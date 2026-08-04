@@ -1,0 +1,48 @@
+{
+  "audit_id": "FUNDING-DATA-0001-SOURCE-AUDIT",
+  "status": "PREREGISTERED_BEFORE_FIRST_RUN",
+  "registered_on": "2026-08-04",
+  "trading_changes": false,
+  "question": "Are official or first-party historical funding sources sufficiently reproducible, documented and complete to support a later no-direction-change Spot/Perp Router backtest?",
+  "sources": {
+    "binance_usdm_public_archive": {
+      "root": "data/futures/um/monthly/fundingRate/",
+      "role": "long-history centralized-exchange proxy",
+      "target_symbols": ["BTCUSDT", "ETHUSDT", "SOLUSDT", "BNBUSDT", "XRPUSDT"]
+    },
+    "hyperliquid_info_api": {
+      "endpoint": "https://api.hyperliquid.xyz/info",
+      "request_type": "fundingHistory",
+      "role": "native venue field/sign/interval validation and historical-coverage probe",
+      "target_coins": ["BTC", "ETH", "SOL", "BNB", "XRP"],
+      "fixed_recent_probe": ["2026-07-25", "2026-08-03"],
+      "fixed_early_probe": ["2023-05-01", "2023-06-01"]
+    }
+  },
+  "required_checks": [
+    "enumerate archive symbols without relying on current exchangeInfo",
+    "enumerate first/last and missing internal Binance funding months for each target",
+    "download first/middle/latest available Binance ZIP samples",
+    "record CSV filenames, columns, row counts, timestamp field, rate field and observed interval",
+    "record funding-rate sign distribution without interpreting strategy profitability",
+    "query fixed Hyperliquid early and recent windows",
+    "record response fields, earliest/latest timestamps, row count and observed interval",
+    "verify positive-rate long-pays-short convention against official venue documentation in the formal result",
+    "write machine-readable coverage and sample evidence"
+  ],
+  "success_gate": {
+    "binance": "All five target symbols must have parseable monthly funding archives covering their actual perpetual lifetime, with explicit gaps reported rather than silently filled.",
+    "hyperliquid": "The native API must return parseable fundingHistory for at least the recent fixed window; early-window absence is allowed and must be reported.",
+    "no_pnl": true
+  },
+  "prohibited": [
+    "no strategy return calculation",
+    "no funding threshold",
+    "no spot/perp routing decision",
+    "no interpolation across missing funding events",
+    "no assumption that Binance funding equals Hyperliquid funding",
+    "no leverage change",
+    "no post-result source substitution under this audit ID"
+  ],
+  "next_experiment_rule": "Only after this audit passes may a separately preregistered FUNDING-PNL experiment apply observed funding to frozen historical holdings without changing directional targets."
+}
