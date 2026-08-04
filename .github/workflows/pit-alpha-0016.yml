@@ -1,6 +1,5 @@
 name: PIT ALPHA 0016 Dynamic Rotation
 
-# Read-only revalidation trigger; no model or portfolio parameter change.
 on:
   workflow_dispatch:
   pull_request:
