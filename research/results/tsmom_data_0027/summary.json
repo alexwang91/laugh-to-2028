@@ -1,0 +1,23 @@
+{
+  "audit_id": "TSMOM-DATA-0027-PIT-PERP-UNIVERSE",
+  "status": "PASSED_HISTORICAL_CONTRACT_EXISTENCE_LAYER",
+  "trading_changes": false,
+  "strategy_pnl": false,
+  "github_actions_run": 30959742172,
+  "latest_archive_month": "2026-07",
+  "counts": {
+    "archive_symbol_count_all_quotes": 986,
+    "archive_usdt_symbol_count": 832,
+    "ordinary_archive_usdt_candidates": 828,
+    "ordinary_with_1d_archives": 828,
+    "ordinary_with_funding_archive_prefix": 828,
+    "ordinary_ended_at_least_2_months_before_latest": 29,
+    "per_symbol_listing_errors": 0
+  },
+  "current_exchangeinfo": {
+    "usable": false,
+    "reason": "Actions environment received HTTP 451 / invalid responses from attempted fapi exchangeInfo endpoints; current archive-only count is therefore not claimed."
+  },
+  "ended_early_examples": ["1000BTTCUSDT","AKROUSDT","ANCUSDT","ANTUSDT","AUDIOUSDT","BTSUSDT","BTTUSDT","BZRXUSDT","COCOSUSDT","DODOUSDT","EOSUSDT","FRONTUSDT","HNTUSDT","LENDUSDT","LUNAUSDT","MATICUSDT","RNDRUSDT","SRMUSDT","SXPUSDT","TOMOUSDT","YFIIUSDT"],
+  "decision": "Historical USD-M perpetual existence is reproducible directly from Binance Public Data archives and includes contracts whose archive ended long before the latest month. Do not use today's survivors as historical TSMOM universe. Next gate is completed-information daily PIT eligibility construction; no TSMOM PNL is authorized yet."
+}
