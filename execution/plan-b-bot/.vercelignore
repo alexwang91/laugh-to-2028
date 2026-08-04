@@ -1,0 +1,9 @@
+cua/
+crypto-beta-bot/
+tests/
+scripts/
+__pycache__/
+.pytest_cache/
+*.pyc
+.env
+.env.*
