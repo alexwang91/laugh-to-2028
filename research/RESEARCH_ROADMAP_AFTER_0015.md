@@ -2,123 +2,179 @@
 
 Date: 2026-08-04
 
-This roadmap is a stopping-rule document, not a strategy. Its purpose is to limit degrees of freedom and prevent serial backtest optimization.
+This is a stopping-rule document, not a strategy. Its purpose is to limit degrees of freedom and prevent serial backtest optimization.
 
-## Current production-research baseline
+## Current baseline
 
 **BRRK-0011** = frozen V1 alpha + frozen PCA4 BRRK-0006 Risk-Off authority structure + mathematically corrected path-CDaR definition.
 
-Common-window baseline (2022-12-10 through 2026-08-02): CAGR 65.10%, MaxDD -33.72%, Sharpe 1.353, Calmar 1.931. No experimental overlay is promoted over BRRK-0011 yet.
+Common window 2022-12-10 through 2026-08-02: CAGR 65.10%, MaxDD -33.72%, Sharpe 1.353, Calmar 1.931.
 
-## Evidence hierarchy
+No experimental overlay is promoted over BRRK-0011.
 
-### Tier A — baseline / implementation corrections
+## Evidence hierarchy after PIT-DISP-0015
 
-- BRRK-0011: baseline.
-- AUDIT-0010/0012: terminal-return scenario distribution is reasonably calibrated; maximum-drawdown scenarios are conservative on the 44 realized 20-day forecasts.
-- No heavier tails or conformal safety buffer are justified by the observed calibration record.
+### Tier A — canonical baseline
 
-### Tier B — strong shadow risk-overlay candidate
+- **BRRK-0011** remains baseline.
+- AUDIT-0010/0012: terminal-return scenarios are reasonably calibrated; maximum-drawdown scenarios are conservative on the available 44 realized forecasts.
+- No heavier tail or conformal safety buffer is justified by the observed calibration record.
 
-**DISP-0014** (external literature formula):
-- scales total exposure to cash using 20-day cross-sectional dispersion versus its prior expanding median;
-- fixed externally specified 0.10 floor and 0.80 recursive smoothing;
-- fixed-panel BRRK result: CAGR 65.71%, MaxDD -30.60%, Sharpe 1.488, Calmar 2.147;
-- interpretation: risk compression rather than alpha creation; gives up upside capture.
+### Tier B — valid risk mechanism, not promoted
 
-It is **not eligible for production promotion until PIT-DISP-0015 validates the signal on a dynamic, survivorship-aware universe**.
+**PIT-DISP-0015**:
 
-### Tier C — promising but weak/event-concentrated candidate
+- true point-in-time, dead-pool-inclusive historical Binance USDT universe;
+- 652 candidates, 646 with rows, zero fetch errors;
+- 159 currently inactive/non-TRADING symbols historically eligible;
+- dynamic broad-market dispersion improves BRRK MDD, CDaR, volatility, downside capture, Sharpe and Calmar;
+- but reduces CAGR from 65.10% to 60.81% and upside capture from 105.02% to 95.92%;
+- status: broad-market risk diagnostic / shadow overlay only.
 
-**DISP-0013** (extreme-dispersion alt-to-BTC reliability gate):
-- fixed-panel BRRK result: CAGR 67.50%, MaxDD -33.72%, Calmar 2.002;
-- only ~2% of days active;
-- activation attribution shows ~97% of positive episode contribution came from the top three episodes, concentrated in late Nov / early Dec 2024.
+### Tier C — selection-sensitive fixed-panel diagnostic
 
-Keep shadow-only. Do not select the 80% sensitivity or combine 0013 with 0014 on the same historical window.
+**DISP-0014**:
 
-## Gate 1 — PIT-DISP-0015 (highest priority)
+- fixed-panel BRRK result remains historically strong: CAGR 65.71%, MaxDD -30.60%, Sharpe 1.488, Calmar 2.147;
+- however fixed-panel and dynamic PIT scales correlate only about 0.064;
+- the fixed BTC/ETH/SOL/BNB/XRP panel is not a reliable proxy for broad historical dispersion;
+- status: downgraded, not production eligible.
 
-Objective: validate the dispersion risk signal itself with a point-in-time, dead-pool-inclusive Binance USDT universe.
+### Tier D — event-concentrated diagnostic
 
-Frozen before first model run:
+**DISP-0013**:
+
+- fixed-panel BRRK CAGR around 67.50%, Calmar around 2.00;
+- only about2% of days active;
+- about97% of positive episode contribution came from the top three episodes, concentrated in late Nov/early Dec 2024;
+- status: shadow only.
+
+## Gate 1 — PIT-DISP-0015: resolved
+
+Frozen rules were executed without post-result change:
+
 - historical ordinary spot-USDT candidates including later inactive/BREAK symbols;
-- last 240 calendar daily rows must be complete;
+- 240 consecutive completed daily observations;
 - completed-day quote volume >= $25m;
 - minimum cross-section 5;
-- dispersion = cross-sectional sample std of trailing 20-day cumulative log return;
+- 20-day cumulative-log-return cross-sectional dispersion;
 - prior expanding-median target;
 - exposure floor 0.10;
-- recursive smoothing lambda 0.80;
+- smoothing lambda 0.80;
 - entire V1 exposure scaled to cash;
-- 0.05 L1 band and 5bps transaction cost;
-- signal at t held over t+1.
+- 0.05 L1 band, 5bps cost, t signal held over t+1.
 
 Decision:
-1. Compare dynamic-universe overlay against BRRK-0011 baseline.
-2. Compare it against fixed-panel DISP-0014.
-3. No parameter may be changed after the first valid model report.
-4. If dynamic-universe risk-adjusted improvement largely disappears, downgrade DISP-0014 and treat the fixed-panel result as potentially selection-driven.
-5. If it survives with materially better drawdown/Sharpe/Calmar and reasonable activation behavior, DISP-0014/0015 becomes eligible for prospective shadow promotion.
 
-## Gate 2 — dynamic alpha universe
+1. Broad dispersion risk compression survives dead-pool inclusion.
+2. The growth/risk trade-off is insufficient for production promotion.
+3. Fixed-panel DISP-0014 is materially selection-sensitive and downgraded.
+4. No PIT-0015 parameter may be tuned on this window.
+5. Exact daily outputs are now persisted under `research/results/pit_disp_0015/`.
 
-Only after Gate 1 is resolved.
+## Gate 2 — dynamic point-in-time alpha universe: current highest priority
 
-Purpose: remove the remaining fixed-winner bias from the **alpha** engine, not merely the dispersion-risk signal.
+Purpose: remove the remaining fixed-winner bias from the **alpha engine**.
 
-Rules must be registered before PnL:
-- point-in-time eligible universe from historical daily rows;
-- dead/delisted coins remain historically eligible until data/trading availability ends;
-- liquidity and age screens must use only lagged/completed information;
-- no present-day market-cap or survival filter;
-- avoid PnL-driven top-N selection: either use an externally specified N or report a small preregistered family in full;
-- include a random-ranking / placebo benchmark so a ranking model must beat noise, not merely cash/BTC.
+The first test must be registered before PnL and use:
 
-Primary question: does the V1 relative-strength/trend mechanism still select durable winners when today's surviving majors are not hard-coded?
+- historical daily rows to determine point-in-time existence;
+- later dead/delisted coins retained until data/trading availability ends;
+- lagged/completed liquidity and age screens;
+- no present-day market cap, rank or survival filters;
+- own absolute trend >0 before relative-strength ranking;
+- BTC regime as risk-on/risk-off authority;
+- gross <=1 in the primary run;
+- explicit transaction costs, rebalance band and t→t+1 execution;
+- full preregistered Top-N family rather than selecting the best N;
+- random-ranking placebo and equal-weight eligible-universe benchmarks;
+- contribution concentration and inactive-asset attribution.
 
-## Gate 3 — downside-risk estimator (LPM)
+Primary question:
 
-Only after the universe problem is controlled.
+> Does V1 own-trend + relative-strength still select durable winners when today's surviving majors are not hard-coded?
 
-Motivation: 2026 crypto portfolio evidence supports lower-partial-moment risk objectives under heavy tails and downside asymmetry. Existing PIT audit shows terminal returns are already reasonably calibrated while path drawdown is conservative, so this should be a **risk-estimator replacement test**, not an additional safety gate.
+Promotion requires:
 
-Preferred first experiment:
-- preserve V1 alpha and the accepted regime gate;
-- replace symmetric/path-risk penalty with a fixed lower-partial-moment objective;
-- do not use Sortino cross-validation or broad parameter search in the first experiment;
-- report downside capture, expected shortfall, CDaR, turnover, upside capture and calibration, not CAGR alone.
+- meaningful outperformance over placebo;
+- no dependence on one ex-post winner;
+- reasonable 2024+ and 2025+ behavior;
+- survival after dead-pool inclusion and realistic costs;
+- no post-result movement of age, liquidity or Top-N rules.
 
-## Gate 4 — derivatives / execution state
+## Gate 2A — dispersion signal-identity audit
 
-Can develop in parallel because it does not need to change alpha.
+No trading changes. Run in parallel with dynamic-alpha engineering.
 
-Prospective Hyperliquid data already includes/should include:
+Explain fixed vs dynamic scale divergence through:
+
+- universe size and breadth;
+- top-contributor concentration;
+- volume-selection effects;
+- BTC inclusion/exclusion;
+- sector/group contributions;
+- inactive-symbol contribution;
+- high-dispersion episode overlap;
+- fixed-panel false-positive and false-negative risk reductions.
+
+This audit may explain signal identity but may not search for a formula that restores fixed-panel PnL.
+
+## Gate 3 — funding history and Spot/Perp Router
+
+Can proceed after or alongside Gate2 data engineering, but cannot become an alpha claim.
+
+Required:
+
+- accessible historical funding archive;
+- spot/perp implementation comparison for unchanged target exposure;
+- funding, basis, fees and slippage attributed separately;
+- leverage-overlay carry isolated from base gross<=1 exposure;
+- hedge and negative-funding-long cases reported separately.
+
+## Gate 4 — downside-risk estimator / risk allocation
+
+Only after dynamic alpha is controlled.
+
+Candidate first experiment:
+
+- preserve accepted alpha and regime gate;
+- replace, not stack, the risk estimator with a fixed lower-partial-moment objective;
+- no broad hyperparameter search;
+- report downside capture, expected shortfall, CDaR, turnover, upside opportunity cost and calibration.
+
+PIT-0015 demonstrates why upside opportunity cost must be a first-class risk metric.
+
+## Gate 5 — execution hardening
+
+Prospective Hyperliquid data and engineering should cover:
+
 - L2 book depth and target-notional VWAP;
 - spread and directional slippage;
-- funding;
-- mark/oracle premium;
-- open interest and volume;
-- fill/reconciliation data once shadow execution begins.
+- funding, premium, open interest and volume;
+- partial fills and reconciliation;
+- idempotency and audit logs;
+- emergency reduce-only controls;
+- testnet end-to-end parity with research targets.
 
-Use cases:
-- execution veto/slicing based on current target-notional liquidity;
-- empirical Slippage-at-Risk / expected tail slippage;
-- funding cost control for exposure above 1.0;
-- liquidity-state monitoring.
-
-Do **not** use one snapshot to choose thresholds. Recent 2026 microstructure evidence favors a state-first L2 design and shows event/cascade early-warning variables are not universal.
+One snapshot cannot define execution thresholds.
 
 ## Explicitly stopped research lines
 
-- manual 'last drop / bottom' recovery jumps;
-- CUSUM re-entry threshold tuning on the same sample;
-- HMM state-count/factor-count selection by realized PnL;
+- manual last-drop/bottom recovery jumps;
+- CUSUM threshold tuning on the same sample;
+- HMM state/factor selection by realized PnL;
 - persistent semantic-state anchoring;
-- adding more generic volatility gates to V1;
-- combining DISP-0013 and DISP-0014 before independent PIT validation;
-- deep-RL portfolio optimization before simple, survivor-free baselines are beaten.
+- generic volatility gates stacked on V1;
+- tuning PIT-DISP-0015 after its valid result;
+- combining dispersion variants to recover historical CAGR;
+- hard-coding HYPE or another current winner before dynamic-alpha testing;
+- deep RL before simple survivor-free baselines are beaten;
+- leverage expansion before universe, funding and execution validation.
 
 ## Promotion philosophy
 
-A new module is promoted only when it satisfies **mechanism + pre-registration + no-lookahead + transaction costs + subperiod robustness + model/universe uncertainty + implementation audit**. A higher historical CAGR alone is insufficient.
+A module is promoted only when it satisfies:
+
+**mechanism + preregistration + no-lookahead + transaction costs + subperiod robustness + model/universe uncertainty + implementation audit + controlled upside opportunity cost.**
+
+Higher historical CAGR alone is insufficient.
