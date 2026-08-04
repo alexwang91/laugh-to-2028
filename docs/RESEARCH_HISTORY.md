@@ -167,40 +167,91 @@ The Top-2 rank:
 
 - beat 98/100 placebo seeds on terminal NAV；
 - beat 98/100 placebo seeds on Calmar；
-- placebo median final value only$2,326 versus primary$18,354；
 - largest positive contributor share13.14%；
 - top-three share34.93%；
-- positive contribution distributed acrossSOL、XRP、EGLD、AXS、DOGE、TRX以及later-inactive FTM/OM/RNDR等。
+- contribution distributed across many survivors and later-inactive assets。
 
-Conclusion: own-trend + relative-strength rank contains real cross-sectional information. It is not merely a current-survivor or single-SOL artifact.
+Conclusion: own-trend + relative-strength rank contains real cross-sectional information.
 
 ### Portfolio conversion failed
 
 - Top-2 CAGR12.25% versus fixed V136.43%；
-- MDD-69.12% worse than fixed V1-59.72% and BTC dynamic-54.31%；
+- MDD-69.12% worse than fixed V1 and BTC dynamic；
 - turnover349.62；
 - 2025+ CAGR negative；
-- 10bps CAGR8.57%；
-- 20bps CAGR1.57%，edge almost disappears。
+- 20bps CAGR1.57%。
 
-The 0/-25/-50% first-missing-day stress did not bind because no symbol remained held on the first day its row disappeared. This does not prove delisting risk is zero.
+Decision:
 
-### 0016 decision
+- ranking mechanism validated；
+- portfolio specification rejected；
+- BRRK-0011 remains baseline；
+- no0016 tuning。
 
-- **Ranking mechanism validated.**
-- **Portfolio specification rejected.**
-- BRRK-0011 remains canonical baseline.
-- PIT-ALPHA-0016 is not live/shadow portfolio eligible.
-- No 0016 parameter may be tuned on this window.
-- Next step is a no-trading-change attribution audit of churn、holding duration、tail losses、rank persistence、2024 success、2025 failure and fixed-V1 overlap.
+## 10. AUDIT-0017 — rank-to-portfolio attribution
 
-## 10. Funding and execution
+The no-trading-change audit identified daily name replacement as the dominant failure mechanism.
 
-Historical funding backtest remains invalid because the first endpoint attempt receivedHTTP451. Funding is an unvalidated execution/routing variable, not established alpha.
+### Churn and holding structure
 
-Hyperliquid Plan B implements signal、portfolio conversion and testnet/shadow skeleton, but remains incomplete: dynamic precision、fill reconciliation、partial fills、slicing、idempotency、emergency protection and endpoint hardening are still open.
+- mean daily eligible-set Jaccard0.630；
+- roughly3 additions and3 removals per day；
+- monthly first-to-last eligible-set Jaccard0.249；
+- 653 holding spells across113 symbols；
+- median holding duration1 day；
+- positive-contribution spells41.96%；
+- TRX re-entered49 times。
 
-## 11. Current evidence hierarchy
+### Turnover decomposition
+
+| Component | Share |
+|---|---:|
+| BTC weight changes | 7.18% |
+| Alt-sleeve size changes | 9.41% |
+| **Within-alt name switching** | **83.41%** |
+
+The portfolio was not behaving as medium-horizon trend following. It was behaving as a daily leaderboard replacement system.
+
+### Rank persistence and payoff shape
+
+At30days after entry:
+
+- 52.07% remain own/relative-trend eligible；
+- only19.35% remain dailyTop-2；
+- median forward return-2.43%；
+- mean forward return+4.83%。
+
+Most entries lose modestly; rare persistent winners create the positive mean. Strict daily Top-2 replacement exits incumbents before those right-tail winners can compound.
+
+### Fixed-V1 overlap
+
+- PIT alt exposure in active fixed-V1 alts averaged15.65%；
+- any overlap occurred28.70% of days；
+- overlap days had materially higher mean return than non-overlap days。
+
+This is evidence of persistent trend quality, not authorization to hard-code ETH/SOL/BNB.
+
+### Tail and sequence effects
+
+The largest drawdown reached-69.12%。Across its drawdown/recovery episode, additive gross return was positive, but volatility sequence and11.42pp of costs left compounded net wealth almost flat by recovery.
+
+### Authorized hypothesis
+
+AUDIT-0017 authorizes one new state machine:
+
+- use Top-2 rank for entry；
+- keep incumbent while own trend>0 and relative trend>0；
+- exit only when it becomes ineligible, BTC becomes risk-off, or a vacancy exists。
+
+This directly addresses name-switch churn without introducing an exit-rank threshold, minimum hold or monthly calendar parameter. It requires a new experiment ID.
+
+## 11. Funding and execution
+
+Historical funding-aware PNL remains invalid because the first endpoint attempt receivedHTTP451. Funding is an unvalidated implementation variable, not established alpha.
+
+Hyperliquid Plan B remains testnet/shadow only. Open items include dynamic precision、fill reconciliation、partial fills、slicing、idempotency、emergency protection and endpoint hardening。
+
+## 12. Current evidence hierarchy
 
 | Component | Status |
 |---|---|
@@ -210,19 +261,16 @@ Hyperliquid Plan B implements signal、portfolio conversion and testnet/shadow s
 | DISP-0013 | Event-concentrated diagnostic |
 | DISP-0014 | Selection-sensitive fixed-panel diagnostic |
 | PIT-DISP-0015 | Valid risk mechanism, portfolio not promoted |
-| **PIT-ALPHA-0016 rank** | **Mechanism validated versus placebo** |
-| **PIT-ALPHA-0016 portfolio** | **Rejected** |
+| PIT-ALPHA-0016 rank | Mechanism validated versus placebo |
+| PIT-ALPHA-0016 portfolio | Rejected |
+| **AUDIT-0017** | **Daily name replacement identified as dominant failure** |
 | Funding-aware PNL | Unvalidated |
 | Hyperliquid Plan B | Testnet/shadow implementation |
 
-## 12. Current stopping rule
+## 13. Current stopping rule
 
-The next question is no longer whether broad trend ranking contains information. It does.
+The next experiment may test only the audit-authorized entry-rank / eligibility-exit state machine.
 
-The current bottleneck is:
-
-> Why does a rank that beats98% of placebos still translate into12.25%CAGR、-69%MDD and extreme turnover?
-
-Until that attribution is completed, do not add HYPE by name, leverage, funding alpha, covariance optimizer, volatility gate or a large parameter grid.
+Until that preregistered result exists, do not add HYPE by name、age filters、exit-rank thresholds、minimum holding periods、monthly schedules、funding alpha、covariance optimizers、volatility gates or leverage。
 
 Original experiment records and exact outputs are under `research/results/`.
