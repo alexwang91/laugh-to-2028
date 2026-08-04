@@ -1,0 +1,44 @@
+{
+  "audit_id": "TSMOM-DATA-0027-PIT-PERP-UNIVERSE",
+  "status": "PREREGISTERED_BEFORE_FIRST_RUN",
+  "registered_on": "2026-08-05",
+  "trading_changes": false,
+  "strategy_pnl": false,
+  "question": "Can the historical Binance USD-M perpetual universe be reconstructed from official public archives, including contracts that later disappeared, so a future TSMOM sleeve does not inherit current-survivor and false-shortability bias?",
+  "official_archive": {
+    "source": "Binance Public Data / data.binance.vision",
+    "s3_endpoint": "https://s3-ap-northeast-1.amazonaws.com/data.binance.vision",
+    "kline_root": "data/futures/um/monthly/klines/",
+    "funding_root": "data/futures/um/monthly/fundingRate/",
+    "kline_interval": "1d"
+  },
+  "scope": {
+    "quote": "USDT",
+    "contract_type_intent": "USD-M perpetual research universe; archive discovery first, exact daily eligibility later",
+    "exclude_stablecoin_bases": true,
+    "exclude_leveraged_token_like_bases": true
+  },
+  "required_outputs": [
+    "all archived USD-M symbols discoverable from monthly kline prefixes",
+    "ordinary USDT candidate classification",
+    "current USD-M exchangeInfo comparison when reachable",
+    "archive-only ordinary USDT contracts",
+    "for every ordinary archived candidate: first/last available 1d monthly archive and file count",
+    "fundingRate archive symbol intersection",
+    "counts proving later-disappeared perpetual contracts are retained"
+  ],
+  "success_gate": {
+    "archive_symbols_nonempty": true,
+    "ordinary_historical_candidates_nonempty": true,
+    "historical_inactive_contracts_found": true,
+    "dated_1d_archives_resolvable": true
+  },
+  "prohibited": [
+    "no TSMOM returns or Sharpe calculation",
+    "no use of today's surviving symbols as the historical universe",
+    "no assumption that spot listing implies perpetual shortability",
+    "no filling missing contract history from a different venue",
+    "no symbol exclusion based on later performance"
+  ],
+  "next_experiment_rule": "Only after historical USD-M contract existence is reproducible may a separate preregistered construction audit build point-in-time daily eligibility from contract age, completed-day liquidity and actual archive availability. Funding and execution costs remain separate gates before portfolio PNL promotion."
+}
