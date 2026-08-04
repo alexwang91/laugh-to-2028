@@ -1,181 +1,166 @@
 # Next Steps
 
-当前原则：**机制验证与组合 promotion 必须分开。先解释失败，再设计下一版。**
+当前原则：**机制验证、组合验证和部署授权必须分开。归因只能授权一种新结构，不能调参救回测。**
 
-## Completed gate — PIT-DISP-0015
+## Completed — PIT-DISP-0015
 
-Broad point-in-time dispersion 的风险压缩机制成立，但降低 CAGR 和 upside capture；fixed-panel DISP-0014 被证明 materially selection-sensitive。
+Broad point-in-time dispersion contains real risk information, but its upside opportunity cost prevents promotion. Fixed-panel DISP-0014 is materially selection-sensitive.
 
-Decision:
+Decision: BRRK-0011 remains canonical baseline; no PIT-DISP-0015 tuning.
 
-- BRRK-0011 remains canonical baseline;
-- DISP-0014 and PIT-DISP-0015 remain diagnostics;
-- no post-result tuning of PIT-DISP-0015.
+## Completed — PIT-ALPHA-0016
 
-Formal result: `research/results/PIT_DISP_0015_RESULT_2026-08-04.md`.
-
-## Completed gate — PIT-ALPHA-0016
-
-The dead-pool-inclusive dynamic-alpha run used 648 historical candidates, 646 symbols with rows, zero fetch errors and 152 currently inactive/non-TRADING symbols that were historically eligible.
-
-### Mechanism result
-
-The frozen Top-2 rank:
-
-- beat 98/100 random-priority placebo seeds on terminal NAV;
-- beat 98/100 placebo seeds on Calmar;
-- had largest positive contributor share only 13.14%;
-- had top-three positive contributor share 34.93%;
-- included later-inactive assets without a single-winner dependency.
-
-Therefore own-trend + relative-strength ranking contains real cross-sectional information.
-
-### Portfolio result
-
-Top-2 primary:
+The dead-pool-inclusive Top-2 rank beat 98/100 random-priority placebos and was not dominated by one winner. The portfolio itself failed:
 
 - CAGR 12.25%;
 - MDD -69.12%;
-- Sharpe 0.480;
-- Calmar 0.177;
-- turnover 349.62.
+- turnover 349.62;
+- negative 2025+ CAGR;
+- almost all growth disappears at 20 bps.
 
-Fixed V1 gross<=1:
+Decision: ranking mechanism validated; portfolio rejected; no 0016 tuning.
 
-- CAGR 36.43%;
-- MDD -59.72%;
-- Sharpe 0.889;
-- Calmar 0.610;
-- turnover 131.81.
+## Completed — AUDIT-0017
 
-At 10 bps Top-2 CAGR falls to 8.57%; at 20 bps it falls to 1.57%. The 2025+ subperiod is negative.
+The no-trading-change audit identified the dominant rank-to-portfolio failure.
 
-Decision:
+### Core diagnosis
 
-- ranking mechanism validated;
-- portfolio specification rejected;
-- BRRK-0011 remains canonical baseline;
-- no 0016 parameter may be tuned on this window.
+- eligible set changes by roughly 3 additions and 3 removals per day;
+- monthly first-to-last eligible-set Jaccard is only 0.249;
+- 653 holding spells across 113 symbols;
+- median holding duration is 1 day;
+- only 41.96% of spells have positive arithmetic contribution;
+- 83.41% of turnover comes from within-alt name switching;
+- BTC-weight turnover is only 7.18%;
+- alt-sleeve-size turnover is only 9.41%.
 
-Formal result: `research/results/PIT_ALPHA_0016_RESULT_2026-08-04.md`.
+### Payoff shape
 
----
+At 30 days after entry:
 
-## P0 — PIT-ALPHA attribution audit, no trading changes
+- 52.07% of assets remain broadly eligible;
+- only 19.35% remain daily Top-2;
+- median forward return is -2.43%;
+- mean forward return is +4.83%.
 
-This is now the highest priority.
+The rank is right-skewed: many small losers and a few large persistent winners. Strict daily Top-2 replacement exits incumbents before the rare winners can compound.
 
-Primary question:
+### Additional findings
 
-> Why does a rank that beats 98% of placebos still produce only 12.25% CAGR, -69% MDD and extreme turnover?
+- PIT alt exposure overlaps active fixed-V1 alts on only 28.70% of days;
+- overlap days have materially higher mean return than non-overlap days;
+- tail losses and volatility sequence drag are at least as important as fees;
+- capacity at $1m NAV is not the primary bottleneck;
+- younger listings have worse median outcomes, but the audit does not authorize an age-threshold change.
 
-Required outputs:
+Formal result: `research/results/AUDIT_0017_PIT_ALPHA_ATTRIBUTION_2026-08-04.md`.
 
-1. eligible-universe churn by day/month;
-2. rank turnover versus actual held-position turnover;
-3. holding-period distribution and re-entry frequency;
-4. contribution by trade, asset, listing cohort and liquidity cohort;
-5. worst tail-loss trades and drawdown episodes;
-6. rank persistence and score decay after entry;
-7. Top-2 overlap with fixed V1 holdings;
-8. decomposition of 2024 success and 2025 failure;
-9. cost split between gross-beta changes and name switching;
-10. effect of banding on forced/optional turnover;
-11. inactive-symbol entry/exit timing;
-12. capacity/slippage proxy by target notional and historical quote volume.
-
-This audit may not change target weights, selection rules or thresholds.
+Exact evidence: `research/results/audit_0017_pit_alpha_attribution/`.
 
 ---
 
-## P1 — new low-turnover experiment only after attribution
+## P0 — New experiment: entry-rank / eligibility-exit
 
-A new monthly/persistence-controlled strategy may be considered only under a new experiment ID.
+AUDIT-0017 authorizes exactly one next structural hypothesis.
 
-Potential structural hypotheses to evaluate later, not tune now:
+### State machine
 
-- monthly rather than daily cross-sectional reselection;
-- minimum rank-persistence before entry;
-- hold-until-rank-exit rather than daily Top-N replacement;
-- separate universe refresh cadence from exposure cadence;
-- turnover budget or hysteresis applied uniformly;
-- limit new-name entries while preserving BTC beta changes.
+```text
+vacancy exists in risk-on state
+        ↓
+use validated Top-2 rank to select entry
+        ↓
+keep incumbent while:
+  own trend > 0
+  relative-to-BTC trend > 0
+  liquidity/continuous-history eligibility holds
+        ↓
+replace only when:
+  incumbent becomes ineligible
+  BTC enters risk-off
+  or a vacancy remains
+```
 
-The attribution audit must determine which one has a causal justification. Do not run a broad parameter grid.
+### What must remain frozen
+
+- full point-in-time historical universe;
+- later inactive/delisted assets retained historically;
+- 240 consecutive completed daily rows;
+- completed-day quote volume >= $25m;
+- existing own/relative trend definitions and rank score;
+- gross <= 1;
+- BTC regime/core logic;
+- 50% BTC / 50% alt sleeve in risk-on;
+- universal 35% single-alt cap;
+- 0.05 L1 band;
+- stated transaction costs;
+- t signal held over t+1.
+
+### What changes
+
+Only the exit authority:
+
+- falling out of daily Top-2 is no longer an exit;
+- losing own/relative eligibility, liquidity/history eligibility or risk-on state is an exit.
+
+### Prohibited additions
+
+- no exit-rank threshold;
+- no minimum holding period;
+- no monthly calendar parameter;
+- no age-threshold increase;
+- no hard-coded ETH/SOL/BNB/HYPE universe;
+- no funding, dispersion, covariance, LPM or leverage overlay;
+- no parameter family selected from PNL.
+
+### Required evidence
+
+- exact PNL and drawdown;
+- turnover decomposition;
+- holding-spell distribution;
+- right-tail winner capture;
+- 5/10/20 bps stress;
+- 2024+, 2025+ and 2026 behavior;
+- contribution concentration;
+- inactive-asset attribution;
+- comparison against PIT-ALPHA-0016, BTC dynamic, fixed V1 and random-priority placebo under the same state machine.
+
+Promotion requires materially better turnover and drawdown without losing the validated rank advantage. Beating 0016 alone is insufficient.
 
 ---
 
-## P2 — fixed versus dynamic dispersion identity audit
+## P1 — Historical funding + Spot/Perp Router
 
-No trading changes. Explain the 0.064 fixed/dynamic scale correlation through:
+Use accessible archives and separately attribute funding, fees, basis and slippage for an unchanged target exposure. This is implementation optimization, not alpha.
 
-- universe breadth and size;
-- constituent concentration;
-- volume selection;
-- sector/group contribution;
-- inactive/dead-pool inclusion;
-- false-positive/false-negative de-risk episodes.
+## P2 — Hyperliquid execution hardening
 
-This remains secondary to the alpha attribution audit.
-
----
-
-## P3 — historical funding + Spot/Perp Router
-
-Use accessible historical archives and attribute separately:
-
-- funding;
-- fees;
-- basis;
-- slippage;
-- spot versus perp implementation;
-- gross>1 leverage overlay;
-- hedge/short carry.
-
-This module optimizes implementation of an unchanged target exposure; it is not a new direction signal.
-
----
-
-## P4 — Hyperliquid execution hardening
-
-`execution/plan-b-bot` remains testnet/shadow only.
-
-Engineering backlog:
+Priorities:
 
 1. metadata-derived size precision;
-2. reversal and fill reconciliation;
-3. partial/resting/rejected state handling;
+2. reversal/fill reconciliation;
+3. partial/resting/rejected handling;
 4. order slicing;
 5. persistent idempotency and audit logs;
-6. notification isolation;
+6. target-notional L2 simulation;
 7. reduce-only emergency protection;
-8. endpoint authorization;
-9. mainnet double confirmation and allocation cap;
-10. testnet end-to-end parity;
-11. target-notional L2 slippage simulation.
+8. endpoint authorization and mainnet double confirmation;
+9. deterministic parity with research targets.
 
----
+## P3 — Risk allocation and leverage last
 
-## P5 — risk allocation and leverage last
-
-Do not add covariance, LPM, volatility gates or leverage to rescue PIT-ALPHA-0016.
-
-Only after alpha economics, funding and execution are controlled may the project reconsider:
-
-- covariance / marginal risk contribution;
-- downside/LPM estimators;
-- normal beta cap around1.30;
-- strong-trend hard maximum1.50.
+Do not use covariance, LPM, generic volatility gates or leverage to rescue a weak alpha implementation.
 
 ## Stopping rules
 
-Stop and retain BRRK-0011 if:
+Stop and retain BRRK-0011 if the authorized state machine:
 
-- attribution cannot identify a stable reason for rank-to-portfolio degradation;
-- a new design requires moving multiple thresholds after seeing 0016;
-- lower turnover is achieved only by selecting the historical winner;
-- 2025+ failure persists;
-- reasonable costs remove the edge;
-- model complexity grows faster than independent market regimes.
+- still produces negative 2025+ economics;
+- reduces turnover but retains unacceptable tail drawdown;
+- loses the placebo-validated ranking edge;
+- depends on one ex-post winner;
+- is fragile at 10–20 bps;
+- requires any additional threshold after seeing results.
 
-The objective is a robust exposure-control system, not recovery of the fixed-universe historical CAGR.
+The objective is not to recover the fixed-universe historical CAGR. It is to determine whether validated ranking information can be converted into a survivor-aware, low-turnover exposure system.
