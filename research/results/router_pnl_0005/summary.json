@@ -1,0 +1,27 @@
+{
+  "experiment_id": "ROUTER-PNL-0005-STRICT-VERIFIED-SPOT",
+  "status": "EXPLORATORY_POST_AUDIT_ACCOUNTING",
+  "promotion_evidence": false,
+  "reason_not_preregistered": "This deterministic accounting diagnostic was computed after ROUTER-DATA-0004 results were observed. It is retained for implementation attribution and must not be represented as preregistered router-promotion evidence.",
+  "trading_target_changes": false,
+  "price_return_source": "research/results/funding_pnl_0003/common_window_daily_equity.csv::PRICE_ONLY",
+  "funding_attribution_source": "research/results/funding_pnl_0003/block_asset_funding_attribution.csv",
+  "router_classification_source": "research/results/router_data_0004/summary.json",
+  "verified_spot_assets": ["BTC"],
+  "strict_perp_assets": ["ETH", "SOL", "BNB", "XRP"],
+  "historical_spot_fee_basis_slippage": "NOT_INCLUDED",
+  "interpretation": "STRICT_VERIFIED_SPOT is a funding-only implementation accounting result. It preserves frozen price returns and the original backtest trading-cost assumption, sets funding to zero only for currently verified spot assets, and retains native Hyperliquid funding for all other targets.",
+  "candidate_counterfactuals_are_promotion_evidence": false,
+  "all_perp_reconstruction_max_abs_error": 0.0000014997567632235587,
+  "workflow_run_id": 30954274000,
+  "artifact_id": 8910374698,
+  "metrics": {
+    "PRICE_ONLY": {"final_10k": 47998.1184656723, "cagr": 0.6536830590706433, "max_drawdown": -0.33715070346578324, "ann_vol": 0.44234264321349764, "sharpe": 1.3553289953480663, "calmar": 1.9388453067160345},
+    "HYPERLIQUID_ALL_PERP_NATIVE": {"final_10k": 31228.153920212077, "cagr": 0.4407517260580207, "max_drawdown": -0.3704391846128513, "ann_vol": 0.4406063839594922, "sharpe": 1.0464515294445504, "calmar": 1.189808595758177},
+    "STRICT_VERIFIED_SPOT": {"final_10k": 40177.86898970672, "cagr": 0.562011121378428, "max_drawdown": -0.3494754194062093, "ann_vol": 0.44121575077129144, "sharpe": 1.2285605472579428, "calmar": 1.6081563685747522},
+    "COUNTERFACTUAL_BTC_ETH_SPOT": {"final_10k": 41423.76639891679, "cagr": 0.577382967775413, "max_drawdown": -0.3469379136353098, "sharpe": 1.2503139625104602, "calmar": 1.6642256296679636},
+    "COUNTERFACTUAL_BTC_SOL_SPOT": {"final_10k": 45938.43778822346, "cagr": 0.6305872538608766, "max_drawdown": -0.34232170868692247, "sharpe": 1.3242606429024582, "calmar": 1.8420895837418054},
+    "COUNTERFACTUAL_BTC_ETH_SOL_SPOT": {"final_10k": 47362.840873258094, "cagr": 0.646632546953702, "max_drawdown": -0.33975629838670096, "sharpe": 1.3459201662125757, "calmar": 1.9032246054721351},
+    "THEORETICAL_ALL_SPOT": {"final_10k": 47998.118465672625, "cagr": 0.6536830590706468, "max_drawdown": -0.337150703465781, "sharpe": 1.35532899534807, "calmar": 1.9388453067160578}
+  }
+}
