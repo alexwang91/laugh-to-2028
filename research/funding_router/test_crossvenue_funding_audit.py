@@ -35,6 +35,7 @@ class CrossVenueFundingAuditTests(unittest.TestCase):
         self.assertAlmostEqual(second["additive_rate"], 0.03)
 
     def test_paired_blocks_use_intersection_only(self):
+        event_time = pd.Timestamp("2026-01-01 00:00:00", tz="UTC")
         blocks = pd.DataFrame({
             "asset": ["BTC", "BTC", "BTC"],
             "venue": ["binance", "hyperliquid", "binance"],
@@ -46,8 +47,8 @@ class CrossVenueFundingAuditTests(unittest.TestCase):
             "additive_rate": [0.01, 0.02, 0.03],
             "compounded_rate": [0.01, 0.02, 0.03],
             "event_count": [1, 3, 1],
-            "first_event": pd.to_datetime(["2026-01-01Z"] * 3),
-            "last_event": pd.to_datetime(["2026-01-01Z"] * 3),
+            "first_event": [event_time] * 3,
+            "last_event": [event_time] * 3,
         })
         paired = build_paired(blocks)
         self.assertEqual(len(paired), 1)
