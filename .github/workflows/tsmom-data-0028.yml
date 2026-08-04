@@ -1,0 +1,53 @@
+name: TSMOM DATA 0028 PIT Eligibility
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/tsmom-data-0028.yml'
+      - 'research/requirements.txt'
+      - 'research/tsmom/**'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tsmom-data-0028-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  pit-eligibility:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: research/requirements.txt
+      - name: Install research dependencies
+        run: pip install --disable-pip-version-check -r research/requirements.txt
+      - name: Run deterministic unit tests
+        working-directory: research/tsmom
+        run: python -m unittest -v test_tsmom_pit_eligibility.py
+      - name: Run preregistered PIT eligibility audit
+        working-directory: research/tsmom
+        shell: bash
+        run: |
+          set -o pipefail
+          python run_tsmom_pit_eligibility.py | tee tsmom_data_0028.log
+      - name: Upload exact evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tsmom-data-0028-results
+          retention-days: 30
+          if-no-files-found: warn
+          path: |
+            research/tsmom/TSMOM-DATA-0028-PIT-ELIGIBILITY.json
+            research/tsmom/tsmom_data_0028.log
+            research/tsmom/tsmom_data_0028_outputs/**
