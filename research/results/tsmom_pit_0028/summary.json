@@ -1,0 +1,32 @@
+{
+  "audit_id": "TSMOM-PIT-0028-DAILY-ELIGIBILITY",
+  "status": "PASSED_DAILY_PIT_ELIGIBILITY_FROZEN",
+  "trading_changes": false,
+  "strategy_pnl": false,
+  "github_actions_run": 30960227098,
+  "parameters": {
+    "data_start": "2020-09-01",
+    "evaluation_start": "2021-05-01",
+    "evaluation_end": "2026-07-31",
+    "continuous_history_days": 240,
+    "completed_day_quote_volume_floor_usd": 25000000.0
+  },
+  "coverage": {
+    "archive_candidates": 828,
+    "usable_symbol_histories": 828,
+    "symbol_failures": 0,
+    "evaluation_days": 1918
+  },
+  "eligibility": {
+    "ever_eligible_symbols": 550,
+    "total_eligible_symbol_days": 143523,
+    "daily_count_min": 26,
+    "daily_count_median": 72.0,
+    "daily_count_mean": 74.82950990615224,
+    "daily_count_max": 212,
+    "ended_early_contracts_ever_eligible_count": 19,
+    "ended_early_contracts_ever_eligible": ["AKROUSDT","ANTUSDT","AUDIOUSDT","BTSUSDT","BTTUSDT","BZRXUSDT","DODOUSDT","EOSUSDT","FOOTBALLUSDT","FRONTUSDT","GALUSDT","HNTUSDT","LUNAUSDT","MATICUSDT","RNDRUSDT","SRMUSDT","SXPUSDT","TOMOUSDT","YFIIUSDT"]
+  },
+  "snapshots": {"2022-01-01":70,"2023-01-01":39,"2024-01-01":84,"2025-01-01":89,"2026-01-01":63,"2026-07-31":53},
+  "decision": "Freeze this completed-information PIT perpetual eligibility construction. Do not retune 240d/$25m from future TSMOM results. First TSMOM mechanism may now reuse the existing 20/60/120/240 per-asset trend definition across all eligible contracts and must report standalone metrics plus correlation to BRRK before any portfolio-stack optimization."
+}
