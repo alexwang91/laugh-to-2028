@@ -291,7 +291,11 @@ def main() -> None:
     total_weights = bt.apply_band(v1_raw.mul(total_scale, axis=0), BAND)
 
     _, frozen_core = load_frozen_weights()
-    core_weight_error = validate_core_weights(core_weights, frozen_core)
+    # PIT-DISP-0015 persists actual held weights (banded target shifted by one day),
+    # so validate the same object rather than the unshifted target.
+    core_held_weights = core_weights.shift(1).fillna(0.0)
+    total_held_weights = total_weights.shift(1).fillna(0.0)
+    core_weight_error = validate_core_weights(core_held_weights, frozen_core)
 
     eval_start = decision_dates[0] + pd.Timedelta(days=1)
     core_price_ret, core_turn, core_gross = portfolio_returns(prices, core_weights)
@@ -311,13 +315,16 @@ def main() -> None:
     core_common = core_price_ret.reindex(common_index)
     total_common = total_price_ret.reindex(common_index)
 
-    core_perp_weights = core_weights.copy()
+    # Funding-PNL-0003 maps funding blocks to held daily weights.
+    core_perp_weights = core_held_weights.copy()
     core_perp_weights["BTC"] = 0.0
 
-    strict_total_perp = total_weights.copy()
-    strict_total_perp["BTC"] = (total_weights["BTC"] - core_weights["BTC"]).clip(lower=0.0)
+    strict_total_perp = total_held_weights.copy()
+    strict_total_perp["BTC"] = (
+        total_held_weights["BTC"] - core_held_weights["BTC"]
+    ).clip(lower=0.0)
 
-    all_perp_total = total_weights.copy()
+    all_perp_total = total_held_weights.copy()
 
     core_funding_factor = funding_factors_for_weights(rates, core_perp_weights)
     strict_total_funding_factor = funding_factors_for_weights(rates, strict_total_perp)
