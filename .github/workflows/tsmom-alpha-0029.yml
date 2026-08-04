@@ -39,12 +39,12 @@ jobs:
       - name: Run deterministic unit tests
         working-directory: research/tsmom
         run: python -m unittest -v test_tsmom_alpha_0029.py
-      - name: Run preregistered TSMOM experiment
+      - name: Run preregistered TSMOM experiment with registered data repair
         working-directory: research/tsmom
         shell: bash
         run: |
           set -o pipefail
-          python run_tsmom_alpha_0029.py | tee tsmom_alpha_0029.log
+          python run_tsmom_alpha_0029_repaired.py | tee tsmom_alpha_0029.log
       - name: Upload exact evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -54,5 +54,6 @@ jobs:
           if-no-files-found: warn
           path: |
             research/tsmom/TSMOM-ALPHA-0029.json
+            research/tsmom/TSMOM-DATA-0029A-MONTHLY-GAP-REPAIR.json
             research/tsmom/tsmom_alpha_0029.log
             research/results/tsmom_alpha_0029/**
