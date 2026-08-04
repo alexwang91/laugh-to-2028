@@ -9,6 +9,7 @@ on:
       - 'research/requirements.txt'
       - 'research/funding_router/FUNDING-CROSSVENUE-0002-OVERLAP-AUDIT.json'
       - 'research/funding_router/run_crossvenue_funding_audit.py'
+      - 'research/funding_router/run_crossvenue_funding_audit_throttled.py'
       - 'research/funding_router/test_crossvenue_funding_audit.py'
       - 'research/funding_router/run_funding_data_audit.py'
       - 'research/pit_universe/run_archive_discovery.py'
@@ -38,12 +39,12 @@ jobs:
       - name: Run deterministic alignment tests
         working-directory: research/funding_router
         run: python -m unittest -v test_crossvenue_funding_audit.py
-      - name: Run preregistered overlap audit
+      - name: Run preregistered overlap audit with API-safe pacing
         working-directory: research/funding_router
         shell: bash
         run: |
           set -o pipefail
-          python run_crossvenue_funding_audit.py | tee funding_crossvenue_0002.log
+          python run_crossvenue_funding_audit_throttled.py | tee funding_crossvenue_0002.log
       - name: Upload exact audit outputs
         if: always()
         uses: actions/upload-artifact@v4
