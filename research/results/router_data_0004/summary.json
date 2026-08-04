@@ -1,0 +1,175 @@
+{
+  "audit_id": "ROUTER-DATA-0004-SPOT-AVAILABILITY",
+  "observed_at_utc": "2026-08-04T19:56:13.283607+00:00",
+  "workflow_run_id": 30945504271,
+  "artifact_id": 8906907321,
+  "strategy_pnl": false,
+  "metadata_counts": {
+    "spot_tokens": 482,
+    "spot_pairs": 322,
+    "spot_contexts": 713,
+    "perp_assets": 232,
+    "perp_contexts": 232,
+    "all_mids_entries": 945
+  },
+  "fixed_notional_usd": [1000.0, 10000.0, 50000.0, 100000.0],
+  "fees": {
+    "spot": {
+      "taker": 0.0007,
+      "maker": 0.0004
+    },
+    "perp": {
+      "taker": 0.00045,
+      "maker": 0.00015
+    }
+  },
+  "targets": {
+    "BTC": {
+      "perp_present": true,
+      "spot_candidate_count": 1,
+      "primary_spot_classification": "verified_official_ui_remap",
+      "primary_spot_reason": "Official Hyperliquid API documentation states UI BTC/USDC maps to UBTC/USDC on mainnet HyperCore.",
+      "primary_spot": {
+        "base_name": "UBTC",
+        "full_name": "Unit Bitcoin",
+        "api_coin": "@142",
+        "spot_order_asset_id": 10142,
+        "pair_is_canonical": false,
+        "token_is_canonical": false,
+        "evm_contract": {
+          "address": "0x9fdbda0a5e284c32744d2f17ee5c74b284993463",
+          "evm_extra_wei_decimals": -2
+        },
+        "spread_bps": 0.155643234577701,
+        "returned_ask_notional": 523422.23717999994,
+        "returned_bid_notional": 605861.07163,
+        "perp_mid_vs_spot_bps": 3.1128646915545843
+      }
+    },
+    "ETH": {
+      "perp_present": true,
+      "spot_candidate_count": 1,
+      "primary_spot_classification": "candidate_wrapped_or_bridged",
+      "primary_spot_reason": "Candidate name/fullName match, but token/pair is noncanonical or has an EVM contract; economic equivalence is not auto-approved.",
+      "primary_spot": {
+        "base_name": "UETH",
+        "full_name": "Unit Ethereum",
+        "api_coin": "@151",
+        "spot_order_asset_id": 10151,
+        "pair_is_canonical": false,
+        "token_is_canonical": false,
+        "evm_contract": {
+          "address": "0xbe6727b535545c67d5caa73dea54865b92cf7907",
+          "evm_extra_wei_decimals": 9
+        },
+        "spread_bps": 0.5330348338259058,
+        "returned_ask_notional": 422717.6848,
+        "returned_bid_notional": 491353.49119000003,
+        "perp_mid_vs_spot_bps": 2.1321393353068707
+      }
+    },
+    "SOL": {
+      "perp_present": true,
+      "spot_candidate_count": 1,
+      "primary_spot_classification": "candidate_wrapped_or_bridged",
+      "primary_spot_reason": "Candidate name/fullName match, but token/pair is noncanonical or has an EVM contract; economic equivalence is not auto-approved.",
+      "primary_spot": {
+        "base_name": "USOL",
+        "full_name": "Unit Solana",
+        "api_coin": "@156",
+        "spot_order_asset_id": 10156,
+        "pair_is_canonical": false,
+        "token_is_canonical": false,
+        "evm_contract": {
+          "address": "0x068f321fa8fb9f0d135f290ef6a3e2813e1c8a29",
+          "evm_extra_wei_decimals": 1
+        },
+        "spread_bps": 1.4840097944659778,
+        "returned_ask_notional": 50265.368577,
+        "returned_bid_notional": 103758.30176599999,
+        "perp_mid_vs_spot_bps": 0.9443698692024327
+      }
+    },
+    "BNB": {
+      "perp_present": true,
+      "spot_candidate_count": 0,
+      "primary_spot_classification": "no_direct_spot_candidate",
+      "primary_spot_reason": "No deterministic direct-USDC spot candidate discovered in current spot metadata."
+    },
+    "XRP": {
+      "perp_present": true,
+      "spot_candidate_count": 0,
+      "primary_spot_classification": "no_direct_spot_candidate",
+      "primary_spot_reason": "No deterministic direct-USDC spot candidate discovered in current spot metadata."
+    }
+  },
+  "fill_summary": {
+    "BTC": {
+      "spot": {
+        "available": true,
+        "all_100k_sides_fillable": true,
+        "maximum_buy_slippage_bps": 0.9692183620280126,
+        "maximum_sell_slippage_bps": 0.3052356321175953
+      },
+      "perp": {
+        "available": true,
+        "all_100k_sides_fillable": true,
+        "maximum_buy_slippage_bps": 0.07779740001101487,
+        "maximum_sell_slippage_bps": 0.536037539973222
+      }
+    },
+    "ETH": {
+      "spot": {
+        "available": true,
+        "all_100k_sides_fillable": true,
+        "maximum_buy_slippage_bps": 2.26352858683887,
+        "maximum_sell_slippage_bps": 1.8274011626118192
+      },
+      "perp": {
+        "available": true,
+        "all_100k_sides_fillable": true,
+        "maximum_buy_slippage_bps": 0.26646060379942327,
+        "maximum_sell_slippage_bps": 1.4073336761466493
+      }
+    },
+    "SOL": {
+      "spot": {
+        "available": true,
+        "all_100k_sides_fillable": false,
+        "maximum_buy_slippage_bps": 2.7139853513835632,
+        "maximum_sell_slippage_bps": 4.203654427149539
+      },
+      "perp": {
+        "available": true,
+        "all_100k_sides_fillable": true,
+        "maximum_buy_slippage_bps": 0.31219744597077437,
+        "maximum_sell_slippage_bps": 1.6524832494591024
+      }
+    },
+    "BNB": {
+      "spot": {"available": false},
+      "perp": {
+        "available": true,
+        "all_100k_sides_fillable": false,
+        "maximum_buy_slippage_bps": 2.357204086314013,
+        "maximum_sell_slippage_bps": 2.9363889406686106
+      }
+    },
+    "XRP": {
+      "spot": {"available": false},
+      "perp": {
+        "available": true,
+        "all_100k_sides_fillable": true,
+        "maximum_buy_slippage_bps": 1.8000159305664454,
+        "maximum_sell_slippage_bps": 1.5970836980350178
+      }
+    }
+  },
+  "decision": {
+    "verified_spot_targets": ["BTC"],
+    "candidate_only_targets": ["ETH", "SOL"],
+    "no_direct_spot_candidate": ["BNB", "XRP"],
+    "router_promotion": false,
+    "next_step": "A separate router accounting/shadow experiment may route only verified spot targets to spot; candidate-only or absent targets remain perp-only unless independently verified."
+  }
+}
