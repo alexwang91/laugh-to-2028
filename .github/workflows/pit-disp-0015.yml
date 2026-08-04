@@ -2,30 +2,63 @@ name: PIT DISP 0015 Dynamic Universe
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/pit-disp-0015.yml'
+      - 'research/requirements.txt'
+      - 'research/crypto_rotation_backtest.py'
+      - 'research/core/crypto_rotation_backtest.py'
+      - 'research/pit_universe/run_archive_discovery.py'
+      - 'research/pit_universe/run_dynamic_dispersion.py'
+      - 'research/pit_universe/run_dynamic_dispersion_with_exports.py'
+      - 'research/pit_universe/PIT-DISP-0015-DYNAMIC-UNIVERSE.json'
+      - 'research/regime_kelly/**'
+      - 'research/hybrid_meta/**'
+      - 'research/risk_metric_fix/**'
+      - 'research/dispersion_overlay/**'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pit-disp-0015-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
   dynamic-universe:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 120
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+          cache: pip
+          cache-dependency-path: research/requirements.txt
       - name: Install research dependencies
         run: pip install --disable-pip-version-check -r research/requirements.txt
-      - name: Run preregistered survivorship-aware dispersion test
+      - name: Run frozen survivorship-aware dispersion test
         working-directory: research/pit_universe
         shell: bash
         run: |
           set -o pipefail
-          python run_dynamic_dispersion.py | tee dynamic_dispersion.log
-      - name: Upload research outputs
+          python run_dynamic_dispersion_with_exports.py | tee dynamic_dispersion.log
+      - name: Upload exact research outputs
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: pit-disp-0015-results
+          retention-days: 30
+          if-no-files-found: warn
           path: |
             research/pit_universe/dynamic_dispersion.log
             research/pit_universe/dynamic_dispersion_report.json
             research/pit_universe/PIT-DISP-0015-DYNAMIC-UNIVERSE.json
+            research/pit_universe/daily_equity.csv
+            research/pit_universe/daily_weights.csv
+            research/pit_universe/daily_dynamic_universe_count.csv
+            research/pit_universe/dispersion_scale.csv
+            research/pit_universe/inactive_eligible_audit.csv
+            research/pit_universe/pnl_daily.svg
+            docs/pnl.svg
