@@ -1,0 +1,104 @@
+{
+  "project": "Bayesian Regime-Switching Robust Kelly",
+  "rule": "Never overwrite a tested specification. Every material hyperparameter or feature change gets a new experiment_id, including failed runs.",
+  "experiments": [
+    {
+      "experiment_id": "BRRK-MVP-0001",
+      "status": "DIAGNOSTIC_BASELINE_REJECTED_FOR_OOS",
+      "created_utc": "2026-08-04",
+      "universe": ["BTC", "ETH", "SOL", "BNB", "XRP"],
+      "states": 4,
+      "state_model": "RobustScaler + sticky full-covariance GaussianHMM in the original 10D feature space",
+      "features": ["btc_trend", "log_btc_rv30", "btc_drawdown_252", "btc_dom_30", "btc_dom_90", "major_breadth", "alt_breadth", "rel_strength_mean", "rel_strength_dispersion", "avg_corr30_btc"],
+      "forecast_horizon_days": 20,
+      "minimum_training_days": 600,
+      "notes": [
+        "Real-data fits showed material EM non-convergence across multiple initializations.",
+        "Kept permanently as a failed diagnostic; do not tune it into a winner."
+      ]
+    },
+    {
+      "experiment_id": "BRRK-MVP-0002",
+      "status": "OOS_COMPLETE_REJECTED",
+      "created_utc": "2026-08-04",
+      "universe": ["BTC", "ETH", "SOL", "BNB", "XRP"],
+      "states": 4,
+      "state_model": "RobustScaler -> PCA(4, whitened) -> sticky VariationalGaussianHMM; forward-filtered decision posterior",
+      "features": ["btc_trend", "log_btc_rv30", "btc_drawdown_252", "btc_dom_30", "btc_dom_90", "major_breadth", "alt_breadth", "rel_strength_mean", "rel_strength_dispersion", "avg_corr30_btc"],
+      "forecast_horizon_days": 20,
+      "minimum_training_days": 600,
+      "refit_every_days": 30,
+      "scenarios": 5000,
+      "return_model": "overlapping 20d forward log returns, state weighted and shrunk",
+      "optimizer": "expected log wealth with CVaR95, turnover and mean-estimation uncertainty penalties",
+      "gross_caps_to_report": [1.0, 1.3],
+      "oos_result": {
+        "evaluation_start": "2025-06-02",
+        "evaluation_end": "2026-08-02",
+        "decisions": 15,
+        "gross_1_0_cagr": 0.0,
+        "gross_1_0_max_drawdown": 0.0,
+        "gross_1_0_avg_gross": 0.0,
+        "gross_1_3_cagr": 0.0,
+        "gross_1_3_max_drawdown": 0.0,
+        "gross_1_3_avg_gross": 0.0,
+        "interpretation": "Optimizer selected cash at every OOS decision. This is not evidence of a superior risk model; the specification is too data-limited and structurally conservative to be useful."
+      },
+      "known_limitations": [
+        "20d forward-return labels overlap heavily, overstating effective independent sample size.",
+        "Free BTC-dominance history used by the current data source limits the first eligible OOS decision to 2025-06-01, which is too short for intended cycle validation.",
+        "The full OOS run chose zero exposure at every decision.",
+        "This specification remains frozen as a rejected diagnostic and must not be silently altered."
+      ]
+    },
+    {
+      "experiment_id": "BRRK-MVP-0003",
+      "status": "DESIGN_FROZEN_NOT_YET_BACKTESTED",
+      "created_utc": "2026-08-04",
+      "universe": ["BTC", "ETH", "SOL", "BNB", "XRP"],
+      "states": 4,
+      "state_model": "training-only robust scaling -> 4-factor dimension reduction -> sticky variational regime model -> forward filter",
+      "state_return_model": "state-conditioned DAILY asset log returns with shrinkage and heavy-tailed innovations",
+      "scenario_engine": "simulate 20 sequential days: sample next latent state from transition matrix, then sample that state's multivariate daily return; compound the path",
+      "optimizer": "risk-constrained log-growth; CVaR in MVP, CDaR/MPC only after OOS validation",
+      "why": [
+        "eliminates overlapping 20d labels as pseudo-independent observations",
+        "uses the Markov transition structure inside the actual future-path generator",
+        "allows state changes within the 20d horizon instead of assuming one current regime for all 20 days",
+        "makes path drawdown and later CDaR optimization statistically natural"
+      ],
+      "data_requirement": "full-history BTC dominance or a separately registered no-dominance specification; do not shorten training history merely to obtain an earlier backtest start",
+      "selection_status": "NO PARAMETER TUNING UNTIL FIRST WALK-FORWARD RESULT IS RECORDED"
+    },
+    {
+      "experiment_id": "BRRK-MVP-0003-ND",
+      "status": "FIRST_OOS_COMPLETE_NOT_PROMOTED",
+      "created_utc": "2026-08-04",
+      "universe": ["BTC", "ETH", "SOL", "BNB", "XRP"],
+      "states": 4,
+      "state_model": "RobustScaler -> PCA(4, whitened) -> sticky VariationalGaussianHMM -> forward filter",
+      "features": ["btc_trend", "log_btc_rv30", "btc_drawdown_252", "major_breadth", "alt_breadth", "rel_strength_mean", "rel_strength_dispersion", "avg_corr30_btc"],
+      "dominance_feature": "excluded by design; this is a separately registered price-only ablation, not an alteration of BRRK-MVP-0003",
+      "minimum_training_days": 600,
+      "refit_every_days": 30,
+      "forecast_horizon_days": 20,
+      "scenarios": 5000,
+      "return_model": "state-conditioned daily multivariate log returns with mean and covariance shrinkage",
+      "scenario_engine": "20-day sequential Markov state transitions with df=5 multivariate Student-t daily innovations",
+      "optimizer": "expected log wealth with CVaR95, turnover and estimation-uncertainty penalties",
+      "gross_caps_to_report": [1.0, 1.3],
+      "oos_result": {
+        "evaluation_start": "2022-12-10",
+        "evaluation_end": "2026-08-02",
+        "decisions": 45,
+        "gross_1_0": {"cagr": 0.3812499244, "max_drawdown": -0.3836704236, "sharpe": 1.0159635336, "calmar": 0.9936912020, "turnover": 14.5151236978, "avg_gross": 0.6407539372, "upside_capture": 0.7569660657, "downside_capture": 0.6564692235},
+        "gross_1_3": {"cagr": 0.3692243173, "max_drawdown": -0.3988772640, "sharpe": 0.9917807267, "calmar": 0.9256589698, "turnover": 15.2208527780, "avg_gross": 0.6447974864},
+        "same_window_v1": {"cagr": 0.6125077379, "max_drawdown": -0.3763490756, "sharpe": 1.2949650632, "calmar": 1.6274989831, "turnover": 93.3674193843, "upside_capture": 1.0604685424, "downside_capture": 0.8033299875},
+        "same_window_btc_dynamic": {"cagr": 0.4278500996, "max_drawdown": -0.3326143463, "sharpe": 1.0997820515, "calmar": 1.2863248515, "turnover": 25.2850069030},
+        "diagnostics": {"convergence_rate": 1.0, "mean_pca_explained_variance": 0.9041170367, "mean_posterior_entropy": 0.0077462532},
+        "interpretation": "Statistically cleaner than 0002 and low-turnover, but materially underperforms V1 and BTC dynamic beta. Posterior is nearly deterministic and the state-pooled expected-return model loses too much upside information."
+      },
+      "anti_overfit_rule": "No parameter change after observing this OOS result without a new experiment ID."
+    }
+  ]
+}
