@@ -1,0 +1,46 @@
+{
+  "audit_id": "AUDIT-0025-APRIL-TREND-DECOMP",
+  "status": "PREREGISTERED_BEFORE_FIRST_RUN",
+  "registered_on": "2026-08-05",
+  "trading_changes": false,
+  "strategy_pnl_promotion": false,
+  "authorized_by": "ASYM-BETA-0024: daily latency cap improves June but leaves April 2024 essentially unchanged.",
+  "question": "Did the already-frozen 20d/60d BTC trend components weaken or turn negative during April 2024 while the 120d/240d components remained positive enough to keep aggregate btc_trend positive and the extra-beta sleeve active?",
+  "frozen_definition": {
+    "horizons_days": [20, 60, 120, 240],
+    "weights": [0.15, 0.25, 0.30, 0.30],
+    "component": "tanh(log(BTC_t/BTC_t-h) / (std_h(daily BTC log return) * sqrt(h)))",
+    "aggregate": "sum(weight_h * component_h)",
+    "existing_drawdown_feature": "BTC / rolling_252d_max(BTC) - 1"
+  },
+  "scope": {
+    "primary_episode": ["2024-03-01", "2024-05-15"],
+    "comparison_episode": ["2024-06-01", "2024-06-30"],
+    "all_history_diagnostic": "count masked-reversal days over the full completed sample"
+  },
+  "masked_reversal_definitions": {
+    "20d_negative_aggregate_positive": "component20 < 0 and aggregate btc_trend > 0",
+    "20d_60d_negative_aggregate_positive": "component20 < 0 and component60 < 0 and aggregate btc_trend > 0",
+    "short_weighted_contribution": "0.15*component20 + 0.25*component60",
+    "long_weighted_contribution": "0.30*component120 + 0.30*component240"
+  },
+  "required_outputs": [
+    "exact daily 20/60/120/240 components and weighted contributions",
+    "validation that weighted component sum equals existing btc_trend",
+    "existing btc_drawdown_252 trajectory",
+    "first natural zero crossing dates for each component in the April and June windows",
+    "days where short components are negative while aggregate trend remains positive",
+    "short-versus-long weighted contribution gap",
+    "forward BTC returns after masked-reversal days for descriptive attribution only",
+    "comparison of April 2024 with all other masked-reversal episodes"
+  ],
+  "prohibited": [
+    "no trading PNL",
+    "no changing trend weights or horizons",
+    "no testing alternative component thresholds beyond the natural zero sign already embedded in the trend definition",
+    "no new crash indicator",
+    "no SOL-specific tilt",
+    "no claim that a component sign crossing itself is an approved trading rule"
+  ],
+  "next_experiment_rule": "Only if the existing short-horizon components clearly weaken before the April loss while aggregate trend stays positive may a separately preregistered experiment give short-horizon confirmation narrow veto authority over extra beta. Otherwise the next attribution must move to another already-existing feature before adding new information."
+}
