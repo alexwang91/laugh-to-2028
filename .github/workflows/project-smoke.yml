@@ -1,0 +1,40 @@
+name: Project Smoke
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'research/**'
+      - 'execution/plan-b-bot/**'
+      - '.github/workflows/project-smoke.yml'
+  workflow_dispatch:
+
+jobs:
+  research-imports:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install research dependencies
+        run: pip install --disable-pip-version-check -r research/requirements.txt
+      - name: Import PIT-DISP-0015 dependency closure
+        working-directory: research/pit_universe
+        run: python -c "import run_dynamic_dispersion; print('PIT-DISP-0015 imports OK')"
+
+  plan-b-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Plan B dependencies
+        working-directory: execution/plan-b-bot
+        run: pip install --disable-pip-version-check -r requirements-dev.txt
+      - name: Run Plan B tests
+        working-directory: execution/plan-b-bot
+        run: pytest -q
