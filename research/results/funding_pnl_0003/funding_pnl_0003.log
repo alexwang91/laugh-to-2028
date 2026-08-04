@@ -1,0 +1,1191 @@
+binance_funding_progress 25/220
+binance_funding_progress 50/220
+binance_funding_progress 75/220
+binance_funding_progress 100/220
+binance_funding_progress 125/220
+binance_funding_progress 150/220
+binance_funding_progress 175/220
+binance_funding_progress 200/220
+binance_funding_progress 220/220
+=== FUNDING_PNL_0003_REPORT ===
+{
+  "experiment_id": "FUNDING-PNL-0003-FROZEN-HOLDINGS",
+  "trading_changes": false,
+  "strategy": {
+    "weights_source": "research/results/pit_disp_0015/daily_weights.csv",
+    "equity_source": "research/results/pit_disp_0015/daily_equity.csv",
+    "held_weight_columns": {
+      "BTC": "BRRK0011_BASELINE__BTC",
+      "ETH": "BRRK0011_BASELINE__ETH",
+      "SOL": "BRRK0011_BASELINE__SOL",
+      "BNB": "BRRK0011_BASELINE__BNB",
+      "XRP": "BRRK0011_BASELINE__XRP"
+    },
+    "daily_held_notional_approximation": true,
+    "positive_rate_long_pays": true
+  },
+  "coverage": {
+    "binance_full": {
+      "label": "binance_full",
+      "expected_blocks": 3990,
+      "observed_blocks": 3990,
+      "missing_clock_blocks": 0,
+      "incomplete_asset_blocks": 0,
+      "missing_asset_cells": {
+        "BTC": 0,
+        "ETH": 0,
+        "SOL": 0,
+        "BNB": 0,
+        "XRP": 0
+      }
+    },
+    "binance_common": {
+      "label": "binance_common",
+      "expected_blocks": 3420,
+      "observed_blocks": 3420,
+      "missing_clock_blocks": 0,
+      "incomplete_asset_blocks": 0,
+      "missing_asset_cells": {
+        "BTC": 0,
+        "ETH": 0,
+        "SOL": 0,
+        "BNB": 0,
+        "XRP": 0
+      }
+    },
+    "hyperliquid_common": {
+      "label": "hyperliquid_common",
+      "expected_blocks": 3420,
+      "observed_blocks": 3420,
+      "missing_clock_blocks": 0,
+      "incomplete_asset_blocks": 0,
+      "missing_asset_cells": {
+        "BTC": 0,
+        "ETH": 0,
+        "SOL": 0,
+        "BNB": 0,
+        "XRP": 0
+      }
+    }
+  },
+  "binance_source_coverage": {
+    "BTC": {
+      "symbol": "BTCUSDT",
+      "selected_months": 44,
+      "first_month": "2022-12",
+      "last_month": "2026-07",
+      "archive_months_total": 79
+    },
+    "ETH": {
+      "symbol": "ETHUSDT",
+      "selected_months": 44,
+      "first_month": "2022-12",
+      "last_month": "2026-07",
+      "archive_months_total": 79
+    },
+    "SOL": {
+      "symbol": "SOLUSDT",
+      "selected_months": 44,
+      "first_month": "2022-12",
+      "last_month": "2026-07",
+      "archive_months_total": 71
+    },
+    "BNB": {
+      "symbol": "BNBUSDT",
+      "selected_months": 44,
+      "first_month": "2022-12",
+      "last_month": "2026-07",
+      "archive_months_total": 78
+    },
+    "XRP": {
+      "symbol": "XRPUSDT",
+      "selected_months": 44,
+      "first_month": "2022-12",
+      "last_month": "2026-07",
+      "archive_months_total": 79
+    }
+  },
+  "full_history_proxy_window": {
+    "label": "BINANCE_FULL_HISTORY_PROXY_WINDOW",
+    "metrics": {
+      "PRICE_ONLY": {
+        "start": "2022-12-10",
+        "end": "2026-07-31",
+        "observations": 1330,
+        "final_multiple": 6.224735468228124,
+        "final_10k": 62247.354682281235,
+        "cagr": 0.6529084605761988,
+        "max_drawdown": -0.3371507034657847,
+        "ann_vol": 0.44240075889735203,
+        "sharpe": 1.3542047922959277,
+        "calmar": 1.9365478222781118
+      },
+      "BINANCE_ALL_PERP_PROXY": {
+        "start": "2022-12-10",
+        "end": "2026-07-31",
+        "observations": 1330,
+        "final_multiple": 5.025859573762231,
+        "final_10k": 50258.59573762231,
+        "cagr": 0.5585262849244002,
+        "max_drawdown": -0.3479236753639079,
+        "ann_vol": 0.44205944713129286,
+        "sharpe": 1.2220104245855306,
+        "calmar": 1.6053126719249968
+      },
+      "BINANCE_ALL_PERP_PROXY_COMPOUNDED_SENSITIVITY": {
+        "start": "2022-12-10",
+        "end": "2026-07-31",
+        "observations": 1330,
+        "final_multiple": 5.025859573762265,
+        "final_10k": 50258.59573762265,
+        "cagr": 0.558526284924403,
+        "max_drawdown": -0.34792367536390745,
+        "ann_vol": 0.44205944713129286,
+        "sharpe": 1.222010424585536,
+        "calmar": 1.605312671925007
+      }
+    },
+    "annual_returns": {
+      "PRICE_ONLY": {
+        "2022": -9.000109537959933e-05,
+        "2023": 2.296975363134045,
+        "2024": 0.8322790485607605,
+        "2025": 0.0913019355455309,
+        "2026": -0.05570487899137233
+      },
+      "BINANCE_ALL_PERP_PROXY": {
+        "2022": -9.000121497571012e-05,
+        "2023": 2.062363563163265,
+        "2024": 0.6536848456980358,
+        "2025": 0.05148227604157496,
+        "2026": -0.0560739171157828
+      },
+      "BINANCE_ALL_PERP_PROXY_COMPOUNDED_SENSITIVITY": {
+        "2022": -9.000121497571012e-05,
+        "2023": 2.062363563163276,
+        "2024": 0.6536848456980391,
+        "2025": 0.05148227604157918,
+        "2026": -0.05607391711578269
+      }
+    },
+    "funding": {
+      "BINANCE_ALL_PERP_PROXY": {
+        "diagnostics": {
+          "label": "BINANCE_FULL_ADDITIVE",
+          "block_count": 3990,
+          "date_count": 1330,
+          "first_block": "2022-12-10 00:00:00+00:00",
+          "last_block": "2026-07-31 16:00:00+00:00",
+          "nonzero_exposure_blocks": 3990,
+          "mean_gross_held_exposure_on_blocks": 0.7554339568446616,
+          "minimum_block_funding_return": -0.00101354,
+          "maximum_block_funding_return": 0.00030575,
+          "total_additive_funding_return": -0.21391215723859502,
+          "total_compounded_funding_factor": 0.807401310371322
+        },
+        "total_compounded_funding_return": -0.19259868962867732,
+        "total_additive_funding_return": -0.21391215723859502,
+        "annual_compounded_funding_returns": {
+          "2022": -1.196064358666149e-10,
+          "2023": -0.07115970674034966,
+          "2024": -0.09747107188886195,
+          "2025": -0.03648821486241616,
+          "2026": -0.00039080803892810323
+        },
+        "annual_additive_funding_returns": {
+          "2022": -1.1960598e-10,
+          "2023": -0.07381262553044873,
+          "2024": -0.10253968838927298,
+          "2025": -0.03716902201667994,
+          "2026": -0.00039082118258739195
+        },
+        "asset_additive_contribution": {
+          "BTC": -0.14141321587658526,
+          "ETH": -0.02169174293454195,
+          "SOL": -0.057566537997939954,
+          "BNB": 0.006759339570472125,
+          "XRP": 0.0
+        },
+        "asset_year_additive_contribution": [
+          {
+            "asset": "BNB",
+            "year": 2022,
+            "contribution": 0.0
+          },
+          {
+            "asset": "BNB",
+            "year": 2023,
+            "contribution": 0.000399132216370798
+          },
+          {
+            "asset": "BNB",
+            "year": 2024,
+            "contribution": 0.007254690868108047
+          },
+          {
+            "asset": "BNB",
+            "year": 2025,
+            "contribution": -0.00089448351400672
+          },
+          {
+            "asset": "BNB",
+            "year": 2026,
+            "contribution": 0.0
+          },
+          {
+            "asset": "BTC",
+            "year": 2022,
+            "contribution": -1.1960598e-10
+          },
+          {
+            "asset": "BTC",
+            "year": 2023,
+            "contribution": -0.04956481213389446
+          },
+          {
+            "asset": "BTC",
+            "year": 2024,
+            "contribution": -0.0610814933359634
+          },
+          {
+            "asset": "BTC",
+            "year": 2025,
+            "contribution": -0.030376089104534033
+          },
+          {
+            "asset": "BTC",
+            "year": 2026,
+            "contribution": -0.000390821182587392
+          },
+          {
+            "asset": "ETH",
+            "year": 2022,
+            "contribution": 0.0
+          },
+          {
+            "asset": "ETH",
+            "year": 2023,
+            "contribution": -0.005583273374491465
+          },
+          {
+            "asset": "ETH",
+            "year": 2024,
+            "contribution": -0.010294572729421305
+          },
+          {
+            "asset": "ETH",
+            "year": 2025,
+            "contribution": -0.005813896830629182
+          },
+          {
+            "asset": "ETH",
+            "year": 2026,
+            "contribution": 0.0
+          },
+          {
+            "asset": "SOL",
+            "year": 2022,
+            "contribution": 0.0
+          },
+          {
+            "asset": "SOL",
+            "year": 2023,
+            "contribution": -0.019063672238433627
+          },
+          {
+            "asset": "SOL",
+            "year": 2024,
+            "contribution": -0.038418313191996324
+          },
+          {
+            "asset": "SOL",
+            "year": 2025,
+            "contribution": -8.455256751000003e-05
+          },
+          {
+            "asset": "SOL",
+            "year": 2026,
+            "contribution": 0.0
+          },
+          {
+            "asset": "XRP",
+            "year": 2022,
+            "contribution": 0.0
+          },
+          {
+            "asset": "XRP",
+            "year": 2023,
+            "contribution": 0.0
+          },
+          {
+            "asset": "XRP",
+            "year": 2024,
+            "contribution": 0.0
+          },
+          {
+            "asset": "XRP",
+            "year": 2025,
+            "contribution": 0.0
+          },
+          {
+            "asset": "XRP",
+            "year": 2026,
+            "contribution": 0.0
+          }
+        ],
+        "rate_sign_additive_contribution": {
+          "negative_long_receives": 0.026332104216937942,
+          "positive_long_pays": -0.24024426145553296,
+          "zero": 0.0
+        }
+      },
+      "BINANCE_ALL_PERP_PROXY_COMPOUNDED_SENSITIVITY": {
+        "diagnostics": {
+          "label": "BINANCE_FULL_COMPOUNDED",
+          "block_count": 3990,
+          "date_count": 1330,
+          "first_block": "2022-12-10 00:00:00+00:00",
+          "last_block": "2026-07-31 16:00:00+00:00",
+          "nonzero_exposure_blocks": 3990,
+          "mean_gross_held_exposure_on_blocks": 0.7554339568446616,
+          "minimum_block_funding_return": -0.0010135400000000905,
+          "maximum_block_funding_return": 0.0003057499999999935,
+          "total_additive_funding_return": -0.21391215723858192,
+          "total_compounded_funding_factor": 0.8074013103713277
+        },
+        "total_compounded_funding_return": -0.192598689628671,
+        "total_additive_funding_return": -0.21391215723858192,
+        "annual_compounded_funding_returns": {
+          "2022": -1.196064358666149e-10,
+          "2023": -0.071159706740346,
+          "2024": -0.09747107188886128,
+          "2025": -0.036488214862413604,
+          "2026": -0.0003908080389274371
+        },
+        "annual_additive_funding_returns": {
+          "2022": -1.1960598000000286e-10,
+          "2023": -0.07381262553044157,
+          "2024": -0.10253968838927033,
+          "2025": -0.03716902201667685,
+          "2026": -0.0003908211825872154
+        },
+        "asset_additive_contribution": {
+          "BTC": -0.14141321587657707,
+          "ETH": -0.021691742934540237,
+          "SOL": -0.05756653799793738,
+          "BNB": 0.006759339570472734,
+          "XRP": 0.0
+        },
+        "asset_year_additive_contribution": [
+          {
+            "asset": "BNB",
+            "year": 2022,
+            "contribution": 0.0
+          },
+          {
+            "asset": "BNB",
+            "year": 2023,
+            "contribution": 0.00039913221637096554
+          },
+          {
+            "asset": "BNB",
+            "year": 2024,
+            "contribution": 0.007254690868108123
+          },
+          {
+            "asset": "BNB",
+            "year": 2025,
+            "contribution": -0.0008944835140063551
+          },
+          {
+            "asset": "BNB",
+            "year": 2026,
+            "contribution": 0.0
+          },
+          {
+            "asset": "BTC",
+            "year": 2022,
+            "contribution": -1.1960598000000284e-10
+          },
+          {
+            "asset": "BTC",
+            "year": 2023,
+            "contribution": -0.04956481213388981
+          },
+          {
+            "asset": "BTC",
+            "year": 2024,
+            "contribution": -0.06108149333596225
+          },
+          {
+            "asset": "BTC",
+            "year": 2025,
+            "contribution": -0.030376089104531802
+          },
+          {
+            "asset": "BTC",
+            "year": 2026,
+            "contribution": -0.0003908211825872151
+          },
+          {
+            "asset": "ETH",
+            "year": 2022,
+            "contribution": 0.0
+          },
+          {
+            "asset": "ETH",
+            "year": 2023,
+            "contribution": -0.005583273374490575
+          },
+          {
+            "asset": "ETH",
+            "year": 2024,
+            "contribution": -0.010294572729420857
+          },
+          {
+            "asset": "ETH",
+            "year": 2025,
+            "contribution": -0.005813896830628804
+          },
+          {
+            "asset": "ETH",
+            "year": 2026,
+            "contribution": 0.0
+          },
+          {
+            "asset": "SOL",
+            "year": 2022,
+            "contribution": 0.0
+          },
+          {
+            "asset": "SOL",
+            "year": 2023,
+            "contribution": -0.01906367223843215
+          },
+          {
+            "asset": "SOL",
+            "year": 2024,
+            "contribution": -0.03841831319199534
+          },
+          {
+            "asset": "SOL",
+            "year": 2025,
+            "contribution": -8.455256750988753e-05
+          },
+          {
+            "asset": "SOL",
+            "year": 2026,
+            "contribution": 0.0
+          },
+          {
+            "asset": "XRP",
+            "year": 2022,
+            "contribution": 0.0
+          },
+          {
+            "asset": "XRP",
+            "year": 2023,
+            "contribution": 0.0
+          },
+          {
+            "asset": "XRP",
+            "year": 2024,
+            "contribution": 0.0
+          },
+          {
+            "asset": "XRP",
+            "year": 2025,
+            "contribution": 0.0
+          },
+          {
+            "asset": "XRP",
+            "year": 2026,
+            "contribution": 0.0
+          }
+        ],
+        "rate_sign_additive_contribution": {
+          "negative_long_receives": 0.026332104216938417,
+          "positive_long_pays": -0.24024426145552036,
+          "zero": 0.0
+        }
+      }
+    }
+  },
+  "common_overlap_window": {
+    "label": "ALL_FIVE_ASSET_COMMON_OVERLAP",
+    "metrics": {
+      "PRICE_ONLY": {
+        "start": "2023-06-18",
+        "end": "2026-07-31",
+        "observations": 1140,
+        "final_multiple": 4.799811846567229,
+        "final_10k": 47998.11846567229,
+        "cagr": 0.6536830590706433,
+        "max_drawdown": -0.3371507034657837,
+        "ann_vol": 0.442342643213498,
+        "sharpe": 1.3553289953480652,
+        "calmar": 1.9388453067160318
+      },
+      "BINANCE_ALL_PERP_COMMON": {
+        "start": "2023-06-18",
+        "end": "2026-07-31",
+        "observations": 1140,
+        "final_multiple": 3.9875146339299667,
+        "final_10k": 39875.14633929967,
+        "cagr": 0.5582273632322301,
+        "max_drawdown": -0.3479236753639079,
+        "ann_vol": 0.4419615872597596,
+        "sharpe": 1.2217177541876534,
+        "calmar": 1.6044535131113362
+      },
+      "HYPERLIQUID_ALL_PERP_NATIVE": {
+        "start": "2023-06-18",
+        "end": "2026-07-31",
+        "observations": 1140,
+        "final_multiple": 3.1228153920705597,
+        "final_10k": 31228.153920705598,
+        "cagr": 0.4407517260653222,
+        "max_drawdown": -0.370439184602929,
+        "ann_vol": 0.4406063839595589,
+        "sharpe": 1.0464515294559804,
+        "calmar": 1.1898085958097566
+      },
+      "BINANCE_COMMON_COMPOUNDED_SENSITIVITY": {
+        "start": "2023-06-18",
+        "end": "2026-07-31",
+        "observations": 1140,
+        "final_multiple": 3.9875146339299667,
+        "final_10k": 39875.14633929967,
+        "cagr": 0.5582273632322301,
+        "max_drawdown": -0.3479236753639079,
+        "ann_vol": 0.4419615872597596,
+        "sharpe": 1.2217177541876534,
+        "calmar": 1.6044535131113362
+      },
+      "HYPERLIQUID_COMMON_COMPOUNDED_SENSITIVITY": {
+        "start": "2023-06-18",
+        "end": "2026-07-31",
+        "observations": 1140,
+        "final_multiple": 3.1224983865426346,
+        "final_10k": 31224.983865426344,
+        "cagr": 0.4407048240884328,
+        "max_drawdown": -0.3704443307269105,
+        "ann_vol": 0.44060602132179955,
+        "sharpe": 1.0463782596725053,
+        "calmar": 1.1896654572190442
+      }
+    },
+    "annual_returns": {
+      "PRICE_ONLY": {
+        "2023": 1.5420256381520532,
+        "2024": 0.8322790485607605,
+        "2025": 0.0913019355455309,
+        "2026": -0.05570487899137233
+      },
+      "BINANCE_ALL_PERP_COMMON": {
+        "2023": 1.4294591439994955,
+        "2024": 0.6536848456980358,
+        "2025": 0.05148227604157496,
+        "2026": -0.0560739171157828
+      },
+      "HYPERLIQUID_ALL_PERP_NATIVE": {
+        "2023": 1.2795424269662714,
+        "2024": 0.4578136621636839,
+        "2025": -0.002285160774778805,
+        "2026": -0.05813169205808022
+      },
+      "BINANCE_COMMON_COMPOUNDED_SENSITIVITY": {
+        "2023": 1.4294591439994955,
+        "2024": 0.6536848456980358,
+        "2025": 0.05148227604157496,
+        "2026": -0.0560739171157828
+      },
+      "HYPERLIQUID_COMMON_COMPOUNDED_SENSITIVITY": {
+        "2023": 1.2794650228206779,
+        "2024": 0.45772746226924554,
+        "2025": -0.0022933590019286187,
+        "2026": -0.05813189263166596
+      }
+    },
+    "funding": {
+      "BINANCE_ALL_PERP_COMMON": {
+        "diagnostics": {
+          "label": "BINANCE_COMMON_ADDITIVE",
+          "block_count": 3420,
+          "date_count": 1140,
+          "first_block": "2023-06-18 00:00:00+00:00",
+          "last_block": "2026-07-31 16:00:00+00:00",
+          "nonzero_exposure_blocks": 3420,
+          "mean_gross_held_exposure_on_blocks": 0.7431475371551755,
+          "minimum_block_funding_return": -0.00101354,
+          "maximum_block_funding_return": 0.00030575,
+          "total_additive_funding_return": -0.1853876492862426,
+          "total_compounded_funding_factor": 0.8307647802448318
+        },
+        "total_compounded_funding_return": -0.16923521975516798,
+        "total_additive_funding_return": -0.1853876492862426,
+        "annual_compounded_funding_returns": {
+          "2023": -0.04428220253293291,
+          "2024": -0.09747107188886195,
+          "2025": -0.03648821486241616,
+          "2026": -0.00039080803892810323
+        },
+        "annual_additive_funding_returns": {
+          "2023": -0.0452881176977023,
+          "2024": -0.10253968838927298,
+          "2025": -0.03716902201667994,
+          "2026": -0.00039082118258739195
+        },
+        "asset_additive_contribution": {
+          "BTC": -0.11809149224369328,
+          "ETH": -0.016108469560050485,
+          "SOL": -0.05754789483660017,
+          "BNB": 0.006360207354101327,
+          "XRP": 0.0
+        },
+        "asset_year_additive_contribution": [
+          {
+            "asset": "BNB",
+            "year": 2023,
+            "contribution": 0.0
+          },
+          {
+            "asset": "BNB",
+            "year": 2024,
+            "contribution": 0.007254690868108047
+          },
+          {
+            "asset": "BNB",
+            "year": 2025,
+            "contribution": -0.00089448351400672
+          },
+          {
+            "asset": "BNB",
+            "year": 2026,
+            "contribution": 0.0
+          },
+          {
+            "asset": "BTC",
+            "year": 2023,
+            "contribution": -0.02624308862060846
+          },
+          {
+            "asset": "BTC",
+            "year": 2024,
+            "contribution": -0.0610814933359634
+          },
+          {
+            "asset": "BTC",
+            "year": 2025,
+            "contribution": -0.030376089104534033
+          },
+          {
+            "asset": "BTC",
+            "year": 2026,
+            "contribution": -0.000390821182587392
+          },
+          {
+            "asset": "ETH",
+            "year": 2023,
+            "contribution": 0.0
+          },
+          {
+            "asset": "ETH",
+            "year": 2024,
+            "contribution": -0.010294572729421305
+          },
+          {
+            "asset": "ETH",
+            "year": 2025,
+            "contribution": -0.005813896830629182
+          },
+          {
+            "asset": "ETH",
+            "year": 2026,
+            "contribution": 0.0
+          },
+          {
+            "asset": "SOL",
+            "year": 2023,
+            "contribution": -0.019045029077093847
+          },
+          {
+            "asset": "SOL",
+            "year": 2024,
+            "contribution": -0.038418313191996324
+          },
+          {
+            "asset": "SOL",
+            "year": 2025,
+            "contribution": -8.455256751000003e-05
+          },
+          {
+            "asset": "SOL",
+            "year": 2026,
+            "contribution": 0.0
+          },
+          {
+            "asset": "XRP",
+            "year": 2023,
+            "contribution": 0.0
+          },
+          {
+            "asset": "XRP",
+            "year": 2024,
+            "contribution": 0.0
+          },
+          {
+            "asset": "XRP",
+            "year": 2025,
+            "contribution": 0.0
+          },
+          {
+            "asset": "XRP",
+            "year": 2026,
+            "contribution": 0.0
+          }
+        ],
+        "rate_sign_additive_contribution": {
+          "negative_long_receives": 0.02473694307536513,
+          "positive_long_pays": -0.21012459236160774,
+          "zero": 0.0
+        }
+      },
+      "HYPERLIQUID_ALL_PERP_NATIVE": {
+        "diagnostics": {
+          "label": "HYPERLIQUID_COMMON_ADDITIVE",
+          "block_count": 3420,
+          "date_count": 1140,
+          "first_block": "2023-06-18 00:00:00+00:00",
+          "last_block": "2026-07-31 16:00:00+00:00",
+          "nonzero_exposure_blocks": 3420,
+          "mean_gross_held_exposure_on_blocks": 0.7431475371551755,
+          "minimum_block_funding_return": -0.0019031696500000001,
+          "maximum_block_funding_return": 0.0003549808999290038,
+          "total_additive_funding_return": -0.42974344402319786,
+          "total_compounded_funding_factor": 0.6506120431166411
+        },
+        "total_compounded_funding_return": -0.34938795688336055,
+        "total_additive_funding_return": -0.42974344402319786,
+        "annual_compounded_funding_returns": {
+          "2023": -0.10325749954929486,
+          "2024": -0.20437137383152204,
+          "2025": -0.08575728977657027,
+          "2026": -0.0025699731076839205
+        },
+        "annual_additive_funding_returns": {
+          "2023": -0.10895423947600696,
+          "2024": -0.22856531727097446,
+          "2025": -0.08965072248683609,
+          "2026": -0.002573164789380299
+        },
+        "asset_additive_contribution": {
+          "BTC": -0.2519322302512702,
+          "ETH": -0.030532803174152384,
+          "SOL": -0.13395625939854083,
+          "BNB": -0.013322151199234385,
+          "XRP": 0.0
+        },
+        "asset_year_additive_contribution": [
+          {
+            "asset": "BNB",
+            "year": 2023,
+            "contribution": 0.0
+          },
+          {
+            "asset": "BNB",
+            "year": 2024,
+            "contribution": -0.007565496877185128
+          },
+          {
+            "asset": "BNB",
+            "year": 2025,
+            "contribution": -0.005756654322049257
+          },
+          {
+            "asset": "BNB",
+            "year": 2026,
+            "contribution": 0.0
+          },
+          {
+            "asset": "BTC",
+            "year": 2023,
+            "contribution": -0.05545616934636766
+          },
+          {
+            "asset": "BTC",
+            "year": 2024,
+            "contribution": -0.12431899006061431
+          },
+          {
+            "asset": "BTC",
+            "year": 2025,
+            "contribution": -0.06958390605490795
+          },
+          {
+            "asset": "BTC",
+            "year": 2026,
+            "contribution": -0.0025731647893802996
+          },
+          {
+            "asset": "ETH",
+            "year": 2023,
+            "contribution": 0.0
+          },
+          {
+            "asset": "ETH",
+            "year": 2024,
+            "contribution": -0.017617683170482793
+          },
+          {
+            "asset": "ETH",
+            "year": 2025,
+            "contribution": -0.012915120003669591
+          },
+          {
+            "asset": "ETH",
+            "year": 2026,
+            "contribution": 0.0
+          },
+          {
+            "asset": "SOL",
+            "year": 2023,
+            "contribution": -0.05349807012963932
+          },
+          {
+            "asset": "SOL",
+            "year": 2024,
+            "contribution": -0.07906314716269222
+          },
+          {
+            "asset": "SOL",
+            "year": 2025,
+            "contribution": -0.0013950421062092946
+          },
+          {
+            "asset": "SOL",
+            "year": 2026,
+            "contribution": 0.0
+          },
+          {
+            "asset": "XRP",
+            "year": 2023,
+            "contribution": 0.0
+          },
+          {
+            "asset": "XRP",
+            "year": 2024,
+            "contribution": 0.0
+          },
+          {
+            "asset": "XRP",
+            "year": 2025,
+            "contribution": 0.0
+          },
+          {
+            "asset": "XRP",
+            "year": 2026,
+            "contribution": 0.0
+          }
+        ],
+        "rate_sign_additive_contribution": {
+          "negative_long_receives": 0.03431713613369161,
+          "positive_long_pays": -0.46406058015688945
+        }
+      },
+      "BINANCE_COMMON_COMPOUNDED_SENSITIVITY": {
+        "diagnostics": {
+          "label": "BINANCE_COMMON_COMPOUNDED",
+          "block_count": 3420,
+          "date_count": 1140,
+          "first_block": "2023-06-18 00:00:00+00:00",
+          "last_block": "2026-07-31 16:00:00+00:00",
+          "nonzero_exposure_blocks": 3420,
+          "mean_gross_held_exposure_on_blocks": 0.7431475371551755,
+          "minimum_block_funding_return": -0.00101354,
+          "maximum_block_funding_return": 0.00030575,
+          "total_additive_funding_return": -0.1853876492862426,
+          "total_compounded_funding_factor": 0.8307647802448318
+        },
+        "total_compounded_funding_return": -0.16923521975516798,
+        "total_additive_funding_return": -0.1853876492862426,
+        "annual_compounded_funding_returns": {
+          "2023": -0.04428220253293291,
+          "2024": -0.09747107188886195,
+          "2025": -0.03648821486241616,
+          "2026": -0.00039080803892810323
+        },
+        "annual_additive_funding_returns": {
+          "2023": -0.0452881176977023,
+          "2024": -0.10253968838927298,
+          "2025": -0.03716902201667994,
+          "2026": -0.00039082118258739195
+        },
+        "asset_additive_contribution": {
+          "BTC": -0.11809149224369328,
+          "ETH": -0.016108469560050485,
+          "SOL": -0.05754789483660017,
+          "BNB": 0.006360207354101327,
+          "XRP": 0.0
+        },
+        "asset_year_additive_contribution": [
+          {
+            "asset": "BNB",
+            "year": 2023,
+            "contribution": 0.0
+          },
+          {
+            "asset": "BNB",
+            "year": 2024,
+            "contribution": 0.007254690868108047
+          },
+          {
+            "asset": "BNB",
+            "year": 2025,
+            "contribution": -0.00089448351400672
+          },
+          {
+            "asset": "BNB",
+            "year": 2026,
+            "contribution": 0.0
+          },
+          {
+            "asset": "BTC",
+            "year": 2023,
+            "contribution": -0.02624308862060846
+          },
+          {
+            "asset": "BTC",
+            "year": 2024,
+            "contribution": -0.0610814933359634
+          },
+          {
+            "asset": "BTC",
+            "year": 2025,
+            "contribution": -0.030376089104534033
+          },
+          {
+            "asset": "BTC",
+            "year": 2026,
+            "contribution": -0.000390821182587392
+          },
+          {
+            "asset": "ETH",
+            "year": 2023,
+            "contribution": 0.0
+          },
+          {
+            "asset": "ETH",
+            "year": 2024,
+            "contribution": -0.010294572729421305
+          },
+          {
+            "asset": "ETH",
+            "year": 2025,
+            "contribution": -0.005813896830629182
+          },
+          {
+            "asset": "ETH",
+            "year": 2026,
+            "contribution": 0.0
+          },
+          {
+            "asset": "SOL",
+            "year": 2023,
+            "contribution": -0.019045029077093847
+          },
+          {
+            "asset": "SOL",
+            "year": 2024,
+            "contribution": -0.038418313191996324
+          },
+          {
+            "asset": "SOL",
+            "year": 2025,
+            "contribution": -8.455256751000003e-05
+          },
+          {
+            "asset": "SOL",
+            "year": 2026,
+            "contribution": 0.0
+          },
+          {
+            "asset": "XRP",
+            "year": 2023,
+            "contribution": 0.0
+          },
+          {
+            "asset": "XRP",
+            "year": 2024,
+            "contribution": 0.0
+          },
+          {
+            "asset": "XRP",
+            "year": 2025,
+            "contribution": 0.0
+          },
+          {
+            "asset": "XRP",
+            "year": 2026,
+            "contribution": 0.0
+          }
+        ],
+        "rate_sign_additive_contribution": {
+          "negative_long_receives": 0.02473694307536513,
+          "positive_long_pays": -0.21012459236160774,
+          "zero": 0.0
+        }
+      },
+      "HYPERLIQUID_COMMON_COMPOUNDED_SENSITIVITY": {
+        "diagnostics": {
+          "label": "HYPERLIQUID_COMMON_COMPOUNDED",
+          "block_count": 3420,
+          "date_count": 1140,
+          "first_block": "2023-06-18 00:00:00+00:00",
+          "last_block": "2026-07-31 16:00:00+00:00",
+          "nonzero_exposure_blocks": 3420,
+          "mean_gross_held_exposure_on_blocks": 0.7431475371551755,
+          "minimum_block_funding_return": -0.001904816261,
+          "maximum_block_funding_return": 0.0003549259899290148,
+          "total_additive_funding_return": -0.42984489332436643,
+          "total_compounded_funding_factor": 0.6505459977094351
+        },
+        "total_compounded_funding_return": -0.3494540022905668,
+        "total_additive_funding_return": -0.42984489332436643,
+        "annual_compounded_funding_returns": {
+          "2023": -0.1032879493387977,
+          "2024": -0.2044184190097703,
+          "2025": -0.08576480211287651,
+          "2026": -0.002570185513299239
+        },
+        "annual_additive_funding_returns": {
+          "2023": -0.10898817386871276,
+          "2024": -0.2286244046014173,
+          "2025": -0.08965893711356573,
+          "2026": -0.0025733777406706042
+        },
+        "asset_additive_contribution": {
+          "BTC": -0.25197461887021355,
+          "ETH": -0.030538072983546105,
+          "SOL": -0.1340048069200597,
+          "BNB": -0.01332739455054709,
+          "XRP": 0.0
+        },
+        "asset_year_additive_contribution": [
+          {
+            "asset": "BNB",
+            "year": 2023,
+            "contribution": 0.0
+          },
+          {
+            "asset": "BNB",
+            "year": 2024,
+            "contribution": -0.007569977851943879
+          },
+          {
+            "asset": "BNB",
+            "year": 2025,
+            "contribution": -0.005757416698603211
+          },
+          {
+            "asset": "BNB",
+            "year": 2026,
+            "contribution": 0.0
+          },
+          {
+            "asset": "BTC",
+            "year": 2023,
+            "contribution": -0.05546757475883671
+          },
+          {
+            "asset": "BTC",
+            "year": 2024,
+            "contribution": -0.1243439144341604
+          },
+          {
+            "asset": "BTC",
+            "year": 2025,
+            "contribution": -0.06958975193654582
+          },
+          {
+            "asset": "BTC",
+            "year": 2026,
+            "contribution": -0.0025733777406706047
+          },
+          {
+            "asset": "ETH",
+            "year": 2023,
+            "contribution": 0.0
+          },
+          {
+            "asset": "ETH",
+            "year": 2024,
+            "contribution": -0.01762141765176725
+          },
+          {
+            "asset": "ETH",
+            "year": 2025,
+            "contribution": -0.012916655331778855
+          },
+          {
+            "asset": "ETH",
+            "year": 2026,
+            "contribution": 0.0
+          },
+          {
+            "asset": "SOL",
+            "year": 2023,
+            "contribution": -0.05352059910987604
+          },
+          {
+            "asset": "SOL",
+            "year": 2024,
+            "contribution": -0.0790890946635458
+          },
+          {
+            "asset": "SOL",
+            "year": 2025,
+            "contribution": -0.0013951131466378457
+          },
+          {
+            "asset": "SOL",
+            "year": 2026,
+            "contribution": 0.0
+          },
+          {
+            "asset": "XRP",
+            "year": 2023,
+            "contribution": 0.0
+          },
+          {
+            "asset": "XRP",
+            "year": 2024,
+            "contribution": 0.0
+          },
+          {
+            "asset": "XRP",
+            "year": 2025,
+            "contribution": 0.0
+          },
+          {
+            "asset": "XRP",
+            "year": 2026,
+            "contribution": 0.0
+          }
+        ],
+        "rate_sign_additive_contribution": {
+          "negative_long_receives": 0.03431304224481801,
+          "positive_long_pays": -0.46415793556918444
+        }
+      }
+    }
+  },
+  "common_source_difference": {
+    "final_10k_hyperliquid_minus_binance": -8646.992418594069,
+    "cagr_hyperliquid_minus_binance": -0.1174756371669079,
+    "total_compounded_funding_return_hyperliquid_minus_binance": -0.18015273712819257
+  },
+  "theoretical_zero_funding_spot_upper_bound": "PRICE_ONLY in each matching window; excludes basis, spot availability, borrow, execution and venue differences",
+  "decision_rule": "No position or routing change is authorized. Binance is a sign/regime/stress proxy; Hyperliquid common-history results are the venue-specific estimate. A later router must separately model spot availability, basis, fees and execution."
+}
+=== END ===

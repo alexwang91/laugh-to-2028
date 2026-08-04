@@ -1,0 +1,77 @@
+{
+  "experiment_id": "FUNDING-PNL-0003-FROZEN-HOLDINGS",
+  "status": "PREREGISTERED_BEFORE_FIRST_PNL_RUN",
+  "registered_on": "2026-08-04",
+  "question": "What funding drag or benefit would the exact frozen BRRK-0011 daily holdings have experienced under separate Binance long-history proxy and Hyperliquid native common-history scenarios, without changing directional targets or weights?",
+  "frozen_strategy": {
+    "source_weights": "research/results/pit_disp_0015/daily_weights.csv columns BRRK0011_BASELINE__BTC/ETH/SOL/BNB/XRP",
+    "source_price_equity": "research/results/pit_disp_0015/daily_equity.csv column BRRK0011_BASELINE",
+    "weights_are": "exact banded targets shifted one day and held over the corresponding UTC daily return",
+    "directional_target_changes": false,
+    "leverage_changes": false
+  },
+  "sources": {
+    "binance_full_history": {
+      "role": "sign/regime and stress proxy only; not a Hyperliquid level estimate",
+      "source": "official USD-M monthly fundingRate archives",
+      "window": ["2022-12-10T00:00:00Z", "2026-07-31T23:59:59.999Z"]
+    },
+    "hyperliquid_native_overlap": {
+      "role": "native venue estimate on exact all-five-asset common history",
+      "source": "persisted FUNDING-CROSSVENUE-0002 paired UTC eight-hour blocks",
+      "window": ["2023-06-18T00:00:00Z", "2026-07-31T23:59:59.999Z"]
+    }
+  },
+  "accounting": {
+    "positive_rate_for_long": "funding paid; negative portfolio contribution",
+    "asset_block_contribution": "- daily held weight(asset, UTC date of block) * block funding rate",
+    "portfolio_block_return": "sum of asset block contributions",
+    "daily_funding_factor": "product over available funding blocks on the UTC date of (1 + portfolio block return)",
+    "combined_daily_return": "(1 + canonical price-and-transaction-cost return) * daily funding factor - 1",
+    "primary_rate": "additive sum of actual event rates inside each UTC eight-hour block",
+    "secondary_sensitivity": "asset-level compounded block rates from FUNDING-CROSSVENUE-0002 or event compounding where available",
+    "weight_timing": "daily-held-notional approximation; the same persisted weight is used for every funding event on its UTC date",
+    "missing_events": "no interpolation, no forward fill and no synthetic zero events inside a claimed source window",
+    "price_return_first_day": "equity(first date) / 10000 - 1; subsequent days use equity pct_change"
+  },
+  "registered_scenarios": [
+    "PRICE_ONLY_BINANCE_WINDOW",
+    "BINANCE_ALL_PERP_PROXY_BINANCE_WINDOW",
+    "PRICE_ONLY_COMMON_OVERLAP",
+    "BINANCE_ALL_PERP_COMMON_OVERLAP",
+    "HYPERLIQUID_ALL_PERP_NATIVE_OVERLAP",
+    "ZERO_FUNDING_SPOT_UPPER_BOUND_EQUALS_PRICE_ONLY"
+  ],
+  "required_outputs": [
+    "final NAV, CAGR, MDD, annual volatility, Sharpe and Calmar for every scenario",
+    "total and annual compounded funding drag",
+    "total and annual additive funding contribution",
+    "asset and year additive attribution",
+    "positive-rate paid versus negative-rate received attribution",
+    "daily funding factors and combined equity",
+    "Binance versus Hyperliquid common-window difference",
+    "additive-rate versus compounded-rate sensitivity",
+    "funding event/block coverage and exact weight-date matching diagnostics",
+    "days and blocks with nonzero held exposure",
+    "explicit approximation and source-role limitations"
+  ],
+  "interpretation": {
+    "binance_full_history": "stress/proxy scenario only",
+    "hyperliquid_overlap": "native common-history estimate only",
+    "zero_funding_spot": "theoretical implementation upper bound, not evidence that required spot markets or inventory are available on Hyperliquid",
+    "no_router_yet": true
+  },
+  "prohibited": [
+    "no funding threshold",
+    "no spot/perp routing decision",
+    "no target-weight or coin-selection change",
+    "no fitted Binance-to-Hyperliquid multiplier",
+    "no blended synthetic funding series",
+    "no BNB omission",
+    "no funding interpolation or forward fill",
+    "no basis, borrow, execution-fee or slippage assumption added under this experiment ID",
+    "no leverage increase",
+    "no post-result accounting-window or formula change"
+  ],
+  "next_experiment_rule": "Only after this attribution is complete may a separately preregistered Spot/Perp Router compare deterministic implementation choices, including explicit basis, fees, spot availability and execution costs, while retaining the same directional target."
+}
