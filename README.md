@@ -6,7 +6,8 @@
 
 1. 风险信号在 point-in-time、包含后来失败/退市资产的真实历史 universe 中是否仍成立；
 2. alpha 排名是否真的优于随机；
-3. 排名信息能否转化为可部署的增长、回撤、成本与换手组合。
+3. 排名信息能否转化为可部署的增长、回撤、成本与换手组合；
+4. 当机制有效但组合失败时，先完成因果归因，再授权下一种结构。
 
 ## Current status
 
@@ -18,7 +19,9 @@
 | DISP-0013 | Benefit concentrated in few episodes | Shadow diagnostic |
 | DISP-0014 | Strong fixed-panel result, selection-sensitive | 不 promotion |
 | PIT-DISP-0015 | Broad PIT risk mechanism survives, growth trade-off fails | Shadow risk diagnostic |
-| **PIT-ALPHA-0016** | **Ranking beats 98% of placebos; portfolio economics fail** | **Mechanism validated / portfolio rejected** |
+| PIT-ALPHA-0016 rank | Beats 98% of placebos | Mechanism validated |
+| PIT-ALPHA-0016 portfolio | High turnover, deep drawdown, weak persistence | Rejected |
+| **AUDIT-0017** | **83.4% of turnover is name switching; median hold 1 day** | **Dominant failure identified** |
 | Historical funding-aware PNL | Not validated | Archive work pending |
 | Hyperliquid Plan B | Testnet/shadow implementation | Not production-ready |
 
@@ -129,15 +132,12 @@ Therefore the rank contains real cross-sectional information and is not simply a
 - at 10 bps CAGR falls to 8.57%;
 - at 20 bps CAGR falls to 1.57% and almost all growth disappears.
 
-The registered 0/-25%/-50% first-missing-day haircuts were identical because no position remained held when its price series first disappeared. This does not prove real delisting risk is harmless; the stress simply did not bind in this sample.
-
 ### PIT-ALPHA-0016 decision
 
-1. **Ranking mechanism validated.** Own-trend + relative-strength selection strongly beats random inside the same point-in-time universe.
-2. **Portfolio specification rejected.** Daily broad-universe Top-2 rotation has unacceptable drawdown, turnover and post-2024 persistence.
+1. **Ranking mechanism validated.**
+2. **Portfolio specification rejected.**
 3. **BRRK-0011 remains canonical baseline.**
-4. PIT-ALPHA-0016 is not eligible for live or shadow portfolio promotion.
-5. No 0016 age, liquidity, rank, Top-N, BTC-core, cap or cost parameter may be tuned on this window.
+4. No 0016 parameter may be tuned on this window.
 
 Full result: [`research/results/PIT_ALPHA_0016_RESULT_2026-08-04.md`](research/results/PIT_ALPHA_0016_RESULT_2026-08-04.md)
 
@@ -145,58 +145,95 @@ Exact outputs: [`research/results/pit_alpha_0016/`](research/results/pit_alpha_0
 
 ---
 
-## What the two PIT experiments changed
+## AUDIT-0017 — why the valid rank became a bad portfolio
 
-Before these tests, fixed-universe historical performance could be interpreted as evidence that the entire architecture generalized.
+The no-trading-change audit identifies a precise mechanical mismatch:
 
-The new evidence separates three layers:
+> **Medium-horizon trend signals were implemented as a daily leaderboard replacement system.**
 
-| Layer | Conclusion |
-|---|---|
-| Broad cross-sectional dispersion | Real risk information, but excessive upside opportunity cost |
-| Broad cross-sectional trend ranking | Real ranking information versus random |
-| Daily dynamic Top-2 portfolio | Poor conversion of information into deployable economics |
+### Dominant evidence
 
-The main bottleneck is no longer “does the signal contain any information?” It is:
+- eligible-set daily Jaccard: **0.630**;
+- roughly **3 additions and 3 removals per day**;
+- monthly first-to-last eligible-set Jaccard: only **0.249**;
+- **653 holding spells across 113 alt symbols**;
+- median holding period: **1 day**;
+- positive-contribution spells: **41.96%**;
+- total turnover: **350.62**;
+- **83.41% of turnover comes from switching one alt name for another**;
+- BTC-weight changes contribute only 7.18% of turnover;
+- alt-sleeve size changes contribute only 9.41%.
 
-> **Why does a rank that beats 98% of placebos still generate only 12.25% CAGR, -69% MDD and extreme turnover?**
+### The rank is right-skewed, not broadly profitable
 
-This must be answered before designing another portfolio.
+| Horizon after entry | Still eligible | Still Top-2 | Median forward return | Mean forward return |
+|---:|---:|---:|---:|---:|
+| 1 day | 79.88% | 51.46% | -0.58% | -0.28% |
+| 3 days | 71.74% | 42.09% | -0.50% | -0.17% |
+| 7 days | 65.13% | 33.64% | -1.50% | +0.65% |
+| 14 days | 58.83% | 25.19% | -1.57% | +2.63% |
+| 30 days | 52.07% | 19.35% | **-2.43%** | **+4.83%** |
+
+Most entries lose modestly. A small number of persistent winners create the positive mean. Strict daily Top-2 membership exits incumbents long before those right-tail trends can compound, even though many remain valid own-trend-positive and relative-trend-positive assets.
+
+### Fixed-V1 overlap
+
+- only **15.65%** of PIT alt exposure was in an active fixed-V1 alt;
+- any overlap occurred on **28.70%** of days;
+- mean daily return on overlap days: **+0.1439%**;
+- mean daily return on non-overlap days: **+0.0396%**.
+
+This does not justify hard-coding ETH/SOL/BNB. It shows that fixed V1 spent more time in persistent major trends, while broad PIT Top-2 repeatedly rotated through less durable names.
+
+### Tail and compounding drag
+
+The worst days were genuine tail events, not transaction-cost artifacts. The largest drawdown reached -69.12%. Across its drawdown/recovery episode, additive gross return was positive, but volatility sequence and 11.42 percentage points of cost left compounded net wealth nearly flat by recovery.
+
+### Authorized next structure
+
+The audit authorizes exactly one new hypothesis:
+
+```text
+Top-2 rank selects entries
+        ↓
+incumbent remains held while own trend > 0
+and relative-to-BTC trend > 0
+        ↓
+replace only when it becomes ineligible,
+BTC enters risk-off, or a vacancy exists
+```
+
+This is **entry-rank / eligibility-exit**. It directly targets name-switch churn without adding a rank-buffer threshold, minimum holding period or monthly calendar parameter.
+
+Full result: [`research/results/AUDIT_0017_PIT_ALPHA_ATTRIBUTION_2026-08-04.md`](research/results/AUDIT_0017_PIT_ALPHA_ATTRIBUTION_2026-08-04.md)
+
+Exact audit evidence: [`research/results/audit_0017_pit_alpha_attribution/`](research/results/audit_0017_pit_alpha_attribution/)
 
 ---
 
 ## Current research queue
 
-### P0 — PIT-ALPHA attribution audit, no trading changes
+### P0 — preregister the entry-rank / eligibility-exit experiment
 
-Required decomposition:
+The next experiment must:
 
-- universe turnover and eligible-set churn;
-- rank turnover versus actual position turnover;
-- holding-period distribution;
-- gross and net contribution by trade/asset/cohort;
-- tail-loss episodes and overnight/missing-row behavior;
-- listing-age and liquidity cohorts;
-- rank persistence and decay;
-- fixed V1 versus PIT Top-2 selection overlap;
-- 2024 outperformance versus 2025 failure;
-- how much cost comes from switching names versus changing gross beta.
+- keep the complete PIT universe, 240-day age and $25m liquidity rules;
+- keep the validated own/relative trend entry rank;
+- keep gross<=1, BTC regime/core, 35% universal alt cap, 0.05 band and stated costs;
+- replace incumbents only when they become ineligible or risk-off forces exit;
+- report turnover decomposition, holding duration, right-tail capture, cost stress and subperiods;
+- receive a new experiment ID;
+- not tune an exit rank, minimum hold or calendar frequency.
 
-The purpose is diagnosis, not threshold search.
-
-### P1 — only after attribution: new low-turnover experiment ID
-
-A monthly or persistence-controlled design may be considered only after the audit, with a new preregistration. It cannot be presented as a tuned version of 0016.
-
-### P2 — historical funding + Spot/Perp Router
+### P1 — historical funding + Spot/Perp Router
 
 Use accessible archives and separately attribute funding, fees, basis and slippage for an unchanged target exposure.
 
-### P3 — Hyperliquid execution hardening
+### P2 — Hyperliquid execution hardening
 
 Metadata precision, fill reconciliation, partial fills, slicing, idempotency, L2 target-notional simulation, reduce-only emergency protection and testnet parity.
 
-### P4 — leverage last
+### P3 — leverage last
 
 Do not reconsider 1.30–1.50 beta before universe, costs, funding and execution are controlled.
 
@@ -229,7 +266,7 @@ Known gaps:
 - report the whole registered family rather than selecting a winner;
 - rejected portfolio specifications remain rejected;
 - mechanism validation is not portfolio promotion;
-- no post-result tuning of PIT-0015 or PIT-0016;
+- attribution may authorize a structure, not tune thresholds;
 - optimize future validity, not maximum historical CAGR.
 
 Detailed stopping rules: [`docs/NEXT_STEPS.md`](docs/NEXT_STEPS.md)
