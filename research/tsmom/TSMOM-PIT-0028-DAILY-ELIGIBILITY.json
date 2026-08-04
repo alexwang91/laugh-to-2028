@@ -1,0 +1,50 @@
+{
+  "audit_id": "TSMOM-PIT-0028-DAILY-ELIGIBILITY",
+  "status": "PREREGISTERED_BEFORE_FIRST_RUN",
+  "registered_on": "2026-08-05",
+  "trading_changes": false,
+  "strategy_pnl": false,
+  "authorized_by": "TSMOM-DATA-0027 historical USD-M perpetual contract-existence audit",
+  "question": "Can a daily point-in-time eligible USD-M perpetual universe be constructed from completed official archive data without current-survivor bias, using the project's already-frozen age/liquidity discipline?",
+  "data": {
+    "source": "Binance Public Data monthly USD-M 1d kline archives",
+    "data_start": "2020-09-01",
+    "evaluation_start": "2021-05-01",
+    "evaluation_end": "2026-07-31",
+    "fields": ["close", "quote_volume"],
+    "information_timing": "daily eligibility at date t uses only the completed t daily kline; any later strategy must execute t -> t+1"
+  },
+  "eligibility": {
+    "contract_existence": "a valid completed USD-M perpetual 1d archive row exists on date t",
+    "continuous_history_days": 240,
+    "history_rule": "the most recent 240 calendar daily rows through t must all be present; stale cumulative history cannot qualify a relisted/discontinuous contract",
+    "completed_day_quote_volume_floor_usd": 25000000.0,
+    "ordinary_symbol_filter": "same stable-base and leveraged-token-like mechanical exclusions used by TSMOM-DATA-0027",
+    "parameter_source": "240 days and $25m are inherited from the already-frozen PIT-ALPHA/PIT-DISP universe discipline, not selected from TSMOM returns"
+  },
+  "required_outputs": [
+    "daily eligible contract count over the full evaluation window",
+    "per-symbol first/last data date and first/last eligible date",
+    "per-symbol eligible-day count",
+    "compressed daily eligibility matrix",
+    "snapshots of eligible symbols on fixed calendar dates",
+    "count of contracts whose archive later ends but which were historically eligible",
+    "download/error/coverage diagnostics"
+  ],
+  "fixed_snapshots": ["2022-01-01", "2023-01-01", "2024-01-01", "2025-01-01", "2026-01-01", "2026-07-31"],
+  "success_gate": {
+    "historical_panel_nonempty": true,
+    "daily_eligibility_nonempty": true,
+    "later_ended_contracts_historically_eligible": true,
+    "symbol_download_failure_fraction_max": 0.01
+  },
+  "prohibited": [
+    "no TSMOM signal or return calculation",
+    "no changing 240-day age or $25m liquidity thresholds after observing coverage",
+    "no current-survivor filtering",
+    "no requiring a contract to exist after its historical end date",
+    "no filling missing futures data from spot or another venue",
+    "no performance-based symbol exclusions"
+  ],
+  "next_experiment_rule": "Only after this daily PIT universe is frozen may a separate preregistered TSMOM mechanism test reuse the existing 20/60/120/240 time-series trend definition per contract. That first signal experiment must report gross mechanism performance and correlation to BRRK before any portfolio-stack optimization. Funding/cost accounting remains mandatory before promotion."
+}
