@@ -2,168 +2,199 @@
 
 一个以 **长期生存、可审计和减少回测自欺** 为目标的 crypto systematic allocation research project。
 
-当前主线不是继续堆指标，而是验证：**在 point-in-time、包含后来失败/退市资产的真实历史 universe 中，现有 regime / dispersion edge 是否仍然成立。**
+当前主线是：在 point-in-time、包含后来失败与退市资产的真实历史 universe 中，验证现有 alpha 和风险控制是否仍然成立，而不是继续在固定赢家币池上堆指标。
 
 ## Current status
 
-| Layer | Current status | Decision |
+| Layer | Evidence status | Decision |
 |---|---|---|
 | BTC dynamic beta | Frozen core concept | 保留 |
-| Fixed-universe V1 rotation | Historical alpha, selection-biased | 不直接外推 |
+| Fixed-universe V1 rotation | Historical alpha, materially selection-biased | 不直接外推 |
 | **BRRK-0011** | **Frozen research baseline** | 当前基线 |
-| DISP-0013 | High-NAV shadow candidate | 证据集中，降级 |
-| **DISP-0014** | **Strongest shadow risk overlay** | 等待 PIT 验证 |
-| **PIT-DISP-0015** | **Critical qualification test** | 尚无合法结果 |
-| Historical funding-aware PnL | Not validated | HTTP 451 阻断 |
-| Hyperliquid Plan B | Testnet / shadow implementation | 未 production-ready |
+| DISP-0013 | Benefit concentrated in few episodes | Shadow diagnostic only |
+| DISP-0014 | Strong fixed-panel result, now shown selection-sensitive | **不 promotion** |
+| **PIT-DISP-0015** | **Valid survivorship-aware run; partial risk-mechanism validation** | Shadow risk diagnostic |
+| Dynamic alpha universe | Not tested yet | **Next P0 research task** |
+| Historical funding-aware PnL | Not validated | HTTP 451 / archive work pending |
+| Hyperliquid Plan B | Testnet / shadow implementation | Not production-ready |
 
-## Backtest PNL
+## Exact daily backtest PNL
 
-![Backtest PNL](docs/pnl.svg)
+![Exact daily backtest PNL](docs/pnl.svg)
 
-> **图表说明**：旧 workflow 没有持久化精确日级 equity series，因此上图使用研究记录中的年度收益复利重建 year-end / period-end NAV，用于可视化 BRRK-0011 与 BRRK-0011 + DISP-0014 的路径差异。它不是伪造的日级曲线。PIT-DISP-0015 成功执行后，下一版必须直接持久化 daily equity CSV，并用真实日级 NAV 替换此图。
+> 上图来自 PIT-DISP-0015 成功运行后持久化的 **1,332 个真实日级净值点**，不再是年度收益复利近似。对应 CSV、held weights、动态币池规模、dispersion scale 和 inactive-symbol audit 位于 `research/results/pit_disp_0015/`。
 
-### 统一窗口核心指标
+### Common evaluation window
 
-评估窗口：2022-12-10 至 2026-08-02；完成日线；t 日信号作用于 t+1；0.05 L1 rebalance band；5 bps / absolute weight change。
+2022-12-10 至 2026-08-02；completed UTC daily data；t 日信息作用于 t+1；0.05 L1 rebalance band；5 bps / absolute weight change。
 
-| Strategy | CAGR | MDD | Ann Vol | Sharpe | Calmar | Path CDaR95 | Upside capture | Downside capture |
-|---|---:|---:|---:|---:|---:|---:|---:|---:|
-| V1 | 61.255% | -37.635% | 44.454% | 1.295 | 1.628 | 36.550% | 106.05% | 80.33% |
-| **BRRK-0011** | **65.104%** | **-33.715%** | 44.207% | **1.353** | **1.931** | **31.781%** | 105.02% | **72.99%** |
-| BRRK-0011 + DISP-0014 | 65.709% | **-30.603%** | **39.010%** | **1.488** | **2.147** | **28.850%** | 98.45% | **62.40%** |
+| Strategy | Final $10k | CAGR | MDD | Ann Vol | Sharpe | Calmar | Path CDaR95 | Up capture | Down capture |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| V1 baseline | $57,116 | 61.255% | -37.635% | 44.454% | 1.295 | 1.628 | 36.550% | 106.05% | 80.33% |
+| V1 + fixed DISP-0014 | $57,663 | 61.676% | -35.107% | 39.289% | 1.417 | 1.757 | 33.989% | 99.41% | 69.84% |
+| V1 + dynamic PIT-0015 | $52,831 | 57.843% | -33.208% | 39.881% | 1.342 | 1.742 | 32.301% | 96.93% | 71.90% |
+| **BRRK-0011 baseline** | **$62,247** | **65.104%** | **-33.715%** | 44.207% | **1.353** | **1.931** | 31.781% | **105.02%** | 72.99% |
+| BRRK + fixed DISP-0014 | $63,084 | 65.709% | -30.603% | 39.010% | 1.488 | 2.147 | 28.850% | 98.45% | 62.40% |
+| **BRRK + dynamic PIT-0015** | **$56,543** | **60.809%** | **-30.398%** | 39.691% | **1.393** | **2.000** | **28.078%** | 95.92% | **65.71%** |
 
-`DISP-0014` 的核心价值目前更像风险压缩，而不是额外 alpha：它明显降低 MDD、波动和 downside capture，但牺牲部分 upside capture。
+## PIT-DISP-0015: decisive result
 
-## What we built
-
-### 1. BTC Dynamic Beta
-
-只使用完成 UTC 日线：20/60/120/240 日风险调整动量 + 30 日 realized volatility。
-
-负趋势下 beta 防御性收缩到 0.18–0.65；正趋势从 1.0 向上扩张。人工“最后一跌反弹加仓”规则已经回测失败并淘汰。
-
-### 2. V1 Rotation
-
-第一版固定 BTC/ETH/SOL/BNB：BTC 决定 regime；risk-off 不配 alt；risk-on 时 alt 必须同时满足绝对趋势与相对 BTC 趋势，再选择 top 1–2。
-
-历史结果很强，但 **SOL 是主要 alpha 来源**，并且 2024 后优势显著减弱。这直接暴露了固定今天赢家回测的 selection / survivorship 问题。
-
-### 3. BRRK regime risk layer
-
-早期 HMM 直接控制 exposure 时过度牺牲牛市收益。最终结构把 regime model 限定为 risk-budget authority：正常状态尽量不干预 V1，只在 Risk-Off 概率上升时赋予 de-risk 权限。
-
-`BRRK-0011` 是修正 path CDaR 定义后的冻结基线：
-
-- CAGR 65.10%
-- MDD -33.72%
-- Sharpe 1.353
-- Calmar 1.931
-- downside capture 72.99%
-
-修正数学定义后结果几乎不变，因此 BRRK 优势不是旧 drawdown bug 造成。
-
-### 4. Dispersion overlays
-
-`DISP-0013`：极端横截面 dispersion 时 alt -> BTC。表面 CAGR 更高（约 67.5%），但 attribution 显示 97% 左右的正贡献集中于三个 episode，主要发生在 2024-11 下旬到 12 月初，因此证据等级下降。
-
-`DISP-0014`：使用外部文献式 median-ratio scaling，高 dispersion 时整个组合 exposure -> cash。它对风险调整后指标改善更稳定，目前是最强 shadow risk overlay。
-
-### 5. Point-in-time universe audits
-
-我们枚举到 **661 个历史普通 Binance spot-USDT candidates**：
-
-- 当前约 471 个仍为 `TRADING`；
-- 189 个为 `BREAK`；
-- 另有 1 个已不在 current exchangeInfo；
-- 至少 185 个历史候选已在 2026-07 前结束。
-
-历史 candidate pool 从 2020-08 的约 143 个扩张到 2026-07 的约 475 个，因此今天的 survivor 集合不能作为过去的 universe。
-
-进一步验证：BREAK / 已从 exchangeInfo 消失的币仍能通过 Binance public market-data API 返回历史日线，因此可以构建真正 survivorship-aware panel。
-
-## The critical next experiment: PIT-DISP-0015
-
-规则已冻结：
+The frozen point-in-time rules were executed without post-result parameter changes:
 
 ```text
-historical ordinary Binance USDT candidates
+historical ordinary Binance spot-USDT candidates
     ↓
 240 consecutive completed daily rows
     ↓
 completed-day quote volume >= $25m
     ↓
+minimum valid cross-section = 5
+    ↓
 20d cumulative-log-return cross-sectional dispersion
     ↓
-raw scale = clip(expanding_prior_median / dispersion, 0.10, 1.00)
+raw scale = clip(expanding prior median / dispersion, 0.10, 1.00)
     ↓
-g_t = 0.80 * g_(t-1) + 0.20 * raw_scale
+g_t = 0.80 × g_(t-1) + 0.20 × raw scale
     ↓
 scale frozen V1 exposure toward cash
 ```
 
-后来 BREAK / inactive 的币在其真实存在期间必须保留。禁止看到结果后修改 $25m、240d、20d、0.10 或 0.80 参数。
+### Data integrity
 
-**目前没有合法 0015 PnL。** 之前的 GitHub hosted runner 在 Python step 开始前即失败（0 steps / 0 logs / 0 artifacts），因此记录为 CI failure，不是模型 failure。
+- 652 historical ordinary USDT candidates discovered;
+- 646 returned historical rows;
+- 1,120 API calls and **zero fetch errors**;
+- mean eligible universe 30.62 assets, median 27, maximum 143;
+- **159 currently inactive/non-TRADING symbols were historically eligible**;
+- examples include MATIC, FTM, EOS, WAVES, RNDR, BTT, XMR, LRC and OM.
 
-## Why survivorship is now P0
+This is a genuine dead-pool-inclusive reconstruction rather than a backtest on today's survivors.
 
-项目早期最漂亮的 rotation 数字很大程度上由 SOL 贡献。今天知道 SOL 成为大币，再回到 2021 把它放进固定候选池，会天然抬高历史表现。
+### What survived
 
-因此现在最重要的问题不是“再找一个更聪明的信号”，而是：
+Against BRRK-0011, dynamic broad-market dispersion:
 
-> **当模型必须面对当时真实存在的资产、包括后来失败和退市的资产时，edge 还剩多少？**
+- improves MDD by about **3.32 percentage points**;
+- improves path CDaR95 by about **3.70 points**;
+- lowers annualized volatility by about **4.52 points**;
+- lowers downside capture from **72.99% to 65.71%**;
+- raises Sharpe from **1.353 to 1.393**;
+- raises Calmar from **1.931 to 2.000**;
+- reduces turnover.
 
-只有这个问题通过，继续做 funding、covariance、LPM、leverage 才有意义。
+Therefore cross-sectional dispersion contains a real risk-compression mechanism that survives point-in-time universe construction.
+
+### What did not survive
+
+The same overlay:
+
+- lowers CAGR from **65.10% to 60.81%** versus BRRK-0011;
+- finishes about **$5,704 lower per $10,000 initial capital**;
+- lowers upside capture from 105.02% to 95.92%;
+- underperforms fixed-panel DISP-0014 on CAGR, Sharpe, Calmar and downside capture.
+
+The fixed-panel and dynamic smoothed scales have only **0.064 correlation**. Their mean absolute difference is 0.122, and dynamic exposure is below the fixed-panel exposure on about 69.1% of days.
+
+**Conclusion:** BTC/ETH/SOL/BNB/XRP fixed-panel dispersion is not a reliable proxy for broad historical crypto dispersion. The attractive DISP-0014 result is materially selection-sensitive.
+
+## Canonical research decision
+
+1. **BRRK-0011 remains the canonical research baseline.**
+2. **DISP-0014 is downgraded** to a selection-sensitive fixed-panel diagnostic; it is not production eligible.
+3. **PIT-DISP-0015 is retained** as a broad-market risk diagnostic / shadow overlay, not as the default portfolio.
+4. No PIT-0015 threshold, liquidity floor, age rule, horizon, exposure floor or smoothing parameter will be tuned on this window.
+5. The next major test is a **point-in-time dynamic alpha universe**. The V1 alpha layer must now face the same dead-pool test.
+
+Full result: [`research/results/PIT_DISP_0015_RESULT_2026-08-04.md`](research/results/PIT_DISP_0015_RESULT_2026-08-04.md)
+
+Exact outputs: [`research/results/pit_disp_0015/`](research/results/pit_disp_0015/)
+
+## What we built
+
+### 1. BTC Dynamic Beta
+
+Completed UTC daily candles only: 20/60/120/240-day risk-adjusted momentum plus 30-day realized volatility. Negative-trend beta contracts toward 0.18–0.65; positive trend permits expansion above 1.0. Manual “last drop / bottom recovery” jumps were tested and rejected.
+
+### 2. V1 Rotation
+
+BTC defines regime. In risk-off, alt exposure is zero. In risk-on, an alt must have both positive absolute trend and positive relative-to-BTC trend before ranking and allocation.
+
+The early fixed BTC/ETH/SOL/BNB result was strong, but SOL dominated historical alpha and the edge weakened materially after 2024. The next alpha test therefore cannot preselect today's winners.
+
+### 3. BRRK regime risk layer
+
+Early HMM alpha/reallocation variants sacrificed too much upside. BRRK restricts the regime model to risk authority: default to V1 and grant de-risking authority mainly when Risk-Off probability is high.
+
+`BRRK-0011` is the corrected path-CDaR implementation baseline:
+
+- CAGR 65.10%;
+- MDD -33.72%;
+- Sharpe 1.353;
+- Calmar 1.931;
+- downside capture 72.99%.
+
+The mathematical CDaR correction had negligible economic impact, so the historical advantage was not created by the old drawdown implementation bug.
+
+### 4. Dispersion research
+
+- `DISP-0013`: extreme dispersion redirects alt exposure to BTC. Headline improvement was concentrated in a small late-2024 cluster; shadow only.
+- `DISP-0014`: fixed five-asset median-ratio exposure scaling. Strong fixed-panel risk metrics, but PIT-0015 shows its timing is selection-sensitive.
+- `PIT-DISP-0015`: broad point-in-time dispersion. Real risk compression, but insufficient growth/risk trade-off for promotion.
+
+## Current snapshot — completed 2026-08-02 candle
+
+- dynamic eligible universe: 10 assets;
+- dynamic dispersion: 0.24757;
+- prior expanding median: 0.23409;
+- raw dynamic scale: 0.94557;
+- smoothed dynamic scale: 0.71791;
+- fixed-panel scale: 0.99992;
+- BRRK final scale: 0.00960.
+
+The broad and fixed-panel risk signals strongly disagree in this snapshot, consistent with their low historical correlation. This is a research diagnostic, not a standalone trade instruction.
 
 ## Funding status
 
-曾尝试拉取 Binance USD-M historical funding 做正式 funding-aware backtest，但 GitHub runner 请求相关 endpoint 返回 HTTP 451。
+The attempted Binance USD-M funding endpoint returned HTTP 451 on GitHub-hosted infrastructure. Therefore:
 
-因此：
-
-- 当前没有合法 historical funding-aware PnL；
-- funding filter 不能被描述为已经统计优化；
-- 下一步应使用可访问 historical archive，分别核算 spot / perp / leverage overlay / hedge 的 carry 与成本。
+- no valid historical funding-aware PNL exists yet;
+- current funding thresholds remain policy heuristics, not statistical optimization;
+- future work must use accessible historical archives and separately attribute spot/perp carry, fees, basis and slippage.
 
 ## Execution architecture
 
-当前执行层在 `execution/plan-b-bot/`：
+`execution/plan-b-bot/` contains the Hyperliquid testnet/shadow skeleton:
 
 ```text
 completed UTC daily candle
         ↓
-BTC trend + rv30
+trend / volatility signal
         ↓
-asymmetric beta target
+target beta or portfolio weights
         ↓
-portfolio NAV / current exposure
+account NAV and current exposure
         ↓
-target perp quantity
+target position delta
         ↓
-Hyperliquid testnet / shadow / trade skeleton
+Hyperliquid testnet / shadow execution
 ```
 
-默认配置是 **testnet + shadow**。
-
-已知仍需修复：dynamic size precision、reversal 后 fill reconciliation、partial-fill handling、order slicing、persistent idempotency/audit log、emergency reduce-only protection、endpoint hardening 和 mainnet safeguards。
+Open engineering items include metadata-derived size precision, fill reconciliation, partial fills, slicing, persistent idempotency/audit logs, reduce-only emergency protection, endpoint hardening and mainnet safeguards.
 
 ## Next steps
 
-优先级已经冻结：
+1. **P0 — dynamic point-in-time alpha universe:** determine whether own-trend + relative-strength alpha survives when historical candidates include later failures and delistings.
+2. **P0 audit — fixed vs dynamic dispersion identity:** no trading change; explain divergence through breadth, universe size, constituent concentration and volume selection.
+3. **P1 — historical funding + Spot/Perp Router:** optimize implementation cost for an unchanged target exposure.
+4. **P2 — risk allocation:** only after dynamic alpha validation, test covariance/risk contribution and downside/LPM estimators one module at a time.
+5. **P3 — Hyperliquid execution hardening:** complete testnet reconciliation and operational controls.
+6. **P4 — leverage:** reconsider 1.30–1.50 beta only after universe, funding and execution validation.
 
-1. **P0：跑通 PIT-DISP-0015**，并持久化 exact daily equity / weights / universe / dispersion scale。
-2. **P1：构建 point-in-time dynamic alpha universe**，不再固定 ETH/SOL/BNB/XRP 等今天赢家。
-3. **P2：补真实 historical funding + Spot/Perp Router**。
-4. **P3：只有 universe validation 通过后**，再研究 covariance/risk contribution、LPM/downside-risk 等风险分配。
-5. **P4：硬化 Hyperliquid execution**，完成 testnet end-to-end reconciliation。
-6. **P5：最后才重新评估 leverage**；不因为历史 CAGR 漂亮就直接提高杠杆。
+Detailed stopping rules: [`docs/NEXT_STEPS.md`](docs/NEXT_STEPS.md)
 
-详细 gate 与 stopping rules：[`docs/NEXT_STEPS.md`](docs/NEXT_STEPS.md)
+Research evolution: [`docs/RESEARCH_HISTORY.md`](docs/RESEARCH_HISTORY.md)
 
-完整研究演化：[`docs/RESEARCH_HISTORY.md`](docs/RESEARCH_HISTORY.md)
-
-迁移范围与旧库关系：[`docs/MIGRATION_MANIFEST.md`](docs/MIGRATION_MANIFEST.md)
+Migration scope: [`docs/MIGRATION_MANIFEST.md`](docs/MIGRATION_MANIFEST.md)
 
 ## Repository layout
 
@@ -178,21 +209,24 @@ Hyperliquid testnet / shadow / trade skeleton
 ├── research/
 │   ├── core/
 │   ├── pit_universe/
-│   └── results/
+│   ├── results/
+│   │   └── pit_disp_0015/
+│   └── ...
 └── execution/
     └── plan-b-bot/
 ```
 
 ## Research discipline
 
-- completed data only;
+- completed information only;
 - no lookahead;
-- transaction cost included where stated;
-- preregister before material parameter experiments;
-- rejected experiments remain rejected unless new independent evidence appears;
-- do not pick sensitivity winners after seeing PnL;
-- do not quote PIT-DISP-0015 or historical funding performance until valid runs exist;
-- optimize for robustness and future validity, not maximum historical CAGR.
+- stated transaction costs included;
+- preregister material experiments;
+- rejected experiments remain rejected absent independent evidence;
+- report full registered families rather than selecting PNL winners;
+- preserve dead/delisted assets in historical eligibility;
+- do not tune PIT-0015 after this result;
+- optimize future validity, not maximum historical CAGR.
 
 ---
 

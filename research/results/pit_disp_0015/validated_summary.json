@@ -1,0 +1,129 @@
+{
+  "experiment_id": "PIT-DISP-0015-DYNAMIC-UNIVERSE",
+  "run_date": "2026-08-04",
+  "status": "VALID_RUN_PARTIAL_MECHANISM_VALIDATION_NO_PRODUCTION_PROMOTION",
+  "evaluation": {
+    "start": "2022-12-10",
+    "end": "2026-08-02",
+    "daily_rows": 1332,
+    "cost_bps_per_absolute_weight_change": 5.0,
+    "rebalance_band_l1": 0.05,
+    "lookahead": "none; completed day t target held over t+1"
+  },
+  "data_integrity": {
+    "historical_candidate_symbols": 652,
+    "symbols_with_rows": 646,
+    "api_calls": 1120,
+    "fetch_errors": 0,
+    "panel_first_date": "2020-08-11",
+    "panel_last_date": "2026-08-02",
+    "mean_eligible_count": 30.6246246246,
+    "median_eligible_count": 27,
+    "max_eligible_count": 143,
+    "inactive_or_nontrading_symbols_ever_eligible": 159
+  },
+  "frozen_methodology": {
+    "minimum_consecutive_daily_rows": 240,
+    "completed_day_quote_volume_floor_usd": 25000000,
+    "minimum_cross_section": 5,
+    "dispersion": "sample standard deviation of 20-day cumulative log returns across the point-in-time eligible universe",
+    "raw_scale": "clip(expanding prior median / current dispersion, 0.10, 1.00)",
+    "recursive_smoothing_lambda": 0.80,
+    "application": "scale entire frozen V1 exposure toward cash"
+  },
+  "metrics": {
+    "V1_BASELINE": {
+      "final_10000": 57116.3256,
+      "cagr": 0.6125475,
+      "max_drawdown": -0.3763491,
+      "annualized_volatility": 0.4445416,
+      "sharpe": 1.2950208,
+      "calmar": 1.6276047,
+      "path_cdar95": 0.3655050,
+      "upside_capture": 1.0604685,
+      "downside_capture": 0.8032742
+    },
+    "V1_PLUS_FIXED_PANEL_DISP0014": {
+      "final_10000": 57662.9314,
+      "cagr": 0.6167646,
+      "max_drawdown": -0.3510653,
+      "annualized_volatility": 0.3928884,
+      "sharpe": 1.4173062,
+      "calmar": 1.7568374,
+      "path_cdar95": 0.3398864,
+      "upside_capture": 0.9941073,
+      "downside_capture": 0.6984475
+    },
+    "V1_PLUS_DYNAMIC_UNIVERSE_DISP0015": {
+      "final_10000": 52831.0421,
+      "cagr": 0.5784276,
+      "max_drawdown": -0.3320761,
+      "annualized_volatility": 0.3988115,
+      "sharpe": 1.3418269,
+      "calmar": 1.7418527,
+      "path_cdar95": 0.3230144,
+      "upside_capture": 0.9692631,
+      "downside_capture": 0.7190210
+    },
+    "BRRK0011_BASELINE": {
+      "final_10000": 62247.3823,
+      "cagr": 0.6510389,
+      "max_drawdown": -0.3371507,
+      "annualized_volatility": 0.4420699,
+      "sharpe": 1.3531837,
+      "calmar": 1.9310026,
+      "path_cdar95": 0.3178091,
+      "upside_capture": 1.0502123,
+      "downside_capture": 0.7299310
+    },
+    "BRRK0011_PLUS_FIXED_PANEL_DISP0014": {
+      "final_10000": 63083.9858,
+      "cagr": 0.6570942,
+      "max_drawdown": -0.3060337,
+      "annualized_volatility": 0.3901009,
+      "sharpe": 1.4878395,
+      "calmar": 2.1471304,
+      "path_cdar95": 0.2884972,
+      "upside_capture": 0.9844916,
+      "downside_capture": 0.6239990
+    },
+    "BRRK0011_PLUS_DYNAMIC_UNIVERSE_DISP0015": {
+      "final_10000": 56543.0765,
+      "cagr": 0.6080933,
+      "max_drawdown": -0.3039785,
+      "annualized_volatility": 0.3969076,
+      "sharpe": 1.3932991,
+      "calmar": 2.0004482,
+      "path_cdar95": 0.2807819,
+      "upside_capture": 0.9591733,
+      "downside_capture": 0.6570938
+    }
+  },
+  "signal_identity": {
+    "fixed_dynamic_scale_correlation": 0.0640821,
+    "mean_absolute_scale_difference": 0.1221328,
+    "fraction_dynamic_scale_below_fixed_scale": 0.69069,
+    "mean_dynamic_smoothed_scale": 0.8981174,
+    "median_dynamic_smoothed_scale": 0.9416767,
+    "fraction_dynamic_scale_below_0_90": 0.3828829,
+    "fraction_dynamic_scale_below_0_50": 0.0112613,
+    "minimum_dynamic_scale": 0.3285391
+  },
+  "current_completed_candle": {
+    "date": "2026-08-02",
+    "eligible_universe_count": 10,
+    "dynamic_dispersion": 0.2475691,
+    "dynamic_prior_median": 0.2340949,
+    "dynamic_raw_scale": 0.9455739,
+    "dynamic_smoothed_scale": 0.7179051,
+    "fixed_panel_smoothed_scale": 0.9999200,
+    "brrk_final_scale": 0.0096005
+  },
+  "decision": {
+    "canonical_baseline": "BRRK-0011",
+    "disp0014": "downgraded to selection-sensitive fixed-panel diagnostic",
+    "pit_disp0015": "retain as broad-market risk diagnostic / shadow overlay; do not promote",
+    "next_major_experiment": "point-in-time dynamic alpha universe",
+    "post_result_tuning_allowed": false
+  }
+}
