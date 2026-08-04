@@ -1,0 +1,92 @@
+name: PIT ALPHA 0018 Entry Rank Eligibility Exit
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/pit-alpha-0018.yml'
+      - 'research/requirements.txt'
+      - 'research/crypto_rotation_backtest.py'
+      - 'research/core/crypto_rotation_backtest.py'
+      - 'research/pit_universe/PIT-ALPHA-0018-ENTRY-RANK-ELIGIBILITY-EXIT.json'
+      - 'research/pit_universe/run_entry_rank_eligibility_exit.py'
+      - 'research/pit_universe/test_entry_rank_eligibility_exit.py'
+      - 'research/pit_universe/run_dynamic_alpha.py'
+      - 'research/pit_universe/run_pit_alpha_attribution.py'
+      - 'research/pit_universe/run_archive_discovery.py'
+      - 'research/pit_universe/run_dynamic_dispersion.py'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pit-alpha-0018-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  eligibility-exit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: research/requirements.txt
+      - name: Install research dependencies
+        run: pip install --disable-pip-version-check -r research/requirements.txt
+      - name: Run deterministic state-machine tests
+        working-directory: research/pit_universe
+        run: python -m unittest -v test_entry_rank_eligibility_exit.py
+      - name: Run preregistered entry-rank eligibility-exit test
+        working-directory: research/pit_universe
+        shell: bash
+        run: |
+          set -o pipefail
+          python run_entry_rank_eligibility_exit.py | tee pit_alpha_0018.log
+      - name: Persist validated outputs on same-repository PR
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+        env:
+          HEAD_REF: ${{ github.head_ref }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf /tmp/pit-alpha-0018
+          mkdir -p /tmp/pit-alpha-0018
+          cp -R research/pit_universe/pit_alpha_0018_outputs/. /tmp/pit-alpha-0018/
+          cp research/pit_universe/pit_alpha_0018.log /tmp/pit-alpha-0018/pit_alpha_0018.log
+
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git fetch origin "$HEAD_REF"
+          git checkout -B "$HEAD_REF" "origin/$HEAD_REF"
+
+          DEST='research/results/pit_alpha_0018'
+          rm -rf "$DEST"
+          mkdir -p "$DEST"
+          cp -R /tmp/pit-alpha-0018/. "$DEST/"
+
+          git add "$DEST"
+          if git diff --cached --quiet; then
+            echo 'Validated outputs are already current.'
+            exit 0
+          fi
+          git commit -m 'Persist PIT-ALPHA-0018 exact outputs'
+          git pull --rebase origin "$HEAD_REF"
+          git push origin "HEAD:$HEAD_REF"
+      - name: Upload exact research outputs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pit-alpha-0018-results
+          retention-days: 30
+          if-no-files-found: warn
+          path: |
+            research/pit_universe/pit_alpha_0018.log
+            research/pit_universe/pit_alpha_0018_outputs/**
+            research/pit_universe/PIT-ALPHA-0018-ENTRY-RANK-ELIGIBILITY-EXIT.json

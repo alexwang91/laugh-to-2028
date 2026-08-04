@@ -1,0 +1,89 @@
+{
+  "experiment_id": "PIT-ALPHA-0018-ENTRY-RANK-ELIGIBILITY-EXIT",
+  "status": "PREREGISTERED_BEFORE_FIRST_PNL_RUN",
+  "registered_on": "2026-08-04",
+  "authorized_by": "AUDIT-0017-PIT-ALPHA-ATTRIBUTION",
+  "primary_question": "Can the validated point-in-time own-trend plus relative-strength entry rank be converted into a lower-turnover portfolio by retaining incumbents until economic eligibility fails, without adding a new threshold or calendar parameter?",
+  "frozen_data": {
+    "source": "Binance public historical ordinary spot-USDT pairs, including later inactive, BREAK and missing-current-status symbols",
+    "evaluation_start": "2021-05-01",
+    "evaluation_end": "2026-08-02",
+    "minimum_consecutive_completed_daily_rows": 240,
+    "completed_day_quote_volume_floor_usd": 25000000,
+    "no_current_listing_status_filter": true,
+    "exclude_stable_fiat_leveraged_and_explicit_wrapped_duplicates": true
+  },
+  "frozen_signal": {
+    "horizons_days": [20, 60, 120, 240],
+    "horizon_weights": [0.15, 0.25, 0.30, 0.30],
+    "own_trend_required_positive": true,
+    "relative_to_btc_trend_required_positive": true,
+    "entry_rank": "(0.5 * own_trend + 0.5 * relative_to_btc_trend) / rv30",
+    "entry_slots": 2
+  },
+  "only_authorized_change": {
+    "description": "Daily Top-2 membership selects entries only. An incumbent remains selected while its existing own-trend, relative-trend, continuous-history and completed-day liquidity eligibility all remain valid.",
+    "exit_conditions": [
+      "own trend <= 0",
+      "relative-to-BTC trend <= 0",
+      "240-consecutive-row eligibility fails",
+      "completed-day quote volume falls below $25m",
+      "rank becomes unavailable",
+      "BTC regime is risk-off"
+    ],
+    "replacement_rule": "When risk-on and fewer than two eligible incumbents remain, fill vacancies with the highest current validated entry rank among eligible non-incumbents.",
+    "no_exit_for_falling_out_of_daily_top2": true
+  },
+  "frozen_portfolio": {
+    "gross_cap": 1.0,
+    "btc_regime_and_beta_budget": "unchanged PIT-ALPHA-0016 logic",
+    "risk_on_btc_core_fraction": 0.50,
+    "risk_on_alt_sleeve_fraction": 0.50,
+    "universal_single_alt_cap_fraction_of_budget": 0.35,
+    "selected_alt_weighting": "unchanged current positive rank-score proportional weighting subject to cap; capped excess returns to BTC",
+    "l1_rebalance_band": 0.05,
+    "mandatory_rebalance": "selected-name set changes or BTC risk-on/risk-off transition",
+    "signal_execution": "completed t information held over t+1",
+    "primary_cost_bps_per_absolute_weight_change": 5
+  },
+  "registered_comparisons": [
+    "PIT-ALPHA-0016 daily Top-2",
+    "BTC dynamic gross<=1",
+    "fixed V1 gross<=1",
+    "100 fixed-random-priority placebo portfolios using the same eligibility-exit state machine"
+  ],
+  "required_outputs": [
+    "exact daily PNL and drawdown",
+    "exact held weights",
+    "5/10/20 bps cost stress",
+    "2024+, 2025+ and 2026 subperiods",
+    "turnover decomposition into BTC, alt-sleeve-size and within-alt name switching",
+    "holding-spell distribution and re-entry counts",
+    "right-tail winner capture and contribution concentration",
+    "inactive/non-TRADING asset attribution",
+    "placebo percentile under the same state machine",
+    "comparison with rejected PIT-ALPHA-0016 and canonical benchmarks"
+  ],
+  "promotion_gate": {
+    "requirements": [
+      "materially lower turnover than PIT-ALPHA-0016",
+      "materially longer holding duration than the 1-day median in AUDIT-0017",
+      "retain the validated rank advantage versus same-state-machine placebos",
+      "improve drawdown and cost robustness relative to PIT-ALPHA-0016",
+      "not remain economically negative from 2025 onward",
+      "not depend on one ex-post winner"
+    ],
+    "beating_0016_alone_is_insufficient": true
+  },
+  "prohibited": [
+    "no exit-rank threshold",
+    "no minimum holding period",
+    "no weekly or monthly rebalance calendar",
+    "no age-threshold increase",
+    "no liquidity-floor change",
+    "no Top-N family selection from PNL",
+    "no hard-coded ETH, SOL, BNB, HYPE or other preferred universe",
+    "no funding, dispersion, covariance, LPM, volatility gate or leverage overlay",
+    "no post-result parameter change under this experiment ID"
+  ]
+}
