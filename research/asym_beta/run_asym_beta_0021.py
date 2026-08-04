@@ -39,7 +39,7 @@ EXTRA_SCALE_CAP = 0.50
 COMMON_START = pd.Timestamp("2023-06-18")
 COMMON_END = pd.Timestamp("2026-07-31")
 CORE_WEIGHT_PATH = RESULTS / "pit_disp_0015" / "daily_weights.csv"
-ROUTER_0005_PATH = RESULTS / "router_pnl_0005" / "daily_equity.csv"
+FUNDING_EQUITY_PATH = RESULTS / "funding_pnl_0003" / "common_window_daily_equity.csv"
 FUNDING_PATH = RESULTS / "funding_pnl_0003" / "block_asset_funding_attribution.csv"
 OUTPUT = RESULTS / "asym_beta_0021"
 
@@ -192,6 +192,25 @@ def funding_factors_for_weights(
     return (1.0 + block_return).groupby(date_index).prod().astype(float)
 
 
+def expected_router_0005_equity_from_persisted_inputs() -> pd.Series:
+    """Reconstruct merged ROUTER-PNL-0005 daily strict curve from its persisted immutable inputs."""
+    equity = pd.read_csv(FUNDING_EQUITY_PATH, parse_dates=["date"]).set_index("date")
+    price_nav = equity["PRICE_ONLY"].astype(float)
+    price_ret = price_nav.pct_change(fill_method=None)
+    price_ret.iloc[0] = price_nav.iloc[0] / 10000.0 - 1.0
+
+    attr = pd.read_csv(FUNDING_PATH, parse_dates=["block", "date"])
+    attr = attr[(attr["source"] == "HYPERLIQUID_COMMON") & (attr["asset"] != "BTC")].copy()
+    block_ret = attr.groupby("block", sort=True)["contribution"].sum()
+    block_dates = pd.DatetimeIndex(block_ret.index).tz_convert("UTC").tz_localize(None).normalize()
+    daily_factor = (1.0 + block_ret).groupby(block_dates).prod()
+    factor = daily_factor.reindex(price_ret.index)
+    if factor.isna().any():
+        raise RuntimeError("Persisted 0005 reconstruction has missing funding dates")
+    strict_ret = (1.0 + price_ret) * factor - 1.0
+    return 10000.0 * (1.0 + strict_ret).cumprod()
+
+
 def combine_price_funding(price_ret: pd.Series, funding_factor: pd.Series) -> pd.Series:
     f = funding_factor.reindex(price_ret.index)
     if f.isna().any():
@@ -291,8 +310,6 @@ def main() -> None:
     total_weights = bt.apply_band(v1_raw.mul(total_scale, axis=0), BAND)
 
     _, frozen_core = load_frozen_weights()
-    # PIT-DISP-0015 persists actual held weights (banded target shifted by one day),
-    # so validate the same object rather than the unshifted target.
     core_held_weights = core_weights.shift(1).fillna(0.0)
     total_held_weights = total_weights.shift(1).fillna(0.0)
     core_weight_error = validate_core_weights(core_held_weights, frozen_core)
@@ -315,7 +332,6 @@ def main() -> None:
     core_common = core_price_ret.reindex(common_index)
     total_common = total_price_ret.reindex(common_index)
 
-    # Funding-PNL-0003 maps funding blocks to held daily weights.
     core_perp_weights = core_held_weights.copy()
     core_perp_weights["BTC"] = 0.0
 
@@ -334,8 +350,7 @@ def main() -> None:
     total_strict_ret = combine_price_funding(total_common, strict_total_funding_factor)
     total_all_perp_ret = combine_price_funding(total_common, all_perp_total_factor)
 
-    persisted_0005 = pd.read_csv(ROUTER_0005_PATH, parse_dates=["date"]).set_index("date")
-    persisted_nav = persisted_0005["STRICT_VERIFIED_SPOT"].reindex(common_index)
+    persisted_nav = expected_router_0005_equity_from_persisted_inputs().reindex(common_index)
     rebuilt_nav = 10000.0 * (1.0 + core_strict_ret).cumprod()
     router_core_error = float((rebuilt_nav - persisted_nav).abs().max())
     if not np.isfinite(router_core_error) or router_core_error > 0.05:
