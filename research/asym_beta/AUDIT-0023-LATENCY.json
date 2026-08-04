@@ -1,0 +1,50 @@
+{
+  "audit_id": "AUDIT-0023-LATENCY",
+  "status": "PREREGISTERED_BEFORE_FIRST_RUN",
+  "registered_on": "2026-08-05",
+  "trading_changes": false,
+  "strategy_pnl_promotion": false,
+  "question": "Is the dominant left-tail damage in ASYM-BETA-0022 primarily an intra-refit latency problem: do already-defined trend, downside-semivolatility and raw-state p_bad diagnostics weaken materially inside the 30-day holding interval before the next BRRK refit?",
+  "authorized_by": "ASYM-BETA-0022 dominant drawdown attribution: incremental damage concentrated in April and June 2024 while the overlay was sized only at monthly refits.",
+  "frozen_monthly_reference": {
+    "core": "corrected BRRK-0011 monthly core authority unchanged",
+    "extra_rule": "exact ASYM-BETA-0022 monthly extra rule",
+    "refit_cadence_days": 30,
+    "extra_cap": 0.50,
+    "gross_cap": 1.50,
+    "downside_window_days": 30,
+    "downside_anchor_annualized": 0.45
+  },
+  "daily_diagnostics_only": {
+    "hmm_refit": "NO daily refit. Keep each monthly fitted HMM fixed until the next scheduled refit.",
+    "state_risk_distribution": "Keep the monthly raw-state V1 conditional-risk distribution frozen until the next refit.",
+    "daily_posterior": "Update only the causal filtered raw-state posterior each completed day under the frozen monthly HMM.",
+    "daily_p_bad": "Posterior-weighted probability of negative conditional V1 mean using the frozen monthly state-risk distribution.",
+    "daily_trend": "Use the existing completed-day BTC trend_score from the frozen feature definition.",
+    "daily_downside_semivol": "Use the existing 30-day downside-semivol definition from ASYM-BETA-0022.",
+    "daily_implied_extra": "Re-evaluate the already-frozen 0022 arithmetic using daily trend, daily p_bad and daily downside semivol, while monthly BRRK core permission remains frozen. This is a diagnostic shadow value only; no returns are generated from trading it."
+  },
+  "required_outputs": [
+    "one row per completed day with monthly held extra and daily implied extra",
+    "daily trend, p_bad, downside semivol and downside scaler",
+    "gap = monthly held extra - daily implied extra",
+    "aggregate excess-exposure days during all active monthly intervals",
+    "episode summaries for the known 2024-04 and 2024-06 damage windows",
+    "date and component attribution for the first material weakening inside each active interval",
+    "all active intervals ranked by average and maximum held-minus-implied gap"
+  ],
+  "material_weakening_diagnostics": {
+    "ratio_levels": [0.75, 0.50, 0.25],
+    "purpose": "Descriptive latency reporting only. These ratios do not authorize trading thresholds and will not be optimized."
+  },
+  "prohibited": [
+    "no alternative semivol windows or anchors",
+    "no alternative p_bad transform or threshold",
+    "no HMM refit-frequency search",
+    "no PNL-selected exit threshold",
+    "no actual daily-overlay backtest under this audit ID",
+    "no SOL-specific tilt",
+    "no claim that a favorable latency diagnostic proves a daily trading rule"
+  ],
+  "next_experiment_rule": "Only if already-defined daily diagnostics materially weaken before the dominant monthly-overlay loss windows may a separately preregistered experiment test faster refresh of overlay risk authority. The next experiment must preserve BRRK core, the 0022 candidate-extra formula, gross cap and all other frozen parameters."
+}
