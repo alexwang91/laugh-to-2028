@@ -1,0 +1,27 @@
+{
+  "audit_id": "AUDIT-0026-APRIL-SEMANTIC-RISK",
+  "status": "SEMANTIC_RISK_ABSENT_IN_APRIL_NO_VETO_AUTHORIZED",
+  "trading_changes": false,
+  "github_actions_run": 30959280178,
+  "primary_april_window": {
+    "start_p_riskoff": 1.6974310402923218e-41,
+    "max_p_riskoff": 6.380084735934902e-08,
+    "max_p_riskoff_date": "2024-05-01",
+    "mean_p_riskoff": 1.73362546595849e-09,
+    "max_drawdown_magnitude": 0.2012721354065098,
+    "crossed_25_50_75": false
+  },
+  "june_comparison": {
+    "start_p_riskoff": 1.0413082007236126e-11,
+    "max_p_riskoff": 8.306508125549478e-05,
+    "max_p_riskoff_date": "2024-06-28",
+    "max_drawdown_magnitude": 0.17488283197447574,
+    "crossed_25_50_75": false
+  },
+  "full_history": {
+    "p_riskoff_quantiles": {"0.50": 3.5887352684514895e-08, "0.75": 0.0016615522328797612, "0.90": 0.9999022212780835, "0.95": 0.9999943729642068, "0.99": 0.9999999296728569},
+    "intervals_crossing_25_50_75": 13,
+    "p_riskoff_ge_0_50_forward": {"count": 310, "mean_1d": -0.0007199201282716968, "mean_5d": -0.0032782614242925943, "mean_10d": -0.004025471715903818}
+  },
+  "decision": "Existing semantic RISK_OFF information is effectively absent in April and June 2024, so faster semantic-veto authority cannot repair the main 0024 tail. Do not tune the HMM or select a drawdown threshold on this sample. Freeze 0024 for forward shadow only and shift historical research toward independent low-correlation sleeves; keep SOL overweight as a separate later conditional-beta audit."
+}
