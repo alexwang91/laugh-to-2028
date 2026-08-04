@@ -34,11 +34,11 @@ class RouterDataAuditTests(unittest.TestCase):
         self.assertAlmostEqual(summary["spread_bps"], 200.0)
 
     def test_buy_vwap_consumes_asks_and_reports_partial_fill(self):
-        full = marketable_vwap(self.book, "buy", 2020.0)
+        full = marketable_vwap(self.book, "buy", 2030.0)
         self.assertTrue(full["fully_fillable_in_returned_book"])
         self.assertAlmostEqual(full["base_filled"], 20.0)
-        self.assertAlmostEqual(full["vwap"], 101.0)
-        self.assertAlmostEqual(full["slippage_bps"], 100.0)
+        self.assertAlmostEqual(full["vwap"], 101.5)
+        self.assertAlmostEqual(full["slippage_bps"], 150.0)
 
         partial = marketable_vwap(self.book, "buy", 5000.0)
         self.assertFalse(partial["fully_fillable_in_returned_book"])
