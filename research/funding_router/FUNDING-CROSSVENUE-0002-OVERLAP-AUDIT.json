@@ -37,13 +37,23 @@
     "sensitivity comparison between additive and compounded block rates"
   ],
   "proxy_gate": {
-    "purpose": "classification only; no parameter optimization",
-    "acceptable_as_level_proxy_if": [
-      "paired coverage is sufficiently broad and explicitly reported",
-      "sign agreement and correlation are not structurally unstable across assets and years",
-      "mean bias is not so large that Binance level costs would systematically misstate Hyperliquid costs"
-    ],
-    "otherwise": "Binance may be used only for stress bounds or directional context, not as a point estimate for Hyperliquid funding PNL"
+    "purpose": "heuristic source classification only; no trading or PNL parameter optimization",
+    "level_proxy": {
+      "all_assets_minimum_paired_blocks": 500,
+      "all_assets_minimum_pearson": 0.50,
+      "all_assets_minimum_spearman": 0.50,
+      "all_assets_minimum_sign_agreement": 0.65,
+      "maximum_absolute_mean_bias_to_mean_absolute_hyperliquid_ratio": 0.50,
+      "minimum_per_year_sign_agreement": 0.55
+    },
+    "sign_regime_proxy": {
+      "minimum_assets_passing": 4,
+      "per_asset_minimum_paired_blocks": 500,
+      "per_asset_minimum_sign_agreement": 0.55,
+      "per_asset_minimum_of_pearson_or_spearman": 0.25
+    },
+    "stress_source": "assigned if neither higher category passes",
+    "classification_is_not_a_router_rule": true
   },
   "prohibited": [
     "no strategy PNL",
@@ -54,7 +64,7 @@
     "no omission of weak assets or years",
     "no interpolation or synthetic events",
     "no leverage or directional change",
-    "no post-result alignment change under this audit ID"
+    "no post-result alignment or classification-gate change under this audit ID"
   ],
   "next_experiment_rule": "A frozen-holdings funding attribution may proceed only after this audit classifies whether Binance is a level proxy, a sign/regime proxy, or merely an external stress source for Hyperliquid."
 }
