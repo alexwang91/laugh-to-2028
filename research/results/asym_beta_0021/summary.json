@@ -1,0 +1,73 @@
+{
+  "experiment_id": "ASYM-BETA-0021",
+  "status": "REJECTED_STRUCTURALLY_INERT",
+  "promotion_evidence": false,
+  "github_actions_run": 30956929530,
+  "validation": {
+    "core_weight_max_abs_error_vs_persisted_BRRK0011": 4.999709674047281e-11,
+    "strict_core_equity_max_abs_error_vs_ROUTER_PNL_0005": 1.3007156667299569e-06
+  },
+  "diagnostics": {
+    "decision_count": 45,
+    "extra_active_decisions": 0,
+    "mean_extra_scale": 0.0,
+    "max_extra_scale": 0.0,
+    "mean_total_scale": 0.8438570554,
+    "max_total_scale": 1.0,
+    "mean_p_bad": 0.2913147785,
+    "mean_safe_total_scale": 0.8312982868,
+    "hmm_convergence_rate": 1.0
+  },
+  "price_only_metrics": {
+    "BRRK0011_CORE": {
+      "final_10k": 62247.3823,
+      "cagr": 0.6516609785,
+      "max_drawdown": -0.3371507035,
+      "ann_vol": 0.44206992,
+      "sharpe": 1.353183673,
+      "calmar": 1.93284775,
+      "turnover": 91.2282,
+      "avg_gross": 0.754299733,
+      "max_gross": 1.0
+    },
+    "ASYM_BETA_0021": {
+      "final_10k": 62247.3823,
+      "cagr": 0.6516609785,
+      "max_drawdown": -0.3371507035,
+      "ann_vol": 0.44206992,
+      "sharpe": 1.353183673,
+      "calmar": 1.93284775,
+      "turnover": 91.2282,
+      "avg_gross": 0.754299733,
+      "max_gross": 1.0
+    }
+  },
+  "funding_aware_metrics": {
+    "BRRK0011_CORE_STRICT_ROUTER": {
+      "final_10k": 40177.86899,
+      "cagr": 0.56201112,
+      "max_drawdown": -0.349475,
+      "sharpe": 1.22856,
+      "calmar": 1.60816
+    },
+    "ASYM_BETA_0021_STRICT_ROUTER": {
+      "final_10k": 40177.86899,
+      "cagr": 0.56201112,
+      "max_drawdown": -0.349475,
+      "sharpe": 1.22856,
+      "calmar": 1.60816
+    },
+    "ASYM_BETA_0021_ALL_PERP_STRESS": {
+      "final_10k": 31228.1539,
+      "cagr": 0.440752,
+      "max_drawdown": -0.370439,
+      "sharpe": 1.04645,
+      "calmar": 1.18981
+    }
+  },
+  "capture": {
+    "upside_capture": 1.0502123,
+    "downside_capture": 0.729931
+  },
+  "decision": "Reject the absolute 20% CVaR/CDaR total-risk gate for >1x overlay authority. Do not tune experiment 0021 on this historical window. A new experiment may only test an incremental/downside-only risk authority that leaves the frozen BRRK core outside the overlay risk model's control."
+}
