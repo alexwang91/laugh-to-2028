@@ -1,0 +1,61 @@
+name: PIT ALPHA 0018 Entry Rank Eligibility Exit
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/pit-alpha-0018.yml'
+      - 'research/requirements.txt'
+      - 'research/crypto_rotation_backtest.py'
+      - 'research/core/crypto_rotation_backtest.py'
+      - 'research/pit_universe/PIT-ALPHA-0018-ENTRY-RANK-ELIGIBILITY-EXIT.json'
+      - 'research/pit_universe/run_entry_rank_eligibility_exit.py'
+      - 'research/pit_universe/test_entry_rank_eligibility_exit.py'
+      - 'research/pit_universe/run_dynamic_alpha.py'
+      - 'research/pit_universe/run_pit_alpha_attribution.py'
+      - 'research/pit_universe/run_archive_discovery.py'
+      - 'research/pit_universe/run_dynamic_dispersion.py'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pit-alpha-0018-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  eligibility-exit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: research/requirements.txt
+      - name: Install research dependencies
+        run: pip install --disable-pip-version-check -r research/requirements.txt
+      - name: Run deterministic state-machine tests
+        working-directory: research/pit_universe
+        run: python -m unittest -v test_entry_rank_eligibility_exit.py
+      - name: Run preregistered entry-rank eligibility-exit test
+        working-directory: research/pit_universe
+        shell: bash
+        run: |
+          set -o pipefail
+          python run_entry_rank_eligibility_exit.py | tee pit_alpha_0018.log
+      - name: Upload exact research outputs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pit-alpha-0018-results
+          retention-days: 30
+          if-no-files-found: warn
+          path: |
+            research/pit_universe/pit_alpha_0018.log
+            research/pit_universe/pit_alpha_0018_outputs/**
+            research/pit_universe/PIT-ALPHA-0018-ENTRY-RANK-ELIGIBILITY-EXIT.json
