@@ -1,0 +1,59 @@
+name: FUNDING PNL 0003 Frozen Holdings
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/funding-pnl-0003.yml'
+      - 'research/requirements.txt'
+      - 'research/funding_router/FUNDING-PNL-0003-FROZEN-HOLDINGS.json'
+      - 'research/funding_router/run_frozen_holdings_funding_pnl.py'
+      - 'research/funding_router/test_frozen_holdings_funding_pnl.py'
+      - 'research/funding_router/run_funding_data_audit.py'
+      - 'research/results/pit_disp_0015/daily_weights.csv'
+      - 'research/results/pit_disp_0015/daily_equity.csv'
+      - 'research/results/funding_crossvenue_0002/paired_8h_blocks.csv'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: funding-pnl-0003-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  frozen-holdings:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: research/requirements.txt
+      - name: Install research dependencies
+        run: pip install --disable-pip-version-check -r research/requirements.txt
+      - name: Run deterministic funding accounting tests
+        working-directory: research/funding_router
+        run: python -m unittest -v test_frozen_holdings_funding_pnl.py
+      - name: Run preregistered frozen-holdings funding attribution
+        working-directory: research/funding_router
+        shell: bash
+        run: |
+          set -o pipefail
+          python run_frozen_holdings_funding_pnl.py | tee funding_pnl_0003.log
+      - name: Upload exact research outputs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: funding-pnl-0003-results
+          retention-days: 30
+          if-no-files-found: warn
+          path: |
+            research/funding_router/funding_pnl_0003.log
+            research/funding_router/funding_pnl_0003_outputs/**
+            research/funding_router/FUNDING-PNL-0003-FROZEN-HOLDINGS.json
