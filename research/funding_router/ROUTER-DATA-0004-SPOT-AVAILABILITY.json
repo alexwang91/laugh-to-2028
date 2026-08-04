@@ -1,0 +1,94 @@
+{
+  "audit_id": "ROUTER-DATA-0004-SPOT-AVAILABILITY",
+  "status": "PREREGISTERED_BEFORE_FIRST_RUN",
+  "registered_on": "2026-08-04",
+  "trading_changes": false,
+  "strategy_pnl": false,
+  "question": "Which BTC, ETH, SOL, BNB and XRP long exposures have a verifiable direct USDC spot implementation on Hyperliquid mainnet, and what are the current spot-versus-perp order-book capacity, spread, fee and basis diagnostics at fixed notionals?",
+  "venue": "Hyperliquid mainnet HyperCore",
+  "official_info_endpoint": "https://api.hyperliquid.xyz/info",
+  "target_assets": ["BTC", "ETH", "SOL", "BNB", "XRP"],
+  "fixed_info_requests": [
+    "spotMetaAndAssetCtxs",
+    "metaAndAssetCtxs",
+    "allMids",
+    "tokenDetails for deterministic spot candidates",
+    "l2Book for every candidate spot pair and target perp"
+  ],
+  "fixed_notional_usd": [1000, 10000, 50000, 100000],
+  "fixed_sides": ["buy", "sell"],
+  "book_assumption": {
+    "marketable_vwap": "consume returned asks for buys and bids for sells in price order",
+    "reference_mid": "best bid/ask midpoint when both sides exist; otherwise official allMids/asset context fallback is reported but not used to manufacture a fill",
+    "maximum_returned_levels": 20,
+    "unfilled_notional": "reported explicitly; no extrapolation beyond returned levels",
+    "slippage_bps": "signed absolute execution deterioration relative to best-book midpoint",
+    "snapshot_only": true
+  },
+  "deterministic_candidate_discovery": {
+    "direct_quote_token": "USDC token index from spot metadata",
+    "target_aliases": {
+      "BTC": ["BTC", "UBTC", "WBTC"],
+      "ETH": ["ETH", "UETH", "WETH"],
+      "SOL": ["SOL", "USOL", "WSOL"],
+      "BNB": ["BNB", "UBNB", "WBNB"],
+      "XRP": ["XRP", "UXRP", "WXRP"]
+    },
+    "additional_candidate": "base-token name or fullName contains the target ticker as a standalone case-insensitive token",
+    "official_ui_remap_exception": "BTC target may classify UBTC/USDC as explicit_ui_remap because official Hyperliquid API documentation states that UI BTC/USDC maps to UBTC/USDC on mainnet HyperCore",
+    "all_other_remapped_or_wrapped_candidates": "candidate_only unless exact token metadata independently establishes economic identity; no automatic routing approval",
+    "no_name_match_means": "no verified direct spot implementation"
+  },
+  "classification": {
+    "verified_exact": "base token name exactly equals target, quote is USDC, pair and token are canonical",
+    "verified_official_ui_remap": "only the preregistered official BTC-to-UBTC mapping, with metadata retained",
+    "candidate_canonical": "candidate pair is canonical but economic identity is not established by exact name or official remap",
+    "candidate_wrapped_or_bridged": "noncanonical pair/token or non-null EVM contract",
+    "no_direct_spot_candidate": "no direct USDC candidate discovered"
+  },
+  "fixed_fee_scenarios": {
+    "public_base_tier_taker": {
+      "perp": 0.00045,
+      "spot": 0.00070
+    },
+    "public_base_tier_maker": {
+      "perp": 0.00015,
+      "spot": 0.00040
+    },
+    "user_specific_fee_query": false,
+    "fee_purpose": "current conservative execution-cost diagnostic only, not historical PNL"
+  },
+  "required_outputs": [
+    "complete direct-USDC spot pair inventory for deterministic target candidates",
+    "spot universe index, order asset ID 10000+index, pair name and API coin",
+    "base/quote token indices, names, szDecimals, weiDecimals, tokenId, isCanonical, evmContract and fullName",
+    "tokenDetails response for each discovered candidate",
+    "perp universe index, order asset ID, szDecimals, maxLeverage, delisted/isolation metadata",
+    "spot and perp asset contexts including mid/mark/oracle/funding/open interest/day volume when available",
+    "best bid, best ask, spread and returned depth",
+    "buy/sell VWAP, filled notional, unfilled notional, levels used and slippage for all fixed notionals",
+    "base-tier taker and maker fee amounts for every fixed notional",
+    "spot-perp midpoint/mark basis where a candidate exists",
+    "classification and exact reason by target",
+    "raw API snapshots and machine-readable summary"
+  ],
+  "success_gate": {
+    "metadata": "spot and perp metadata parse successfully and all target perps are identified or explicitly absent",
+    "books": "l2Book responses parse for every discovered candidate and target perp, including explicit empty books",
+    "classification": "no token is called a verified spot substitute solely because its name resembles the target",
+    "no_pnl": true
+  },
+  "prohibited": [
+    "no strategy PNL",
+    "no target or weight change",
+    "no spot-first routing promotion from one snapshot",
+    "no assumption that a U- or W-prefixed token is economically equivalent except the documented BTC-to-UBTC UI remap",
+    "no extrapolation beyond twenty returned book levels",
+    "no historical fee or liquidity inference from the current snapshot",
+    "no external exchange fallback",
+    "no funding threshold",
+    "no leverage increase",
+    "no post-result alias, notional, fee or classification change under this audit ID"
+  ],
+  "next_experiment_rule": "A ROUTER-SHADOW experiment may be preregistered only for targets whose spot classification and executable-book evidence are explicit. Unverified or unavailable assets must remain perp-only or unavailable in the first router; external venues require a separate audit."
+}
