@@ -1,0 +1,107 @@
+{
+  "experiment_id": "PIT-ALPHA-0016-DYNAMIC-ROTATION",
+  "status": "PREREGISTERED_BEFORE_FIRST_PNL_RUN",
+  "registered_on": "2026-08-04",
+  "purpose": "Test whether the frozen own-trend plus relative-to-BTC trend mechanism retains alpha when asset selection is performed from a point-in-time, dead-pool-inclusive historical Binance spot-USDT universe rather than a fixed set of today's surviving winners.",
+  "scope": "Alpha-universe qualification. This experiment does not change or optimize BRRK-0011 and does not use leverage, funding, derivatives, dispersion scaling or new regime predictors.",
+  "data": {
+    "source": "Binance public spot daily klines / historical archive discovery",
+    "start_fetch": "2019-01-01",
+    "evaluation_start": "2021-05-01",
+    "evaluation_end": "2026-08-02",
+    "completed_information_only": true,
+    "lookahead": "target computed from completed day t information and held over t+1 return"
+  },
+  "candidate_universe": {
+    "source": "all mechanically discoverable historical ordinary Binance spot-USDT symbols",
+    "later_inactive_or_delisted_symbols": "retained while historical daily rows exist; no current-survival filter",
+    "minimum_consecutive_completed_daily_rows": 240,
+    "liquidity_rule": "completed-day quote volume at t >= 25000000 USD",
+    "mechanical_exclusions": [
+      "stable or fiat-like base assets",
+      "obvious leveraged-token names/suffixes UP/DOWN/BULL/BEAR",
+      "explicit wrapped/synthetic duplicates: WBTC, WETH, WBETH, BETH, BTCB, BTCST, ETHW"
+    ],
+    "btc_role": "BTC is the regime/core asset and is excluded from the alt ranking set"
+  },
+  "signal": {
+    "trend_horizons_days": [20, 60, 120, 240],
+    "trend_weights": [0.15, 0.25, 0.30, 0.30],
+    "component": "tanh(log(P_t/P_t-h)/(sample_std(last h daily log returns)*sqrt(h)))",
+    "own_trend_eligibility": "asset own trend > 0",
+    "relative_trend_eligibility": "trend(asset/BTC) > 0",
+    "combined_rank_score": "0.50*own_trend + 0.50*relative_to_BTC_trend",
+    "risk_adjusted_rank": "combined_rank_score / max(rv30, 1e-6)",
+    "btc_regime": "if BTC trend < 0, no alt exposure",
+    "btc_beta_budget": "existing frozen asymmetric BTC beta, capped at gross 1.0"
+  },
+  "portfolio_rule": {
+    "gross_cap": 1.0,
+    "risk_on_core": "50% of available beta budget to BTC and 50% to selected alt sleeve",
+    "alt_allocation": "positive risk-adjusted rank score normalized across selected assets",
+    "universal_single_alt_cap_fraction_of_budget": 0.35,
+    "overflow": "returned to BTC",
+    "no_eligible_alt": "100% of available beta budget to BTC",
+    "rebalance_band_l1": 0.05,
+    "transaction_cost_bps_per_absolute_weight_change": 5.0
+  },
+  "registered_strategy_family": [
+    "PIT_ALPHA_TOP1",
+    "PIT_ALPHA_TOP2_PRIMARY",
+    "PIT_ALPHA_TOP3",
+    "PIT_ALPHA_EQUAL_WEIGHT_ALL_ELIGIBLE"
+  ],
+  "comparators": [
+    "BTC_HOLD",
+    "BTC_DYNAMIC_GROSS_1_0",
+    "FIXED_V1_GROSS_1_0",
+    "PIT_ELIGIBILITY_RANDOM_PRIORITY_TOP2_PLACEBO_FAMILY"
+  ],
+  "placebo": {
+    "purpose": "Test whether cross-sectional ranking adds value beyond the same absolute/relative trend eligibility gate.",
+    "method": "For each seed, assign each symbol one fixed pseudorandom priority for the full sample; on each day select the two eligible assets with highest random priority and apply the identical portfolio rule.",
+    "seeds": 100,
+    "seed_base": 2026080400,
+    "report": "full distribution, median, 5th/95th percentiles and fraction beaten by PIT_ALPHA_TOP2_PRIMARY; no placebo winner selection"
+  },
+  "delisting_exit_stress": {
+    "base_case": "last observed close proxy; a held asset with a missing next daily row receives zero unobserved return and is forced out through the next target update with turnover cost",
+    "registered_haircuts_on_first_missing_day_while_held": [0.0, -0.25, -0.50],
+    "interpretation": "stress only; includes genuine failures, exchange removals, migrations and ticker replacements, so it is deliberately conservative and not a historical delisting-price estimate"
+  },
+  "required_outputs": [
+    "exact daily equity and returns for every registered strategy",
+    "exact daily held weights for Top1/Top2/Top3/equal-weight",
+    "daily eligible-universe and eligible-trend counts",
+    "asset arithmetic contribution and contribution concentration",
+    "currently inactive/non-TRADING asset contribution",
+    "annual and subperiod metrics",
+    "5/10/20 bps cost stress",
+    "0/-25%/-50% delisting-exit stress",
+    "100-seed placebo distribution",
+    "exact daily PNL SVG",
+    "machine-readable report"
+  ],
+  "primary_decision_rule": {
+    "primary_strategy": "PIT_ALPHA_TOP2_PRIMARY",
+    "promotion_requirements": [
+      "beats the median random-priority Top2 placebo and preferably at least 80% of placebo seeds on Calmar or terminal NAV without materially worse drawdown",
+      "does not depend on one asset for more than 50% of positive arithmetic contribution",
+      "retains economically meaningful advantage after 10 bps cost and -25% delisting stress",
+      "does not collapse in both 2024+ and 2025+ subperiods",
+      "includes later inactive assets without making the edge disappear",
+      "requires no post-result change to liquidity, age, rank formula, Top-N, BTC core, cap or cost assumptions"
+    ],
+    "failure_action": "retain BRRK-0011 fixed-alpha baseline as the research baseline; do not increase model complexity or leverage to rescue PIT alpha"
+  },
+  "prohibited_posthoc_actions": [
+    "no changing the 25m liquidity floor after first result",
+    "no changing the 240-day continuous-history rule",
+    "no selecting the best Top-N from the registered family as if it were preregistered primary",
+    "no asset-specific signal weights or caps",
+    "no removing failed/delisted symbols based on current knowledge",
+    "no adding HYPE or another current winner by name",
+    "no adding funding, dispersion, covariance, LPM or leverage before interpreting this experiment",
+    "no selecting a favorable placebo seed"
+  ]
+}
