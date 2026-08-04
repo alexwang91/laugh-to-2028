@@ -1,0 +1,30 @@
+{
+  "audit_id": "FUNDING-CROSSVENUE-0002-OVERLAP-AUDIT",
+  "status": "VALID_NO_PNL_AUDIT",
+  "window": {
+    "start": "2023-05-01T00:00:00Z",
+    "end": "2026-07-31T23:59:59.999Z"
+  },
+  "alignment": "Exact intersection of UTC eight-hour blocks; additive sum primary; no interpolation or forward fill",
+  "proxy_classification": "sign_regime_proxy",
+  "level_proxy_rejected": true,
+  "paired_coverage": {
+    "BTC": {"blocks": 3531, "fraction": 1.0},
+    "ETH": {"blocks": 3531, "fraction": 1.0},
+    "SOL": {"blocks": 3531, "fraction": 1.0},
+    "BNB": {"blocks": 3531, "fraction": 1.0},
+    "XRP": {"blocks": 3420, "fraction": 1.0}
+  },
+  "asset_metrics": {
+    "BTC": {"pearson": 0.6461266901, "spearman": 0.5534832616, "sign_agreement": 0.7969413764, "mean_bias_hl_minus_binance": 0.0000635242},
+    "ETH": {"pearson": 0.6118801615, "spearman": 0.6225956822, "sign_agreement": 0.8153497593, "mean_bias_hl_minus_binance": 0.0000635545},
+    "SOL": {"pearson": 0.6730889830, "spearman": 0.6413099382, "sign_agreement": 0.7400169924, "mean_bias_hl_minus_binance": 0.0000667388},
+    "BNB": {"pearson": 0.6121644190, "spearman": 0.6163699605, "sign_agreement": 0.3823279524, "mean_bias_hl_minus_binance": 0.0000459879},
+    "XRP": {"pearson": 0.6515505806, "spearman": 0.6204744915, "sign_agreement": 0.7581871345, "mean_bias_hl_minus_binance": 0.0000176279}
+  },
+  "classification_checks": {
+    "level_proxy": {"BTC": true, "ETH": true, "SOL": true, "BNB": false, "XRP": true},
+    "sign_regime_proxy": {"BTC": true, "ETH": true, "SOL": true, "BNB": false, "XRP": true}
+  },
+  "decision": "Binance may be used only as a long-history sign/regime and stress scenario. It must not be used as a Hyperliquid funding level point estimate, and no fitted multiplier or blended synthetic series is authorized."
+}
