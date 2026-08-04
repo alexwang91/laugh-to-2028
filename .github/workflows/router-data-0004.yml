@@ -1,0 +1,55 @@
+name: ROUTER DATA 0004 Spot Availability
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/router-data-0004.yml'
+      - 'research/requirements.txt'
+      - 'research/funding_router/ROUTER-DATA-0004-SPOT-AVAILABILITY.json'
+      - 'research/funding_router/run_router_data_audit.py'
+      - 'research/funding_router/test_router_data_audit.py'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: router-data-0004-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  spot-perp-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: research/requirements.txt
+      - name: Install research dependencies
+        run: pip install --disable-pip-version-check -r research/requirements.txt
+      - name: Run deterministic metadata and VWAP tests
+        working-directory: research/funding_router
+        run: python -m unittest -v test_router_data_audit.py
+      - name: Audit current Hyperliquid spot and perp implementation data
+        working-directory: research/funding_router
+        shell: bash
+        run: |
+          set -o pipefail
+          python run_router_data_audit.py | tee router_data_0004.log
+      - name: Upload exact audit evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: router-data-0004-results
+          retention-days: 30
+          if-no-files-found: warn
+          path: |
+            research/funding_router/router_data_0004.log
+            research/funding_router/router_data_0004_outputs/**
+            research/funding_router/ROUTER-DATA-0004-SPOT-AVAILABILITY.json
