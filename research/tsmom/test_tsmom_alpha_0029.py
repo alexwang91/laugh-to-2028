@@ -4,7 +4,6 @@ import numpy as np
 import pandas as pd
 
 from run_tsmom_alpha_0029 import (
-    EPS,
     build_targets,
     event_pnl_date,
     funding_accounting,
@@ -15,10 +14,13 @@ from run_tsmom_alpha_0029 import (
 class Tsmom0029Tests(unittest.TestCase):
     def test_targets_are_gross_one_and_follow_own_trend_direction(self):
         idx = pd.date_range("2023-01-01", periods=300, freq="D")
+        t = np.arange(len(idx), dtype=float)
+        # Explicit trend plus small deterministic oscillation: direction is clear,
+        # while realized volatility is nonzero so inverse-vol sizing is defined.
         close = pd.DataFrame(
             {
-                "UPUSDT": np.exp(np.linspace(0, 1.2, len(idx))),
-                "DOWNUSDT": np.exp(np.linspace(1.2, 0, len(idx))),
+                "UPUSDT": np.exp(0.004 * t + 0.015 * np.sin(t / 5.0)),
+                "DOWNUSDT": np.exp(-0.004 * t + 0.015 * np.sin(t / 5.0)),
             },
             index=idx,
         )
@@ -26,6 +28,8 @@ class Tsmom0029Tests(unittest.TestCase):
         target, trend, vol = build_targets(close, eligibility)
         row = target.iloc[-1]
         self.assertAlmostEqual(float(row.abs().sum()), 1.0, places=10)
+        self.assertGreater(float(vol.iloc[-1]["UPUSDT"]), 0.0)
+        self.assertGreater(float(vol.iloc[-1]["DOWNUSDT"]), 0.0)
         self.assertGreater(float(trend.iloc[-1]["UPUSDT"]), 0.0)
         self.assertLess(float(trend.iloc[-1]["DOWNUSDT"]), 0.0)
         self.assertGreater(float(row["UPUSDT"]), 0.0)
