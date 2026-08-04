@@ -1,0 +1,45 @@
+{
+  "experiment_id": "PIT-DISP-0015-DYNAMIC-UNIVERSE",
+  "status": "preregistered",
+  "registered_on": "2026-08-04",
+  "trading_changes": true,
+  "purpose": "Test whether the externally specified DISP-0014 risk overlay remains useful when dispersion is measured from a point-in-time, survivorship-aware liquid Binance USDT universe instead of today's fixed BTC/ETH/SOL/BNB/XRP panel.",
+  "historical_candidate_source": "all ordinary historical spot-USDT symbols programmatically discoverable from Binance public market data; later inactive/BREAK symbols are retained while historical daily rows exist",
+  "eligibility_at_date_t": {
+    "completed_daily_observations_min": 240,
+    "completed_history_semantics": "the most recent 240 calendar daily rows ending at t must all be present; cumulative old observations separated by a long gap do not qualify",
+    "daily_quote_volume_floor_usd": 25000000,
+    "quote_volume_information": "completed Binance 1d kline quote asset volume at t",
+    "mechanical_exclusions": ["stable/fiat-like base assets", "obvious leveraged-token names/suffixes UP/DOWN/BULL/BEAR"],
+    "minimum_cross_section_size": 5
+  },
+  "dispersion": "sample standard deviation across eligible symbols of trailing 20-day cumulative log return at t",
+  "risk_overlay": {
+    "target_dispersion": "expanding median of strictly earlier valid dynamic-universe dispersion values",
+    "raw_scale": "clip(target/current, 0.10, 1.00)",
+    "recursive_smoothing": "g_t=0.80*g_{t-1}+0.20*raw_t, initial g=1",
+    "application": "scale entire frozen V1 exposure; removed exposure becomes cash",
+    "rebalance_band_l1": 0.05,
+    "transaction_cost_bps": 5.0,
+    "lookahead": "none; completed-day t information sets target for t+1"
+  },
+  "comparators": [
+    "V1_BASELINE",
+    "V1_PLUS_FIXED_PANEL_DISP0014",
+    "V1_PLUS_DYNAMIC_UNIVERSE_DISP0015",
+    "BRRK0011_BASELINE",
+    "BRRK0011_PLUS_FIXED_PANEL_DISP0014",
+    "BRRK0011_PLUS_DYNAMIC_UNIVERSE_DISP0015"
+  ],
+  "interpretation_rule": "The decisive comparison is dynamic-universe DISP0015 versus both baseline and fixed-panel DISP0014. Do not tune liquidity, age, smoothing, floor or dispersion horizon after seeing results. Positive performance validates the dispersion risk mechanism more strongly; failure suggests fixed-panel selection/survivorship may explain part of DISP0014.",
+  "scope_caveat": "This validates the dispersion risk signal only. Frozen V1 alpha still selects a fixed BTC/ETH/SOL/BNB/XRP set and therefore retains its own asset-selection bias; a separate dynamic-alpha experiment is required later.",
+  "prohibited_posthoc_changes": [
+    "no changing $25m volume floor",
+    "no changing 240-day continuous-history requirement",
+    "no top-N selection",
+    "no changing 20-day return horizon",
+    "no changing 0.10 minimum exposure",
+    "no changing 0.80 smoothing",
+    "no adding market-cap estimates or current survival filters after first model run"
+  ]
+}
