@@ -1,0 +1,541 @@
+data_progress 50/648 errors=0 calls=76
+data_progress 100/648 errors=0 calls=163
+data_progress 150/648 errors=0 calls=249
+data_progress 200/648 errors=0 calls=350
+data_progress 250/648 errors=0 calls=440
+data_progress 300/648 errors=0 calls=523
+data_progress 350/648 errors=0 calls=615
+data_progress 400/648 errors=0 calls=685
+data_progress 450/648 errors=0 calls=772
+data_progress 500/648 errors=0 calls=858
+data_progress 550/648 errors=0 calls=942
+data_progress 600/648 errors=0 calls=1023
+data_progress 648/648 errors=0 calls=1114
+=== AUDIT_0017_REPORT ===
+{
+  "audit_id": "AUDIT-0017-PIT-ALPHA-ATTRIBUTION",
+  "trading_changes": false,
+  "data": {
+    "candidate_symbols": 648,
+    "symbols_with_rows": 646,
+    "api_calls": 1114,
+    "fetch_errors": 0,
+    "evaluation_start": "2021-05-01",
+    "evaluation_end": "2026-08-02",
+    "evaluation_days": 1920
+  },
+  "eligible_universe_churn": {
+    "daily_jaccard": {
+      "count": 1920,
+      "mean": 0.6302549393934554,
+      "median": 0.6521739130434783,
+      "p05": 0.25,
+      "p25": 0.5,
+      "p75": 0.75,
+      "p95": 1.0,
+      "p99": 1.0,
+      "max": 1.0
+    },
+    "mean_daily_additions": 2.980729166666667,
+    "mean_daily_removals": 2.9796875,
+    "monthly_first_last_jaccard": {
+      "count": 64,
+      "mean": 0.2491877093535742,
+      "median": 0.2222222222222222,
+      "p05": 0.00394736842105264,
+      "p25": 0.14285714285714285,
+      "p75": 0.3559027777777778,
+      "p95": 0.5,
+      "p99": 0.5193095238095239,
+      "max": 0.5238095238095238
+    }
+  },
+  "held_name_churn": {
+    "daily_jaccard": {
+      "count": 1920,
+      "mean": 0.7716145833333333,
+      "median": 1.0,
+      "p05": 0.0,
+      "p25": 0.3333333333333333,
+      "p75": 1.0,
+      "p95": 1.0,
+      "p99": 1.0,
+      "max": 1.0
+    },
+    "mean_daily_additions": 0.34010416666666665,
+    "mean_daily_removals": 0.34010416666666665,
+    "monthly_first_last_jaccard": {
+      "count": 64,
+      "mean": 0.4375,
+      "median": 0.3333333333333333,
+      "p05": 0.0,
+      "p25": 0.0,
+      "p75": 1.0,
+      "p95": 1.0,
+      "p99": 1.0,
+      "max": 1.0
+    },
+    "holding_spells": {
+      "spell_count": 653,
+      "symbols_held": 113,
+      "duration": {
+        "count": 653,
+        "mean": 3.2833078101071975,
+        "median": 1.0,
+        "p05": 1.0,
+        "p25": 1.0,
+        "p75": 3.0,
+        "p95": 11.0,
+        "p99": 30.88000000000011,
+        "max": 63.0
+      },
+      "positive_contribution_fraction": 0.41960183767228176,
+      "median_reentries_per_symbol": 2.0,
+      "max_reentries_symbol": "TRXUSDT",
+      "max_reentries": 49
+    }
+  },
+  "turnover_decomposition": {
+    "total_turnover": 350.6155275493,
+    "btc_weight_turnover": 25.1770738017,
+    "alt_sleeve_size_turnover": 33.006529867,
+    "within_alt_name_switch_turnover": 292.43192388060004,
+    "btc_turnover_share": 0.07180821105579774,
+    "alt_sleeve_size_share": 0.09413881381040363,
+    "name_switch_share": 0.8340529751337987,
+    "total_transaction_cost": 0.17530776377465
+  },
+  "rank_persistence": {
+    "1": {
+      "entries_with_observation": 651,
+      "remain_eligible_probability": 0.7987711213517665,
+      "remain_top2_probability": 0.5145929339477726,
+      "mean_score_change": -0.015293715570166613,
+      "median_forward_return": -0.005791453546588721,
+      "mean_forward_return": -0.0028029696339356195
+    },
+    "3": {
+      "entries_with_observation": 651,
+      "remain_eligible_probability": 0.717357910906298,
+      "remain_top2_probability": 0.42089093701996927,
+      "mean_score_change": -0.045363530967212615,
+      "median_forward_return": -0.005008347245408995,
+      "mean_forward_return": -0.001720906141568191
+    },
+    "7": {
+      "entries_with_observation": 651,
+      "remain_eligible_probability": 0.6513056835637481,
+      "remain_top2_probability": 0.33640552995391704,
+      "mean_score_change": -0.10165676469859389,
+      "median_forward_return": -0.014985014985014922,
+      "mean_forward_return": 0.006520040699164925
+    },
+    "14": {
+      "entries_with_observation": 651,
+      "remain_eligible_probability": 0.5883256528417818,
+      "remain_top2_probability": 0.2519201228878648,
+      "mean_score_change": -0.15877695580603834,
+      "median_forward_return": -0.015678460046388065,
+      "mean_forward_return": 0.0263209960116491
+    },
+    "30": {
+      "entries_with_observation": 651,
+      "remain_eligible_probability": 0.5207373271889401,
+      "remain_top2_probability": 0.1935483870967742,
+      "mean_score_change": -0.2897934925609441,
+      "median_forward_return": -0.024321652785444237,
+      "mean_forward_return": 0.04831302807860841
+    }
+  },
+  "fixed_v1_overlap": {
+    "mean_fraction_of_pit_alt_exposure_in_active_fixed_v1_alts": 0.15651313837085232,
+    "days_with_any_overlap_fraction": 0.2869791666666667,
+    "mean_net_return_overlap_days": 0.0014392411292362287,
+    "mean_net_return_nonoverlap_days": 0.000396421705248482,
+    "compound_return_overlap_days": 0.5583908186835007,
+    "compound_return_nonoverlap_days": 0.17777531534812008
+  },
+  "tail_loss": {
+    "worst_10_days": [
+      {
+        "date": "2021-05-19",
+        "net_return": -0.21154716728500778,
+        "gross_return": -0.21154716728517128,
+        "transaction_cost": 0.0,
+        "turnover": 0.0,
+        "worst_asset": "FTTUSDT",
+        "worst_asset_contribution": -0.07642795898598159
+      },
+      {
+        "date": "2023-09-23",
+        "net_return": -0.11663465007270168,
+        "gross_return": -0.11613465008420515,
+        "transaction_cost": 0.0005,
+        "turnover": 1.0,
+        "worst_asset": "FLMUSDT",
+        "worst_asset_contribution": -0.08618908820035436
+      },
+      {
+        "date": "2021-09-07",
+        "net_return": -0.11638642301387758,
+        "gross_return": -0.1161475698865381,
+        "transaction_cost": 0.0002388531272,
+        "turnover": 0.4777062544,
+        "worst_asset": "BTCUSDT",
+        "worst_asset_contribution": -0.05506779786533089
+      },
+      {
+        "date": "2021-05-12",
+        "net_return": -0.11018061694553116,
+        "gross_return": -0.10990639195449689,
+        "transaction_cost": 0.00027422499219999994,
+        "turnover": 0.5484499843999999,
+        "worst_asset": "BTCUSDT",
+        "worst_asset_contribution": -0.062102501463736914
+      },
+      {
+        "date": "2024-03-19",
+        "net_return": -0.10523914912262733,
+        "gross_return": -0.1052391491231259,
+        "transaction_cost": 0.0,
+        "turnover": 0.0,
+        "worst_asset": "BTCUSDT",
+        "worst_asset_contribution": -0.04195082708931036
+      },
+      {
+        "date": "2021-09-20",
+        "net_return": -0.10363107146447048,
+        "gross_return": -0.10363107146375994,
+        "transaction_cost": 0.0,
+        "turnover": 0.0,
+        "worst_asset": "BTCUSDT",
+        "worst_asset_contribution": -0.04472876216482241
+      },
+      {
+        "date": "2025-03-03",
+        "net_return": -0.10226076987680921,
+        "gross_return": -0.10198348091639625,
+        "transaction_cost": 0.00027728895780000006,
+        "turnover": 0.5545779156000001,
+        "worst_asset": "BTCUSDT",
+        "worst_asset_contribution": -0.04269327463668188
+      },
+      {
+        "date": "2023-07-21",
+        "net_return": -0.10215610095725158,
+        "gross_return": -0.10189378764209167,
+        "transaction_cost": 0.000262313299,
+        "turnover": 0.524626598,
+        "worst_asset": "AGLDUSDT",
+        "worst_asset_contribution": -0.10472431324061302
+      },
+      {
+        "date": "2021-05-21",
+        "net_return": -0.09994003717052602,
+        "gross_return": -0.0996246608964548,
+        "transaction_cost": 0.00031537627405,
+        "turnover": 0.6307525481,
+        "worst_asset": "BTCUSDT",
+        "worst_asset_contribution": -0.040400956013131095
+      },
+      {
+        "date": "2021-11-26",
+        "net_return": -0.09488673354137778,
+        "gross_return": -0.09464511541046686,
+        "transaction_cost": 0.00024161813059999997,
+        "turnover": 0.48323626119999996,
+        "worst_asset": "BTCUSDT",
+        "worst_asset_contribution": -0.044384311764717854
+      }
+    ],
+    "top_5_drawdown_episodes": [
+      {
+        "peak_date": "2021-11-08",
+        "start": "2021-11-09",
+        "trough": "2023-10-19",
+        "end_or_last": "2024-11-21",
+        "max_drawdown": -0.6911553739233145,
+        "calendar_days_to_trough": 710,
+        "episode_net_compound_return": 0.03556794815514075,
+        "episode_gross_additive_return": 0.5578906531121481,
+        "episode_cost": 0.11417536672510001,
+        "worst_asset": "BNBUSDT",
+        "worst_asset_contribution": -0.13095988433781977
+      },
+      {
+        "peak_date": "2021-05-08",
+        "start": "2021-05-09",
+        "trough": "2021-07-20",
+        "end_or_last": "2021-11-07",
+        "max_drawdown": -0.5581199906483796,
+        "calendar_days_to_trough": 73,
+        "episode_net_compound_return": 0.00296007328372494,
+        "episode_gross_additive_return": 0.19357523048554048,
+        "episode_cost": 0.021439121831400003,
+        "worst_asset": "FTTUSDT",
+        "worst_asset_contribution": -0.11976838862386657
+      },
+      {
+        "peak_date": "2025-10-08",
+        "start": "2025-10-09",
+        "trough": "2026-06-30",
+        "end_or_last": "2026-08-02",
+        "max_drawdown": -0.27022530161833125,
+        "calendar_days_to_trough": 265,
+        "episode_net_compound_return": -0.2630525255960475,
+        "episode_gross_additive_return": -0.2864960625318263,
+        "episode_cost": 0.0056024915050499995,
+        "worst_asset": "BTCUSDT",
+        "worst_asset_contribution": -0.2735759712864831
+      },
+      {
+        "peak_date": "2025-03-02",
+        "start": "2025-03-03",
+        "trough": "2025-06-21",
+        "end_or_last": "2025-08-13",
+        "max_drawdown": -0.2423199545029725,
+        "calendar_days_to_trough": 111,
+        "episode_net_compound_return": 0.004986008791526109,
+        "episode_gross_additive_return": 0.061384880017987156,
+        "episode_cost": 0.0220081409183,
+        "worst_asset": "OMUSDT",
+        "worst_asset_contribution": -0.04328471625609827
+      },
+      {
+        "peak_date": "2025-02-20",
+        "start": "2025-02-21",
+        "trough": "2025-02-26",
+        "end_or_last": "2025-03-02",
+        "max_drawdown": -0.1461990080650395,
+        "calendar_days_to_trough": 6,
+        "episode_net_compound_return": 0.0037000330767809064,
+        "episode_gross_additive_return": 0.01932273814354471,
+        "episode_cost": 0.00022778972820000003,
+        "worst_asset": "BTCUSDT",
+        "worst_asset_contribution": -0.01706579181889256
+      }
+    ]
+  },
+  "year_summary": [
+    {
+      "year": 2021,
+      "net_compound_return": -0.03982123968286844,
+      "gross_additive_return": 0.16727562280750935,
+      "transaction_cost": 0.0278218754609,
+      "total_turnover": 55.643750921800006,
+      "btc_turnover": 2.9576189815999996,
+      "alt_sleeve_size_turnover": 6.0,
+      "name_switch_turnover": 46.6861319402,
+      "mean_eligible_jaccard": 0.7409209414364654,
+      "mean_held_jaccard": 0.6993197278911564,
+      "new_holding_spells": 107,
+      "median_holding_days": 1.0,
+      "fixed_v1_overlap_day_fraction": 0.5755102040816327,
+      "top_contributor": "EGLDUSDT",
+      "top_contribution": 0.20981150972603974,
+      "bottom_contributor": "FTTUSDT",
+      "bottom_contribution": -0.10032175363660913
+    },
+    {
+      "year": 2022,
+      "net_compound_return": -0.312609736884246,
+      "gross_additive_return": -0.3478497343559381,
+      "transaction_cost": 0.0060763862964999995,
+      "total_turnover": 12.152772593,
+      "btc_turnover": 5.833967780000001,
+      "alt_sleeve_size_turnover": 2.0,
+      "name_switch_turnover": 4.318804813,
+      "mean_eligible_jaccard": 0.6022316357701847,
+      "mean_held_jaccard": 0.9744292237442923,
+      "new_holding_spells": 12,
+      "median_holding_days": 1.0,
+      "fixed_v1_overlap_day_fraction": 0.0,
+      "top_contributor": "LUNAUSDT",
+      "top_contribution": 0.028954412126294835,
+      "bottom_contributor": "BTCUSDT",
+      "bottom_contribution": -0.34172042921847423
+    },
+    {
+      "year": 2023,
+      "net_compound_return": -0.14960291047209318,
+      "gross_additive_return": 0.11528909747442803,
+      "transaction_cost": 0.06304483310810001,
+      "total_turnover": 126.08966621620002,
+      "btc_turnover": 4.8157251294000005,
+      "alt_sleeve_size_turnover": 8.13719425,
+      "name_switch_turnover": 113.1367468368,
+      "mean_eligible_jaccard": 0.5352209131891037,
+      "mean_held_jaccard": 0.5803652968036529,
+      "new_holding_spells": 239,
+      "median_holding_days": 1.0,
+      "fixed_v1_overlap_day_fraction": 0.25753424657534246,
+      "top_contributor": "BTCUSDT",
+      "top_contribution": 0.5333740590018533,
+      "bottom_contributor": "FETUSDT",
+      "bottom_contribution": -0.10691436508244818
+    },
+    {
+      "year": 2024,
+      "net_compound_return": 2.3190623177763405,
+      "gross_additive_return": 1.4405598379402411,
+      "transaction_cost": 0.044066145673000004,
+      "total_turnover": 88.132291346,
+      "btc_turnover": 2.4213905490000003,
+      "alt_sleeve_size_turnover": 7.6367154276,
+      "name_switch_turnover": 78.0741853694,
+      "mean_eligible_jaccard": 0.6637645741825517,
+      "mean_held_jaccard": 0.6657559198542804,
+      "new_holding_spells": 181,
+      "median_holding_days": 2.0,
+      "fixed_v1_overlap_day_fraction": 0.6065573770491803,
+      "top_contributor": "BTCUSDT",
+      "top_contribution": 0.4406387725167987,
+      "bottom_contributor": "BNBUSDT",
+      "bottom_contribution": -0.06400509853142038
+    },
+    {
+      "year": 2025,
+      "net_compound_return": 0.10771801983654594,
+      "gross_additive_return": 0.22565083516449214,
+      "transaction_cost": 0.03165195282285,
+      "total_turnover": 63.30390564569999,
+      "btc_turnover": 5.5856976823,
+      "alt_sleeve_size_turnover": 7.502153042200001,
+      "name_switch_turnover": 50.2160549212,
+      "mean_eligible_jaccard": 0.6463157386628827,
+      "mean_held_jaccard": 0.7917808219178082,
+      "new_holding_spells": 110,
+      "median_holding_days": 2.0,
+      "fixed_v1_overlap_day_fraction": 0.25753424657534246,
+      "top_contributor": "XRPUSDT",
+      "top_contribution": 0.13631739856414102,
+      "bottom_contributor": "BCHUSDT",
+      "bottom_contribution": -0.039119030314574976
+    },
+    {
+      "year": 2026,
+      "net_compound_return": -0.11055936808835987,
+      "gross_additive_return": -0.10916014509161276,
+      "transaction_cost": 0.0026465704133,
+      "total_turnover": 5.2931408266,
+      "btc_turnover": 3.5626736793999996,
+      "alt_sleeve_size_turnover": 1.7304671472,
+      "name_switch_turnover": 0.0,
+      "mean_eligible_jaccard": 0.6287410927597843,
+      "mean_held_jaccard": 0.9813084112149533,
+      "new_holding_spells": 4,
+      "median_holding_days": 1.0,
+      "fixed_v1_overlap_day_fraction": 0.0,
+      "top_contributor": "TRXUSDT",
+      "top_contribution": 0.0032279921438254306,
+      "bottom_contributor": "BTCUSDT",
+      "bottom_contribution": -0.10897064475725782
+    }
+  ],
+  "capacity_proxy": [
+    {
+      "count": 2142,
+      "mean": 0.00031098611450213934,
+      "median": 0.00018896453914771217,
+      "p05": 1.2882717366927115e-05,
+      "p25": 5.130469450628823e-05,
+      "p75": 0.0004967037598497124,
+      "p95": 0.0009560760925431164,
+      "p99": 0.0012521238181509367,
+      "max": 0.0013950946861159732,
+      "hypothetical_nav": 100000.0
+    },
+    {
+      "count": 2142,
+      "mean": 0.003109861145021393,
+      "median": 0.001889645391477122,
+      "p05": 0.00012882717366927113,
+      "p25": 0.0005130469450628823,
+      "p75": 0.004967037598497124,
+      "p95": 0.009560760925431164,
+      "p99": 0.012521238181509367,
+      "max": 0.01395094686115973,
+      "hypothetical_nav": 1000000.0
+    }
+  ],
+  "entry_cohorts": {
+    "listing_age": [
+      {
+        "listing_age_cohort": "1460d+",
+        "entries": 82,
+        "median_forward_30d": 0.01400282785602891,
+        "mean_forward_30d": 0.0015604438160604272,
+        "remain_top2_7d": 0.5
+      },
+      {
+        "listing_age_cohort": "240-364d",
+        "entries": 126,
+        "median_forward_30d": -0.10765510871411582,
+        "mean_forward_30d": 0.025524711761870655,
+        "remain_top2_7d": 0.35714285714285715
+      },
+      {
+        "listing_age_cohort": "365-729d",
+        "entries": 105,
+        "median_forward_30d": -0.06852431049189656,
+        "mean_forward_30d": -0.015367407978647439,
+        "remain_top2_7d": 0.29523809523809524
+      },
+      {
+        "listing_age_cohort": "730-1459d",
+        "entries": 338,
+        "median_forward_30d": -0.002500468347367446,
+        "mean_forward_30d": 0.08751784405098152,
+        "remain_top2_7d": 0.30177514792899407
+      }
+    ],
+    "quote_volume": [
+      {
+        "quote_volume_cohort": "100-500m",
+        "entries": 161,
+        "median_forward_30d": -0.011073716208880646,
+        "mean_forward_30d": 0.0894991770844611,
+        "remain_top2_7d": 0.39751552795031053
+      },
+      {
+        "quote_volume_cohort": "25-100m",
+        "entries": 390,
+        "median_forward_30d": -0.03467701552328506,
+        "mean_forward_30d": 0.03288656675247848,
+        "remain_top2_7d": 0.2641025641025641
+      },
+      {
+        "quote_volume_cohort": "2b+",
+        "entries": 12,
+        "median_forward_30d": -0.11404885691885969,
+        "mean_forward_30d": -0.10027535912623531,
+        "remain_top2_7d": 0.6666666666666666
+      },
+      {
+        "quote_volume_cohort": "500m-2b",
+        "entries": 88,
+        "median_forward_30d": 0.012049515947487599,
+        "mean_forward_30d": 0.06106451887097348,
+        "remain_top2_7d": 0.5
+      }
+    ],
+    "current_status": [
+      {
+        "current_status": "BREAK",
+        "entries": 110,
+        "median_forward_30d": -0.047092547092547066,
+        "mean_forward_30d": 0.035747984083028525,
+        "remain_top2_7d": 0.17272727272727273
+      },
+      {
+        "current_status": "TRADING",
+        "entries": 541,
+        "median_forward_30d": -0.018650088809946674,
+        "mean_forward_30d": 0.05079816617015564,
+        "remain_top2_7d": 0.36968576709796674
+      }
+    ]
+  },
+  "interpretation_rule": "No target or parameter changes. Use attribution to choose at most one causal hypothesis for a separately preregistered future experiment."
+}
+=== END ===
