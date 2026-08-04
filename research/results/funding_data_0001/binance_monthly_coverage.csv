@@ -1,0 +1,6 @@
+symbol,present_in_archive_root,month_count,first_month,last_month,internal_gap_count,internal_gaps
+BTCUSDT,True,79,2020-01,2026-07,0,
+ETHUSDT,True,79,2020-01,2026-07,0,
+SOLUSDT,True,71,2020-09,2026-07,0,
+BNBUSDT,True,78,2020-02,2026-07,0,
+XRPUSDT,True,79,2020-01,2026-07,0,
