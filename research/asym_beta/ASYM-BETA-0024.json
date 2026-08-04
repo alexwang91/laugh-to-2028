@@ -1,0 +1,64 @@
+{
+  "experiment_id": "ASYM-BETA-0024-DAILY-CAP",
+  "status": "PREREGISTERED_BEFORE_FIRST_RUN",
+  "registered_on": "2026-08-05",
+  "promotion_evidence": false,
+  "authorized_by": "AUDIT-0023-LATENCY",
+  "question": "What is the economic value of fixing only the validated intra-refit latency defect in ASYM-BETA-0022, by allowing already-defined daily diagnostics to cap the incremental sleeve while leaving BRRK core and monthly alpha authority unchanged?",
+  "frozen_inputs": {
+    "core": "corrected BRRK-0011 monthly core authority unchanged",
+    "monthly_approved_extra": "exact ASYM-BETA-0022 monthly rule",
+    "monthly_extra_candidate": "0.50 * max(existing BTC trend_score, 0) * (1 - exact p_bad) * min(1, 0.45/downside_semivol30)",
+    "extra_cap": 0.50,
+    "gross_cap": 1.50,
+    "downside_window_days": 30,
+    "downside_anchor_annualized": 0.45,
+    "transaction_cost_bps_per_absolute_weight_change": 5.0,
+    "rebalance_band_l1": 0.05,
+    "hmm_refit_cadence_days": 30
+  },
+  "only_structural_change_vs_0022": {
+    "daily_hmm_refit": false,
+    "daily_state_risk_reestimate": false,
+    "frozen_within_month": "HMM parameters, semantic mapping, raw-state conditional V1 risk distribution and BRRK core scale",
+    "updated_each_completed_day": "causal raw-state posterior, existing BTC trend score, existing 30-day downside semivol",
+    "daily_implied_extra": "same frozen 0022 arithmetic evaluated with daily diagnostics",
+    "actual_extra_target": "min(monthly_approved_extra, daily_implied_extra)",
+    "authority": "daily layer may reduce or release its cap but can never raise exposure above the monthly approved extra",
+    "execution": "daily target is still shifted t -> t+1 and passes through the existing 0.05 L1 rebalance band"
+  },
+  "implementation_accounting": {
+    "BTC_core": "spot / zero funding",
+    "ETH_SOL_BNB_XRP_core": "native Hyperliquid perp funding",
+    "all_incremental_exposure": "native Hyperliquid perp funding including incremental BTC",
+    "all_perp_stress": true,
+    "historical_spot_fee_basis_slippage": "not invented"
+  },
+  "hard_validation": [
+    "Reconstructed BRRK held weights match persisted BRRK0011_BASELINE <=1e-5 max absolute error.",
+    "Reconstructed BRRK strict Router equity matches deterministic ROUTER-PNL-0005 <=$0.05 max absolute error.",
+    "Reconstructed monthly ASYM-BETA-0022 final price-only and strict-router NAV match persisted 0022 machine summary within $0.05.",
+    "Final held gross never exceeds 1.50 + numerical tolerance."
+  ],
+  "required_outputs": [
+    "BRRK core, monthly 0022 and daily-cap 0024 price-only metrics",
+    "strict-router and all-perp funding-aware metrics",
+    "annual returns",
+    "upside/downside capture",
+    "MDD peak/trough and April/June 2024 monthly attribution",
+    "turnover increase caused by daily cap",
+    "daily-cap binding frequency and average/max reduction versus monthly approved extra"
+  ],
+  "prohibited": [
+    "no alternative daily cadence",
+    "no running-minimum/ratchet variant",
+    "no threshold search",
+    "no change to 30d semivol window or 45% anchor",
+    "no change to p_bad or trend formula",
+    "no daily HMM refit",
+    "no new risk variable",
+    "no SOL or other asset-specific tilt",
+    "no post-result cap selection"
+  ],
+  "stopping_rule": "Run exactly this daily-cap structure once. Do not tune it on the same history. If it improves the June/latency losses but April remains dominant, preserve the result and return to attribution before introducing any new risk mechanism."
+}
