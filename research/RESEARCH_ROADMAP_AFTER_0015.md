@@ -1,180 +1,199 @@
-# Crypto Regime/Rotation Research Roadmap — after PIT-DISP-0015
+# Crypto Regime/Rotation Research Roadmap — after PIT-ALPHA-0016
 
 Date: 2026-08-04
 
-This is a stopping-rule document, not a strategy. Its purpose is to limit degrees of freedom and prevent serial backtest optimization.
+This is a stopping-rule document, not a strategy. It limits degrees of freedom and prevents serial backtest optimization.
 
-## Current baseline
+## Current canonical baseline
 
-**BRRK-0011** = frozen V1 alpha + frozen PCA4 BRRK-0006 Risk-Off authority structure + mathematically corrected path-CDaR definition.
+**BRRK-0011** = frozen fixed-V1 alpha + frozen PCA4 BRRK-0006 Risk-Off authority structure + corrected path-CDaR definition.
 
-Common window 2022-12-10 through 2026-08-02: CAGR 65.10%, MaxDD -33.72%, Sharpe 1.353, Calmar 1.931.
+Common BRRK window 2022-12-10 through 2026-08-02:
 
-No experimental overlay is promoted over BRRK-0011.
+- CAGR 65.10%;
+- MDD -33.72%;
+- Sharpe 1.353;
+- Calmar 1.931.
 
-## Evidence hierarchy after PIT-DISP-0015
+No PIT module is promoted over BRRK-0011.
 
-### Tier A — canonical baseline
+## Current evidence hierarchy
 
-- **BRRK-0011** remains baseline.
-- AUDIT-0010/0012: terminal-return scenarios are reasonably calibrated; maximum-drawdown scenarios are conservative on the available 44 realized forecasts.
-- No heavier tail or conformal safety buffer is justified by the observed calibration record.
+### Tier A — canonical portfolio baseline
 
-### Tier B — valid risk mechanism, not promoted
+- BRRK-0011.
+- Calibration audits show no observed terminal-tail undercoverage and conservative path-drawdown forecasts.
+
+### Tier B — validated mechanisms, rejected portfolio implementations
 
 **PIT-DISP-0015**:
 
-- true point-in-time, dead-pool-inclusive historical Binance USDT universe;
-- 652 candidates, 646 with rows, zero fetch errors;
-- 159 currently inactive/non-TRADING symbols historically eligible;
-- dynamic broad-market dispersion improves BRRK MDD, CDaR, volatility, downside capture, Sharpe and Calmar;
-- but reduces CAGR from 65.10% to 60.81% and upside capture from 105.02% to 95.92%;
-- status: broad-market risk diagnostic / shadow overlay only.
+- broad historical dispersion contains real risk information;
+- reduces MDD、CDaR、volatility and downside capture;
+- lowers CAGR and upside capture;
+- not promoted.
 
-### Tier C — selection-sensitive fixed-panel diagnostic
+**PIT-ALPHA-0016 ranking**:
 
-**DISP-0014**:
+- beats 98/100 random-priority placebo seeds on terminal NAV and Calmar;
+- diversified contribution, largest positive contributor share13.14%；
+- includes152 currently inactive/non-TRADING historical candidates；
+- cross-sectional trend ranking is validated.
 
-- fixed-panel BRRK result remains historically strong: CAGR 65.71%, MaxDD -30.60%, Sharpe 1.488, Calmar 2.147;
-- however fixed-panel and dynamic PIT scales correlate only about 0.064;
-- the fixed BTC/ETH/SOL/BNB/XRP panel is not a reliable proxy for broad historical dispersion;
-- status: downgraded, not production eligible.
+**PIT-ALPHA-0016 portfolio**:
 
-### Tier D — event-concentrated diagnostic
+- CAGR12.25%；
+- MDD-69.12%；
+- turnover349.62；
+- negative2025+ subperiod；
+- nearly eliminated at20bps；
+- rejected.
 
-**DISP-0013**:
+### Tier C — fixed-panel or event-concentrated diagnostics
 
-- fixed-panel BRRK CAGR around 67.50%, Calmar around 2.00;
-- only about2% of days active;
-- about97% of positive episode contribution came from the top three episodes, concentrated in late Nov/early Dec 2024;
-- status: shadow only.
+- DISP-0014: selection-sensitive fixed-panel diagnostic.
+- DISP-0013: event-concentrated alt-to-BTC diagnostic.
 
 ## Gate 1 — PIT-DISP-0015: resolved
 
-Frozen rules were executed without post-result change:
+Decision:
 
-- historical ordinary spot-USDT candidates including later inactive/BREAK symbols;
+1. Broad risk mechanism survives dead-pool inclusion.
+2. Growth/opportunity-cost trade-off fails promotion.
+3. Fixed-panel0014 downgraded.
+4. No tuning of0015.
+
+## Gate 2 — PIT-ALPHA-0016: resolved
+
+Frozen primary specification:
+
+- historical ordinary Binance USDT universe;
 - 240 consecutive completed daily observations;
-- completed-day quote volume >= $25m;
-- minimum cross-section 5;
-- 20-day cumulative-log-return cross-sectional dispersion;
-- prior expanding-median target;
-- exposure floor 0.10;
-- smoothing lambda 0.80;
-- entire V1 exposure scaled to cash;
-- 0.05 L1 band, 5bps cost, t signal held over t+1.
+- completed-day quote volume >=$25m;
+- own trend>0 and relative trend>0;
+- rank=`(0.5 own +0.5 relative)/rv30`;
+- Top-2 primary;
+- gross<=1;
+- 50%BTC core/50%alt sleeve;
+- universal35% alt cap;
+- 0.05 band and5bps;
+- 100 fixed-random-priority placebo seeds.
 
 Decision:
 
-1. Broad dispersion risk compression survives dead-pool inclusion.
-2. The growth/risk trade-off is insufficient for production promotion.
-3. Fixed-panel DISP-0014 is materially selection-sensitive and downgraded.
-4. No PIT-0015 parameter may be tuned on this window.
-5. Exact daily outputs are now persisted under `research/results/pit_disp_0015/`.
+1. Ranking mechanism is real and not explained by random eligibility selection.
+2. Contribution is not dominated by one ex-post winner.
+3. Daily broad-universe Top-2 portfolio fails risk, turnover, cost and persistence requirements.
+4. BRRK-0011 remains baseline.
+5. No0016 parameter may be tuned.
+6. Any lower-turnover redesign requires a new experiment ID after attribution.
 
-## Gate 2 — dynamic point-in-time alpha universe: current highest priority
+## Gate 3 — PIT-ALPHA attribution audit: current highest priority
 
-Purpose: remove the remaining fixed-winner bias from the **alpha engine**.
+No trading changes are allowed.
 
-The first test must be registered before PnL and use:
+Required decomposition:
 
-- historical daily rows to determine point-in-time existence;
-- later dead/delisted coins retained until data/trading availability ends;
-- lagged/completed liquidity and age screens;
-- no present-day market cap, rank or survival filters;
-- own absolute trend >0 before relative-strength ranking;
-- BTC regime as risk-on/risk-off authority;
-- gross <=1 in the primary run;
-- explicit transaction costs, rebalance band and t→t+1 execution;
-- full preregistered Top-N family rather than selecting the best N;
-- random-ranking placebo and equal-weight eligible-universe benchmarks;
-- contribution concentration and inactive-asset attribution.
+- daily/monthly eligible-universe churn;
+- score/rank turnover;
+- actual held-name turnover;
+- holding-period and re-entry distributions;
+- transaction cost by gross-beta change versus name replacement;
+- contribution by asset、trade、listing cohort、liquidity cohort；
+- worst tail-loss trades and drawdown episodes；
+- rank persistence and post-entry decay；
+- overlap with fixed V1 holdings；
+- decomposition of2024 success and2025 failure；
+- inactive-symbol selection and exit timing；
+- capacity proxy using historical quote volume and target weights。
 
 Primary question:
 
-> Does V1 own-trend + relative-strength still select durable winners when today's surviving majors are not hard-coded?
+> Why does a rank that beats98% of placebos still generate only12.25%CAGR、-69%MDD and extreme turnover?
 
-Promotion requires:
+The audit must produce causal diagnostics, not an optimized threshold.
 
-- meaningful outperformance over placebo;
-- no dependence on one ex-post winner;
-- reasonable 2024+ and 2025+ behavior;
-- survival after dead-pool inclusion and realistic costs;
-- no post-result movement of age, liquidity or Top-N rules.
+## Gate 4 — new low-turnover design, conditional on attribution
 
-## Gate 2A — dispersion signal-identity audit
+Only one structurally justified hypothesis should be registered first.
 
-No trading changes. Run in parallel with dynamic-alpha engineering.
+Potential hypotheses, not yet authorized experiments:
 
-Explain fixed vs dynamic scale divergence through:
+- monthly universe/rank refresh with daily BTC beta;
+- persistence confirmation before new-name entry;
+- hold-until-rank-exit rather than continuous Top-N replacement;
+- separate universe refresh cadence from exposure cadence;
+- uniform turnover budget/hysteresis;
+- restrict name switching while preserving risk-off exit authority.
 
-- universe size and breadth;
-- top-contributor concentration;
-- volume-selection effects;
-- BTC inclusion/exclusion;
-- sector/group contributions;
-- inactive-symbol contribution;
-- high-dispersion episode overlap;
-- fixed-panel false-positive and false-negative risk reductions.
+A broad parameter grid is prohibited. The next experiment must be selected from attribution evidence, not historical PNL.
 
-This audit may explain signal identity but may not search for a formula that restores fixed-panel PnL.
+## Gate 5 — dispersion signal-identity audit
 
-## Gate 3 — funding history and Spot/Perp Router
+Secondary no-trading-change audit:
 
-Can proceed after or alongside Gate2 data engineering, but cannot become an alpha claim.
+- explain fixed/dynamic scale correlation0.064；
+- universe breadth and concentration；
+- volume-selection effects；
+- sector/group and inactive-asset contribution；
+- false-positive/false-negative risk episodes。
+
+It cannot search for a formula that restores fixed-panel CAGR.
+
+## Gate 6 — funding history and Spot/Perp Router
 
 Required:
 
-- accessible historical funding archive;
-- spot/perp implementation comparison for unchanged target exposure;
-- funding, basis, fees and slippage attributed separately;
-- leverage-overlay carry isolated from base gross<=1 exposure;
-- hedge and negative-funding-long cases reported separately.
+- accessible historical funding archive；
+- spot/perp comparison for unchanged target exposure；
+- separate funding、basis、fees and slippage；
+- isolate gross>1 carry；
+- report hedge/short and negative-funding-long cases separately。
 
-## Gate 4 — downside-risk estimator / risk allocation
+This is an implementation module, not an alpha claim.
 
-Only after dynamic alpha is controlled.
+## Gate 7 — execution hardening
 
-Candidate first experiment:
+Hyperliquid testnet/shadow work should cover:
 
-- preserve accepted alpha and regime gate;
-- replace, not stack, the risk estimator with a fixed lower-partial-moment objective;
-- no broad hyperparameter search;
-- report downside capture, expected shortfall, CDaR, turnover, upside opportunity cost and calibration.
+- metadata precision；
+- target-notional L2 VWAP and Slippage-at-Risk；
+- partial fills and reconciliation；
+- order slicing；
+- idempotency and audit logs；
+- emergency reduce-only controls；
+- endpoint authorization；
+- deterministic parity with research targets。
 
-PIT-0015 demonstrates why upside opportunity cost must be a first-class risk metric.
+## Gate 8 — risk allocation and leverage last
 
-## Gate 5 — execution hardening
+Do not add covariance、LPM、generic volatility gates or leverage to rescue0016.
 
-Prospective Hyperliquid data and engineering should cover:
+Only after alpha economics、funding and execution are controlled may the project test:
 
-- L2 book depth and target-notional VWAP;
-- spread and directional slippage;
-- funding, premium, open interest and volume;
-- partial fills and reconciliation;
-- idempotency and audit logs;
-- emergency reduce-only controls;
-- testnet end-to-end parity with research targets.
-
-One snapshot cannot define execution thresholds.
+- covariance/marginal risk contribution；
+- downside/LPM estimators；
+- normal beta cap around1.30；
+- strong-trend hard maximum1.50。
 
 ## Explicitly stopped research lines
 
-- manual last-drop/bottom recovery jumps;
-- CUSUM threshold tuning on the same sample;
-- HMM state/factor selection by realized PnL;
-- persistent semantic-state anchoring;
-- generic volatility gates stacked on V1;
-- tuning PIT-DISP-0015 after its valid result;
-- combining dispersion variants to recover historical CAGR;
-- hard-coding HYPE or another current winner before dynamic-alpha testing;
-- deep RL before simple survivor-free baselines are beaten;
-- leverage expansion before universe, funding and execution validation.
+- manual bottom/recovery jumps；
+- CUSUM threshold tuning；
+- HMM factor/state selection by PNL；
+- semantic-state anchoring；
+- stacking generic volatility gates；
+- tuning PIT-DISP-0015；
+- tuning PIT-ALPHA-0016 Top-N、liquidity、age、rank weights、BTC core or caps；
+- hard-coding HYPE or another current winner；
+- combining modules to recover historical CAGR before attribution；
+- deep RL before simple survivor-free economics work；
+- leverage expansion before validation。
 
 ## Promotion philosophy
 
 A module is promoted only when it satisfies:
 
-**mechanism + preregistration + no-lookahead + transaction costs + subperiod robustness + model/universe uncertainty + implementation audit + controlled upside opportunity cost.**
+**mechanism + preregistration + no-lookahead + realistic cost + subperiod persistence + model/universe uncertainty + implementation audit + controlled upside opportunity cost + acceptable turnover.**
 
-Higher historical CAGR alone is insufficient.
+Mechanism validation alone is not portfolio validation. Higher historical CAGR alone is insufficient.

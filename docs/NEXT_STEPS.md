@@ -1,189 +1,181 @@
 # Next Steps
 
-当前原则：**先验证偏差，再增加复杂度。**
+当前原则：**机制验证与组合 promotion 必须分开。先解释失败，再设计下一版。**
 
 ## Completed gate — PIT-DISP-0015
 
-PIT-DISP-0015 已在 2026-08-04 完成第一份合法、可复现、包含 later inactive/delisted assets 的 point-in-time 运行。
+Broad point-in-time dispersion 的风险压缩机制成立，但降低 CAGR 和 upside capture；fixed-panel DISP-0014 被证明 materially selection-sensitive。
 
-已持久化：
+Decision:
 
-- exact `daily_equity.csv`；
-- exact `daily_weights.csv`；
-- daily dynamic-universe count；
-- fixed/dynamic dispersion and exposure scales；
-- inactive-symbol historical eligibility audit；
-- exact daily `docs/pnl.svg`；
-- full JSON report and formal result record。
+- BRRK-0011 remains canonical baseline;
+- DISP-0014 and PIT-DISP-0015 remain diagnostics;
+- no post-result tuning of PIT-DISP-0015.
 
-研究结论：
+Formal result: `research/results/PIT_DISP_0015_RESULT_2026-08-04.md`.
 
-- broad dynamic dispersion 的风险压缩机制成立；
-- 但它降低 CAGR 和 upside capture，不满足 production promotion；
-- fixed-panel DISP-0014 与 dynamic signal 的 scale correlation 只有约 0.064，证明0014 materially selection-sensitive；
-- BRRK-0011 继续作为 canonical baseline；
-- 0014 与0015都不允许在当前窗口上调参。
+## Completed gate — PIT-ALPHA-0016
 
-Formal result: `research/results/PIT_DISP_0015_RESULT_2026-08-04.md`。
+The dead-pool-inclusive dynamic-alpha run used 648 historical candidates, 646 symbols with rows, zero fetch errors and 152 currently inactive/non-TRADING symbols that were historically eligible.
 
----
+### Mechanism result
 
-## P0 — Point-in-time dynamic ALPHA universe
+The frozen Top-2 rank:
 
-这是当前最高优先级。0015只解决 dispersion risk signal 的 universe bias，V1 alpha 仍使用固定的今天赢家集合。
+- beat 98/100 random-priority placebo seeds on terminal NAV;
+- beat 98/100 placebo seeds on Calmar;
+- had largest positive contributor share only 13.14%;
+- had top-three positive contributor share 34.93%;
+- included later-inactive assets without a single-winner dependency.
 
-### Primary question
+Therefore own-trend + relative-strength ranking contains real cross-sectional information.
 
-> 当 own-trend + relative-strength 模型必须从当时真实存在的完整候选池中选择，并且不能事后删除后来失败/退市资产时，historical alpha 还剩多少？
+### Portfolio result
 
-### Frozen design requirements before first PnL
+Top-2 primary:
 
-- 每个日期只使用当时真实存在且有 completed data 的资产；
-- later delistings 在历史真实存在期间保留；
-- stablecoins、fiat-like bases、wrapped duplicates 和 leveraged tokens 机械排除；
-- 不使用今天的 market cap、rank 或 survivor status；
-- 至少240个连续 completed daily rows；
-- liquidity 使用 completed-day、point-in-time quote volume；
-- ranking 之前必须满足 own absolute trend > 0；
-- relative-to-BTC trend 作为第二层 eligibility / ranking；
-- BTC regime 继续决定 risk-on / risk-off；
-- gross <= 1 作为首轮主测试，不使用 leverage；
-- 交易成本、rebalance band 和 t→t+1 no-lookahead 规则保持清晰。
+- CAGR 12.25%;
+- MDD -69.12%;
+- Sharpe 0.480;
+- Calmar 0.177;
+- turnover 349.62.
 
-### Top-N and concentration control
+Fixed V1 gross<=1:
 
-不能从 PnL 中挑最佳 N。首轮应 preregister 一个小 family 并全部报告，例如：
+- CAGR 36.43%;
+- MDD -59.72%;
+- Sharpe 0.889;
+- Calmar 0.610;
+- turnover 131.81.
 
-- Top-1；
-- Top-2；
-- Top-3；
-- breadth-weighted sleeve。
+At 10 bps Top-2 CAGR falls to 8.57%; at 20 bps it falls to 1.57%. The 2025+ subperiod is negative.
 
-同时报告：
+Decision:
 
-- random-ranking placebo；
-- equal-weight eligible-universe benchmark；
-- BTC-only dynamic baseline；
-- fixed V1 comparator；
-- each asset contribution；
-- top contributor share；
-- later inactive/delisted asset contribution；
-- turnover and realistic capacity diagnostics。
+- ranking mechanism validated;
+- portfolio specification rejected;
+- BRRK-0011 remains canonical baseline;
+- no 0016 parameter may be tuned on this window.
 
-### Promotion gate
-
-Dynamic alpha 只有在以下条件下才有资格继续：
-
-1. 明显优于 random/placebo，而不仅仅是优于 cash；
-2. 不依赖一个 SOL-like ex-post winner；
-3. 2024+、2025+ 子区间不完全失效；
-4. later inactive assets 的加入不使 edge 消失；
-5. 对5–20bps成本压力不过度脆弱；
-6. 不需要看到结果后移动 liquidity / age / Top-N 参数。
-
-失败时保留 BRRK-0011，不继续复杂化 alpha。
+Formal result: `research/results/PIT_ALPHA_0016_RESULT_2026-08-04.md`.
 
 ---
 
-## P0 Audit — fixed vs dynamic dispersion identity
+## P0 — PIT-ALPHA attribution audit, no trading changes
 
-这是 no-trading-change audit，可与 dynamic alpha implementation 并行。
+This is now the highest priority.
 
-目标：解释 fixed-panel DISP-0014 与 PIT-DISP-0015 的 scale correlation 为什么只有约0.064。
+Primary question:
 
-只做 attribution，不优化策略：
+> Why does a rank that beats 98% of placebos still produce only 12.25% CAGR, -69% MDD and extreme turnover?
 
-- dynamic universe size；
-- top-5 / top-10 return contribution concentration；
-- volume-weighted vs equal-weight dispersion；
-- meme / L1 / DeFi / legacy-coin group contribution；
-- inclusion/exclusion of BTC；
-- inactive/dead-pool contribution；
-- high-dispersion episode overlap；
-- fixed-panel false-positive / false-negative de-risk episodes。
+Required outputs:
 
-这一步的用途是理解 signal identity，不是寻找一个能恢复0014漂亮 PnL 的新公式。
+1. eligible-universe churn by day/month;
+2. rank turnover versus actual held-position turnover;
+3. holding-period distribution and re-entry frequency;
+4. contribution by trade, asset, listing cohort and liquidity cohort;
+5. worst tail-loss trades and drawdown episodes;
+6. rank persistence and score decay after entry;
+7. Top-2 overlap with fixed V1 holdings;
+8. decomposition of 2024 success and 2025 failure;
+9. cost split between gross-beta changes and name switching;
+10. effect of banding on forced/optional turnover;
+11. inactive-symbol entry/exit timing;
+12. capacity/slippage proxy by target notional and historical quote volume.
 
----
-
-## P1 — Funding history + Spot/Perp Router
-
-当前没有有效 historical funding-aware PnL。
-
-下一步：
-
-1. 使用可访问的 historical funding archive，而不是被 HTTP 451 阻断的 endpoint；
-2. 把 funding 作为 portfolio carry / execution routing input；
-3. gross <= 1 的 directional long 比较 spot 与 perp 的真实净成本；
-4. gross > 1 的额外 beta 单独核算 perp funding；
-5. hedge/short 与 negative-funding long 单独归因；
-6. funding、fees、slippage、basis 分开记录。
-
-Spot/Perp Router 只优化同一 target exposure 的实现方式，不创造新的方向预测。
+This audit may not change target weights, selection rules or thresholds.
 
 ---
 
-## P2 — Risk allocation after dynamic-alpha validation
+## P1 — new low-turnover experiment only after attribution
 
-只有 dynamic alpha 通过后再测试：
+A new monthly/persistence-controlled strategy may be considered only under a new experiment ID.
 
-- covariance / marginal risk contribution；
-- downside/LPM risk measure；
-- correlation concentration；
-- volatility shock；
-- breadth / dispersion interaction。
+Potential structural hypotheses to evaluate later, not tune now:
 
-禁止一次引入多个 gate。每个新模块单独 preregister、回测和 attribution。
+- monthly rather than daily cross-sectional reselection;
+- minimum rank-persistence before entry;
+- hold-until-rank-exit rather than daily Top-N replacement;
+- separate universe refresh cadence from exposure cadence;
+- turnover budget or hysteresis applied uniformly;
+- limit new-name entries while preserving BTC beta changes.
 
-PIT-0015 已经表明：一个经济上合理的风险信号也可能因为长期削减上涨 exposure 而降低最终 NAV。因此新风险模块必须同时报告 upside opportunity cost。
-
----
-
-## P3 — Hyperliquid execution hardening
-
-`execution/plan-b-bot` 当前只用于 testnet / shadow validation。
-
-Engineering backlog：
-
-1. 从 exchange metadata 动态读取 size decimals；
-2. reversal close 后重新读取真实 position/fill；
-3. 明确处理 partial fill / resting / rejected；
-4. 大订单分片；
-5. notification failure 不得让成功订单返回 HTTP 500；
-6. persistent idempotency key 与 run audit log；
-7. native reduce-only emergency orders；
-8. status/account endpoint 权限保护；
-9. mainnet double-confirm / allocation cap；
-10. testnet end-to-end reconciliation；
-11. daily signal 与 research implementation deterministic parity test；
-12. target-notional L2 slippage simulation before submission。
+The attribution audit must determine which one has a causal justification. Do not run a broad parameter grid.
 
 ---
 
-## P4 — Leverage only after validation
+## P2 — fixed versus dynamic dispersion identity audit
 
-现阶段 live candidate 优先 gross <= 1。
+No trading changes. Explain the 0.064 fixed/dynamic scale correlation through:
 
-只有 dynamic universe、funding 和 execution 三层都验证后，才重新评估：
+- universe breadth and size;
+- constituent concentration;
+- volume selection;
+- sector/group contribution;
+- inactive/dead-pool inclusion;
+- false-positive/false-negative de-risk episodes.
 
-- normal beta cap around 1.30；
-- strong-trend hard max 1.50；
-- platform effective leverage 不接近 exchange maximum。
-
-历史 CAGR 不能作为直接提高杠杆的理由。
+This remains secondary to the alpha attribution audit.
 
 ---
 
-## Stopping Rules
+## P3 — historical funding + Spot/Perp Router
 
-以下情况应停止优化并保留 BRRK-0011：
+Use accessible historical archives and attribute separately:
 
-- dynamic-alpha edge 主要由极少数今天仍存活的赢家贡献；
-- dead-pool inclusion 后 alpha 消失；
-- edge 在合理成本/funding 压力下消失；
-- 新模块只改善同一历史窗口，不能跨子区间；
-- 需要不断移动 threshold 才能保持漂亮结果；
-- 风险 overlay 的 drawdown improvement 由更大的 bull opportunity cost 换来；
-- 参数数量增长快于独立有效市场 regime 数量。
+- funding;
+- fees;
+- basis;
+- slippage;
+- spot versus perp implementation;
+- gross>1 leverage overlay;
+- hedge/short carry.
 
-研究目标不是最高 historical CAGR，而是得到**对未来仍有可解释性的 exposure-control system**。
+This module optimizes implementation of an unchanged target exposure; it is not a new direction signal.
+
+---
+
+## P4 — Hyperliquid execution hardening
+
+`execution/plan-b-bot` remains testnet/shadow only.
+
+Engineering backlog:
+
+1. metadata-derived size precision;
+2. reversal and fill reconciliation;
+3. partial/resting/rejected state handling;
+4. order slicing;
+5. persistent idempotency and audit logs;
+6. notification isolation;
+7. reduce-only emergency protection;
+8. endpoint authorization;
+9. mainnet double confirmation and allocation cap;
+10. testnet end-to-end parity;
+11. target-notional L2 slippage simulation.
+
+---
+
+## P5 — risk allocation and leverage last
+
+Do not add covariance, LPM, volatility gates or leverage to rescue PIT-ALPHA-0016.
+
+Only after alpha economics, funding and execution are controlled may the project reconsider:
+
+- covariance / marginal risk contribution;
+- downside/LPM estimators;
+- normal beta cap around1.30;
+- strong-trend hard maximum1.50.
+
+## Stopping rules
+
+Stop and retain BRRK-0011 if:
+
+- attribution cannot identify a stable reason for rank-to-portfolio degradation;
+- a new design requires moving multiple thresholds after seeing 0016;
+- lower turnover is achieved only by selecting the historical winner;
+- 2025+ failure persists;
+- reasonable costs remove the edge;
+- model complexity grows faster than independent market regimes.
+
+The objective is a robust exposure-control system, not recovery of the fixed-universe historical CAGR.
