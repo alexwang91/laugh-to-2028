@@ -1,0 +1,74 @@
+{
+  "experiment_id": "ASYM-BETA-0021",
+  "status": "PREREGISTERED_BEFORE_FIRST_RUN",
+  "registered_on": "2026-08-05",
+  "promotion_evidence": false,
+  "question": "Can BRRK-0011 preserve its existing downside authority while allowing a strictly bull-only 0..0.5 V1-scale extra-beta sleeve, and does that remain economically useful after current native Hyperliquid funding accounting?",
+  "frozen_inputs": {
+    "core_strategy": "BRRK-0011 corrected baseline",
+    "underlying_alpha": "frozen V1 asset-selection and weights",
+    "state_model": "existing 4-state price-only PCA4 variational HMM, 600-day minimum training, 30-day refit",
+    "forecast_horizon_days": 20,
+    "scenario_count": 5000,
+    "student_t_df": 5,
+    "risk_budget": {
+      "CVaR95": 0.2,
+      "CDaR95": 0.2
+    },
+    "transaction_cost_bps_per_absolute_weight_change": 5.0,
+    "rebalance_band": 0.05,
+    "trend_score": {
+      "horizons_days": [20, 60, 120, 240],
+      "weights": [0.15, 0.25, 0.3, 0.3],
+      "component_transform": "tanh(log-price momentum / horizon-scaled daily log-return volatility)",
+      "range": [-1.0, 1.0]
+    },
+    "p_bad": "Exact BRRK-0009 label-free raw-state P(conditional V1 daily mean < 0), posterior-weighted using the strict causal raw-state filter."
+  },
+  "only_structural_change": {
+    "gross_scale_cap": 1.5,
+    "extra_scale_cap": 0.5,
+    "permission": "Extra beta may exist only when corrected BRRK core scale is numerically exactly 1.0; any BRRK de-risking below 1.0 has absolute veto authority.",
+    "candidate_extra": "0.50 * max(BTC trend_score, 0)",
+    "bad_state_veto": "candidate_extra * (1 - p_bad)",
+    "downside_risk_veto": "Extra cannot exceed max(0, safe_total_scale - 1), where safe_total_scale is the largest total V1 scale <=1.50 satisfying the existing 20-day CVaR95 and corrected CDaR95 20% budgets.",
+    "final_extra": "min(0.50, pbad_adjusted_candidate, downside_risk_capacity)",
+    "asset_allocation": "Uniformly scale the existing frozen V1 vector. No SOL or other asset-specific tilt."
+  },
+  "implementation_accounting": {
+    "strict_current_router": {
+      "BTC_core": "spot / zero funding",
+      "ETH_SOL_BNB_XRP_core": "Hyperliquid perp / native funding",
+      "all_incremental_exposure_above_core": "Hyperliquid perp / native funding including incremental BTC"
+    },
+    "all_perp_stress": true,
+    "historical_spot_fee_basis_slippage": "NOT_INVENTED; omitted until legitimate historical/forward evidence exists."
+  },
+  "required_validation": [
+    "Reconstructed corrected BRRK core weights must match persisted BRRK0011_BASELINE weights within 1e-5 max absolute weight error.",
+    "Reconstructed strict-core funding equity must match ROUTER-PNL-0005 within $0.05 max absolute equity error.",
+    "Report price-only and strict-router funding-aware metrics separately."
+  ],
+  "required_outputs": [
+    "daily returns",
+    "all monthly decision diagnostics",
+    "CAGR/MDD/vol/Sharpe/Calmar",
+    "turnover, average and maximum gross",
+    "upside/downside capture",
+    "extra-beta activation frequency and magnitude",
+    "strict-router funding-aware result",
+    "all-perp funding stress"
+  ],
+  "prohibited": [
+    "no SOL-specific or other asset-specific tilt",
+    "no change to V1 selection or weights",
+    "no HMM state-count/PCA/refit/trend-horizon/weight tuning",
+    "no p_bad threshold or transformation search",
+    "no change to the 20% CVaR/CDaR budget",
+    "no funding threshold",
+    "no liquidity threshold",
+    "no choosing among 1.3/1.5/1.75/2.0 after seeing results",
+    "no representation of this same-window architecture test as untouched OOS or production promotion evidence"
+  ],
+  "stopping_rule": "After the first valid run, do not tune this specification on the same historical window. It may be rejected, or if economically promising, only qualify for a separately preregistered forward-shadow test."
+}
