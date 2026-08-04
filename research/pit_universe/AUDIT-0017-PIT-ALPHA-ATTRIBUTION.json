@@ -1,0 +1,100 @@
+{
+  "audit_id": "AUDIT-0017-PIT-ALPHA-ATTRIBUTION",
+  "status": "PREREGISTERED_BEFORE_FIRST_AUDIT_RUN",
+  "registered_on": "2026-08-04",
+  "trading_changes": false,
+  "purpose": "Explain why the validated PIT-ALPHA-0016 rank beat 98% of random-priority placebo portfolios yet produced weak growth, deep drawdown, high turnover and negative post-2024 persistence.",
+  "canonical_input": {
+    "experiment": "PIT-ALPHA-0016-DYNAMIC-ROTATION",
+    "primary_strategy": "PIT_ALPHA_TOP2_PRIMARY",
+    "target_weights_may_change": false,
+    "signal_or_parameter_changes_allowed": false,
+    "persisted_evidence": [
+      "research/results/pit_alpha_0016/daily_equity.csv",
+      "research/results/pit_alpha_0016/daily_held_weights_long.csv",
+      "research/results/pit_alpha_0016/daily_universe_counts.csv",
+      "research/results/pit_alpha_0016/dynamic_alpha_report.json",
+      "research/results/pit_alpha_0016/asset_contribution.csv"
+    ]
+  },
+  "audit_dimensions": {
+    "eligible_universe_churn": [
+      "daily eligible-set Jaccard similarity",
+      "daily additions and removals",
+      "monthly first-to-last eligible-set similarity",
+      "2024 versus 2025 comparison"
+    ],
+    "held_name_churn": [
+      "daily held-alt-set Jaccard similarity",
+      "new names and removed names per rebalance",
+      "holding-spell duration distribution",
+      "re-entry counts per symbol",
+      "2024 versus 2025 comparison"
+    ],
+    "turnover_decomposition": [
+      "BTC-weight turnover",
+      "change in total alt-sleeve exposure",
+      "within-alt name-switch residual",
+      "transaction-cost attribution by component and year"
+    ],
+    "rank_persistence": [
+      "entry rank position among eligible assets",
+      "probability an entry remains eligible after 1/3/7/14/30 days",
+      "probability it remains Top-2 after 1/3/7/14/30 days",
+      "rank-score decay and forward asset return over the same horizons"
+    ],
+    "fixed_v1_overlap": [
+      "fraction of PIT alt exposure in ETH/SOL/BNB",
+      "fraction of days PIT Top-2 overlaps fixed V1 alt holdings",
+      "performance and turnover conditional on overlap versus non-overlap"
+    ],
+    "tail_loss_attribution": [
+      "worst daily net returns",
+      "largest asset-level negative contributors",
+      "top drawdown episodes",
+      "cost versus gross-loss share in drawdowns"
+    ],
+    "cohort_attribution": [
+      "entry listing-age cohorts",
+      "entry quote-volume cohorts",
+      "currently active versus inactive symbols",
+      "2024 success versus 2025 failure"
+    ],
+    "capacity_proxy": [
+      "position notional as fraction of completed-day quote volume at hypothetical $100k and $1m NAV",
+      "median/95th/99th/max participation"
+    ]
+  },
+  "fixed_conventions": {
+    "evaluation_start": "2021-05-01",
+    "evaluation_end": "2026-08-02",
+    "transaction_cost_bps": 5.0,
+    "alt_assets": "all symbols except BTCUSDT",
+    "fixed_v1_alt_set": ["ETHUSDT", "SOLUSDT", "BNBUSDT"],
+    "holding_threshold": 1e-12,
+    "rank_horizons_days": [1, 3, 7, 14, 30],
+    "listing_age_cohorts_days": [240, 365, 730, 1460],
+    "quote_volume_cohorts_usd": [25000000, 100000000, 500000000, 2000000000],
+    "hypothetical_nav_usd": [100000, 1000000]
+  },
+  "required_outputs": [
+    "machine-readable attribution report",
+    "holding-spell table",
+    "daily turnover decomposition",
+    "entry rank-persistence table",
+    "worst-day and drawdown-episode tables",
+    "year/cohort attribution tables",
+    "formal no-trading-change conclusion"
+  ],
+  "interpretation_rule": {
+    "goal": "identify the dominant mechanical reason that validated rank information failed to become acceptable portfolio economics",
+    "not_allowed": [
+      "no changing liquidity or age thresholds",
+      "no changing rank weights or Top-N",
+      "no testing monthly or persistence-controlled targets in this audit",
+      "no selecting a future strategy from audit PnL",
+      "no recalculating PIT-ALPHA-0016 as if a modified rule were the original result"
+    ],
+    "next_experiment_rule": "A future low-turnover experiment may be registered only after this audit identifies a specific causal mechanism; it must receive a new experiment ID."
+  }
+}
