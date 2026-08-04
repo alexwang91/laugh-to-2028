@@ -13,12 +13,6 @@ on:
       - 'research/pit_universe/run_dynamic_alpha.py'
       - 'research/pit_universe/run_archive_discovery.py'
       - 'research/pit_universe/run_dynamic_dispersion.py'
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/pit-alpha-0016.yml'
-      - 'research/pit_universe/PIT-ALPHA-0016-DYNAMIC-ROTATION.json'
-      - 'research/pit_universe/run_dynamic_alpha.py'
 
 permissions:
   contents: write
