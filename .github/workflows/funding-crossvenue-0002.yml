@@ -1,0 +1,57 @@
+name: FUNDING CROSSVENUE 0002 Overlap Audit
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/funding-crossvenue-0002.yml'
+      - 'research/requirements.txt'
+      - 'research/funding_router/FUNDING-CROSSVENUE-0002-OVERLAP-AUDIT.json'
+      - 'research/funding_router/run_crossvenue_funding_audit.py'
+      - 'research/funding_router/test_crossvenue_funding_audit.py'
+      - 'research/funding_router/run_funding_data_audit.py'
+      - 'research/pit_universe/run_archive_discovery.py'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: funding-crossvenue-0002-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  overlap-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: research/requirements.txt
+      - name: Install research dependencies
+        run: pip install --disable-pip-version-check -r research/requirements.txt
+      - name: Run deterministic alignment tests
+        working-directory: research/funding_router
+        run: python -m unittest -v test_crossvenue_funding_audit.py
+      - name: Run preregistered overlap audit
+        working-directory: research/funding_router
+        shell: bash
+        run: |
+          set -o pipefail
+          python run_crossvenue_funding_audit.py | tee funding_crossvenue_0002.log
+      - name: Upload exact audit outputs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: funding-crossvenue-0002-results
+          retention-days: 30
+          if-no-files-found: warn
+          path: |
+            research/funding_router/funding_crossvenue_0002.log
+            research/funding_router/funding_crossvenue_0002_outputs/**
+            research/funding_router/FUNDING-CROSSVENUE-0002-OVERLAP-AUDIT.json
