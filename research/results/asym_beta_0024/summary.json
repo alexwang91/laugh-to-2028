@@ -1,0 +1,43 @@
+{
+  "experiment_id": "ASYM-BETA-0024-DAILY-CAP",
+  "status": "LATENCY_FIX_VALIDATED_NOT_SHADOW_QUALIFIED",
+  "promotion_evidence": false,
+  "github_actions_run": 30958475344,
+  "validation": {
+    "core_weight_max_abs_error": 4.999709674047281e-11,
+    "router_core_equity_max_abs_error": 1.3007156667299569e-06,
+    "reconstructed_0022_price_final_10k_error": 0.0,
+    "reconstructed_0022_strict_final_10k_error": 0.0,
+    "max_final_held_gross": 1.4228228549235102
+  },
+  "daily_cap_behavior": {
+    "active_daily_rows": 630,
+    "binding_days": 339,
+    "binding_fraction_of_active_days": 0.5380952380952381,
+    "mean_reduction_when_binding": 0.08002463556925271,
+    "max_reduction": 0.33450814500516407,
+    "mean_actual_extra_on_active_days": 0.24197086928486425,
+    "mean_monthly_approved_extra_on_active_days": 0.28503174461498587
+  },
+  "price_only_metrics": {
+    "BRRK0011_CORE": {"final_10k": 62247.38231294191, "cagr": 0.6516609785339953, "max_drawdown": -0.3371507034657846, "sharpe": 1.3531836730182594, "calmar": 1.9328477497901129},
+    "ASYM_BETA_0022_MONTHLY": {"final_10k": 83262.08353768353, "cagr": 0.7889040717669937, "max_drawdown": -0.40860258198437693, "sharpe": 1.3464556108409178, "calmar": 1.9307368737996808},
+    "ASYM_BETA_0024_DAILY_CAP": {"final_10k": 82388.86088096532, "cagr": 0.783735908533328, "max_drawdown": -0.3994629929581637, "sharpe": 1.3572290006749594, "calmar": 1.9619737556400119}
+  },
+  "funding_aware_metrics": {
+    "BRRK0011_CORE_STRICT_ROUTER": {"final_10k": 40177.86898983339, "cagr": 0.5620111213800072, "max_drawdown": -0.3494754193969606, "sharpe": 1.2285605472605456, "calmar": 1.60815636862183},
+    "ASYM_BETA_0022_STRICT_ROUTER": {"final_10k": 47235.931391983366, "cagr": 0.6452163775774136, "max_drawdown": -0.4242142464321287, "sharpe": 1.1824362768893202, "calmar": 1.5209681970938798},
+    "ASYM_BETA_0024_STRICT_ROUTER": {"final_10k": 47506.95253290777, "cagr": 0.6482375514823588, "max_drawdown": -0.4143612474883821, "sharpe": 1.1990372684938742, "calmar": 1.5644261026135997},
+    "ASYM_BETA_0024_ALL_PERP_STRESS": {"final_10k": 36923.69697752476, "cagr": 0.5202715673338252, "max_drawdown": -0.4332345204322131, "sharpe": 1.048599687652673, "calmar": 1.2009005349222408}
+  },
+  "capture": {
+    "BRRK0011_CORE": {"upside_capture": 1.0502122957658155, "downside_capture": 0.7299310068023137},
+    "ASYM_BETA_0022_MONTHLY": {"upside_capture": 1.2759929850460914, "downside_capture": 0.8570563119883337},
+    "ASYM_BETA_0024_DAILY_CAP": {"upside_capture": 1.2543860405682619, "downside_capture": 0.8337772592872634}
+  },
+  "known_month_attribution": {
+    "2024-04": {"core_strict_return": -0.19866986733194802, "0022_strict_return": -0.2587824955030108, "0024_strict_return": -0.2566540682244113},
+    "2024-06": {"core_strict_return": -0.07726419759563596, "0022_strict_return": -0.11072914928043542, "0024_strict_return": -0.10035410448751259}
+  },
+  "decision": "Keep daily-cap as the better latency implementation, but do not shadow-qualify yet. April 2024 remains the primary unresolved tail episode. Next step is no-trading-change attribution of existing 20/60/120/240 trend components and existing drawdown features; no parameter tuning or SOL tilt is authorized yet."
+}
