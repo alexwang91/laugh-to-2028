@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import time
 
+import pandas as pd
 import requests
 
 import run_crossvenue_funding_audit as audit
@@ -16,6 +17,7 @@ import run_crossvenue_funding_audit as audit
 SUCCESS_DELAY_SECONDS = 0.35
 BETWEEN_ASSET_DELAY_SECONDS = 3.0
 MAX_ATTEMPTS = 8
+ORIGINAL_LOAD_HYPERLIQUID_EVENTS = audit.load_hyperliquid_events
 
 
 def rate_limit_safe_query(asset, start, end):
@@ -57,15 +59,16 @@ def load_hyperliquid_events_with_asset_pause():
     original_assets = audit.ASSETS
     frames = []
     coverage = {}
-    for index, asset in enumerate(original_assets):
-        audit.ASSETS = (asset,)
-        frame, asset_coverage = audit.load_hyperliquid_events()
-        frames.append(frame)
-        coverage.update(asset_coverage)
-        if index + 1 < len(original_assets):
-            time.sleep(BETWEEN_ASSET_DELAY_SECONDS)
-    audit.ASSETS = original_assets
-    import pandas as pd
+    try:
+        for index, asset in enumerate(original_assets):
+            audit.ASSETS = (asset,)
+            frame, asset_coverage = ORIGINAL_LOAD_HYPERLIQUID_EVENTS()
+            frames.append(frame)
+            coverage.update(asset_coverage)
+            if index + 1 < len(original_assets):
+                time.sleep(BETWEEN_ASSET_DELAY_SECONDS)
+    finally:
+        audit.ASSETS = original_assets
     return pd.concat(frames, ignore_index=True).sort_values(["asset", "timestamp"]), coverage
 
 
