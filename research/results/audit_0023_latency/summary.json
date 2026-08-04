@@ -1,0 +1,44 @@
+{
+  "audit_id": "AUDIT-0023-LATENCY",
+  "status": "LATENCY_DEFECT_VALIDATED_PARTIAL_EXPLANATION",
+  "trading_changes": false,
+  "github_actions_run": 30958047983,
+  "decision_count": 45,
+  "active_intervals": 21,
+  "active_daily_rows": 630,
+  "aggregate": {
+    "mean_monthly_held_extra_on_active_days": 0.28503174461498587,
+    "mean_daily_implied_extra_on_active_days": 0.2709051889560715,
+    "mean_implied_to_held_ratio": 1.0372996295931571,
+    "median_implied_to_held_ratio": 0.9863406244034768,
+    "fraction_active_days_daily_implied_below_monthly": 0.5380952380952381,
+    "excess_exposure_days": 27.128351457976663,
+    "negative_btc_day_excess_exposure_days": 16.35279317785306,
+    "ratio_crossing_interval_count": {"0.75": 13, "0.5": 8, "0.25": 5},
+    "median_days_after_refit_to_ratio_crossing": {"0.75": 7.0, "0.5": 12.5, "0.25": 17.0}
+  },
+  "known_damage_episodes": {
+    "APRIL_2024": {
+      "mean_monthly_held_extra": 0.29274923409132647,
+      "mean_daily_implied_extra": 0.3161250164133247,
+      "mean_implied_to_held_ratio": 1.0802620956909774,
+      "min_implied_to_held_ratio": 0.6120825918633498,
+      "date_min_ratio": "2024-04-30",
+      "max_p_bad": 0.0010436239132981043,
+      "max_downside_semivol": 0.5462561073669296
+    },
+    "JUNE_2024": {
+      "mean_monthly_held_extra": 0.3461054458885384,
+      "mean_daily_implied_extra": 0.19408496852095253,
+      "mean_implied_to_held_ratio": 0.5607683173626128,
+      "min_implied_to_held_ratio": 0.03350799885162547,
+      "date_min_ratio": "2024-06-28",
+      "first_cross_75pct": "2024-06-09",
+      "first_cross_50pct": "2024-06-18",
+      "first_cross_25pct": "2024-06-24",
+      "max_p_bad": 0.25621064438254126,
+      "max_downside_semivol": 0.26988299123246245
+    }
+  },
+  "decision": "Authorize exactly one next structural change: daily cap of the incremental extra sleeve using the already-defined daily 0022 implied extra under a frozen monthly HMM/risk distribution. Daily information may not raise exposure above the monthly approved extra. Faster refresh is expected to address June-style latency but is not expected to solve April 2024, where the existing diagnostics did not weaken early enough."
+}
