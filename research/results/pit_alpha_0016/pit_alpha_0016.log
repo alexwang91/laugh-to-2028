@@ -9,7 +9,7 @@ data_progress 350/648 errors=0 calls=615
 data_progress 400/648 errors=0 calls=685
 data_progress 450/648 errors=0 calls=773
 data_progress 500/648 errors=0 calls=858
-data_progress 550/648 errors=0 calls=943
+data_progress 550/648 errors=0 calls=942
 data_progress 600/648 errors=0 calls=1023
 data_progress 648/648 errors=0 calls=1114
 === PIT_ALPHA_0016_REPORT ===
@@ -77,7 +77,7 @@ data_progress 648/648 errors=0 calls=1114
       "cagr": -0.24906380922749238,
       "max_drawdown": -0.8293370214599805,
       "ann_vol": 0.5347881984797854,
-      "sharpe": -0.26570840546641156,
+      "sharpe": -0.2657084054664116,
       "calmar": -0.3003167624050302,
       "turnover": 352.62191436470516,
       "avg_gross_exposure": 0.7031521111576122
@@ -392,13 +392,13 @@ data_progress 648/648 errors=0 calls=1114
     },
     "PIT_ALPHA_EQUAL_WEIGHT_ALL_ELIGIBLE": {
       "2022-01-01": {
-        "end_multiple": 0.3289936532913971,
-        "final_10k": 3289.9365329139714,
-        "cagr": -0.21527397727991615,
+        "end_multiple": 0.32899365329139796,
+        "final_10k": 3289.9365329139796,
+        "cagr": -0.2152739772799157,
         "max_drawdown": -0.7402800389342856,
         "ann_vol": 0.49321073699451995,
-        "sharpe": -0.2465077609646645,
-        "calmar": -0.2908007320983917,
+        "sharpe": -0.24650776096466448,
+        "calmar": -0.2908007320983911,
         "turnover": 314.766554029903,
         "avg_gross_exposure": 0.692488585245272
       },
@@ -408,7 +408,7 @@ data_progress 648/648 errors=0 calls=1114
         "cagr": -0.17419425015326018,
         "max_drawdown": -0.7319440434695879,
         "ann_vol": 0.5465377420672494,
-        "sharpe": -0.07918188250500617,
+        "sharpe": -0.07918188250500609,
         "calmar": -0.23798847973068848,
         "turnover": 303.19095306531517,
         "avg_gross_exposure": 0.8035060444881511
@@ -419,7 +419,7 @@ data_progress 648/648 errors=0 calls=1114
         "cagr": -0.10936155545262505,
         "max_drawdown": -0.5385595393481573,
         "ann_vol": 0.5142903843005884,
-        "sharpe": 0.028734608971551275,
+        "sharpe": 0.02873460897155132,
         "calmar": -0.20306307374109506,
         "turnover": 176.86641874739718,
         "avg_gross_exposure": 0.7528243223986228
