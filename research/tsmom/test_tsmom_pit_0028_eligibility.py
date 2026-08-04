@@ -20,7 +20,9 @@ class PitEligibilityTests(unittest.TestCase):
         close.loc[idx[100], "B"] = np.nan
         eligible = build_eligibility(close, qvol)
         self.assertTrue(bool(eligible.loc[idx[-1], "A"]))
-        self.assertFalse(bool(eligible.loc[idx[239], "B"]))
+        # The missing day remains inside B's latest 240-calendar-day window at the
+        # final evaluation date, so stale cumulative history cannot qualify it.
+        self.assertFalse(bool(eligible.loc[idx[-1], "B"]))
 
     def test_volume_floor_is_completed_day_gate(self):
         idx = pd.date_range("2020-09-01", periods=300, freq="D")
