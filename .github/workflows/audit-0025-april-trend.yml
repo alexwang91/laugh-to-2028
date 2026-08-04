@@ -1,0 +1,58 @@
+name: AUDIT 0025 April Trend Decomposition
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/audit-0025-april-trend.yml'
+      - 'research/requirements.txt'
+      - 'research/asym_beta/AUDIT-0025-APRIL-TREND-DECOMP.json'
+      - 'research/asym_beta/run_audit_0025_april_trend.py'
+      - 'research/asym_beta/test_audit_0025_april_trend.py'
+      - 'research/regime_kelly/features.py'
+      - 'research/regime_kelly/features_no_dominance.py'
+      - 'research/crypto_rotation_backtest.py'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: audit-0025-april-trend-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  april-trend-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: research/requirements.txt
+      - name: Install research dependencies
+        run: pip install --disable-pip-version-check -r research/requirements.txt
+      - name: Run deterministic audit tests
+        working-directory: research/asym_beta
+        run: python -m unittest -v test_audit_0025_april_trend.py
+      - name: Run no-trading-change April trend audit
+        working-directory: research/asym_beta
+        shell: bash
+        run: |
+          set -o pipefail
+          python run_audit_0025_april_trend.py | tee audit_0025_april_trend.log
+      - name: Upload exact audit evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: audit-0025-april-trend-results
+          retention-days: 30
+          if-no-files-found: warn
+          path: |
+            research/asym_beta/AUDIT-0025-APRIL-TREND-DECOMP.json
+            research/asym_beta/audit_0025_april_trend.log
+            research/results/audit_0025_april_trend/**
