@@ -1,0 +1,49 @@
+{
+  "audit_id": "TSMOM-DATA-0028-PIT-ELIGIBILITY",
+  "status": "PREREGISTERED_BEFORE_FIRST_RUN",
+  "registered_on": "2026-08-05",
+  "trading_changes": false,
+  "strategy_pnl": false,
+  "question": "Can the historical Binance USD-M perpetual archive support a reproducible daily point-in-time shortable universe using only completed information, while preserving later-ended contracts historically?",
+  "candidate_source": "TSMOM-DATA-0027 ordinary USDT perpetual archive universe",
+  "data_source": "Binance Public Data data/futures/um/monthly/klines/{symbol}/1d/",
+  "frozen_eligibility_rule": {
+    "minimum_contiguous_completed_daily_bars": 240,
+    "completed_day_quote_volume_floor_usd": 25000000,
+    "effective_for_trading": "eligibility observed at completed UTC day t is usable no earlier than t+1",
+    "missing_bar": "ineligible",
+    "post_contract_end": "ineligible naturally because no completed bar exists",
+    "symbol_exclusions": "reuse TSMOM-DATA-0027 mechanical stable-base and leveraged-token-like exclusions"
+  },
+  "parameter_provenance": {
+    "240_days": "exact existing PIT-DISP-0015 minimum contiguous-history rule",
+    "25m_quote_volume": "exact existing PIT-DISP-0015 completed-day quote-volume floor",
+    "note": "No TSMOM PNL or future returns are used to choose either value."
+  },
+  "required_outputs": [
+    "per-symbol first/last archive date and first/last eligible date",
+    "daily eligible-contract counts",
+    "eligibility spells",
+    "historical ended-contracts that were previously eligible",
+    "selected calendar snapshots of eligible symbols",
+    "download/error diagnostics",
+    "proof that no eligibility occurs before 240 contiguous bars"
+  ],
+  "success_gate": [
+    "historical ordinary perpetual candidates remain nonempty",
+    "daily archive histories can be resolved with no material systematic gaps",
+    "a nontrivial daily eligible universe exists",
+    "at least one later-ended historical contract is shown to have been eligible before its history ended",
+    "eligibility construction uses only same-day-or-earlier completed data"
+  ],
+  "prohibited": [
+    "no TSMOM signal",
+    "no long/short portfolio",
+    "no Sharpe/CAGR/MDD",
+    "no current-survivor substitution",
+    "no liquidity or age threshold search",
+    "no future return or later delisting information in daily eligibility",
+    "no asset ranking or Top-K selection"
+  ],
+  "stopping_rule": "If the PIT eligibility layer passes, the next experiment may preregister a TSMOM signal/risk-normalization specification. If it fails, repair data completeness only; do not calculate strategy PNL from a compromised universe."
+}
