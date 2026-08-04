@@ -18,7 +18,7 @@ on:
       - 'research/pit_universe/run_dynamic_dispersion.py'
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: pit-alpha-0018-${{ github.ref }}
@@ -32,6 +32,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
@@ -48,6 +49,36 @@ jobs:
         run: |
           set -o pipefail
           python run_entry_rank_eligibility_exit.py | tee pit_alpha_0018.log
+      - name: Persist validated outputs on same-repository PR
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+        env:
+          HEAD_REF: ${{ github.head_ref }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf /tmp/pit-alpha-0018
+          mkdir -p /tmp/pit-alpha-0018
+          cp -R research/pit_universe/pit_alpha_0018_outputs/. /tmp/pit-alpha-0018/
+          cp research/pit_universe/pit_alpha_0018.log /tmp/pit-alpha-0018/pit_alpha_0018.log
+
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git fetch origin "$HEAD_REF"
+          git checkout -B "$HEAD_REF" "origin/$HEAD_REF"
+
+          DEST='research/results/pit_alpha_0018'
+          rm -rf "$DEST"
+          mkdir -p "$DEST"
+          cp -R /tmp/pit-alpha-0018/. "$DEST/"
+
+          git add "$DEST"
+          if git diff --cached --quiet; then
+            echo 'Validated outputs are already current.'
+            exit 0
+          fi
+          git commit -m 'Persist PIT-ALPHA-0018 exact outputs'
+          git pull --rebase origin "$HEAD_REF"
+          git push origin "HEAD:$HEAD_REF"
       - name: Upload exact research outputs
         if: always()
         uses: actions/upload-artifact@v4
