@@ -1,0 +1,72 @@
+{
+  "experiment_id": "ASYM-BETA-0022-SEMIVOL",
+  "status": "PREREGISTERED_BEFORE_FIRST_RUN",
+  "registered_on": "2026-08-05",
+  "promotion_evidence": false,
+  "question": "Can a bull-only extra-beta sleeve increase upside when downside semivolatility, rather than total or absolute portfolio tail risk, has authority only over the incremental sleeve while corrected BRRK-0011 remains frozen?",
+  "parent_evidence": {
+    "ASYM-BETA-0021": "Rejected as structurally inert because the absolute 20% CVaR/CDaR budget repeatedly estimated safe total scale below 1 and therefore prohibited any >1x overlay.",
+    "BRRK-0009": "Exact label-free p_bad contains left-tail information but previously harmed upside when allowed to scale the whole portfolio.",
+    "legacy_dynamic_beta": "Positive-side beta used a frozen 45% annualized total-volatility anchor; 0022 preserves the 45% anchor but changes only the risk measure from total RV to downside semivolatility and limits its authority to extra beta."
+  },
+  "frozen_inputs": {
+    "core_strategy": "corrected BRRK-0011",
+    "underlying_alpha": "frozen V1 selection and relative asset weights, gross normalized to <=1 before BRRK scaling",
+    "state_model": "existing PCA4 four-state variational HMM, 600-day minimum training, 30-day refit",
+    "trend_score": "existing BTC 20/60/120/240-day score with weights 0.15/0.25/0.30/0.30, range [-1,1]",
+    "p_bad": "exact migrated BRRK-0009 causal raw-state P(conditional V1 daily mean < 0)",
+    "transaction_cost_bps_per_absolute_weight_change": 5.0,
+    "rebalance_band_l1": 0.05,
+    "gross_cap": 1.50,
+    "extra_cap": 0.50,
+    "downside_risk_anchor_annualized": 0.45,
+    "downside_window_days": 30
+  },
+  "only_structural_change_vs_0021": {
+    "remove": "absolute 20-day CVaR/CDaR safe-total-scale gate from extra-beta authority",
+    "replace_with": "30-day BTC downside semivolatility scaler applied only to the extra sleeve",
+    "downside_semivolatility": "sqrt(mean(min(BTC daily log return, 0)^2) over the latest 30 completed daily returns) * sqrt(365)",
+    "downside_scaler": "min(1, 0.45 / downside_semivol30); if downside_semivol30 is zero, scaler=1",
+    "candidate_extra": "0.50 * max(BTC trend_score, 0)",
+    "pbad_adjusted_extra": "candidate_extra * (1 - p_bad)",
+    "final_extra": "pbad_adjusted_extra * downside_scaler, capped to [0,0.50]",
+    "permission": "final_extra is forced to zero whenever corrected BRRK core scale is below 1.0",
+    "total_scale": "core_scale + final_extra, hard-capped at 1.50",
+    "asset_allocation": "scale the frozen V1 vector uniformly; no SOL or other asset-specific tilt"
+  },
+  "implementation_accounting": {
+    "strict_current_router": {
+      "BTC_core": "spot / zero funding",
+      "ETH_SOL_BNB_XRP_core": "native Hyperliquid perp funding",
+      "all_incremental_exposure": "native Hyperliquid perp funding, including incremental BTC"
+    },
+    "all_perp_stress": true,
+    "historical_spot_fee_basis_slippage": "not invented"
+  },
+  "required_validation": [
+    "Reconstructed BRRK core held weights must match persisted BRRK0011_BASELINE within 1e-5 max absolute weight error.",
+    "Reconstructed BRRK strict-router equity must match deterministic ROUTER-PNL-0005 reconstruction within $0.05 max absolute equity error.",
+    "The final gross exposure after banding must never exceed 1.50 + numerical tolerance."
+  ],
+  "required_outputs": [
+    "daily price-only and funding-aware returns",
+    "monthly decision diagnostics including trend, p_bad, downside semivol, downside scaler and extra scale",
+    "CAGR/MDD/ann vol/Sharpe/Calmar",
+    "turnover, average/max gross",
+    "upside/downside capture",
+    "extra activation frequency and exposure distribution",
+    "annual returns and 2025+ subperiod",
+    "all-perp stress"
+  ],
+  "prohibited": [
+    "no post-result search over downside window length",
+    "no post-result search over the 45% anchor",
+    "no change to the 0.50 extra cap or 1.50 gross cap",
+    "no p_bad threshold or nonlinear transform",
+    "no SOL-specific or other asset-specific tilt",
+    "no HMM/PCA/trend tuning",
+    "no funding threshold",
+    "no reinterpretation as untouched out-of-sample or production evidence"
+  ],
+  "stopping_rule": "Run this specification once. Do not tune it on the same historical window. If it is economically unhelpful after native funding, reject it. If it produces materially higher funding-aware upside without an obviously unacceptable left-tail deterioration, it may only qualify for a separately preregistered forward-shadow experiment."
+}

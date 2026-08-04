@@ -1,0 +1,112 @@
+{
+  "experiment_id": "ASYM-BETA-0022-SEMIVOL",
+  "status": "MECHANISM_VALIDATED_NOT_SHADOW_QUALIFIED",
+  "promotion_evidence": false,
+  "github_actions_run": 30957522673,
+  "validation": {
+    "core_weight_max_abs_error_vs_persisted_BRRK0011": 4.999709674047281e-11,
+    "strict_core_equity_max_abs_error_vs_ROUTER_PNL_0005": 1.3007156667299569e-06,
+    "max_final_held_gross": 1.4228228549235102
+  },
+  "diagnostics": {
+    "decision_count": 45,
+    "extra_active_decisions": 21,
+    "extra_active_fraction": 0.4666666666666667,
+    "mean_extra_scale_all_decisions": 0.13301481415366007,
+    "mean_extra_scale_when_active": 0.28503174461498587,
+    "max_extra_scale": 0.4228228549235103,
+    "mean_downside_semivol30": 0.2850407356440157,
+    "mean_downside_scaler": 0.9868135916897117,
+    "fraction_downside_scaler_below_1": 0.08888888888888889,
+    "mean_p_bad": 0.2913147784693364,
+    "hmm_convergence_rate": 1.0
+  },
+  "price_only_metrics": {
+    "BRRK0011_CORE": {
+      "final_10k": 62247.38231294191,
+      "cagr": 0.6516609785339953,
+      "max_drawdown": -0.3371507034657846,
+      "ann_vol": 0.4420699199849814,
+      "sharpe": 1.3531836730182594,
+      "calmar": 1.9328477497901129,
+      "turnover": 91.22820938775163,
+      "avg_gross": 0.7542997329947537,
+      "max_gross": 1.0000000000000002
+    },
+    "ASYM_BETA_0022": {
+      "final_10k": 83262.08353768353,
+      "cagr": 0.7889040717669937,
+      "max_drawdown": -0.40860258198437693,
+      "ann_vol": 0.5378737149212606,
+      "sharpe": 1.3464556108409178,
+      "calmar": 1.9307368737996808,
+      "turnover": 108.97422935267538,
+      "avg_gross": 0.8888243348696973,
+      "max_gross": 1.4228228549235102
+    }
+  },
+  "funding_aware_metrics": {
+    "BRRK0011_CORE_STRICT_ROUTER": {
+      "final_10k": 40177.86898983339,
+      "cagr": 0.5620111213800072,
+      "max_drawdown": -0.3494754193969606,
+      "ann_vol": 0.4412157507711231,
+      "sharpe": 1.2285605472605456,
+      "calmar": 1.60815636862183
+    },
+    "ASYM_BETA_0022_STRICT_ROUTER": {
+      "final_10k": 47235.931391983366,
+      "cagr": 0.6452163775774136,
+      "max_drawdown": -0.4242142464321287,
+      "ann_vol": 0.5449653842115219,
+      "sharpe": 1.1824362768893202,
+      "calmar": 1.5209681970938798
+    },
+    "ASYM_BETA_0022_ALL_PERP_STRESS": {
+      "final_10k": 36713.01340697415,
+      "cagr": 0.5174844404312848,
+      "max_drawdown": -0.44277007568742976,
+      "ann_vol": 0.5443079894116911,
+      "sharpe": 1.034943792909527,
+      "calmar": 1.1687430313077416
+    }
+  },
+  "capture": {
+    "BRRK0011_CORE": {
+      "upside_capture": 1.0502122957658155,
+      "downside_capture": 0.7299310068023137
+    },
+    "ASYM_BETA_0022": {
+      "upside_capture": 1.2759929850460914,
+      "downside_capture": 0.8570563119883337
+    }
+  },
+  "annual_returns": {
+    "BRRK0011_CORE": {
+      "2023": 2.2969753631340364,
+      "2024": 0.8322790485607565,
+      "2025": 0.09130193554552668,
+      "2026": -0.05570445983302741
+    },
+    "ASYM_BETA_0022": {
+      "2023": 2.936869207058426,
+      "2024": 1.0006167810093696,
+      "2025": 0.11960165206563178,
+      "2026": -0.05570445983302741
+    }
+  },
+  "dominant_drawdown": {
+    "peak": "2024-03-31",
+    "trough": "2024-09-06",
+    "strict_core_mdd": -0.3494754193969606,
+    "strict_0022_mdd": -0.4242142464321287,
+    "incremental_monthly_damage_pp": {
+      "2024-04": -6.0113,
+      "2024-05": -0.6528,
+      "2024-06": -3.3465,
+      "2024-07": -0.1180,
+      "2024-08": 0.0
+    }
+  },
+  "decision": "Extra beta materially increases upside and remains economically positive after native funding, but left-tail participation increases too much and funding-aware Sharpe/Calmar deteriorate. Do not tune 0022. Run a no-trading-change latency attribution audit before authorizing any new overlay structure."
+}
