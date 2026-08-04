@@ -1,0 +1,42 @@
+{
+  "audit_id": "AUDIT-0026-APRIL-SEMANTIC-RISK",
+  "status": "PREREGISTERED_BEFORE_FIRST_RUN",
+  "registered_on": "2026-08-05",
+  "trading_changes": false,
+  "strategy_pnl_promotion": false,
+  "authorized_by": "AUDIT-0025: short-horizon trend masking is real but does not provide a timely clean April veto.",
+  "question": "During April 2024, did the already-fitted semantic HMM's causal daily P(RISK_OFF) rise materially before the unresolved extra-beta losses even though BRRK core and extra authority were only refreshed monthly? How did that compare with the already-existing btc_drawdown_252 feature?",
+  "frozen_model": {
+    "hmm": "existing PCA4 four-state variational HMM",
+    "fit_cadence_days": 30,
+    "within_interval": "HMM parameters, PCA transform and semantic state mapping remain frozen from the scheduled monthly fit",
+    "daily_update": "causal filtered semantic posterior only; no model refit",
+    "semantic_target": "RISK_OFF",
+    "existing_drawdown": "BTC / rolling_252d_max(BTC) - 1"
+  },
+  "scope": {
+    "primary_episode": ["2024-03-01", "2024-05-15"],
+    "comparison_episode": ["2024-06-01", "2024-06-30"],
+    "full_active_intervals": "descriptive distribution of daily P(RISK_OFF) changes within all monthly intervals"
+  },
+  "descriptive_probability_levels": [0.25, 0.50, 0.75],
+  "required_outputs": [
+    "daily frozen-fit P(RISK_OFF) with refit date and days after refit",
+    "monthly starting P(RISK_OFF) versus intra-interval maximum and change",
+    "first dates crossing descriptive 25/50/75% probability levels",
+    "daily btc_drawdown_252 trajectory",
+    "April and June episode summaries",
+    "full-history relationship between high semantic risk probability and subsequent BTC returns for attribution only"
+  ],
+  "prohibited": [
+    "no trading PNL",
+    "no daily HMM refit",
+    "no probability threshold optimization",
+    "no new state model or feature",
+    "no drawdown threshold selection",
+    "no trend-weight change",
+    "no SOL tilt",
+    "no claim that descriptive 25/50/75% levels are approved trading thresholds"
+  ],
+  "next_experiment_rule": "Only if frozen-fit daily P(RISK_OFF) clearly rises before April losses may a separate preregistered experiment give daily semantic risk probability narrow veto authority over extra beta only. Otherwise the existing HMM information is insufficient for April and another no-trading attribution is required before adding new information."
+}
