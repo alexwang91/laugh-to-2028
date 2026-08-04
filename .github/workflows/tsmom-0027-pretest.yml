@@ -1,0 +1,51 @@
+name: TSMOM 0027 Pretest
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/tsmom-0027-pretest.yml'
+      - 'research/tsmom/**'
+      - 'research/core/**'
+      - 'research/funding_router/**'
+      - 'research/results/pit_disp_0015/daily_equity.csv'
+      - 'research/results/funding_crossvenue_0002/paired_8h_blocks.csv'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tsmom-0027-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  pretest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: research/requirements.txt
+      - name: Install research dependencies
+        run: pip install --disable-pip-version-check -r research/requirements.txt
+      - name: Run preregistered TSMOM-0027 pretest
+        shell: bash
+        run: |
+          set -o pipefail
+          python research/tsmom/run_tsmom_0027_pretest.py | tee research/tsmom/tsmom_0027_pretest.log
+      - name: Upload exact evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tsmom-0027-pretest-results
+          retention-days: 30
+          if-no-files-found: warn
+          path: |
+            research/tsmom/tsmom_0027_pretest.log
+            research/results/tsmom_0027_pretest/**
