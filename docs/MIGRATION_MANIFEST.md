@@ -47,10 +47,10 @@ Early rotation/ablation conclusions are consolidated in `docs/RESEARCH_HISTORY.m
 
 ## New canonical evidence generated after migration
 
-The target repository subsequently completed the first valid PIT-DISP-0015 run. These are now canonical target-repository evidence rather than migrated source evidence:
+The target repository subsequently completed the first valid PIT-DISP-0015 run. These are canonical target-repository evidence rather than migrated source evidence:
 
 - `research/results/PIT_DISP_0015_RESULT_2026-08-04.md`;
-- `research/results/pit_disp_0015/dynamic_dispersion_report.json`;
+- `research/results/pit_disp_0015/validated_summary.json`;
 - `research/results/pit_disp_0015/daily_equity.csv`;
 - `research/results/pit_disp_0015/daily_weights.csv`;
 - `research/results/pit_disp_0015/daily_dynamic_universe_count.csv`;
@@ -58,6 +58,8 @@ The target repository subsequently completed the first valid PIT-DISP-0015 run. 
 - `research/results/pit_disp_0015/inactive_eligible_audit.csv`;
 - `research/results/pit_disp_0015/pnl_daily.svg`;
 - `docs/pnl.svg` generated from exact daily equity.
+
+The valid run's full raw JSON and log are also retained in its GitHub Actions artifact; the repository persists a compact machine-readable validated summary plus exact daily source series.
 
 The valid result includes 652 historical candidates, 646 symbols with data, zero fetch errors, and 159 currently inactive/non-TRADING symbols that were historically eligible.
 
@@ -88,7 +90,7 @@ The original source PR #2 remains the immutable code-level archive for obsolete 
 
 1. `research/results/BRRK_0011_CDAR_CORRECTION_2026-08-04.md` — frozen baseline.
 2. `research/results/PIT_DISP_0015_RESULT_2026-08-04.md` — survivorship-aware qualification result.
-3. `research/results/pit_disp_0015/` — exact daily validated outputs.
+3. `research/results/pit_disp_0015/` — exact daily validated outputs and machine-readable summary.
 4. `research/results/DISP_0014_MEDIAN_RATIO_REPLICATION_2026-08-04.md` — fixed-panel result, now classified selection-sensitive.
 5. `research/results/AUDIT_0013_ACTIVATION_ATTRIBUTION_2026-08-04.md` — reason DISP-0013 was downgraded.
 6. PIT universe discovery/lifecycle/data-access records — construction provenance.
