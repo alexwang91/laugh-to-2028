@@ -1,81 +1,75 @@
 # Next Steps
 
-当前原则：**机制验证、组合验证和部署授权必须分开。已经失败的 alpha 组合不能通过同一窗口上的新阈值继续被救。**
+当前原则：**机制验证、组合验证、工具身份验证和部署授权必须分开。已经失败的 alpha 组合不能通过同一窗口上的新阈值继续被救；一个 spot 资产也不能因为历史 PNL 更漂亮就被自动认定为合法替代品。**
 
-## Completed — PIT-DISP-0015
+## Completed research gates
+
+### PIT-DISP-0015
 
 Broad point-in-time dispersion contains real risk information, but its upside opportunity cost prevents promotion. Fixed-panel DISP-0014 is materially selection-sensitive.
 
 Decision: `BRRK-0011` remains canonical baseline; no PIT-DISP-0015 tuning.
 
-## Completed — PIT-ALPHA-0016
+### PIT-ALPHA-0016 / AUDIT-0017 / PIT-ALPHA-0018
 
-The dead-pool-inclusive Top-2 rank beat 98/100 random-priority placebos and was not dominated by one winner. The portfolio failed:
+The dynamic cross-sectional rank contains information, and eligibility-based persistence reduces churn, but the broad portfolio remains unacceptable:
 
-- CAGR 12.25%;
-- MDD -69.12%;
-- turnover 349.62;
-- negative 2025+ economics;
-- almost all growth disappears at 20 bps.
+- PIT-ALPHA-0018 CAGR: **16.62%**;
+- MDD: **-66.86%**;
+- 2025 return: **-10.03%**;
+- 2026 through Aug 2: **-11.06%**;
+- 2025+ CAGR: **-13.11%**.
 
-Decision: ranking mechanism validated; daily Top-2 portfolio rejected; no 0016 tuning.
+Decision: dynamic-alpha portfolio rejected; no threshold rescue on this window.
 
-## Completed — AUDIT-0017
+### FUNDING-DATA-0001 / FUNDING-CROSSVENUE-0002
 
-The no-trading-change audit identified the dominant conversion defect:
+Official Binance and Hyperliquid funding sources were validated. Binance can serve only as a sign/regime or stress proxy, not a Hyperliquid level point estimate.
 
-- 83.41% of turnover came from switching one alt name for another;
-- 653 holding spells across 113 symbols;
-- median hold one day;
-- only 19.35% remained daily Top-2 after 30 days;
-- 52.07% remained broadly eligible;
-- 30-day median forward return -2.43%, mean +4.83%.
+### FUNDING-PNL-0003
 
-The rank is right-skewed: many small losers and a few persistent winners. This authorized exactly one new structure—entry rank with eligibility exit.
+Frozen BRRK held weights were charged native Hyperliquid funding without changing targets.
 
-## Completed — PIT-ALPHA-0018
+Common 2023-06-18 through 2026-07-31 window:
 
-The authorized state machine was executed without adding a threshold:
+| Scenario | CAGR | MDD |
+|---|---:|---:|
+| Price-only | 65.37% | -33.72% |
+| Hyperliquid all-perp | **44.08%** | **-37.04%** |
 
-```text
-Top-2 rank fills vacancies
-        ↓
-hold incumbent while own trend, relative trend,
-history and liquidity eligibility remain valid
-        ↓
-exit on eligibility loss or BTC risk-off
-```
+Decision: default all-perp implementation for gross≤1 long exposure is rejected.
 
-### What improved
+### ROUTER-DATA-0004
 
-- CAGR 12.25% → **16.62%**;
-- MDD -69.12% → **-66.86%**;
-- turnover 349.62 → **141.86**;
-- median hold 1 day → **3 days**;
-- spells 653 → **188**;
-- longest spell **260 days**;
-- 20 bps CAGR remains **12.00%**;
-- final NAV and Calmar still beat **98/100** same-state-machine placebos.
+Current Hyperliquid spot/perp metadata and L2 books were audited at fixed notionals.
 
-### What failed
+- BTC: verified through the preregistered official BTC→UBTC UI remap;
+- ETH: UETH exists but remains `candidate_wrapped_or_bridged`;
+- SOL: USOL exists but remains `candidate_wrapped_or_bridged`;
+- BNB: no deterministic direct-USDC spot candidate;
+- XRP: no deterministic direct-USDC spot candidate.
 
-- MDD remains unacceptable at **-66.86%**;
-- 2025 return **-10.03%**;
-- 2026 through Aug 2 **-11.06%**;
-- 2025+ CAGR **-13.11%**;
-- fixed V1 remains far stronger historically;
-- contribution concentration rises as long winners are allowed to compound.
+Decision: BTC is the only target currently eligible for a strict spot-first shadow implementation.
 
-Decision:
+### ROUTER-PNL-0005
 
-1. ranking mechanism remains validated;
-2. persistence mechanism is validated as a turnover/right-tail improvement;
-3. broad dynamic-alpha portfolio remains rejected;
-4. `BRRK-0011` remains canonical baseline;
-5. no 0018 threshold or portfolio parameter may be tuned on this window;
-6. no live or shadow allocation change is authorized.
+Exploratory post-audit accounting applied zero funding only to currently verified spot assets while preserving the frozen BRRK price path and native perp funding for all other assets.
 
-Formal result: `research/results/PIT_ALPHA_0018_RESULT_2026-08-04.md`.
+| Implementation | CAGR | MDD | Sharpe |
+|---|---:|---:|---:|
+| Hyperliquid all-perp | 44.08% | -37.04% | 1.046 |
+| **Strict BTC-spot router accounting** | **56.20%** | **-34.95%** | **1.229** |
+| Price-only upper bound | 65.37% | -33.72% | 1.355 |
+
+This result is **not production-promotion evidence**. Historical spot fees, basis, spread, slippage and fills were not fabricated.
+
+Mechanical counterfactual attribution shows:
+
+- BTC + ETH spot: 57.74% CAGR;
+- BTC + SOL spot: **63.06%**;
+- BTC + ETH + SOL spot: **64.66%**.
+
+These figures do not authorize UETH or USOL routing. They only identify where historical funding drag came from.
 
 ---
 
@@ -83,116 +77,156 @@ Formal result: `research/results/PIT_ALPHA_0018_RESULT_2026-08-04.md`.
 
 The current alpha line stops here.
 
-Do **not** add any of the following to rescue 0018 on the same historical window:
+Do **not** add any of the following to rescue PIT-ALPHA-0018 on the same historical window:
 
 - exit-rank threshold;
 - minimum holding period;
 - weekly/monthly rebalance schedule;
-- higher listing-age threshold;
-- higher liquidity threshold;
-- named ETH/SOL/BNB/HYPE universe;
-- dispersion, funding, LPM, covariance or generic volatility gate;
+- higher listing-age or liquidity threshold;
+- named winner universe;
+- dispersion, funding, covariance, LPM or generic volatility gate;
 - leverage;
 - PNL-selected parameter family.
 
-A future alpha experiment requires new evidence outside this selection loop—for example a genuinely new forward sample or a separately justified external mechanism. Another historical threshold search is not authorized.
+A future alpha experiment requires genuinely new evidence or a separately justified external mechanism.
 
 ---
 
-## P0 — Historical funding + Spot/Perp Router
+## P0 — Unit identity / custody / redemption audit
 
-This is now the primary research task.
+This is now the primary implementation-research gate.
 
 ### Goal
 
-Improve implementation economics without changing the frozen target exposure.
+Determine whether UETH and USOL can legitimately represent the frozen ETH and SOL economic exposures in a spot-first Hyperliquid router.
 
-### Required components
+### Required evidence
 
-1. Obtain accessible historical funding archives for BTC, ETH, SOL, BNB and XRP, with exact timestamps and signs.
-2. Align funding to the held instrument and actual holding interval.
-3. Separate:
-   - price PNL;
-   - funding PNL;
-   - spot/perp basis;
-   - exchange fees;
-   - market impact/slippage.
-4. Implement a deterministic router:
-   - use spot for gross<=1 long exposure when positive perp funding is expensive and spot is available;
-   - use perp for leverage overlay, shorts, operational necessity or advantageous negative funding;
-   - never change the directional target because of historical funding optimization in the first test.
-5. Report BTC/ETH/SOL/BNB/XRP attribution and the exact difference versus price-only BRRK-0011.
-6. Stress costs and funding-source disagreement.
+1. authoritative issuer / protocol documentation for UETH and USOL;
+2. exact underlying backing and economic identity;
+3. mint, deposit, withdrawal and redemption mechanics;
+4. custody / bridge / smart-contract / validator or guardian dependencies;
+5. redemption fees, limits, latency and availability;
+6. depeg, halt, bridge-failure and contract-upgrade failure modes;
+7. Hyperliquid's official UI / API mapping, if any, from ETH/SOL exposure to the Unit representation;
+8. deterministic treatment when the representation cannot be redeemed or traded;
+9. any additional price tracking or basis risk relative to the intended underlying.
 
 ### Prohibited
 
-- no funding threshold selected from PNL;
-- no changing coin weights because one funding series looks attractive;
-- no assumption that Binance funding equals Hyperliquid funding without labeling it as proxy evidence;
-- no leverage increase.
+- no promotion because the ticker resembles ETH/SOL;
+- no promotion because ROUTER-PNL-0005 counterfactual CAGR is higher;
+- no PNL-selected identity rule;
+- no silent assumption that wrapped/bridged/custodied assets are equivalent to native assets.
 
-Promotion requires a reproducible improvement after all fees, basis and slippage, not merely a lower quoted APR.
+Passing this gate authorizes only a later shadow-routing test, not production.
 
 ---
 
-## P1 — Hyperliquid execution hardening
+## P1 — Strict Spot/Perp forward shadow router
+
+### Initial deterministic rule
+
+```text
+verified long spot capacity → spot
+unverified / unavailable long exposure → perp
+short exposure → perp
+leverage above cash-backed spot capacity → perp
+```
+
+Until P0 changes classifications:
+
+```text
+BTC → spot candidate for shadow execution
+ETH → perp
+SOL → perp
+BNB → perp
+XRP → perp
+```
+
+### Required forward evidence
+
+For every rebalance decision persist:
+
+- research target weight and target notional;
+- chosen instrument and exact reason;
+- live spot/perp funding;
+- mark/oracle/mid and spot-perp basis;
+- best bid/ask and spread;
+- L2 book depth and expected VWAP at target notional;
+- maker/taker fee assumption actually used;
+- order parameters;
+- submitted / resting / cancelled / rejected / filled state;
+- realized fill price and slippage;
+- post-trade holdings and residual target error;
+- fallback decision if spot is insufficient or unavailable.
+
+No historical liquidity or basis series may be inferred from the single ROUTER-DATA-0004 snapshot.
+
+---
+
+## P2 — Hyperliquid execution hardening
 
 Priorities:
 
 1. derive size precision from live metadata;
-2. read account/position state before and after every trade;
-3. reconcile reversal close and reopen fills;
-4. handle partial, resting, rejected and cancelled orders;
+2. read account, order and position state before and after every trade;
+3. reconcile reversal close and reopen fills before submitting the second leg;
+4. handle partial, resting, rejected and cancelled orders explicitly;
 5. slice large deltas or use controlled TWAP;
 6. persist idempotency keys, decisions, orders and fills;
-7. simulate target-notional L2 VWAP and slippage before submission;
-8. route by side, notional, funding and spot/perp availability;
-9. add reduce-only emergency protection;
-10. secure status/cron endpoints;
+7. simulate target-notional L2 VWAP and apply a deterministic slippage veto;
+8. route by verified instrument, side and capacity;
+9. add reduce-only emergency protection and a kill switch;
+10. secure status / cron endpoints;
 11. require explicit mainnet confirmation and hard leverage caps;
-12. prove deterministic parity between research target JSON and executor orders.
+12. prove deterministic parity between research target JSON and actual orders.
 
-No production promotion until testnet reconciliation and failure-path tests pass.
+No production promotion until reconciliation and failure-path tests pass on testnet / shadow.
 
 ---
 
-## P2 — Forward shadow evidence
+## P3 — Forward shadow evidence
 
-Continue accumulating, without changing trading targets:
+Continue accumulating without retuning trading targets:
 
-- daily BRRK-0011 signal;
-- PCA3/4/5 specification disagreement;
-- label-free bad-state probability;
-- cycle diagnostic;
+- daily BRRK-0011 target;
 - Hyperliquid hourly funding;
+- spot/perp basis;
 - mark/oracle premium;
 - L2 book depth;
-- expected VWAP/slippage by side and notional;
-- realized execution outcome.
+- expected and realized VWAP/slippage;
+- fees;
+- routing decision;
+- order/fill outcome;
+- position reconciliation;
+- operational failure events.
 
-Only forward evidence can authorize basis/funding/liquidity variables as active controls.
+Only forward evidence can authorize liquidity, basis or funding variables as active routing controls beyond the frozen deterministic rule.
 
 ---
 
-## P3 — Risk allocation and leverage last
+## P4 — Leverage last
 
-Do not use covariance, LPM, generic volatility scaling or leverage to rescue a rejected alpha portfolio.
+Do not reconsider gross 1.30–1.50 until:
 
-Reconsider gross 1.30–1.50 only after:
-
-- funding-aware net PNL is validated;
+- funding-aware implementation economics are validated;
 - spot/perp routing is deterministic;
+- spot identity/custody risks are understood;
 - execution reconciliation is reliable;
 - L2 slippage controls are implemented;
-- BRRK-0011 shadow signals have accumulated forward evidence;
-- operational kill switches are tested.
+- kill switches and failure paths are tested;
+- sufficient BRRK shadow evidence has accumulated.
 
 ## Canonical position
 
 Until those gates are passed:
 
-- `BRRK-0011` remains the research baseline;
+- `BRRK-0011` remains the directional research baseline;
 - PIT dispersion remains diagnostic;
 - dynamic alpha ranks remain research evidence, not target weights;
+- all-perp default remains rejected;
+- BTC-only strict spot routing is an **implementation/shadow candidate**, not production-ready;
+- `56.20%` is a funding-only accounting result, not a deployable net-return claim;
 - Plan B remains testnet/shadow;
 - no increase in leverage is authorized.
