@@ -1,6 +1,5 @@
 name: AUDIT 0017 PIT Alpha Attribution
 
-# One-time evidence persistence; no trading or audit-method change.
 on:
   workflow_dispatch:
   pull_request:
@@ -14,7 +13,7 @@ on:
       - 'research/results/pit_alpha_0016/**'
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: audit-0017-${{ github.ref }}
@@ -28,7 +27,6 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
-          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
@@ -42,22 +40,6 @@ jobs:
         run: |
           set -o pipefail
           python run_pit_alpha_attribution.py | tee audit_0017.log
-      - name: Persist validated audit evidence
-        if: github.event_name == 'pull_request' && success()
-        shell: bash
-        run: |
-          set -euo pipefail
-          out='research/results/audit_0017_pit_alpha_attribution'
-          mkdir -p "$out"
-          cp research/pit_universe/audit_0017_outputs/* "$out/"
-          cp research/pit_universe/audit_0017.log "$out/"
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add -f "$out"
-          if ! git diff --cached --quiet; then
-            git commit -m 'Record AUDIT 0017 attribution outputs'
-            git push origin HEAD:"${GITHUB_HEAD_REF}"
-          fi
       - name: Upload audit outputs
         if: always()
         uses: actions/upload-artifact@v4
