@@ -1,0 +1,26 @@
+{
+  "audit_id": "AUDIT-0025-APRIL-TREND-DECOMP",
+  "status": "MASKING_CONFIRMED_NO_SHORT_TREND_VETO_AUTHORIZED",
+  "trading_changes": false,
+  "github_actions_run": 30958976327,
+  "validation": {"max_aggregate_reconstruction_error": 0.0},
+  "primary_april_window": {
+    "first_negative_cross": {"20": "2024-03-19", "60": "2024-04-30", "120": null, "240": null},
+    "mask20_days": 35,
+    "mask20_60_days": 12,
+    "min_components": {"20": -0.9046215199, "60": -0.5963650675, "120": 0.6471202015, "240": 0.9567818883},
+    "min_aggregate": 0.2670559006,
+    "max_drawdown_252": 0.2012721354
+  },
+  "june_comparison": {
+    "first_negative_cross": {"20": "2024-06-09", "60": "2024-06-07", "120": "2024-06-27", "240": null},
+    "first_joint_20_60_mask": "2024-06-09"
+  },
+  "full_history": {
+    "mask20_days": 400,
+    "mask20_60_days": 133,
+    "mask20_forward": {"mean_1d": -0.00054929, "mean_5d": 0.00010466, "mean_10d": 0.00123472, "median_10d": -0.00565073},
+    "mask20_60_forward": {"mean_1d": -0.00359173, "mean_5d": -0.00884535, "mean_10d": -0.00591975, "median_10d": -0.00801495}
+  },
+  "decision": "Long-horizon masking is real, but 20d alone is too common/noisy and 20d+60d turns negative too late in April. Do not tune trend. Next no-trading attribution should inspect daily semantic P(RISK_OFF) under the frozen monthly HMM together with existing btc_drawdown_252."
+}
