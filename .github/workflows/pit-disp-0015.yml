@@ -1,0 +1,31 @@
+name: PIT DISP 0015 Dynamic Universe
+
+on:
+  workflow_dispatch:
+
+jobs:
+  dynamic-universe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install research dependencies
+        run: pip install --disable-pip-version-check -r research/requirements.txt
+      - name: Run preregistered survivorship-aware dispersion test
+        working-directory: research/pit_universe
+        shell: bash
+        run: |
+          set -o pipefail
+          python run_dynamic_dispersion.py | tee dynamic_dispersion.log
+      - name: Upload research outputs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pit-disp-0015-results
+          path: |
+            research/pit_universe/dynamic_dispersion.log
+            research/pit_universe/dynamic_dispersion_report.json
+            research/pit_universe/PIT-DISP-0015-DYNAMIC-UNIVERSE.json
