@@ -1,206 +1,331 @@
 # laugh-to-2028
 
-一个以 **长期生存、可审计、可自动执行和减少回测自欺** 为目标的 crypto systematic-allocation research project。
+一个加密货币系统化配置研究项目。目标是**活得久、每一步都查得清、能自动执行、少骗自己**。
 
-核心纪律：
+这个仓库是研究代码，**不是**"未来收益会和回测一样"的承诺。
+
+---
+
+## 先读这一段：怎么看下面的数字
+
+所有表格里出现的四个指标，用大白话解释一遍：
+
+| 指标 | 意思 | 怎么看 |
+|---|---|---|
+| **年化收益** | 平均每年赚百分之几（复利口径） | 越高越好，但单看它没意义，必须配着回撤一起看 |
+| **最大回撤** | 从历史最高点跌下来最惨的一次跌了多少 | 越接近 0 越好。-60% 意味着 100 万变 40 万，要涨 150% 才能回本 |
+| **夏普比率** | 每承担一份波动，换回多少收益 | **加杠杆不会改变它**。所以比较两个方案谁更聪明，看这个，不看年化收益 |
+| **卡玛比率** | 年化收益 ÷ 最大回撤 | 衡量"为了这点收益，最惨要忍多大的坑" |
+
+三条特别容易踩的坑，先说在前面：
+
+1. **年化收益高不等于方案更好。** 把一个方案加两倍杠杆，年化收益翻倍，夏普比率一点不变。所以只要看到"年化收益变高了"，第一件事是去看夏普比率有没有跟着变高。如果没有，那只是加了杠杆，不是变聪明了。
+
+2. **不同表格的时间窗口不一样，不能跨表比。** 本仓库的实验分布在两个窗口上，长度差了将近一倍（3.65 年 vs 5.25 年）。同一个方案换个起点，数字会天差地别 —— 具体差多少见下面"起点的影响"一节。**每张表都标注了窗口，比较前先看窗口。**
+
+3. **3.65 年的数据量，不足以分辨两个接近的方案。** 详见"这些数字有多可信"一节。
+
+---
+
+## 现在的结论
+
+**套利（carry）这条线已经停止。** 原因见下面"套利线为什么停"。
+
+目前没有正在推进的实盘计划。下一步是独立于套利的路由和前瞻性执行证据收集。
+
+**方向性核心仍然是 BRRK-0011**，但要带着下面所有的限定条件看。
+
+---
+
+## 全部方案总表
+
+这是把仓库里**每一个跑出过结果的方案**列在一起。所有数字都来自已提交的结果文件，没有一个是估算的。
+
+### 表一：3.65 年窗口（2022-12-10 至 2026-08-02）
+
+这个窗口是 BRRK 走向前验证的第一个决策日决定的（模型要求至少 600 天训练数据）。
+
+**注意：这个起点是 2022 年 11 月 21 日比特币周期底部之后三周。** 整段窗口基本就是一轮牛市。
+
+#### 只算价格，不算资金费
+
+| 方案 | 1 万元变成 | 年化收益 | 最大回撤 | **夏普比率** | 卡玛比率 |
+|---|---:|---:|---:|---:|---:|
+| V1 基础版（固定四币轮动） | 57,116 | 61.25% | -37.63% | **1.295** | 1.628 |
+| V1 + 固定盘面离散度调节 | 57,663 | 61.68% | -35.11% | **1.417** | 1.757 |
+| V1 + 动态币池离散度调节 | 52,831 | 57.84% | -33.21% | **1.342** | 1.742 |
+| **BRRK-0011（当前核心）** | **62,247** | **65.10%** | **-33.72%** | **1.353** | 1.931 |
+| BRRK-0011 + 固定盘面离散度 | 63,084 | 65.71% | -30.60% | **1.488** | 2.147 |
+| BRRK-0011 + 动态币池离散度 | 56,543 | 60.81% | -30.40% | **1.393** | 2.000 |
+| ASYM-BETA-0022（月度额外仓位） | 83,262 | 78.89% | -40.86% | **1.346** | 1.931 |
+| ASYM-BETA-0024（日度封顶版） | 82,389 | 78.37% | -39.95% | **1.357** | 1.962 |
+
+**这张表最该注意的一行：ASYM-BETA-0024 年化收益 78.37%，比核心的 65.10% 高了 13 个百分点，但夏普比率只有 1.357 对 1.353 —— 基本没差。** 多出来的收益是加杠杆换来的（该方案总仓位最高到 1.42 倍），不是策略变聪明了。而最大回撤从 -33.72% 恶化到 -39.95%。
+
+#### 算上资金费之后（更接近真实可部署的口径）
+
+永续合约要付资金费。项目自己的纪律第 6 条就说"价格回测不是可部署收益"，所以**判断一个方案好不好，应该看这张表，不是上面那张**。
+
+| 方案 | 年化收益 | 最大回撤 | **夏普比率** | 卡玛比率 |
+|---|---:|---:|---:|---:|
+| 理论上限（假设完全不付资金费） | 65.37% | -33.72% | **1.355** | 1.939 |
+| **BRRK-0011 + 已验证的比特币现货路由** | **56.20%** | **-34.95%** | **1.229** | **1.608** |
+| BRRK-0011 全部走永续合约 | 44.08% | -37.04% | **1.046** | 1.190 |
+| ASYM-BETA-0022 + 现货路由 | 64.52% | -42.42% | **1.182** | 1.521 |
+| ASYM-BETA-0024 + 现货路由 | 64.82% | -41.44% | **1.199** | 1.564 |
+| ASYM-BETA-0024 全部走永续合约 | 52.03% | -43.32% | **1.049** | 1.201 |
+
+**这张表推翻了上一张表的印象。** 算上资金费之后：
+
+- 核心（BRRK-0011）夏普 **1.229**
+- ASYM-BETA-0024 夏普 **1.199** —— **更低**
+- 卡玛比率 1.608 对 1.564 —— 也更低
+- 最大回撤 -34.95% 对 -41.44% —— 深了 6.5 个百分点
+
+因为夏普比率不受杠杆影响，这意味着：**直接把 BRRK-0011 核心加杠杆，任何倍数，都比 ASYM-BETA-0024 更划算。** 那一层额外仓位机制，在真实资金费口径下没有创造价值，只是把一个更低的夏普换成了更高的年化收益。
+
+ASYM-BETA-0024 自己的月度归因也支持这个结论：2024 年 4 月，核心亏 19.87%，它亏 **25.67%**；2024 年 6 月核心亏 7.73%，它亏 **10.04%**。最难的两个月，它都亏得更多。
+
+#### 如果不同币种能走现货（反事实推演，不是可执行方案）
+
+| 哪些币走现货 | 年化收益 | 最大回撤 | 夏普比率 | 卡玛比率 |
+|---|---:|---:|---:|---:|
+| 只有比特币（当前唯一已验证） | 56.20% | -34.95% | 1.229 | 1.608 |
+| 比特币 + 以太坊 | 57.74% | -34.69% | 1.250 | 1.664 |
+| 比特币 + Solana | 63.06% | -34.23% | 1.324 | 1.842 |
+| 比特币 + 以太坊 + Solana | 64.66% | -33.98% | 1.346 | 1.903 |
+| 全部走现货（理论天花板） | 65.37% | -33.72% | 1.355 | 1.939 |
+
+这几行**只回答一个问题**：如果将来有独立证据证明那些币的现货代表可用，历史上能少付多少资金费。**它不是路由批准，也不能当作可以这么做的依据。**
+
+### 表二：5.25 年窗口（2021-05-01 至 2026-08-02）
+
+动态选币这条线在更长的窗口上测试。这个窗口多包含了 2021-2022 的整轮熊市。
+
+| 方案 | 年化收益 | 最大回撤 | **夏普比率** | 卡玛比率 |
+|---|---:|---:|---:|---:|
+| **同一个 V1（固定四币轮动）** | **36.43%** | **-59.72%** | **0.889** | **0.610** |
+| 比特币动态仓位 | 11.07% | -54.31% | 0.461 | 0.204 |
+| 一直持有比特币 | 1.86% | -76.63% | 0.309 | 0.024 |
+| PIT-ALPHA-0016（每日选前 2 名） | 12.25% | -69.12% | 0.480 | 0.177 |
+| PIT-ALPHA-0016（只选第 1 名） | 8.31% | -66.02% | 0.407 | 0.126 |
+| PIT-ALPHA-0016（选前 3 名） | 0.71% | -76.39% | 0.268 | 0.009 |
+| PIT-ALPHA-0016（所有合格币等权） | -24.91% | -82.93% | -0.266 | -0.300 |
+| PIT-ALPHA-0018（改进持仓规则） | 16.62% | -66.86% | 0.555 | 0.249 |
+| TSMOM-ALPHA-0029（只算价格） | 7.41% | -85.61% | 0.434 | 0.087 |
+| TSMOM-ALPHA-0029（算上资金费） | **-4.12%** | **-88.30%** | 0.251 | -0.047 |
+
+**对比表一的第一行和这张表的第一行 —— 那是同一个 V1 策略，同一份代码。**
+
+| | 3.65 年窗口 | 5.25 年窗口 |
+|---|---:|---:|
+| 年化收益 | 61.25% | **36.43%** |
+| 最大回撤 | -37.63% | **-59.72%** |
+| 夏普比率 | 1.295 | **0.889** |
+| 卡玛比率 | 1.628 | **0.610** |
+
+**卡玛比率差了 2.7 倍，纯粹因为起点不同。**
+
+这两个 5.25 年的数字不是外部计算的 —— 它们一直就在本仓库自己的 PIT-ALPHA 报告里（`FIXED_V1_GROSS_1_0` 那一行）。
+
+### 表三：套利方案（5.87 年窗口，2020-09-15 至 2026-07-30）
+
+现货多头 + 永续空头，方向对冲，赚资金费。
+
+| 方案 | 年化收益 | 最大回撤 | 夏普比率 | 卡玛比率 |
+|---|---:|---:|---:|---:|
+| CARRY-PNL-0031（手续费 5 个基点） | 2.740% | -7.01% | **1.428** | 0.391 |
+| 同上，手续费 10 个基点 | 2.178% | -7.55% | 1.138 | — |
+| 同上，手续费 20 个基点 | 1.063% | -9.06% | 0.561 | — |
+| **同期只买 3 个月美国国债** | **3.165%** | ~0% | — | — |
+
+**夏普 1.428 这个数字具有误导性。** 它是拿收益跟"零"比出来的。但这个方案是方向对冲、全额占用资金的 —— 它本身就等价于一个"合成的现金"。所以正确的比较对象是现金，不是零。
+
+跟现金比：**年化落后 0.425 个百分点，对现金的夏普是 -0.223**（负的）。
+
+详见下面"套利线为什么停"。
+
+---
+
+## 起点的影响：同一套代码，换个起点
+
+用完全相同的 V1 权重构造，只改评估起点：
+
+| 起点 | 年数 | 1 万元变成 | 年化收益 | 最大回撤 | 夏普比率 | 卡玛比率 |
+|---|---:|---:|---:|---:|---:|---:|
+| 2021-05-01 | 5.25 | 51,160 | **36.44%** | **-59.72%** | 0.889 | **0.610** |
+| 2021-11-10 | 4.73 | 31,566 | 27.54% | -44.99% | 0.791 | 0.612 |
+| 2022-01-01 | 4.58 | 41,716 | 36.57% | -37.63% | 0.964 | 0.972 |
+| 2022-06-01 | 4.17 | 47,580 | 45.37% | -37.63% | 1.098 | 1.205 |
+| **2022-12-10** | **3.64** | **57,111** | **61.31%** | **-37.63%** | **1.295** | **1.629** |
+| 2023-06-18 | 3.12 | 44,232 | 60.96% | -37.63% | 1.290 | 1.620 |
+| 2024-01-01 | 2.58 | 17,401 | 23.90% | -37.63% | 0.720 | 0.635 |
+
+加粗那一行就是表一用的窗口。
+
+**这个窗口不是人为挑出来的** —— 它由模型"至少 600 天训练数据"的要求决定，是一个合法的走向前验证起点。但后果必须说清楚：**所有主要风险指标描述的都是同一轮牛市**，起点在周期底部之后三周。
+
+复算脚本：[`research/review_2026_08_04/verify_start_date_sensitivity.py`](research/review_2026_08_04/verify_start_date_sensitivity.py)
+
+---
+
+## 这些数字有多可信
+
+用统计方法检验 BRRK-0011 的 3.65 年结果：
+
+| 检验项 | 结果 | 大白话 |
+|---|---:|---|
+| 观测天数 | 1332 天（3.65 年） | |
+| 年化夏普 | 1.353 | |
+| 偏度 / 峰度 | +0.567 / 7.07 | 尾部比正态分布厚得多，极端日子更常见 |
+| "真实夏普大于 0"的概率 | **99.57%** | **这个策略确实有效，这点站得住** |
+| "真实夏普大于 1.0"的概率 | 75.35% | 不够确定 |
+| **要在 95% 把握下说"夏普超过 1.0"，需要多少数据** | **20.97 年** | 现在只有 3.65 年 |
+
+**结论：策略有效这件事是可靠的；但"夏普到底是 1.3 还是 0.9"这个精度，现有数据给不出来。**
+
+再看 BRRK-0011 和 V1 到底差多少：
+
+| 对比项 | 结果 |
+|---|---:|
+| 两者每日收益的相关性 | **0.9948** |
+| 夏普差 | +0.058 |
+| 夏普差的 95% 置信区间 | **[-0.046, +0.164]** — **包含 0** |
+| 卡玛差的 95% 置信区间 | **[-0.164, +0.599]** — **包含 0** |
+
+**两个方案 99.5% 的日子是一模一样的，差异在统计上分辨不出来。**
+
+补充一个事实：BRRK-0011 那套很复杂的机器（隐马尔可夫模型 + 主成分分析 + 变分推断 + 五千条蒙特卡洛路径 + 尾部风险约束 + 凯利公式搜索），最终输出是一个 0 到 1 之间的仓位系数，而这个系数**有 81% 的交易日恰好等于 1.0**（也就是"什么都不做"）。全部贡献来自剩下约 19% 的日子。
+
+复算脚本：[`research/review_2026_08_04/verify_psr_dsr_mintrl.py`](research/review_2026_08_04/verify_psr_dsr_mintrl.py)
+
+---
+
+## 套利线为什么停
+
+CARRY-PNL-0031 的合格门槛是"净收益 > 0"。对一个方向对冲、全额占资金的组合，这个门槛是错的 —— 它本身就是一个合成的现金工具，每一块钱投进去，就是一块钱不能去买国债。**正确的门槛是现金。**
+
+用同一时间窗口的 3 个月美国国债重新衡量：
+
+| | 年化收益 | 1 万元变成 |
+|---|---:|---:|
+| CARRY-PNL-0031 | 2.740% | 11,720 |
+| 同期国债 | **3.165%** | **12,007** |
+| 差额 | **-0.425 个百分点/年** | |
+| 原报告夏普 1.428 → **对现金的夏普** | **-0.223** | |
+
+而且全部收益来自一年：
+
+| 年份 | 套利收益 | 国债收益 | 差额 |
+|---|---:|---:|---:|
+| 2020（9月15日起） | +0.83% | 0.03% | +0.80 |
+| **2021** | **+16.80%** | 0.05% | **+16.76** |
+| 2022 | -6.52% | 2.04% | -8.55 |
+| 2023 | +1.27% | 5.19% | -3.92 |
+| 2024 | +4.57% | 5.11% | -0.54 |
+| 2025 | +0.69% | 4.15% | -3.46 |
+| 2026（至7月30日） | -0.17% | 2.12% | -2.29 |
+
+**2021 一年贡献了 +16.80%，而整个 5.87 年累计只有 +17.20%。** 剔除 2021，剩下 4.9 年一共只赚了 +0.34%。2021 年之后的 4.58 年，年化落后现金 4.17 个百分点。
+
+2021 年是散户杠杆做多的顶峰，永续合约资金费持续极端为正。那个环境没有再出现过。
+
+按纪律第 7 条（不无限救策略）：
+
+- **套利研究线停止**；
+- **CARRY-PM-0035 不再需要执行**；
+- **CARRY-PM-0037 保留为已修正的测量工具，但不投入任何实盘资金**；
+- 不允许通过剔除币种、加资金费方向过滤、加基差门槛、换时间窗口、改权重或加杠杆来抢救。
+
+复算脚本：[`research/review_2026_08_04/verify_carry_vs_cash.py`](research/review_2026_08_04/verify_carry_vs_cash.py)
+
+顺带一提，这也解释了 CARRY-STACK-0033（把套利塞进主策略闲置资金）为什么失败：**往闲置资金里塞一个跑不赢现金的东西，数学上必然拉低整体收益**，跟它归因的"换手率太高"关系不大。
+
+---
+
+## 各条研究线的状态
+
+| 研究线 | 结论 | 状态 |
+|---|---|---|
+| **BRRK-0011** | 方向性核心 | **冻结沿用**，但见上面所有限定条件 |
+| V1 固定四币轮动 | 和 BRRK-0011 统计上分辨不出差异 | 作为对照基准保留 |
+| 离散度调节（0014 / 0015） | 固定盘面和动态币池两个版本的信号相关性只有 **0.064** —— 两种实现几乎毫不相干，说明它测的是币池组成变化而不是风险 | **仅作诊断，不用于配置** |
+| PIT-ALPHA-0016 / 0018 | 排序和持仓机制本身有信息，但组合最大回撤 -66% 到 -69%，2025 年以后为负 | **停止** |
+| ASYM-BETA-0021 / 0022 / 0024 | 算上资金费后夏普和卡玛都低于核心 | **不推进实盘**，见上面表格 |
+| TSMOM-ALPHA-0029 | 算上资金费年化 **-4.12%**，最大回撤 **-88.30%** | **拒绝，不再抢救** |
+| 资金费数据 / 跨交易所对比 | 数据源已验证；币安只能当作方向和状态的代理，不能当作 Hyperliquid 的水平代理 | 通过，但有严格的用途限制 |
+| 全永续实现方式 | 年化从约 65% 掉到 44.08% | **拒绝作为默认实现** |
+| 比特币严格现货路由 | 年化恢复到 56.20% | 实现层候选，待前瞻验证 |
+| 套利线（0030 至 0035） | 跑不赢现金，全部收益来自 2021 一年 | **停止** |
+| Hyperliquid 执行器 | 测试网骨架 | **未加固**，见下 |
+
+---
+
+## 已知的重要问题（尚未修复）
+
+这些来自一次只读代码审查，完整清单在 [`docs/REVIEW_FIX_BACKLOG.md`](docs/REVIEW_FIX_BACKLOG.md)（共 28 条）。
+
+**执行器还不能碰实盘资金。** 目前缺：
+
+1. **下单去重机制** —— 如果订单已被交易所接受但网络响应超时，下一次定时任务会重复下单。这是当前风险最高的一处。
+2. **部分成交被当成完全成交** —— 代码不核对实际成交数量。
+3. **反向调仓不是原子操作** —— 先平后开，第二步失败时账户会被留在空仓，而且告警发不出去。
+4. **下单精度写死** —— 没有从交易所元数据读取。
+5. **接口鉴权可绕过** —— 未设密钥时，靠一个调用方可以任意伪造的请求头做验证，任何人都能读到账户净值和持仓。
+
+**研究层和执行层用的不是同一份价格。** 回测信号用币安现货日收盘价，机器人用 Hyperliquid 永续合约的日线。定时任务跑在世界时 01:10，而回测假设在 00:00 成交 —— 每天有 70 分钟未建模的延迟。
+
+**成本模型没有冲击成本项。** 统一按 5 个基点线性计算，规模变大后会低估。
+
+**闲置资金不计息，夏普也没减无风险利率。** 3.65 年窗口内平均有 20.5% 的资金闲置。
+
+---
+
+## 七条核心纪律
 
 1. 机制有效不等于组合可用；
-2. 固定赢家币池结果不能直接外推；
-3. 先登记、后运行，失败版本必须保留；
+2. 固定赢家币池的结果不能直接外推；
+3. 先登记、后运行，失败的版本必须保留；
 4. 归因只能授权一种结构变化，不能授权参数搜索；
 5. 研究信号和交易执行必须分层；
-6. 价格回测不是可部署 PNL，funding、basis、fees、slippage 和 fills 必须单独验证；
-7. 对同一历史窗口不无限救策略。
-
-## Current frontier
-
-项目已经从“继续寻找新历史 alpha”转入 **capital structure / routing / execution / forward evidence** 阶段。
-
-**Carry 历史研究线已停止。** `CARRY-RF-0036R1` 将 CARRY-PNL-0031 从“相对零收益为正”重新定价为“相对现金为正”；随后 `CARRY-RF-0036R2` 仅校正 PR #30 指定的命名指标口径。最终可复算结果为：5 bps carry CAGR **2.740%**，同期 FRED `DTB3` 现金 CAGR **3.165%**，`excess_cagr_over_rf = -0.425 pp/yr`，`excess_sharpe_over_rf = -0.223`。因此 corrected `net_economics` **FAIL**，按纪律 #7 不再救援。
-
-由此：**CARRY-PM-0035 不再需要执行；CARRY-PM-0037 作为 F2 的 measurement-integrity 修复保留，但同样不再需要投入 live probe capital。**
+6. 价格回测不是可部署收益，资金费、基差、手续费、滑点和成交必须单独验证；
+7. 对同一段历史不无限抢救策略。
 
 ---
 
-## Canonical strategy / implementation status
+## 下一步
 
-| Layer | Evidence | Decision |
-|---|---|---|
-| **BRRK-0011** | Price-only CAGR **65.10%**, MDD **-33.72%**, Sharpe **1.353**, Calmar **1.931** | **冻结为 directional core** |
-| PIT-DISP-0015 | MDD/Sharpe 改善但牺牲 CAGR；固定 panel selection-sensitive | Diagnostic only |
-| PIT-ALPHA-0016 / 0018 | Rank/persistence 有信息，但组合 MDD -66%~-69%，2025+ 为负 | **停止** |
-| ASYM-BETA-0024 | Bull extra-beta 机制有效；strict funding-aware CAGR **64.82%**, MDD **-41.44%**, Sharpe **1.199** | 参数冻结；forward shadow only |
-| TSMOM-ALPHA-0029 | Corr vs BRRK 低，但 CAGR **-4.12%**, MDD **-88.30%** | **拒绝并停止救援** |
-| FUNDING-PNL-0003 | Hyperliquid all-perp CAGR **44.08%** vs price-only ~65% | **全 perp 默认实现拒绝** |
-| ROUTER-DATA-0004 / PNL-0005 | BTC->UBTC spot verified；BTC-only spot accounting CAGR **56.20%** | BTC spot-first shadow candidate |
-| **CARRY-PNL-0031** | 原报告 CAGR **2.74%**, Sharpe **1.428**；F1 复算同期 DTB3 CAGR **3.165%**, excess Sharpe **-0.223** | **corrected net_economics FAIL；carry 线停止** |
-| CARRY-AUDIT-0032 | SOL/XRP basis extrema 与官方 exact daily archive 一致 | 数据归因通过，但不改变 F1 停止结论 |
-| **CARRY-STACK-0033** | 原规则已拒绝；F1 再与 BRRK+idle cash 对照后仍为负超额 | **保持拒绝；不再解释为“standalone carry 仍通过”** |
-| **CARRY-IMPL-0034** | UBTC token index 197 当前 LTV **0.50**；BTC spot/perp books live | public feasibility 有效，但无后续 carry 授权 |
-| **CARRY-PM-0035** | 旧四阶段账户机制探针 | **NOT REQUIRED — upstream carry economics failed** |
-| **CARRY-PM-0037** | F2 measurement-integrity gate：time/drift bounds + 3-state outcome + bounded retry | **实现保留；NOT REQUIRED，不运行 live probe** |
-| Hyperliquid executor | testnet/shadow skeleton | reconciliation / slippage / failure-path hardening required |
+1. **修复证据基础设施**（清单第 8 至 14 条）—— 特别是加上统计置信区间计算，让"A 比 B 好"这种说法自动带上置信区间，而不是靠人工复审才发现差异不显著；
+2. **修正 README 之外的表述问题**（第 3 至 7 条）；
+3. **执行器加固**（第 15 至 23 条）—— 实盘前必须完成；
+4. **方法论改动**（第 24 至 28 条）—— 每一项都需要先登记新实验。
+
+杠杆放在最后。在执行器的对账、滑点控制和紧急停止机制拿到前瞻性证据之前，不重开更高倍数的仓位。
 
 ---
 
-## Canonical BRRK economics
-
-Price-only full historical result:
-
-| Strategy | Final $10k | CAGR | MDD | Sharpe | Calmar |
-|---|---:|---:|---:|---:|---:|
-| V1 baseline | $57,116 | 61.26% | -37.64% | 1.295 | 1.628 |
-| **BRRK-0011** | **$62,247** | **65.10%** | **-33.72%** | **1.353** | **1.931** |
-
-Native-Hyperliquid common window (2023-06-18 through 2026-07-31):
-
-| Implementation accounting | CAGR | MDD | Sharpe |
-|---|---:|---:|---:|
-| Price-only upper bound | 65.37% | -33.72% | 1.355 |
-| Hyperliquid all-perp | **44.08%** | -37.04% | 1.046 |
-| **Strict BTC-spot router** | **56.20%** | -34.95% | 1.229 |
-
-The dominant implementation lesson is that instrument/funding choice can destroy more return than another round of signal tuning can plausibly recover.
-
----
-
-## Carry research
-
-### CARRY-PNL-0031 — original report preserved, qualification restated by CARRY-RF-0036R1/R2
-
-Frozen same-venue Binance `long spot + short perp` baseline across BTC/ETH/SOL/BNB/XRP originally reported:
-
-- 5 bps CAGR: **2.740%**;
-- MDD: **-7.005%**;
-- annualized vol: **1.904%**;
-- zero-hurdle Sharpe: **1.428**;
-- funding-only no-cost CAGR: **3.701%**;
-- daily corr vs BRRK: **-0.098**;
-- mean carry return on BRRK worst-decile days: positive.
-
-F1 did **not** change assets, weights, costs, funding accounting or window. `CARRY-RF-0036R1` changed only the economic hurdle to FRED 3-month T-bill `DTB3` cash on the identical 2020-09-15..2026-07-30 window. `CARRY-RF-0036R2` then corrected only the named `excess_sharpe_over_rf` reporting convention to match PR #30 exactly, using strategy annualized volatility as the denominator:
-
-| Measure | Carry 0031 | DTB3 cash / excess |
-|---|---:|---:|
-| CAGR | **2.7404%** | cash **3.1653%** |
-| Final $10k | **$11,719.83** | cash **$12,007.20** |
-| excess CAGR | — | **-0.4249 pp/yr** |
-| excess Sharpe over rf | — | **-0.22315** |
-
-R1 的值 **-0.221582** 原样保留在 R1 报告中。它用的是 excess-return volatility 作分母，也就是超额收益序列 Sharpe 的教科书定义；R2 不覆盖 R1，也不改变任何 gate 或策略结果。
-
-**后续审查判定 R2 这一步不必要**：PR #30 的 -0.223 是 `excess CAGR / CARRY_VOL`，其中 `CARRY_VOL` 直接取自 0031 已发布的 `RESULT.md`，属于量级指示而非提议的口径。两者相差 0.0016，而 `net_economics` gate 判定依据是 **excess CAGR**，与任一比率无关。约定与教训记录在 [`docs/RISK_FREE_METRIC_CONVENTIONS.md`](docs/RISK_FREE_METRIC_CONVENTIONS.md)。
-
-2021 carry return was **+16.8037%** while full-window cumulative carry return was **+17.1983%**. The corrected `net_economics = excess return over rf > 0` gate therefore **FAILS**.
-
-Decision: **stop the carry line under discipline #7.** No BNB removal, funding-sign filter, basis threshold, alternate window, weight/leverage change or other same-window rescue is authorized.
-
-Exact restatement and daily evidence: [`research/results/carry_rf_0036r1/`](research/results/carry_rf_0036r1/)  
-Reporting-parity correction: [`research/results/carry_rf_0036r2/`](research/results/carry_rf_0036r2/)
-
-### CARRY-STACK-0033
-
-The conservative rule `carry_scale = max(0, 1 - held_BRRK_gross)` had already failed its preregistered stack gate:
-
-- BRRK CAGR **56.66%** -> combined **56.04%**;
-- Sharpe **1.235** -> **1.226**;
-- Calmar **1.621** -> **1.597**;
-- carry allocation turnover: **20.87x**;
-- extra scale-change cost: about **1.043%**;
-- net carry contribution: **-1.236%**.
-
-F1 additionally compares the combined stack against the correct alternative for unused BRRK capital: **BRRK + matched idle cash accrual**. The combined stack again has negative excess economics; corrected `net_economics_vs_idle_cash` **FAILS**.
-
-对这一组比较，**不要引用任何 `excess_sharpe_over_rf` 数值**。combined stack 与 `BRRK + idle cash` 的日相关性是 **0.9999953**，超额序列几乎没有波动（超额年化波动 0.135% vs 策略 44.16%），所以 R1 的 **-16.21** 和 R2 的 **-0.04953** 都不是任何东西的 Sharpe。正确的统计量是信息比率 **-10.31**——组合近乎确定地跑输"BRRK + 闲置现金计息"。判定本身不受影响：两个 gate 都是在 excess CAGR 上失败的。详见 [`docs/RISK_FREE_METRIC_CONVENTIONS.md`](docs/RISK_FREE_METRIC_CONVENTIONS.md)。
-
-The earlier interpretation “carry mechanism did not fail; only the idle-cash conversion failed” is no longer supported after the cash-hurdle correction. Both the standalone economic gate and the 0033 conversion gate fail. No historical rescue is authorized.
-
-### CARRY-IMPL-0034
-
-Public Hyperliquid audit on 2026-08-05:
-
-- selected BTC spot representation: `UBTC/USDC` (`@142`);
-- UBTC token index: **197**;
-- reserve LTV: **0.50**;
-- BTC perp present;
-- spot/perp books live;
-- spot/perp midpoint basis at snapshot: **2.492 bps**;
-- $100k UBTC simulated spot buy/sell slippage: **1.177 / 0.287 bps** within returned 20 levels.
-
-`PASS_BTC_PUBLIC_FEASIBILITY` remains a valid implementation observation, but F1 removed the upstream economic authorization for a carry PM probe.
-
-Formal result: [`research/results/CARRY_IMPL_0034_RESULT_2026-08-05.md`](research/results/CARRY_IMPL_0034_RESULT_2026-08-05.md)
-
----
-
-## F2 — CARRY-PM-0037 measurement integrity
-
-`CARRY-PM-0035.json` is preserved unchanged. Because F2 changes a frozen gate, the replacement was preregistered first as `CARRY-PM-0037-MEASUREMENT-INTEGRITY`.
-
-The script remains strictly read-only: Hyperliquid `/info` only, no signing, no orders, public address stored only as a SHA-256 fingerprint.
-
-Frozen F2 integrity bounds:
-
-- spot -> matched snapshot gap <= **300 seconds**;
-- UBTC spot midpoint drift <= **25 bps**;
-- BTC perp midpoint drift <= **25 bps**;
-- probe spot cap remains **$500**, with the already-existing fixed **5% execution tolerance** (`$525` observed-notional ceiling);
-- `/info` calls use bounded retries: **4 attempts**, backoff **0.5 / 1 / 2 seconds**, only transport errors plus HTTP 408/429/5xx are retryable.
-
-The old clamped single-number interpretation is replaced by explicit measurement states:
-
-```text
-PM_RELEASES_MARGIN
-PM_CONSUMES_MARGIN
-MEASUREMENT_INCONCLUSIVE
-```
-
-`snapshot_gap_within_bound` and `mid_drift_within_bound` must both pass before a release/consume interpretation is allowed. Failed drift/timing integrity produces `MEASUREMENT_INCONCLUSIVE`, not a false zero-consumption PASS.
-
-Because F1 failed the upstream cash hurdle, **0035/0037 are not required and no live PM probe should be run**. F2 is retained as corrected measurement infrastructure, not as authorization to spend capital.
-
-Preregistration: [`research/carry/CARRY-PM-0037.json`](research/carry/CARRY-PM-0037.json)  
-Runbook: [`docs/CARRY_PM_0037_RUNBOOK.md`](docs/CARRY_PM_0037_RUNBOOK.md)
-
----
-
-## Queue after F1/F2
-
-There is no authorized historical carry rescue and no authorized PM carry stack experiment.
-
-Continue only independent non-carry work already separated by the project disciplines:
-
-- strict BTC spot/perp forward shadow router;
-- UETH/USOL identity/custody/redemption validation remains separate from PNL;
-- executor reconciliation, partial/rejected/cancelled handling, TWAP/slicing, L2 slippage veto, idempotency, reduce-only kill paths;
-- forward collection of funding, basis, depth, expected/realized slippage and fills;
-- leverage remains last.
-
-This PR does not implement any `execution/` work.
-
----
-
-## Repository structure
+## 仓库结构
 
 ```text
 research/
-  common/               reusable research infrastructure, including risk-free series
-  core/                 frozen strategy foundations
-  regime_kelly/         BRRK state/risk research
-  dispersion_overlay/   dispersion experiments
-  pit_universe/          survivorship-aware universe and alpha tests
-  tsmom/                 independent trend sleeve research
-  carry/                 carry and Portfolio Margin experiments
-  funding_router/        funding/router audits and accounting
-  results/               durable reports and daily evidence
+  core/                 冻结的策略基础
+  regime_kelly/         状态识别与风险模型
+  dispersion_overlay/   离散度调节实验
+  pit_universe/          考虑退市的币池与选币测试
+  tsmom/                 独立趋势跟踪研究
+  carry/                 套利与保证金实验
+  funding_router/        资金费与路由核算
+  common/                共享工具（无风险利率、超额收益指标）
+  review_2026_08_04/     审查复算脚本
+  results/               全部结果、报告与原始数据
 execution/
-  plan-b-bot/            Hyperliquid testnet/shadow executor skeleton
+  plan-b-bot/            Hyperliquid 测试网执行器骨架
 docs/
+  REVIEW_FIX_BACKLOG.md          待修复清单（28 条）
+  CODE_REVIEW_2026-08-04.md      代码审查报告
+  CODE_REVIEW_FOLLOWUP_2026-08-05.md
+  RISK_FREE_METRIC_CONVENTIONS.md 无风险利率与超额收益口径约定
   NEXT_STEPS.md
   RESEARCH_HISTORY.md
-  CARRY_PM_0035_RUNBOOK.md
-  CARRY_PM_0037_RUNBOOK.md
-.github/workflows/       reproducible experiment and validation jobs
+.github/workflows/       可复现的实验与验证任务
 ```
-
-This repository is research software, not a representation that future returns will match backtests.
