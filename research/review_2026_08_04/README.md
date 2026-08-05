@@ -11,16 +11,19 @@ experiments and must never be cited as promotion evidence.
 | `verify_band_drift.py` | Does `apply_band` + `run_portfolio` understate turnover by ignoring weight drift? | §2.0 |
 | `verify_start_date_sensitivity.py` | How much of the headline result is the 2022-12-10 start date? Also reproduces the README table and prices the omitted cash yield. | §3.1, §3.8 |
 | `verify_psr_dsr_mintrl.py` | Probabilistic / Deflated Sharpe and Minimum Track Record Length on the committed BRRK-0011 and V1 daily series. | §3.2 |
+| `verify_carry_vs_cash.py` | Does CARRY-PNL-0031 beat the risk-free rate over its own window? | followup §N1 |
 
 `verify_band_drift.py` and `verify_start_date_sensitivity.py` refetch Binance daily klines
-(no key required, a few minutes). `verify_psr_dsr_mintrl.py` reads only committed CSV/JSON
-under `research/results/` and runs offline.
+(no key required, a few minutes). `verify_carry_vs_cash.py` reads committed JSON plus FRED
+DTB3. `verify_psr_dsr_mintrl.py` reads only committed CSV/JSON under `research/results/`
+and runs offline.
 
 ```bash
 pip install -r ../requirements.txt scipy
 python verify_band_drift.py
 python verify_start_date_sensitivity.py
 python verify_psr_dsr_mintrl.py
+python verify_carry_vs_cash.py
 ```
 
 ## Results obtained on 2026-08-04
@@ -49,3 +52,15 @@ annualised Sharpe > 1.0 at 95% confidence is **20.97 years** against 3.65 years 
 **BRRK-0011 vs V1 (§3.3).** Daily correlation 0.9948. Paired bootstrap (4000 resamples):
 Sharpe difference +0.058, 95% CI [-0.046, +0.164]; Calmar difference 95% CI [-0.164, +0.599].
 Neither excludes zero.
+
+## Follow-up 2026-08-05
+
+See [`docs/CODE_REVIEW_FOLLOWUP_2026-08-05.md`](../../docs/CODE_REVIEW_FOLLOWUP_2026-08-05.md).
+
+**Carry vs cash (§N1).** CARRY-PNL-0031 returns 2.740% CAGR over 2020-09-15..2026-07-30
+against 3.165% for 3-month T-bills over the identical window ($11,720 vs $12,007 on $10k),
+so its excess Sharpe against cash is -0.223 rather than the reported +1.428. 2021 alone
+contributed +16.80% of the +17.20% cumulative; excluding 2021 the sleeve returned +0.34%
+over ~4.9 years, and post-2021 it trails cash by 4.17 pp/yr. The `net_economics`
+qualification gate tests against zero, which is the wrong hurdle for a delta-neutral
+fully-collateralized book.
