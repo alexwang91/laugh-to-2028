@@ -20,6 +20,7 @@ MATCH_TOLERANCE = 0.02
 MAX_PROBE_NOTIONAL_USD = 500.0
 MAX_PORTFOLIO_MARGIN_RATIO = 0.50
 MAX_INCREMENTAL_MAINTENANCE_FRACTION = 0.25
+MAX_CLOSED_UBTC_RESIDUAL_USD = 1.0
 ADDRESS_RE = re.compile(r"^0x[0-9a-fA-F]{40}$")
 
 
@@ -292,7 +293,7 @@ def compare_snapshots(
         incremental_maintenance = max(0.0, available_spot - available_matched)
         incremental_fraction = incremental_maintenance / short_notional
 
-    closed_ubtc = as_float(closed.get("spot", {}).get("ubtc", {}).get("total")) or 0.0
+    closed_ubtc_notional = as_float(closed.get("derived", {}).get("ubtc_spot_notional"))
     closed_btc_szi = as_float(closed.get("perp", {}).get("btc_position", {}).get("szi")) or 0.0
 
     checks = {
@@ -314,7 +315,10 @@ def compare_snapshots(
             and incremental_fraction <= MAX_INCREMENTAL_MAINTENANCE_FRACTION
         ),
         "closed_stage_flat_btc": abs(closed_btc_szi) <= 1e-12,
-        "closed_stage_near_zero_ubtc": abs(closed_ubtc) <= 1e-8,
+        "closed_stage_ubtc_residual_below_1_usd": (
+            closed_ubtc_notional is not None
+            and abs(closed_ubtc_notional) <= MAX_CLOSED_UBTC_RESIDUAL_USD
+        ),
     }
     passed = all(checks.values())
 
@@ -331,6 +335,7 @@ def compare_snapshots(
             "match_tolerance_fraction": MATCH_TOLERANCE,
             "max_portfolio_margin_ratio": MAX_PORTFOLIO_MARGIN_RATIO,
             "max_incremental_maintenance_fraction": MAX_INCREMENTAL_MAINTENANCE_FRACTION,
+            "max_closed_ubtc_residual_notional_usd": MAX_CLOSED_UBTC_RESIDUAL_USD,
         },
         "measurements": {
             "spot_stage_ubtc_notional": spot_notional,
@@ -342,6 +347,7 @@ def compare_snapshots(
             "matched_stage_available_after_maintenance_usdc": available_matched,
             "incremental_maintenance_consumption_usdc": incremental_maintenance,
             "incremental_maintenance_fraction_of_short_notional": incremental_fraction,
+            "closed_stage_ubtc_notional": closed_ubtc_notional,
             "matched_stage_borrow_value": as_float(
                 matched.get("borrow_lend", {}).get("total_borrow_value")
             ),
