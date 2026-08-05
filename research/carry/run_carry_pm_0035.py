@@ -17,6 +17,7 @@ USDC_TOKEN_INDEX = 0
 BTC_SPOT_API_COIN = "@142"
 BTC_PERP_API_COIN = "BTC"
 MATCH_TOLERANCE = 0.02
+MAX_SPOT_QTY_CHANGE_FRACTION = 0.001
 MAX_PROBE_NOTIONAL_USD = 500.0
 MAX_PORTFOLIO_MARGIN_RATIO = 0.50
 MAX_INCREMENTAL_MAINTENANCE_FRACTION = 0.25
@@ -270,27 +271,44 @@ def stage_clean(snapshot: dict[str, Any]) -> bool:
     return not snapshot.get("derived", {}).get("has_other_perp_positions", False)
 
 
+def is_portfolio_margin_stage(snapshot: dict[str, Any]) -> bool:
+    return (
+        snapshot.get("user_abstraction") == "portfolioMargin"
+        and bool(snapshot.get("spot", {}).get("portfolioMarginEnabled"))
+    )
+
+
 def compare_snapshots(
     cash: dict[str, Any],
     spot: dict[str, Any],
     matched: dict[str, Any],
     closed: dict[str, Any],
 ) -> dict[str, Any]:
-    fingerprints = {snapshot.get("account_fingerprint") for snapshot in (cash, spot, matched, closed)}
+    snapshots = (cash, spot, matched, closed)
+    fingerprints = {snapshot.get("account_fingerprint") for snapshot in snapshots}
     same_account = len(fingerprints) == 1 and None not in fingerprints
 
+    cash_ubtc_notional = as_float(cash.get("derived", {}).get("ubtc_spot_notional"))
     spot_notional = as_float(spot.get("derived", {}).get("ubtc_spot_notional")) or 0.0
     matched_spot_notional = as_float(matched.get("derived", {}).get("ubtc_spot_notional")) or 0.0
     short_notional = as_float(matched.get("derived", {}).get("btc_short_notional")) or 0.0
     mismatch = as_float(matched.get("derived", {}).get("match_mismatch_fraction"))
     pm_ratio = as_float(matched.get("spot", {}).get("portfolioMarginRatio"))
 
+    spot_ubtc_qty = abs(as_float(spot.get("spot", {}).get("ubtc", {}).get("total")) or 0.0)
+    matched_ubtc_qty = abs(as_float(matched.get("spot", {}).get("ubtc", {}).get("total")) or 0.0)
+    spot_qty_change_fraction = None
+    if spot_ubtc_qty > 0:
+        spot_qty_change_fraction = abs(matched_ubtc_qty - spot_ubtc_qty) / spot_ubtc_qty
+
     available_spot = available_usdc(spot)
     available_matched = available_usdc(matched)
+    raw_available_change = None
     incremental_maintenance = None
     incremental_fraction = None
     if available_spot is not None and available_matched is not None and short_notional > 0:
-        incremental_maintenance = max(0.0, available_spot - available_matched)
+        raw_available_change = available_spot - available_matched
+        incremental_maintenance = max(0.0, raw_available_change)
         incremental_fraction = incremental_maintenance / short_notional
 
     closed_ubtc_notional = as_float(closed.get("derived", {}).get("ubtc_spot_notional"))
@@ -298,15 +316,22 @@ def compare_snapshots(
 
     checks = {
         "same_account": same_account,
-        "portfolio_margin_mode": matched.get("user_abstraction") == "portfolioMargin",
-        "portfolio_margin_enabled": bool(matched.get("spot", {}).get("portfolioMarginEnabled")),
-        "dedicated_account_no_other_perps": all(stage_clean(snapshot) for snapshot in (cash, spot, matched, closed)),
+        "portfolio_margin_mode_all_stages": all(is_portfolio_margin_stage(snapshot) for snapshot in snapshots),
+        "dedicated_account_no_other_perps": all(stage_clean(snapshot) for snapshot in snapshots),
         "cash_stage_has_no_btc_short": not bool(cash.get("derived", {}).get("has_btc_short")),
+        "cash_stage_ubtc_residual_below_1_usd": (
+            cash_ubtc_notional is not None
+            and abs(cash_ubtc_notional) <= MAX_CLOSED_UBTC_RESIDUAL_USD
+        ),
         "spot_stage_has_ubtc": bool(spot.get("derived", {}).get("has_ubtc_spot")),
         "spot_stage_has_no_btc_short": not bool(spot.get("derived", {}).get("has_btc_short")),
         "probe_notional_within_cap": 0 < spot_notional <= MAX_PROBE_NOTIONAL_USD * 1.05,
         "matched_stage_has_ubtc": bool(matched.get("derived", {}).get("has_ubtc_spot")),
         "matched_stage_has_btc_short": bool(matched.get("derived", {}).get("has_btc_short")),
+        "spot_quantity_preserved_to_matched": (
+            spot_qty_change_fraction is not None
+            and spot_qty_change_fraction <= MAX_SPOT_QTY_CHANGE_FRACTION
+        ),
         "matched_base_notional_within_2pct": mismatch is not None and mismatch <= MATCH_TOLERANCE,
         "portfolio_margin_ratio_below_0_50": pm_ratio is not None and pm_ratio < MAX_PORTFOLIO_MARGIN_RATIO,
         "incremental_maintenance_measurement_available": incremental_fraction is not None,
@@ -333,11 +358,16 @@ def compare_snapshots(
         "frozen_limits": {
             "max_probe_notional_usd": MAX_PROBE_NOTIONAL_USD,
             "match_tolerance_fraction": MATCH_TOLERANCE,
+            "max_spot_qty_change_fraction": MAX_SPOT_QTY_CHANGE_FRACTION,
             "max_portfolio_margin_ratio": MAX_PORTFOLIO_MARGIN_RATIO,
             "max_incremental_maintenance_fraction": MAX_INCREMENTAL_MAINTENANCE_FRACTION,
             "max_closed_ubtc_residual_notional_usd": MAX_CLOSED_UBTC_RESIDUAL_USD,
         },
         "measurements": {
+            "cash_stage_ubtc_notional": cash_ubtc_notional,
+            "spot_stage_ubtc_quantity": spot_ubtc_qty,
+            "matched_stage_ubtc_quantity": matched_ubtc_qty,
+            "spot_to_matched_ubtc_quantity_change_fraction": spot_qty_change_fraction,
             "spot_stage_ubtc_notional": spot_notional,
             "matched_stage_ubtc_notional": matched_spot_notional,
             "matched_stage_btc_short_notional": short_notional,
@@ -345,6 +375,7 @@ def compare_snapshots(
             "matched_stage_portfolio_margin_ratio": pm_ratio,
             "spot_stage_available_after_maintenance_usdc": available_spot,
             "matched_stage_available_after_maintenance_usdc": available_matched,
+            "raw_available_after_maintenance_change_usdc": raw_available_change,
             "incremental_maintenance_consumption_usdc": incremental_maintenance,
             "incremental_maintenance_fraction_of_short_notional": incremental_fraction,
             "closed_stage_ubtc_notional": closed_ubtc_notional,
