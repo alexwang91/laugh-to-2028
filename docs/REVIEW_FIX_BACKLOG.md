@@ -279,23 +279,39 @@ step executing untrusted code. The 13 newer workflows already use `contents: rea
 (`workflow_run`, or `push` on the branch) that holds the write scope — matching the newer
 convention.
 
-### F12. Weighted covariance is biased low
+### F12. Weighted covariance is biased low — relocated, checked, immaterial
 
-**File:** `research/regime_kelly/daily_distribution.py:37`
+**Originally:** `research/regime_kelly/daily_distribution.py:37`. That function
+(`fit_daily_conditional_distribution`) was deleted as dead code by F14 — it had zero callers, so
+this exact line no longer exists anywhere.
 
+**But the same defect class is live elsewhere.** The active scenario engine moved to
+`research/hybrid_meta/walkforward_v1_meta.py::fit_state_v1_distribution` (a scalar V1-return
+version, not a full covariance matrix), and it has the identical gap at line 162:
 ```python
-w = w / w.sum()
-cov = (xc * w[:, None]).T @ xc        # missing 1/(1 - sum(w^2))
+var_raw = float(np.sum(((arr - mu_raw) ** 2) * w))   # missing * n_eff / (n_eff - 1)
+n_eff = float(1.0 / np.sum(w ** 2))                   # computed right below, unused for this
 ```
+This function is not a side line — `run_dispersion_overlay.py::build_brrk0011_scale` calls it
+directly, feeding `sample_v1_paths` → `choose_scale_corrected`, which produces the actual
+`brrk_scale` time series that `BRRK0011_BASELINE = v1_raw.mul(brrk_scale, axis=0)` uses. It is on
+the critical path of the canonical, currently-recommended BRRK-0011 number.
 
-Frequency-weighted covariance needs the `1/(1 - Σwᵢ²)` correction. Without it the
-state-conditional covariance is understated by roughly `1/n_eff`, which narrows the Monte Carlo
-paths, shrinks CVaR/CDaR, raises `safe_max_scale` and biases position size **upward**. `n_eff` is
-already computed on the next line.
+**Checked 2026-08-05, before doing anything: how big is it?** `n_eff` at the state level depends
+on how concentrated the posterior state-membership weights are, not on the training-window length
+directly. A read-only diagnostic (fit the real variational regime model at 8 decision dates spread
+across the full 2022-12-10..2026-08-02 walk-forward, sample every semantic state) found `n_eff`
+consistently in the **200-665** range, giving a bias-correction factor `n_eff/(n_eff-1)` of
+**1.0015 to 1.0094** — i.e. the missing correction understates variance by **0.15%-0.94%**, mean
+0.39%, across all 32 (date, state) samples. That is two orders of magnitude smaller than the
+effects this repo already treats as immaterial (e.g. F7's 0.07pp CAGR convention gap), and far
+inside the noise of a Monte Carlo scale choice.
 
-**Do.** Apply the correction, re-run the affected experiments under their existing IDs, and record
-old vs new. Expect BRRK scales to move slightly down. **[REGISTER]** if the resulting scale change
-alters a published trading target.
+**Decision: not doing this.** Per the standing rule (a fix only earns a registered rerun if it has
+a plausible chance of changing a trading-relevant number), a <1% variance correction is not worth
+the [REGISTER] overhead of a new experiment ID and a full re-run. Closing without a code change.
+Reopen only if `fit_state_v1_distribution` is ever changed to condition on a much narrower/more
+concentrated posterior (small `n_eff`), where this correction would start to matter.
 
 ### F13. One drawdown implementation
 
@@ -333,6 +349,18 @@ assertion that the caller has already purged.
 ---
 
 ## P3 — execution hardening (unchanged since the first review; research now runs at 1.42x gross)
+
+**Triage note, 2026-08-05.** Explicitly not touched in this pass, and why: F15/F16/F17 (order
+idempotency, partial-fill detection, non-atomic reversal with a silent-alert gap) are real
+capital-safety risk — the "avoid liquidation on top of CAGR" side of the priority the strategy
+work is supposed to serve — but `execution/plan-b-bot` is live-money-moving code with an unclear
+deploy trigger (possibly auto-deploy on push to `main`), so pushing changes here is a materially
+different kind of action than a research/measurement PR and deserves its own explicit round rather
+than being folded into a backlog sweep. F18-F21 are lower-severity execution polish. F23 (funding
+filter scope) is [REGISTER] research work, not hardening, and is high-value given FUNDING-PNL-0003
+already measured -25.19%/-13.40% additive drag concentrated exactly where the current filter is
+blind — it is the strongest remaining candidate for the next *research* round. None of F15-F23 are
+abandoned; they are sequenced behind getting explicit sign-off on touching the execution layer.
 
 ### F15. Order idempotency — highest single operational risk
 
@@ -451,6 +479,19 @@ stress (see Zhang 2026 in the literature review). Do not tune the existing thres
 
 ## P3b — methodology, needs registration
 
+**Triage note, 2026-08-05.** Traced whether F24/F26 actually touch the canonical, currently-
+recommended number before prioritizing them: `run_dynamic_dispersion.py::main` builds
+`BRRK0011_BASELINE = v1_raw.mul(brrk_scale, axis=0)` from `build_brrk0011_scale` alone —
+`dynamic_dispersion()` (F24's target) only feeds the separate `*_DISP0015` overlay candidates
+(`V1_PLUS_DYNAMIC_UNIVERSE_DISP0015`, `BRRK0011_PLUS_DYNAMIC_UNIVERSE_DISP0015`), which the
+script's own `decision` field already says are not promoted. Confirmed by reading the code, not
+assumed. Same for F26 (PIT fetch error tolerance) as it applies to that dynamic-universe fetch —
+the fixed V1/BRRK-0011 core (BTC/ETH/SOL/BNB) does not depend on the wider dynamic panel resolving
+cleanly. Both stay correctly low-priority: real defects, but currently isolated to a
+not-yet-promoted research line, not the baseline the README recommends. F25 is explicitly
+deferred by its own text ("if the PIT-ALPHA line stays stopped, do this when it is next touched").
+F28 (impact cost / capacity) matters more as deployed size grows; revisit if that changes.
+
 ### F24. Make the dispersion estimator scale-invariant **[REGISTER]**
 
 **File:** `research/pit_universe/run_dynamic_dispersion.py` (`dynamic_dispersion`)
@@ -487,7 +528,7 @@ selective and favourable. `run_entry_rank_eligibility_exit.py` already uses `if 
 
 **Do.** Match the stricter behaviour, and persist the failed-symbol list in the report either way.
 
-### F27. Model the risk-free rate and idle cash consistently
+### F27. Model the risk-free rate and idle cash consistently — measured, restated numbers below
 
 **Files:** `research/core/crypto_rotation_backtest.py` (`metrics`),
 `research/pit_universe/run_dynamic_alpha.py` (`metrics`),
@@ -495,9 +536,8 @@ selective and favourable. `run_entry_rank_eligibility_exit.py` already uses `if 
 `research/funding_router/run_frozen_holdings_funding_pnl.py` (`metrics`)
 
 Every Sharpe uses rf = 0, and idle cash earns nothing. Mean idle cash over the 2022-12-10 window
-is **20.5%**. Crediting 4.5% raises CAGR by ~1.5pp while lowering excess Sharpe from 1.295 to
-1.215 — the two omissions push CAGR and Sharpe in opposite directions and do not cancel. At the
-0.08 Sharpe level this is comparable to the entire BRRK-0011 vs V1 gap.
+was estimated at **20.5%**, with a preliminary estimate that crediting 4.5% would raise CAGR by
+~1.5pp while *lowering* excess Sharpe from 1.295 to 1.215.
 
 **Do.** Credit unused cash at the daily risk-free rate and report Sharpe on excess returns. Share
 the rate series with F1. Report restated numbers next to the originals.
@@ -514,6 +554,53 @@ the rate series with F1. Report restated numbers next to the originals.
   `preferred_ratio_field`. Several F27 comparisons will be between highly correlated variants of
   the same strategy, which is the regime where a geometric excess/volatility ratio stops being a
   Sharpe ratio.
+
+**Measured 2026-08-05** with `research/review_2026_08_04/verify_idle_cash_credit.py`, following
+both constraints above exactly (investment-basis rate, `excess_return_metrics`,
+`preferred_ratio_field`), against the committed PIT-DISP-0015 `daily_equity.csv` /
+`daily_weights.csv` (2022-12-10..2026-08-02, no re-fit — gross exposure read directly from the
+committed weights, cash fraction is `1 - gross`, credited at the daily investment-basis rate):
+
+| | V1 baseline | BRRK-0011 core |
+|---|---:|---:|
+| mean idle-cash fraction | 20.5% | 24.5% |
+| CAGR, raw → credited | 61.373% → 62.721% | 65.233% → 66.870% |
+| CAGR delta | **+1.348 pp** | **+1.637 pp** |
+| Sharpe (rf=0), raw → credited | 1.2955 → 1.3143 | 1.3538 → 1.3761 |
+| Sharpe (excess over rf), raw → credited | 1.2733 → 1.3037 | 1.3677 → 1.4048 |
+| Max drawdown, raw → credited | -37.63% → -36.60% | -33.72% → -33.55% |
+
+The CAGR direction and rough size (+1.3-1.6pp) match the preliminary estimate. **The Sharpe
+direction does not**: both variants' Sharpe *rises* on crediting, on both the rf=0 and the
+excess-over-rf basis — it does not fall from 1.295 to 1.215 the way the preliminary estimate
+assumed. This is mechanically expected once you account for *when* the idle cash sits: median
+idle fraction is 0% for both variants (most days are close to fully invested), and the mean is
+pulled up by episodes where the regime-Kelly / trend-following exposure pulls back toward cash —
+which are disproportionately the same higher-realized-volatility, drawdown-adjacent periods.
+Crediting a smooth, positive, low-volatility return exactly on the days the strategy is
+defensively out of the market is diversifying, not diluting; both variants' max drawdown also
+improves slightly, consistent with this. The "1.295 to 1.215" figure predates
+`excess_return_metrics`/the investment-basis rate and was a preliminary estimate from the initial
+review, not a reproduced number — treat the table above as the current source of truth and this
+note as its correction, per discipline #3 (both are kept, not silently merged).
+
+**Net effect on the BRRK-0011 vs V1 comparison:** the Sharpe gap moves from +0.0582 (raw) to
++0.0618 (credited) — a shift of +0.0036, far smaller than F10's bootstrap CI width
+`[-0.046, +0.164]`. Idle-cash crediting does not change which side of zero that comparison sits
+on, and does not change the "not statistically significant" conclusion.
+
+**What this does change:** both variants' true achievable CAGR is 1.3-1.6pp higher than the
+headline numbers show, at zero additional strategy or leverage risk, if idle margin is actually
+swept into a yield-bearing instrument (a T-bill ladder, or a spot-collateral yield where
+applicable) instead of sitting at 0%. This is the one restatement in this pass with a direct,
+low-risk profitability read: it is not a reason to change the strategy, but it is a reason to make
+sure idle margin is not literally earning nothing in execution.
+
+**Not yet done:** wiring this into the four `metrics()` functions listed above as a standing
+feature (this measurement was done as an external overlay on committed evidence, matching the
+"report restated numbers next to the originals" instruction, without touching any frozen
+function). Doing that for every experiment, not just the BRRK-0011-vs-V1 headline pair, is future
+work if it turns out to matter for a specific promotion decision.
 
 ### F28. Cost model has no impact term
 
