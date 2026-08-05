@@ -16,11 +16,9 @@
 
 项目已经从“继续寻找新历史 alpha”转入 **capital structure / routing / execution / forward evidence** 阶段。
 
-当前唯一 P0：**CARRY-PM-0035 — Hyperliquid Portfolio Margin account-behavior probe**。
+**Carry 历史研究线已停止。** `CARRY-RF-0036R1` 将 CARRY-PNL-0031 从“相对零收益为正”重新定价为“相对现金为正”，首个有效结果显示：5 bps carry CAGR **2.740%**，同期 FRED `DTB3` 现金 CAGR **3.165%**，`excess_cagr_over_rf = -0.425 pp/yr`，`excess_sharpe_over_rf = -0.222`。因此 corrected `net_economics` **FAIL**，按纪律 #7 不再救援。
 
-它要回答的不是“carry 历史收益还能不能更高”，而是：
-
-> 在已验证的 `UBTC spot + BTC short perp` 结构下，Portfolio Margin 对 short leg 的真实增量 maintenance consumption 到底是多少，能否解决 CARRY-STACK-0033 的资本占用/频繁缩放缺陷。
+由此：**CARRY-PM-0035 不再需要执行；CARRY-PM-0037 作为 F2 的 measurement-integrity 修复保留，但同样不再需要投入 live probe capital。**
 
 ---
 
@@ -35,11 +33,12 @@
 | TSMOM-ALPHA-0029 | Corr vs BRRK 低，但 CAGR **-4.12%**, MDD **-88.30%** | **拒绝并停止救援** |
 | FUNDING-PNL-0003 | Hyperliquid all-perp CAGR **44.08%** vs price-only ~65% | **全 perp 默认实现拒绝** |
 | ROUTER-DATA-0004 / PNL-0005 | BTC->UBTC spot verified；BTC-only spot accounting CAGR **56.20%** | BTC spot-first shadow candidate |
-| **CARRY-PNL-0031** | CAGR **2.74%**, MDD **-7.01%**, Sharpe **1.428**, corr(BRRK) **-0.098** | **独立 carry 机制通过** |
-| CARRY-AUDIT-0032 | SOL/XRP basis extrema 与官方 exact daily archive 一致 | 0031 数据归因通过 |
-| **CARRY-STACK-0033** | BRRK+idle-capital carry CAGR/Sharpe/Calmar 均下降；allocation turnover **20.87x** | **该 stacking 方式拒绝** |
-| **CARRY-IMPL-0034** | UBTC token index 197 当前 LTV **0.50**；BTC spot/perp books live | **BTC PM public feasibility PASS** |
-| **CARRY-PM-0035** | 四阶段账户机制探针 | **当前 P0，尚未产生账户结果** |
+| **CARRY-PNL-0031** | 原报告 CAGR **2.74%**, Sharpe **1.428**；F1 复算同期 DTB3 CAGR **3.165%**, excess Sharpe **-0.222** | **corrected net_economics FAIL；carry 线停止** |
+| CARRY-AUDIT-0032 | SOL/XRP basis extrema 与官方 exact daily archive 一致 | 数据归因通过，但不改变 F1 停止结论 |
+| **CARRY-STACK-0033** | 原规则已拒绝；F1 再与 BRRK+idle cash 对照后仍为负超额 | **保持拒绝；不再解释为“standalone carry 仍通过”** |
+| **CARRY-IMPL-0034** | UBTC token index 197 当前 LTV **0.50**；BTC spot/perp books live | public feasibility 有效，但无后续 carry 授权 |
+| **CARRY-PM-0035** | 旧四阶段账户机制探针 | **NOT REQUIRED — upstream carry economics failed** |
+| **CARRY-PM-0037** | F2 measurement-integrity gate：time/drift bounds + 3-state outcome + bounded retry | **实现保留；NOT REQUIRED，不运行 live probe** |
 | Hyperliquid executor | testnet/shadow skeleton | reconciliation / slippage / failure-path hardening required |
 
 ---
@@ -67,23 +66,36 @@ The dominant implementation lesson is that instrument/funding choice can destroy
 
 ## Carry research
 
-### CARRY-PNL-0031
+### CARRY-PNL-0031 — original report preserved, qualification restated by CARRY-RF-0036R1
 
-Frozen same-venue Binance `long spot + short perp` baseline across BTC/ETH/SOL/BNB/XRP:
+Frozen same-venue Binance `long spot + short perp` baseline across BTC/ETH/SOL/BNB/XRP originally reported:
 
 - 5 bps CAGR: **2.740%**;
 - MDD: **-7.005%**;
 - annualized vol: **1.904%**;
-- Sharpe: **1.428**;
+- zero-hurdle Sharpe: **1.428**;
 - funding-only no-cost CAGR: **3.701%**;
 - daily corr vs BRRK: **-0.098**;
 - mean carry return on BRRK worst-decile days: positive.
 
-This establishes an economically independent low-vol carry mechanism.
+F1 did **not** change assets, weights, costs, funding accounting or window. `CARRY-RF-0036R1` changed only the economic hurdle to FRED 3-month T-bill `DTB3` cash on the identical 2020-09-15..2026-07-30 window:
+
+| Measure | Carry 0031 | DTB3 cash / excess |
+|---|---:|---:|
+| CAGR | **2.7404%** | cash **3.1653%** |
+| Final $10k | **$11,719.83** | cash **$12,007.20** |
+| excess CAGR | — | **-0.4249 pp/yr** |
+| excess Sharpe over rf | — | **-0.2216** |
+
+2021 carry return was **+16.8037%** while full-window cumulative carry return was **+17.1983%**. The corrected `net_economics = excess return over rf > 0` gate therefore **FAILS**.
+
+Decision: **stop the carry line under discipline #7.** No BNB removal, funding-sign filter, basis threshold, alternate window, weight/leverage change or other same-window rescue is authorized.
+
+Exact restatement and daily evidence: [`research/results/carry_rf_0036r1/`](research/results/carry_rf_0036r1/)
 
 ### CARRY-STACK-0033
 
-The conservative rule `carry_scale = max(0, 1 - held_BRRK_gross)` failed:
+The conservative rule `carry_scale = max(0, 1 - held_BRRK_gross)` had already failed its preregistered stack gate:
 
 - BRRK CAGR **56.66%** -> combined **56.04%**;
 - Sharpe **1.235** -> **1.226**;
@@ -92,7 +104,9 @@ The conservative rule `carry_scale = max(0, 1 - held_BRRK_gross)` failed:
 - extra scale-change cost: about **1.043%**;
 - net carry contribution: **-1.236%**.
 
-Interpretation: **carry mechanism did not fail; using it as a daily BRRK idle-cash filler failed.** No historical scale/threshold/fixed-weight/leverage rescue is authorized.
+F1 additionally compares the combined stack against the correct alternative for unused BRRK capital: **BRRK + matched idle cash accrual**. The combined stack again has negative excess economics; corrected `net_economics_vs_idle_cash` **FAILS**.
+
+The earlier interpretation “carry mechanism did not fail; only the idle-cash conversion failed” is no longer supported after the cash-hurdle correction. Both the standalone economic gate and the 0033 conversion gate fail. No historical rescue is authorized.
 
 ### CARRY-IMPL-0034
 
@@ -106,64 +120,48 @@ Public Hyperliquid audit on 2026-08-05:
 - spot/perp midpoint basis at snapshot: **2.492 bps**;
 - $100k UBTC simulated spot buy/sell slippage: **1.177 / 0.287 bps** within returned 20 levels.
 
-Decision: **PASS_BTC_PUBLIC_FEASIBILITY**. This only authorizes the separate account-behavior probe in CARRY-PM-0035.
+`PASS_BTC_PUBLIC_FEASIBILITY` remains a valid implementation observation, but F1 removed the upstream economic authorization for a carry PM probe.
 
 Formal result: [`research/results/CARRY_IMPL_0034_RESULT_2026-08-05.md`](research/results/CARRY_IMPL_0034_RESULT_2026-08-05.md)
 
 ---
 
-## P0 — CARRY-PM-0035
+## F2 — CARRY-PM-0037 measurement integrity
 
-Use a dedicated new account/subaccount with value below $1,000. Research code is read-only and never handles private keys or submits orders.
+`CARRY-PM-0035.json` is preserved unchanged. Because F2 changes a frozen gate, the replacement was preregistered first as `CARRY-PM-0037-MEASUREMENT-INTEGRITY`.
 
-Frozen four-stage sequence:
+The script remains strictly read-only: Hyperliquid `/info` only, no signing, no orders, public address stored only as a SHA-256 fingerprint.
+
+Frozen F2 integrity bounds:
+
+- spot -> matched snapshot gap <= **300 seconds**;
+- UBTC spot midpoint drift <= **25 bps**;
+- BTC perp midpoint drift <= **25 bps**;
+- probe spot cap remains **$500**, with the already-existing fixed **5% execution tolerance** (`$525` observed-notional ceiling);
+- `/info` calls use bounded retries: **4 attempts**, backoff **0.5 / 1 / 2 seconds**, only transport errors plus HTTP 408/429/5xx are retryable.
+
+The old clamped single-number interpretation is replaced by explicit measurement states:
 
 ```text
-cash
-  -> UBTC spot only
-  -> same UBTC + matched BTC short perp
-  -> close both legs
+PM_RELEASES_MARGIN
+PM_CONSUMES_MARGIN
+MEASUREMENT_INCONCLUSIVE
 ```
 
-Primary measurement:
+`snapshot_gap_within_bound` and `mid_drift_within_bound` must both pass before a release/consume interpretation is allowed. Failed drift/timing integrity produces `MEASUREMENT_INCONCLUSIVE`, not a false zero-consumption PASS.
 
-```text
-incremental_maintenance_consumption_usdc
-  = available_after_maintenance_USDC(spot-only)
-    - available_after_maintenance_USDC(matched)
+Because F1 failed the upstream cash hurdle, **0035/0037 are not required and no live PM probe should be run**. F2 is retained as corrected measurement infrastructure, not as authorization to spend capital.
 
-capital_factor
-  = incremental_maintenance_consumption_usdc
-    / matched_short_notional
-```
-
-Frozen structural gate:
-
-- account abstraction = Portfolio Margin;
-- PM enabled;
-- dedicated account, no other perp positions;
-- matched notional mismatch <= **2%**;
-- matched portfolio margin ratio < **0.50**;
-- measured incremental maintenance fraction <= **25%**;
-- closed stage returns flat in BTC short and UBTC probe legs.
-
-PASS authorizes only one separately preregistered PM-aware BRRK + frozen CARRY-0031 stack accounting experiment. No leverage/weight/funding-threshold search.
-
-Preregistration: [`research/carry/CARRY-PM-0035.json`](research/carry/CARRY-PM-0035.json)  
-Runbook: [`docs/CARRY_PM_0035_RUNBOOK.md`](docs/CARRY_PM_0035_RUNBOOK.md)
+Preregistration: [`research/carry/CARRY-PM-0037.json`](research/carry/CARRY-PM-0037.json)  
+Runbook: [`docs/CARRY_PM_0037_RUNBOOK.md`](docs/CARRY_PM_0037_RUNBOOK.md)
 
 ---
 
-## Queue after 0035
+## Queue after F1/F2
 
-### If 0035 passes
+There is no authorized historical carry rescue and no authorized PM carry stack experiment.
 
-1. preregister exactly one `CARRY-STACK-0036-PM` capital rule using the observed PM capital factor;
-2. preserve BRRK-0011 and CARRY-0031 unchanged;
-3. test CAGR / Sharpe / MDD / Calmar / capital utilization / carry turnover;
-4. if 0036 fails, stop historical carry stacking research.
-
-### In parallel / afterwards
+Continue only independent non-carry work already separated by the project disciplines:
 
 - strict BTC spot/perp forward shadow router;
 - UETH/USOL identity/custody/redemption validation remains separate from PNL;
@@ -171,12 +169,15 @@ Runbook: [`docs/CARRY_PM_0035_RUNBOOK.md`](docs/CARRY_PM_0035_RUNBOOK.md)
 - forward collection of funding, basis, depth, expected/realized slippage and fills;
 - leverage remains last.
 
+This PR does not implement any `execution/` work.
+
 ---
 
 ## Repository structure
 
 ```text
 research/
+  common/               reusable research infrastructure, including risk-free series
   core/                 frozen strategy foundations
   regime_kelly/         BRRK state/risk research
   dispersion_overlay/   dispersion experiments
@@ -184,13 +185,14 @@ research/
   tsmom/                 independent trend sleeve research
   carry/                 carry and Portfolio Margin experiments
   funding_router/        funding/router audits and accounting
-  results/               durable reports and compact evidence
+  results/               durable reports and daily evidence
 execution/
   plan-b-bot/            Hyperliquid testnet/shadow executor skeleton
 docs/
   NEXT_STEPS.md
   RESEARCH_HISTORY.md
   CARRY_PM_0035_RUNBOOK.md
+  CARRY_PM_0037_RUNBOOK.md
 .github/workflows/       reproducible experiment and validation jobs
 ```
 
