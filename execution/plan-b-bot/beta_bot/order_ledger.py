@@ -11,15 +11,44 @@ from .order_identity import OrderIdentity
 
 
 SCHEMA_VERSION = 1
-KNOWN_EXCHANGE_STATUSES = {
-    "filled",
-    "open",
+CANCEL_EXCHANGE_STATUSES = {
     "canceled",
-    "triggered",
-    "rejected",
     "marginCanceled",
+    "vaultWithdrawalCanceled",
+    "openInterestCapCanceled",
+    "selfTradeCanceled",
+    "reduceOnlyCanceled",
+    "siblingFilledCanceled",
+    "delistedCanceled",
+    "liquidatedCanceled",
+    "scheduledCancel",
 }
-TERMINAL_EXCHANGE_STATUSES = {"filled", "canceled", "rejected", "marginCanceled"}
+REJECT_EXCHANGE_STATUSES = {
+    "rejected",
+    "tickRejected",
+    "minTradeNtlRejected",
+    "perpMarginRejected",
+    "reduceOnlyRejected",
+    "badAloPxRejected",
+    "iocCancelRejected",
+    "badTriggerPxRejected",
+    "marketOrderNoLiquidityRejected",
+    "positionIncreaseAtOpenInterestCapRejected",
+    "positionFlipAtOpenInterestCapRejected",
+    "tooAggressiveAtOpenInterestCapRejected",
+    "openInterestIncreaseRejected",
+    "insufficientSpotBalanceRejected",
+    "oracleRejected",
+    "perpMaxPositionRejected",
+}
+KNOWN_EXCHANGE_STATUSES = {
+    "open",
+    "filled",
+    "triggered",
+} | CANCEL_EXCHANGE_STATUSES | REJECT_EXCHANGE_STATUSES
+TERMINAL_EXCHANGE_STATUSES = {
+    "filled",
+} | CANCEL_EXCHANGE_STATUSES | REJECT_EXCHANGE_STATUSES
 FILL_LIMIT = 2000
 
 
@@ -673,10 +702,10 @@ class OrderLedger:
                 terminal = status if status in TERMINAL_EXCHANGE_STATUSES and complete else None
                 cancel_reason = None
                 reject_reason = row["reject_reason"]
-                if status in {"canceled", "marginCanceled"}:
+                if status in CANCEL_EXCHANGE_STATUSES:
                     cancel_reason = f"exchange_status:{status}"
-                if status == "rejected" and not reject_reason:
-                    reject_reason = "exchange_status:rejected"
+                if status in REJECT_EXCHANGE_STATUSES and not reject_reason:
+                    reject_reason = f"exchange_status:{status}"
 
                 current_status = f"exchange:{status}" if complete else "reconciliation_uncertain"
                 conn.execute(
