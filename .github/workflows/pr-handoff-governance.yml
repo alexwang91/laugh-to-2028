@@ -1,0 +1,67 @@
+name: PR handoff governance
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  continuity-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate PR handoff contract
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const body = context.payload.pull_request?.body || '';
+            const required = [
+              '## Roadmap task',
+              '## Baseline reviewed',
+              '## What changed',
+              '## What did not change',
+              '## Evidence and tests',
+              '## Project drift audit',
+              '## Risks and unresolved items',
+              '## Production authorization',
+              '## CURRENT_STATE handoff',
+              '## Exact next step',
+            ];
+
+            const missing = required.filter(section => !body.includes(section));
+            if (missing.length) {
+              core.setFailed(`Missing mandatory PR sections: ${missing.join(', ')}`);
+              return;
+            }
+
+            if (!/DRIFT_[0-4]/.test(body)) {
+              core.setFailed('PR body must declare a project drift level DRIFT_0..DRIFT_4.');
+              return;
+            }
+
+            if (/DRIFT_4/.test(body)) {
+              core.setFailed('DRIFT_4 is a merge-prohibited state. Correct the violation before merge.');
+              return;
+            }
+
+            const allowedAuthorization = /NO_CHANGE|SHADOW_ONLY|CANDIDATE|LIVE_LIMITED|ACTIVE_RELEASE/;
+            if (!allowedAuthorization.test(body)) {
+              core.setFailed('PR body must explicitly declare production authorization.');
+              return;
+            }
+
+            const files = await github.paginate(github.rest.pulls.listFiles, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number,
+              per_page: 100,
+            });
+            const names = files.map(f => f.filename);
+            if (!names.includes('docs/CURRENT_STATE.md')) {
+              core.setFailed('Every forward PR must update docs/CURRENT_STATE.md for cross-chat handoff.');
+              return;
+            }
+
+            core.info('PR handoff contract satisfied.');
