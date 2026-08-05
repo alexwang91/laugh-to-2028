@@ -1,0 +1,55 @@
+name: CARRY DATA 0030
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/carry-data-0030.yml'
+      - 'research/requirements.txt'
+      - 'research/carry/**'
+      - 'research/pit_universe/run_archive_discovery.py'
+      - 'research/funding_router/run_funding_data_audit.py'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: carry-data-0030-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  carry-data:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: research/requirements.txt
+      - name: Install research dependencies
+        run: pip install --disable-pip-version-check -r research/requirements.txt
+      - name: Run deterministic unit tests
+        working-directory: research/carry
+        run: python -m unittest -v test_carry_data_0030.py
+      - name: Run preregistered carry data audit
+        working-directory: research/carry
+        shell: bash
+        run: |
+          set -o pipefail
+          python run_carry_data_0030.py | tee carry_data_0030.log
+      - name: Upload exact evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: carry-data-0030-results
+          retention-days: 30
+          if-no-files-found: warn
+          path: |
+            research/carry/CARRY-DATA-0030.json
+            research/carry/carry_data_0030.log
+            research/results/carry_data_0030/**
