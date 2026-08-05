@@ -11,6 +11,14 @@ from .order_identity import OrderIdentity
 
 
 SCHEMA_VERSION = 1
+KNOWN_EXCHANGE_STATUSES = {
+    "filled",
+    "open",
+    "canceled",
+    "triggered",
+    "rejected",
+    "marginCanceled",
+}
 TERMINAL_EXCHANGE_STATUSES = {"filled", "canceled", "rejected", "marginCanceled"}
 FILL_LIMIT = 2000
 
@@ -49,11 +57,10 @@ class LedgerIntent:
 
 
 class OrderLedger:
-    """SQLite-backed audit ledger keyed by deterministic Hyperliquid CLOID.
+    """SQLite-backed execution truth keyed by deterministic Hyperliquid CLOID.
 
-    P1.2 assumes this file lives on operator-provided durable storage. Runtime
-    validation belongs in Settings; this class only guarantees transactional SQLite
-    semantics for the path it is given.
+    The configured file is assumed to live on operator-provided durable storage.
+    Settings validates that deployment precondition before trade mode is allowed.
     """
 
     def __init__(self, path: str):
@@ -81,8 +88,8 @@ class OrderLedger:
     def _initialize(self) -> None:
         try:
             with self._connect() as conn:
-                # DELETE keeps the durable state self-contained in the configured DB
-                # file instead of relying on a long-lived WAL sidecar.
+                # DELETE keeps committed truth in the configured database file rather
+                # than depending on a long-lived WAL sidecar surviving separately.
                 conn.execute("PRAGMA journal_mode = DELETE")
                 check = conn.execute("PRAGMA quick_check").fetchone()
                 if not check or check[0] != "ok":
@@ -159,7 +166,9 @@ class OrderLedger:
                     "SELECT value FROM ledger_metadata WHERE key='schema_version'"
                 ).fetchone()
                 if not row or int(row[0]) != SCHEMA_VERSION:
-                    raise LedgerError(f"Unsupported order-ledger schema version: {row[0] if row else None}")
+                    raise LedgerError(
+                        f"Unsupported order-ledger schema version: {row[0] if row else None}"
+                    )
         except LedgerError:
             raise
         except sqlite3.Error as exc:
@@ -218,7 +227,9 @@ class OrderLedger:
         now = _now_ms()
         try:
             with self._connect() as conn:
-                existing = conn.execute("SELECT * FROM orders WHERE cloid=?", (identity.cloid,)).fetchone()
+                existing = conn.execute(
+                    "SELECT * FROM orders WHERE cloid=?", (identity.cloid,)
+                ).fetchone()
                 if existing is None:
                     conn.execute(
                         """INSERT INTO orders (
@@ -288,7 +299,9 @@ class OrderLedger:
                         raise LedgerUncertainState(
                             f"CLOID {identity.cloid} already exists with different economic intent"
                         )
-                row = conn.execute("SELECT * FROM orders WHERE cloid=?", (identity.cloid,)).fetchone()
+                row = conn.execute(
+                    "SELECT * FROM orders WHERE cloid=?", (identity.cloid,)
+                ).fetchone()
                 return dict(row)
         except LedgerError:
             raise
@@ -308,13 +321,12 @@ class OrderLedger:
                     )
                 conn.execute(
                     """UPDATE orders
-                       SET submission_attempt_timestamp_ms=?, current_status='submission_attempt_recorded',
-                           updated_at_ms=? WHERE cloid=?""",
+                       SET submission_attempt_timestamp_ms=?,
+                           current_status='submission_attempt_recorded', updated_at_ms=?
+                       WHERE cloid=?""",
                     (timestamp, timestamp, cloid),
                 )
-                self._history(
-                    conn, cloid, "local", "submission_attempt_recorded", {}, timestamp
-                )
+                self._history(conn, cloid, "local", "submission_attempt_recorded", {}, timestamp)
         except LedgerError:
             raise
         except sqlite3.Error as exc:
@@ -322,7 +334,10 @@ class OrderLedger:
 
     def record_submission_unknown(self, cloid: str, error: BaseException | str) -> None:
         now = _now_ms()
-        detail = {"error": str(error), "error_type": type(error).__name__ if not isinstance(error, str) else "str"}
+        detail = {
+            "error": str(error),
+            "error_type": type(error).__name__ if not isinstance(error, str) else "str",
+        }
         try:
             with self._connect() as conn:
                 conn.execute(
@@ -352,9 +367,9 @@ class OrderLedger:
                 conn.execute(
                     """UPDATE orders SET
                         exchange_oid=COALESCE(?, exchange_oid),
-                        submission_response_timestamp_ms=?,
-                        submission_response_status=?, submission_response_json=?,
-                        current_status=?, reject_reason=COALESCE(?, reject_reason),
+                        submission_response_timestamp_ms=?, submission_response_status=?,
+                        submission_response_json=?, current_status=?,
+                        reject_reason=COALESCE(?, reject_reason),
                         terminal_status=COALESCE(?, terminal_status), updated_at_ms=?
                        WHERE cloid=?""",
                     (
@@ -374,7 +389,11 @@ class OrderLedger:
                     cloid,
                     "exchange_submission",
                     response_status,
-                    {"exchange_oid": exchange_oid, "response": response, "reject_reason": reject_reason},
+                    {
+                        "exchange_oid": exchange_oid,
+                        "response": response,
+                        "reject_reason": reject_reason,
+                    },
                     now,
                 )
         except LedgerError:
@@ -382,60 +401,15 @@ class OrderLedger:
         except sqlite3.Error as exc:
             raise LedgerError(f"Could not persist submission response: {exc}") from exc
 
-    def record_exchange_discovery(self, cloid: str, response: dict[str, Any]) -> str:
-        """Persist a known exchange order before full fill reconciliation.
-
-        This is used by the pre-submit CLOID lookup. It suppresses duplicate submission
-        immediately, while deliberately leaving terminal_status unset until user fills
-        have been reconciled.
-        """
-        if response.get("status") != "order":
-            raise LedgerUncertainState(f"Cannot record non-order discovery: {response}")
-        envelope = response.get("order")
-        if not isinstance(envelope, dict):
-            raise LedgerUncertainState(f"Malformed orderStatus envelope: {response}")
-        order = envelope.get("order")
-        status = envelope.get("status")
-        if not isinstance(order, dict) or not isinstance(status, str) or order.get("oid") is None:
-            raise LedgerUncertainState(f"Malformed orderStatus payload: {response}")
-        oid = str(order["oid"])
-        remaining = _as_float(order.get("sz"))
+    def record_reconciliation_uncertainty(
+        self, cloid: str, reason: str, detail: Any = None
+    ) -> None:
         now = _now_ms()
         try:
             with self._connect() as conn:
-                row = conn.execute("SELECT * FROM orders WHERE cloid=?", (cloid,)).fetchone()
+                row = conn.execute("SELECT cloid FROM orders WHERE cloid=?", (cloid,)).fetchone()
                 if not row:
-                    raise LedgerError(f"Exchange discovery has no local intent record: {cloid}")
-                existing_oid = row["exchange_oid"]
-                if existing_oid is not None and str(existing_oid) != oid:
-                    self._history(
-                        conn, cloid, "reconciliation", "exchange_oid_conflict",
-                        {"local_oid": existing_oid, "exchange_oid": oid}, now,
-                    )
-                    conn.commit()
-                    raise LedgerUncertainState(
-                        f"CLOID {cloid} maps to conflicting exchange OIDs: {existing_oid} vs {oid}"
-                    )
-                conn.execute(
-                    """UPDATE orders SET exchange_oid=?, current_status=?, last_exchange_status=?,
-                       last_exchange_payload_json=?, remaining_quantity=COALESCE(?, remaining_quantity),
-                       last_reconciliation_timestamp_ms=?, updated_at_ms=? WHERE cloid=?""",
-                    (oid, f"exchange_observed:{status}", status, _json(response), remaining, now, now, cloid),
-                )
-                self._history(
-                    conn, cloid, "exchange_lookup", status,
-                    {"exchange_oid": oid, "full_fill_reconciliation_pending": True}, now,
-                )
-                return status
-        except LedgerError:
-            raise
-        except sqlite3.Error as exc:
-            raise LedgerError(f"Could not persist exchange discovery: {exc}") from exc
-
-    def record_reconciliation_uncertainty(self, cloid: str, reason: str, detail: Any = None) -> None:
-        now = _now_ms()
-        try:
-            with self._connect() as conn:
+                    raise LedgerError(f"Cannot audit uncertainty for missing CLOID: {cloid}")
                 conn.execute(
                     """UPDATE orders SET current_status='reconciliation_uncertain',
                        last_reconciliation_timestamp_ms=?, updated_at_ms=? WHERE cloid=?""",
@@ -449,8 +423,85 @@ class OrderLedger:
                     {"reason": reason, "detail": detail},
                     now,
                 )
+        except LedgerError:
+            raise
         except sqlite3.Error as exc:
             raise LedgerError(f"Could not persist reconciliation uncertainty: {exc}") from exc
+
+    def record_exchange_discovery(self, cloid: str, response: dict[str, Any]) -> str:
+        """Persist a known exchange order before full fill reconciliation."""
+        if response.get("status") != "order":
+            self.record_reconciliation_uncertainty(cloid, "non_order_exchange_discovery", response)
+            raise LedgerUncertainState(f"Cannot record non-order discovery: {response}")
+        envelope = response.get("order")
+        if not isinstance(envelope, dict):
+            self.record_reconciliation_uncertainty(cloid, "malformed_order_status_envelope", response)
+            raise LedgerUncertainState(f"Malformed orderStatus envelope: {response}")
+        order = envelope.get("order")
+        status = envelope.get("status")
+        if not isinstance(order, dict) or not isinstance(status, str) or order.get("oid") is None:
+            self.record_reconciliation_uncertainty(cloid, "malformed_order_status_payload", response)
+            raise LedgerUncertainState(f"Malformed orderStatus payload: {response}")
+        if status not in KNOWN_EXCHANGE_STATUSES:
+            self.record_reconciliation_uncertainty(
+                cloid, "unknown_exchange_status", {"status": status, "response": response}
+            )
+            raise LedgerUncertainState(f"Unknown Hyperliquid order status: {status}")
+        oid = str(order["oid"])
+        try:
+            remaining = _as_float(order.get("sz"))
+        except LedgerUncertainState as exc:
+            self.record_reconciliation_uncertainty(cloid, "invalid_remaining_quantity", str(exc))
+            raise
+        now = _now_ms()
+        try:
+            with self._connect() as conn:
+                row = conn.execute("SELECT * FROM orders WHERE cloid=?", (cloid,)).fetchone()
+                if not row:
+                    raise LedgerError(f"Exchange discovery has no local intent record: {cloid}")
+                existing_oid = row["exchange_oid"]
+                if existing_oid is not None and str(existing_oid) != oid:
+                    self._history(
+                        conn,
+                        cloid,
+                        "reconciliation",
+                        "exchange_oid_conflict",
+                        {"local_oid": existing_oid, "exchange_oid": oid},
+                        now,
+                    )
+                    conn.commit()
+                    raise LedgerUncertainState(
+                        f"CLOID {cloid} maps to conflicting exchange OIDs: {existing_oid} vs {oid}"
+                    )
+                conn.execute(
+                    """UPDATE orders SET exchange_oid=?, current_status=?,
+                       last_exchange_status=?, last_exchange_payload_json=?,
+                       remaining_quantity=COALESCE(?, remaining_quantity),
+                       last_reconciliation_timestamp_ms=?, updated_at_ms=? WHERE cloid=?""",
+                    (
+                        oid,
+                        f"exchange_observed:{status}",
+                        status,
+                        _json(response),
+                        remaining,
+                        now,
+                        now,
+                        cloid,
+                    ),
+                )
+                self._history(
+                    conn,
+                    cloid,
+                    "exchange_lookup",
+                    status,
+                    {"exchange_oid": oid, "full_fill_reconciliation_pending": True},
+                    now,
+                )
+                return status
+        except LedgerError:
+            raise
+        except sqlite3.Error as exc:
+            raise LedgerError(f"Could not persist exchange discovery: {exc}") from exc
 
     def unresolved_orders(self) -> list[dict[str, Any]]:
         try:
@@ -462,10 +513,15 @@ class OrderLedger:
         except sqlite3.Error as exc:
             raise LedgerError(f"Could not enumerate unresolved orders: {exc}") from exc
 
-    def blocking_unresolved_orders(self, *, excluding_cloid: str | None = None) -> list[dict[str, Any]]:
+    def blocking_unresolved_orders(
+        self, *, excluding_cloid: str | None = None
+    ) -> list[dict[str, Any]]:
+        # A recovered exchange order is blocking even when this local database never
+        # recorded its original submission attempt. Exchange existence is sufficient
+        # evidence that another economic order must not be allowed through blindly.
         query = """SELECT * FROM orders
                    WHERE terminal_status IS NULL
-                     AND submission_attempt_timestamp_ms IS NOT NULL"""
+                     AND (submission_attempt_timestamp_ms IS NOT NULL OR exchange_oid IS NOT NULL)"""
         params: list[Any] = []
         if excluding_cloid is not None:
             query += " AND cloid != ?"
@@ -488,7 +544,9 @@ class OrderLedger:
     ) -> dict[str, Any]:
         now = reconciled_at_ms or _now_ms()
         if order_status_response.get("status") != "order":
-            raise LedgerUncertainState(f"Cannot apply non-order exchange response: {order_status_response}")
+            raise LedgerUncertainState(
+                f"Cannot apply non-order exchange response: {order_status_response}"
+            )
         envelope = order_status_response.get("order")
         if not isinstance(envelope, dict):
             raise LedgerUncertainState(f"Malformed orderStatus envelope: {order_status_response}")
@@ -497,6 +555,8 @@ class OrderLedger:
         status_timestamp = envelope.get("statusTimestamp")
         if not isinstance(order, dict) or not isinstance(status, str):
             raise LedgerUncertainState(f"Malformed orderStatus payload: {order_status_response}")
+        if status not in KNOWN_EXCHANGE_STATUSES:
+            raise LedgerUncertainState(f"Unknown Hyperliquid order status: {status}")
         oid = order.get("oid")
         if oid is None:
             raise LedgerUncertainState(f"orderStatus missing oid: {order_status_response}")
@@ -554,15 +614,25 @@ class OrderLedger:
                     fee = _as_float(fill.get("fee"), 0.0)
                     fill_time = fill.get("time")
                     if tid is None or px is None or qty is None or qty <= 0 or fill_time is None:
-                        raise LedgerUncertainState(f"Malformed fill for oid {exchange_oid}: {fill}")
+                        raise LedgerUncertainState(
+                            f"Malformed fill for oid {exchange_oid}: {fill}"
+                        )
                     conn.execute(
                         """INSERT OR IGNORE INTO fill_events
                            (tid, cloid, exchange_oid, fill_timestamp_ms, price, quantity,
                             fee, fee_token, side, raw_json)
                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
                         (
-                            str(tid), cloid, exchange_oid, int(fill_time), px, qty, fee or 0.0,
-                            fill.get("feeToken"), fill.get("side"), _json(fill),
+                            str(tid),
+                            cloid,
+                            exchange_oid,
+                            int(fill_time),
+                            px,
+                            qty,
+                            fee or 0.0,
+                            fill.get("feeToken"),
+                            fill.get("side"),
+                            _json(fill),
                         ),
                     )
 
@@ -594,7 +664,9 @@ class OrderLedger:
 
                 complete = True
                 uncertainty_reason = None
-                if status == "filled" and fill_qty + 1e-8 < min(submitted_qty, authoritative_orig):
+                if status == "filled" and fill_qty + 1e-8 < min(
+                    submitted_qty, authoritative_orig
+                ):
                     complete = False
                     uncertainty_reason = "exchange_reports_filled_but_fill_events_are_incomplete"
 
@@ -616,8 +688,20 @@ class OrderLedger:
                         last_reconciliation_timestamp_ms=?, updated_at_ms=?
                        WHERE cloid=?""",
                     (
-                        exchange_oid, current_status, status, _json(order_status_response), fill_qty,
-                        avg_px, fees, remaining_qty, cancel_reason, reject_reason, terminal, now, now, cloid,
+                        exchange_oid,
+                        current_status,
+                        status,
+                        _json(order_status_response),
+                        fill_qty,
+                        avg_px,
+                        fees,
+                        remaining_qty,
+                        cancel_reason,
+                        reject_reason,
+                        terminal,
+                        now,
+                        now,
+                        cloid,
                     ),
                 )
                 self._history(
@@ -657,7 +741,9 @@ class OrderLedger:
             raise LedgerError(f"Could not apply exchange truth: {exc}") from exc
 
 
-def _query_status_for_cloid(query_order_status: Callable[[str], dict[str, Any]], cloid: str) -> dict[str, Any]:
+def _query_status_for_cloid(
+    query_order_status: Callable[[str], dict[str, Any]], cloid: str
+) -> dict[str, Any]:
     try:
         response = query_order_status(cloid)
     except Exception as exc:
@@ -667,6 +753,16 @@ def _query_status_for_cloid(query_order_status: Callable[[str], dict[str, Any]],
     return response
 
 
+def _audit_known_orders(
+    ledger: OrderLedger,
+    orders: Iterable[dict[str, Any]],
+    reason: str,
+    detail: Any,
+) -> None:
+    for order in orders:
+        ledger.record_reconciliation_uncertainty(order["cloid"], reason, detail)
+
+
 def reconcile_unresolved_orders(
     ledger: OrderLedger,
     *,
@@ -674,21 +770,32 @@ def reconcile_unresolved_orders(
     fetch_fills_by_time: Callable[[int, int], list[dict[str, Any]]],
     now_ms: int | None = None,
 ) -> dict[str, Any]:
-    """Rebuild unresolved local orders from Hyperliquid orderStatus + user fills.
+    """Rebuild unresolved rows from Hyperliquid orderStatus + user fill truth.
 
-    Exchange truth wins when it is known. Any ambiguous lookup, potentially truncated fill
-    response, conflicting OID, or missing fills for an exchange-filled order raises and
-    leaves the ledger unresolved so callers fail closed.
+    Any read ambiguity leaves a structured uncertainty event and raises. Exchange truth
+    wins when known. A prior submission attempt that later returns unknownOid never
+    triggers a blind resubmission.
     """
     now = now_ms or _now_ms()
     unresolved = ledger.unresolved_orders()
     if not unresolved:
-        return {"unresolved_before": 0, "reconciled": 0, "unresolved_after": 0, "blocking_unresolved_after": 0}
+        return {
+            "unresolved_before": 0,
+            "reconciled": 0,
+            "unresolved_after": 0,
+            "blocking_unresolved_after": 0,
+        }
 
     known: list[tuple[dict[str, Any], dict[str, Any]]] = []
     for local in unresolved:
         cloid = local["cloid"]
-        response = _query_status_for_cloid(query_order_status, cloid)
+        try:
+            response = _query_status_for_cloid(query_order_status, cloid)
+        except LedgerUncertainState as exc:
+            ledger.record_reconciliation_uncertainty(
+                cloid, "order_status_lookup_failed", str(exc)
+            )
+            raise
         if response["status"] == "unknownOid":
             if local["submission_attempt_timestamp_ms"] is not None:
                 ledger.record_reconciliation_uncertainty(
@@ -700,7 +807,7 @@ def reconcile_unresolved_orders(
                     f"CLOID {cloid} is unknown at exchange after a durable submission attempt; blind retry is forbidden"
                 )
             # The crash-safe ordering proves no network submit happened before the
-            # durable attempt marker. Keep the intent for deterministic replay.
+            # durable attempt marker. Keep this intent for deterministic replay.
             continue
         known.append((local, response))
 
@@ -714,23 +821,38 @@ def reconcile_unresolved_orders(
         try:
             fills = fetch_fills_by_time(start_ms, now)
         except Exception as exc:
-            for local, _ in known:
-                ledger.record_reconciliation_uncertainty(local["cloid"], "fill_lookup_failed", str(exc))
+            _audit_known_orders(ledger, [local for local, _ in known], "fill_lookup_failed", str(exc))
             raise LedgerUncertainState(f"userFillsByTime lookup failed: {exc}") from exc
         if not isinstance(fills, list):
+            _audit_known_orders(
+                ledger,
+                [local for local, _ in known],
+                "malformed_fill_lookup_response",
+                fills,
+            )
             raise LedgerUncertainState(f"Malformed userFillsByTime response: {fills}")
         if len(fills) >= FILL_LIMIT:
-            for local, _ in known:
-                ledger.record_reconciliation_uncertainty(
-                    local["cloid"], "fill_response_may_be_truncated", {"count": len(fills)}
-                )
+            _audit_known_orders(
+                ledger,
+                [local for local, _ in known],
+                "fill_response_may_be_truncated",
+                {"count": len(fills)},
+            )
             raise LedgerUncertainState(
                 f"userFillsByTime returned {len(fills)} fills, reaching the API limit; pagination is required before truth is complete"
             )
 
     reconciled = 0
     for local, response in known:
-        ledger.apply_exchange_truth(local["cloid"], response, fills, reconciled_at_ms=now)
+        try:
+            ledger.apply_exchange_truth(
+                local["cloid"], response, fills, reconciled_at_ms=now
+            )
+        except LedgerUncertainState as exc:
+            ledger.record_reconciliation_uncertainty(
+                local["cloid"], "exchange_truth_apply_failed", str(exc)
+            )
+            raise
         reconciled += 1
 
     after = ledger.unresolved_orders()
