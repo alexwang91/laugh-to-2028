@@ -234,7 +234,11 @@ This only proves infrastructure/collateral eligibility. It does not measure acco
 
 Formal result: `research/results/CARRY_IMPL_0034_RESULT_2026-08-05.md`.
 
-## 11. CARRY-PM-0035 — current frontier
+## 11. CARRY-PM-0035 — superseded and no longer required
+
+**Status: not required.** `CARRY-RF-0036R1` re-priced CARRY-PNL-0031 against cash rather than zero and the sleeve failed the corrected `net_economics` gate, so the carry line is stopped under discipline #7 and no probe capital is committed. `CARRY-PM-0037` supersedes the gate design below with time/drift bounds and a three-state outcome, and is retained as corrected infrastructure that is not run. See section 11a and `docs/RISK_FREE_METRIC_CONVENTIONS.md`.
+
+The description below is retained as the frozen 0035 design that 0037 replaced.
 
 Preregistered account-behavior probe uses a dedicated Portfolio Margin account/subaccount below $1,000 and a probe notional capped at $500.
 
@@ -272,6 +276,26 @@ Research code is read-only and does not hold private keys or submit orders.
 
 A PASS authorizes only one preregistered PM-aware BRRK + frozen CARRY-0031 stack accounting experiment. A FAIL/inconclusive result stops that path without threshold rescue.
 
+## 11a. CARRY-RF-0036R1/R2 — the cash hurdle that stopped the carry line
+
+CARRY-PNL-0031's `net_economics` gate tested net return against **zero**. For a delta-neutral, gross-1.0, fully collateralized book that is the wrong hurdle: the sleeve is itself a synthetic cash instrument, and every dollar in it displaces a dollar that could sit in T-bills.
+
+Re-priced against FRED `DTB3` over the identical 2020-09-15..2026-07-30 window:
+
+| measure | CARRY-PNL-0031 | cash |
+|---|---:|---:|
+| CAGR | **2.7404%** | **3.1653%** |
+| final $10k | $11,719.83 | **$12,007.20** |
+| excess CAGR | **-0.4249 pp/yr** | — |
+
+The result is also a single year: 2021 returned **+16.80%** against a full-window cumulative of **+17.20%**. Excluding 2021 the sleeve returned +0.34% over ~4.9 years, and post-2021 it trails cash by roughly 4 pp/yr. CARRY-STACK-0033 fails the same way against the correct alternative for unused capital, BRRK plus idle-cash accrual.
+
+Decision: **stop the carry line under discipline #7.** No BNB removal, funding-sign filter, basis threshold, alternate window, or weight/leverage change is authorized.
+
+Two reporting caveats are recorded in `docs/RISK_FREE_METRIC_CONVENTIONS.md`: `excess_sharpe_over_rf` carries different denominators in R1 (-0.221582) and R2 (-0.223151), and the 0033 comparison must be quoted as an information ratio (**-10.31**) rather than either published excess Sharpe, because the two series are 0.9999953 correlated and the geometric ratio divides by nearly nothing.
+
+Evidence: `research/results/carry_rf_0036r1/` (including daily sequences and the raw FRED CSV) and `research/results/carry_rf_0036r2/`.
+
 ## 12. Current evidence hierarchy
 
 | Component | Status |
@@ -284,9 +308,9 @@ A PASS authorizes only one preregistered PM-aware BRRK + frozen CARRY-0031 stack
 | Funding data/cross-venue | Validated with source-role limits |
 | All-perp BRRK implementation | Rejected |
 | BTC strict spot router | Implementation/shadow candidate |
-| **CARRY-PNL-0031** | **Qualified independent low-vol sleeve** |
-| CARRY-STACK-0033 | Idle-capital stacking rule rejected |
-| **CARRY-IMPL-0034** | **BTC PM public feasibility passed** |
-| **CARRY-PM-0035** | **Current P0; account result pending** |
+| **CARRY-PNL-0031** | **Rejected: fails net economics against cash (CARRY-RF-0036R1)** |
+| CARRY-STACK-0033 | Rejected against both the original gate and BRRK + idle cash |
+| CARRY-IMPL-0034 | Public feasibility valid; no downstream carry authorization |
+| CARRY-PM-0035 / 0037 | **Not required; carry line stopped, no live probe** |
 | Hyperliquid executor | Testnet/shadow; hardening required |
 | Leverage | Deferred to final stage |

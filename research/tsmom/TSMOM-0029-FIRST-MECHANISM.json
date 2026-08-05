@@ -1,0 +1,67 @@
+{
+  "experiment_id": "TSMOM-0029-FIRST-MECHANISM",
+  "status": "PREREGISTERED_BEFORE_FIRST_RUN",
+  "registered_on": "2026-08-05",
+  "promotion_evidence": false,
+  "authorized_by": "TSMOM-PIT-0028 frozen daily perpetual eligibility",
+  "question": "Does a broad point-in-time crypto time-series-momentum sleeve built only from already-frozen trend/risk definitions produce a useful standalone return stream with materially lower correlation to BRRK than another directional crypto-beta strategy?",
+  "universe": {
+    "source": "exact TSMOM-PIT-0028 construction",
+    "continuous_history_days": 240,
+    "completed_day_quote_volume_floor_usd": 25000000.0,
+    "evaluation_start": "2021-05-01",
+    "evaluation_end": "2026-07-31",
+    "current_survivor_filter": false
+  },
+  "signal": {
+    "per_contract": "same existing 20/60/120/240 time-series trend score used elsewhere in the project",
+    "horizons_days": [20,60,120,240],
+    "weights": [0.15,0.25,0.30,0.30],
+    "component": "tanh(log(P_t/P_t-h)/(rolling_std_h(daily log return)*sqrt(h)))",
+    "direction": "continuous signed score; positive may be long and negative may be short",
+    "no_cross_sectional_rank": true,
+    "no_top_n": true
+  },
+  "risk_normalization": {
+    "own_rv30": "rolling 30-day standard deviation of daily close-to-close simple returns using completed information",
+    "raw_weight": "eligible * trend_score / max(rv30,1e-6)",
+    "portfolio_normalization": "divide each day's raw weights by sum(abs(raw_weight)) so target gross is 1.0 when any valid signal exists",
+    "asset_cap": null,
+    "net_exposure_target": null
+  },
+  "execution": {
+    "rebalance_frequency": "daily target calculation",
+    "l1_rebalance_band": 0.05,
+    "timing": "completed date-t target -> t+1 held exposure",
+    "execution_availability": "if the contract has no valid t+1 close-to-close return / archive row, actual held weight on that date is zero; remaining contracts are not renormalized using future availability",
+    "canonical_cost_bps_per_absolute_weight_change": 5.0,
+    "fixed_cost_family_bps": [5.0,10.0,20.0]
+  },
+  "required_outputs": [
+    "standalone daily equity and metrics at all fixed cost levels",
+    "annual returns",
+    "turnover, average gross and average net exposure",
+    "average long/short gross and active long/short contract counts",
+    "daily and monthly Pearson/Spearman correlation to frozen BRRK-0011 over their common history",
+    "TSMOM returns during BRRK negative months and worst BRRK months",
+    "contribution concentration by contract and later-ended-contract contribution",
+    "full daily target/held diagnostics as artifact"
+  ],
+  "explicit_limitations": [
+    "This first mechanism is price-return plus fixed transaction-cost accounting only.",
+    "Native funding is not yet incorporated and is a mandatory next gate if the mechanism is economically interesting.",
+    "Binance funding must not be presented as a Hyperliquid point estimate based on prior cross-venue evidence."
+  ],
+  "prohibited": [
+    "no changing trend horizons/weights after seeing results",
+    "no Top-N selection or named-coin whitelist",
+    "no tuning age/liquidity eligibility",
+    "no choosing a net-exposure target",
+    "no asset concentration cap added after result",
+    "no stacking with BRRK or optimizing sleeve weight under this experiment",
+    "no leverage above unit gross",
+    "no selecting one transaction-cost level as the only reported result",
+    "no claim of deployment PNL before funding/venue execution audit"
+  ],
+  "stopping_rule": "Run this exact broad mechanism once. Do not rescue it with horizon, rank, cap or universe tuning on the same history. If weak or highly correlated to BRRK, preserve/reject it. If standalone quality and diversification are meaningful, the next authorized work is funding/implementation attribution before portfolio stacking."
+}
