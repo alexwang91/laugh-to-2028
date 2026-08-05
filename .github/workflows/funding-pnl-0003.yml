@@ -83,7 +83,15 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          SRC='/tmp/artifact/research/funding_router'
+          # actions/upload-artifact@v4 roots the archive at the least common
+          # ancestor of every path in the research job's `path:` list above.
+          # Those three paths all share the research/funding_router/ prefix,
+          # so upload-artifact strips it and the download has no such prefix
+          # (verified with `unzip -l` on the uploaded artifact: files sit at
+          # its root, e.g. funding_pnl_0003_outputs/..., not
+          # research/funding_router/funding_pnl_0003_outputs/...). Re-check
+          # this if the upload `path:` list above ever changes.
+          SRC='/tmp/artifact'
           DEST='research/results/funding_pnl_0003'
           rm -rf "$DEST"
           mkdir -p "$DEST"
