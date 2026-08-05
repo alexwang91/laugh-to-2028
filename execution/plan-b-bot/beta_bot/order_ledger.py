@@ -50,6 +50,7 @@ TERMINAL_EXCHANGE_STATUSES = {
     "filled",
 } | CANCEL_EXCHANGE_STATUSES | REJECT_EXCHANGE_STATUSES
 FILL_LIMIT = 2000
+QUANTITY_TOLERANCE = 1e-8
 
 
 class LedgerError(RuntimeError):
@@ -545,9 +546,6 @@ class OrderLedger:
     def blocking_unresolved_orders(
         self, *, excluding_cloid: str | None = None
     ) -> list[dict[str, Any]]:
-        # A recovered exchange order is blocking even when this local database never
-        # recorded its original submission attempt. Exchange existence is sufficient
-        # evidence that another economic order must not be allowed through blindly.
         query = """SELECT * FROM orders
                    WHERE terminal_status IS NULL
                      AND (submission_attempt_timestamp_ms IS NOT NULL OR exchange_oid IS NOT NULL)"""
@@ -592,6 +590,10 @@ class OrderLedger:
         exchange_oid = str(oid)
         remaining = _as_float(order.get("sz"))
         orig_sz = _as_float(order.get("origSz"))
+        if orig_sz is None or orig_sz <= 0:
+            raise LedgerUncertainState(f"orderStatus missing/invalid origSz: {order_status_response}")
+        if status != "filled" and remaining is None:
+            raise LedgerUncertainState(f"orderStatus missing remaining sz: {order_status_response}")
         normalized_fills = [fill for fill in fills if str(fill.get("oid")) == exchange_oid]
 
         try:
@@ -678,26 +680,36 @@ class OrderLedger:
                 avg_px = aggregates["avg_px"]
                 fees = float(aggregates["fees"])
                 submitted_qty = float(row["submitted_quantity"])
-                authoritative_orig = orig_sz if orig_sz is not None else submitted_qty
-                if abs(authoritative_orig - submitted_qty) > 1e-8:
+
+                if abs(orig_sz - submitted_qty) > QUANTITY_TOLERANCE:
                     self._history(
                         conn,
                         cloid,
                         "reconciliation",
                         "submitted_quantity_conflict",
-                        {"local": submitted_qty, "exchange_origSz": authoritative_orig},
+                        {"local": submitted_qty, "exchange_origSz": orig_sz},
                         now,
                     )
-                calculated_remaining = max(submitted_qty - fill_qty, 0.0)
-                remaining_qty = remaining if remaining is not None else calculated_remaining
 
-                complete = True
+                if status == "filled":
+                    expected_fill_qty = orig_sz
+                    remaining_qty = 0.0
+                else:
+                    assert remaining is not None
+                    if remaining < -QUANTITY_TOLERANCE or remaining > orig_sz + QUANTITY_TOLERANCE:
+                        raise LedgerUncertainState(
+                            f"Exchange remaining size {remaining} is inconsistent with origSz {orig_sz}"
+                        )
+                    remaining_qty = max(remaining, 0.0)
+                    expected_fill_qty = max(orig_sz - remaining_qty, 0.0)
+
+                complete = abs(fill_qty - expected_fill_qty) <= QUANTITY_TOLERANCE
                 uncertainty_reason = None
-                if status == "filled" and fill_qty + 1e-8 < min(
-                    submitted_qty, authoritative_orig
-                ):
-                    complete = False
-                    uncertainty_reason = "exchange_reports_filled_but_fill_events_are_incomplete"
+                if not complete:
+                    if status == "filled" and fill_qty < expected_fill_qty:
+                        uncertainty_reason = "exchange_reports_filled_but_fill_events_are_incomplete"
+                    else:
+                        uncertainty_reason = "exchange_order_size_and_fill_events_disagree"
 
                 terminal = status if status in TERMINAL_EXCHANGE_STATUSES and complete else None
                 cancel_reason = None
@@ -741,6 +753,8 @@ class OrderLedger:
                     {
                         "status_timestamp": status_timestamp,
                         "exchange_oid": exchange_oid,
+                        "exchange_orig_quantity": orig_sz,
+                        "expected_fill_quantity": expected_fill_qty,
                         "fill_quantity": fill_qty,
                         "average_fill_price": avg_px,
                         "fees": fees,
@@ -755,7 +769,11 @@ class OrderLedger:
                         cloid,
                         "reconciliation",
                         "reconciliation_uncertain",
-                        {"reason": uncertainty_reason},
+                        {
+                            "reason": uncertainty_reason,
+                            "expected_fill_quantity": expected_fill_qty,
+                            "observed_fill_quantity": fill_qty,
+                        },
                         now,
                     )
                     conn.commit()
@@ -835,8 +853,6 @@ def reconcile_unresolved_orders(
                 raise LedgerUncertainState(
                     f"CLOID {cloid} is unknown at exchange after a durable submission attempt; blind retry is forbidden"
                 )
-            # The crash-safe ordering proves no network submit happened before the
-            # durable attempt marker. Keep this intent for deterministic replay.
             continue
         known.append((local, response))
 
