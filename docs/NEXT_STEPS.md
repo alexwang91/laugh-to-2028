@@ -186,4 +186,8 @@ Portfolio Margin carry evidence is no longer a required forward track after the 
 
 # Leverage last
 
-Do not reopen gross 1.30–1.50 until routing, execution reconciliation, slippage controls, kill paths and forward evidence are all established.
+This has two separate meanings that must not be conflated, per backlog F5.
+
+**Research has already explored gross 1.30-1.50.** ASYM-BETA-0021/0022/0024 ran BRRK-0011 core plus an extra bull-tilt sleeve up to `GROSS_CAP = 1.50` (observed max held gross 1.4228), fully backtested with funding-aware accounting. The answer is already in: on the funding-aware basis, the extra sleeve is dominated by simply levering BRRK-0011 core to the same target risk (Sharpe 1.199 vs the core's 1.229, Calmar 1.564 vs 1.608, MDD -41.44% vs -34.95% — see the README's funding-aware table). Further research at this gross level does not need to "reopen" anything; it is already open, and the current finding is negative.
+
+**Deployment stays capped regardless of what research finds.** No live position may run above the currently deployed gross target until routing, execution reconciliation, slippage controls, kill paths and forward evidence are all established in `execution/plan-b-bot/`. This is an execution-readiness gate, not a research restriction — it does not become looser or tighter based on which gross level a backtest happens to test.

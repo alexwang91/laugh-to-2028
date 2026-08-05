@@ -34,14 +34,23 @@ on:
       - 'research/dispersion_overlay/**'
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: pit-disp-0015-${{ github.ref }}
   cancel-in-progress: false
 
+# Split into two jobs (backlog F11): `research` (contents: read) executes
+# PR-supplied Python; `persist` (contents: write) only copies artifact files
+# and runs git, never repository code, so the two never share a write-scoped
+# token in the same job environment. `persist` also now checks the PR is
+# same-repository, matching every other experiment workflow -- the original
+# single-job version only checked `event_name == 'pull_request'`. A direct
+# `push` to main still runs `research` (as before) but never ran `persist`
+# even before this split, since persist required a pull_request event; that
+# is unchanged here.
 jobs:
-  dynamic-universe:
+  research:
     runs-on: ubuntu-latest
     timeout-minutes: 120
     steps:
@@ -62,29 +71,6 @@ jobs:
         run: |
           set -o pipefail
           python run_dynamic_dispersion_with_exports.py | tee dynamic_dispersion.log
-      - name: Persist validated outputs on same-repository PR
-        if: github.event_name == 'pull_request' && success()
-        shell: bash
-        run: |
-          set -euo pipefail
-          out='research/results/pit_disp_0015'
-          mkdir -p "$out"
-          cp research/pit_universe/dynamic_dispersion_report.json "$out/"
-          cp research/pit_universe/daily_equity.csv "$out/"
-          cp research/pit_universe/daily_weights.csv "$out/"
-          cp research/pit_universe/daily_dynamic_universe_count.csv "$out/"
-          cp research/pit_universe/dispersion_scale.csv "$out/"
-          cp research/pit_universe/inactive_eligible_audit.csv "$out/"
-          cp research/pit_universe/pnl_daily.svg "$out/"
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add "$out" docs/pnl.svg
-          if ! git diff --cached --quiet; then
-            git commit -m 'Record validated PIT 0015 outputs'
-            git fetch origin "${GITHUB_HEAD_REF}"
-            git rebase "origin/${GITHUB_HEAD_REF}"
-            git push origin HEAD:"${GITHUB_HEAD_REF}"
-          fi
       - name: Upload exact research outputs
         if: always()
         uses: actions/upload-artifact@v4
@@ -103,3 +89,46 @@ jobs:
             research/pit_universe/inactive_eligible_audit.csv
             research/pit_universe/pnl_daily.svg
             docs/pnl.svg
+
+  persist:
+    needs: research
+    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
+      - uses: actions/download-artifact@v4
+        with:
+          name: pit-disp-0015-results
+          path: /tmp/artifact
+      - name: Persist validated outputs
+        shell: bash
+        run: |
+          set -euo pipefail
+          SRC='/tmp/artifact/research/pit_universe'
+          out='research/results/pit_disp_0015'
+          mkdir -p "$out"
+          cp "$SRC/dynamic_dispersion_report.json" "$out/"
+          cp "$SRC/daily_equity.csv" "$out/"
+          cp "$SRC/daily_weights.csv" "$out/"
+          cp "$SRC/daily_dynamic_universe_count.csv" "$out/"
+          cp "$SRC/dispersion_scale.csv" "$out/"
+          cp "$SRC/inactive_eligible_audit.csv" "$out/"
+          cp "$SRC/pnl_daily.svg" "$out/"
+          cp /tmp/artifact/docs/pnl.svg docs/pnl.svg
+
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add "$out" docs/pnl.svg
+          if git diff --cached --quiet; then
+            echo 'Validated outputs are already current.'
+            exit 0
+          fi
+          git commit -m 'Record validated PIT 0015 outputs'
+          git pull --rebase origin "${{ github.head_ref }}"
+          git push origin "HEAD:${{ github.head_ref }}"

@@ -5,20 +5,38 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
-from scipy.optimize import minimize_scalar
 
 HERE = Path(__file__).resolve().parent
 RESEARCH = HERE.parent
 REGIME = RESEARCH / "regime_kelly"
+RISKFIX = RESEARCH / "risk_metric_fix"
 sys.path.insert(0, str(RESEARCH))
 sys.path.insert(0, str(REGIME))
+sys.path.insert(0, str(RISKFIX))
 
 import crypto_rotation_backtest as bt
 from config import RegimeKellyConfig
+from corrected_risk import choose_scale_corrected
 from daily_distribution import semantic_transition_matrix
 from features_no_dominance import build_features_no_dominance
 from regime_model import SEMANTIC_STATES
 from regime_model_vb_nd import fit_variational_regime_model_nd
+
+# Backlog F13 / docs/CODE_REVIEW_2026-08-04.md section 2.3: this file used to
+# define its own path_tail_risk/safe_max_scale/expected_log_terminal/
+# choose_scale, which computed path drawdown without including decision-time
+# wealth=1 as the initial running peak -- understating drawdown on paths that
+# lose money on their very first simulated day. research/risk_metric_fix/
+# corrected_risk.py fixes this (see
+# research/results/BRRK_0011_CDAR_CORRECTION_2026-08-04.md) and is what every
+# other caller of this module (run_dispersion_overlay.py, run_asym_beta_0021/
+# 0022/0024.py, run_audit_0023/0026.py) already uses for its own risk-scaling
+# -- none of them ever imported the uncorrected functions that used to live
+# here. Only this file's own main() (BRRK-MVP-0005-V1-META, which has no
+# published results directory) called the uncorrected version, so this switch
+# restates nothing that is cited anywhere in this repo. main() now calls
+# choose_scale_corrected directly; the local duplicates are deleted rather
+# than kept as unreachable dead code.
 
 
 EXPERIMENT_ID = "BRRK-MVP-0005-V1-META"
@@ -182,82 +200,6 @@ def sample_v1_paths(current_posterior: pd.Series, fit, dist: dict, cfg: RegimeKe
     return np.maximum(paths, -0.999)
 
 
-def path_tail_risk(v1_paths: np.ndarray, scale: float) -> tuple[float, float]:
-    port = scale * v1_paths
-    nav = np.cumprod(np.maximum(1.0 + port, 1e-12), axis=1)
-    terminal = nav[:, -1] - 1.0
-    losses = -terminal
-    q = float(np.quantile(losses, 0.95))
-    tail = losses[losses >= q]
-    cvar95 = float(tail.mean()) if len(tail) else q
-
-    peaks = np.maximum.accumulate(nav, axis=1)
-    dd = nav / np.maximum(peaks, 1e-12) - 1.0
-    max_dd = dd.min(axis=1)
-    qdd = float(np.quantile(max_dd, 0.05))
-    dd_tail = max_dd[max_dd <= qdd]
-    cdar95 = float(-dd_tail.mean()) if len(dd_tail) else float(-qdd)
-    return cvar95, cdar95
-
-
-def safe_max_scale(v1_paths: np.ndarray, budget: float) -> tuple[float, float, float]:
-    cvar1, cdar1 = path_tail_risk(v1_paths, 1.0)
-    if cvar1 <= budget and cdar1 <= budget:
-        return 1.0, cvar1, cdar1
-    lo, hi = 0.0, 1.0
-    for _ in range(28):
-        mid = 0.5 * (lo + hi)
-        cvar, cdar = path_tail_risk(v1_paths, mid)
-        if cvar <= budget and cdar <= budget:
-            lo = mid
-        else:
-            hi = mid
-    cvar, cdar = path_tail_risk(v1_paths, lo)
-    return float(lo), float(cvar), float(cdar)
-
-
-def expected_log_terminal(v1_paths: np.ndarray, scale: float) -> float:
-    wealth = np.maximum(1.0 + scale * v1_paths, 1e-12)
-    return float(np.mean(np.log(wealth).sum(axis=1)))
-
-
-def choose_scale(v1_paths: np.ndarray, budget: float) -> dict:
-    safe_max, safe_cvar, safe_cdar = safe_max_scale(v1_paths, budget)
-    if safe_max <= 1e-8:
-        return {
-            "scale": 0.0,
-            "safe_max": 0.0,
-            "expected_log20": 0.0,
-            "scenario_cvar95": 0.0,
-            "scenario_cdar95": 0.0,
-            "full_scale_cvar95": path_tail_risk(v1_paths, 1.0)[0],
-            "full_scale_cdar95": path_tail_risk(v1_paths, 1.0)[1],
-        }
-
-    result = minimize_scalar(
-        lambda s: -expected_log_terminal(v1_paths, float(s)),
-        bounds=(0.0, safe_max),
-        method="bounded",
-        options={"xatol": 1e-4},
-    )
-    candidates = [0.0, float(safe_max)]
-    if result.success and np.isfinite(result.x):
-        candidates.append(float(np.clip(result.x, 0.0, safe_max)))
-    scores = [expected_log_terminal(v1_paths, s) for s in candidates]
-    scale = float(candidates[int(np.argmax(scores))])
-    cvar, cdar = path_tail_risk(v1_paths, scale)
-    cvar1, cdar1 = path_tail_risk(v1_paths, 1.0)
-    return {
-        "scale": scale,
-        "safe_max": float(safe_max),
-        "expected_log20": float(max(scores)),
-        "scenario_cvar95": float(cvar),
-        "scenario_cdar95": float(cdar),
-        "full_scale_cvar95": float(cvar1),
-        "full_scale_cdar95": float(cdar1),
-    }
-
-
 def main():
     cfg = RegimeKellyConfig(hmm_restarts=3, hmm_iter=250)
     bt.START_DATE = START
@@ -302,7 +244,7 @@ def main():
             cfg,
             seed=cfg.random_seed + int(dt.strftime("%Y%m%d")),
         )
-        alloc = choose_scale(paths, RISK_BUDGET)
+        alloc = choose_scale_corrected(paths, RISK_BUDGET)
         scale = float(alloc["scale"])
 
         next_dt = decision_dates[j + 1] if j + 1 < len(decision_dates) else END + pd.Timedelta(days=1)

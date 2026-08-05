@@ -211,6 +211,41 @@ same way — the data is not committed.
 **Do.** Have each PNL-producing runner write `daily_equity.csv` (one column per strategy) into its
 results directory, and backfill for 0021/0022/0024. BRRK's equivalent is ~100KB for 1332 rows.
 
+**Backfilled 2026-08-05, with a finding that changes how any future backfill must be done.**
+`run_asym_beta_0021/0022/0024.py` and `run_audit_0023_latency.py` already wrote daily-granularity
+CSVs (`daily_returns.csv`, `decisions.csv`, etc.) into their `OUTPUT` directory, which points
+directly at the committed `research/results/<name>/` path — the code was never the problem, only
+`summary.json` had been committed while the CSVs sitting right next to it were not.
+
+Re-running each script to backfill those CSVs also **overwrites `summary.json` in place**, and
+every one of these scripts hardcodes `"status": "FIRST_RUN_COMPLETE"` as a placeholder — the
+committed `summary.json` files' real `status` (e.g. `REJECTED_STRUCTURALLY_INERT`,
+`MECHANISM_VALIDATED_NOT_SHADOW_QUALIFIED`), their `decision` text, and fields like
+`dominant_drawdown` are **hand-added after the run**, not reproduced by the script. A naive
+backfill would have silently reverted a recorded rejection back to a placeholder and deleted the
+decision reasoning. Every rerun was diffed field-by-field against the committed `summary.json`
+first: all *numeric* metrics matched to float precision (confirming no code drift since the
+original run), only the hand-annotated fields differed, and only the new CSV files were staged —
+`summary.json` was restored to its committed version in every case. Anyone doing this for
+`tsmom_data_0027`/`tsmom_pit_0028` (not yet backfilled) must repeat that diff, not just re-run and
+commit.
+
+`audit_0026_semantic_risk` backfilled the same way, but its rerun surfaced a second, distinct
+failure mode worth flagging separately: `run_audit_0026_semantic_risk.py`'s output schema has
+genuinely grown since `summary.json` was committed (it now also emits `top_interval_increases`,
+a `forward_by_descriptive_level` breakdown at the 0.25/0.75 thresholds in addition to 0.5, row
+counts, and calendar bounds) — this is not just the placeholder-status pattern above, the script
+itself now computes and reports more than it did at commit time. Every field that exists in
+*both* versions was checked and matches (the `0.5`-threshold forward-return triple is
+bit-identical; the handful of probability values differ only at the 11th-12th significant digit,
+consistent with summation-order floating-point noise in the HMM/VB fit, e.g.
+`1.6974310402923218e-41` vs `1.6974310402860743e-41`). Per the same rule, the richer output was
+**not** merged into the committed record — `summary.json` was restored verbatim and only the two
+genuinely new files (`daily_semantic_risk.csv`, `interval_summary.csv`) were staged. Promoting the
+richer schema into the committed `summary.json` would be a legitimate follow-up, but it changes a
+published file's structure and belongs in its own reviewed change, not silently bundled into a
+CSV backfill.
+
 ### F10. Add shared statistical inference and wire it into every report
 
 **New file:** `research/stats/inference.py`
