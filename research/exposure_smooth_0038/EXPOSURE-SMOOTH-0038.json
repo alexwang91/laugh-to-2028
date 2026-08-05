@@ -1,0 +1,68 @@
+{
+  "experiment_id": "EXPOSURE-SMOOTH-0038-CONTINUOUS-BETA",
+  "status": "PREREGISTERED_BEFORE_FIRST_RUN",
+  "registered_at_utc": "2026-08-05",
+  "authorized_by": "user request following code-level review diagnosis of the 2021-05 V1 crash",
+
+  "diagnosis": {
+    "source": "static code inspection of research/core/crypto_rotation_backtest.py:btc_last_drop_beta, NOT a fit to any historical result",
+    "defect_1_discontinuity": "beta(t, vol) is two disconnected linear branches split at t=0. At t=0 the positive branch evaluates to 1.0 (vol-independent) while the negative branch evaluates to 0.65*vm(vol), which ranges 0.39 to 0.65 depending on volatility. This is a jump of 0.35 to 0.61 in gross exposure for an infinitesimal change in trend sign.",
+    "defect_2_vol_deadzone": "positive_scaler = clip(0.45/vol, upper=1.0) is the only vol response on the positive branch, and it is rendered inert whenever beta>=1.0 because build_benchmark_v1 renormalizes gross exposure down to exactly 1.0 in that regime. Verified analytically: BTC realized vol moving from 0.75 to 1.20 during 2021-05-19..05-29 produced zero change in held gross exposure while trend stayed positive.",
+    "observed_symptom_not_the_cause": "2021-05-15..2021-06-30, trend crossed zero 10 times in 47 days, producing 10.21x cumulative turnover in that window alone against a 0.041 daily average over the full history. This is downstream evidence consistent with the two defects above, not the basis for choosing the fix -- the fix is derived from the code structure, not from minimizing this specific window's loss."
+  },
+
+  "structural_change_authorized": {
+    "count": 1,
+    "description": "Replace the two-branch beta(t, vol) function with a single continuous linear function of trend, scaled by the existing volatility multiplier across its full domain, clipped to the existing bounds.",
+    "formula": "raw = (0.65 + 0.65 * t) * vm(vol); beta = clip(raw, lower=0.18, upper=1.30)",
+    "vm_definition_unchanged": "vm=1.0 for vol<0.35; 0.90 for 0.35<=vol<0.50; 0.75 for 0.50<=vol<0.70; 0.60 for vol>=0.70 -- byte-identical to the existing negative-branch vm in crypto_rotation_backtest.py",
+    "constants_reused_not_new": [
+      "0.65 slope -- identical to the existing negative-branch slope",
+      "0.18 floor -- identical to the existing negative-branch floor",
+      "1.30 ceiling -- identical to the existing budget=min(beta,1.30) cap already applied downstream in build_rotation_weights",
+      "vol breakpoints 0.35/0.50/0.70 and multipliers 0.90/0.75/0.60 -- identical to the existing vm"
+    ],
+    "no_new_free_parameters": true,
+    "verification_at_registration": [
+      "at t=1, vol<0.35 (vm=1.0): raw = 1.30, matching the existing positive-branch ceiling exactly",
+      "at t=0: raw = 0.65*vm, matching the existing negative-branch value at t=0 exactly (continuous with what the old code already did on that side)",
+      "function is continuous and monotonic in t for fixed vol by construction (single linear form, no branch)"
+    ]
+  },
+
+  "explicitly_not_changed": [
+    "trend_score() -- the 20/60/120/240-day weighted momentum formula, unchanged",
+    "rv30() -- the realized volatility formula, unchanged",
+    "asset eligibility, alt scoring, inverse-vol allocation, per-asset caps inside build_rotation_weights -- unchanged",
+    "the hard trend-sign threshold that switches the alt sleeve on/off entirely (a separate defect in build_rotation_weights, not touched here; candidate for a future, separately preregistered experiment if this one succeeds)",
+    "cost model, rebalance band, execution timing -- all identical to the frozen backtest (5 bps, 0.05 L1 band, t completed -> t+1 held)",
+    "BRRK-0011's regime-scale overlay -- not re-fit in this experiment; this tests the V1 base construction only, to keep to one structural change per discipline #4"
+  ],
+
+  "evaluation_plan": {
+    "universe": "BTC, ETH, SOL, BNB -- identical to frozen V1",
+    "window": "full available common panel (raw_start ~2020-08-11 through the same evaluation end used by crypto_rotation_backtest.py), not restricted to any stress episode",
+    "primary_comparison": "smoothed-beta V1 (gross<=1, same band/cost) vs frozen V1 baseline, full panel and every existing published sub-window (2021-05-01 start, 2022-12-10 start, stress windows already defined in crypto_rotation_backtest.py)",
+    "required_reporting": [
+      "full-panel CAGR, MDD, Sharpe, Calmar for both variants -- must not selectively report only favorable sub-windows",
+      "2021-05-01..2021-08-01 segment return and drawdown specifically",
+      "turnover and trend-sign-crossing count in the 2021-05-15..2021-06-30 window specifically, to verify the whipsaw mechanism directly rather than inferring it from PnL alone",
+      "the 3.65-year window (2022-12-10 onward) metrics, because a fix that helps 2021 but breaks the window the current README reports as canonical would not be an improvement"
+    ]
+  },
+
+  "success_criteria_frozen_before_running": {
+    "primary": "2021-05-15..2021-06-30 turnover materially reduced (mechanism check, not a PnL target)",
+    "secondary_must_not_regress": "full-panel Sharpe and Calmar must not be materially worse than frozen V1; the 2022-12-10 window's Sharpe must not be materially worse than the published 1.295",
+    "explicit_caveat": "This experiment necessarily has some hindsight risk in its choice of WHICH window motivated the diagnosis (2021-05), even though the fix itself was derived from code structure rather than from fitting to that window's returns. Results on 2021-05 specifically should be read as 'is the mechanism doing what it was designed to do', not as out-of-sample validation. The out-of-sample test is whether the OTHER windows (2022 bear, 2023-24 bull, 2025-26) are unharmed."
+  },
+
+  "prohibited": [
+    "no re-tuning of the 0.65/0.18/1.30/vol-breakpoint constants after seeing results",
+    "no changing the alt-inclusion threshold in the same experiment",
+    "no re-fitting BRRK-0011's regime scale on the new V1 in this experiment",
+    "no cherry-picking sub-windows in the report"
+  ],
+
+  "stopping_rule": "If secondary criteria fail (full-panel or 2022-12-10-window risk-adjusted metrics materially worse), report FAIL and stop -- do not retune. If primary criterion fails (turnover not reduced), the diagnosis itself was wrong and must be revisited from code, not patched with new parameters."
+}

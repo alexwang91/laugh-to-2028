@@ -1,0 +1,213 @@
+{
+  "experiment_id": "EXPOSURE-SMOOTH-0038-CONTINUOUS-BETA",
+  "preregistration": "research/exposure_smooth_0038/EXPOSURE-SMOOTH-0038.json",
+  "promotion_evidence": false,
+  "trading_changes": false,
+  "methodology": {
+    "data": "Binance spot UTC daily closes via public market-data REST endpoint",
+    "raw_common_start": "2020-08-11",
+    "evaluation_start": "2021-05-01",
+    "evaluation_end": "2026-08-03",
+    "cost_bps": 5.0,
+    "band": 0.05,
+    "single_structural_change": "btc_last_drop_beta -> continuous (0.65+0.65t)*vm(vol), clipped [0.18,1.30]; no other change"
+  },
+  "metrics": {
+    "V1_FROZEN_BASELINE": {
+      "end_multiple": 5.113724875168956,
+      "final_10k": 51137.24875168956,
+      "cagr": 0.36381675951102377,
+      "max_drawdown": -0.5971708172784427,
+      "ann_vol": 0.48093928479358816,
+      "sharpe": 0.8881090280648389,
+      "calmar": 0.6092339896465286,
+      "turnover": 132.96917813759117,
+      "avg_gross_exposure": 0.7030302627823694
+    },
+    "V1_SMOOTH_BETA_0038": {
+      "end_multiple": 4.6850720419907805,
+      "final_10k": 46850.720419907804,
+      "cagr": 0.34130292241690907,
+      "max_drawdown": -0.4319885701630801,
+      "ann_vol": 0.37695559387491806,
+      "sharpe": 0.9664648760410806,
+      "calmar": 0.7900739648923204,
+      "turnover": 121.3091081490804,
+      "avg_gross_exposure": 0.5982635707563988
+    }
+  },
+  "annual_returns": {
+    "V1_FROZEN_BASELINE": {
+      "2021": 0.22618829773701443,
+      "2022": -0.2797390722835841,
+      "2023": 2.327477412826084,
+      "2024": 0.8322788070816003,
+      "2025": 0.0785759123287102,
+      "2026": -0.11949273422580253
+    },
+    "V1_SMOOTH_BETA_0038": {
+      "2021": 0.3883108316773918,
+      "2022": -0.29129541804169334,
+      "2023": 1.866367626112063,
+      "2024": 0.7335134762707622,
+      "2025": 0.07725433577086194,
+      "2026": -0.11041601106477661
+    }
+  },
+  "whipsaw_2021_05_15_to_06_30": {
+    "V1_FROZEN_BASELINE": {
+      "window": "2021-05-15..2021-06-30",
+      "days": 47,
+      "trend_sign_crossings": 10,
+      "cumulative_turnover": 10.214693972006554,
+      "mean_daily_turnover": 0.2173339142980118
+    },
+    "V1_SMOOTH_BETA_0038": {
+      "window": "2021-05-15..2021-06-30",
+      "days": 47,
+      "trend_sign_crossings": 10,
+      "cumulative_turnover": 6.320975873486067,
+      "mean_daily_turnover": 0.13448884837204397
+    }
+  },
+  "gross_response_2021_05_15_to_06_30": {
+    "V1_FROZEN_BASELINE": {
+      "window": "2021-05-15..2021-06-30",
+      "beta_min": 0.28182390474726166,
+      "beta_max": 1.0664142151927132,
+      "beta_std": 0.324779739640483,
+      "vol_min": 0.8655237636299968,
+      "vol_max": 1.212447197381256
+    },
+    "V1_SMOOTH_BETA_0038": {
+      "window": "2021-05-15..2021-06-30",
+      "beta_min": 0.28182390474726166,
+      "beta_max": 0.4902478529567483,
+      "beta_std": 0.04265855738814237,
+      "vol_min": 0.8655237636299968,
+      "vol_max": 1.212447197381256
+    }
+  },
+  "sub_windows": {
+    "2021_05_crash": {
+      "V1_FROZEN_BASELINE": {
+        "end_multiple": 0.597286528007806,
+        "final_10k": 5972.86528007806,
+        "cagr": -0.8678778356462797,
+        "max_drawdown": -0.5971708172784427,
+        "ann_vol": 0.9620172343267468,
+        "sharpe": -1.5797596820050093,
+        "calmar": -1.453315886401754,
+        "turnover": 13.767421389462708,
+        "avg_gross_exposure": 0.6099003039706477
+      },
+      "V1_SMOOTH_BETA_0038": {
+        "end_multiple": 0.9221172225260822,
+        "final_10k": 9221.172225260822,
+        "cagr": -0.2727221195232373,
+        "max_drawdown": -0.3011111277382591,
+        "ann_vol": 0.5181594789478642,
+        "sharpe": -0.35314751559928664,
+        "calmar": -0.9057191661156444,
+        "turnover": 9.299403135680945,
+        "avg_gross_exposure": 0.41867515701899816
+      }
+    },
+    "published_3_65y_window": {
+      "V1_FROZEN_BASELINE": {
+        "end_multiple": 5.7085597686522345,
+        "final_10k": 57085.59768652234,
+        "cagr": 0.6117319518001354,
+        "max_drawdown": -0.37634907563779707,
+        "ann_vol": 0.4443760994472716,
+        "sharpe": 1.294199856750362,
+        "calmar": 1.6254376359592115,
+        "turnover": 93.52556855677076,
+        "avg_gross_exposure": 0.7945729662337011
+      },
+      "V1_SMOOTH_BETA_0038": {
+        "end_multiple": 4.69462100538992,
+        "final_10k": 46946.2100538992,
+        "cagr": 0.5276454747657426,
+        "max_drawdown": -0.34495386641489445,
+        "ann_vol": 0.3885949114948725,
+        "sharpe": 1.282983643166582,
+        "calmar": 1.5296117137330916,
+        "turnover": 93.0612843284959,
+        "avg_gross_exposure": 0.6940366819763139
+      }
+    },
+    "2021_2022_bear": {
+      "V1_FROZEN_BASELINE": {
+        "end_multiple": 0.5443703691722271,
+        "final_10k": 5443.703691722271,
+        "cagr": -0.4452135013887534,
+        "max_drawdown": -0.44947235250908535,
+        "ann_vol": 0.2997757899603698,
+        "sharpe": -1.810277200799028,
+        "calmar": -0.9905247762258171,
+        "turnover": 16.341647580223004,
+        "avg_gross_exposure": 0.34852690330540526
+      },
+      "V1_SMOOTH_BETA_0038": {
+        "end_multiple": 0.577808184213921,
+        "final_10k": 5778.08184213921,
+        "cagr": -0.4122289349825128,
+        "max_drawdown": -0.41717231393464793,
+        "ann_vol": 0.23607928166969677,
+        "sharpe": -2.1286933501627696,
+        "calmar": -0.9881502707945534,
+        "turnover": 11.848455459235929,
+        "avg_gross_exposure": 0.30881842600969067
+      }
+    },
+    "2023_2024_bull": {
+      "V1_FROZEN_BASELINE": {
+        "end_multiple": 6.010012781829637,
+        "final_10k": 60100.12781829637,
+        "cagr": 3.2059968544048933,
+        "max_drawdown": -0.24859967078196366,
+        "ann_vol": 0.5473790110829176,
+        "sharpe": 2.897243466493166,
+        "calmar": 12.89622325049955,
+        "turnover": 34.31179172172653,
+        "avg_gross_exposure": 0.9477498544139898
+      },
+      "V1_SMOOTH_BETA_0038": {
+        "end_multiple": 4.7832544427316055,
+        "final_10k": 47832.544427316054,
+        "cagr": 2.5030760569807953,
+        "max_drawdown": -0.21685450251383798,
+        "ann_vol": 0.49146279288457284,
+        "sharpe": 2.795936267738035,
+        "calmar": 11.542651999218085,
+        "turnover": 35.2057603459317,
+        "avg_gross_exposure": 0.8300681414193517
+      }
+    },
+    "2024_2025_period": {
+      "V1_FROZEN_BASELINE": {
+        "end_multiple": 1.0934813809964543,
+        "final_10k": 10934.813809964544,
+        "cagr": 0.05232474561441425,
+        "max_drawdown": -0.3098685445719255,
+        "ann_vol": 0.43436182887213026,
+        "sharpe": 0.3337088130444423,
+        "calmar": 0.16886110749543612,
+        "turnover": 54.746237927590535,
+        "avg_gross_exposure": 0.8594687630855672
+      },
+      "V1_SMOOTH_BETA_0038": {
+        "end_multiple": 1.118544895850384,
+        "final_10k": 11185.448958503841,
+        "cagr": 0.06602320650600157,
+        "max_drawdown": -0.27704361874557515,
+        "ann_vol": 0.3661495419119293,
+        "sharpe": 0.3570015369306213,
+        "calmar": 0.23831339918583155,
+        "turnover": 54.58095906678983,
+        "avg_gross_exposure": 0.7351719055509058
+      }
+    }
+  }
+}
