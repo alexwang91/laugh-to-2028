@@ -3,10 +3,10 @@ import unittest
 import numpy as np
 import pandas as pd
 
+from funding_event_semantics_0029b import funding_accounting_event_semantics
 from run_tsmom_alpha_0029 import (
     build_targets,
     event_pnl_date,
-    funding_accounting,
     price_returns_and_costs,
 )
 
@@ -67,12 +67,39 @@ class Tsmom0029Tests(unittest.TestCase):
                 "rate": [0.001],
             }),
         }
-        factor, summary, diag = funding_accounting(held, funding, idx)
+        factor, summary, diag = funding_accounting_event_semantics(held, funding, idx)
         long_row = summary.set_index("symbol").loc["LONG"]
         short_row = summary.set_index("symbol").loc["SHORT"]
         self.assertLess(float(long_row["net_additive_contribution"]), 0.0)
         self.assertGreater(float(short_row["net_additive_contribution"]), 0.0)
         self.assertAlmostEqual(float(factor.iloc[0]), 1.0, places=12)
+        self.assertEqual(int(diag["active_symbol_days_without_funding_event"]), 0)
+
+    def test_active_day_without_event_is_zero_cashflow_but_recorded(self):
+        idx = pd.date_range("2024-03-01", periods=2, freq="D")
+        held = pd.DataFrame({"X": [0.5, 0.5]}, index=idx)
+        funding = {
+            "X": pd.DataFrame({
+                "timestamp": [pd.Timestamp("2024-03-01 08:00:00", tz="UTC")],
+                "rate": [0.001],
+            })
+        }
+        factor, summary, diag = funding_accounting_event_semantics(held, funding, idx)
+        self.assertAlmostEqual(float(factor.loc[idx[0]]), 0.9995, places=12)
+        self.assertAlmostEqual(float(factor.loc[idx[1]]), 1.0, places=12)
+        self.assertEqual(int(diag["active_symbol_days"]), 2)
+        self.assertEqual(int(diag["active_symbol_days_with_funding_event"]), 1)
+        self.assertEqual(int(diag["active_symbol_days_without_funding_event"]), 1)
+        self.assertAlmostEqual(float(diag["active_symbol_day_event_coverage_ratio"]), 0.5, places=12)
+        xrow = summary.set_index("symbol").loc["X"]
+        self.assertEqual(int(xrow["active_days_without_funding_event"]), 1)
+        self.assertEqual(diag["longest_no_event_spans"][0]["start"], "2024-03-02")
+
+    def test_missing_funding_archive_result_remains_hard_failure(self):
+        idx = pd.DatetimeIndex([pd.Timestamp("2024-03-01")])
+        held = pd.DataFrame({"X": [0.5]}, index=idx)
+        with self.assertRaises(RuntimeError):
+            funding_accounting_event_semantics(held, {}, idx)
 
 
 if __name__ == "__main__":
