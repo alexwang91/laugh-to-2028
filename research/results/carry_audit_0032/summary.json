@@ -1,0 +1,42 @@
+{
+  "audit_id": "CARRY-AUDIT-0032-BASIS-OUTLIERS",
+  "status": "PASS",
+  "trading_changes": false,
+  "recomputed_filtered_strategy": false,
+  "decision": "0031_MAY_PROCEED_TO_SEPARATELY_PREREGISTERED_STACK_TEST",
+  "relative_source_tolerance": 1e-10,
+  "assets": {
+    "SOLUSDT": {
+      "largest_abs_basis": 0.16903409090909094,
+      "largest_basis_date": "2022-11-09",
+      "largest_basis_signed": -0.16903409090909094,
+      "dates_abs_basis_ge_2pct": ["2021-01-06", "2022-11-08", "2022-11-09"],
+      "daily_crosscheck_dates": 37,
+      "daily_crosscheck_unavailable_count": 0,
+      "source_mismatch_count": 0,
+      "full_window_cumulative_additive_price_spread": -0.017044047563504843,
+      "top20_abs_basis_dates_cumulative_additive_price_spread": 0.014899469801436152,
+      "abs_basis_ge_2pct_dates_cumulative_additive_price_spread": 0.012357529182790226,
+      "interpretation": "The largest basis observations are source-consistent and their selected-date frozen 0031 price-spread contribution is positive, so they do not explain the asset's negative full-window spread contribution."
+    },
+    "XRPUSDT": {
+      "largest_abs_basis": 0.06688506688506679,
+      "largest_basis_date": "2020-12-11",
+      "largest_basis_signed": -0.06688506688506679,
+      "dates_abs_basis_ge_2pct": ["2020-12-11"],
+      "daily_crosscheck_dates": 33,
+      "daily_crosscheck_unavailable_count": 0,
+      "source_mismatch_count": 0,
+      "full_window_cumulative_additive_price_spread": -0.0020267549472849293,
+      "top20_abs_basis_dates_cumulative_additive_price_spread": 0.005942357566331049,
+      "abs_basis_ge_2pct_dates_cumulative_additive_price_spread": 0.006124005382818776,
+      "interpretation": "The largest basis observations are source-consistent and their selected-date frozen 0031 price-spread contribution is positive, so they do not explain the asset's negative full-window spread contribution."
+    }
+  },
+  "pass_rule": {
+    "all_compared_source_rows_consistent": true,
+    "all_selected_daily_crosschecks_available": true,
+    "decision": "PASS authorizes proceeding to a separately preregistered BRRK+carry stack test"
+  },
+  "interpretation": "Post-hoc source attribution only. No outlier, asset, day or weight was removed; the frozen CARRY-PNL-0031 result remains unchanged."
+}

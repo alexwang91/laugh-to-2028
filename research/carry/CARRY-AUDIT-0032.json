@@ -1,0 +1,45 @@
+{
+  "audit_id": "CARRY-AUDIT-0032-BASIS-OUTLIERS",
+  "status": "REGISTERED_AFTER_0031_AS_POSTHOC_DATA_VALIDATION",
+  "registered_on": "2026-08-05",
+  "promotion_evidence": false,
+  "trigger": "The frozen first valid CARRY-PNL-0031 run passed its preregistered gates but reported unusually large daily-close basis minima, approximately -16.9% for SOLUSDT and -6.7% for XRPUSDT.",
+  "purpose": "Validate source/timestamp consistency and quantify PNL influence of observed basis outliers before any BRRK stack experiment. This audit has no authority to alter the frozen 0031 portfolio or result.",
+  "assets": ["SOLUSDT", "XRPUSDT"],
+  "source_rule": {
+    "monthly_primary": "official Binance spot and USD-M perpetual monthly 1d archives",
+    "daily_crosscheck": "official corresponding spot and USD-M perpetual daily 1d archive for each selected outlier date and its immediately prior day when available",
+    "same_symbol_same_market": true,
+    "cross_venue_substitution": false
+  },
+  "selection_for_audit_only": {
+    "ranked_dates": "top 20 dates by absolute daily-close basis = abs(perp_close / spot_close - 1) within the frozen 0031 evaluation window",
+    "absolute_basis_flag": "also report every date with abs(basis) >= 0.02",
+    "note": "2% is a diagnostic materiality flag only; it is not a trading threshold and cannot change 0031 holdings"
+  },
+  "required_checks": [
+    "identify exact dates and spot/perp closes for ranked basis observations",
+    "compare monthly-archive closes with exact official daily-archive closes for both legs on selected dates",
+    "verify selected rows map to the same UTC open date",
+    "report relative monthly-vs-daily close disagreement for each leg",
+    "compute daily basis change and the frozen 0031 asset price-spread contribution = 0.10 * spot_return - 0.10 * perp_return",
+    "quantify how much of each asset's cumulative additive 0031 price-spread contribution is attributable to top outlier dates",
+    "inspect prior/next-day basis around the largest events to distinguish persistent dislocation from one-day snapback",
+    "do not recompute an alternative filtered strategy"
+  ],
+  "pass_rule": {
+    "archive_consistency": "all ranked dates with available official daily archives reproduce monthly spot and perp closes to relative tolerance <= 1e-10; unavailable daily files must be disclosed",
+    "timestamp_consistency": "all compared daily and monthly rows resolve to the same requested UTC date",
+    "decision": "PASS means the extreme observations are source-consistent enough for 0031 to proceed to a separately preregistered stack test; FAIL blocks stacking pending source resolution"
+  },
+  "prohibited": [
+    "no removal of SOL, XRP or any outlier date",
+    "no winsorization",
+    "no basis cap",
+    "no alternative price source inserted into 0031",
+    "no funding threshold",
+    "no weight change",
+    "no leverage change",
+    "no re-estimation of 0031 performance after excluding audited observations"
+  ]
+}

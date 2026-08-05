@@ -1,0 +1,53 @@
+name: CARRY AUDIT 0032
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/carry-audit-0032.yml'
+      - 'research/requirements.txt'
+      - 'research/carry/**'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: carry-audit-0032-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  carry-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: research/requirements.txt
+      - name: Install research dependencies
+        run: pip install --disable-pip-version-check -r research/requirements.txt
+      - name: Run deterministic unit tests
+        working-directory: research/carry
+        run: python -m unittest -v test_carry_audit_0032.py
+      - name: Run basis outlier source attribution
+        working-directory: research/carry
+        shell: bash
+        run: |
+          set -o pipefail
+          python run_carry_audit_0032.py | tee carry_audit_0032.log
+      - name: Upload exact evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: carry-audit-0032-results
+          retention-days: 30
+          if-no-files-found: warn
+          path: |
+            research/carry/CARRY-AUDIT-0032.json
+            research/carry/carry_audit_0032.log
+            research/results/carry_audit_0032/**
