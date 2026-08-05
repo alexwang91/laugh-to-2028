@@ -1,0 +1,57 @@
+{
+  "audit_id": "CARRY-IMPL-0034-HYPERLIQUID-PORTFOLIO-MARGIN",
+  "status": "PREREGISTERED_BEFORE_FIRST_RUN",
+  "registered_on": "2026-08-05",
+  "promotion_evidence": false,
+  "motivation": "CARRY-PNL-0031 qualified as a standalone low-vol funding mechanism, while CARRY-STACK-0033 rejected a conservative fully-funded idle-capital deployment. Current Hyperliquid Portfolio Margin is independently relevant because it is designed to offset spot inventory against short perps and may reduce capital consumption without changing the carry signal.",
+  "question": "Which components of the frozen five-asset carry mechanism are currently eligible for capital-efficient Hyperliquid Portfolio Margin implementation, and what public reserve/market constraints must be satisfied before a live subaccount shadow test?",
+  "targets": ["BTC", "ETH", "SOL", "BNB", "XRP"],
+  "public_sources": {
+    "info_endpoint": "https://api.hyperliquid.xyz/info",
+    "required_requests": [
+      "allBorrowLendReserveStates",
+      "spotMetaAndAssetCtxs",
+      "metaAndAssetCtxs",
+      "allMids",
+      "l2Book for every classified target spot candidate and target perp"
+    ],
+    "official_documentation_snapshot": {
+      "portfolio_margin_use_case": "official docs describe a carry trade where a spot balance offsets a short perp and the spot balance collateralizes the perp position",
+      "current_mode_context": "official Hyperliquid announcements in 2026 state Portfolio Margin has progressed to beta and supports BTC and HYPE as collateral, subject to account/cap requirements",
+      "note": "documentation claims are recorded as external context; runtime API reserve state is the machine-verifiable authority for current LTV/rates"
+    }
+  },
+  "asset_identity": {
+    "BTC": "official Hyperliquid API docs state app UI BTC/USDC maps to UBTC/USDC on mainnet HyperCore; this remap is allowed",
+    "other_targets": "no wrapped/bridged/canonical candidate is automatically treated as economically identical solely because its ticker contains ETH/SOL/BNB/XRP",
+    "collateral_rule": "a spot token is machine-classified as current collateral only when its exact token index appears in allBorrowLendReserveStates with numeric LTV > 0"
+  },
+  "required_diagnostics": [
+    "map every borrow/lend reserve token index to current spot token metadata/name",
+    "report reserve LTV, oracle price, total supplied/borrowed, utilization, borrow yearly rate and supply yearly rate",
+    "identify every reserve with LTV > 0 and every reserve with observable borrowing liquidity",
+    "re-run target spot identity classification for BTC/ETH/SOL/BNB/XRP using current metadata",
+    "report whether each target has a current perp market",
+    "for each target report whether the selected/verified spot token itself has LTV > 0",
+    "for BTC and any other verified collateral-capable target, capture spot/perp spread, returned L2 depth and $1k/$10k/$50k/$100k marketable VWAP/slippage",
+    "compare observed USDC borrow yearly rate with a diagnostic annualized funding hurdle only as an implementation hurdle; do not create strategy PNL",
+    "explicitly distinguish Portfolio Margin collateral eligibility from mere Unified Account balance unification"
+  ],
+  "qualification_rule": {
+    "btc_carry_public_feasibility": "BTC has verified UI-remapped spot identity, live BTC perp, selected BTC spot token LTV > 0, nonempty spot/perp books, and current public reserve state is readable",
+    "multi_asset_pm_feasibility": "report target-by-target only; do not require all five to pass because PM collateral eligibility is an implementation property, not a strategy selection rule",
+    "decision": "PASS for BTC authorizes a separate no-trade/small-subaccount Portfolio Margin shadow design; it does not authorize live capital or leverage. Other assets remain unsupported for collateral-efficient carry unless their exact selected spot token independently passes the same LTV rule."
+  },
+  "prohibited": [
+    "no carry PNL backtest",
+    "no change to CARRY-PNL-0031 assets or weights",
+    "no reinterpretation of CARRY-STACK-0033",
+    "no assumption that Unified Account equals Portfolio Margin offsetting",
+    "no inferred LTV for an asset absent from reserve state",
+    "no wrapped-token approval based only on name similarity",
+    "no private-key use or order placement",
+    "no leverage recommendation from this public snapshot",
+    "no assumption that current borrow/supply caps or rates remain stable"
+  ],
+  "next_gate": "If BTC public feasibility passes, separately preregister a Portfolio Margin subaccount shadow/probe that measures actual margin usage, health factor and capital release for matched BTC spot + short perp without strategy PNL optimization."
+}

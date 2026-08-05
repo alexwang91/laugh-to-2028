@@ -1,0 +1,54 @@
+name: CARRY IMPL 0034
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/carry-impl-0034.yml'
+      - 'research/requirements.txt'
+      - 'research/carry/**'
+      - 'research/funding_router/run_router_data_audit.py'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: carry-impl-0034-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  carry-impl:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: research/requirements.txt
+      - name: Install research dependencies
+        run: pip install --disable-pip-version-check -r research/requirements.txt
+      - name: Run deterministic unit tests
+        working-directory: research/carry
+        run: python -m unittest -v test_carry_impl_0034.py
+      - name: Run public Hyperliquid Portfolio Margin audit
+        working-directory: research/carry
+        shell: bash
+        run: |
+          set -o pipefail
+          python run_carry_impl_0034.py | tee carry_impl_0034.log
+      - name: Upload exact evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: carry-impl-0034-results
+          retention-days: 30
+          if-no-files-found: warn
+          path: |
+            research/carry/CARRY-IMPL-0034.json
+            research/carry/carry_impl_0034.log
+            research/results/carry_impl_0034/**
