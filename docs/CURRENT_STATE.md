@@ -11,17 +11,17 @@ Status: authoritative cross-chat handoff snapshot
 - Continuity protocol: `docs/CONTEXT_CONTINUITY_PROTOCOL.md`
 - Planning PR: #38 merged
 - Context-handoff governance PR: #39 merged
-- Current candidate branch: `phase0/canonical-config-registry`
+- Phase 0 PR: #40, CI green and ready to merge
 
 ## Current roadmap position
 
 ```text
 PLANNING BASELINE: complete
 CONTEXT-HANDOFF GOVERNANCE: complete
-P0.1 Canonical product config: candidate implemented, pending PR/CI closure
-P0.2 Decision registry: candidate implemented, pending PR/CI closure
-P1.1 Deterministic order identity: NEXT only after Phase 0 closes
-P1+: not authorized to skip ahead
+P0.1 Canonical product config: PASS
+P0.2 Decision registry: PASS
+P1.1 Deterministic order identity: NEXT
+P1+: continue in dependency order only
 ```
 
 ## Product state frozen by the master plan
@@ -42,21 +42,23 @@ P1+: not authorized to skip ahead
 - Bot may use a trading Agent/API credential only; never the master wallet private key and never automated withdrawals.
 - Strategy upgrades use candidate/shadow plus manual blue-green cutover; no hot strategy patching.
 
-## Phase 0 candidate implementation
+## Phase 0 implementation now established
 
-P0.1 adds:
+P0.1:
 
-- `config/product.json` as the canonical machine-readable product baseline;
-- `execution/plan-b-bot/beta_bot/product_config.py` as a validated loader;
-- execution settings now consume the canonical product config before applying the narrower BTC-only implementation capability;
-- explicit distinction between product universe and current executor capability;
-- research and execution contract tests reading the same source file;
-- `phase0-baseline.yml` CI contract.
+- `config/product.json` is the canonical machine-readable product baseline;
+- `execution/plan-b-bot/beta_bot/product_config.py` validates and serializes that baseline;
+- execution settings consume the canonical product config before applying narrower executor capability constraints;
+- product universe and current BTC-only executor capability are explicitly separated;
+- research and execution contract tests consume the same canonical product file;
+- `.github/workflows/phase0-baseline.yml` enforces the contract.
 
-P0.2 adds:
+P0.2:
 
-- `config/decision_registry.json` with accepted research targets, implementation-verified evidence, shadow-only lines, stopped/rejected lines and explicit production-authorized set;
-- stopped historical lines are machine-readable so future tasks can detect that they must not be silently reopened.
+- `config/decision_registry.json` is the machine-readable frozen decision registry;
+- accepted research targets, implementation-verified evidence, shadow-only lines, stopped/rejected lines and superseded work are explicit;
+- the production-authorized component set is currently empty;
+- future tasks must reference an existing decision or create a new registered decision rather than silently reopening stopped work.
 
 ## Research boundaries that must remain closed unless formally reopened
 
@@ -70,11 +72,11 @@ P0.2 adds:
 - BRRK-0011 remains the frozen directional research target.
 - Hyperliquid all-perp implementation is economically inferior to spot-aware routing on the tested window.
 - BTC spot/UBTC identity has public verification; ETH/SOL spot identity remains an explicit later router validation item.
+- Phase 0 PR #40 passed both the PR handoff governance workflow and the Phase-0 baseline contract workflow before merge.
 - Execution production readiness is not established: deterministic order identity, persistent ledger, partial-fill lifecycle, reconciliation, idempotency, slicing, kill paths and executor lifecycle tests remain required.
 - Dynamic leverage above the current BRRK scale is not yet production-authorized.
 - Cycle-top/exit model is not yet validated; future study must include 2021 two-wave structure and 2025 multi-peak structure.
 - Bear-market Top-20 short expansion is research-only and deferred.
-- Phase 0 evidence is not final until candidate PR CI and governance checks pass.
 
 ## Production authorization
 
@@ -87,10 +89,10 @@ Short authorization: NONE
 
 ## Open blockers / uncertainties
 
-1. Phase 0 candidate must pass PR governance and Phase-0 CI before being considered closed.
-2. Execution account/order/fill truth is not yet hardened; this becomes Phase 1.
-3. Operating drawdown budget is intentionally not frozen until leverage research.
-4. Cycle-exit signal parameters/timeframes are intentionally not frozen until historical/walk-forward study.
+1. P1 account/order/fill truth is not yet hardened.
+2. Operating drawdown budget is intentionally not frozen until leverage research.
+3. Cycle-exit signal parameters/timeframes are intentionally not frozen until historical/walk-forward study.
+4. ETH/SOL/BNB execution and spot identities are not authorized merely because they exist in the product universe.
 
 ## Latest project-drift assessment
 
@@ -98,22 +100,20 @@ Short authorization: NONE
 DRIFT_0
 ```
 
-Reason: Phase 0 implements the exact next roadmap dependency. It does not change strategy economics, risk limits, venue, asset universe, approval boundaries or production authorization. Legacy BTC-only and beta-cap behavior is explicitly treated as current execution capability/research legacy rather than canonical product policy.
+Reason: Phase 0 implemented the exact roadmap dependency without changing strategy economics, risk limits, venue, asset universe, approval boundaries or production authorization. Legacy BTC-only and beta-cap behavior remains implementation/research legacy rather than canonical product policy.
 
 ## Exact next unblocked task
-
-If and only if the Phase 0 PR passes CI/review and merges:
 
 ```text
 P1.1 Deterministic order identity
 ```
 
-Then continue Phase 1 in dependency order. Do not begin dynamic leverage, cycle-exit research or bear-short work before account/execution truth is closed.
+Required outcome: deterministic client/order IDs derived from release, decision timestamp, asset, side and intent/target revision; rerunning the same decision must not create duplicate economic orders; IDs must survive restart; replay tests must pass.
+
+After P1.1, continue Phase 1 in roadmap dependency order. Do not begin P4 leverage, P5 cycle-exit research or P8 bear-short work before the required earlier gates are closed.
 
 ## Fresh-chat resume instructions
 
-A fresh conversation should read the canonical files, inspect the latest merged PR after #39, verify actual GitHub state and CI, then:
+A fresh conversation should read the canonical files, inspect merged PRs #38, #39 and #40, verify actual GitHub state and CI, then begin `P1.1 Deterministic order identity`.
 
-- if the Phase 0 PR is still open or failing, close/fix it first;
-- if Phase 0 is merged and green, begin P1.1 Deterministic order identity;
-- do not ask the user to repeat product decisions already captured in `config/product.json`, the master plan or this handoff.
+Do not ask the user to repeat product decisions already captured in `config/product.json`, `config/decision_registry.json`, the master plan or this handoff.
