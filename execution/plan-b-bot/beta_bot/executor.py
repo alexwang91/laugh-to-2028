@@ -9,7 +9,9 @@ from hyperliquid.exchange import Exchange
 from hyperliquid.utils.types import Cloid
 
 from .config import Settings
+from .market import fetch_order_status, fetch_user_fills_by_time
 from .order_identity import OrderIdentity, build_order_identity, canonical_target_revision
+from .order_ledger import LedgerIntent, LedgerUncertainState, OrderLedger, reconcile_unresolved_orders
 
 
 def _round_size(size: float, decimals: int = 5) -> float:
@@ -19,59 +21,131 @@ def _round_size(size: float, decimals: int = 5) -> float:
     return rounded
 
 
-def _extract_status(response: dict[str, Any]) -> str:
+def _parse_submission_response(response: dict[str, Any]) -> tuple[str, str | None, str | None]:
+    if not isinstance(response, dict):
+        raise LedgerUncertainState(f"Malformed Hyperliquid submission response: {response}")
     if response.get("status") != "ok":
-        raise RuntimeError(f"Hyperliquid order failed: {response}")
+        return "rejected", None, f"hyperliquid_response:{response}"
     statuses = response.get("response", {}).get("data", {}).get("statuses", [])
     if not statuses:
-        return "ok"
+        return "ok", None, None
     status = statuses[0]
+    if not isinstance(status, dict):
+        raise LedgerUncertainState(f"Malformed Hyperliquid order status: {status}")
     if "error" in status:
-        raise RuntimeError(f"Hyperliquid order rejected: {status['error']}")
+        return "rejected", None, str(status["error"])
     if "filled" in status:
-        return "filled"
+        filled = status["filled"] or {}
+        oid = filled.get("oid") if isinstance(filled, dict) else None
+        return "filled", str(oid) if oid is not None else None, None
     if "resting" in status:
-        return "resting"
-    return str(status)
+        resting = status["resting"] or {}
+        oid = resting.get("oid") if isinstance(resting, dict) else None
+        return "resting", str(oid) if oid is not None else None, None
+    raise LedgerUncertainState(f"Unrecognized Hyperliquid order status: {status}")
 
 
-def _existing_order_status(exchange: Exchange, account_address: str, cloid: Cloid) -> str | None:
-    """Return a prior order status for this cloid, or None when it has never existed.
+def _extract_status(response: dict[str, Any]) -> str:
+    status, _oid, reject_reason = _parse_submission_response(response)
+    if status == "rejected":
+        raise RuntimeError(f"Hyperliquid order rejected: {reject_reason}")
+    return status
 
-    Hyperliquid's orderStatus endpoint returns unknownOid for a missing oid/cloid and
-    status=order for any known order, including terminal states. Any unexpected response
-    fails closed so a transient/malformed lookup cannot cause an accidental duplicate.
-    """
+
+def _query_existing_order(exchange: Exchange, account_address: str, cloid: Cloid) -> dict[str, Any] | None:
+    """Return exact Hyperliquid orderStatus truth, or None when the CLOID is unknown."""
     response = exchange.info.query_order_by_cloid(account_address, cloid)
     response_status = response.get("status") if isinstance(response, dict) else None
     if response_status == "unknownOid":
         return None
     if response_status == "order":
-        order = response.get("order") or {}
-        return str(order.get("status") or "order")
+        envelope = response.get("order") or {}
+        if not isinstance(envelope, dict) or not isinstance(envelope.get("order"), dict):
+            raise RuntimeError(f"Malformed Hyperliquid orderStatus response for cloid {cloid}: {response}")
+        if not isinstance(envelope.get("status"), str):
+            raise RuntimeError(f"Malformed Hyperliquid orderStatus response for cloid {cloid}: {response}")
+        return response
     raise RuntimeError(f"Unexpected Hyperliquid orderStatus response for cloid {cloid}: {response}")
+
+
+def _existing_order_status(exchange: Exchange, account_address: str, cloid: Cloid) -> str | None:
+    """Compatibility helper used by tests and diagnostics."""
+    response = _query_existing_order(exchange, account_address, cloid)
+    if response is None:
+        return None
+    return str(response["order"]["status"])
 
 
 def _submit_once(
     *,
     exchange: Exchange,
     account_address: str,
-    identity: OrderIdentity,
+    ledger: OrderLedger,
+    intent: LedgerIntent,
     submit: Callable[[Cloid], dict[str, Any]],
 ) -> tuple[str, str | None]:
-    """Submit one economic order at most once for sequential replay/restart attempts.
+    """Persist-before-submit and suppress/recover one deterministic economic order.
 
-    The exchange-visible cloid is the durable idempotency key. A restart reconstructs
-    the same cloid from the same economic decision, queries exchange history, and skips
-    submission if that cloid already exists. Cross-process concurrent submission races
-    are intentionally not claimed here; persistent coordination belongs to later Phase 1.
+    Durable ordering is intentional:
+      intent -> exchange CLOID lookup -> durable submission-attempt marker -> network submit.
+    If a prior attempt exists and the exchange later says unknownOid, P1.2 does not retry.
+    That retry policy belongs to a later lifecycle task; this path fails closed instead.
     """
+    identity = intent.identity
+    local = ledger.record_intent(intent)
     cloid = Cloid.from_str(identity.cloid)
-    existing = _existing_order_status(exchange, account_address, cloid)
+    try:
+        existing = _query_existing_order(exchange, account_address, cloid)
+    except Exception as exc:
+        ledger.record_reconciliation_uncertainty(
+            identity.cloid, "pre_submit_order_status_lookup_failed", str(exc)
+        )
+        raise
+
     if existing is not None:
-        return "duplicate_suppressed", existing
-    response = submit(cloid)
-    return _extract_status(response), None
+        existing_status = ledger.record_exchange_discovery(identity.cloid, existing)
+        return "duplicate_suppressed", existing_status
+
+    if local["submission_attempt_timestamp_ms"] is not None:
+        ledger.record_reconciliation_uncertainty(
+            identity.cloid,
+            "unknown_oid_after_durable_submission_attempt",
+            {"submission_attempt_timestamp_ms": local["submission_attempt_timestamp_ms"]},
+        )
+        raise LedgerUncertainState(
+            f"CLOID {identity.cloid} is unknown at exchange after a prior submission attempt; blind retry is forbidden"
+        )
+
+    ledger.record_submission_attempt(identity.cloid)
+    try:
+        response = submit(cloid)
+    except Exception as exc:
+        ledger.record_submission_unknown(identity.cloid, exc)
+        raise
+
+    try:
+        status, exchange_oid, reject_reason = _parse_submission_response(response)
+    except Exception as exc:
+        ledger.record_submission_response(
+            identity.cloid,
+            response if isinstance(response, dict) else {"raw": str(response)},
+            "unrecognized",
+        )
+        ledger.record_reconciliation_uncertainty(
+            identity.cloid, "unrecognized_submission_response", str(exc)
+        )
+        raise
+
+    ledger.record_submission_response(
+        identity.cloid,
+        response,
+        status,
+        exchange_oid=exchange_oid,
+        reject_reason=reject_reason,
+    )
+    if status == "rejected":
+        raise RuntimeError(f"Hyperliquid order rejected: {reject_reason}")
+    return status, None
 
 
 def _identity(
@@ -93,6 +167,50 @@ def _identity(
     )
 
 
+def _open_ledger(settings: Settings) -> OrderLedger:
+    if not settings.order_ledger_path:
+        raise LedgerUncertainState("Trade execution requires a configured persistent order ledger")
+    return OrderLedger(settings.order_ledger_path)
+
+
+def reconcile_persistent_orders(settings: Settings) -> dict[str, Any]:
+    """Reconstruct unresolved ledger rows from Hyperliquid read-only truth."""
+    if not settings.account_address:
+        raise ValueError("Trading account address is missing")
+    ledger = _open_ledger(settings)
+    return reconcile_unresolved_orders(
+        ledger,
+        query_order_status=lambda cloid: fetch_order_status(
+            settings.api_url,
+            settings.account_address or "",
+            cloid,
+            settings.request_timeout_seconds,
+        ),
+        fetch_fills_by_time=lambda start_ms, end_ms: fetch_user_fills_by_time(
+            settings.api_url,
+            settings.account_address or "",
+            start_ms,
+            end_ms,
+            settings.request_timeout_seconds,
+        ),
+    )
+
+
+def _ledger_intent(
+    *,
+    identity: OrderIdentity,
+    route_action: str,
+    quantity: float,
+    parameters: dict[str, Any],
+) -> LedgerIntent:
+    return LedgerIntent(
+        identity=identity,
+        route_action=route_action,
+        submitted_quantity=quantity,
+        submitted_order_parameters=parameters,
+    )
+
+
 def execute_target_position(
     settings: Settings,
     current_qty: float,
@@ -101,11 +219,14 @@ def execute_target_position(
     release_id: str,
     decision_timestamp_ms: int,
 ) -> list[dict[str, Any]]:
-    """Move a BTC perp position to the target with deterministic exchange order IDs."""
+    """Move a BTC perp position to the target with durable deterministic order truth."""
     if not settings.api_private_key or not settings.master_address:
         raise ValueError("Trading credentials are missing")
     if not settings.account_address:
         raise ValueError("Trading account address is missing")
+
+    # Open and integrity-check durable state before any exchange write action.
+    ledger = _open_ledger(settings)
 
     wallet = Account.from_key(settings.api_private_key)
     exchange = Exchange(
@@ -131,43 +252,70 @@ def execute_target_position(
         delta = target_qty - current_qty
         side = "buy" if delta > 0 else "sell"
         reducing = current_qty != 0 and abs(target_qty) < abs(current_qty)
-        intent = "reduce" if reducing else "increase"
+        intent_name = "reduce" if reducing else "increase"
         identity = _identity(
             release_id=release_id,
             decision_timestamp_ms=decision_timestamp_ms,
             asset=settings.coin,
             side=side,
-            intent=intent,
+            intent=intent_name,
             target_revision=target_revision,
         )
+        quantity = _round_size(abs(delta))
 
         if reducing:
+            ledger_intent = _ledger_intent(
+                identity=identity,
+                route_action="reduce",
+                quantity=quantity,
+                parameters={
+                    "method": "market_close",
+                    "coin": settings.coin,
+                    "size": quantity,
+                    "slippage": slippage,
+                    "reduce_only_semantics": True,
+                },
+            )
             status, existing_status = _submit_once(
                 exchange=exchange,
                 account_address=settings.account_address,
-                identity=identity,
+                ledger=ledger,
+                intent=ledger_intent,
                 submit=lambda cloid: exchange.market_close(
                     settings.coin,
-                    sz=_round_size(abs(delta)),
+                    sz=quantity,
                     slippage=slippage,
                     cloid=cloid,
                 ),
             )
         else:
+            ledger_intent = _ledger_intent(
+                identity=identity,
+                route_action="increase",
+                quantity=quantity,
+                parameters={
+                    "method": "market_open",
+                    "coin": settings.coin,
+                    "is_buy": delta > 0,
+                    "size": quantity,
+                    "slippage": slippage,
+                },
+            )
             status, existing_status = _submit_once(
                 exchange=exchange,
                 account_address=settings.account_address,
-                identity=identity,
+                ledger=ledger,
+                intent=ledger_intent,
                 submit=lambda cloid: exchange.market_open(
                     settings.coin,
                     is_buy=delta > 0,
-                    sz=_round_size(delta),
+                    sz=quantity,
                     slippage=slippage,
                     cloid=cloid,
                 ),
             )
         action = {
-            "action": intent,
+            "action": intent_name,
             "size": abs(delta),
             "status": status,
             "order_identity": identity.to_dict(),
@@ -177,9 +325,8 @@ def execute_target_position(
         actions.append(action)
         return actions
 
-    # Reversal route labels remain observable, but identity uses route-independent
-    # economic intents. This lets a restart after the close leg reconstruct the same
-    # increase cloid that the original reversal would have used for the open leg.
+    # P1.2 preserves the existing two-leg reversal route. It records each economic leg
+    # durably but does not claim P1.3 partial-fill correctness or P1.4 reversal safety.
     close_side = "sell" if current_qty > 0 else "buy"
     close_identity = _identity(
         release_id=release_id,
@@ -189,13 +336,27 @@ def execute_target_position(
         intent="reduce",
         target_revision=target_revision,
     )
+    close_quantity = _round_size(current_qty)
+    close_ledger_intent = _ledger_intent(
+        identity=close_identity,
+        route_action="close_for_reversal",
+        quantity=close_quantity,
+        parameters={
+            "method": "market_close",
+            "coin": settings.coin,
+            "size": close_quantity,
+            "slippage": slippage,
+            "reduce_only_semantics": True,
+        },
+    )
     close_status, close_existing_status = _submit_once(
         exchange=exchange,
         account_address=settings.account_address,
-        identity=close_identity,
+        ledger=ledger,
+        intent=close_ledger_intent,
         submit=lambda cloid: exchange.market_close(
             settings.coin,
-            sz=_round_size(current_qty),
+            sz=close_quantity,
             slippage=slippage,
             cloid=cloid,
         ),
@@ -219,14 +380,28 @@ def execute_target_position(
         intent="increase",
         target_revision=target_revision,
     )
+    open_quantity = _round_size(target_qty)
+    open_ledger_intent = _ledger_intent(
+        identity=open_identity,
+        route_action="open_reversal",
+        quantity=open_quantity,
+        parameters={
+            "method": "market_open",
+            "coin": settings.coin,
+            "is_buy": target_qty > 0,
+            "size": open_quantity,
+            "slippage": slippage,
+        },
+    )
     open_status, open_existing_status = _submit_once(
         exchange=exchange,
         account_address=settings.account_address,
-        identity=open_identity,
+        ledger=ledger,
+        intent=open_ledger_intent,
         submit=lambda cloid: exchange.market_open(
             settings.coin,
             is_buy=target_qty > 0,
-            sz=_round_size(target_qty),
+            sz=open_quantity,
             slippage=slippage,
             cloid=cloid,
         ),
