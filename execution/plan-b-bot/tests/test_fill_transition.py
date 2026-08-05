@@ -187,3 +187,24 @@ def test_fill_larger_than_submitted_fails_closed():
     }
     with pytest.raises(FillTransitionError, match="exceeds submitted_quantity"):
         build_fill_transition(order)
+
+
+def test_exchange_remaining_must_match_local_submitted_minus_actual_fill():
+    order = {
+        "cloid": "0x" + "3" * 32,
+        "asset": "BTC",
+        "side": "buy",
+        "economic_intent": "increase",
+        "route_action": "increase",
+        "submitted_quantity": 0.25,
+        "fill_quantity": 0.10,
+        "remaining_quantity": 0.05,
+        "last_exchange_status": "open",
+        "terminal_status": None,
+        "submitted_order_parameters_json": (
+            '{"position_before_qty":0.0,"target_position_qty":0.25,'
+            '"position_tracking_source":"pre_trade_exchange_position"}'
+        ),
+    }
+    with pytest.raises(FillTransitionError, match="remaining quantity disagrees"):
+        build_fill_transition(order)
