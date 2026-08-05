@@ -11,7 +11,7 @@ Status: authoritative cross-chat handoff snapshot
 - Continuity protocol: `docs/CONTEXT_CONTINUITY_PROTOCOL.md`
 - Planning PR: #38 merged
 - Context-handoff governance PR: #39 merged
-- Phase 0 PR: #40, CI green and ready to merge
+- Phase 0 PR: #40 merged; squash commit `1feffd07208a741e53766fe126dc9cb7add3d3d1`; final-head governance and Phase-0 baseline CI both passed
 
 ## Current roadmap position
 
@@ -72,7 +72,7 @@ P0.2:
 - BRRK-0011 remains the frozen directional research target.
 - Hyperliquid all-perp implementation is economically inferior to spot-aware routing on the tested window.
 - BTC spot/UBTC identity has public verification; ETH/SOL spot identity remains an explicit later router validation item.
-- Phase 0 PR #40 passed both the PR handoff governance workflow and the Phase-0 baseline contract workflow before merge.
+- Phase 0 PR #40 passed both the PR handoff governance workflow and the Phase-0 baseline contract workflow on its final head and is merged.
 - Execution production readiness is not established: deterministic order identity, persistent ledger, partial-fill lifecycle, reconciliation, idempotency, slicing, kill paths and executor lifecycle tests remain required.
 - Dynamic leverage above the current BRRK scale is not yet production-authorized.
 - Cycle-top/exit model is not yet validated; future study must include 2021 two-wave structure and 2025 multi-peak structure.
