@@ -41,6 +41,14 @@ class ProductContractIntegrationTest(unittest.TestCase):
         ]:
             self.assertEqual(by_id[decision_id]["status"], "REJECTED_STOPPED")
 
+    def test_p1_1_order_identity_is_registered_without_production_authorization(self):
+        registry = json.loads(DECISION_REGISTRY.read_text(encoding="utf-8"))
+        by_id = {decision["id"]: decision for decision in registry["decisions"]}
+
+        self.assertEqual(by_id["EXEC-ORDER-ID-P1.1"]["status"], "IMPLEMENTATION_VERIFIED")
+        self.assertEqual(by_id["EXEC-ORDER-ID-P1.1"]["scope"], "execution_identity")
+        self.assertEqual(registry["production_authorized_components"], [])
+
 
 if __name__ == "__main__":
     unittest.main()
