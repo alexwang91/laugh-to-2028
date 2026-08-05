@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import datetime, timezone
 
 from .config import Settings
-from .executor import execute_target_position
+from .executor import execute_target_position, reconcile_persistent_orders
 from .market import fetch_market_snapshot, fetch_user_state
 from .model import build_signal
 from .notify import send_telegram
@@ -67,6 +67,13 @@ def run_strategy(settings: Settings) -> dict:
         send_telegram(settings, payload)
         return payload
 
+    pre_reconciliation = None
+    if settings.can_trade:
+        # Restart recovery always runs before a fresh trading decision can submit risk.
+        # Any database/read/exchange uncertainty raises and therefore fails closed.
+        pre_reconciliation = reconcile_persistent_orders(settings)
+        payload["order_reconciliation"] = {"pre_trade": pre_reconciliation}
+
     user_state = fetch_user_state(
         settings.api_url,
         settings.account_address,
@@ -94,6 +101,9 @@ def run_strategy(settings: Settings) -> dict:
     elif not settings.can_trade:
         payload["result"] = "shadow_rebalance_recommended"
         payload["orders"] = []
+    elif pre_reconciliation and pre_reconciliation.get("blocking_unresolved_after", 0) > 0:
+        payload["result"] = "trade_blocked_unresolved_orders"
+        payload["orders"] = []
     else:
         payload["orders"] = execute_target_position(
             settings,
@@ -102,6 +112,8 @@ def run_strategy(settings: Settings) -> dict:
             release_id=product.strategy_release_id,
             decision_timestamp_ms=decision_timestamp_ms,
         )
+        post_reconciliation = reconcile_persistent_orders(settings)
+        payload.setdefault("order_reconciliation", {})["post_trade"] = post_reconciliation
         payload["result"] = "trade_submitted_or_duplicate_suppressed"
 
     send_telegram(settings, payload)
