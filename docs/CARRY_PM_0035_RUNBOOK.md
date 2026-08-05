@@ -45,7 +45,12 @@ Capture `matched.json`.
 
 ### 4. `closed`
 
-Close the BTC short and exit the probe UBTC spot. Capture `closed.json` after the account is flat in both probe legs.
+Close the BTC short and exit the probe UBTC spot. Capture `closed.json` after:
+
+- BTC short size is exactly flat within the API numerical tolerance; and
+- residual UBTC **market value is <= $1**.
+
+The $1 residual rule was frozen before any account result. It prevents ordinary spot quantity dust from creating a false failure and is not a parameter to optimize.
 
 ## Compare
 
@@ -83,7 +88,7 @@ If the first valid probe fails or returns an inconclusive state:
 
 - retain the result;
 - diagnose API/state/account-isolation defects only;
-- do not retune probe notional, match tolerance, PM-ratio threshold, maintenance-fraction threshold, or account structure from that outcome;
+- do not retune probe notional, match tolerance, PM-ratio threshold, maintenance-fraction threshold, closed-dust threshold, or account structure from that outcome;
 - do not run a BRRK+carry stack experiment.
 
 A PASS authorizes only a separately preregistered PM-aware stack accounting experiment using the observed capital factor. It does not authorize production or leverage.
