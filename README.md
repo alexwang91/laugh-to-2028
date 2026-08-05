@@ -87,7 +87,9 @@ F1 did **not** change assets, weights, costs, funding accounting or window. `CAR
 | excess CAGR | — | **-0.4249 pp/yr** |
 | excess Sharpe over rf | — | **-0.22315** |
 
-R1 的旧命名值 **-0.221582** 原样保留在 R1 报告中，作为使用 excess-return volatility 分母的旧诊断值；R2 不覆盖 R1，也不改变任何 gate 或策略结果。
+R1 的值 **-0.221582** 原样保留在 R1 报告中。它用的是 excess-return volatility 作分母，也就是超额收益序列 Sharpe 的教科书定义；R2 不覆盖 R1，也不改变任何 gate 或策略结果。
+
+**后续审查判定 R2 这一步不必要**：PR #30 的 -0.223 是 `excess CAGR / CARRY_VOL`，其中 `CARRY_VOL` 直接取自 0031 已发布的 `RESULT.md`，属于量级指示而非提议的口径。两者相差 0.0016，而 `net_economics` gate 判定依据是 **excess CAGR**，与任一比率无关。约定与教训记录在 [`docs/RISK_FREE_METRIC_CONVENTIONS.md`](docs/RISK_FREE_METRIC_CONVENTIONS.md)。
 
 2021 carry return was **+16.8037%** while full-window cumulative carry return was **+17.1983%**. The corrected `net_economics = excess return over rf > 0` gate therefore **FAILS**.
 
@@ -107,7 +109,9 @@ The conservative rule `carry_scale = max(0, 1 - held_BRRK_gross)` had already fa
 - extra scale-change cost: about **1.043%**;
 - net carry contribution: **-1.236%**.
 
-F1 additionally compares the combined stack against the correct alternative for unused BRRK capital: **BRRK + matched idle cash accrual**. The combined stack again has negative excess economics; corrected `net_economics_vs_idle_cash` **FAILS**. Under the R2 review convention, the stack's `excess_sharpe_over_rf` is **-0.04953**.
+F1 additionally compares the combined stack against the correct alternative for unused BRRK capital: **BRRK + matched idle cash accrual**. The combined stack again has negative excess economics; corrected `net_economics_vs_idle_cash` **FAILS**.
+
+对这一组比较，**不要引用任何 `excess_sharpe_over_rf` 数值**。combined stack 与 `BRRK + idle cash` 的日相关性是 **0.9999953**，超额序列几乎没有波动（超额年化波动 0.135% vs 策略 44.16%），所以 R1 的 **-16.21** 和 R2 的 **-0.04953** 都不是任何东西的 Sharpe。正确的统计量是信息比率 **-10.31**——组合近乎确定地跑输"BRRK + 闲置现金计息"。判定本身不受影响：两个 gate 都是在 excess CAGR 上失败的。详见 [`docs/RISK_FREE_METRIC_CONVENTIONS.md`](docs/RISK_FREE_METRIC_CONVENTIONS.md)。
 
 The earlier interpretation “carry mechanism did not fail; only the idle-cash conversion failed” is no longer supported after the cash-hurdle correction. Both the standalone economic gate and the 0033 conversion gate fail. No historical rescue is authorized.
 
