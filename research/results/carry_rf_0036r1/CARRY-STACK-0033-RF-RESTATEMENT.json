@@ -1,0 +1,77 @@
+{
+  "restatement_experiment_id": "CARRY-RF-0036R1-RISK-FREE-HURDLE",
+  "source_experiment_id": "CARRY-STACK-0033-IDLE-CAPITAL",
+  "published_report_preserved": "research/results/carry_stack_0033/summary.json",
+  "published_decision": "REJECTED_BY_PREREGISTERED_QUALIFICATION_RULE",
+  "published_baseline_strict_router_brrk": {
+    "final_10k": 40447.91784855683,
+    "cagr": 0.5666045723859101,
+    "max_drawdown": -0.34947541940620985,
+    "ann_vol": 0.44157859533759874,
+    "sharpe": 1.2345578380693756,
+    "calmar": 1.6213002143287278
+  },
+  "published_combined_idle_capital_stack": {
+    "final_10k": 39948.40114060251,
+    "cagr": 0.5603633156526788,
+    "max_drawdown": -0.3508136245379694,
+    "ann_vol": 0.44158343959064755,
+    "sharpe": 1.225511842183166,
+    "calmar": 1.5973248370575452
+  },
+  "published_qualification": {
+    "return_improvement": false,
+    "sharpe_improvement": false,
+    "drawdown_nonworsening": false,
+    "calmar_improvement": false,
+    "gross_discipline": true,
+    "qualified_idle_capital_stack": false
+  },
+  "risk_free_restatement": {
+    "strategy": {"start": "2023-06-19", "end": "2026-07-30", "observations": 1138, "final_10k": 39948.40114060251, "cumulative_return": 2.994840114060251, "cagr": 0.5603633156526788, "ann_vol": 0.44158343959064755},
+    "cash_benchmark": {"start": "2023-06-19", "end": "2026-07-30", "observations": 1138, "final_10k": 41717.439594592885, "cumulative_return": 3.171743959459288, "cagr": 0.5822347043739968, "ann_vol": 0.44155795014966853},
+    "excess_cagr_over_rf": -0.021871388721317997,
+    "excess_ann_vol": 0.0013491789472661875,
+    "excess_sharpe_over_rf": -16.210887937167655,
+    "arithmetic_excess_sharpe_daily_mean_diagnostic": -10.306917625332206
+  },
+  "annual_combined_vs_brrk_plus_idle_cash": [
+    {"year": 2023, "start": "2023-06-19", "end": "2023-12-31", "strategy_return": 1.4198625580654927, "cash_return": 1.4312121190093348, "excess_percentage_points": -1.1349560943842096},
+    {"year": 2024, "start": "2024-01-01", "end": "2024-12-31", "strategy_return": 0.6447054308958304, "cash_return": 0.6559423677390797, "excess_percentage_points": -1.1236936843249223},
+    {"year": 2025, "start": "2025-01-01", "end": "2025-12-31", "strategy_return": 0.06657053553391812, "cash_return": 0.07839006850776564, "excess_percentage_points": -1.1819532973847524},
+    {"year": 2026, "start": "2026-01-01", "end": "2026-07-30", "strategy_return": -0.05891035703326153, "cash_return": -0.03910994963056813, "excess_percentage_points": -1.9800407402693398}
+  ],
+  "annual_carry_vs_cash": [
+    {"year": 2023, "start": "2023-06-19", "end": "2023-12-31", "strategy_return": -0.0024238351367913413, "cash_return": 0.0022462543805685797, "excess_percentage_points": -0.4670089517359921},
+    {"year": 2024, "start": "2024-01-01", "end": "2024-12-31", "strategy_return": -0.0037321769560437756, "cash_return": 0.0030909407136949785, "excess_percentage_points": -0.6823117669738754},
+    {"year": 2025, "start": "2025-01-01", "end": "2025-12-31", "strategy_return": -0.002867471831471846, "cash_return": 0.008204976897413063, "excess_percentage_points": -1.107244872888491},
+    {"year": 2026, "start": "2026-01-01", "end": "2026-07-30", "strategy_return": -0.003394146634967843, "cash_return": 0.017570088248345384, "excess_percentage_points": -2.0964234883313226}
+  ],
+  "incremental_sleeve": {
+    "scaled_carry_net_cumulative": -0.012360421628584861,
+    "scaled_idle_cash_cumulative": 0.03140188137838207,
+    "incremental_excess_cumulative": -0.04243293336349552,
+    "incremental_excess_ann_vol": 0.0013491789472661875
+  },
+  "corrected_qualification": {
+    "net_economics_vs_idle_cash": false,
+    "return_improvement": false,
+    "sharpe_improvement": false,
+    "drawdown_nonworsening": false,
+    "calmar_improvement": false,
+    "gross_discipline": true,
+    "qualified_idle_capital_stack_corrected": false
+  },
+  "corrected_net_economics_pass": false,
+  "decision": "FAIL_CORRECTED_NET_ECONOMICS_AND_REMAIN_REJECTED",
+  "source_reconstruction_parity": {
+    "expected_combined_final_10k": 39948.40114060251,
+    "reconstructed_combined_final_10k": 39948.40114060251,
+    "combined_abs_difference_dollars": 0.0,
+    "expected_brrk_final_10k": 40447.91784855683,
+    "reconstructed_brrk_final_10k": 40447.91784855683,
+    "brrk_abs_difference_dollars": 0.0,
+    "tolerance_dollars": 0.05,
+    "pass": true
+  }
+}
