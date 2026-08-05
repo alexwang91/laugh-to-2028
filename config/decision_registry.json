@@ -150,6 +150,13 @@
       "scope": "execution_identity",
       "decision": "Deterministic 128-bit Hyperliquid cloid is derived from release, canonical daily decision timestamp, asset, side, route-independent economic intent and executable target revision. Sequential replay/restart checks exchange orderStatus by cloid and suppresses a known order; this does not claim persistent local ledger, partial-fill retry semantics or cross-process locking.",
       "source": "PR #42"
+    },
+    {
+      "id": "EXEC-ORDER-LEDGER-P1.2",
+      "status": "IMPLEMENTATION_VERIFIED",
+      "scope": "execution_truth",
+      "decision": "Persistent single-account SQLite order ledger records deterministic CLOID intent before submission, a durable submission-attempt marker before the network call, submission/OID/status/fill/fee/average-price/remaining/cancel-reject truth, and restart reconciliation against Hyperliquid. Unknown or corrupt state fails closed and recovered exchange orders block new risk until resolved. This verifies P1.2 only; it does not authorize live production, complete the P1.3 partial-fill/retry lifecycle, or solve simultaneous multi-process/distributed locking.",
+      "source": "PR #44"
     }
   ]
 }
