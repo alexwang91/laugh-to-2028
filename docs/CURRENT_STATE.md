@@ -17,8 +17,8 @@ Status: authoritative cross-chat handoff snapshot
 - P1.1 handoff normalization PR: #43 merged; main commit `83ef2b44616269213f371ddbd2c0d352749c1c50`
 - P1.2 implementation PR: #44 merged; squash/main commit `a4e1ebc98039ffee7e53f2acd7c38feaebbb2769`
 - P1.2 handoff normalization PR: #45 merged; main commit `0a461cb541e85c5287177a0c46ae9905d9fede25`
-- P1.3 implementation PR: #46 open
-- P1.3 candidate branch: `p1-3/partial-fill-correctness`
+- P1.3 implementation PR: #46 merged; squash/main commit `fe663a0e8115baaa5c2ae9f1a59338e8f4a0c868`
+- P1.3 final implementation head before merge: `68bd96f86945ab0fd42ad977142fdacef6a2642d`
 
 ## Current roadmap position
 
@@ -29,11 +29,12 @@ P0.1 Canonical product config: PASS / MERGED
 P0.2 Decision registry: PASS / MERGED
 P1.1 Deterministic order identity: PASS / MERGED
 P1.2 Persistent order ledger: PASS / MERGED
-P1.3 Partial-fill correctness: IMPLEMENTATION VERIFIED / FINAL-HEAD CI PENDING / NOT MERGED
-P1.4+ blocked until P1.3 closes its final evidence/merge gate
+P1.3 Partial-fill correctness: PASS / MERGED
+P1.4 Reversal safety: NEXT
+P1.5+ blocked until dependency order is satisfied
 ```
 
-The only active implementation task is **P1.3 Partial-fill correctness**. Do not start P1.4, P2, P4, P5 or P8 while PR #46 remains unmerged.
+The unique next implementation task is **P1.4 Reversal safety**. Do not start P1.5, P2, P4, P5 or P8 before P1.4 closes its own evidence/merge gate.
 
 ## Product state frozen by the master plan
 
@@ -55,121 +56,101 @@ The only active implementation task is **P1.3 Partial-fill correctness**. Do not
 
 ## P1.1 established
 
-P1.1 established deterministic Hyperliquid CLOID identity from:
-
-- strategy release;
-- canonical UTC decision timestamp;
-- asset;
-- side;
-- route-independent economic intent;
-- executable target revision.
-
-Sequential replay/restart reconstructs the same CLOID, queries Hyperliquid `orderStatus`, and suppresses a known economic order. Reversal route labels remain observable as `close_for_reversal` / `open_reversal` while economic identity remains `reduce` / `increase`.
+P1.1 established deterministic Hyperliquid CLOID identity from strategy release, canonical UTC decision timestamp, asset, side, route-independent economic intent and executable target revision. Replay/restart reconstructs the same CLOID and suppresses a known economic order.
 
 ## P1.2 PASS / MERGED
 
-PR #44 established persistent execution truth for the current single-account executor using SQLite on explicitly durable storage:
+P1.2 established the persistent single-account SQLite execution ledger and restart reconciliation spine:
 
-- CLOID is the local/exchange correlation key and database primary key;
-- strategy release, canonical decision timestamp, asset, side, economic intent, target revision, route label, submitted quantity and submitted order parameters are persisted;
-- `intent_recorded` commits before any economic-order network submission;
-- a durable `submission_attempt_recorded` marker commits before the submit network call;
-- submission response, OID when available, timestamps and rejection information are persisted;
-- structured status history and raw exchange observations preserve audit evidence;
-- fill events are deduplicated by Hyperliquid trade ID and persist OID, timestamp, price, quantity, fee, fee token and raw payload;
-- fill quantity, weighted average fill price, fees and remaining quantity are reconstructed and persisted;
-- unresolved orders survive restart and are reconciled from Hyperliquid `orderStatus` plus `userFillsByTime`;
-- exchange facts supersede conflicting local observations while conflicts remain auditable;
-- Hyperliquid's documented active, cancellation and rejection status taxonomy is classified explicitly and exact cancel/reject reasons are retained;
-- exchange `origSz`, remaining `sz` and reconstructed fills are cross-checked; inconsistent or incomplete fill truth remains unresolved and fails closed;
-- `unknownOid` after a durable submission attempt never triggers blind resubmission;
-- a recovered exchange order with an OID blocks new risk even when the new local ledger lacks the historical submission-attempt marker;
-- malformed/failed reconciliation and undocumented exchange states persist `reconciliation_uncertain` evidence before failing closed;
-- a fill response at the guarded API result limit is treated as potentially incomplete and fails closed;
-- SQLite initialization performs an integrity check; database/read failures fail closed;
-- trade mode requires explicit `ORDER_LEDGER_PATH` plus `ORDER_LEDGER_DURABLE_STORAGE=true`;
-- the current local SQLite backend rejects Vercel trade mode; Docker declares `/data` as the intended mount point, but infrastructure must actually provide persistent storage;
-- each trade cycle reconciles unresolved truth before new submission and again after submission.
+- durable intent before any economic-order submit;
+- durable submission-attempt marker before the network call;
+- CLOID/OID/status/fill/fee/average-fill/remaining/cancel-reject persistence;
+- fill-event deduplication by Hyperliquid trade ID;
+- restart reconstruction through `orderStatus` plus `userFillsByTime`;
+- exchange-truth precedence with auditable conflicts;
+- documented Hyperliquid lifecycle status classification;
+- no blind retry after an uncertain durable submission attempt;
+- fail-closed behavior for corrupt, malformed, incomplete or truncated truth;
+- durable storage required for trade mode, with current Vercel local-SQLite trade mode rejected.
 
-`EXEC-ORDER-LEDGER-P1.2` is registered as `IMPLEMENTATION_VERIFIED` in `config/decision_registry.json`. `production_authorized_components` remains empty.
+`EXEC-ORDER-LEDGER-P1.2` remains `IMPLEMENTATION_VERIFIED`. Production authorization remains empty.
 
-## P1.3 implementation verified on candidate code head
+## P1.3 PASS / MERGED
 
-PR #46 adds an actual-fill-driven transition layer on top of P1.2 truth without changing strategy economics:
+PR #46 established actual-fill-driven position progress on top of P1.2 ledger truth:
 
-- every new same-direction order persists the exchange-observed pre-trade position baseline and intended target position in the already-durable submitted-order parameters;
-- fill state is classified from reconciled actual fill quantity as `zero_fill`, `partial_fill` or `full_fill`;
-- signed position delta is derived from actual fills and order side, never from requested notional;
+- new same-direction orders persist the exchange-observed pre-trade position baseline and target position in durable order parameters;
+- fill progress is classified as `zero_fill`, `partial_fill` or `full_fill` from reconciled actual fill quantity;
+- signed position movement is derived from actual fill quantity plus buy/sell side, never from requested notional;
 - `actual_position_qty_from_fills = position_before_qty + signed_fill_quantity`;
-- `target_gap_qty = target_position_qty - actual_position_qty_from_fills` remains explicitly visible while the baseline is trustworthy;
-- `exchange_remaining_quantity`, `unfilled_quantity` and `resting_remaining_quantity` are separately exposed so a live resting remainder is not confused with a canceled unfilled remainder;
-- exchange remaining quantity must agree with local `submitted_quantity - actual_fill_quantity`; disagreement fails closed instead of declaring progress complete;
-- reconciliation returns structured `fill_transitions` for orders touched by the cycle;
-- transition-construction failures are persisted as `fill_transition_failed` reconciliation uncertainty and block new risk;
-- legacy P1.2 rows without a stored position baseline retain fill truth but report `position_tracking_status=baseline_unavailable` rather than inventing target-versus-actual exposure;
-- for a reversal close leg, the known pre-trade baseline can be tracked toward zero;
-- for the reversal open leg, P1.3 deliberately persists `position_before_qty=null` and reports the baseline unavailable, because only P1.4 may establish safe fresh state between reversal legs.
+- `target_gap_qty = target_position_qty - actual_position_qty_from_fills` while the baseline is trustworthy;
+- `exchange_remaining_quantity`, `unfilled_quantity` and `resting_remaining_quantity` are distinct, so canceled unfilled size is not mislabeled as a live resting order;
+- exchange remaining quantity must equal local submitted-minus-actual-fill truth or the transition fails closed;
+- reconciliation exposes structured `fill_transitions` for rows touched by the cycle;
+- transition-construction failure is persisted as `fill_transition_failed` uncertainty and blocks new risk;
+- legacy rows without a position baseline preserve fill truth but report `position_tracking_status=baseline_unavailable` rather than inventing an exposure gap;
+- reversal close legs can track actual-fill progress toward zero using the known pre-trade baseline;
+- reversal open legs deliberately keep `position_before_qty=null`, because safe fresh-state handoff between reversal legs belongs to P1.4.
 
-Candidate unit coverage includes 0% fill, partial fill, full fill, sell-side signed transitions, canceled versus resting remainder, reversal baseline unavailability, overfill rejection and remaining-quantity mismatch rejection.
+Focused tests cover 0%, partial and full fills; sell-side signed transition; live-resting versus canceled remainder; reversal-open baseline unavailability; overfill rejection; and local/exchange remaining-quantity mismatch rejection.
 
-`EXEC-PARTIAL-FILL-P1.3` is now registered as `IMPLEMENTATION_VERIFIED` in `config/decision_registry.json`, based on the green candidate code head evidence below. This does **not** authorize production and does **not** mark P1.3 merged.
+`EXEC-PARTIAL-FILL-P1.3` is registered as `IMPLEMENTATION_VERIFIED` in `config/decision_registry.json`. This is engineering verification only, not production authorization.
 
-## P1.3 evidence so far
+## P1.3 evidence
 
-Candidate code/docs head before registry finalization:
+Exact final implementation head:
 
 ```text
-c75cd51ba2d73a6b629fb7402e6948326756c0af
+68bd96f86945ab0fd42ad977142fdacef6a2642d
 ```
 
-That head passed:
+Final-head evidence:
 
-- `Phase 0 baseline contract` run #24 / Actions run `31055367127`: SUCCESS;
-- execution tests step: SUCCESS;
-- research integration contract step: SUCCESS;
-- corrected `PR handoff governance` run #32 / Actions run `31055420052`: SUCCESS.
+- `Phase 0 baseline contract` run #27 / Actions run `31055589418`: SUCCESS;
+- execution tests step inside that run: SUCCESS;
+- research integration contract step inside that run: SUCCESS;
+- `PR handoff governance` run #35 / Actions run `31055589427`: SUCCESS;
+- evidence-only PR-body update then triggered `PR handoff governance` run #36 / Actions run `31055704431`: SUCCESS.
 
-The first governance run #31 failed only because the PR body used `## Risks / unresolved` instead of the exact mandatory heading `## Risks and unresolved items`. The PR body was corrected without changing implementation code; governance run #32 then passed.
+PR #46 was squash-merged to main as:
 
-Pre-PR self-review also identified and corrected one implementation issue before the PR opened: exchange remaining quantity must equal local submitted-minus-actual-fill truth, otherwise a local/exchange size mismatch could be misclassified as valid progress.
+```text
+fe663a0e8115baaa5c2ae9f1a59338e8f4a0c868
+```
 
-The current branch now also contains the decision-registry and handoff updates. **Final-head CI is still required before merge.**
+Review corrections:
+
+1. self-review identified that fill-state classification alone could hide an exchange/local order-size mismatch; P1.3 now requires exchange remaining size to equal local submitted-minus-fill truth and fails closed on disagreement;
+2. initial PR governance run #31 failed because the risk-section heading did not exactly match the governance contract; the PR body was corrected without code changes, then governance runs #32, #35 and #36 passed;
+3. final diff review found no additional P1.3 implementation change required and no open review threads remained before merge.
 
 ## P1.3 boundaries deliberately not solved
 
 P1.3 does **not** claim:
 
-- safe reversal continuation or a fresh account-state read between reversal legs (P1.4);
-- metadata-driven size/price precision (P1.5);
-- full open-orders/fills/positions/equity/margin post-submit account reconciliation (P1.6);
-- the complete restart-recovery matrix (P1.7);
-- kill/emergency paths (P1.8);
+- P1.4 reversal safety or fresh account-state verification between reversal close/open legs;
+- P1.5 metadata-driven size/price precision;
+- P1.6 full open-order/fill/position/equity/margin post-submit reconciliation;
+- P1.7 complete restart-recovery matrix;
+- P1.8 kill/emergency paths;
 - simultaneous multi-process race elimination or distributed locking;
 - order slicing;
 - production readiness;
 - multi-asset production execution.
 
-## P1.2 evidence retained
+## Current unique next task: P1.4 Reversal safety
 
-Exact final P1.2 implementation head `62fab73baef86970954afe55831305f4328dee20` passed:
+Roadmap requirement:
 
-- `Phase 0 baseline contract` run #22 / Actions run `31053496487`: SUCCESS;
-- execution pytest step inside that run: SUCCESS;
-- research integration contract step inside that run: SUCCESS;
-- `PR handoff governance` run #27 / `31053496526`: SUCCESS;
-- `PR handoff governance` run #28 / `31053541154`: SUCCESS.
+> No non-atomic long-to-short or short-to-long assumption.
 
-PR #44 then squash-merged to main as `a4e1ebc98039ffee7e53f2acd7c38feaebbb2769`.
+Acceptance criteria:
 
-Self-review corrections completed inside PR #44:
+- reduction and new-direction opening are distinct intents;
+- reduce-only is used where applicable;
+- failure during reversal cannot accidentally double directional risk.
 
-1. persisted uncertainty/conflict audit events before raising so exception rollback cannot erase forensic evidence;
-2. made recovered exchange orders blocking even without a historical local submission-attempt marker;
-3. added structured audit persistence for malformed/failed order/fill reconciliation and undocumented exchange states;
-4. expanded lifecycle classification to the documented Hyperliquid cancel/reject taxonomy and retained exact reason codes;
-5. prevented false completion of partially-filled-then-canceled orders by cross-checking `origSz`, remaining `sz` and reconstructed fills.
-
-These corrections changed implementation safety only. They did not change product economics or authorization.
+P1.4 has **not** been implemented yet. Development must begin from current main on a fresh candidate branch after this post-merge handoff normalization is merged.
 
 ## Research boundaries that remain closed unless formally reopened
 
@@ -196,14 +177,13 @@ P1.3 engineering verification does not authorize live deployment or increase ris
 
 ## Open blockers / uncertainties
 
-1. P1.3 final-head CI and merge are still outstanding.
-2. P1.4 fresh-state reversal safety remains unimplemented; the P1.3 reversal-open transition therefore reports its position baseline unavailable.
-3. Cross-process simultaneous submission races/distributed locking remain unimplemented.
-4. Order slicing remains unimplemented.
-5. SQLite durability depends on the deployment actually mounting persistent storage; Vercel trade mode remains rejected by the current backend.
-6. `userFillsByTime` pagination beyond the guarded response limit is not implemented; reaching the limit blocks rather than claiming complete truth.
-7. Current BTC quantity precision remains hardcoded at five decimals; instrument-specific precision belongs to later router/metadata work.
-8. Production authorization remains empty.
+1. P1.4 fresh-state reversal safety remains unimplemented.
+2. Cross-process simultaneous submission races/distributed locking remain unimplemented.
+3. Order slicing remains unimplemented.
+4. SQLite durability depends on the deployment actually mounting persistent storage; Vercel trade mode remains rejected by the current backend.
+5. `userFillsByTime` pagination beyond the guarded response limit is not implemented; reaching the limit blocks rather than claiming complete truth.
+6. Current BTC quantity precision remains hardcoded at five decimals; instrument-specific precision belongs to P1.5/later router work.
+7. Production authorization remains empty.
 
 ## Latest project-drift assessment
 
@@ -211,25 +191,24 @@ P1.3 engineering verification does not authorize live deployment or increase ris
 DRIFT_0
 ```
 
-Reason: P1.3 is the exact roadmap dependency and implements actual-fill position progress on top of P1.2. It changes no BRRK objective, strategy economics, product universe, Hyperliquid-first venue, leverage philosophy, 70% catastrophic-only boundary, human approval rule, ACTIVE/CANDIDATE separation, credential boundary, stopped research line or production authorization. P1.4 behavior is explicitly not claimed.
+Reason: P1.3 followed the roadmap dependency order and changed no BRRK objective, strategy economics, product universe, Hyperliquid-first venue, leverage philosophy, 70% catastrophic-only boundary, human approval rule, ACTIVE/CANDIDATE separation, credential boundary, stopped research line or production authorization. Its reversal limitation is explicitly handed to P1.4 rather than being silently widened.
 
 ## Exact next action
 
 ```text
-P1.3 final-head CI -> merge PR #46 -> normalize post-merge handoff to P1.4
+P1.4 Reversal safety
 ```
 
-Do not begin P1.4 until PR #46 is merged and its handoff is normalized.
+Start only from current main after verifying this post-merge normalization is merged. Keep P1.5+ blocked until P1.4 passes its own implementation/test/review/PR/final-head-CI/merge gate.
 
 ## Fresh-chat resume instructions
 
 A fresh conversation should:
 
 1. read the canonical files in the repository-defined order;
-2. verify actual main, PR #46 head, open PR/issues and final-head CI rather than trusting handoff prose alone;
-3. confirm P1.2 / PR #44 and normalization PR #45 are merged;
-4. confirm `EXEC-PARTIAL-FILL-P1.3` is registered but production authorization remains empty;
-5. if PR #46 is still open, continue only its final-head CI/fix/merge loop;
-6. start P1.4 only after P1.3 is PASS / MERGED and the post-merge handoff is normalized.
+2. verify actual main, latest merged PR, open PR/issues and final CI rather than trusting handoff prose alone;
+3. confirm P1.3 / PR #46 is merged and `EXEC-PARTIAL-FILL-P1.3` is registered;
+4. confirm production authorization remains empty;
+5. if this post-merge normalization is present on main, start only P1.4 from a fresh candidate branch.
 
 Do not ask the user to repeat product decisions already captured in GitHub.
