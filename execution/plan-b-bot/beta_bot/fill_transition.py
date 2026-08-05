@@ -98,6 +98,11 @@ def build_fill_transition(order: dict[str, Any]) -> FillTransition:
     fill = max(fill, 0.0)
     remaining = max(remaining, 0.0)
     unfilled = max(submitted - fill, 0.0)
+    if abs(remaining - unfilled) > QUANTITY_TOLERANCE:
+        raise FillTransitionError(
+            "exchange remaining quantity disagrees with local submitted-minus-fill truth: "
+            f"remaining={remaining}, submitted={submitted}, fill={fill}"
+        )
 
     if fill <= QUANTITY_TOLERANCE:
         fill_state = "zero_fill"
