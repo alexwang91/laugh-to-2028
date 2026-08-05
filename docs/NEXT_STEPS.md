@@ -19,30 +19,65 @@
 ## Current authorized task
 
 ```text
-P1.2 Persistent order ledger
+P1.3 Partial-fill correctness
 ```
 
-P0.1, P0.2 and P1.1 are merged and complete. P1.2 is the only authorized next implementation dependency until its implementation PR, final-head CI, merge and post-merge handoff are complete.
+P0.1, P0.2, P1.1 and P1.2 are merged and complete. P1.3 is now the only authorized next implementation dependency.
 
-Do not start P1.3 partial-fill lifecycle, P4 leverage work, P5 cycle-exit research or P8 bear-short research early.
+Do not start P1.4 reversal safety, P2 router work, P4 leverage work, P5 cycle-exit research or P8 bear-short research early.
 
 ---
 
-## P1.2 acceptance boundary
+## P1.3 acceptance boundary
 
-P1.2 must establish durable execution truth keyed by deterministic Hyperliquid CLOID:
+Roadmap requirement:
 
-- persist economic order intent before network submission;
-- persist a durable submission-attempt marker before the submit call;
-- persist submission response and OID when available;
-- persist status history, fills, fees, average fill price, remaining quantity and cancel/reject reason;
-- enumerate unresolved orders after restart and reconcile them against Hyperliquid `orderStatus` and fill truth;
-- prefer exchange truth while preserving audit evidence for conflicts;
-- fail closed on ledger corruption, ambiguous reads, uncertain reconciliation or unknown CLOID after a durable submission attempt;
-- never blind-resubmit because local state is damaged or exchange lookup is uncertain;
-- cover persistence, uniqueness, replay, restart and reconstruction with tests.
+> Implement position transition from actual fills, not requested notional.
 
-P1.2 does **not** claim the full P1.3 partial-fill state machine/retry policy, simultaneous multi-process/distributed locking, slicing, reversal safety, multi-asset production execution or production readiness.
+Acceptance criteria:
+
+- 0%, partial and full fill cases all reconcile correctly;
+- resting remainder is visible;
+- target versus actual exposure is continuously calculable.
+
+P1.3 must consume the durable P1.2 order/fill truth rather than replacing it with requested order size or optimistic submission assumptions.
+
+P1.3 must not be described as complete merely because P1.2 can persist partial-fill events. The missing capability is the **execution/position transition driven by actual fills**, including explicit representation of a resting remainder and a continuously computable target-versus-actual exposure gap.
+
+Unless the roadmap is formally changed, P1.3 does **not** automatically include or claim:
+
+- P1.4 reversal safety;
+- P1.5 metadata-driven precision;
+- P1.6 full post-submit account reconciliation;
+- P1.7 complete restart-recovery matrix;
+- P1.8 emergency/kill paths;
+- simultaneous multi-process/distributed locking;
+- production readiness.
+
+---
+
+## P1.2 closure baseline
+
+P1.2 Persistent order ledger is `PASS / MERGED` through PR #44, squash/main commit:
+
+```text
+a4e1ebc98039ffee7e53f2acd7c38feaebbb2769
+```
+
+Its exact final implementation head `62fab73baef86970954afe55831305f4328dee20` passed execution pytest, research integration and PR handoff governance before merge.
+
+P1.2 established:
+
+- durable intent before economic-order network submission;
+- durable submission-attempt marker before the submit call;
+- deterministic CLOID linkage to Hyperliquid truth;
+- submission/OID/status/fill/fee/average-fill/remaining/cancel-reject persistence;
+- unresolved-order restart reconstruction;
+- exchange-truth precedence with audit history;
+- fail-closed behavior for corruption, ambiguous reconciliation and unknown result after a durable submission attempt;
+- no blind resubmission under uncertain execution truth.
+
+It did not authorize production risk and did not complete P1.3.
 
 ---
 
@@ -86,9 +121,13 @@ Current BTC-only executor capability does not redefine the BTC/ETH/SOL/BNB produ
 ```text
 P0  canonical product/state registry                       COMPLETE
 P1.1 deterministic order identity                         COMPLETE
-P1.2 persistent order ledger                              CURRENT
-P1.3 partial-fill state machine                           BLOCKED ON P1.2
-P1+  continue strictly in roadmap dependency order
+P1.2 persistent order ledger                              COMPLETE
+P1.3 partial-fill correctness                             CURRENT / NEXT
+P1.4 reversal safety                                      BLOCKED ON P1.3
+P1.5 precision / metadata                                 BLOCKED
+P1.6 post-submit reconciliation                           BLOCKED
+P1.7 restart recovery                                     BLOCKED
+P1.8 kill and emergency paths                             BLOCKED
 P2  Hyperliquid BRRK instrument router                    BLOCKED
 P3  production-quality daily BRRK target engine           BLOCKED
 P4  dynamic leverage extension and operating-risk study   BLOCKED
@@ -99,6 +138,17 @@ P8  future bear-short research                            BLOCKED
 ```
 
 The detailed task definitions and acceptance gates are in `docs/IMPLEMENTATION_ROADMAP_2026-08-05.md`.
+
+---
+
+## Production authorization
+
+```text
+NO_CHANGE
+production_authorized_components = []
+```
+
+P1.2 being engineering-verified and merged does not authorize live deployment, leverage expansion, new-asset execution, shorting, cycle-exit production or strategy cutover.
 
 ---
 
@@ -121,4 +171,4 @@ main
 -> normalize post-merge handoff if needed
 ```
 
-Production authorization does not change merely because an implementation component passes its engineering gate.
+The exact next action after this handoff normalization is merged is to start **P1.3 Partial-fill correctness** from current main on a fresh candidate branch.
