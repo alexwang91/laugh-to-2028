@@ -10,12 +10,14 @@ Status: authoritative cross-chat handoff snapshot
 - Governance: `docs/PROJECT_GOVERNANCE_2026-08-05.md`
 - Continuity protocol: `docs/CONTEXT_CONTINUITY_PROTOCOL.md`
 - Last merged planning PR: #38
-- Continuity bootstrap commit: `7abf1260e979061960b8eda27457905473f27d4f`
+- Continuity bootstrap commits on `main`: `7abf1260e979061960b8eda27457905473f27d4f`, `e457e7ad9610fc3dd8b7c241347709a21e595060`
+- Current governance candidate: `governance/context-handoff`
 
 ## Current roadmap position
 
 ```text
 PLANNING BASELINE: complete
+CONTEXT-HANDOFF GOVERNANCE: being closed before implementation work
 P0.1 Canonical product config: NEXT
 P0.2 Decision registry: NEXT / may be implemented in the same Phase-0 PR if acceptance gates remain clear
 P1+: not authorized to skip ahead
@@ -55,6 +57,7 @@ P1+: not authorized to skip ahead
 - Dynamic leverage above the current BRRK scale is not yet production-authorized.
 - Cycle-top/exit model is not yet validated; future study must include 2021 two-wave structure and 2025 multi-peak structure.
 - Bear-market Top-20 short expansion is research-only and deferred.
+- Cross-chat continuity contract now exists; this governance PR adds the mandatory PR template and automated PR-body/CURRENT_STATE check.
 
 ## Production authorization
 
@@ -79,11 +82,11 @@ Short authorization: NONE
 DRIFT_1
 ```
 
-Reason: the initial `CONTEXT_CONTINUITY_PROTOCOL.md` bootstrap file was committed directly to `main` before the PR guard/template branch existed. This is a process-only deviation. It changed no product, research, risk, credential or production behavior. All subsequent material work must follow candidate branch + PR + handoff protocol.
+Reason: two continuity bootstrap files were created directly on `main` before the branch/PR guard was installed: the continuity protocol and initial `CURRENT_STATE`. This is a process-only deviation. It changed no product, research, risk, credential or production behavior. The `governance/context-handoff` PR closes the gap by adding a mandatory PR template and automated check. After that merge, all material forward work must follow candidate branch + PR + handoff update.
 
 ## Exact next unblocked task
 
-Implement Phase 0:
+After the context-handoff governance PR merges, implement Phase 0:
 
 ```text
 P0.1 Canonical product config
