@@ -13,7 +13,7 @@ Status: authoritative cross-chat handoff snapshot
 - Context-handoff governance PR: #39 merged
 - Phase 0 PR: #40 merged; squash commit `1feffd07208a741e53766fe126dc9cb7add3d3d1`
 - Phase 0 handoff normalization PR: #41 merged
-- P1.1 implementation PR: #42
+- P1.1 implementation PR: #42 merged; squash commit `937db648b4ddaf8322c7bd9ce9b03f39321e2508`; final-head governance, execution pytest and research integration contracts passed
 
 ## Current roadmap position
 
@@ -22,7 +22,7 @@ PLANNING BASELINE: complete
 CONTEXT-HANDOFF GOVERNANCE: complete
 P0.1 Canonical product config: PASS
 P0.2 Decision registry: PASS
-P1.1 Deterministic order identity: PASS
+P1.1 Deterministic order identity: PASS / MERGED
 P1.2 Persistent order ledger: NEXT
 P1+: continue in dependency order only
 ```
@@ -77,7 +77,7 @@ Deterministic exchange-visible order identity is implemented for the current BTC
 - an already-known cloid is returned as `duplicate_suppressed` instead of submitting again;
 - malformed/ambiguous order-status lookup fails closed before submission;
 - reversal route labels remain observable, but the cloid uses route-independent `reduce` / `increase` intent so a restart after the close leg reconstructs the same open-leg identity;
-- golden-vector, component-difference, target-rounding, reversal-restart, sequential replay/restart, new-revision and fail-closed tests pass on the implementation head used to close evidence;
+- golden-vector, component-difference, target-rounding, reversal-restart, sequential replay/restart, new-revision and fail-closed tests passed on PR #42 final head;
 - `EXEC-ORDER-ID-P1.1` is registered as `IMPLEMENTATION_VERIFIED` in `config/decision_registry.json`.
 
 P1.1 does **not** claim:
@@ -103,7 +103,7 @@ Those remain later dependencies.
 - Hyperliquid all-perp implementation is economically inferior to spot-aware routing on the tested window.
 - BTC spot/UBTC identity has public verification; ETH/SOL spot identity remains an explicit later router validation item.
 - Phase 0 is merged and green.
-- P1.1 deterministic identity/replay contract has passed the execution test suite and PR handoff governance on the reviewed implementation head; final merge still follows the repository rule that the final head must be green.
+- P1.1 PR #42 is merged and its final head passed PR handoff governance, execution pytest and research integration contracts.
 - Execution production readiness is not established: persistent ledger, partial-fill lifecycle, reconciliation, broader idempotency/coordination, slicing, kill paths and executor lifecycle tests remain required.
 - Dynamic leverage above the current BRRK scale is not yet production-authorized.
 - Cycle-top/exit model is not yet validated; future study must include 2021 two-wave structure and 2025 multi-peak structure.
@@ -135,7 +135,7 @@ Production-authorized component set: EMPTY
 DRIFT_0
 ```
 
-Reason: P1.1 implements the exact next execution-hardening dependency. It changes no strategy economics, long/short universe, venue, risk philosophy, human approval boundary, wallet/credential boundary or production authorization. During review, reversal identity was corrected from route-label-dependent IDs to route-independent economic intents specifically to reduce restart drift rather than expand scope.
+Reason: P1.1 implemented the exact next execution-hardening dependency. It changed no strategy economics, long/short universe, venue, risk philosophy, human approval boundary, wallet/credential boundary or production authorization. During review, reversal identity was corrected from route-label-dependent IDs to route-independent economic intents specifically to reduce restart drift rather than expand scope.
 
 ## Exact next unblocked task
 
@@ -149,6 +149,6 @@ Do not begin P4 leverage, P5 cycle-exit research or P8 bear-short work before re
 
 ## Fresh-chat resume instructions
 
-A fresh conversation should read the canonical files, verify actual GitHub/CI state and inspect PR #42. If #42 is not merged or its final head is not green, close/fix P1.1 first. If #42 is green and merged, begin `P1.2 Persistent order ledger` and do not skip ahead.
+A fresh conversation should read the canonical files, verify actual GitHub/CI state, confirm PR #42 is merged, then begin `P1.2 Persistent order ledger` and do not skip ahead.
 
 Do not ask the user to repeat product decisions already captured in `config/product.json`, `config/decision_registry.json`, the master plan or this handoff.
