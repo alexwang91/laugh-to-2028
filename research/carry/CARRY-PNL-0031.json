@@ -1,0 +1,84 @@
+{
+  "experiment_id": "CARRY-PNL-0031",
+  "status": "PREREGISTERED_BEFORE_FIRST_PNL_RUN",
+  "registered_on": "2026-08-05",
+  "promotion_evidence": false,
+  "question": "Does the simplest same-venue, always-on, delta-neutral spot-perpetual carry sleeve have positive net historical economics and useful diversification/crisis behavior versus BRRK before any funding threshold or asset selection is introduced?",
+  "data_authority": "CARRY-DATA-0030 PASS",
+  "assets": ["BTCUSDT", "ETHUSDT", "SOLUSDT", "BNBUSDT", "XRPUSDT"],
+  "portfolio": {
+    "spot_weight_each": 0.10,
+    "perp_weight_each": -0.10,
+    "spot_gross": 0.50,
+    "perp_short_gross": 0.50,
+    "total_gross": 1.00,
+    "net_directional_exposure_at_rebalance": 0.00,
+    "selection": "all five assets at all times when all legs are valid; no Top-K or sign filter",
+    "leverage_search": false
+  },
+  "window": {
+    "common_start_rule": "first completed UTC day on which all five assets have valid same-day Binance spot and USD-M perpetual closes after SOL common coverage begins; first target is established only after that completed day",
+    "funding_end_rule": "last day for which official archived settlement events needed by the project event-timing convention are available; never assume a future 00:00 event"
+  },
+  "price_data_repair": {
+    "primary": "official Binance monthly 1d spot and USD-M perpetual archives",
+    "fallback": "for an internal calendar gap strictly between a leg's first and last monthly-archive bars, use only the exact corresponding official Binance daily 1d archive for the same venue/market/symbol/date",
+    "not_repairable": "prelisting/post-ending dates, absent/invalid daily fallback, or source mismatch",
+    "remaining_required_leg_gap": "hard failure",
+    "prohibited": ["interpolation", "forward fill", "spot/perp substitution", "cross-venue substitution", "zero-return assumption"]
+  },
+  "funding": {
+    "source": "official Binance USD-M monthly fundingRate archives",
+    "event_accounting": "event-by-event; no daily-average approximation",
+    "short_perp_cashflow": "per event contribution = -perp_weight * funding_rate, so positive funding pays the short",
+    "event_timing": "exact 00:00 settlement belongs to the position held immediately before the new completed-day target becomes effective; later events use the current held position",
+    "active_day_without_recorded_event": "no manufactured cashflow; record as coverage diagnostic",
+    "missing archive/load failure": "hard failure"
+  },
+  "daily_pnl": {
+    "price_component": "sum(spot_weight * spot_return + perp_weight * perp_return) across five assets",
+    "funding_component": "compound all official recorded portfolio funding settlement cashflows assigned to that PNL day",
+    "pre_cost_combination": "(1 + price_component) * funding_factor - 1"
+  },
+  "rebalancing_and_costs": {
+    "rebalance_frequency": "daily after completed UTC day",
+    "target": "restore the frozen signed notionals +0.10/-0.10 each using pre-cost portfolio NAV",
+    "drift_turnover": "sum(abs(target_weight * pre_cost_nav_factor - prior_target_weight * (1 + same_leg_price_return))) across the ten legs, expressed relative to prior NAV",
+    "initial_entry_turnover": 1.0,
+    "terminal_exit": "not charged in canonical CAGR because the sleeve is treated as continuing; report a separate liquidatable-terminal diagnostic with one additional gross=1.0 exit charge",
+    "canonical_cost_bps_per_absolute_notional_change": 5.0,
+    "stress_cost_bps": [10.0, 20.0],
+    "cost_convention": "deduct turnover * bps from the pre-cost daily return; no claim that fixed target weights imply zero turnover"
+  },
+  "required_outputs": [
+    "5/10/20 bps net CAGR/MDD/annualized volatility/Sharpe/Calmar and final value",
+    "price-spread-only, funding-only and net contribution diagnostics",
+    "per-asset spot/perp price contribution and funding contribution",
+    "annual net returns",
+    "turnover and initial/terminal cost diagnostics",
+    "daily and monthly correlation versus canonical BRRK and strict-router BRRK",
+    "mean carry return on BRRK worst 10% daily returns and worst 20 days",
+    "basis excursion diagnostics",
+    "funding-event/no-event coverage diagnostics",
+    "evidence all five assets remain in the baseline without post-hoc selection"
+  ],
+  "qualification_rule": {
+    "net_economics": "canonical 5 bps funding-aware CAGR > 0 and Sharpe > 0",
+    "funding_mechanism": "cumulative recorded funding contribution > 0",
+    "diversification": "daily correlation with canonical BRRK < 0.50",
+    "crisis_alpha": "mean carry return on BRRK worst 10% daily returns >= 0",
+    "decision": "all four required to authorize a separately preregistered stack test"
+  },
+  "prohibited": [
+    "no funding-rate threshold",
+    "no positive-funding-only filter",
+    "no asset ranking or asset removal including BNB",
+    "no Top-K",
+    "no basis threshold",
+    "no leverage optimization",
+    "no dynamic weights",
+    "no cross-venue carry",
+    "no same-window rescue tuning after first valid run"
+  ],
+  "stopping_rule": "Freeze the first valid result. If it fails qualification, retain it as rejected evidence. Any later funding-conditioned or cross-venue carry must be a separately motivated/preregistered mechanism study, not a parameter rescue of 0031."
+}
