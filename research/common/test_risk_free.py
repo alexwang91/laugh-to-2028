@@ -51,10 +51,17 @@ class RiskFreeTests(unittest.TestCase):
 
     def test_geometric_excess_metrics_and_annual_table(self):
         idx = pd.date_range("2025-01-01", periods=365, freq="D")
-        strategy = pd.Series(0.00010, index=idx)
-        cash = pd.Series(0.00012, index=idx)
+        strategy = pd.Series(
+            [0.00009 if i % 2 == 0 else 0.00011 for i in range(len(idx))],
+            index=idx,
+        )
+        cash = pd.Series(
+            [0.000115 if i % 3 == 0 else 0.000125 for i in range(len(idx))],
+            index=idx,
+        )
         out = compare_to_cash(strategy, cash)
         self.assertLess(out["excess_cagr_over_rf"], 0)
+        self.assertIsNotNone(out["excess_sharpe_over_rf"])
         self.assertLess(out["excess_sharpe_over_rf"], 0)
         rows = annual_carry_vs_cash(strategy, cash)
         self.assertEqual(len(rows), 1)
