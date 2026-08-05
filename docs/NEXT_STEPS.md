@@ -19,57 +19,34 @@
 ## Current authorized task
 
 ```text
-P1.3 Partial-fill correctness — IMPLEMENTATION VERIFIED / FINAL-HEAD CI PENDING / NOT MERGED
+P1.4 Reversal safety
 ```
 
-P0.1, P0.2, P1.1 and P1.2 are merged and complete. P1.3 remains the only active dependency on PR #46.
+P0.1, P0.2, P1.1, P1.2 and P1.3 are merged and complete. P1.4 is now the only authorized next implementation dependency.
 
-The exact next action is:
-
-```text
-final-head CI on PR #46
--> fix only P1.3 findings on the same PR if required
--> final-head CI green
--> merge PR #46
--> normalize handoff to P1.4
-```
-
-Do not start P1.4 reversal safety, P2 router work, P4 leverage work, P5 cycle-exit research or P8 bear-short research early.
+Do not start P1.5 precision/metadata, P2 router work, P4 leverage work, P5 cycle-exit research or P8 bear-short research early.
 
 ---
 
-## P1.3 acceptance boundary
+## P1.4 acceptance boundary
 
 Roadmap requirement:
 
-> Implement position transition from actual fills, not requested notional.
+> No non-atomic long-to-short or short-to-long assumption.
 
 Acceptance criteria:
 
-- 0%, partial and full fill cases all reconcile correctly;
-- resting remainder is visible;
-- target versus actual exposure is continuously calculable.
+- reduction and new-direction opening are distinct intents;
+- reduce-only is used where applicable;
+- failure during reversal cannot accidentally double directional risk.
 
-The P1.3 implementation consumes durable P1.2 order/fill truth rather than replacing it with requested order size or optimistic submission assumptions.
+P1.4 should consume P1.2 durable order truth and P1.3 actual-fill transition truth. It must not assume that a reversal close leg fully filled merely because it was requested or submitted.
 
-Implemented candidate behavior:
+The key unresolved boundary handed forward from P1.3 is deliberate: a reversal-open leg currently has no trustworthy `position_before_qty` until fresh state proves the close leg result. P1.4 must solve that safety problem explicitly rather than assigning an optimistic zero baseline.
 
-- persist a trustworthy pre-trade position baseline and target for same-direction economic orders;
-- derive signed position progress only from reconciled actual fills;
-- classify zero / partial / full fill explicitly;
-- expose exchange remaining quantity, live resting remainder and total unfilled quantity separately;
-- expose `actual_position_qty_from_fills` and `target_gap_qty` whenever the pre-trade position baseline is known;
-- fail closed if local submitted-minus-fill truth disagrees with the exchange remaining quantity;
-- do not invent a position baseline for the reversal open leg before P1.4 provides fresh reversal-state reconciliation.
+Unless the roadmap is formally changed, P1.4 does **not** automatically include or claim:
 
-Initial candidate head `c75cd51ba2d73a6b629fb7402e6948326756c0af` passed execution tests and research integration in Phase 0 baseline contract run #24 / Actions `31055367127`. Corrected PR handoff governance run #32 / Actions `31055420052` also passed. `EXEC-PARTIAL-FILL-P1.3` is registered as `IMPLEMENTATION_VERIFIED`.
-
-P1.3 is still **not merged**. The current branch head includes decision-registry and handoff evidence updates, so final-head CI must pass before merge.
-
-Unless the roadmap is formally changed, P1.3 does **not** include or claim:
-
-- P1.4 reversal safety;
-- P1.5 metadata-driven precision;
+- P1.5 metadata-driven size/price precision;
 - P1.6 full post-submit account reconciliation;
 - P1.7 complete restart-recovery matrix;
 - P1.8 emergency/kill paths;
@@ -78,28 +55,43 @@ Unless the roadmap is formally changed, P1.3 does **not** include or claim:
 
 ---
 
-## P1.2 closure baseline
+## P1.3 closure baseline
 
-P1.2 Persistent order ledger is `PASS / MERGED` through PR #44, squash/main commit:
+P1.3 Partial-fill correctness is `PASS / MERGED` through PR #46.
+
+Final implementation head:
 
 ```text
-a4e1ebc98039ffee7e53f2acd7c38feaebbb2769
+68bd96f86945ab0fd42ad977142fdacef6a2642d
 ```
 
-Its exact final implementation head `62fab73baef86970954afe55831305f4328dee20` passed execution pytest, research integration and PR handoff governance before merge.
+Final-head evidence:
 
-P1.2 established:
+- `Phase 0 baseline contract` run #27 / Actions `31055589418`: SUCCESS;
+- execution tests: SUCCESS;
+- research integration contract: SUCCESS;
+- `PR handoff governance` run #35 / Actions `31055589427`: SUCCESS;
+- evidence-only PR-body governance run #36 / Actions `31055704431`: SUCCESS.
 
-- durable intent before economic-order network submission;
-- durable submission-attempt marker before the submit call;
-- deterministic CLOID linkage to Hyperliquid truth;
-- submission/OID/status/fill/fee/average-fill/remaining/cancel-reject persistence;
-- unresolved-order restart reconstruction;
-- exchange-truth precedence with audit history;
-- fail-closed behavior for corruption, ambiguous reconciliation and unknown result after a durable submission attempt;
-- no blind resubmission under uncertain execution truth.
+Squash/main commit:
 
-It did not authorize production risk and did not complete P1.3.
+```text
+fe663a0e8115baaa5c2ae9f1a59338e8f4a0c868
+```
+
+`EXEC-PARTIAL-FILL-P1.3` is registered as `IMPLEMENTATION_VERIFIED`.
+
+P1.3 established:
+
+- zero / partial / full fill classification from actual reconciled fills;
+- signed position movement from actual fills and order side;
+- fill-implied actual position and target gap when a trustworthy baseline exists;
+- separate live resting remainder versus canceled unfilled remainder;
+- fail-closed local/exchange quantity consistency;
+- explicit baseline-unavailable state rather than invented exposure truth;
+- reversal-close actual-fill progress toward zero while leaving fresh reversal-open baseline safety to P1.4.
+
+It did not authorize production risk and did not complete P1.4.
 
 ---
 
@@ -144,9 +136,9 @@ Current BTC-only executor capability does not redefine the BTC/ETH/SOL/BNB produ
 P0  canonical product/state registry                       COMPLETE
 P1.1 deterministic order identity                         COMPLETE
 P1.2 persistent order ledger                              COMPLETE
-P1.3 partial-fill correctness                             VERIFIED / FINAL-HEAD CI PENDING / NOT MERGED
-P1.4 reversal safety                                      BLOCKED ON P1.3 MERGE
-P1.5 precision / metadata                                 BLOCKED
+P1.3 partial-fill correctness                             COMPLETE
+P1.4 reversal safety                                      CURRENT / NEXT
+P1.5 precision / metadata                                 BLOCKED ON P1.4
 P1.6 post-submit reconciliation                           BLOCKED
 P1.7 restart recovery                                     BLOCKED
 P1.8 kill and emergency paths                             BLOCKED
@@ -170,7 +162,7 @@ NO_CHANGE
 production_authorized_components = []
 ```
 
-P1.3 engineering verification does not authorize live deployment, leverage expansion, new-asset execution, shorting, cycle-exit production or strategy cutover.
+P1.3 being engineering-verified and merged does not authorize live deployment, leverage expansion, new-asset execution, shorting, cycle-exit production or strategy cutover.
 
 ---
 
@@ -193,4 +185,4 @@ main
 -> normalize post-merge handoff if needed
 ```
 
-Current execution is at the **P1.3 final-head CI gate**. P1.4 remains blocked.
+The exact next action after this handoff normalization is merged is to start **P1.4 Reversal safety** from current main on a fresh candidate branch.
