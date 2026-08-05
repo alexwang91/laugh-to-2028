@@ -70,11 +70,13 @@ PR #44 implements a SQLite-backed execution ledger for the current single-accoun
 - ledger aggregates fill quantity, weighted average fill price, fees and remaining quantity;
 - unresolved orders survive process restart and reconstruct from Hyperliquid `orderStatus` plus `userFillsByTime`;
 - exchange truth wins over conflicting local observations while conflict history is retained;
-- an exchange `filled` state without complete fill evidence remains unresolved and fails closed;
+- Hyperliquid's documented open/triggered/filled, cancellation and rejection status taxonomy is classified explicitly; specific cancellation and rejection terminal reasons remain auditable;
+- exchange `origSz` / remaining `sz` and reconstructed fill quantity are cross-checked; canceled or open orders with missing partial-fill evidence remain unresolved instead of being falsely terminalized;
+- an exchange `filled` state requires fill evidence for the full original exchange size and records remaining quantity as zero;
 - `unknownOid` after a durable submission-attempt marker remains uncertain and is never blindly resubmitted;
 - a recovered exchange order with an OID blocks new economic risk even if the current local ledger never recorded its original submission attempt;
 - malformed/failed order-status and fill reconciliation paths leave structured `reconciliation_uncertain` audit events before failing closed;
-- unknown exchange status values fail closed rather than being silently treated as known lifecycle states;
+- undocumented exchange status values fail closed rather than being silently interpreted;
 - SQLite initialization runs `quick_check`; database/read failures fail closed;
 - a fill response at the documented API limit is treated as potentially truncated and fails closed rather than claiming complete truth;
 - trade mode requires an explicitly configured persistent ledger path and `ORDER_LEDGER_DURABLE_STORAGE=true`;
@@ -95,20 +97,24 @@ Tests cover:
 - recovered exchange-open order blocking even without a local submission-attempt record;
 - reconstruction of OID, fills, average fill price, fees, remaining quantity and terminal state;
 - exchange/local status conflict audit;
+- full documented Hyperliquid cancel/reject terminal classification and reason persistence;
+- partial-fill-then-cancel reconciliation, including failure when fill evidence is missing and successful reconstruction when fills match `origSz - sz`;
 - filled-with-missing-fills fail-closed behavior;
 - structured audit for order-status lookup failure and malformed fill lookup;
-- unknown exchange-status fail-closed behavior;
+- undocumented exchange-status fail-closed behavior;
 - corrupt database fail-closed behavior;
 - API fill-limit truncation guard;
 - durable-storage and Vercel runtime configuration gates.
 
-Candidate head `40dff282eb89fcf6f2459c029b4a1f681f7c96c8` passed both `Phase 0 baseline contract` and `PR handoff governance`; the Phase 0 job included successful execution pytest and research integration steps. The decision-registry/current-state commits after that evidence require a new final-head CI run before merge.
+Earlier candidate head `40dff282eb89fcf6f2459c029b4a1f681f7c96c8` passed both `Phase 0 baseline contract` and `PR handoff governance`; the Phase 0 job included successful execution pytest and research integration steps. Subsequent self-review produced additional safety fixes, so only the final PR #44 head after those fixes can authorize merge.
 
 Self-review corrections made inside PR #44:
 
-1. uncertainty/conflict audit records were initially vulnerable to transaction rollback when immediately followed by an exception; the corrected paths persist audit/state before raising;
-2. a recovered exchange-open order could initially remain non-blocking when the new local ledger had no historical submission-attempt marker; blocking now includes either a durable local attempt or discovered exchange OID;
-3. malformed order/fill reconciliation and unknown exchange status paths now leave structured uncertainty audit evidence before failing closed.
+1. uncertainty/conflict audit records were initially vulnerable to transaction rollback when immediately followed by an exception; corrected paths persist audit/state before raising;
+2. a recovered exchange-open order could initially remain non-blocking when a new local ledger had no historical submission-attempt marker; blocking now includes either a durable local attempt or discovered exchange OID;
+3. malformed order/fill reconciliation and undocumented exchange status paths did not all leave durable uncertainty evidence; they now do;
+4. the first status classifier covered only a small subset of Hyperliquid terminal states; it now models the documented cancellation and rejection taxonomy and records specific terminal reasons;
+5. the first terminal reconciliation path could falsely complete a partially-filled-then-canceled order when fill events were missing; it now cross-checks exchange original/remaining size against fill events and stays unresolved on disagreement.
 
 These are implementation/safety corrections only and do not change product assumptions.
 
@@ -124,6 +130,8 @@ P1.2 does **not** claim:
 - cancel/retry lifecycle hardening beyond persisted truth and fail-closed uncertainty;
 - multi-asset execution readiness;
 - production readiness.
+
+P1.2 may persist and reconstruct partial-fill facts without claiming that the executor can yet safely continue, resize or retry a partially-filled economic order. That lifecycle remains P1.3.
 
 The existing reversal route remains observable as `close_for_reversal` / `open_reversal` while deterministic identity remains route-independent `reduce` / `increase`.
 
