@@ -1,0 +1,72 @@
+{
+  "experiment_id": "CARRY-STACK-0033-IDLE-CAPITAL",
+  "status": "FIRST_VALID_RUN_COMPLETE",
+  "decision": "REJECTED_BY_PREREGISTERED_QUALIFICATION_RULE",
+  "promotion_evidence": false,
+  "carry_0031_parity": {
+    "expected_final_10k": 11719.827766646282,
+    "reconstructed_final_10k": 11719.827766646282,
+    "absolute_difference_dollars": 0.0,
+    "tolerance_dollars": 0.01,
+    "pass": true,
+    "funding_event_coverage_ratio": 1.0,
+    "remaining_required_price_gaps": 0
+  },
+  "window": {
+    "start": "2023-06-19",
+    "end": "2026-07-30",
+    "observations": 1138
+  },
+  "baseline_strict_router_brrk": {
+    "final_10k": 40447.91784855683,
+    "cagr": 0.5666045723859101,
+    "max_drawdown": -0.34947541940620985,
+    "ann_vol": 0.44157859533759874,
+    "sharpe": 1.2345578380693756,
+    "calmar": 1.6213002143287278
+  },
+  "combined_idle_capital_stack": {
+    "final_10k": 39948.40114060251,
+    "cagr": 0.5603633156526788,
+    "max_drawdown": -0.3508136245379694,
+    "ann_vol": 0.44158343959064755,
+    "sharpe": 1.225511842183166,
+    "calmar": 1.5973248370575452
+  },
+  "incremental": {
+    "cagr_percentage_points": -0.6241256733231282,
+    "max_drawdown_percentage_points": -0.1338205131759529,
+    "sharpe": -0.00904599588620969,
+    "calmar": -0.023975377271182596,
+    "scaled_carry_before_scale_cost_cumulative": -0.0020015136794044874,
+    "scaled_carry_net_cumulative": -0.012360421628584861,
+    "scale_change_turnover": 20.865826353099997,
+    "scale_change_cost_additive": 0.010432913176549999
+  },
+  "capital_usage": {
+    "avg_held_brrk_gross": 0.7444535242536907,
+    "min_held_brrk_gross": 0.0000408781,
+    "max_held_brrk_gross": 1.0,
+    "avg_carry_scale": 0.25554647574630934,
+    "min_carry_scale": 0.0,
+    "max_carry_scale": 0.9999591219,
+    "carry_active_day_share": 0.6230228471001757,
+    "avg_combined_gross": 1.0,
+    "max_combined_gross": 1.0
+  },
+  "from_2025": {
+    "baseline_cumulative_return": 0.010038002834183768,
+    "combined_cumulative_return": 0.0037384844844567944,
+    "scaled_carry_net_cumulative_return": -0.006251885846572547
+  },
+  "qualification": {
+    "return_improvement": false,
+    "sharpe_improvement": false,
+    "drawdown_nonworsening": false,
+    "calmar_improvement": false,
+    "gross_discipline": true,
+    "qualified_idle_capital_stack": false
+  },
+  "interpretation": "The standalone 0031 carry mechanism does not transfer positively when allocation is mechanically conditioned on BRRK idle capital. Even before allocation-change costs, the scaled carry contribution was slightly negative over the common window; frequent changes in BRRK gross then added material turnover cost. This rejects the specific idle-capital deployment rule, not the standalone carry mechanism.",
+  "stopping_rule": "No same-window scale, threshold, fixed-weight, leverage, asset-removal, or BRRK-reduction rescue of 0033. Retain as negative evidence. Any future capital-efficient carry overlay must be motivated by independent collateral/margin implementation economics rather than tuning this historical stack."
+}
