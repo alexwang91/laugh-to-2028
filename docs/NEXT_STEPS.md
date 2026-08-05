@@ -36,7 +36,7 @@ Decision: **rejected; TSMOM line stopped on this sample**.
 
 Decision: all-perp default rejected; BTC spot-first remains implementation/shadow candidate.
 
-### CARRY-PNL-0031 + CARRY-RF-0036R1
+### CARRY-PNL-0031 + CARRY-RF-0036R1/R2
 
 The original CARRY-PNL-0031 report is preserved unchanged. It passed a zero-return `net_economics` hurdle with:
 
@@ -46,14 +46,19 @@ The original CARRY-PNL-0031 report is preserved unchanged. It passed a zero-retu
 - daily corr vs BRRK **-0.098**;
 - mean return on BRRK worst-decile days positive.
 
-F1 preregistered a benchmark-only restatement. No asset, weight, cost, funding-accounting or window change was allowed. The first valid `CARRY-RF-0036R1` result on 2020-09-15..2026-07-30 is:
+F1 preregistered a benchmark-only restatement. No asset, weight, cost, funding-accounting or window change was allowed. The first valid `CARRY-RF-0036R1` result on 2020-09-15..2026-07-30 established:
 
 - CARRY-PNL-0031 CAGR: **2.7404%**;
 - FRED `DTB3` cash CAGR: **3.1653%**;
 - excess CAGR over rf: **-0.4249 pp/yr**;
-- excess Sharpe over rf: **-0.2216**;
 - 2021 carry return: **+16.8037%**;
 - full-window cumulative carry return: **+17.1983%**.
+
+A subsequent registered **reporting-only** correction, `CARRY-RF-0036R2`, aligns the named `excess_sharpe_over_rf` exactly to PR #30's reference convention:
+
+- named excess Sharpe over rf: **-0.2231508** (≈ **-0.223**);
+- R1's old **-0.2215824** value is preserved as the earlier excess-return-volatility diagnostic;
+- no gate, input, return series, risk-free series or decision changed.
 
 Corrected gate:
 
@@ -65,7 +70,8 @@ Decision: **FAIL_CORRECTED_NET_ECONOMICS_STOP_CARRY_LINE**.
 
 Under discipline #7, the carry line is stopped. Do not drop BNB, filter funding sign, add basis thresholds, change the window, change costs, change weights or add leverage to rescue this sample.
 
-Exact restatement plus daily evidence: `research/results/carry_rf_0036r1/`.
+Exact restatement plus daily evidence: `research/results/carry_rf_0036r1/`.  
+Named-metric parity correction: `research/results/carry_rf_0036r2/`.
 
 ### CARRY-AUDIT-0032
 
@@ -88,7 +94,7 @@ carry_scale_t = clip(1 - held_BRRK_gross_t, 0, 1)
 - scale-change cost about **1.043%**;
 - net carry contribution **-1.236%**.
 
-F1 further compared the combined stack with **BRRK + the same idle capital accruing DTB3 cash**. The corrected `net_economics_vs_idle_cash` also fails.
+F1 further compared the combined stack with **BRRK + the same idle capital accruing DTB3 cash**. The corrected `net_economics_vs_idle_cash` also fails. Under the R2 review convention, its named excess Sharpe over rf is **-0.049529**.
 
 Decision: **remain rejected**. The previous interpretation that standalone carry still passed while only the idle-cash conversion failed is no longer supported after F1.
 
