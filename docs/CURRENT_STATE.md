@@ -12,6 +12,7 @@ Status: authoritative cross-chat handoff snapshot
 - Planning PR: #38 merged
 - Context-handoff governance PR: #39 merged
 - Phase 0 PR: #40 merged; squash commit `1feffd07208a741e53766fe126dc9cb7add3d3d1`; final-head governance and Phase-0 baseline CI both passed
+- Phase 0 handoff normalization PR: #41 merged
 
 ## Current roadmap position
 
@@ -20,7 +21,8 @@ PLANNING BASELINE: complete
 CONTEXT-HANDOFF GOVERNANCE: complete
 P0.1 Canonical product config: PASS
 P0.2 Decision registry: PASS
-P1.1 Deterministic order identity: NEXT
+P1.1 Deterministic order identity: CANDIDATE / CI REQUIRED
+P1.2 Persistent order ledger: BLOCKED ON P1.1
 P1+: continue in dependency order only
 ```
 
@@ -42,7 +44,7 @@ P1+: continue in dependency order only
 - Bot may use a trading Agent/API credential only; never the master wallet private key and never automated withdrawals.
 - Strategy upgrades use candidate/shadow plus manual blue-green cutover; no hot strategy patching.
 
-## Phase 0 implementation now established
+## Phase 0 implementation established
 
 P0.1:
 
@@ -60,6 +62,22 @@ P0.2:
 - the production-authorized component set is currently empty;
 - future tasks must reference an existing decision or create a new registered decision rather than silently reopening stopped work.
 
+## P1.1 candidate implementation
+
+The current candidate branch implements deterministic exchange-visible order identity:
+
+- canonical daily decision timestamp is the UTC boundary immediately after the last completed daily candle;
+- order identity inputs are release ID, decision timestamp, asset, side, intent and target revision;
+- target revision is based on executable target-position precision rather than current-position delta;
+- canonical inputs are hashed to a 128-bit Hyperliquid cloid;
+- `market_open` and `market_close` receive that cloid;
+- before submission the bot queries Hyperliquid `orderStatus` by cloid;
+- an already-known cloid is returned as `duplicate_suppressed` instead of submitting again;
+- malformed/ambiguous order-status lookup fails closed before submission;
+- replay/restart and golden-vector tests are included.
+
+P1.1 does **not** claim persistent local ledger, partial-fill lifecycle, retry-attempt policy or cross-process locking. Those remain later Phase-1 dependencies.
+
 ## Research boundaries that must remain closed unless formally reopened
 
 - Do not silently rescue stopped carry work.
@@ -72,8 +90,9 @@ P0.2:
 - BRRK-0011 remains the frozen directional research target.
 - Hyperliquid all-perp implementation is economically inferior to spot-aware routing on the tested window.
 - BTC spot/UBTC identity has public verification; ETH/SOL spot identity remains an explicit later router validation item.
-- Phase 0 PR #40 passed both the PR handoff governance workflow and the Phase-0 baseline contract workflow on its final head and is merged.
-- Execution production readiness is not established: deterministic order identity, persistent ledger, partial-fill lifecycle, reconciliation, idempotency, slicing, kill paths and executor lifecycle tests remain required.
+- Phase 0 is merged and green.
+- P1.1 code exists on candidate branch but is not PASS until final-head CI and governance checks succeed.
+- Execution production readiness is not established: persistent ledger, partial-fill lifecycle, reconciliation, idempotency beyond sequential replay, slicing, kill paths and executor lifecycle tests remain required.
 - Dynamic leverage above the current BRRK scale is not yet production-authorized.
 - Cycle-top/exit model is not yet validated; future study must include 2021 two-wave structure and 2025 multi-peak structure.
 - Bear-market Top-20 short expansion is research-only and deferred.
@@ -81,7 +100,7 @@ P0.2:
 ## Production authorization
 
 ```text
-Strategy change from Phase 0: NONE
+Strategy change from P1.1 candidate: NONE
 New live capital authorization: NONE
 Leverage expansion authorization: NONE
 Short authorization: NONE
@@ -89,10 +108,13 @@ Short authorization: NONE
 
 ## Open blockers / uncertainties
 
-1. P1 account/order/fill truth is not yet hardened.
-2. Operating drawdown budget is intentionally not frozen until leverage research.
-3. Cycle-exit signal parameters/timeframes are intentionally not frozen until historical/walk-forward study.
-4. ETH/SOL/BNB execution and spot identities are not authorized merely because they exist in the product universe.
+1. P1.1 requires green final-head CI before it can be marked PASS.
+2. P1.2 persistent ledger is not yet implemented.
+3. Cross-process simultaneous submission races are not claimed solved by P1.1.
+4. Retry behavior after rejected/canceled/partially-filled orders is intentionally not defined until later Phase 1.
+5. Operating drawdown budget is intentionally not frozen until leverage research.
+6. Cycle-exit signal parameters/timeframes are intentionally not frozen until historical/walk-forward study.
+7. ETH/SOL/BNB execution and spot identities are not authorized merely because they exist in the product universe.
 
 ## Latest project-drift assessment
 
@@ -100,20 +122,26 @@ Short authorization: NONE
 DRIFT_0
 ```
 
-Reason: Phase 0 implemented the exact roadmap dependency without changing strategy economics, risk limits, venue, asset universe, approval boundaries or production authorization. Legacy BTC-only and beta-cap behavior remains implementation/research legacy rather than canonical product policy.
+Reason: P1.1 candidate is pure execution hardening implementing the next roadmap dependency. It changes no strategy economics, asset universe, venue, risk philosophy, approval boundary, credential boundary or production authorization.
 
 ## Exact next unblocked task
 
+Until candidate CI closes:
+
 ```text
-P1.1 Deterministic order identity
+P1.1 Deterministic order identity — TEST / REVIEW / CLOSE EVIDENCE
 ```
 
-Required outcome: deterministic client/order IDs derived from release, decision timestamp, asset, side and intent/target revision; rerunning the same decision must not create duplicate economic orders; IDs must survive restart; replay tests must pass.
+After P1.1 is green and merged:
 
-After P1.1, continue Phase 1 in roadmap dependency order. Do not begin P4 leverage, P5 cycle-exit research or P8 bear-short work before the required earlier gates are closed.
+```text
+P1.2 Persistent order ledger
+```
+
+Do not begin P4 leverage, P5 cycle-exit research or P8 bear-short work before required earlier gates are closed.
 
 ## Fresh-chat resume instructions
 
-A fresh conversation should read the canonical files, inspect merged PRs #38, #39 and #40, verify actual GitHub state and CI, then begin `P1.1 Deterministic order identity`.
+A fresh conversation should read the canonical files, verify actual GitHub state and CI, inspect the latest P1.1 PR, and either close/fix P1.1 or, if it is already green and merged, begin `P1.2 Persistent order ledger`.
 
 Do not ask the user to repeat product decisions already captured in `config/product.json`, `config/decision_registry.json`, the master plan or this handoff.
