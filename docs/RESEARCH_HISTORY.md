@@ -1,276 +1,292 @@
 # Research History
 
-本项目目标是建立一个低频、可审计的 crypto regime / rotation / risk-allocation system。基本纪律：completed data only、t→t+1 no lookahead、明确成本、先登记再评估，并把 model selection、asset selection 与 survivorship bias 作为一等问题。
+本项目目标是建立一个低频、可审计、可自动执行的 crypto regime / allocation system。研究纪律始终保持：completed data only、t→t+1 no lookahead、明确成本、先登记后运行、失败结果保留、禁止在同一历史窗口无限救援。
 
-## 1. BTC Dynamic Beta
+## 1. BTC Dynamic Beta / Fixed V1
 
-BTC core 使用20/60/120/240日风险调整动量，权重0.15/0.25/0.30/0.30，并结合30日 realized volatility。负趋势时beta收缩至0.18–0.65；正趋势时从1.0向上扩张。0.05 rebalance band用于降低无效换手。
+早期 BTC core 使用 20/60/120/240 日风险调整趋势和 realized volatility 动态调整 beta。Fixed V1 使用 BTC/ETH/SOL/BNB rotation，risk-off 时 alt=0，risk-on 时 alt 必须同时满足绝对趋势与相对 BTC 趋势。
 
-人工“最后一跌后跳升beta”规则回测失败并永久淘汰。
+Fixed V1 历史表现较强，但后续 attribution 证明 SOL 是重要历史收益来源，当前 survivor/winner panel 不能合法外推为历史可交易 universe。
 
-## 2. Fixed-universe V1 rotation
+## 2. BRRK-0004 → BRRK-0011
 
-第一版多资产模型固定BTC/ETH/SOL/BNB：BTC决定regime；risk-off时alt为0；risk-on时alt必须同时满足绝对趋势和相对BTC趋势，再选择top1–2。
+BRRK 研究逐步把 HMM 从“alpha engine”收缩为稀疏 risk authority。永久低仓位会牺牲太多牛市收益，真正有效的是少数 Risk-Off 状态下的风险收缩。
 
-2021-05-01至2026-08-02，no-leverage fixed V1历史CAGR约36.4%。但SOL是主要历史alpha来源；去掉SOL后早期高杠杆版本CAGR大幅下降，且2024后优势显著减弱。
+BRRK-0011 只修正 path CDaR 数学定义，没有改变 alpha、HMM、risk budget 或成本。
 
-早期结论：alpha不只是杠杆造成，但固定今天已知赢家存在严重selection/survivorship bias，不能直接外推。
-
-## 3. BRRK：从alpha engine收缩为risk authority
-
-早期BRRK-0004/0005广泛缩放或替代V1，降低回撤但牺牲太多牛市收益。
-
-BRRK-0006将HMM权限收窄：正常状态默认接近完整V1，只有Risk-Off概率上升时才允许meta allocator降风险。该结构首次在共同历史窗口同时改善增长与主要风险指标。
-
-随后实验表明：
-
-- risk scaling的有效性来自稀疏Risk-Off干预，而不是永久低仓位；
-- execution lag会削弱结果；
-- deterministic cycle/halving与CUSUM re-entry没有提供足够独立价值；
-- HMM factor count存在显著model-specification uncertainty；
-- persistent semantic anchoring与label-free替代方案均未超越基线。
-
-## 4. BRRK-0011：冻结基线
-
-0011只修正path CDaR数学定义，没有改alpha、HMM、state count、risk budget或成本。修正后headline结果几乎不变，说明BRRK优势不是旧drawdown bug造成。
-
-| Model | CAGR | MDD | Sharpe | Calmar | CDaR95 | Up capture | Down capture |
-|---|---:|---:|---:|---:|---:|---:|---:|
-| V1 | 61.26% | -37.64% | 1.295 | 1.628 | 36.55% | 106.05% | 80.33% |
-| **BRRK-0011** | **65.10%** | **-33.72%** | **1.353** | **1.931** | **31.78%** | 105.02% | **72.99%** |
-
-**Canonical research baseline = BRRK-0011.**
-
-## 5. Calibration audits
-
-AUDIT-0010/0012对44个strictly prequential 20-day forecasts做coverage与PIT calibration。
-
-- terminal-return distribution没有明显系统失准；
-- maximum-drawdown distribution偏保守，经常预测比实际更严重的drawdown；
-- 没有证据支持继续加厚尾部、增加conformal safety buffer或在同一窗口放松risk budget。
-
-## 6. Fixed-panel dispersion experiments
-
-### DISP-0013 — alt to BTC
-
-当ETH/SOL/BNB/XRP的20日横截面return dispersion进入历史极端区间时，将部分alt权重转回BTC，不降低gross。
-
-BRRK+0013 headline CAGR约67.5%，但post-band实际变化只有29/1332日，约97%的正episode贡献来自最大的三个episode，集中在2024年末。
-
-Status: mechanistically plausible, event-concentrated, shadow only.
-
-### DISP-0014 — total exposure to cash
-
-0014采用外部文献式median-ratio scaling，不从0013 PNL重新优化参数。
-
-| Strategy | CAGR | MDD | Vol | Sharpe | Calmar | Up | Down |
-|---|---:|---:|---:|---:|---:|---:|---:|
-| BRRK-0011 | 65.10% | -33.72% | 44.21% | 1.353 | 1.931 | 105.02% | 72.99% |
-| + fixed DISP-0014 | 65.71% | -30.60% | 39.01% | 1.488 | 2.147 | 98.45% | 62.40% |
-
-固定五币结果表现强，但后续PIT-DISP-0015证明其timing materially selection-sensitive。
-
-## 7. Point-in-time universe engineering
-
-Archive与lifecycle审计发现数百个历史Binance spot-USDT candidates，其中大量当前已BREAK或inactive。今天的survivor集合不是合法历史universe。
-
-数据访问审计确认BREAK以及从current exchangeInfo消失的symbol仍可通过Binance public market-data API返回历史日线，因此可以构建dead-pool-inclusive panel。
-
-## 8. PIT-DISP-0015 — risk-signal qualification
-
-Frozen design:
-
-- historical ordinary spot-USDT universe；
-- later inactive assets在真实存在期间保留；
-- 240连续completed rows；
-- completed-day quote volume >=$25m；
-- 20日横截面累计log-return dispersion；
-- expanding-prior-median/current ratio，clip[0.10,1.00]；
-- smoothing lambda0.80；
-- total V1 exposure toward cash；
-- 0.05 band，5bps，t→t+1。
-
-Valid run:
-
-- candidates652，symbols with rows646；
-- zero fetch errors；
-- 1,332 evaluation days；
-- mean eligible universe30.62；
-- 159 currently inactive/non-TRADING symbols historically eligible。
-
-| Strategy | CAGR | MDD | Vol | Sharpe | Calmar | CDaR95 |
-|---|---:|---:|---:|---:|---:|---:|
-| BRRK-0011 | 65.10% | -33.72% | 44.21% | 1.353 | 1.931 | 31.78% |
-| BRRK + fixed0014 | 65.71% | -30.60% | 39.01% | 1.488 | 2.147 | 28.85% |
-| BRRK + dynamic0015 | 60.81% | -30.40% | 39.69% | 1.393 | 2.000 | 28.08% |
-
-What survived:
-
-- broad dispersion genuinely reduces MDD、CDaR、volatility与downside capture；
-- risk mechanism survives dead-pool inclusion。
-
-What failed:
-
-- CAGR 65.10%→60.81%；
-- upside capture明显下降；
-- fixed与dynamic scale correlation只有0.064。
-
-Decision:
-
-- BRRK-0011 remains baseline；
-- DISP-0014 downgraded to selection-sensitive diagnostic；
-- PIT-DISP-0015 retained as broad-market risk diagnostic, not promoted；
-- no post-result tuning。
-
-## 9. PIT-ALPHA-0016 — alpha-mechanism qualification
-
-### Frozen design
-
-- 648 historical ordinary USDT candidates；
-- 240连续completed rows；
-- completed-day quote volume >=$25m；
-- own trend >0 and relative-to-BTC trend >0；
-- rank=`(0.5 own + 0.5 relative)/rv30`；
-- Top-2 primary；
-- gross<=1；
-- 50%BTC core / 50%alt sleeve；
-- universal alt cap35%；
-- 0.05 band，5bps，t→t+1；
-- 100 fixed-random-priority placebo seeds；
-- Top1/Top2/Top3/equal-all完整报告；
-- 5/10/20bps成本压力与missing-day haircut压力。
-
-### Valid run integrity
-
-- 648 candidates，646 with rows；
-- zero fetch errors；
-- panel 2019-01-01 to 2026-08-02；
-- evaluation 2021-05-01 to 2026-08-02，1,920日；
-- mean age/liquidity universe34.91；
-- mean positive-trend eligible universe14.98；
-- 152 currently inactive/non-TRADING symbols historically eligible。
-
-### Portfolio family
-
-| Strategy | CAGR | MDD | Sharpe | Calmar | Turnover |
+| Model | CAGR | MDD | Sharpe | Calmar | CDaR95 |
 |---|---:|---:|---:|---:|---:|
-| Top-1 | 8.31% | -66.02% | 0.407 | 0.126 | 270.04 |
-| **Top-2 primary** | **12.25%** | **-69.12%** | **0.480** | **0.177** | **349.62** |
-| Top-3 | 0.71% | -76.39% | 0.268 | 0.009 | 333.03 |
-| Equal all eligible | -24.91% | -82.93% | -0.266 | -0.300 | 352.62 |
-| BTC dynamic | 11.07% | -54.31% | 0.461 | 0.204 | 40.44 |
-| **Fixed V1 gross<=1** | **36.43%** | **-59.72%** | **0.889** | **0.610** | **131.81** |
+| V1 | 61.26% | -37.64% | 1.295 | 1.628 | 36.55% |
+| **BRRK-0011** | **65.10%** | **-33.72%** | **1.353** | **1.931** | **31.78%** |
 
-### Ranking mechanism passed
+Decision: **BRRK-0011 frozen as canonical directional target**.
 
-The Top-2 rank:
+## 3. Dispersion line
 
-- beat 98/100 placebo seeds on terminal NAV；
-- beat 98/100 placebo seeds on Calmar；
-- largest positive contributor share13.14%；
-- top-three share34.93%；
-- contribution distributed across many survivors and later-inactive assets。
+### DISP-0013 / DISP-0014
 
-Conclusion: own-trend + relative-strength rank contains real cross-sectional information.
+Fixed-panel dispersion showed attractive risk compression, but episode concentration and panel selection were material concerns.
 
-### Portfolio conversion failed
+### PIT-DISP-0015
 
-- Top-2 CAGR12.25% versus fixed V136.43%；
-- MDD-69.12% worse than fixed V1 and BTC dynamic；
-- turnover349.62；
-- 2025+ CAGR negative；
-- 20bps CAGR1.57%。
+A dead-pool-inclusive historical Binance spot-USDT universe was constructed with 240 contiguous completed days and $25m completed-day liquidity.
 
-Decision:
+Dynamic PIT dispersion retained real risk information:
 
-- ranking mechanism validated；
-- portfolio specification rejected；
-- BRRK-0011 remains baseline；
-- no0016 tuning。
+- MDD -33.72% -> -30.40%;
+- CDaR95 31.78% -> 28.08%;
+- Sharpe 1.353 -> 1.393;
 
-## 10. AUDIT-0017 — rank-to-portfolio attribution
+but CAGR fell 65.10% -> 60.81% and fixed-vs-dynamic scale correlation was only ~0.064.
 
-The no-trading-change audit identified daily name replacement as the dominant failure mechanism.
+Decision: dispersion retained as diagnostic/shadow risk information, not promoted.
 
-### Churn and holding structure
+## 4. Dynamic cross-sectional alpha line
 
-- mean daily eligible-set Jaccard0.630；
-- roughly3 additions and3 removals per day；
-- monthly first-to-last eligible-set Jaccard0.249；
-- 653 holding spells across113 symbols；
-- median holding duration1 day；
-- positive-contribution spells41.96%；
-- TRX re-entered49 times。
+### PIT-ALPHA-0016
 
-### Turnover decomposition
+Own-trend + relative-to-BTC rank beat 98/100 fixed-random-priority placebos on terminal NAV and Calmar, proving the ranking mechanism contains information.
 
-| Component | Share |
-|---|---:|
-| BTC weight changes | 7.18% |
-| Alt-sleeve size changes | 9.41% |
-| **Within-alt name switching** | **83.41%** |
+Portfolio conversion failed:
 
-The portfolio was not behaving as medium-horizon trend following. It was behaving as a daily leaderboard replacement system.
+- CAGR 12.25%;
+- MDD -69.12%;
+- Sharpe 0.480;
+- turnover 349.62x;
+- 2025+ CAGR negative.
 
-### Rank persistence and payoff shape
+### AUDIT-0017
 
-At30days after entry:
+Attribution showed 83.41% of turnover came from within-alt name switching. Median holding spell was only one day despite medium-horizon signals. Rare persistent winners produced a right-tailed payoff shape.
 
-- 52.07% remain own/relative-trend eligible；
-- only19.35% remain dailyTop-2；
-- median forward return-2.43%；
-- mean forward return+4.83%。
+### PIT-ALPHA-0018
 
-Most entries lose modestly; rare persistent winners create the positive mean. Strict daily Top-2 replacement exits incumbents before those right-tail winners can compound.
+Eligibility-based incumbent persistence reduced turnover to 141.86x and improved CAGR to 16.62%, but MDD remained -66.86% and 2025+ economics stayed negative.
 
-### Fixed-V1 overlap
+Decision: **dynamic-alpha portfolio line stopped on this historical window**.
 
-- PIT alt exposure in active fixed-V1 alts averaged15.65%；
-- any overlap occurred28.70% of days；
-- overlap days had materially higher mean return than non-overlap days。
+## 5. Historical funding validation
 
-This is evidence of persistent trend quality, not authorization to hard-code ETH/SOL/BNB.
+### FUNDING-DATA-0001
 
-### Tail and sequence effects
+Official Binance USD-M funding archives and Hyperliquid native fundingHistory were validated. Hyperliquid historically changed funding frequency; accounting must use actual event timestamps.
 
-The largest drawdown reached-69.12%。Across its drawdown/recovery episode, additive gross return was positive, but volatility sequence and11.42pp of costs left compounded net wealth almost flat by recovery.
+### FUNDING-CROSSVENUE-0002
 
-### Authorized hypothesis
+Binance vs Hyperliquid overlap showed BTC/ETH/SOL/XRP reasonable sign/regime agreement but material level differences; BNB was structurally inconsistent.
 
-AUDIT-0017 authorizes one new state machine:
+Decision: Binance may serve only as sign/regime/stress proxy, not Hyperliquid funding level estimator.
 
-- use Top-2 rank for entry；
-- keep incumbent while own trend>0 and relative trend>0；
-- exit only when it becomes ineligible, BTC becomes risk-off, or a vacancy exists。
+### FUNDING-PNL-0003
 
-This directly addresses name-switch churn without introducing an exit-rank threshold, minimum hold or monthly calendar parameter. It requires a new experiment ID.
+Frozen BRRK held weights were charged native Hyperliquid funding.
 
-## 11. Funding and execution
+Common 2023-06-18 through 2026-07-31:
 
-Historical funding-aware PNL remains invalid because the first endpoint attempt receivedHTTP451. Funding is an unvalidated implementation variable, not established alpha.
+| Scenario | CAGR | MDD | Sharpe |
+|---|---:|---:|---:|
+| Price-only | 65.37% | -33.72% | 1.355 |
+| Hyperliquid all-perp | **44.08%** | **-37.04%** | **1.046** |
 
-Hyperliquid Plan B remains testnet/shadow only. Open items include dynamic precision、fill reconciliation、partial fills、slicing、idempotency、emergency protection and endpoint hardening。
+Native funding drag was dominated by BTC and SOL.
+
+Decision: **all-perp default implementation rejected**.
+
+## 6. Spot/perp router
+
+### ROUTER-DATA-0004
+
+Current Hyperliquid metadata and books were audited.
+
+- BTC: verified through official UI BTC -> UBTC HyperCore remap;
+- ETH: UETH candidate only;
+- SOL: USOL candidate only;
+- BNB/XRP: no deterministic direct-USDC candidate.
+
+### ROUTER-PNL-0005
+
+Funding-only accounting moved verified BTC long exposure to spot while preserving all targets.
+
+- all-perp CAGR 44.08%;
+- strict BTC-spot CAGR **56.20%**;
+- price-only upper bound 65.37%.
+
+Decision: BTC spot-first is an implementation/shadow candidate. UETH/USOL identity cannot be promoted from PNL.
+
+## 7. Bull extra-beta line
+
+### ASYM-BETA-0021
+
+Applying the old absolute CVaR/CDaR budget to approve gross >1 made the extra sleeve structurally inert. Rejected.
+
+### ASYM-BETA-0022
+
+Downside-semivol control allowed bull extra beta and raised price-only CAGR to 78.89%, but strict funding-aware MDD worsened to -42.42% and Sharpe fell to 1.182.
+
+### AUDIT-0023 / ASYM-BETA-0024
+
+Daily refresh confirmed a real stale-holding defect in June 2024. A daily cap improved 0022 without changing BRRK core:
+
+- strict CAGR 64.82%;
+- MDD -41.44%;
+- Sharpe 1.199.
+
+April 2024 remained the dominant unresolved tail.
+
+### AUDIT-0025 / 0026
+
+Short-horizon trend masking was real but did not justify a simple 20d veto. Frozen semantic RISK_OFF probability was effectively absent during April 2024.
+
+Decision: **stop historical rescue of the bull-extra tail; 0024 remains forward-shadow evidence only**.
+
+## 8. TSMOM independent sleeve
+
+### TSMOM-DATA-0027 / PIT-0028
+
+Historical Binance USD-M perpetual archives produced 828 ordinary candidates and a daily PIT eligibility set preserving later-ended contracts. 550 contracts were historically eligible; no survivor substitution was used.
+
+### TSMOM-ALPHA-0029
+
+First valid funding-aware broad long/short TSMOM:
+
+- CAGR **-4.12%**;
+- MDD **-88.30%**;
+- Sharpe **0.251**;
+- daily corr vs BRRK **0.060**;
+- mean return on BRRK worst-decile days **-0.589%**.
+
+Decision: diversification correlation passed, economics/crisis-alpha failed. **TSMOM line stopped on this sample**.
+
+## 9. Carry independent sleeve
+
+### CARRY-DATA-0030
+
+Official Binance same-venue spot/perp/funding data qualified for BTC/ETH/SOL/BNB/XRP with >=99% daily spot-perp alignment on every target.
+
+### CARRY-PNL-0031
+
+Frozen five-asset delta-neutral baseline:
+
+- each asset +0.10 spot / -0.10 USD-M perp;
+- total gross 1.0;
+- no funding threshold, Top-K, basis threshold, leverage search or dynamic weighting;
+- event-by-event funding;
+- fixed 5/10/20 bps cost family.
+
+Canonical 5 bps result:
+
+- CAGR **2.740%**;
+- MDD **-7.005%**;
+- vol **1.904%**;
+- Sharpe **1.428**;
+- funding-only no-cost CAGR **3.701%**;
+- corr vs BRRK **-0.098**;
+- BRRK worst-decile mean carry return positive.
+
+Decision: **independent carry mechanism qualified**.
+
+### CARRY-AUDIT-0032
+
+SOL (~-16.9%) and XRP (~-6.7%) basis extrema were cross-checked against exact official daily archives. Zero mismatches. Outlier dates contributed positive rather than artificial negative spread PNL.
+
+Decision: data/source attribution passed.
+
+### CARRY-STACK-0033
+
+Carry was inserted only into BRRK idle gross:
+
+```text
+carry_scale = clip(1 - held_BRRK_gross, 0, 1)
+```
+
+Result:
+
+- BRRK CAGR 56.66% -> combined **56.04%**;
+- MDD -34.95% -> **-35.08%**;
+- Sharpe 1.235 -> **1.226**;
+- Calmar 1.621 -> **1.597**;
+- average carry scale 25.55%;
+- active 62.3% of days;
+- scale turnover **20.87x**;
+- extra scale-change cost ~**1.043%**;
+- net carry contribution **-1.236%**.
+
+Decision: **carry-as-daily-idle-cash-filler rejected**. The carry mechanism itself remains qualified.
+
+## 10. Portfolio Margin implementation path
+
+### CARRY-IMPL-0034
+
+After 0033 failed, a separate public Hyperliquid Portfolio Margin audit asked whether matched spot + short perp could have a more capital-efficient implementation path.
+
+2026-08-05 public snapshot:
+
+- UBTC token index **197**;
+- current reserve LTV **0.50**;
+- BTC perp present;
+- BTC spot/perp books live;
+- spot/perp midpoint basis **2.492 bps**;
+- $100k UBTC spot simulated buy/sell slippage **1.177 / 0.287 bps** within returned book.
+
+Decision: **PASS_BTC_PUBLIC_FEASIBILITY**.
+
+This only proves infrastructure/collateral eligibility. It does not measure account-level capital release.
+
+Formal result: `research/results/CARRY_IMPL_0034_RESULT_2026-08-05.md`.
+
+## 11. CARRY-PM-0035 — current frontier
+
+Preregistered account-behavior probe uses a dedicated Portfolio Margin account/subaccount below $1,000 and a probe notional capped at $500.
+
+Frozen four-stage sequence:
+
+```text
+cash
+-> UBTC spot only
+-> UBTC + matched BTC short perp
+-> close both probe legs
+```
+
+Primary account-level measurement:
+
+```text
+incremental_maintenance_consumption_usdc
+  = available_after_maintenance_USDC(spot)
+    - available_after_maintenance_USDC(matched)
+
+capital_factor
+  = incremental_maintenance_consumption_usdc
+    / matched_short_notional
+```
+
+Frozen PASS requirements include:
+
+- Portfolio Margin mode and flag active;
+- no other perp positions;
+- matched notional mismatch <=2%;
+- portfolio margin ratio <0.50;
+- incremental maintenance fraction <=25%;
+- flat BTC/UBTC probe state after closing.
+
+Research code is read-only and does not hold private keys or submit orders.
+
+A PASS authorizes only one preregistered PM-aware BRRK + frozen CARRY-0031 stack accounting experiment. A FAIL/inconclusive result stops that path without threshold rescue.
 
 ## 12. Current evidence hierarchy
 
 | Component | Status |
 |---|---|
-| BTC Dynamic Beta | Frozen core concept |
-| Fixed V1 | Strong historical alpha, selection-biased |
-| **BRRK-0011** | **Canonical research baseline** |
-| DISP-0013 | Event-concentrated diagnostic |
-| DISP-0014 | Selection-sensitive fixed-panel diagnostic |
-| PIT-DISP-0015 | Valid risk mechanism, portfolio not promoted |
-| PIT-ALPHA-0016 rank | Mechanism validated versus placebo |
-| PIT-ALPHA-0016 portfolio | Rejected |
-| **AUDIT-0017** | **Daily name replacement identified as dominant failure** |
-| Funding-aware PNL | Unvalidated |
-| Hyperliquid Plan B | Testnet/shadow implementation |
-
-## 13. Current stopping rule
-
-The next experiment may test only the audit-authorized entry-rank / eligibility-exit state machine.
-
-Until that preregistered result exists, do not add HYPE by name、age filters、exit-rank thresholds、minimum holding periods、monthly schedules、funding alpha、covariance optimizers、volatility gates or leverage。
-
-Original experiment records and exact outputs are under `research/results/`.
+| **BRRK-0011** | **Canonical directional core** |
+| PIT dispersion | Diagnostic/shadow risk information |
+| Dynamic PIT alpha | Mechanisms interesting; portfolio line stopped |
+| ASYM-BETA-0024 | Forward-shadow bull-extra candidate only |
+| TSMOM-0029 | Rejected |
+| Funding data/cross-venue | Validated with source-role limits |
+| All-perp BRRK implementation | Rejected |
+| BTC strict spot router | Implementation/shadow candidate |
+| **CARRY-PNL-0031** | **Qualified independent low-vol sleeve** |
+| CARRY-STACK-0033 | Idle-capital stacking rule rejected |
+| **CARRY-IMPL-0034** | **BTC PM public feasibility passed** |
+| **CARRY-PM-0035** | **Current P0; account result pending** |
+| Hyperliquid executor | Testnet/shadow; hardening required |
+| Leverage | Deferred to final stage |
