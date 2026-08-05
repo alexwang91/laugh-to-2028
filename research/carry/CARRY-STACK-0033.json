@@ -1,0 +1,62 @@
+{
+  "experiment_id": "CARRY-STACK-0033-IDLE-CAPITAL",
+  "status": "PREREGISTERED_BEFORE_FIRST_STACK_RUN",
+  "registered_on": "2026-08-05",
+  "promotion_evidence": false,
+  "question": "Can the frozen CARRY-PNL-0031 sleeve improve the strict-router BRRK portfolio by using only capital that BRRK leaves idle, without reducing BRRK exposure or increasing combined gross above 1?",
+  "authorizing_evidence": ["CARRY-PNL-0031 qualified all frozen gates", "CARRY-AUDIT-0032 source-consistency PASS"],
+  "baseline": {
+    "strategy": "BRRK-0011 strict-router accounting from ROUTER-PNL-0005",
+    "brkk_gross_source": "frozen BRRK0011_BASELINE target weights from PIT-DISP-0015; held gross on day t uses target weights decided on t-1",
+    "core_change": "none"
+  },
+  "carry": {
+    "strategy": "exact frozen CARRY-PNL-0031 5bps daily sleeve",
+    "standalone_parity_requirement": "reconstruction in this experiment must reproduce the persisted 0031 final value within $0.01 per $10,000 before any stack result is accepted",
+    "asset_or_rule_change": "none"
+  },
+  "capital_rule": {
+    "held_brrk_gross_t": "sum(abs(BRRK0011_BASELINE held asset weights))",
+    "carry_scale_t": "clip(1 - held_brrk_gross_t, 0, 1)",
+    "combined_gross_target": "held_brrk_gross_t + carry_scale_t <= 1, apart from floating point tolerance",
+    "directional_authority": "carry remains delta-neutral; it may not increase or decrease BRRK directional target",
+    "economic_interpretation": "conservative fully-funded sub-account model: unit carry consumes unit capital for gross=1; no collateral sharing or leverage credit is assumed"
+  },
+  "daily_accounting": {
+    "baseline_return": "strict-router BRRK daily return",
+    "scaled_carry_contribution": "carry_scale_t * frozen 0031 net_5bps return_t",
+    "scale_change_cost": "abs(carry_scale_t - carry_scale_{t-1}) * 5bps, with prior scale=0 on first stack day",
+    "combined_return": "baseline_return + scaled_carry_contribution - scale_change_cost",
+    "note": "0031 internal drift/rebalance transaction costs are already inside its net_5bps return and scale linearly with allocated capital; scale-change turnover is charged separately"
+  },
+  "required_outputs": [
+    "common-window strict BRRK vs combined CAGR/MDD/vol/Sharpe/Calmar/final value",
+    "average/min/max carry scale and fraction of days carry is active",
+    "average combined gross and verification max <=1",
+    "incremental cumulative PNL from scaled carry before and after scale-change cost",
+    "scale-change turnover and cost",
+    "annual returns baseline vs combined",
+    "2025+ return comparison",
+    "worst drawdown dates and whether carry helped or hurt",
+    "standalone 0031 parity check"
+  ],
+  "qualification_rule": {
+    "return_improvement": "combined CAGR > strict-router BRRK CAGR",
+    "sharpe_improvement": "combined Sharpe > strict-router BRRK Sharpe",
+    "drawdown_nonworsening": "combined max drawdown >= strict-router BRRK max drawdown",
+    "calmar_improvement": "combined Calmar > strict-router BRRK Calmar",
+    "gross_discipline": "max combined gross <= 1 + 1e-10",
+    "decision": "all five required for idle-capital stack qualification"
+  },
+  "prohibited": [
+    "no fixed 80/20 or optimized stack weight",
+    "no carry leverage",
+    "no collateral-sharing assumption",
+    "no reduction of BRRK exposure to make room for carry",
+    "no funding threshold or asset removal",
+    "no parameter search on carry scale",
+    "no use of future BRRK gross information",
+    "no same-window rescue tuning if the stack fails"
+  ],
+  "implementation_limit": "This is a capital-accounting stack test using Binance-qualified carry mechanics and the strict-router BRRK research path. It is not yet Hyperliquid execution evidence; venue-specific spot/collateral/netting/fees still require a later implementation study."
+}
