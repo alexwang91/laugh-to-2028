@@ -16,7 +16,7 @@
 
 项目已经从“继续寻找新历史 alpha”转入 **capital structure / routing / execution / forward evidence** 阶段。
 
-**Carry 历史研究线已停止。** `CARRY-RF-0036R1` 将 CARRY-PNL-0031 从“相对零收益为正”重新定价为“相对现金为正”，首个有效结果显示：5 bps carry CAGR **2.740%**，同期 FRED `DTB3` 现金 CAGR **3.165%**，`excess_cagr_over_rf = -0.425 pp/yr`，`excess_sharpe_over_rf = -0.222`。因此 corrected `net_economics` **FAIL**，按纪律 #7 不再救援。
+**Carry 历史研究线已停止。** `CARRY-RF-0036R1` 将 CARRY-PNL-0031 从“相对零收益为正”重新定价为“相对现金为正”；随后 `CARRY-RF-0036R2` 仅校正 PR #30 指定的命名指标口径。最终可复算结果为：5 bps carry CAGR **2.740%**，同期 FRED `DTB3` 现金 CAGR **3.165%**，`excess_cagr_over_rf = -0.425 pp/yr`，`excess_sharpe_over_rf = -0.223`。因此 corrected `net_economics` **FAIL**，按纪律 #7 不再救援。
 
 由此：**CARRY-PM-0035 不再需要执行；CARRY-PM-0037 作为 F2 的 measurement-integrity 修复保留，但同样不再需要投入 live probe capital。**
 
@@ -33,7 +33,7 @@
 | TSMOM-ALPHA-0029 | Corr vs BRRK 低，但 CAGR **-4.12%**, MDD **-88.30%** | **拒绝并停止救援** |
 | FUNDING-PNL-0003 | Hyperliquid all-perp CAGR **44.08%** vs price-only ~65% | **全 perp 默认实现拒绝** |
 | ROUTER-DATA-0004 / PNL-0005 | BTC->UBTC spot verified；BTC-only spot accounting CAGR **56.20%** | BTC spot-first shadow candidate |
-| **CARRY-PNL-0031** | 原报告 CAGR **2.74%**, Sharpe **1.428**；F1 复算同期 DTB3 CAGR **3.165%**, excess Sharpe **-0.222** | **corrected net_economics FAIL；carry 线停止** |
+| **CARRY-PNL-0031** | 原报告 CAGR **2.74%**, Sharpe **1.428**；F1 复算同期 DTB3 CAGR **3.165%**, excess Sharpe **-0.223** | **corrected net_economics FAIL；carry 线停止** |
 | CARRY-AUDIT-0032 | SOL/XRP basis extrema 与官方 exact daily archive 一致 | 数据归因通过，但不改变 F1 停止结论 |
 | **CARRY-STACK-0033** | 原规则已拒绝；F1 再与 BRRK+idle cash 对照后仍为负超额 | **保持拒绝；不再解释为“standalone carry 仍通过”** |
 | **CARRY-IMPL-0034** | UBTC token index 197 当前 LTV **0.50**；BTC spot/perp books live | public feasibility 有效，但无后续 carry 授权 |
@@ -66,7 +66,7 @@ The dominant implementation lesson is that instrument/funding choice can destroy
 
 ## Carry research
 
-### CARRY-PNL-0031 — original report preserved, qualification restated by CARRY-RF-0036R1
+### CARRY-PNL-0031 — original report preserved, qualification restated by CARRY-RF-0036R1/R2
 
 Frozen same-venue Binance `long spot + short perp` baseline across BTC/ETH/SOL/BNB/XRP originally reported:
 
@@ -78,20 +78,23 @@ Frozen same-venue Binance `long spot + short perp` baseline across BTC/ETH/SOL/B
 - daily corr vs BRRK: **-0.098**;
 - mean carry return on BRRK worst-decile days: positive.
 
-F1 did **not** change assets, weights, costs, funding accounting or window. `CARRY-RF-0036R1` changed only the economic hurdle to FRED 3-month T-bill `DTB3` cash on the identical 2020-09-15..2026-07-30 window:
+F1 did **not** change assets, weights, costs, funding accounting or window. `CARRY-RF-0036R1` changed only the economic hurdle to FRED 3-month T-bill `DTB3` cash on the identical 2020-09-15..2026-07-30 window. `CARRY-RF-0036R2` then corrected only the named `excess_sharpe_over_rf` reporting convention to match PR #30 exactly, using strategy annualized volatility as the denominator:
 
 | Measure | Carry 0031 | DTB3 cash / excess |
 |---|---:|---:|
 | CAGR | **2.7404%** | cash **3.1653%** |
 | Final $10k | **$11,719.83** | cash **$12,007.20** |
 | excess CAGR | — | **-0.4249 pp/yr** |
-| excess Sharpe over rf | — | **-0.2216** |
+| excess Sharpe over rf | — | **-0.22315** |
+
+R1 的旧命名值 **-0.221582** 原样保留在 R1 报告中，作为使用 excess-return volatility 分母的旧诊断值；R2 不覆盖 R1，也不改变任何 gate 或策略结果。
 
 2021 carry return was **+16.8037%** while full-window cumulative carry return was **+17.1983%**. The corrected `net_economics = excess return over rf > 0` gate therefore **FAILS**.
 
 Decision: **stop the carry line under discipline #7.** No BNB removal, funding-sign filter, basis threshold, alternate window, weight/leverage change or other same-window rescue is authorized.
 
-Exact restatement and daily evidence: [`research/results/carry_rf_0036r1/`](research/results/carry_rf_0036r1/)
+Exact restatement and daily evidence: [`research/results/carry_rf_0036r1/`](research/results/carry_rf_0036r1/)  
+Reporting-parity correction: [`research/results/carry_rf_0036r2/`](research/results/carry_rf_0036r2/)
 
 ### CARRY-STACK-0033
 
@@ -104,7 +107,7 @@ The conservative rule `carry_scale = max(0, 1 - held_BRRK_gross)` had already fa
 - extra scale-change cost: about **1.043%**;
 - net carry contribution: **-1.236%**.
 
-F1 additionally compares the combined stack against the correct alternative for unused BRRK capital: **BRRK + matched idle cash accrual**. The combined stack again has negative excess economics; corrected `net_economics_vs_idle_cash` **FAILS**.
+F1 additionally compares the combined stack against the correct alternative for unused BRRK capital: **BRRK + matched idle cash accrual**. The combined stack again has negative excess economics; corrected `net_economics_vs_idle_cash` **FAILS**. Under the R2 review convention, the stack's `excess_sharpe_over_rf` is **-0.04953**.
 
 The earlier interpretation “carry mechanism did not fail; only the idle-cash conversion failed” is no longer supported after the cash-hurdle correction. Both the standalone economic gate and the 0033 conversion gate fail. No historical rescue is authorized.
 
