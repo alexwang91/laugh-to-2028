@@ -1,0 +1,1424 @@
+{
+  "audit_id": "FUNDING-DATA-0001-SOURCE-AUDIT",
+  "trading_changes": false,
+  "binance": {
+    "archive_root_prefix": "data/futures/um/monthly/fundingRate/",
+    "archive_symbol_count": 920,
+    "target_symbol_count": 5,
+    "all_targets_present": true,
+    "all_targets_have_months": true,
+    "total_internal_missing_months": 0,
+    "coverage": [
+      {
+        "symbol": "BTCUSDT",
+        "present_in_archive_root": true,
+        "month_count": 79,
+        "first_month": "2020-01",
+        "last_month": "2026-07",
+        "internal_gap_count": 0,
+        "internal_gaps": ""
+      },
+      {
+        "symbol": "ETHUSDT",
+        "present_in_archive_root": true,
+        "month_count": 79,
+        "first_month": "2020-01",
+        "last_month": "2026-07",
+        "internal_gap_count": 0,
+        "internal_gaps": ""
+      },
+      {
+        "symbol": "SOLUSDT",
+        "present_in_archive_root": true,
+        "month_count": 71,
+        "first_month": "2020-09",
+        "last_month": "2026-07",
+        "internal_gap_count": 0,
+        "internal_gaps": ""
+      },
+      {
+        "symbol": "BNBUSDT",
+        "present_in_archive_root": true,
+        "month_count": 78,
+        "first_month": "2020-02",
+        "last_month": "2026-07",
+        "internal_gap_count": 0,
+        "internal_gaps": ""
+      },
+      {
+        "symbol": "XRPUSDT",
+        "present_in_archive_root": true,
+        "month_count": 79,
+        "first_month": "2020-01",
+        "last_month": "2026-07",
+        "internal_gap_count": 0,
+        "internal_gaps": ""
+      }
+    ],
+    "samples": [
+      {
+        "key": "data/futures/um/monthly/fundingRate/BTCUSDT/BTCUSDT-fundingRate-2020-01.zip",
+        "zip_bytes": 825,
+        "member": "BTCUSDT-fundingRate-2020-01.csv",
+        "columns": [
+          "calc_time",
+          "funding_interval_hours",
+          "last_funding_rate"
+        ],
+        "rows": 93,
+        "time_column": "calc_time",
+        "rate_column": "last_funding_rate",
+        "first_timestamp": "2020-01-01 00:00:00+00:00",
+        "last_timestamp": "2020-01-31 16:00:00+00:00",
+        "median_interval_hours": 8.0,
+        "minimum_interval_hours": 7.999999444444445,
+        "maximum_interval_hours": 8.000000555555555,
+        "valid_rate_rows": 93,
+        "positive_rate_rows": 88,
+        "zero_rate_rows": 0,
+        "negative_rate_rows": 5,
+        "mean_rate_per_event": 0.00019566397849462368,
+        "median_rate_per_event": 0.0001,
+        "minimum_rate": -0.00012383,
+        "maximum_rate": 0.00108193,
+        "sample_rows": [
+          {
+            "calc_time": 1577836800000,
+            "funding_interval_hours": 8,
+            "last_funding_rate": -0.00012359
+          },
+          {
+            "calc_time": 1577865600000,
+            "funding_interval_hours": 8,
+            "last_funding_rate": -0.00012383
+          },
+          {
+            "calc_time": 1577894400000,
+            "funding_interval_hours": 8,
+            "last_funding_rate": -9.664e-05
+          },
+          {
+            "calc_time": 1577923200002,
+            "funding_interval_hours": 8,
+            "last_funding_rate": 3.662e-05
+          },
+          {
+            "calc_time": 1577952000000,
+            "funding_interval_hours": 8,
+            "last_funding_rate": 0.0001
+          }
+        ],
+        "symbol": "BTCUSDT",
+        "month": "2020-01"
+      },
+      {
+        "key": "data/futures/um/monthly/fundingRate/BTCUSDT/BTCUSDT-fundingRate-2023-04.zip",
+        "zip_bytes": 952,
+        "member": "BTCUSDT-fundingRate-2023-04.csv",
+        "columns": [
+          "calc_time",
+          "funding_interval_hours",
+          "last_funding_rate"
+        ],
+        "rows": 90,
+        "time_column": "calc_time",
+        "rate_column": "last_funding_rate",
+        "first_timestamp": "2023-04-01 00:00:00+00:00",
+        "last_timestamp": "2023-04-30 16:00:00.010000+00:00",
+        "median_interval_hours": 7.999999722222222,
+        "minimum_interval_hours": 7.999995277777778,
+        "maximum_interval_hours": 8.00000611111111,
+        "valid_rate_rows": 90,
+        "positive_rate_rows": 78,
+        "zero_rate_rows": 0,
+        "negative_rate_rows": 12,
+        "mean_rate_per_event": 5.014888888888889e-05,
+        "median_rate_per_event": 5.1655e-05,
+        "minimum_rate": -6.009e-05,
+        "maximum_rate": 0.0001,
+        "sample_rows": [
+          {
+            "calc_time": 1680307200000,
+            "funding_interval_hours": 8,
+            "last_funding_rate": 0.0001
+          },
+          {
+            "calc_time": 1680336000000,
+            "funding_interval_hours": 8,
+            "last_funding_rate": 0.0001
+          },
+          {
+            "calc_time": 1680364800018,
+            "funding_interval_hours": 8,
+            "last_funding_rate": 8.84e-05
+          },
+          {
+            "calc_time": 1680393600013,
+            "funding_interval_hours": 8,
+            "last_funding_rate": 4.527e-05
+          },
+          {
+            "calc_time": 1680422400014,
+            "funding_interval_hours": 8,
+            "last_funding_rate": 6.893e-05
+          }
+        ],
+        "symbol": "BTCUSDT",
+        "month": "2023-04"
+      },
+      {
+        "key": "data/futures/um/monthly/fundingRate/BTCUSDT/BTCUSDT-fundingRate-2026-07.zip",
+        "zip_bytes": 914,
+        "member": "BTCUSDT-fundingRate-2026-07.csv",
+        "columns": [
+          "calc_time",
+          "funding_interval_hours",
+          "last_funding_rate"
+        ],
+        "rows": 93,
+        "time_column": "calc_time",
+        "rate_column": "last_funding_rate",
+        "first_timestamp": "2026-07-01 00:00:00+00:00",
+        "last_timestamp": "2026-07-31 16:00:00+00:00",
+        "median_interval_hours": 8.0,
+        "minimum_interval_hours": 7.999997222222222,
+        "maximum_interval_hours": 8.000002777777777,
+        "valid_rate_rows": 93,
+        "positive_rate_rows": 92,
+        "zero_rate_rows": 0,
+        "negative_rate_rows": 1,
+        "mean_rate_per_event": 6.081806451612903e-05,
+        "median_rate_per_event": 6.102e-05,
+        "minimum_rate": -3.43e-06,
+        "maximum_rate": 0.0001,
+        "sample_rows": [
+          {
+            "calc_time": 1782864000000,
+            "funding_interval_hours": 8,
+            "last_funding_rate": 5.532e-05
+          },
+          {
+            "calc_time": 1782892800000,
+            "funding_interval_hours": 8,
+            "last_funding_rate": 1.853e-05
+          },
+          {
+            "calc_time": 1782921600000,
+            "funding_interval_hours": 8,
+            "last_funding_rate": 7.073e-05
+          },
+          {
+            "calc_time": 1782950400000,
+            "funding_interval_hours": 8,
+            "last_funding_rate": 8.001e-05
+          },
+          {
+            "calc_time": 1782979200000,
+            "funding_interval_hours": 8,
+            "last_funding_rate": 5.238e-05
+          }
+        ],
+        "symbol": "BTCUSDT",
+        "month": "2026-07"
+      },
+      {
+        "key": "data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2020-01.zip",
+        "zip_bytes": 795,
+        "member": "ETHUSDT-fundingRate-2020-01.csv",
+        "columns": [
+          "calc_time",
+          "funding_interval_hours",
+          "last_funding_rate"
+        ],
+        "rows": 93,
+        "time_column": "calc_time",
+        "rate_column": "last_funding_rate",
+        "first_timestamp": "2020-01-01 00:00:00+00:00",
+        "last_timestamp": "2020-01-31 16:00:00+00:00",
+        "median_interval_hours": 8.0,
+        "minimum_interval_hours": 7.999999444444445,
+        "maximum_interval_hours": 8.000000555555555,
+        "valid_rate_rows": 93,
+        "positive_rate_rows": 92,
+        "zero_rate_rows": 0,
+        "negative_rate_rows": 1,
+        "mean_rate_per_event": 0.00022581279569892473,
+        "median_rate_per_event": 0.0001,
+        "minimum_rate": -0.00016125,
+        "maximum_rate": 0.00132017,
+        "sample_rows": [
+          {
+            "calc_time": 1577836800000,
+            "funding_interval_hours": 8,
+            "last_funding_rate": 0.0001
+          },
+          {
+            "calc_time": 1577865600000,
+            "funding_interval_hours": 8,
+            "last_funding_rate": 7.354e-05
+          },
+          {
+            "calc_time": 1577894400000,
+            "funding_interval_hours": 8,
+            "last_funding_rate": -0.00016125
+          },
+          {
+            "calc_time": 1577923200002,
+            "funding_interval_hours": 8,
+            "last_funding_rate": 5.047e-05
+          },
+          {
+            "calc_time": 1577952000000,
+            "funding_interval_hours": 8,
+            "last_funding_rate": 0.0001
+          }
+        ],
+        "symbol": "ETHUSDT",
+        "month": "2020-01"
+      },
+      {
+        "key": "data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2023-04.zip",
+        "zip_bytes": 945,
+        "member": "ETHUSDT-fundingRate-2023-04.csv",
+        "columns": [
+          "calc_time",
+          "funding_interval_hours",
+          "last_funding_rate"
+        ],
+        "rows": 90,
+        "time_column": "calc_time",
+        "rate_column": "last_funding_rate",
+        "first_timestamp": "2023-04-01 00:00:00+00:00",
+        "last_timestamp": "2023-04-30 16:00:00.010000+00:00",
+        "median_interval_hours": 7.999999722222222,
+        "minimum_interval_hours": 7.999995277777778,
+        "maximum_interval_hours": 8.00000611111111,
+        "valid_rate_rows": 90,
+        "positive_rate_rows": 80,
+        "zero_rate_rows": 0,
+        "negative_rate_rows": 10,
+        "mean_rate_per_event": 5.463677777777778e-05,
+        "median_rate_per_event": 6.304499999999999e-05,
+        "minimum_rate": -6.991e-05,
+        "maximum_rate": 0.0001,
+        "sample_rows": [
+          {
+            "calc_time": 1680307200000,
+            "funding_interval_hours": 8,
+            "last_funding_rate": 0.0001
+          },
+          {
+            "calc_time": 1680336000000,
+            "funding_interval_hours": 8,
+            "last_funding_rate": 0.0001
+          },
+          {
+            "calc_time": 1680364800018,
+            "funding_interval_hours": 8,
+            "last_funding_rate": 6.306e-05
+          },
+          {
+            "calc_time": 1680393600013,
+            "funding_interval_hours": 8,
+            "last_funding_rate": 3.987e-05
+          },
+          {
+            "calc_time": 1680422400014,
+            "funding_interval_hours": 8,
+            "last_funding_rate": 5.018e-05
+          }
+        ],
+        "symbol": "ETHUSDT",
+        "month": "2023-04"
+      },
+      {
+        "key": "data/futures/um/monthly/fundingRate/ETHUSDT/ETHUSDT-fundingRate-2026-07.zip",
+        "zip_bytes": 941,
+        "member": "ETHUSDT-fundingRate-2026-07.csv",
+        "columns": [
+          "calc_time",
+          "funding_interval_hours",
+          "last_funding_rate"
+        ],
+        "rows": 93,
+        "time_column": "calc_time",
+        "rate_column": "last_funding_rate",
+        "first_timestamp": "2026-07-01 00:00:00+00:00",
+        "last_timestamp": "2026-07-31 16:00:00+00:00",
+        "median_interval_hours": 8.0,
+        "minimum_interval_hours": 7.999997222222222,
+        "maximum_interval_hours": 8.000002777777777,
+        "valid_rate_rows": 93,
+        "positive_rate_rows": 86,
+        "zero_rate_rows": 0,
+        "negative_rate_rows": 7,
+        "mean_rate_per_event": 3.74589247311828e-05,
+        "median_rate_per_event": 3.598e-05,
+        "minimum_rate": -3.657e-05,
+        "maximum_rate": 0.0001,
+        "sample_rows": [
+          {
+            "calc_time": 1782864000000,
+            "funding_interval_hours": 8,
+            "last_funding_rate": 6.151e-05
+          },
+          {
+            "calc_time": 1782892800000,
+            "funding_interval_hours": 8,
+            "last_funding_rate": 5.33e-05
+          },
+          {
+            "calc_time": 1782921600000,
+            "funding_interval_hours": 8,
+            "last_funding_rate": 2.077e-05
+          },
+          {
+            "calc_time": 1782950400000,
+            "funding_interval_hours": 8,
+            "last_funding_rate": 1.96e-05
+          },
+          {
+            "calc_time": 1782979200000,
+            "funding_interval_hours": 8,
+            "last_funding_rate": 5.02e-05
+          }
+        ],
+        "symbol": "ETHUSDT",
+        "month": "2026-07"
+      },
+      {
+        "key": "data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2020-09.zip",
+        "zip_bytes": 554,
+        "member": "SOLUSDT-fundingRate-2020-09.csv",
+        "columns": [
+          "calc_time",
+          "funding_interval_hours",
+          "last_funding_rate"
+        ],
+        "rows": 52,
+        "time_column": "calc_time",
+        "rate_column": "last_funding_rate",
+        "first_timestamp": "2020-09-13 16:00:00.004000+00:00",
+        "last_timestamp": "2020-09-30 16:00:00+00:00",
+        "median_interval_hours": 8.0,
+        "minimum_interval_hours": 7.9999875000000005,
+        "maximum_interval_hours": 8.00001,
+        "valid_rate_rows": 52,
+        "positive_rate_rows": 45,
+        "zero_rate_rows": 0,
+        "negative_rate_rows": 7,
+        "mean_rate_per_event": 5.5372884615384604e-05,
+        "median_rate_per_event": 0.0001,
+        "minimum_rate": -0.00044892,
+        "maximum_rate": 0.0001,
+        "sample_rows": [
+          {
+            "calc_time": 1600012800004,
+            "funding_interval_hours": 8,
+            "last_funding_rate": 0.0001
+          },
+          {
+            "calc_time": 1600041600003,
+            "funding_interval_hours": 8,
+            "last_funding_rate": 0.0001
+          },
+          {
+            "calc_time": 1600070400008,
+            "funding_interval_hours": 8,
+            "last_funding_rate": 0.0001
+          },
+          {
+            "calc_time": 1600099200000,
+            "funding_interval_hours": 8,
+            "last_funding_rate": 0.0001
+          },
+          {
+            "calc_time": 1600128000000,
+            "funding_interval_hours": 8,
+            "last_funding_rate": 0.0001
+          }
+        ],
+        "symbol": "SOLUSDT",
+        "month": "2020-09"
+      },
+      {
+        "key": "data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2023-08.zip",
+        "zip_bytes": 897,
+        "member": "SOLUSDT-fundingRate-2023-08.csv",
+        "columns": [
+          "calc_time",
+          "funding_interval_hours",
+          "last_funding_rate"
+        ],
+        "rows": 93,
+        "time_column": "calc_time",
+        "rate_column": "last_funding_rate",
+        "first_timestamp": "2023-08-01 00:00:00+00:00",
+        "last_timestamp": "2023-08-31 16:00:00+00:00",
+        "median_interval_hours": 8.0,
+        "minimum_interval_hours": 7.999998611111111,
+        "maximum_interval_hours": 8.00000111111111,
+        "valid_rate_rows": 93,
+        "positive_rate_rows": 59,
+        "zero_rate_rows": 0,
+        "negative_rate_rows": 34,
+        "mean_rate_per_event": 8.439569892473117e-06,
+        "median_rate_per_event": 3.019e-05,
+        "minimum_rate": -0.00040362,
+        "maximum_rate": 0.0001,
+        "sample_rows": [
+          {
+            "calc_time": 1690848000000,
+            "funding_interval_hours": 8,
+            "last_funding_rate": 0.0001
+          },
+          {
+            "calc_time": 1690876800000,
+            "funding_interval_hours": 8,
+            "last_funding_rate": 7.943e-05
+          },
+          {
+            "calc_time": 1690905600000,
+            "funding_interval_hours": 8,
+            "last_funding_rate": 6.97e-05
+          },
+          {
+            "calc_time": 1690934400000,
+            "funding_interval_hours": 8,
+            "last_funding_rate": 1.932e-05
+          },
+          {
+            "calc_time": 1690963200000,
+            "funding_interval_hours": 8,
+            "last_funding_rate": 1.057e-05
+          }
+        ],
+        "symbol": "SOLUSDT",
+        "month": "2023-08"
+      },
+      {
+        "key": "data/futures/um/monthly/fundingRate/SOLUSDT/SOLUSDT-fundingRate-2026-07.zip",
+        "zip_bytes": 964,
+        "member": "SOLUSDT-fundingRate-2026-07.csv",
+        "columns": [
+          "calc_time",
+          "funding_interval_hours",
+          "last_funding_rate"
+        ],
+        "rows": 93,
+        "time_column": "calc_time",
+        "rate_column": "last_funding_rate",
+        "first_timestamp": "2026-07-01 00:00:00+00:00",
+        "last_timestamp": "2026-07-31 16:00:00+00:00",
+        "median_interval_hours": 8.0,
+        "minimum_interval_hours": 7.999997222222222,
+        "maximum_interval_hours": 8.000002777777777,
+        "valid_rate_rows": 93,
+        "positive_rate_rows": 65,
+        "zero_rate_rows": 0,
+        "negative_rate_rows": 28,
+        "mean_rate_per_event": 2.0693870967741932e-05,
+        "median_rate_per_event": 2.682e-05,
+        "minimum_rate": -0.00013328,
+        "maximum_rate": 0.0001,
+        "sample_rows": [
+          {
+            "calc_time": 1782864000000,
+            "funding_interval_hours": 8,
+            "last_funding_rate": 0.0001
+          },
+          {
+            "calc_time": 1782892800000,
+            "funding_interval_hours": 8,
+            "last_funding_rate": 0.0001
+          },
+          {
+            "calc_time": 1782921600000,
+            "funding_interval_hours": 8,
+            "last_funding_rate": 6.848e-05
+          },
+          {
+            "calc_time": 1782950400000,
+            "funding_interval_hours": 8,
+            "last_funding_rate": 2.682e-05
+          },
+          {
+            "calc_time": 1782979200000,
+            "funding_interval_hours": 8,
+            "last_funding_rate": -2.441e-05
+          }
+        ],
+        "symbol": "SOLUSDT",
+        "month": "2026-07"
+      },
+      {
+        "key": "data/futures/um/monthly/fundingRate/BNBUSDT/BNBUSDT-fundingRate-2020-02.zip",
+        "zip_bytes": 695,
+        "member": "BNBUSDT-fundingRate-2020-02.csv",
+        "columns": [
+          "calc_time",
+          "funding_interval_hours",
+          "last_funding_rate"
+        ],
+        "rows": 59,
+        "time_column": "calc_time",
+        "rate_column": "last_funding_rate",
+        "first_timestamp": "2020-02-10 08:00:00+00:00",
+        "last_timestamp": "2020-02-29 16:00:00+00:00",
+        "median_interval_hours": 8.0,
+        "minimum_interval_hours": 7.999995833333333,
+        "maximum_interval_hours": 8.000004166666667,
+        "valid_rate_rows": 59,
+        "positive_rate_rows": 41,
+        "zero_rate_rows": 18,
+        "negative_rate_rows": 0,
+        "mean_rate_per_event": 0.0006435362711864407,
+        "median_rate_per_event": 0.0003025,
+        "minimum_rate": 0.0,
+        "maximum_rate": 0.00339783,
+        "sample_rows": [
+          {
+            "calc_time": 1581321600000,
+            "funding_interval_hours": 8,
+            "last_funding_rate": 0.0
+          },
+          {
+            "calc_time": 1581350400009,
+            "funding_interval_hours": 8,
+            "last_funding_rate": 0.00304635
+          },
+          {
+            "calc_time": 1581379200000,
+            "funding_interval_hours": 8,
+            "last_funding_rate": 0.00161571
+          },
+          {
+            "calc_time": 1581408000000,
+            "funding_interval_hours": 8,
+            "last_funding_rate": 0.00261274
+          },
+          {
+            "calc_time": 1581436800000,
+            "funding_interval_hours": 8,
+            "last_funding_rate": 0.00155591
+          }
+        ],
+        "symbol": "BNBUSDT",
+        "month": "2020-02"
+      },
+      {
+        "key": "data/futures/um/monthly/fundingRate/BNBUSDT/BNBUSDT-fundingRate-2023-05.zip",
+        "zip_bytes": 905,
+        "member": "BNBUSDT-fundingRate-2023-05.csv",
+        "columns": [
+          "calc_time",
+          "funding_interval_hours",
+          "last_funding_rate"
+        ],
+        "rows": 93,
+        "time_column": "calc_time",
+        "rate_column": "last_funding_rate",
+        "first_timestamp": "2023-05-01 00:00:00.004000+00:00",
+        "last_timestamp": "2023-05-31 16:00:00+00:00",
+        "median_interval_hours": 8.0,
+        "minimum_interval_hours": 7.999992222222223,
+        "maximum_interval_hours": 8.000007222222223,
+        "valid_rate_rows": 93,
+        "positive_rate_rows": 6,
+        "zero_rate_rows": 50,
+        "negative_rate_rows": 37,
+        "mean_rate_per_event": -0.00013189494623655913,
+        "median_rate_per_event": 0.0,
+        "minimum_rate": -0.00149947,
+        "maximum_rate": 0.00020674,
+        "sample_rows": [
+          {
+            "calc_time": 1682899200004,
+            "funding_interval_hours": 8,
+            "last_funding_rate": -0.00105825
+          },
+          {
+            "calc_time": 1682928000008,
+            "funding_interval_hours": 8,
+            "last_funding_rate": -0.00094339
+          },
+          {
+            "calc_time": 1682956800014,
+            "funding_interval_hours": 8,
+            "last_funding_rate": -0.00120421
+          },
+          {
+            "calc_time": 1682985600015,
+            "funding_interval_hours": 8,
+            "last_funding_rate": -0.00149947
+          },
+          {
+            "calc_time": 1683014400018,
+            "funding_interval_hours": 8,
+            "last_funding_rate": -0.00126006
+          }
+        ],
+        "symbol": "BNBUSDT",
+        "month": "2023-05"
+      },
+      {
+        "key": "data/futures/um/monthly/fundingRate/BNBUSDT/BNBUSDT-fundingRate-2026-07.zip",
+        "zip_bytes": 937,
+        "member": "BNBUSDT-fundingRate-2026-07.csv",
+        "columns": [
+          "calc_time",
+          "funding_interval_hours",
+          "last_funding_rate"
+        ],
+        "rows": 93,
+        "time_column": "calc_time",
+        "rate_column": "last_funding_rate",
+        "first_timestamp": "2026-07-01 00:00:00+00:00",
+        "last_timestamp": "2026-07-31 16:00:00+00:00",
+        "median_interval_hours": 8.0,
+        "minimum_interval_hours": 7.999997222222222,
+        "maximum_interval_hours": 8.000002777777777,
+        "valid_rate_rows": 93,
+        "positive_rate_rows": 79,
+        "zero_rate_rows": 14,
+        "negative_rate_rows": 0,
+        "mean_rate_per_event": 5.736397849462366e-05,
+        "median_rate_per_event": 5.254e-05,
+        "minimum_rate": 0.0,
+        "maximum_rate": 0.00019594,
+        "sample_rows": [
+          {
+            "calc_time": 1782864000000,
+            "funding_interval_hours": 8,
+            "last_funding_rate": 8.374e-05
+          },
+          {
+            "calc_time": 1782892800000,
+            "funding_interval_hours": 8,
+            "last_funding_rate": 1.081e-05
+          },
+          {
+            "calc_time": 1782921600000,
+            "funding_interval_hours": 8,
+            "last_funding_rate": 0.0
+          },
+          {
+            "calc_time": 1782950400000,
+            "funding_interval_hours": 8,
+            "last_funding_rate": 5.254e-05
+          },
+          {
+            "calc_time": 1782979200000,
+            "funding_interval_hours": 8,
+            "last_funding_rate": 4.503e-05
+          }
+        ],
+        "symbol": "BNBUSDT",
+        "month": "2026-07"
+      },
+      {
+        "key": "data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2020-01.zip",
+        "zip_bytes": 723,
+        "member": "XRPUSDT-fundingRate-2020-01.csv",
+        "columns": [
+          "calc_time",
+          "funding_interval_hours",
+          "last_funding_rate"
+        ],
+        "rows": 77,
+        "time_column": "calc_time",
+        "rate_column": "last_funding_rate",
+        "first_timestamp": "2020-01-06 08:00:00+00:00",
+        "last_timestamp": "2020-01-31 16:00:00+00:00",
+        "median_interval_hours": 8.0,
+        "minimum_interval_hours": 7.999999444444445,
+        "maximum_interval_hours": 8.000000555555555,
+        "valid_rate_rows": 77,
+        "positive_rate_rows": 77,
+        "zero_rate_rows": 0,
+        "negative_rate_rows": 0,
+        "mean_rate_per_event": 0.0005148167532467532,
+        "median_rate_per_event": 0.0001,
+        "minimum_rate": 0.0001,
+        "maximum_rate": 0.00487889,
+        "sample_rows": [
+          {
+            "calc_time": 1578297600000,
+            "funding_interval_hours": 8,
+            "last_funding_rate": 0.0001
+          },
+          {
+            "calc_time": 1578326400000,
+            "funding_interval_hours": 8,
+            "last_funding_rate": 0.00487889
+          },
+          {
+            "calc_time": 1578355200000,
+            "funding_interval_hours": 8,
+            "last_funding_rate": 0.00180851
+          },
+          {
+            "calc_time": 1578384000001,
+            "funding_interval_hours": 8,
+            "last_funding_rate": 0.00075005
+          },
+          {
+            "calc_time": 1578412800000,
+            "funding_interval_hours": 8,
+            "last_funding_rate": 0.00022266
+          }
+        ],
+        "symbol": "XRPUSDT",
+        "month": "2020-01"
+      },
+      {
+        "key": "data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2023-04.zip",
+        "zip_bytes": 926,
+        "member": "XRPUSDT-fundingRate-2023-04.csv",
+        "columns": [
+          "calc_time",
+          "funding_interval_hours",
+          "last_funding_rate"
+        ],
+        "rows": 90,
+        "time_column": "calc_time",
+        "rate_column": "last_funding_rate",
+        "first_timestamp": "2023-04-01 00:00:00+00:00",
+        "last_timestamp": "2023-04-30 16:00:00.010000+00:00",
+        "median_interval_hours": 7.999999722222222,
+        "minimum_interval_hours": 7.999995277777778,
+        "maximum_interval_hours": 8.00000611111111,
+        "valid_rate_rows": 90,
+        "positive_rate_rows": 61,
+        "zero_rate_rows": 0,
+        "negative_rate_rows": 29,
+        "mean_rate_per_event": 1.7725111111111113e-05,
+        "median_rate_per_event": 5.6535e-05,
+        "minimum_rate": -0.00045241,
+        "maximum_rate": 0.0001,
+        "sample_rows": [
+          {
+            "calc_time": 1680307200000,
+            "funding_interval_hours": 8,
+            "last_funding_rate": 8.752e-05
+          },
+          {
+            "calc_time": 1680336000000,
+            "funding_interval_hours": 8,
+            "last_funding_rate": -1.213e-05
+          },
+          {
+            "calc_time": 1680364800018,
+            "funding_interval_hours": 8,
+            "last_funding_rate": 1.171e-05
+          },
+          {
+            "calc_time": 1680393600013,
+            "funding_interval_hours": 8,
+            "last_funding_rate": 1.652e-05
+          },
+          {
+            "calc_time": 1680422400014,
+            "funding_interval_hours": 8,
+            "last_funding_rate": -5.317e-05
+          }
+        ],
+        "symbol": "XRPUSDT",
+        "month": "2023-04"
+      },
+      {
+        "key": "data/futures/um/monthly/fundingRate/XRPUSDT/XRPUSDT-fundingRate-2026-07.zip",
+        "zip_bytes": 972,
+        "member": "XRPUSDT-fundingRate-2026-07.csv",
+        "columns": [
+          "calc_time",
+          "funding_interval_hours",
+          "last_funding_rate"
+        ],
+        "rows": 93,
+        "time_column": "calc_time",
+        "rate_column": "last_funding_rate",
+        "first_timestamp": "2026-07-01 00:00:00+00:00",
+        "last_timestamp": "2026-07-31 16:00:00+00:00",
+        "median_interval_hours": 8.0,
+        "minimum_interval_hours": 7.999997222222222,
+        "maximum_interval_hours": 8.000002777777777,
+        "valid_rate_rows": 93,
+        "positive_rate_rows": 64,
+        "zero_rate_rows": 0,
+        "negative_rate_rows": 29,
+        "mean_rate_per_event": 1.757763440860215e-05,
+        "median_rate_per_event": 1.333e-05,
+        "minimum_rate": -0.00016009,
+        "maximum_rate": 0.0001,
+        "sample_rows": [
+          {
+            "calc_time": 1782864000000,
+            "funding_interval_hours": 8,
+            "last_funding_rate": 3.247e-05
+          },
+          {
+            "calc_time": 1782892800000,
+            "funding_interval_hours": 8,
+            "last_funding_rate": 4.61e-06
+          },
+          {
+            "calc_time": 1782921600000,
+            "funding_interval_hours": 8,
+            "last_funding_rate": 5.278e-05
+          },
+          {
+            "calc_time": 1782950400000,
+            "funding_interval_hours": 8,
+            "last_funding_rate": -1.531e-05
+          },
+          {
+            "calc_time": 1782979200000,
+            "funding_interval_hours": 8,
+            "last_funding_rate": 2.495e-05
+          }
+        ],
+        "symbol": "XRPUSDT",
+        "month": "2026-07"
+      }
+    ]
+  },
+  "hyperliquid": {
+    "endpoint": "https://api.hyperliquid.xyz/info",
+    "request_type": "fundingHistory",
+    "early_probe": [
+      "2023-05-01 00:00:00+00:00",
+      "2023-06-01 00:00:00+00:00"
+    ],
+    "recent_probe": [
+      "2026-07-25 00:00:00+00:00",
+      "2026-08-03 23:59:59.999000+00:00"
+    ],
+    "all_recent_targets_parseable": true,
+    "diagnostics": [
+      {
+        "coin": "BTC",
+        "window": "early",
+        "rows": 60,
+        "columns": [
+          "coin",
+          "fundingRate",
+          "premium",
+          "time"
+        ],
+        "sample_rows": [
+          {
+            "coin": "BTC",
+            "fundingRate": "-0.0006133368",
+            "premium": "-0.0009133368",
+            "time": 1683849600048
+          },
+          {
+            "coin": "BTC",
+            "fundingRate": "-0.000745027",
+            "premium": "-0.001045027",
+            "time": 1683878400388
+          },
+          {
+            "coin": "BTC",
+            "fundingRate": "-0.0008179771",
+            "premium": "-0.0011179771",
+            "time": 1683907200253
+          },
+          {
+            "coin": "BTC",
+            "fundingRate": "-0.0004403551",
+            "premium": "-0.0007403551",
+            "time": 1683936000278
+          },
+          {
+            "coin": "BTC",
+            "fundingRate": "-0.0001034319",
+            "premium": "-0.0004034319",
+            "time": 1683964800255
+          }
+        ],
+        "time_column": "time",
+        "rate_column": "fundingRate",
+        "first_timestamp": "2023-05-12 00:00:00.048000+00:00",
+        "last_timestamp": "2023-05-31 16:00:00.323000+00:00",
+        "median_interval_hours": 7.999999722222222,
+        "minimum_interval_hours": 7.601955277777778,
+        "maximum_interval_hours": 8.398060555555556,
+        "positive_rate_rows": 15,
+        "zero_rate_rows": 0,
+        "negative_rate_rows": 45,
+        "mean_rate_per_event": -0.00011261009166666666,
+        "minimum_rate": -0.0008179771,
+        "maximum_rate": 0.0001
+      },
+      {
+        "coin": "BTC",
+        "window": "recent",
+        "rows": 240,
+        "columns": [
+          "coin",
+          "fundingRate",
+          "premium",
+          "time"
+        ],
+        "sample_rows": [
+          {
+            "coin": "BTC",
+            "fundingRate": "0.0000125",
+            "premium": "-0.0003305286",
+            "time": 1784937600066
+          },
+          {
+            "coin": "BTC",
+            "fundingRate": "0.0000125",
+            "premium": "-0.0003338493",
+            "time": 1784941200036
+          },
+          {
+            "coin": "BTC",
+            "fundingRate": "0.0000125",
+            "premium": "-0.0003393406",
+            "time": 1784944800050
+          },
+          {
+            "coin": "BTC",
+            "fundingRate": "0.000010696",
+            "premium": "-0.000414432",
+            "time": 1784948400016
+          },
+          {
+            "coin": "BTC",
+            "fundingRate": "0.0000102798",
+            "premium": "-0.0004177615",
+            "time": 1784952000036
+          }
+        ],
+        "time_column": "time",
+        "rate_column": "fundingRate",
+        "first_timestamp": "2026-07-25 00:00:00.066000+00:00",
+        "last_timestamp": "2026-08-03 23:00:00.067000+00:00",
+        "median_interval_hours": 1.0,
+        "minimum_interval_hours": 0.9999702777777778,
+        "maximum_interval_hours": 1.0000341666666668,
+        "positive_rate_rows": 223,
+        "zero_rate_rows": 0,
+        "negative_rate_rows": 17,
+        "mean_rate_per_event": 8.607372916666667e-06,
+        "minimum_rate": -8.8182e-06,
+        "maximum_rate": 1.25e-05
+      },
+      {
+        "coin": "ETH",
+        "window": "early",
+        "rows": 60,
+        "columns": [
+          "coin",
+          "fundingRate",
+          "premium",
+          "time"
+        ],
+        "sample_rows": [
+          {
+            "coin": "ETH",
+            "fundingRate": "0.0000863563",
+            "premium": "-0.0002136437",
+            "time": 1683849600048
+          },
+          {
+            "coin": "ETH",
+            "fundingRate": "0.0000799327",
+            "premium": "-0.0002200673",
+            "time": 1683878400388
+          },
+          {
+            "coin": "ETH",
+            "fundingRate": "0.0001",
+            "premium": "-0.0001401292",
+            "time": 1683907200253
+          },
+          {
+            "coin": "ETH",
+            "fundingRate": "0.0001",
+            "premium": "0.000004141",
+            "time": 1683936000278
+          },
+          {
+            "coin": "ETH",
+            "fundingRate": "0.0001",
+            "premium": "0.0001616548",
+            "time": 1683964800255
+          }
+        ],
+        "time_column": "time",
+        "rate_column": "fundingRate",
+        "first_timestamp": "2023-05-12 00:00:00.048000+00:00",
+        "last_timestamp": "2023-05-31 16:00:00.323000+00:00",
+        "median_interval_hours": 7.999999722222222,
+        "minimum_interval_hours": 7.601955277777778,
+        "maximum_interval_hours": 8.398060555555556,
+        "positive_rate_rows": 26,
+        "zero_rate_rows": 0,
+        "negative_rate_rows": 34,
+        "mean_rate_per_event": -0.00014508738666666666,
+        "minimum_rate": -0.0007369307,
+        "maximum_rate": 0.0001
+      },
+      {
+        "coin": "ETH",
+        "window": "recent",
+        "rows": 240,
+        "columns": [
+          "coin",
+          "fundingRate",
+          "premium",
+          "time"
+        ],
+        "sample_rows": [
+          {
+            "coin": "ETH",
+            "fundingRate": "0.0000086357",
+            "premium": "-0.0004309143",
+            "time": 1784937600066
+          },
+          {
+            "coin": "ETH",
+            "fundingRate": "0.0000047874",
+            "premium": "-0.0004617006",
+            "time": 1784941200036
+          },
+          {
+            "coin": "ETH",
+            "fundingRate": "0.0000028746",
+            "premium": "-0.0004770031",
+            "time": 1784944800050
+          },
+          {
+            "coin": "ETH",
+            "fundingRate": "0.0000027752",
+            "premium": "-0.0004777987",
+            "time": 1784948400016
+          },
+          {
+            "coin": "ETH",
+            "fundingRate": "0.0000042245",
+            "premium": "-0.0004662044",
+            "time": 1784952000036
+          }
+        ],
+        "time_column": "time",
+        "rate_column": "fundingRate",
+        "first_timestamp": "2026-07-25 00:00:00.066000+00:00",
+        "last_timestamp": "2026-08-03 23:00:00.067000+00:00",
+        "median_interval_hours": 1.0,
+        "minimum_interval_hours": 0.9999702777777778,
+        "maximum_interval_hours": 1.0000341666666668,
+        "positive_rate_rows": 206,
+        "zero_rate_rows": 0,
+        "negative_rate_rows": 34,
+        "mean_rate_per_event": 6.869172083333334e-06,
+        "minimum_rate": -9.9015e-06,
+        "maximum_rate": 1.25e-05
+      },
+      {
+        "coin": "SOL",
+        "window": "early",
+        "rows": 60,
+        "columns": [
+          "coin",
+          "fundingRate",
+          "premium",
+          "time"
+        ],
+        "sample_rows": [
+          {
+            "coin": "SOL",
+            "fundingRate": "-0.0002365296",
+            "premium": "-0.0005365296",
+            "time": 1683849600048
+          },
+          {
+            "coin": "SOL",
+            "fundingRate": "-0.0002071632",
+            "premium": "-0.0005071632",
+            "time": 1683878400388
+          },
+          {
+            "coin": "SOL",
+            "fundingRate": "-0.0002149873",
+            "premium": "-0.0005149873",
+            "time": 1683907200253
+          },
+          {
+            "coin": "SOL",
+            "fundingRate": "-0.0001690189",
+            "premium": "-0.0004690189",
+            "time": 1683936000278
+          },
+          {
+            "coin": "SOL",
+            "fundingRate": "-0.0001689846",
+            "premium": "-0.0004689846",
+            "time": 1683964800255
+          }
+        ],
+        "time_column": "time",
+        "rate_column": "fundingRate",
+        "first_timestamp": "2023-05-12 00:00:00.048000+00:00",
+        "last_timestamp": "2023-05-31 16:00:00.323000+00:00",
+        "median_interval_hours": 7.999999722222222,
+        "minimum_interval_hours": 7.601955277777778,
+        "maximum_interval_hours": 8.398060555555556,
+        "positive_rate_rows": 13,
+        "zero_rate_rows": 0,
+        "negative_rate_rows": 47,
+        "mean_rate_per_event": -9.310046833333335e-05,
+        "minimum_rate": -0.0002933989,
+        "maximum_rate": 0.0001
+      },
+      {
+        "coin": "SOL",
+        "window": "recent",
+        "rows": 240,
+        "columns": [
+          "coin",
+          "fundingRate",
+          "premium",
+          "time"
+        ],
+        "sample_rows": [
+          {
+            "coin": "SOL",
+            "fundingRate": "-0.0000095331",
+            "premium": "-0.0005762651",
+            "time": 1784937600066
+          },
+          {
+            "coin": "SOL",
+            "fundingRate": "-0.0000028549",
+            "premium": "-0.0005228392",
+            "time": 1784941200036
+          },
+          {
+            "coin": "SOL",
+            "fundingRate": "0.0000084016",
+            "premium": "-0.0004327876",
+            "time": 1784944800050
+          },
+          {
+            "coin": "SOL",
+            "fundingRate": "-0.0000006563",
+            "premium": "-0.0005052502",
+            "time": 1784948400016
+          },
+          {
+            "coin": "SOL",
+            "fundingRate": "-0.0000022603",
+            "premium": "-0.0005180823",
+            "time": 1784952000036
+          }
+        ],
+        "time_column": "time",
+        "rate_column": "fundingRate",
+        "first_timestamp": "2026-07-25 00:00:00.066000+00:00",
+        "last_timestamp": "2026-08-03 23:00:00.067000+00:00",
+        "median_interval_hours": 1.0,
+        "minimum_interval_hours": 0.9999702777777778,
+        "maximum_interval_hours": 1.0000341666666668,
+        "positive_rate_rows": 160,
+        "zero_rate_rows": 0,
+        "negative_rate_rows": 80,
+        "mean_rate_per_event": 2.49037375e-06,
+        "minimum_rate": -3.78524e-05,
+        "maximum_rate": 1.25e-05
+      },
+      {
+        "coin": "BNB",
+        "window": "early",
+        "rows": 60,
+        "columns": [
+          "coin",
+          "fundingRate",
+          "premium",
+          "time"
+        ],
+        "sample_rows": [
+          {
+            "coin": "BNB",
+            "fundingRate": "-0.0006517008",
+            "premium": "-0.0009517008",
+            "time": 1683849600048
+          },
+          {
+            "coin": "BNB",
+            "fundingRate": "-0.0002713743",
+            "premium": "-0.0005713743",
+            "time": 1683878400388
+          },
+          {
+            "coin": "BNB",
+            "fundingRate": "-0.0003156078",
+            "premium": "-0.0006156078",
+            "time": 1683907200253
+          },
+          {
+            "coin": "BNB",
+            "fundingRate": "-0.0003122939",
+            "premium": "-0.0006122939",
+            "time": 1683936000278
+          },
+          {
+            "coin": "BNB",
+            "fundingRate": "-0.0001912566",
+            "premium": "-0.0004912566",
+            "time": 1683964800255
+          }
+        ],
+        "time_column": "time",
+        "rate_column": "fundingRate",
+        "first_timestamp": "2023-05-12 00:00:00.048000+00:00",
+        "last_timestamp": "2023-05-31 16:00:00.323000+00:00",
+        "median_interval_hours": 7.999999722222222,
+        "minimum_interval_hours": 7.601955277777778,
+        "maximum_interval_hours": 8.398060555555556,
+        "positive_rate_rows": 37,
+        "zero_rate_rows": 0,
+        "negative_rate_rows": 23,
+        "mean_rate_per_event": 3.703124999999999e-06,
+        "minimum_rate": -0.0006517008,
+        "maximum_rate": 0.0004751657
+      },
+      {
+        "coin": "BNB",
+        "window": "recent",
+        "rows": 240,
+        "columns": [
+          "coin",
+          "fundingRate",
+          "premium",
+          "time"
+        ],
+        "sample_rows": [
+          {
+            "coin": "BNB",
+            "fundingRate": "0.0000009238",
+            "premium": "-0.0004926099",
+            "time": 1784937600066
+          },
+          {
+            "coin": "BNB",
+            "fundingRate": "-0.0000032086",
+            "premium": "-0.0005256691",
+            "time": 1784941200036
+          },
+          {
+            "coin": "BNB",
+            "fundingRate": "0.0000005718",
+            "premium": "-0.0004954252",
+            "time": 1784944800050
+          },
+          {
+            "coin": "BNB",
+            "fundingRate": "0.0000000693",
+            "premium": "-0.0004994453",
+            "time": 1784948400016
+          },
+          {
+            "coin": "BNB",
+            "fundingRate": "-0.0000026354",
+            "premium": "-0.0005210835",
+            "time": 1784952000036
+          }
+        ],
+        "time_column": "time",
+        "rate_column": "fundingRate",
+        "first_timestamp": "2026-07-25 00:00:00.066000+00:00",
+        "last_timestamp": "2026-08-03 23:00:00.067000+00:00",
+        "median_interval_hours": 1.0,
+        "minimum_interval_hours": 0.9999702777777778,
+        "maximum_interval_hours": 1.0000341666666668,
+        "positive_rate_rows": 221,
+        "zero_rate_rows": 0,
+        "negative_rate_rows": 19,
+        "mean_rate_per_event": 9.793303333333335e-06,
+        "minimum_rate": -1.90202e-05,
+        "maximum_rate": 1.25e-05
+      },
+      {
+        "coin": "XRP",
+        "window": "early",
+        "rows": 0,
+        "columns": [],
+        "sample_rows": [],
+        "first_timestamp": null,
+        "last_timestamp": null,
+        "median_interval_hours": null,
+        "positive_rate_rows": 0,
+        "zero_rate_rows": 0,
+        "negative_rate_rows": 0
+      },
+      {
+        "coin": "XRP",
+        "window": "recent",
+        "rows": 240,
+        "columns": [
+          "coin",
+          "fundingRate",
+          "premium",
+          "time"
+        ],
+        "sample_rows": [
+          {
+            "coin": "XRP",
+            "fundingRate": "-0.0000031864",
+            "premium": "-0.0005254912",
+            "time": 1784937600066
+          },
+          {
+            "coin": "XRP",
+            "fundingRate": "-0.0000004629",
+            "premium": "-0.0005037034",
+            "time": 1784941200036
+          },
+          {
+            "coin": "XRP",
+            "fundingRate": "0.0000016527",
+            "premium": "-0.0004867784",
+            "time": 1784944800050
+          },
+          {
+            "coin": "XRP",
+            "fundingRate": "0.000000504",
+            "premium": "-0.0004959678",
+            "time": 1784948400016
+          },
+          {
+            "coin": "XRP",
+            "fundingRate": "-0.0000005429",
+            "premium": "-0.0005043433",
+            "time": 1784952000036
+          }
+        ],
+        "time_column": "time",
+        "rate_column": "fundingRate",
+        "first_timestamp": "2026-07-25 00:00:00.066000+00:00",
+        "last_timestamp": "2026-08-03 23:00:00.067000+00:00",
+        "median_interval_hours": 1.0,
+        "minimum_interval_hours": 0.9999702777777778,
+        "maximum_interval_hours": 1.0000341666666668,
+        "positive_rate_rows": 153,
+        "zero_rate_rows": 0,
+        "negative_rate_rows": 87,
+        "mean_rate_per_event": 2.4612175e-06,
+        "minimum_rate": -3.02457e-05,
+        "maximum_rate": 1.25e-05
+      }
+    ]
+  },
+  "success": {
+    "binance_all_targets_present": true,
+    "binance_all_targets_have_parseable_samples": true,
+    "hyperliquid_all_recent_targets_parseable": true
+  },
+  "decision_rule": "No PNL or routing rule is authorized by this audit. A later experiment may use Binance as a clearly labeled long-history proxy and Hyperliquid as the native venue source only after coverage, sign and interval evidence are reviewed."
+}
