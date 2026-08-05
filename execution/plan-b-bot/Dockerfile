@@ -4,4 +4,5 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 COPY beta_bot ./beta_bot
 COPY run_once.py .
+VOLUME ["/data"]
 CMD ["python", "run_once.py"]
