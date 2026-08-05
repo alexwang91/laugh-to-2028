@@ -12,9 +12,13 @@ The **<$1,000 account value** and **$500 UBTC probe notional** below are project
 
 Use a dedicated new account or subaccount with total value below **$1,000**. The probe spot notional is capped at **$500**. Keep all non-probe perp positions at zero.
 
+The account-value limit is a manual precondition. Under Portfolio Margin, Hyperliquid documents the spot clearinghouse state as the authoritative unified balance/hold source rather than individual perp-DEX balance summaries, so the experiment does not invent an account-value formula from non-authoritative fields.
+
 The account address is supplied to the script through `HL_PM_PROBE_USER`. The output stores only a SHA-256 fingerprint of the address, not the full address. Never put a private key in this secret or in the research workflow.
 
 ## Four frozen snapshots
+
+Portfolio Margin mode must remain enabled for **all four snapshots**. Changing abstraction mode invalidates the probe.
 
 ### 1. `cash`
 
@@ -24,7 +28,7 @@ Requirements:
 - Portfolio Margin enabled in spot state;
 - no BTC perp position;
 - no other perp positions;
-- no probe UBTC balance above the fixed $1 residual-value tolerance.
+- no probe UBTC balance above the fixed **$1 residual-value tolerance**.
 
 Capture:
 
@@ -43,7 +47,9 @@ Capture `spot.json` with the same command and `--label spot`.
 
 ### 3. `matched`
 
-Open a BTC short-perp sized to match the existing UBTC economic notional. The frozen comparison tolerance is **2%**. Do not add any other position.
+Keep the **same UBTC quantity** from the spot-only snapshot, with a fixed maximum quantity change of **0.1%**. Then open a BTC short-perp sized to match the existing UBTC economic notional. The frozen spot/short notional mismatch tolerance is **2%**. Do not add any other position.
+
+This quantity invariant is methodological: the only intended state change from `spot` to `matched` is addition of the BTC short leg.
 
 Capture `matched.json`.
 
@@ -72,15 +78,19 @@ python research/carry/run_carry_pm_0035.py compare \
 The experiment measures the incremental maintenance consumption of adding the matched BTC short after the UBTC spot is already present:
 
 ```text
+raw_available_change_usdc
+  = spot.tokenToAvailableAfterMaintenance[USDC]
+    - matched.tokenToAvailableAfterMaintenance[USDC]
+
 incremental_maintenance_consumption_usdc
-  = max(0,
-      spot.tokenToAvailableAfterMaintenance[USDC]
-      - matched.tokenToAvailableAfterMaintenance[USDC])
+  = max(0, raw_available_change_usdc)
 
 incremental_maintenance_fraction
   = incremental_maintenance_consumption_usdc
     / matched_btc_short_notional
 ```
+
+A negative raw change is retained in the evidence because it would mean the matched hedge increased available capacity; the structural capital factor is floored at zero rather than converting such a hedge benefit into negative capital consumption.
 
 The first valid probe passes the capital-efficiency gate only when this fraction is **<= 25%**, while the matched account's `portfolioMarginRatio` is below **0.50** and all other frozen structural checks pass.
 
@@ -96,7 +106,7 @@ If the first valid probe fails or returns an inconclusive state:
 
 - retain the result;
 - diagnose API/state/account-isolation defects only;
-- do not retune probe notional, match tolerance, PM-ratio threshold, maintenance-fraction threshold, closed-dust threshold, or account structure from that outcome;
+- do not retune probe notional, 0.1% spot-quantity invariant, 2% match tolerance, PM-ratio threshold, maintenance-fraction threshold, dust thresholds, or account structure from that outcome;
 - do not run a BRRK+carry stack experiment.
 
 A PASS authorizes only a separately preregistered PM-aware stack accounting experiment using the observed capital factor. It does not authorize production or leverage.
