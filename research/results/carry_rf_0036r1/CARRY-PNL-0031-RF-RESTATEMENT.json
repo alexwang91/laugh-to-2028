@@ -58,13 +58,62 @@
     "arithmetic_excess_sharpe_daily_mean_diagnostic": -0.2053599796127741
   },
   "annual_carry_vs_cash": [
-    {"year": 2020, "start": "2020-09-15", "end": "2020-12-31", "strategy_return": 0.008305214669825034, "cash_return": 0.00027757240173209574, "excess_percentage_points": 0.8027642268092938},
-    {"year": 2021, "start": "2021-01-01", "end": "2021-12-31", "strategy_return": 0.16803690598573118, "cash_return": 0.00045352713514379417, "excess_percentage_points": 16.758337885058737},
-    {"year": 2022, "start": "2022-01-01", "end": "2022-12-31", "strategy_return": -0.06516594400550979, "cash_return": 0.0203536530267745, "excess_percentage_points": -8.551959703228428},
-    {"year": 2023, "start": "2023-01-01", "end": "2023-12-31", "strategy_return": 0.012739603269520394, "cash_return": 0.05194848690905318, "excess_percentage_points": -3.9208883639532788},
-    {"year": 2024, "start": "2024-01-01", "end": "2024-12-31", "strategy_return": 0.04565016526808807, "cash_return": 0.051069375964147845, "excess_percentage_points": -0.5419210696059773},
-    {"year": 2025, "start": "2025-01-01", "end": "2025-12-31", "strategy_return": 0.006904041647746828, "cash_return": 0.041475884326824586, "excess_percentage_points": -3.4571842679077758},
-    {"year": 2026, "start": "2026-01-01", "end": "2026-07-30", "strategy_return": -0.001689043331677187, "cash_return": 0.021170628920639256, "excess_percentage_points": -2.2859672252316443}
+    {
+      "year": 2020,
+      "start": "2020-09-15",
+      "end": "2020-12-31",
+      "strategy_return": 0.008305214669825034,
+      "cash_return": 0.00027757240173209574,
+      "excess_percentage_points": 0.8027642268092938
+    },
+    {
+      "year": 2021,
+      "start": "2021-01-01",
+      "end": "2021-12-31",
+      "strategy_return": 0.16803690598573118,
+      "cash_return": 0.00045352713514379417,
+      "excess_percentage_points": 16.758337885058737
+    },
+    {
+      "year": 2022,
+      "start": "2022-01-01",
+      "end": "2022-12-31",
+      "strategy_return": -0.06516594400550979,
+      "cash_return": 0.0203536530267745,
+      "excess_percentage_points": -8.551959703228428
+    },
+    {
+      "year": 2023,
+      "start": "2023-01-01",
+      "end": "2023-12-31",
+      "strategy_return": 0.012739603269520394,
+      "cash_return": 0.05194848690905318,
+      "excess_percentage_points": -3.9208883639532788
+    },
+    {
+      "year": 2024,
+      "start": "2024-01-01",
+      "end": "2024-12-31",
+      "strategy_return": 0.04565016526808807,
+      "cash_return": 0.051069375964147845,
+      "excess_percentage_points": -0.5419210696059773
+    },
+    {
+      "year": 2025,
+      "start": "2025-01-01",
+      "end": "2025-12-31",
+      "strategy_return": 0.006904041647746828,
+      "cash_return": 0.041475884326824586,
+      "excess_percentage_points": -3.4571842679077758
+    },
+    {
+      "year": 2026,
+      "start": "2026-01-01",
+      "end": "2026-07-30",
+      "strategy_return": -0.001689043331677187,
+      "cash_return": 0.021170628920639256,
+      "excess_percentage_points": -2.2859672252316443
+    }
   ],
   "corrected_qualification": {
     "net_economics": false,
