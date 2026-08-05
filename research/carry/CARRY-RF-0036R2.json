@@ -1,0 +1,45 @@
+{
+  "experiment_id": "CARRY-RF-0036R2-REVIEW-METRIC-PARITY",
+  "status": "PREREGISTERED_BEFORE_R2_REPORT_RUN",
+  "registered_on": "2026-08-05",
+  "promotion_evidence": false,
+  "source_experiment": "CARRY-RF-0036R1-RISK-FREE-HURDLE",
+  "source_first_valid_result": "research/results/carry_rf_0036r1/summary.json",
+  "reason": "Post-run code review found that R1's named excess_sharpe_over_rf used excess-return volatility, while the backlog reference implementation verify_carry_vs_cash.py defines its published approximately -0.223 value as (strategy CAGR - cash CAGR) / strategy annualized volatility. R1 is retained unchanged. R2 corrects reporting convention only and cannot change the net_economics gate, which is excess CAGR over risk-free > 0.",
+  "authorized_change": "Reporting-metric parity only. Recompute the named excess_sharpe_over_rf from already-persisted R1 daily evidence using strategy annualized volatility as the denominator. No strategy return, risk-free series, asset, weight, funding rule, cost, window, benchmark, qualification threshold or decision rule may change.",
+  "inputs_frozen": {
+    "r1_daily_evidence": "research/results/carry_rf_0036r1/daily_repricing.csv",
+    "r1_summary": "research/results/carry_rf_0036r1/summary.json",
+    "fred_raw_sha256": "27b9d881b98ec90890a891c1080170fe6ade2a682ab01b6e66561479b113d0c3",
+    "carry_0031_window": "2020-09-15 through 2026-07-30",
+    "carry_stack_0033_window": "2023-06-19 through 2026-07-30"
+  },
+  "metric_definitions": {
+    "excess_cagr_over_rf": "unchanged from R1: strategy CAGR - matched cash benchmark CAGR",
+    "strategy_ann_vol": "stdev(strategy daily return, ddof=1) * sqrt(365)",
+    "excess_sharpe_over_rf": "excess_cagr_over_rf / strategy_ann_vol; this exactly matches the PR #30 verify_carry_vs_cash.py convention for the named approximately -0.223 CARRY-PNL-0031 value",
+    "r1_excess_vol_ratio": "retain R1's excess_cagr_over_rf / stdev(strategy_return - cash_return) / sqrt(365) value only as a diagnostic named r1_excess_vol_ratio_diagnostic; it is no longer the named excess_sharpe_over_rf"
+  },
+  "qualification_rule": {
+    "carry_pnl_0031_net_economics": "unchanged: PASS only if excess_cagr_over_rf > 0",
+    "carry_stack_0033_net_economics": "unchanged: PASS only if combined CAGR minus BRRK-plus-idle-cash benchmark CAGR > 0"
+  },
+  "required_outputs": [
+    "R1 old named metric preserved alongside R2 corrected named metric",
+    "CARRY-PNL-0031 excess_sharpe_over_rf reproduces the PR #30 approximately -0.223 reference",
+    "CARRY-STACK-0033 named excess_sharpe_over_rf reported under the same strategy-volatility convention",
+    "net_economics pass/fail copied from the unchanged excess-CAGR gate and explicitly shown unchanged",
+    "R2 result generated only from persisted R1 daily evidence; no network fetch and no strategy reconstruction"
+  ],
+  "decision_rule": "R2 is a reporting correction only. The R1 STOP_CARRY_LINE decision remains binding unless the unchanged excess_cagr_over_rf itself was shown to be a data/implementation error; this registration does not authorize such a re-run or any rescue.",
+  "prohibited": [
+    "no change to DTB3 series or daily accrual",
+    "no change to assets or BNB inclusion",
+    "no funding-sign or basis filter",
+    "no window change",
+    "no cost change",
+    "no leverage or weight change",
+    "no threshold change",
+    "no reclassification of the R1 FAIL outcome"
+  ]
+}

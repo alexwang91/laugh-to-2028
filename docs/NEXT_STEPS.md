@@ -36,27 +36,52 @@ Decision: **rejected; TSMOM line stopped on this sample**.
 
 Decision: all-perp default rejected; BTC spot-first remains implementation/shadow candidate.
 
-### CARRY-PNL-0031
+### CARRY-PNL-0031 + CARRY-RF-0036R1/R2
 
-Frozen five-asset same-venue delta-neutral baseline passed its independent sleeve gate:
+The original CARRY-PNL-0031 report is preserved unchanged. It passed a zero-return `net_economics` hurdle with:
 
 - CAGR **2.740%**;
 - MDD **-7.005%**;
-- Sharpe **1.428**;
+- zero-hurdle Sharpe **1.428**;
 - daily corr vs BRRK **-0.098**;
 - mean return on BRRK worst-decile days positive.
 
-Decision: **carry mechanism qualified**.
+F1 preregistered a benchmark-only restatement. No asset, weight, cost, funding-accounting or window change was allowed. The first valid `CARRY-RF-0036R1` result on 2020-09-15..2026-07-30 established:
+
+- CARRY-PNL-0031 CAGR: **2.7404%**;
+- FRED `DTB3` cash CAGR: **3.1653%**;
+- excess CAGR over rf: **-0.4249 pp/yr**;
+- 2021 carry return: **+16.8037%**;
+- full-window cumulative carry return: **+17.1983%**.
+
+A subsequent registered **reporting-only** correction, `CARRY-RF-0036R2`, aligns the named `excess_sharpe_over_rf` exactly to PR #30's reference convention:
+
+- named excess Sharpe over rf: **-0.2231508** (≈ **-0.223**);
+- R1's old **-0.2215824** value is preserved as the earlier excess-return-volatility diagnostic;
+- no gate, input, return series, risk-free series or decision changed.
+
+Corrected gate:
+
+```text
+net_economics = excess return over risk-free cash > 0
+```
+
+Decision: **FAIL_CORRECTED_NET_ECONOMICS_STOP_CARRY_LINE**.
+
+Under discipline #7, the carry line is stopped. Do not drop BNB, filter funding sign, add basis thresholds, change the window, change costs, change weights or add leverage to rescue this sample.
+
+Exact restatement plus daily evidence: `research/results/carry_rf_0036r1/`.  
+Named-metric parity correction: `research/results/carry_rf_0036r2/`.
 
 ### CARRY-AUDIT-0032
 
 Extreme SOL/XRP daily-close basis observations matched exact official Binance daily archives and did not artificially create 0031 economics.
 
-Decision: source attribution passed.
+Decision: source attribution passed. This does not override the F1 cash-hurdle failure.
 
 ### CARRY-STACK-0033
 
-The frozen idle-capital rule failed:
+The frozen idle-capital rule had already failed:
 
 ```text
 carry_scale_t = clip(1 - held_BRRK_gross_t, 0, 1)
@@ -69,148 +94,60 @@ carry_scale_t = clip(1 - held_BRRK_gross_t, 0, 1)
 - scale-change cost about **1.043%**;
 - net carry contribution **-1.236%**.
 
-Decision: carry-as-daily-idle-cash-filler rejected. No historical scale/threshold/fixed-weight/leverage rescue.
+F1 further compared the combined stack with **BRRK + the same idle capital accruing DTB3 cash**. The corrected `net_economics_vs_idle_cash` also fails. Under the R2 review convention, its named excess Sharpe over rf is **-0.049529**.
+
+Decision: **remain rejected**. The previous interpretation that standalone carry still passed while only the idle-cash conversion failed is no longer supported after F1.
 
 ### CARRY-IMPL-0034
 
-Public Hyperliquid Portfolio Margin audit passed BTC feasibility:
+Public Hyperliquid Portfolio Margin audit passed BTC public feasibility:
 
-- BTC UI -> HyperCore UBTC mapping already verified;
+- BTC UI -> HyperCore UBTC mapping verified;
 - exact UBTC token index **197**;
 - current UBTC reserve LTV **0.50**;
-- live BTC spot and perp books;
-- current PM infrastructure therefore supports a separately tested BTC collateral path.
+- live BTC spot and perp books.
 
-Decision: **PASS_BTC_PUBLIC_FEASIBILITY**. This result does not establish actual account-level capital release.
+Decision: `PASS_BTC_PUBLIC_FEASIBILITY` remains valid as an implementation observation, but it no longer authorizes live carry work because the upstream corrected economic gate failed.
 
 Formal result: `research/results/CARRY_IMPL_0034_RESULT_2026-08-05.md`.
 
----
+### CARRY-PM-0035 / CARRY-PM-0037
 
-# P0 — CARRY-PM-0035 account-behavior probe
+**CARRY-PM-0035 is no longer required. Do not spend live probe capital.**
 
-This is the only current primary historical/implementation gate.
+F2 is retained as an implementation fix because the old 0035 comparator could confuse genuine margin release with a timing/price-drift-corrupted measurement. Since this changes a frozen gate, it was preregistered separately as `CARRY-PM-0037-MEASUREMENT-INTEGRITY`; `CARRY-PM-0035.json` remains untouched.
 
-## Question
+Frozen F2 integrity rules:
 
-For a small dedicated Portfolio Margin account/subaccount, how much incremental maintenance capacity is actually consumed when a BTC short perp is added against an already-held UBTC spot balance?
+- spot -> matched snapshot gap <= **300 seconds**;
+- UBTC spot midpoint drift <= **25 bps**;
+- BTC perp midpoint drift <= **25 bps**;
+- observed probe spot notional <= **$500 * 1.05 = $525**;
+- bounded `/info` retries: **4 attempts**, backoff **0.5 / 1 / 2 seconds**, retrying transport failures plus HTTP 408/429/5xx only;
+- research remains read-only: `/info` only, no signing, no orders, account address stored only as SHA-256 fingerprint.
 
-## Frozen account limits
-
-- dedicated new account/subaccount;
-- total account value < **$1,000**;
-- probe UBTC spot notional <= **$500** plus fixed 5% execution tolerance;
-- BTC only;
-- no other perp positions;
-- research code is read-only;
-- no private key or order signing in research code.
-
-## Frozen four-stage sequence
+Measurement state is now explicit:
 
 ```text
-1. cash
-2. UBTC spot only
-3. same UBTC + matched BTC short perp
-4. both probe legs closed
+PM_RELEASES_MARGIN
+PM_CONSUMES_MARGIN
+MEASUREMENT_INCONCLUSIVE
 ```
 
-The BTC short must match the UBTC economic notional within **2%**.
+`snapshot_gap_within_bound` and `mid_drift_within_bound` must pass before interpreting raw available-after-maintenance change. Failed timing/drift integrity is `MEASUREMENT_INCONCLUSIVE`, never a false zero-consumption pass.
 
-## Required API evidence
+Decision: **0037 implementation retained but live probe NOT REQUIRED because F1 stopped the carry line.**
 
-Read and persist sanitized summaries from:
-
-- `userAbstraction`;
-- `spotClearinghouseState`;
-- `borrowLendUserState`;
-- `clearinghouseState`;
-- UBTC spot L2 (`@142`);
-- BTC perp L2 (`BTC`).
-
-The primary PM fields are:
-
-- `portfolioMarginEnabled`;
-- `portfolioMarginRatio`;
-- `tokenToPortfolioBorrowRatio`;
-- `tokenToAvailableAfterMaintenance`;
-- USDC / UBTC balances;
-- BTC perp size/notional;
-- borrow/lend health.
-
-## Frozen capital measurement
-
-```text
-incremental_maintenance_consumption_usdc
-  = max(0,
-      available_after_maintenance_USDC(spot-only)
-      - available_after_maintenance_USDC(matched))
-
-incremental_maintenance_fraction
-  = incremental_maintenance_consumption_usdc
-    / matched_BTC_short_notional
-```
-
-## PASS gate
-
-All required:
-
-1. account abstraction = `portfolioMargin`;
-2. Portfolio Margin enabled;
-3. no other perp positions in any stage;
-4. spot stage has UBTC and no BTC short;
-5. spot notional is within fixed probe cap;
-6. matched stage contains UBTC + BTC short;
-7. spot/short economic notional mismatch <= **2%**;
-8. matched `portfolioMarginRatio` < **0.50**;
-9. USDC available-after-maintenance measurement exists;
-10. incremental maintenance fraction <= **25%** of short notional;
-11. closed stage returns BTC short to zero and probe UBTC to near zero.
-
-The 25% gate is a coarse structural discriminator chosen before account evidence. It is not a leverage target and may not be tuned after the result.
-
-Preregistration: `research/carry/CARRY-PM-0035.json`  
-Runbook: `docs/CARRY_PM_0035_RUNBOOK.md`
-
-## Failure rule
-
-If the first valid four-stage probe fails or is inconclusive:
-
-- preserve the result;
-- diagnose only API/state/account-isolation defects;
-- do not change the $500 cap, 2% match tolerance, 0.50 PM-ratio gate, or 25% maintenance gate based on outcome;
-- do not reopen carry stacking.
+Preregistration: `research/carry/CARRY-PM-0037.json`  
+Runbook: `docs/CARRY_PM_0037_RUNBOOK.md`
 
 ---
 
-# P1 — CARRY-STACK-0036-PM, only if 0035 passes
+# Current priority — non-carry forward implementation evidence
 
-Preregister exactly one PM-aware accounting rule using the **observed 0035 capital factor**.
+There is no authorized historical carry rescue, no live PM carry probe, and no PM-aware carry stack experiment.
 
-Preserve:
-
-- BRRK-0011 target weights;
-- CARRY-PNL-0031 mechanism;
-- no fixed 80/20 or other post-result weight search;
-- no leverage grid;
-- no asset removal;
-- no funding/basis threshold optimization.
-
-Required stack gates:
-
-- CAGR improves vs strict-router BRRK;
-- Sharpe improves;
-- MDD non-worse;
-- Calmar improves;
-- carry turnover materially below 0033's 20.87x pathology;
-- modeled combined capital use respects the observed PM factor and a separately frozen safety buffer.
-
-If the first valid 0036 fails, **stop historical carry stacking research**.
-
----
-
-# P2 — strict forward router / execution hardening
-
-Independently of 0035/0036, continue implementation work:
+Continue independent work already separated from carry:
 
 1. BTC verified long spot capacity -> spot;
 2. unverified/unavailable long exposure -> perp;
@@ -225,9 +162,11 @@ Independently of 0035/0036, continue implementation work:
 
 UETH/USOL identity/custody/redemption validation remains separate. No PNL may upgrade token identity.
 
+This F1/F2 change set does **not** modify `execution/`.
+
 ---
 
-# P3 — forward evidence
+# Forward evidence
 
 Accumulate without retuning targets:
 
@@ -239,11 +178,12 @@ Accumulate without retuning targets:
 - L2 depth and expected VWAP;
 - actual fee/fill/slippage;
 - post-trade reconciliation;
-- Portfolio Margin ratio/capital fields when applicable;
 - operational failure events.
+
+Portfolio Margin carry evidence is no longer a required forward track after the F1 failure.
 
 ---
 
-# P4 — leverage last
+# Leverage last
 
-Do not reopen gross 1.30–1.50 until routing, Portfolio Margin behavior, execution reconciliation, slippage controls, kill paths and forward evidence are all established.
+Do not reopen gross 1.30–1.50 until routing, execution reconciliation, slippage controls, kill paths and forward evidence are all established.

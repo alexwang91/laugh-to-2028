@@ -1,0 +1,44 @@
+name: CARRY PM 0037
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/carry-pm-0037.yml'
+      - 'research/requirements.txt'
+      - 'research/carry/CARRY-PM-0035.json'
+      - 'research/carry/CARRY-PM-0037.json'
+      - 'research/carry/run_carry_pm_0035.py'
+      - 'research/carry/run_carry_pm_0037.py'
+      - 'research/carry/test_carry_pm_0037.py'
+      - 'docs/CARRY_PM_0037_RUNBOOK.md'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: carry-pm-0037-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deterministic-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: research/requirements.txt
+      - name: Install research dependencies
+        run: pip install --disable-pip-version-check -r research/requirements.txt
+      - name: Run F2 deterministic tests
+        working-directory: research/carry
+        run: python -m unittest -v test_carry_pm_0037.py
+
+# No live workflow_dispatch is added here. F1 independently decides whether the carry
+# line remains eligible to spend any live probe capital. If F1 fails, 0037 remains a
+# tested safety implementation but is not required and must not be run as a rescue.

@@ -1,0 +1,32 @@
+{
+  "experiment_id": "CARRY-RF-0036R2-REVIEW-METRIC-PARITY",
+  "status": "FIRST_VALID_REPORTING_CORRECTION_COMPLETE",
+  "promotion_evidence": false,
+  "source_experiment": "CARRY-RF-0036R1-RISK-FREE-HURDLE",
+  "source_daily_evidence": "research/results/carry_rf_0036r1/daily_repricing.csv",
+  "source_fred_raw_sha256": "27b9d881b98ec90890a891c1080170fe6ade2a682ab01b6e66561479b113d0c3",
+  "authorized_change": "named excess_sharpe_over_rf reporting convention only",
+  "carry_pnl_0031": {
+    "excess_cagr_over_rf": -0.004248625687953478,
+    "strategy_ann_vol": 0.01903925948507352,
+    "r1_excess_sharpe_over_rf_preserved": -0.22158239017165546,
+    "excess_sharpe_over_rf": -0.2231507843718572,
+    "pr30_reference_rounded": -0.223,
+    "absolute_difference_to_pr30_rounded_reference": 0.00015078437185719884,
+    "corrected_net_economics_pass": false,
+    "decision": "FAIL_CORRECTED_NET_ECONOMICS_STOP_CARRY_LINE"
+  },
+  "carry_stack_0033": {
+    "excess_cagr_over_rf": -0.021871388721317997,
+    "strategy_ann_vol": 0.44158343959064705,
+    "r1_excess_sharpe_over_rf_preserved": -16.210887937167655,
+    "excess_sharpe_over_rf": -0.049529458671713385,
+    "corrected_net_economics_pass": false,
+    "decision": "FAIL_CORRECTED_NET_ECONOMICS_AND_REMAIN_REJECTED"
+  },
+  "carry_line_stopped_under_discipline_7": true,
+  "carry_pm_0035_required": false,
+  "carry_pm_0037_required": false,
+  "decision": "REPORTING_METRIC_CORRECTED_R1_STOP_DECISION_UNCHANGED",
+  "stopping_rule": "R2 cannot alter the R1 excess-CAGR gate or carry-line decision. No rescue or strategy rerun is authorized."
+}

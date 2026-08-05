@@ -467,6 +467,19 @@ is **20.5%**. Crediting 4.5% raises CAGR by ~1.5pp while lowering excess Sharpe 
 **Do.** Credit unused cash at the daily risk-free rate and report Sharpe on excess returns. Share
 the rate series with F1. Report restated numbers next to the originals.
 
+**Two constraints carried over from the F1 implementation** (see
+[`RISK_FREE_METRIC_CONVENTIONS.md`](RISK_FREE_METRIC_CONVENTIONS.md)):
+
+- Use `load_fred_daily_risk_free_investment_basis`, **not**
+  `load_fred_daily_risk_free`. The latter accrues DTB3's bank-discount quote as if it were an
+  investment yield, understating cash by ~0.082 pp/yr. F1 could keep it because understating cash
+  made its STOP conclusion conservative; here the sign flips — understating cash inflates both the
+  credited idle-cash return and the resulting excess Sharpe.
+- Use `excess_return_metrics`, not `compare_to_cash` (frozen R1 evidence), and quote
+  `preferred_ratio_field`. Several F27 comparisons will be between highly correlated variants of
+  the same strategy, which is the regime where a geometric excess/volatility ratio stops being a
+  Sharpe ratio.
+
 ### F28. Cost model has no impact term
 
 **Files:** all runners using `COST_BPS = 5.0`

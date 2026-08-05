@@ -1,0 +1,152 @@
+{
+  "restatement_experiment_id": "CARRY-RF-0036R1-RISK-FREE-HURDLE",
+  "source_experiment_id": "CARRY-PNL-0031",
+  "published_report_preserved": "research/results/carry_pnl_0031/summary.json",
+  "published_decision": "QUALIFIED_FOR_SEPARATELY_PREREGISTERED_STACK_TEST",
+  "published_canonical_5bps": {
+    "final_10k": 11719.827766646282,
+    "cagr": 0.027404258463378905,
+    "max_drawdown": -0.07005447665064357,
+    "ann_vol": 0.019039259485073706,
+    "sharpe": 1.4281396586508797,
+    "calmar": 0.39118497166200944,
+    "turnover": 64.39404564978872
+  },
+  "published_qualification": {
+    "net_economics": true,
+    "funding_mechanism": true,
+    "daily_correlation_below_0_50": true,
+    "nonnegative_brrk_worst_decile_day_alpha": true,
+    "qualified_for_stack_test": true
+  },
+  "risk_free_source": {
+    "provider": "FRED",
+    "series_id": "DTB3",
+    "url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DTB3&cosd=2020-09-15&coed=2026-07-30",
+    "requested_start": "2020-09-15",
+    "requested_end": "2026-07-30",
+    "calendar_days": 2145,
+    "valid_fred_observations": 1468,
+    "first_valid_observation": "2020-09-15",
+    "last_valid_observation": "2026-07-30",
+    "daily_return_conversion": "rate_percent / 100 / 365.0",
+    "calendarization": "calendar daily; forward-fill latest in-window FRED observation",
+    "raw_csv_sha256": "27b9d881b98ec90890a891c1080170fe6ade2a682ab01b6e66561479b113d0c3"
+  },
+  "risk_free_restatement": {
+    "strategy": {
+      "start": "2020-09-15",
+      "end": "2026-07-30",
+      "observations": 2145,
+      "final_10k": 11719.827766646282,
+      "cumulative_return": 0.17198277666462825,
+      "cagr": 0.027404258463378905,
+      "ann_vol": 0.019039259485073706
+    },
+    "cash_benchmark": {
+      "start": "2020-09-15",
+      "end": "2026-07-30",
+      "observations": 2145,
+      "final_10k": 12007.195005351832,
+      "cumulative_return": 0.20071950053518317,
+      "cagr": 0.03165288415133238,
+      "ann_vol": 0.0010590901948615502
+    },
+    "excess_cagr_over_rf": -0.004248625687953478,
+    "excess_ann_vol": 0.019174022288784558,
+    "excess_sharpe_over_rf": -0.22158239017165546,
+    "arithmetic_excess_sharpe_daily_mean_diagnostic": -0.2053599796127741
+  },
+  "annual_carry_vs_cash": [
+    {
+      "year": 2020,
+      "start": "2020-09-15",
+      "end": "2020-12-31",
+      "strategy_return": 0.008305214669825034,
+      "cash_return": 0.00027757240173209574,
+      "excess_percentage_points": 0.8027642268092938
+    },
+    {
+      "year": 2021,
+      "start": "2021-01-01",
+      "end": "2021-12-31",
+      "strategy_return": 0.16803690598573118,
+      "cash_return": 0.00045352713514379417,
+      "excess_percentage_points": 16.758337885058737
+    },
+    {
+      "year": 2022,
+      "start": "2022-01-01",
+      "end": "2022-12-31",
+      "strategy_return": -0.06516594400550979,
+      "cash_return": 0.0203536530267745,
+      "excess_percentage_points": -8.551959703228428
+    },
+    {
+      "year": 2023,
+      "start": "2023-01-01",
+      "end": "2023-12-31",
+      "strategy_return": 0.012739603269520394,
+      "cash_return": 0.05194848690905318,
+      "excess_percentage_points": -3.9208883639532788
+    },
+    {
+      "year": 2024,
+      "start": "2024-01-01",
+      "end": "2024-12-31",
+      "strategy_return": 0.04565016526808807,
+      "cash_return": 0.051069375964147845,
+      "excess_percentage_points": -0.5419210696059773
+    },
+    {
+      "year": 2025,
+      "start": "2025-01-01",
+      "end": "2025-12-31",
+      "strategy_return": 0.006904041647746828,
+      "cash_return": 0.041475884326824586,
+      "excess_percentage_points": -3.4571842679077758
+    },
+    {
+      "year": 2026,
+      "start": "2026-01-01",
+      "end": "2026-07-30",
+      "strategy_return": -0.001689043331677187,
+      "cash_return": 0.021170628920639256,
+      "excess_percentage_points": -2.2859672252316443
+    }
+  ],
+  "corrected_qualification": {
+    "net_economics": false,
+    "funding_mechanism": true,
+    "daily_correlation_below_0_50": true,
+    "nonnegative_brrk_worst_decile_day_alpha": true,
+    "qualified_for_stack_test": false
+  },
+  "corrected_net_economics_pass": false,
+  "decision": "FAIL_CORRECTED_NET_ECONOMICS_STOP_CARRY_LINE",
+  "source_reconstruction_parity": {
+    "expected_final_10k": 11719.827766646282,
+    "reconstructed_final_10k": 11719.827766646282,
+    "absolute_difference_dollars": 0.0,
+    "tolerance_dollars": 0.01,
+    "pass": true,
+    "funding_event_coverage_ratio": 1.0,
+    "remaining_required_price_gaps": 0
+  },
+  "review_reference_parity": {
+    "carry_cagr_reference": 0.027404258463378905,
+    "carry_cagr_actual": 0.027404258463378905,
+    "carry_cagr_abs_difference": 0.0,
+    "cash_cagr_reference_rounded": 0.03165,
+    "cash_cagr_actual": 0.03165288415133238,
+    "cash_cagr_abs_difference_to_rounded_reference": 2.8841513323857315e-06,
+    "excess_sharpe_reference_rounded": -0.223,
+    "excess_sharpe_actual": -0.22158239017165546,
+    "excess_sharpe_abs_difference_to_rounded_reference": 0.001417609828344546,
+    "cumulative_reference": 0.1719827766646282,
+    "cumulative_actual": 0.17198277666462825,
+    "return_2021_reference": 0.16803690598573118,
+    "return_2021_actual": 0.16803690598573118,
+    "review_numbers_reproduced_with_rounding": true
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "experiment_id": "CARRY-RF-0036-RISK-FREE-HURDLE",
+  "status": "PREREGISTERED_BEFORE_FIRST_REPRICING_RUN",
+  "registered_on": "2026-08-05",
+  "promotion_evidence": false,
+  "question": "Does the already-frozen CARRY-PNL-0031 mechanism, and the already-rejected CARRY-STACK-0033 idle-capital conversion, still have positive net economics after the displaced cash return is priced with a frozen daily risk-free benchmark?",
+  "authorized_change": "Accounting benchmark only. No strategy target, asset, weight, cost, funding rule, window, threshold, or execution assumption changes.",
+  "source_experiments": [
+    "CARRY-PNL-0031",
+    "CARRY-STACK-0033-IDLE-CAPITAL"
+  ],
+  "risk_free": {
+    "provider": "Federal Reserve Bank of St. Louis FRED",
+    "series_id": "DTB3",
+    "series_name": "3-Month Treasury Bill: Secondary Market Rate",
+    "download": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DTB3&cosd={start}&coed={end}",
+    "calendarization": "Parse FRED business-day observations as percent per annum, reindex to every calendar day in the requested closed interval, forward-fill only from the latest observation available on or before each day, and hard-fail if the first requested day has no rate.",
+    "daily_return_conversion": "rf_daily = DTB3_percent / 100 / 365.0; simple daily accrual, compounded through time",
+    "fallback_series": "none; any change to SOFR or another series requires a new preregistered ID",
+    "persistence": "Commit the exact daily risk-free sequence used by the first valid run and source metadata so the result remains independently reproducible even if FRED later revises observations."
+  },
+  "frozen_windows": {
+    "carry_pnl_0031": "Use the unchanged first-held through funding-end window from CARRY-PNL-0031: 2020-09-15 through 2026-07-30.",
+    "carry_stack_0033": "Use the unchanged common window produced by CARRY-STACK-0033: 2023-06-19 through 2026-07-30."
+  },
+  "carry_pnl_0031_benchmark": {
+    "strategy_return": "unchanged canonical 5 bps daily funding-aware CARRY-PNL-0031 return",
+    "cash_return": "DTB3 daily return for the same dates",
+    "excess_daily_return": "strategy_return - cash_return",
+    "excess_cagr_over_rf": "strategy CAGR minus compounded DTB3 cash CAGR on the identical date span",
+    "excess_sharpe_over_rf": "mean(excess_daily_return) / stdev(excess_daily_return, ddof=1) * sqrt(365)",
+    "net_economics": "PASS only if excess_cagr_over_rf > 0. No zero-return hurdle remains."
+  },
+  "carry_stack_0033_benchmark": {
+    "principle": "Only the CARRY-STACK-0033 carry_scale displaces idle cash. The matched cash alternative therefore earns carry_scale * rf_daily while BRRK is unchanged.",
+    "combined_strategy_return": "unchanged CARRY-STACK-0033 combined_return",
+    "cash_benchmark_return": "unchanged brrk_return + carry_scale * rf_daily",
+    "incremental_sleeve_excess_return": "scaled_carry_net - carry_scale * rf_daily",
+    "excess_cagr_over_rf": "combined strategy CAGR minus BRRK-plus-idle-cash benchmark CAGR on the identical date span",
+    "excess_sharpe_over_rf": "mean(incremental_sleeve_excess_return) / stdev(incremental_sleeve_excess_return, ddof=1) * sqrt(365)",
+    "net_economics": "PASS only if excess_cagr_over_rf > 0. Existing 0033 qualification remains historical evidence and is not retuned."
+  },
+  "required_outputs": [
+    "old published CARRY-PNL-0031 metrics preserved verbatim alongside risk-free-restated metrics",
+    "old published CARRY-STACK-0033 metrics preserved verbatim alongside risk-free-restated metrics",
+    "excess_cagr_over_rf and excess_sharpe_over_rf for both source experiments",
+    "annual carry-vs-cash tables for both source experiments",
+    "exact daily risk-free series",
+    "daily CARRY-PNL-0031 return, cash return and excess return",
+    "daily CARRY-STACK-0033 combined return, BRRK-plus-cash benchmark return, scaled carry return, scaled cash return and excess return",
+    "explicit corrected net_economics pass/fail",
+    "FRED raw-source digest and requested window metadata"
+  ],
+  "decision_rule": "If CARRY-PNL-0031 fails corrected net_economics, stop the carry research line under discipline #7, mark CARRY-PM-0035 and its measurement-integrity successor as not required, and do not attempt a funding sign filter, asset removal, basis filter, shorter window, threshold change, leverage change, or any same-window rescue.",
+  "prohibited": [
+    "no asset removal including BNB",
+    "no funding-sign filter",
+    "no basis threshold",
+    "no Top-K",
+    "no window restriction or start-date change",
+    "no cost change",
+    "no leverage or weight change",
+    "no benchmark substitution after observing results",
+    "no threshold tuning after observing results"
+  ]
+}
