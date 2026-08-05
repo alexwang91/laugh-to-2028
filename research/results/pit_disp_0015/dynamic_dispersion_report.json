@@ -1,0 +1,1093 @@
+{
+  "experiment_id": "PIT-DISP-0015-DYNAMIC-UNIVERSE",
+  "data": {
+    "historical_candidate_symbol_count": 652,
+    "symbols_fetched_with_rows": 646,
+    "fetch_error_count": 0,
+    "fetch_errors": {},
+    "api_call_count": 1120,
+    "first_panel_date": "2020-08-11",
+    "last_panel_date": "2026-08-02"
+  },
+  "methodology": {
+    "eligibility": "240 consecutive completed daily rows ending at t and completed-day quote volume >= $25,000,000",
+    "minimum_cross_section": 5,
+    "dispersion": "sample std of 20-day cumulative log returns across eligible point-in-time symbols",
+    "scale": "expanding-prior-median/current clipped [0.10,1], recursively smoothed lambda=0.80",
+    "execution": "scale entire frozen V1 gross exposure to cash, 0.05 band, 5bps per absolute weight change, t signal held over t+1",
+    "scope": "validates risk signal only; V1 alpha asset set remains fixed"
+  },
+  "metrics": {
+    "V1_BASELINE": {
+      "end_multiple": 5.711632557478853,
+      "final_10k": 57116.325574788534,
+      "cagr": 0.6125475374912208,
+      "max_drawdown": -0.3763490756377965,
+      "ann_vol": 0.44454164411975383,
+      "sharpe": 1.295020811994923,
+      "calmar": 1.6276047349210043,
+      "daily_cvar95": 0.049946391773158044,
+      "cdar95_path": 0.3655049824991216,
+      "turnover": 93.18741938434445,
+      "avg_gross_exposure": 0.7948173292846904
+    },
+    "V1_PLUS_FIXED_PANEL_DISP0014": {
+      "end_multiple": 5.766293138257855,
+      "final_10k": 57662.93138257855,
+      "cagr": 0.6167645985931725,
+      "max_drawdown": -0.35106527974753654,
+      "ann_vol": 0.39288837350858224,
+      "sharpe": 1.4173061507532907,
+      "calmar": 1.7568373581024865,
+      "daily_cvar95": 0.04319595974795998,
+      "cdar95_path": 0.3398864008030475,
+      "turnover": 91.45058436190251,
+      "avg_gross_exposure": 0.7155663905351057
+    },
+    "V1_PLUS_DYNAMIC_UNIVERSE_DISP0015": {
+      "end_multiple": 5.283104212609068,
+      "final_10k": 52831.04212609068,
+      "cagr": 0.5784276453013533,
+      "max_drawdown": -0.33207609380900793,
+      "ann_vol": 0.39881149120297876,
+      "sharpe": 1.3418268954635681,
+      "calmar": 1.7418527141373608,
+      "daily_cvar95": 0.04444561288745126,
+      "cdar95_path": 0.3230144145605293,
+      "turnover": 89.35316218774346,
+      "avg_gross_exposure": 0.7138540959214096
+    },
+    "BRRK0011_BASELINE": {
+      "end_multiple": 6.224738231294191,
+      "final_10k": 62247.38231294191,
+      "cagr": 0.6510388939009106,
+      "max_drawdown": -0.3371507034657846,
+      "ann_vol": 0.4420699199849814,
+      "sharpe": 1.3531836730182594,
+      "calmar": 1.9310026264470799,
+      "daily_cvar95": 0.04993629693036896,
+      "cdar95_path": 0.31780914865807236,
+      "turnover": 91.22820938775163,
+      "avg_gross_exposure": 0.7542997329947537
+    },
+    "BRRK0011_PLUS_FIXED_PANEL_DISP0014": {
+      "end_multiple": 6.30839858456571,
+      "final_10k": 63083.9858456571,
+      "cagr": 0.6570941825507026,
+      "max_drawdown": -0.30603365805158245,
+      "ann_vol": 0.39010092974057886,
+      "sharpe": 1.4878395405872167,
+      "calmar": 2.147130438966123,
+      "daily_cvar95": 0.043185952354760034,
+      "cdar95_path": 0.288497160059518,
+      "turnover": 89.30972513075945,
+      "avg_gross_exposure": 0.675295774838912
+    },
+    "BRRK0011_PLUS_DYNAMIC_UNIVERSE_DISP0015": {
+      "end_multiple": 5.654307645645618,
+      "final_10k": 56543.07645645618,
+      "cagr": 0.6080933372772448,
+      "max_drawdown": -0.30397853988103285,
+      "ann_vol": 0.3969075969317075,
+      "sharpe": 1.393299130426662,
+      "calmar": 2.000448247153343,
+      "daily_cvar95": 0.044436360841899274,
+      "cdar95_path": 0.2807819336892984,
+      "turnover": 87.25107351422153,
+      "avg_gross_exposure": 0.6794842384581465
+    }
+  },
+  "capture": {
+    "V1_BASELINE": {
+      "upside_capture": 1.0604685423806295,
+      "downside_capture": 0.8032741968019982,
+      "up_months": 27,
+      "down_months": 18
+    },
+    "V1_PLUS_FIXED_PANEL_DISP0014": {
+      "upside_capture": 0.9941073052109954,
+      "downside_capture": 0.6984475209089863,
+      "up_months": 27,
+      "down_months": 18
+    },
+    "V1_PLUS_DYNAMIC_UNIVERSE_DISP0015": {
+      "upside_capture": 0.9692630999636369,
+      "downside_capture": 0.7190210214475371,
+      "up_months": 27,
+      "down_months": 18
+    },
+    "BRRK0011_BASELINE": {
+      "upside_capture": 1.0502122957658155,
+      "downside_capture": 0.7299310068023137,
+      "up_months": 27,
+      "down_months": 18
+    },
+    "BRRK0011_PLUS_FIXED_PANEL_DISP0014": {
+      "upside_capture": 0.9844915707648011,
+      "downside_capture": 0.6239989849822266,
+      "up_months": 27,
+      "down_months": 18
+    },
+    "BRRK0011_PLUS_DYNAMIC_UNIVERSE_DISP0015": {
+      "upside_capture": 0.9591732539238915,
+      "downside_capture": 0.6570937723237297,
+      "up_months": 27,
+      "down_months": 18
+    }
+  },
+  "annual_returns": {
+    "V1_BASELINE": {
+      "2022": -0.014003649968686527,
+      "2023": 2.327477412826084,
+      "2024": 0.8322788070816003,
+      "2025": 0.0785759123287102,
+      "2026": -0.11909806964457448
+    },
+    "V1_PLUS_FIXED_PANEL_DISP0014": {
+      "2022": -0.013975761295937028,
+      "2023": 2.0159185459764064,
+      "2024": 0.9135537214469638,
+      "2025": 0.15451777630974362,
+      "2026": -0.12229568329494989
+    },
+    "V1_PLUS_DYNAMIC_UNIVERSE_DISP0015": {
+      "2022": -0.013962183728462363,
+      "2023": 2.1530797394722225,
+      "2024": 0.7719752493441316,
+      "2025": 0.06472012924460868,
+      "2026": -0.09932618639062496
+    },
+    "BRRK0011_BASELINE": {
+      "2022": -9.00010953754915e-05,
+      "2023": 2.2969753631340364,
+      "2024": 0.8322790485607565,
+      "2025": 0.09130193554552668,
+      "2026": -0.05570445983302741
+    },
+    "BRRK0011_PLUS_FIXED_PANEL_DISP0014": {
+      "2022": -7.676971200742955e-05,
+      "2023": 1.9883913470566696,
+      "2024": 0.9135539614614767,
+      "2025": 0.16813421329686573,
+      "2026": -0.05554441404945365
+    },
+    "BRRK0011_PLUS_DYNAMIC_UNIVERSE_DISP0015": {
+      "2022": -7.011538121159955e-05,
+      "2023": 2.1242204750822093,
+      "2024": 0.7719753486824437,
+      "2025": 0.08295445160852588,
+      "2026": -0.0568074858702714
+    }
+  },
+  "subperiods": {
+    "V1_BASELINE": {
+      "2023-01-01": {
+        "end_multiple": 5.7927522320923925,
+        "final_10k": 57927.52232092393,
+        "cagr": 0.6319435673706273,
+        "max_drawdown": -0.3763490756377964,
+        "ann_vol": 0.4480641579871399,
+        "sharpe": 1.3150200171213715,
+        "calmar": 1.6791420738836054,
+        "daily_cvar95": 0.050196693571521775,
+        "cdar95_path": 0.3658795139511274,
+        "turnover": 92.73133967647132,
+        "avg_gross_exposure": 0.8035060444881511
+      },
+      "2024-01-01": {
+        "end_multiple": 1.7408840131457155,
+        "final_10k": 17408.840131457157,
+        "cagr": 0.23896618367298772,
+        "max_drawdown": -0.37634907563779574,
+        "ann_vol": 0.4181491871131,
+        "sharpe": 0.7204716850886517,
+        "calmar": 0.6349588696823917,
+        "daily_cvar95": 0.050348264842894785,
+        "cdar95_path": 0.36875178085411836,
+        "turnover": 67.72600258066674,
+        "avg_gross_exposure": 0.7528243223986228
+      },
+      "2025-01-01": {
+        "end_multiple": 0.9501196032052238,
+        "final_10k": 9501.196032052238,
+        "cagr": -0.03176251225852611,
+        "max_drawdown": -0.37634907563779696,
+        "ann_vol": 0.33030644842538426,
+        "sharpe": 0.06742646288370235,
+        "calmar": -0.08439641363459797,
+        "daily_cvar95": 0.04291070919871047,
+        "cdar95_path": 0.37052821227798916,
+        "turnover": 27.633039559871037,
+        "avg_gross_exposure": 0.6353155310803814
+      },
+      "2026-01-01": {
+        "end_multiple": 0.8809019303554255,
+        "final_10k": 8809.019303554256,
+        "cagr": -0.19461469641882057,
+        "max_drawdown": -0.15663948909795078,
+        "ann_vol": 0.1364222385443873,
+        "sharpe": -1.5168897626951645,
+        "calmar": -1.2424369968234696,
+        "daily_cvar95": 0.017755369850560834,
+        "cdar95_path": 0.15247517465592514,
+        "turnover": 4.878231968557047,
+        "avg_gross_exposure": 0.328780263046428
+      }
+    },
+    "V1_PLUS_FIXED_PANEL_DISP0014": {
+      "2023-01-01": {
+        "end_multiple": 5.8480237218473485,
+        "final_10k": 58480.237218473485,
+        "cagr": 0.6362702160877012,
+        "max_drawdown": -0.351065279747537,
+        "ann_vol": 0.39596235887072984,
+        "sharpe": 1.439643166199446,
+        "calmar": 1.8123985845175712,
+        "daily_cvar95": 0.04339948837456188,
+        "cdar95_path": 0.3402956550204842,
+        "turnover": 90.9800115214486,
+        "avg_gross_exposure": 0.7230036426918022
+      },
+      "2024-01-01": {
+        "end_multiple": 1.9390522763452254,
+        "final_10k": 19390.522763452253,
+        "cagr": 0.2916820697772682,
+        "max_drawdown": -0.35106527974753754,
+        "ann_vol": 0.3730228386072676,
+        "sharpe": 0.8713142624010239,
+        "calmar": 0.8308485247730173,
+        "daily_cvar95": 0.043847454454800844,
+        "cdar95_path": 0.3434816400220322,
+        "turnover": 64.95449853452402,
+        "avg_gross_exposure": 0.68512199428831
+      },
+      "2025-01-01": {
+        "end_multiple": 1.0133252359797764,
+        "final_10k": 10133.252359797763,
+        "cagr": 0.008385394606716945,
+        "max_drawdown": -0.3510652797475369,
+        "ann_vol": 0.2996236318502362,
+        "sharpe": 0.17726234384950093,
+        "calmar": 0.02388557083385509,
+        "daily_cvar95": 0.037881555732779806,
+        "cdar95_path": 0.34549126670842656,
+        "turnover": 27.021150737412814,
+        "avg_gross_exposure": 0.5939677611536324
+      },
+      "2026-01-01": {
+        "end_multiple": 0.8777043167050501,
+        "final_10k": 8777.0431670505,
+        "cagr": -0.1995980410436281,
+        "max_drawdown": -0.15809356374483685,
+        "ann_vol": 0.13629490007848089,
+        "sharpe": -1.5639145259247171,
+        "calmar": -1.2625311006701039,
+        "daily_cvar95": 0.01775536984834914,
+        "cdar95_path": 0.15432027875981827,
+        "turnover": 5.0119529840924155,
+        "avg_gross_exposure": 0.32759933038557554
+      }
+    },
+    "V1_PLUS_DYNAMIC_UNIVERSE_DISP0015": {
+      "2023-01-01": {
+        "end_multiple": 5.3579123695132065,
+        "final_10k": 53579.12369513207,
+        "cagr": 0.5968209347940645,
+        "max_drawdown": -0.3320760938090076,
+        "ann_vol": 0.40194423399913254,
+        "sharpe": 1.363300134522254,
+        "calmar": 1.7972414935033654,
+        "daily_cvar95": 0.04465167857004234,
+        "cdar95_path": 0.3233916240316477,
+        "turnover": 88.87745430978583,
+        "avg_gross_exposure": 0.7212956616231142
+      },
+      "2024-01-01": {
+        "end_multiple": 1.699263200495542,
+        "final_10k": 16992.63200495542,
+        "cagr": 0.22743236219181684,
+        "max_drawdown": -0.33207609380900727,
+        "ann_vol": 0.370546091360069,
+        "sharpe": 0.7373002780103557,
+        "calmar": 0.6848802621805832,
+        "daily_cvar95": 0.044710186168002576,
+        "cdar95_path": 0.32608860510172527,
+        "turnover": 64.9102483449314,
+        "avg_gross_exposure": 0.6786830523148868
+      },
+      "2025-01-01": {
+        "end_multiple": 0.9589655392334068,
+        "final_10k": 9589.655392334067,
+        "cagr": -0.026085560169946564,
+        "max_drawdown": -0.3320760938090067,
+        "ann_vol": 0.29342686617073455,
+        "sharpe": 0.05667078572431396,
+        "calmar": -0.07855296016867042,
+        "daily_cvar95": 0.038886713472807845,
+        "cdar95_path": 0.32765901176913126,
+        "turnover": 27.507071799261553,
+        "avg_gross_exposure": 0.563628271306261
+      },
+      "2026-01-01": {
+        "end_multiple": 0.900673813609375,
+        "final_10k": 9006.73813609375,
+        "cagr": -0.1635172782558354,
+        "max_drawdown": -0.14028644330581141,
+        "ann_vol": 0.11628908705858221,
+        "sharpe": -1.475962433705134,
+        "calmar": -1.1655957225986757,
+        "daily_cvar95": 0.015504382453934894,
+        "cdar95_path": 0.13747090628798458,
+        "turnover": 4.643140342733652,
+        "avg_gross_exposure": 0.27729331456100237
+      }
+    },
+    "BRRK0011_BASELINE": {
+      "2023-01-01": {
+        "end_multiple": 6.2252985149795625,
+        "final_10k": 62252.985149795626,
+        "cagr": 0.6650420106136357,
+        "max_drawdown": -0.3371507034657857,
+        "ann_vol": 0.4457504253710498,
+        "sharpe": 1.36460444486963,
+        "calmar": 1.9725363280492891,
+        "daily_cvar95": 0.05018644577656922,
+        "cdar95_path": 0.3179014109310387,
+        "turnover": 91.04820942221534,
+        "avg_gross_exposure": 0.7669673615197027
+      },
+      "2024-01-01": {
+        "end_multiple": 1.8881847236680422,
+        "final_10k": 18881.847236680424,
+        "cagr": 0.27847836242033974,
+        "max_drawdown": -0.337150703465785,
+        "ann_vol": 0.4147597109843246,
+        "sharpe": 0.7986498355879125,
+        "calmar": 0.8259759198414381,
+        "daily_cvar95": 0.050334174809793165,
+        "cdar95_path": 0.31868198331283476,
+        "turnover": 65.8381418075644,
+        "avg_gross_exposure": 0.7043340878246901
+      },
+      "2025-01-01": {
+        "end_multiple": 1.0305115507112252,
+        "final_10k": 10305.115507112252,
+        "cagr": 0.01914065216297134,
+        "max_drawdown": -0.32253254346529125,
+        "ann_vol": 0.3233636543902665,
+        "sharpe": 0.22020887263533237,
+        "calmar": 0.059344870930927086,
+        "daily_cvar95": 0.042815565548792754,
+        "cdar95_path": 0.31762115097442783,
+        "turnover": 25.745204987848396,
+        "avg_gross_exposure": 0.5561737292709517
+      },
+      "2026-01-01": {
+        "end_multiple": 0.9442955401669726,
+        "final_10k": 9442.955401669726,
+        "cagr": -0.09319306176728626,
+        "max_drawdown": -0.11761914802085649,
+        "ann_vol": 0.09341230969147107,
+        "sharpe": -0.999779467903783,
+        "calmar": -0.7923289985977543,
+        "daily_cvar95": 0.013668813855267253,
+        "cdar95_path": 0.11268877725239487,
+        "turnover": 3.4816115802255143,
+        "avg_gross_exposure": 0.16694264220408986
+      }
+    },
+    "BRRK0011_PLUS_FIXED_PANEL_DISP0014": {
+      "2023-01-01": {
+        "end_multiple": 6.308882915690234,
+        "final_10k": 63088.82915690234,
+        "cagr": 0.6712452359529757,
+        "max_drawdown": -0.3060336580515822,
+        "ann_vol": 0.39334529135578317,
+        "sharpe": 1.5004025574934137,
+        "calmar": 2.193370625396494,
+        "daily_cvar95": 0.04338932935419225,
+        "cdar95_path": 0.2885877375589989,
+        "turnover": 89.15618782479092,
+        "avg_gross_exposure": 0.6866366193616449
+      },
+      "2024-01-01": {
+        "end_multiple": 2.1111300974365266,
+        "final_10k": 21111.300974365266,
+        "cagr": 0.33483511202548155,
+        "max_drawdown": -0.3060336580515822,
+        "ann_vol": 0.3692173703642594,
+        "sharpe": 0.9654856495300832,
+        "calmar": 1.0941120468816041,
+        "daily_cvar95": 0.04383293985290946,
+        "cdar95_path": 0.28941981130191397,
+        "turnover": 62.92703145322642,
+        "avg_gross_exposure": 0.6368594964823382
+      },
+      "2025-01-01": {
+        "end_multiple": 1.103250882888169,
+        "final_10k": 11032.508828881691,
+        "cagr": 0.06394744593007862,
+        "max_drawdown": -0.29367207677091256,
+        "ann_vol": 0.291950479040467,
+        "sharpe": 0.3577617483599736,
+        "calmar": 0.2177511959366933,
+        "daily_cvar95": 0.037657060253754454,
+        "cdar95_path": 0.28860547146878607,
+        "turnover": 24.993709540745453,
+        "avg_gross_exposure": 0.5151976513394085
+      },
+      "2026-01-01": {
+        "end_multiple": 0.9444555859505464,
+        "final_10k": 9444.555859505463,
+        "cagr": -0.09293072836314198,
+        "max_drawdown": -0.1173933155309762,
+        "ann_vol": 0.0933258922722221,
+        "sharpe": -0.997695126724339,
+        "calmar": -0.7916185682533231,
+        "daily_cvar95": 0.013655833737418778,
+        "cdar95_path": 0.1125137704134544,
+        "turnover": 3.481611594420554,
+        "avg_gross_exposure": 0.166744505802033
+      }
+    },
+    "BRRK0011_PLUS_DYNAMIC_UNIVERSE_DISP0015": {
+      "2023-01-01": {
+        "end_multiple": 5.654704127381174,
+        "final_10k": 56547.04127381174,
+        "cagr": 0.6210055886703072,
+        "max_drawdown": -0.3039785398810324,
+        "ann_vol": 0.4002110923529714,
+        "sharpe": 1.4050528937605011,
+        "calmar": 2.0429257569081987,
+        "daily_cvar95": 0.04464228634198206,
+        "cdar95_path": 0.28085138634663476,
+        "turnover": 87.11084480877682,
+        "avg_gross_exposure": 0.6908954236071658
+      },
+      "2024-01-01": {
+        "end_multiple": 1.809956810820902,
+        "final_10k": 18099.56810820902,
+        "cagr": 0.25773981417001224,
+        "max_drawdown": -0.30397853988103285,
+        "ann_vol": 0.3679821537398948,
+        "sharpe": 0.8061503025195225,
+        "calmar": 0.8478881906297828,
+        "daily_cvar95": 0.04469731513273358,
+        "cdar95_path": 0.2816244886925387,
+        "turnover": 62.93988759419018,
+        "avg_gross_exposure": 0.6386973734193568
+      },
+      "2025-01-01": {
+        "end_multiple": 1.021434531900626,
+        "final_10k": 10214.34531900626,
+        "cagr": 0.013468543491107265,
+        "max_drawdown": -0.28432057390369403,
+        "ann_vol": 0.2881998803898664,
+        "sharpe": 0.19047265648274028,
+        "calmar": 0.047370977436438956,
+        "daily_cvar95": 0.03885526006628642,
+        "cdar95_path": 0.2799612166831574,
+        "turnover": 25.53673597017105,
+        "avg_gross_exposure": 0.4983669456191354
+      },
+      "2026-01-01": {
+        "end_multiple": 0.9431925141297286,
+        "final_10k": 9431.925141297286,
+        "cagr": -0.0950001933718585,
+        "max_drawdown": -0.11123286378416897,
+        "ann_vol": 0.08411846901072637,
+        "sharpe": -1.1436958829130317,
+        "calmar": -0.85406587711517,
+        "daily_cvar95": 0.012500239454336426,
+        "cdar95_path": 0.10706115898074647,
+        "turnover": 3.2210944821006073,
+        "avg_gross_exposure": 0.14845222993056104
+      }
+    }
+  },
+  "dynamic_universe_diagnostics": {
+    "evaluation_mean_eligible_count": 30.624624624624623,
+    "evaluation_median_eligible_count": 27.0,
+    "evaluation_min_eligible_count": 4,
+    "evaluation_max_eligible_count": 143,
+    "mean_dynamic_smoothed_scale": 0.8981173576648007,
+    "median_dynamic_smoothed_scale": 0.9416767369939214,
+    "fraction_dynamic_scale_below_0_9": 0.38288288288288286,
+    "fraction_dynamic_scale_below_0_5": 0.01126126126126126,
+    "min_dynamic_scale": 0.32853906908479374,
+    "inactive_or_nontrading_symbols_ever_eligible_count": 159,
+    "top_inactive_symbols_by_eligible_days": [
+      {
+        "symbol": "MATICUSDT",
+        "eligible_days": 1124,
+        "current_status": "BREAK"
+      },
+      {
+        "symbol": "FTMUSDT",
+        "eligible_days": 965,
+        "current_status": "BREAK"
+      },
+      {
+        "symbol": "EOSUSDT",
+        "eligible_days": 530,
+        "current_status": "BREAK"
+      },
+      {
+        "symbol": "WAVESUSDT",
+        "eligible_days": 320,
+        "current_status": "BREAK"
+      },
+      {
+        "symbol": "RNDRUSDT",
+        "eligible_days": 312,
+        "current_status": "BREAK"
+      },
+      {
+        "symbol": "SXPUSDT",
+        "eligible_days": 280,
+        "current_status": "BREAK"
+      },
+      {
+        "symbol": "OMGUSDT",
+        "eligible_days": 273,
+        "current_status": "BREAK"
+      },
+      {
+        "symbol": "BTTUSDT",
+        "eligible_days": 229,
+        "current_status": "BREAK"
+      },
+      {
+        "symbol": "XMRUSDT",
+        "eligible_days": 225,
+        "current_status": "BREAK"
+      },
+      {
+        "symbol": "LRCUSDT",
+        "eligible_days": 213,
+        "current_status": "BREAK"
+      },
+      {
+        "symbol": "OMUSDT",
+        "eligible_days": 207,
+        "current_status": "BREAK"
+      },
+      {
+        "symbol": "MKRUSDT",
+        "eligible_days": 201,
+        "current_status": "BREAK"
+      },
+      {
+        "symbol": "DENTUSDT",
+        "eligible_days": 195,
+        "current_status": "BREAK"
+      },
+      {
+        "symbol": "SRMUSDT",
+        "eligible_days": 152,
+        "current_status": "BREAK"
+      },
+      {
+        "symbol": "TONUSDT",
+        "eligible_days": 106,
+        "current_status": "BREAK"
+      },
+      {
+        "symbol": "UNFIUSDT",
+        "eligible_days": 105,
+        "current_status": "BREAK"
+      },
+      {
+        "symbol": "BAKEUSDT",
+        "eligible_days": 91,
+        "current_status": "BREAK"
+      },
+      {
+        "symbol": "TROYUSDT",
+        "eligible_days": 85,
+        "current_status": "BREAK"
+      },
+      {
+        "symbol": "OCEANUSDT",
+        "eligible_days": 83,
+        "current_status": "BREAK"
+      },
+      {
+        "symbol": "WRXUSDT",
+        "eligible_days": 81,
+        "current_status": "BREAK"
+      },
+      {
+        "symbol": "AGIXUSDT",
+        "eligible_days": 79,
+        "current_status": "BREAK"
+      },
+      {
+        "symbol": "STMXUSDT",
+        "eligible_days": 76,
+        "current_status": "BREAK"
+      },
+      {
+        "symbol": "BNXUSDT",
+        "eligible_days": 74,
+        "current_status": "BREAK"
+      },
+      {
+        "symbol": "LINAUSDT",
+        "eligible_days": 71,
+        "current_status": "BREAK"
+      },
+      {
+        "symbol": "REEFUSDT",
+        "eligible_days": 70,
+        "current_status": "BREAK"
+      },
+      {
+        "symbol": "BLZUSDT",
+        "eligible_days": 68,
+        "current_status": "BREAK"
+      },
+      {
+        "symbol": "COCOSUSDT",
+        "eligible_days": 67,
+        "current_status": "BREAK"
+      },
+      {
+        "symbol": "TRUUSDT",
+        "eligible_days": 64,
+        "current_status": "BREAK"
+      },
+      {
+        "symbol": "NKNUSDT",
+        "eligible_days": 64,
+        "current_status": "BREAK"
+      },
+      {
+        "symbol": "ALPHAUSDT",
+        "eligible_days": 63,
+        "current_status": "BREAK"
+      }
+    ],
+    "snapshots": {
+      "2023-01-01": {
+        "eligible_count": 6,
+        "dispersion": 0.07755619859371383,
+        "raw_scale": 1.0,
+        "smoothed_scale": 0.9980471545214307,
+        "top_20_by_same_day_quote_volume": [
+          {
+            "symbol": "BTCUSDT",
+            "quote_volume": 1604793789.6772127
+          },
+          {
+            "symbol": "ETHUSDT",
+            "quote_volume": 141014996.655708
+          },
+          {
+            "symbol": "LTCUSDT",
+            "quote_volume": 34983776.58672
+          },
+          {
+            "symbol": "XRPUSDT",
+            "quote_volume": 34471638.5714
+          },
+          {
+            "symbol": "DOGEUSDT",
+            "quote_volume": 31186485.64412
+          },
+          {
+            "symbol": "BNBUSDT",
+            "quote_volume": 26767261.7192
+          }
+        ]
+      },
+      "2024-01-01": {
+        "eligible_count": 40,
+        "dispersion": 0.28061653330713987,
+        "raw_scale": 0.8658544951342058,
+        "smoothed_scale": 0.806924525529541,
+        "top_20_by_same_day_quote_volume": [
+          {
+            "symbol": "BTCUSDT",
+            "quote_volume": 1169995682.0280013
+          },
+          {
+            "symbol": "TRBUSDT",
+            "quote_volume": 1011470309.7031
+          },
+          {
+            "symbol": "ETHUSDT",
+            "quote_volume": 500451219.612806
+          },
+          {
+            "symbol": "SOLUSDT",
+            "quote_volume": 464763783.1089
+          },
+          {
+            "symbol": "FILUSDT",
+            "quote_volume": 292839056.61143
+          },
+          {
+            "symbol": "BNBUSDT",
+            "quote_volume": 192732706.8128
+          },
+          {
+            "symbol": "ARBUSDT",
+            "quote_volume": 162561793.75524
+          },
+          {
+            "symbol": "OPUSDT",
+            "quote_volume": 144053947.87947
+          },
+          {
+            "symbol": "ICPUSDT",
+            "quote_volume": 114225757.51177
+          },
+          {
+            "symbol": "AVAXUSDT",
+            "quote_volume": 109336068.2752
+          },
+          {
+            "symbol": "XRPUSDT",
+            "quote_volume": 102732273.8982
+          },
+          {
+            "symbol": "KP3RUSDT",
+            "quote_volume": 84281504.9332
+          },
+          {
+            "symbol": "BAKEUSDT",
+            "quote_volume": 77152640.0807
+          },
+          {
+            "symbol": "MATICUSDT",
+            "quote_volume": 77113606.28827
+          },
+          {
+            "symbol": "1INCHUSDT",
+            "quote_volume": 72464844.09498
+          },
+          {
+            "symbol": "INJUSDT",
+            "quote_volume": 64131983.8288
+          },
+          {
+            "symbol": "ADAUSDT",
+            "quote_volume": 55163198.2366
+          },
+          {
+            "symbol": "GMTUSDT",
+            "quote_volume": 54927481.64329
+          },
+          {
+            "symbol": "GRTUSDT",
+            "quote_volume": 53888182.5262
+          },
+          {
+            "symbol": "NEARUSDT",
+            "quote_volume": 51654172.3703
+          }
+        ]
+      },
+      "2024-12-01": {
+        "eligible_count": 82,
+        "dispersion": 0.3337058828614571,
+        "raw_scale": 0.7182167093877205,
+        "smoothed_scale": 0.7658946855492454,
+        "top_20_by_same_day_quote_volume": [
+          {
+            "symbol": "XRPUSDT",
+            "quote_volume": 2385698260.929747
+          },
+          {
+            "symbol": "BTCUSDT",
+            "quote_volume": 1641327626.6062205
+          },
+          {
+            "symbol": "ETHUSDT",
+            "quote_volume": 1589850114.025915
+          },
+          {
+            "symbol": "DOGEUSDT",
+            "quote_volume": 1476298154.74837
+          },
+          {
+            "symbol": "SHIBUSDT",
+            "quote_volume": 1078093869.8201125
+          },
+          {
+            "symbol": "PEPEUSDT",
+            "quote_volume": 870209378.0776365
+          },
+          {
+            "symbol": "SOLUSDT",
+            "quote_volume": 577329157.83331
+          },
+          {
+            "symbol": "XLMUSDT",
+            "quote_volume": 417501814.0388
+          },
+          {
+            "symbol": "HBARUSDT",
+            "quote_volume": 409356088.64082
+          },
+          {
+            "symbol": "ADAUSDT",
+            "quote_volume": 408454755.18449
+          },
+          {
+            "symbol": "BNBUSDT",
+            "quote_volume": 284736496.31933
+          },
+          {
+            "symbol": "WLDUSDT",
+            "quote_volume": 259222528.7679
+          },
+          {
+            "symbol": "ALGOUSDT",
+            "quote_volume": 233293421.2299
+          },
+          {
+            "symbol": "LTCUSDT",
+            "quote_volume": 217809899.61107
+          },
+          {
+            "symbol": "WIFUSDT",
+            "quote_volume": 189664953.19465
+          },
+          {
+            "symbol": "SUIUSDT",
+            "quote_volume": 165656488.41945
+          },
+          {
+            "symbol": "FLOKIUSDT",
+            "quote_volume": 155891637.2491438
+          },
+          {
+            "symbol": "DOTUSDT",
+            "quote_volume": 132985400.07623
+          },
+          {
+            "symbol": "BONKUSDT",
+            "quote_volume": 130485915.36932828
+          },
+          {
+            "symbol": "ENSUSDT",
+            "quote_volume": 130014478.8715
+          }
+        ]
+      },
+      "2025-01-01": {
+        "eligible_count": 45,
+        "dispersion": 0.28844900425235553,
+        "raw_scale": 0.8390380374954599,
+        "smoothed_scale": 0.8416374954370126,
+        "top_20_by_same_day_quote_volume": [
+          {
+            "symbol": "BTCUSDT",
+            "quote_volume": 975444194.1379983
+          },
+          {
+            "symbol": "XRPUSDT",
+            "quote_volume": 760832060.3151
+          },
+          {
+            "symbol": "ETHUSDT",
+            "quote_volume": 636613395.6959649
+          },
+          {
+            "symbol": "PEPEUSDT",
+            "quote_volume": 328210024.69330406
+          },
+          {
+            "symbol": "SOLUSDT",
+            "quote_volume": 316558431.70699
+          },
+          {
+            "symbol": "XLMUSDT",
+            "quote_volume": 294204588.8823
+          },
+          {
+            "symbol": "DOGEUSDT",
+            "quote_volume": 225584886.81993
+          },
+          {
+            "symbol": "HBARUSDT",
+            "quote_volume": 179014779.0183
+          },
+          {
+            "symbol": "ADAUSDT",
+            "quote_volume": 153287717.95969
+          },
+          {
+            "symbol": "SUIUSDT",
+            "quote_volume": 114224406.22836
+          },
+          {
+            "symbol": "FTMUSDT",
+            "quote_volume": 110287223.5095
+          },
+          {
+            "symbol": "LINKUSDT",
+            "quote_volume": 98808034.4598
+          },
+          {
+            "symbol": "BNBUSDT",
+            "quote_volume": 95912659.04516
+          },
+          {
+            "symbol": "PHAUSDT",
+            "quote_volume": 79160849.3351
+          },
+          {
+            "symbol": "TRXUSDT",
+            "quote_volume": 68428746.93324
+          },
+          {
+            "symbol": "CVCUSDT",
+            "quote_volume": 64512603.5937
+          },
+          {
+            "symbol": "LTCUSDT",
+            "quote_volume": 57842205.47703
+          },
+          {
+            "symbol": "WIFUSDT",
+            "quote_volume": 55999443.42858
+          },
+          {
+            "symbol": "AAVEUSDT",
+            "quote_volume": 54582953.44294
+          },
+          {
+            "symbol": "ENAUSDT",
+            "quote_volume": 52877703.797705
+          }
+        ]
+      },
+      "2026-01-01": {
+        "eligible_count": 14,
+        "dispersion": 0.13420609273458292,
+        "raw_scale": 1.0,
+        "smoothed_scale": 0.9987977759084276,
+        "top_20_by_same_day_quote_volume": [
+          {
+            "symbol": "BTCUSDT",
+            "quote_volume": 552991635.2911001
+          },
+          {
+            "symbol": "ETHUSDT",
+            "quote_volume": 406547667.098154
+          },
+          {
+            "symbol": "SOLUSDT",
+            "quote_volume": 217068948.15615
+          },
+          {
+            "symbol": "DOGEUSDT",
+            "quote_volume": 109222807.65797
+          },
+          {
+            "symbol": "ZECUSDT",
+            "quote_volume": 78157064.91435
+          },
+          {
+            "symbol": "XRPUSDT",
+            "quote_volume": 76213964.8482
+          },
+          {
+            "symbol": "BNBUSDT",
+            "quote_volume": 69705177.29618
+          },
+          {
+            "symbol": "PEPEUSDT",
+            "quote_volume": 62255109.01935289
+          },
+          {
+            "symbol": "BROCCOLI714USDT",
+            "quote_volume": 59833123.90503
+          },
+          {
+            "symbol": "AVAXUSDT",
+            "quote_volume": 57578512.3074
+          },
+          {
+            "symbol": "ADAUSDT",
+            "quote_volume": 36328065.70213
+          },
+          {
+            "symbol": "FILUSDT",
+            "quote_volume": 35709887.73506
+          },
+          {
+            "symbol": "TRXUSDT",
+            "quote_volume": 33398718.92518
+          },
+          {
+            "symbol": "SUIUSDT",
+            "quote_volume": 27661232.42926
+          }
+        ]
+      },
+      "2026-08-02": {
+        "eligible_count": 10,
+        "dispersion": 0.24756910536377605,
+        "raw_scale": 0.9455739033490126,
+        "smoothed_scale": 0.7179050837449279,
+        "top_20_by_same_day_quote_volume": [
+          {
+            "symbol": "BTCUSDT",
+            "quote_volume": 531238376.4212737
+          },
+          {
+            "symbol": "ETHUSDT",
+            "quote_volume": 231569308.36133
+          },
+          {
+            "symbol": "ERAUSDT",
+            "quote_volume": 107184638.21503
+          },
+          {
+            "symbol": "SOLUSDT",
+            "quote_volume": 61963188.31639
+          },
+          {
+            "symbol": "EULUSDT",
+            "quote_volume": 45577324.41463
+          },
+          {
+            "symbol": "ADAUSDT",
+            "quote_volume": 45448922.17457
+          },
+          {
+            "symbol": "BNBUSDT",
+            "quote_volume": 45408224.32145
+          },
+          {
+            "symbol": "XRPUSDT",
+            "quote_volume": 36230905.41793
+          },
+          {
+            "symbol": "ZECUSDT",
+            "quote_volume": 35471364.16422
+          },
+          {
+            "symbol": "HOMEUSDT",
+            "quote_volume": 27457212.36608
+          }
+        ]
+      }
+    }
+  },
+  "current": {
+    "date": "2026-08-02",
+    "dynamic_universe_count": 10,
+    "dynamic_dispersion": 0.24756910536377605,
+    "dynamic_target_median": 0.23409488530744868,
+    "dynamic_raw_scale": 0.9455739033490126,
+    "dynamic_smoothed_scale": 0.7179050837449279,
+    "fixed_panel_smoothed_scale": 0.999919961859455,
+    "BRRK_final_scale": 0.009600519865604396
+  },
+  "decision": "No parameter tuning is allowed. Interpret dynamic-universe overlay versus both baseline and fixed-panel DISP0014; frozen BRRK0011 remains baseline unless survivorship-aware evidence is sufficiently strong."
+}
