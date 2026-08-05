@@ -177,14 +177,16 @@ def execute_target_position(
         actions.append(action)
         return actions
 
-    # Reversal: close the existing position first, then open the target direction.
+    # Reversal route labels remain observable, but identity uses route-independent
+    # economic intents. This lets a restart after the close leg reconstruct the same
+    # increase cloid that the original reversal would have used for the open leg.
     close_side = "sell" if current_qty > 0 else "buy"
     close_identity = _identity(
         release_id=release_id,
         decision_timestamp_ms=decision_timestamp_ms,
         asset=settings.coin,
         side=close_side,
-        intent="close_for_reversal",
+        intent="reduce",
         target_revision=target_revision,
     )
     close_status, close_existing_status = _submit_once(
@@ -214,7 +216,7 @@ def execute_target_position(
         decision_timestamp_ms=decision_timestamp_ms,
         asset=settings.coin,
         side=open_side,
-        intent="open_reversal",
+        intent="increase",
         target_revision=target_revision,
     )
     open_status, open_existing_status = _submit_once(
