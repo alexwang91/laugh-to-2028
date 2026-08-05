@@ -1,0 +1,91 @@
+name: CARRY PM 0035
+
+on:
+  workflow_dispatch:
+    inputs:
+      label:
+        description: Read-only snapshot label
+        required: true
+        default: readiness
+        type: choice
+        options:
+          - readiness
+          - cash
+          - spot
+          - matched
+          - closed
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/carry-pm-0035.yml'
+      - 'research/requirements.txt'
+      - 'research/carry/CARRY-PM-0035.json'
+      - 'research/carry/run_carry_pm_0035.py'
+      - 'research/carry/test_carry_pm_0035.py'
+      - 'docs/CARRY_PM_0035_RUNBOOK.md'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: carry-pm-0035-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deterministic-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: research/requirements.txt
+      - name: Install research dependencies
+        run: pip install --disable-pip-version-check -r research/requirements.txt
+      - name: Run deterministic unit tests
+        working-directory: research/carry
+        run: python -m unittest -v test_carry_pm_0035.py
+
+  live-readonly-snapshot:
+    if: github.event_name == 'workflow_dispatch'
+    needs: deterministic-tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      HL_PM_PROBE_USER: ${{ secrets.HL_PM_PROBE_USER }}
+      PROBE_LABEL: ${{ inputs.label }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: research/requirements.txt
+      - name: Install research dependencies
+        run: pip install --disable-pip-version-check -r research/requirements.txt
+      - name: Require dedicated probe account secret
+        shell: bash
+        run: |
+          if [ -z "$HL_PM_PROBE_USER" ]; then
+            echo "Repository secret HL_PM_PROBE_USER is not configured; refusing live account query."
+            exit 2
+          fi
+      - name: Capture read-only Portfolio Margin state
+        shell: bash
+        run: |
+          mkdir -p research/results/carry_pm_0035
+          python research/carry/run_carry_pm_0035.py snapshot \
+            --user "$HL_PM_PROBE_USER" \
+            --label "$PROBE_LABEL" \
+            --output "research/results/carry_pm_0035/${PROBE_LABEL}.json"
+      - name: Upload sanitized snapshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: carry-pm-0035-${{ inputs.label }}
+          retention-days: 30
+          if-no-files-found: error
+          path: research/results/carry_pm_0035/${{ inputs.label }}.json
