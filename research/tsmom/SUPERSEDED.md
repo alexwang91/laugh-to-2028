@@ -21,5 +21,14 @@ No rescue of that line is authorized.
 `run_tsmom_0029_first_mechanism.py` also shipped a local copy of
 `crypto_rotation_backtest.py` on its branch. That copy is **not** preserved — the
 canonical module is `research/core/crypto_rotation_backtest.py`, and a duplicated
-copy of a frozen strategy foundation is a hazard rather than evidence. The
-superseded runner is kept for the record and is not expected to import cleanly.
+copy of a frozen strategy foundation is a hazard rather than evidence.
+
+Dropping the duplicate is strictly an improvement here. The runner already puts
+`research/core` on `sys.path`, so `import crypto_rotation_backtest` now resolves
+to the canonical module and the file imports cleanly — verified. On its branch
+the local copy would have shadowed it, because `HERE` is inserted last and
+therefore searched first.
+
+No CI job imports these files: the tsmom workflows name
+`test_tsmom_alpha_0029.py` and `run_tsmom_alpha_0029_repaired.py` explicitly
+rather than discovering modules.
