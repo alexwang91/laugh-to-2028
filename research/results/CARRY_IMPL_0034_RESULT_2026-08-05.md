@@ -75,29 +75,34 @@ These are one-time public order-book diagnostics, not historical liquidity evide
 
 ## Official Portfolio Margin context
 
-Hyperliquid's current documentation explicitly describes portfolio margin as unifying spot and perp balances and gives the carry trade as an intended use case: a spot balance can offset a short perp position while the spot balance serves as collateral.
+Hyperliquid documentation explicitly describes Portfolio Margin as unifying spot and perp balances and gives the carry trade as an intended use case: a spot balance can offset a short perp position while the spot balance serves as collateral.
 
-The same documentation states that Portfolio Margin remains in pre-alpha and recommends small new accounts/subaccounts to test full behavior because user-level caps can cause fallback to non-portfolio-margin behavior. API documentation also states that Portfolio Margin / Unified Account balances and holds should be read from the spot clearinghouse state rather than relying on individual perp-dex user states.
+Rollout status must be treated as time-sensitive. Hyperliquid's official June 2026 announcement states that Portfolio Margin has advanced to **beta**, with BTC and HYPE accepted as collateral and increased limits. Older pre-alpha documentation/announcements are retained only as rollout history and must not be used to describe current eligibility or caps.
+
+The account-abstraction documentation also states that Portfolio Margin / Unified Account balances and holds should be read from the spot clearinghouse state; individual perp-DEX user states are not authoritative for unified balances. Perp position fields remain useful as position diagnostics, while the primary capital-efficiency measurement for 0035 is taken from Portfolio Margin fields in the spot clearinghouse state.
 
 Relevant official docs:
 
 - `https://hyperliquid.gitbook.io/hyperliquid-docs/trading/portfolio-margin`
 - `https://hyperliquid.gitbook.io/hyperliquid-docs/trading/account-abstraction-modes`
 - `https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint`
+- official Hyperliquid announcements channel for current rollout/cap changes
 
 ## Next authorized gate
 
 Create `CARRY-PM-0035` as an **account-behavior / capital-efficiency probe**.
 
-It may measure, for a small dedicated account/subaccount:
+For experimental isolation, the project independently caps the dedicated probe account/subaccount at **<$1,000** and the UBTC probe leg at **$500**. These are project safety limits, not claims about current Hyperliquid eligibility requirements.
+
+0035 may measure:
 
 - abstraction mode;
 - spot clearinghouse state;
 - borrow/lend user state;
-- account value / withdrawable / maintenance usage where exposed by the API;
+- account diagnostics where exposed by the API;
 - UBTC balance and collateral state;
 - BTC short-perp position state;
 - portfolio margin ratio / liquidation-health diagnostics;
 - pre/post state around one preregistered matched spot + short-perp configuration.
 
-It must not search leverage, not optimize size, not change BRRK or CARRY-0031, and not promote a stack based on this public feasibility result alone.
+It must not search leverage, optimize size, change BRRK or CARRY-0031, or promote a stack based on this public feasibility result alone.
