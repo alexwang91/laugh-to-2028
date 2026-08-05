@@ -1,0 +1,67 @@
+name: CARRY RF 0036R1
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/carry-rf-0036r1.yml'
+      - 'research/requirements.txt'
+      - 'research/common/**'
+      - 'research/carry/CARRY-RF-0036*.json'
+      - 'research/carry/run_carry_rf_0036r1.py'
+      - 'research/carry/test_carry_rf_0036r1.py'
+      - 'research/carry/run_carry_pnl_0031.py'
+      - 'research/carry/run_carry_stack_0033.py'
+      - 'research/carry/run_carry_data_0030.py'
+      - 'research/asym_beta/run_asym_beta_0021.py'
+      - 'research/results/carry_pnl_0031/**'
+      - 'research/results/carry_stack_0033/**'
+      - 'research/results/pit_disp_0015/**'
+      - 'research/results/funding_pnl_0003/**'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: carry-rf-0036r1-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  reprice:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: research/requirements.txt
+      - name: Install research dependencies
+        run: pip install --disable-pip-version-check -r research/requirements.txt
+      - name: Run shared risk-free unit tests
+        working-directory: research/common
+        run: python -m unittest -v test_risk_free.py
+      - name: Run F1 deterministic qualification tests
+        working-directory: research/carry
+        run: python -m unittest -v test_carry_rf_0036r1.py
+      - name: Run preregistered risk-free repricing
+        working-directory: research/carry
+        shell: bash
+        run: |
+          set -o pipefail
+          python run_carry_rf_0036r1.py | tee carry_rf_0036r1.log
+      - name: Upload exact evidence including daily sequences
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: carry-rf-0036r1-results
+          retention-days: 30
+          if-no-files-found: error
+          path: |
+            research/carry/CARRY-RF-0036.json
+            research/carry/CARRY-RF-0036R1.json
+            research/carry/carry_rf_0036r1.log
+            research/results/carry_rf_0036r1/**
