@@ -8,15 +8,30 @@ from .market import fetch_market_snapshot, fetch_user_state
 from .model import build_signal
 from .notify import send_telegram
 from .portfolio import build_portfolio_plan, parse_account_equity, parse_position_qty
+from .product_config import load_product_config
+
+
+DAY_MS = 86_400_000
+
+
+def _canonical_decision_timestamp_ms(last_completed_candle_start_ms: int) -> int:
+    """Return the UTC decision boundary immediately after the completed daily candle."""
+    if last_completed_candle_start_ms <= 0:
+        raise ValueError("last_completed_candle_start_ms must be positive")
+    return last_completed_candle_start_ms + DAY_MS
 
 
 def run_strategy(settings: Settings) -> dict:
+    product = load_product_config()
     snapshot = fetch_market_snapshot(
         api_url=settings.api_url,
         coin=settings.coin,
         lookback_days=settings.candle_lookback_days,
         timeout=settings.request_timeout_seconds,
     )
+    decision_timestamp_ms = _canonical_decision_timestamp_ms(snapshot.last_candle_start_ms)
+    decision_timestamp_utc = datetime.fromtimestamp(decision_timestamp_ms / 1000, tz=timezone.utc).isoformat()
+
     signal = build_signal(
         snapshot.closes,
         funding_apr=snapshot.funding_apr_24h,
@@ -27,6 +42,13 @@ def run_strategy(settings: Settings) -> dict:
 
     payload: dict = {
         "timestamp_utc": datetime.now(timezone.utc).isoformat(),
+        "decision": {
+            "timestamp_ms": decision_timestamp_ms,
+            "timestamp_utc": decision_timestamp_utc,
+            "strategy_release_id": product.strategy_release_id,
+            "model_version": product.model_version,
+            "data_version": product.data_version,
+        },
         "network": settings.network,
         "mode": settings.trading_mode,
         "coin": settings.coin,
@@ -77,8 +99,10 @@ def run_strategy(settings: Settings) -> dict:
             settings,
             current_qty=current_qty,
             target_qty=plan.target_perp_qty,
+            release_id=product.strategy_release_id,
+            decision_timestamp_ms=decision_timestamp_ms,
         )
-        payload["result"] = "trade_submitted"
+        payload["result"] = "trade_submitted_or_duplicate_suppressed"
 
     send_telegram(settings, payload)
     return payload
