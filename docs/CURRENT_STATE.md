@@ -14,18 +14,23 @@ Status: authoritative cross-chat handoff snapshot
 - Phase 0 PR: #40 merged; squash commit `1feffd07208a741e53766fe126dc9cb7add3d3d1`
 - Phase 0 handoff normalization PR: #41 merged
 - P1.1 implementation PR: #42 merged; squash commit `937db648b4ddaf8322c7bd9ce9b03f39321e2508`; final-head governance, execution pytest and research integration contracts passed
+- P1.1 handoff normalization PR: #43 merged; main commit `83ef2b44616269213f371ddbd2c0d352749c1c50`
+- P1.2 candidate branch: `p1-2/persistent-order-ledger`
 
 ## Current roadmap position
 
 ```text
 PLANNING BASELINE: complete
 CONTEXT-HANDOFF GOVERNANCE: complete
-P0.1 Canonical product config: PASS
-P0.2 Decision registry: PASS
+P0.1 Canonical product config: PASS / MERGED
+P0.2 Decision registry: PASS / MERGED
 P1.1 Deterministic order identity: PASS / MERGED
-P1.2 Persistent order ledger: NEXT
+P1.2 Persistent order ledger: IMPLEMENTATION CANDIDATE — final PR/CI/merge gate still required
+P1.3 Partial-fill state machine: BLOCKED ON P1.2
 P1+: continue in dependency order only
 ```
+
+P1.2 must not be promoted to `PASS / MERGED` until its final-head CI is green and its PR is merged.
 
 ## Product state frozen by the master plan
 
@@ -39,95 +44,111 @@ P1+: continue in dependency order only
 - Leverage is model-determined, not a user-fixed constant.
 - 70% drawdown is catastrophic tolerance only, not an operating target.
 - Cycle exit is market-state based, not tied to a literal 2028 date.
-- Late-bull rotation may increase relative alt weights while total gross exposure decreases.
 - FLAT = zero directional exposure.
 - Re-entry from FLAT and first short activation in a new bear phase require human approval.
-- Bot may use a trading Agent/API credential only; never the master wallet private key and never automated withdrawals.
+- Bot may use a trading Agent/API credential only; never the master wallet private key and never automated withdrawals or external transfers.
 - Strategy upgrades use candidate/shadow plus manual blue-green cutover; no hot strategy patching.
+- Current BTC-only executor capability does not redefine the BTC/ETH/SOL/BNB product universe.
 
-## Phase 0 implementation established
+## Phase 0 and P1.1 established
 
-P0.1:
+Phase 0 established the canonical machine-readable product config and decision registry, including an empty `production_authorized_components` set. P1.1 established deterministic Hyperliquid CLOID identity from strategy release, canonical UTC decision timestamp, asset, side, route-independent economic intent and executable target revision. Replay/restart queries exchange `orderStatus` by CLOID and suppresses a known order.
 
-- `config/product.json` is the canonical machine-readable product baseline;
-- `execution/plan-b-bot/beta_bot/product_config.py` validates and serializes that baseline;
-- execution settings consume the canonical product config before applying narrower executor capability constraints;
-- product universe and current BTC-only executor capability are explicitly separated;
-- research and execution contract tests consume the same canonical product file;
-- `.github/workflows/phase0-baseline.yml` enforces the contract.
+P1.1 deliberately did not claim persistent local order truth, partial-fill lifecycle, retry semantics or distributed locking.
 
-P0.2:
+## P1.2 implementation candidate
 
-- `config/decision_registry.json` is the machine-readable frozen decision registry;
-- accepted research targets, implementation-verified evidence, shadow-only lines, stopped/rejected lines and superseded work are explicit;
-- the production-authorized component set is currently empty;
-- future tasks must reference an existing decision or create a new registered decision rather than silently reopening stopped work.
+The candidate branch implements a SQLite-backed execution ledger for the current single-account executor:
 
-## P1.1 implementation established
+- CLOID is the primary local/exchange correlation key and a database primary key;
+- economic intent, route label, strategy release, canonical decision timestamp, asset, side, economic intent, target revision, submitted quantity and submitted SDK parameters are persisted;
+- `intent_recorded` is committed before the pre-submit exchange lookup;
+- a separate durable `submission_attempt_recorded` marker is committed before the network submit call;
+- submission response, OID when available, response timestamp and rejection reason are persisted;
+- status history and raw exchange observations are append-only audit evidence;
+- fill events are deduplicated by Hyperliquid trade ID and persist OID, timestamp, price, quantity, fee, fee token and raw payload;
+- ledger aggregates fill quantity, weighted average fill price, fees and remaining quantity;
+- unresolved orders survive process restart and are reconstructed from Hyperliquid `orderStatus` plus `userFillsByTime`;
+- exchange truth wins over conflicting local submission observations, while the conflict is retained in status history;
+- an exchange `filled` state without complete fill evidence remains unresolved and fails closed;
+- `unknownOid` after a durable submission-attempt marker is treated as uncertain and is never blindly resubmitted;
+- SQLite initialization runs `quick_check`; database/read failures fail closed;
+- a fill response at the documented API limit is treated as potentially truncated and fails closed rather than claiming complete truth;
+- trade mode requires an explicitly configured persistent ledger path and `ORDER_LEDGER_DURABLE_STORAGE=true`;
+- the current local SQLite backend rejects Vercel trade mode; Docker declares `/data` as the intended mount point, but the operator must actually provide persistent storage;
+- service trade runs reconcile unresolved state before a new order and reconcile again after submission; known unresolved prior orders block a new rebalance until terminal exchange truth is recovered.
 
-Deterministic exchange-visible order identity is implemented for the current BTC executor:
+Candidate tests cover:
 
-- canonical decision timestamp is the UTC boundary immediately after the last completed daily candle;
-- identity inputs are strategy release ID, decision timestamp, asset, side, route-independent economic intent (`increase` / `reduce`) and executable target revision;
-- target revision is target-position-centric, not current-position/delta-centric;
-- target revision rounding matches the current executor order-size rounding semantics;
-- canonical identity is hashed to a valid 128-bit Hyperliquid cloid;
-- `market_open` and `market_close` receive that cloid;
-- before submission, executor queries Hyperliquid `orderStatus` by cloid;
-- an already-known cloid is returned as `duplicate_suppressed` instead of submitting again;
-- malformed/ambiguous order-status lookup fails closed before submission;
-- reversal route labels remain observable, but the cloid uses route-independent `reduce` / `increase` intent so a restart after the close leg reconstructs the same open-leg identity;
-- golden-vector, component-difference, target-rounding, reversal-restart, sequential replay/restart, new-revision and fail-closed tests passed on PR #42 final head;
-- `EXEC-ORDER-ID-P1.1` is registered as `IMPLEMENTATION_VERIFIED` in `config/decision_registry.json`.
+- SQLite persistence across reopen/restart;
+- CLOID uniqueness and idempotent replay;
+- pre-network durable intent and submission-attempt ordering;
+- network timeout followed by restart without blind duplicate submission;
+- known-CLOID duplicate suppression with local exchange observation;
+- reconstruction of OID, fills, average fill price, fees, remaining quantity and terminal state;
+- exchange/local status conflict audit;
+- filled-with-missing-fills fail-closed behavior;
+- corrupt database fail-closed behavior;
+- API fill-limit truncation guard;
+- durable-storage and Vercel runtime configuration gates.
 
-P1.1 does **not** claim:
+## P1.2 boundaries not solved
 
-- persistent local order ledger;
-- full partial-fill lifecycle;
-- retry-attempt policy after rejected/canceled/partially-filled orders;
-- cross-process/distributed locking;
-- multi-asset instrument-specific quantity precision.
+P1.2 does **not** claim:
 
-Those remain later dependencies.
+- the complete P1.3 partial-fill state machine or retry policy;
+- simultaneous multi-process race elimination or distributed locking;
+- order slicing;
+- fresh position/fill verification between reversal close/open legs;
+- P1.4 reversal safety;
+- cancel/retry lifecycle hardening beyond persisted truth and fail-closed uncertainty;
+- multi-asset execution readiness;
+- production readiness.
 
-## Research boundaries that must remain closed unless formally reopened
+The existing reversal route remains observable as `close_for_reversal` / `open_reversal` while deterministic identity remains route-independent `reduce` / `increase`.
 
-- Do not silently rescue stopped carry work.
+## Research boundaries that remain closed unless formally reopened
+
+- Do not rescue stopped carry work.
 - Do not rescue rejected TSMOM or historical alpha lines by parameter/window/asset retuning.
-- Do not treat prior ASYM-BETA extra sleeve as an approved leverage implementation.
-- Do not infer spot identity from PnL; UETH/USOL identity/custody validation remains separate.
+- Do not treat historical ASYM-BETA extra sleeve as approved leverage expansion.
+- Do not infer spot identity from PnL.
+- ETH/SOL/BNB execution support is not production-ready merely because those assets are in the product universe.
 
 ## Current evidence status
 
 - BRRK-0011 remains the frozen directional research target.
-- Hyperliquid all-perp implementation is economically inferior to spot-aware routing on the tested window.
-- BTC spot/UBTC identity has public verification; ETH/SOL spot identity remains an explicit later router validation item.
-- Phase 0 is merged and green.
-- P1.1 PR #42 is merged and its final head passed PR handoff governance, execution pytest and research integration contracts.
-- Execution production readiness is not established: persistent ledger, partial-fill lifecycle, reconciliation, broader idempotency/coordination, slicing, kill paths and executor lifecycle tests remain required.
-- Dynamic leverage above the current BRRK scale is not yet production-authorized.
-- Cycle-top/exit model is not yet validated; future study must include 2021 two-wave structure and 2025 multi-peak structure.
-- Bear-market Top-20 short expansion is research-only and deferred.
+- Hyperliquid all-perp implementation remains rejected as the default relative to spot-aware routing evidence on the tested window.
+- BTC spot/UBTC identity has public verification; other instrument identity work remains separately gated.
+- Phase 0 and P1.1 are merged and green.
+- P1.2 implementation exists on the candidate branch; GitHub final-head CI and merge evidence are still required before PASS.
+- Execution production readiness is not established.
+- Dynamic leverage expansion is not production-authorized.
+- Cycle-top/exit model is not validated.
+- Bear-market Top-20 expansion remains research-only and deferred.
 
 ## Production authorization
 
 ```text
-Strategy change from P1.1: NONE
+Strategy economics change from P1.2: NONE
 New live capital authorization: NONE
 Leverage expansion authorization: NONE
+New asset execution authorization: NONE
 Short authorization: NONE
+Cycle-exit production authorization: NONE
+Strategy cutover authorization: NONE
 Production-authorized component set: EMPTY
 ```
 
 ## Open blockers / uncertainties
 
-1. P1.2 persistent order ledger is not implemented.
-2. Cross-process simultaneous submission races are not claimed solved by P1.1.
-3. Retry behavior after rejected/canceled/partially-filled orders is intentionally not defined until later Phase 1.
-4. Current target revision precision is tied to the BTC executor's 5-decimal size precision; instrument-specific precision belongs to later router work.
-5. Operating drawdown budget is intentionally not frozen until leverage research.
-6. Cycle-exit signal parameters/timeframes are intentionally not frozen until historical/walk-forward study.
-7. ETH/SOL/BNB execution and spot identities are not authorized merely because they exist in the product universe.
+1. P1.2 still requires PR review, final-head CI and merge before it can PASS.
+2. P1.3 partial-fill state transitions and retry policy remain unimplemented.
+3. Cross-process simultaneous submission races/distributed locking remain unimplemented.
+4. Existing reversal close/open lifecycle is not declared safe by P1.2.
+5. SQLite durability depends on the deployment actually mounting persistent storage; Vercel trade mode is rejected by the current backend.
+6. Current BTC quantity precision remains hardcoded at five decimals; instrument-specific precision belongs to later router work.
+7. Production authorization remains empty.
 
 ## Latest project-drift assessment
 
@@ -135,20 +156,18 @@ Production-authorized component set: EMPTY
 DRIFT_0
 ```
 
-Reason: P1.1 implemented the exact next execution-hardening dependency. It changed no strategy economics, long/short universe, venue, risk philosophy, human approval boundary, wallet/credential boundary or production authorization. During review, reversal identity was corrected from route-label-dependent IDs to route-independent economic intents specifically to reduce restart drift rather than expand scope.
+Reason: P1.2 implements the next roadmap dependency without changing BRRK economics, objective, product universe, Hyperliquid-first venue, leverage philosophy, 70% catastrophic-only boundary, human approval rules, ACTIVE/CANDIDATE separation, credential boundary, stopped research lines or production authorization. Rejecting trade mode without a durable ledger is an execution-safety requirement of P1.2, not a product-scope change.
 
-## Exact next unblocked task
+## Exact next action
 
 ```text
-P1.2 Persistent order ledger
+Complete P1.2 PR review -> final-head CI -> merge -> post-merge handoff normalization if required.
 ```
 
-Required outcome from the roadmap: persist order intent, submitted order, exchange order ID, status history, fill events, fees, average fill price, remaining quantity and cancellation/rejection reason; process restart must reconstruct unresolved orders.
-
-Do not begin P4 leverage, P5 cycle-exit research or P8 bear-short work before required earlier gates are closed.
+Do not begin P1.3 until P1.2 is actually `PASS / MERGED`.
 
 ## Fresh-chat resume instructions
 
-A fresh conversation should read the canonical files, verify actual GitHub/CI state, confirm PR #42 is merged, then begin `P1.2 Persistent order ledger` and do not skip ahead.
+A fresh conversation should read the canonical files, verify actual GitHub/CI state, confirm PR #43/main baseline, then inspect the P1.2 candidate/PR. If P1.2 is not merged or its final head is not green, finish P1.2 first. Only after P1.2 is merged and handoff text is normalized may the exact next task become P1.3.
 
-Do not ask the user to repeat product decisions already captured in `config/product.json`, `config/decision_registry.json`, the master plan or this handoff.
+Do not ask the user to repeat product decisions already captured in GitHub.
