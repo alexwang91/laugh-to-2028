@@ -59,12 +59,12 @@ def _submit_once(
     identity: OrderIdentity,
     submit: Callable[[Cloid], dict[str, Any]],
 ) -> tuple[str, str | None]:
-    """Submit one economic order at most once for a deterministic identity.
+    """Submit one economic order at most once for sequential replay/restart attempts.
 
     The exchange-visible cloid is the durable idempotency key. A restart reconstructs
     the same cloid from the same economic decision, queries exchange history, and skips
-    submission if that cloid already exists. Hyperliquid also requires cloids to be
-    unique per user, providing a second guard if two retries race after the preflight.
+    submission if that cloid already exists. Cross-process concurrent submission races
+    are intentionally not claimed here; persistent coordination belongs to later Phase 1.
     """
     cloid = Cloid.from_str(identity.cloid)
     existing = _existing_order_status(exchange, account_address, cloid)
