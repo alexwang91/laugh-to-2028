@@ -42,11 +42,35 @@ def test_identity_changes_for_each_economic_identity_component():
         assert build_order_identity(**candidate).cloid != baseline
 
 
-def test_reversal_legs_have_distinct_ids_for_same_target_revision():
-    close_fields = dict(BASE, side="sell", intent="close_for_reversal", target_revision="target_qty:-0.10000")
-    open_fields = dict(BASE, side="sell", intent="open_reversal", target_revision="target_qty:-0.10000")
+def test_reversal_reduce_and_increase_legs_have_distinct_ids():
+    close_fields = dict(BASE, side="sell", intent="reduce", target_revision="target_qty:-0.10000")
+    open_fields = dict(BASE, side="sell", intent="increase", target_revision="target_qty:-0.10000")
 
     assert build_order_identity(**close_fields).cloid != build_order_identity(**open_fields).cloid
+
+
+def test_reversal_open_leg_survives_restart_as_normal_increase():
+    # Original route: long -> short. After the reduce-to-flat leg, a fresh process sees
+    # current_qty == 0 and routes the remaining target as a normal increase. The economic
+    # identity must therefore be identical to the original reversal open leg.
+    original_open = build_order_identity(
+        release_id=BASE["release_id"],
+        decision_timestamp_ms=BASE["decision_timestamp_ms"],
+        asset="BTC",
+        side="sell",
+        intent="increase",
+        target_revision="target_qty:-0.10000",
+    )
+    restarted_normal_increase = build_order_identity(
+        release_id=BASE["release_id"],
+        decision_timestamp_ms=BASE["decision_timestamp_ms"],
+        asset="BTC",
+        side="sell",
+        intent="increase",
+        target_revision="target_qty:-0.10000",
+    )
+
+    assert original_open.cloid == restarted_normal_increase.cloid
 
 
 def test_target_revision_is_based_on_executable_target_not_float_noise():
