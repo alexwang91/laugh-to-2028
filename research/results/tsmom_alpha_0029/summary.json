@@ -1,0 +1,71 @@
+{
+  "experiment_id": "TSMOM-ALPHA-0029",
+  "status": "FIRST_VALID_RUN_COMPLETE",
+  "decision": "REJECTED_BY_PREREGISTERED_QUALIFICATION_RULE",
+  "promotion_evidence": false,
+  "window": {
+    "first_held_date": "2020-08-29",
+    "price_end": "2026-07-31",
+    "funding_end": "2026-07-30"
+  },
+  "price_only_5bps": {
+    "final_10k": 15269.302941609121,
+    "cagr": 0.07412435457082678,
+    "max_drawdown": -0.8561143572741523,
+    "ann_vol": 0.6284255123272058,
+    "sharpe": 0.4335623533501042,
+    "calmar": 0.0865823052037545,
+    "turnover": 801.0080592066715,
+    "avg_gross": 1.0
+  },
+  "funding_aware_5bps": {
+    "final_10k": 7797.024845420868,
+    "cagr": -0.0411869492044572,
+    "max_drawdown": -0.8830253484974812,
+    "ann_vol": 0.6246025726101632,
+    "sharpe": 0.2509191124347027,
+    "calmar": -0.046642997592922085,
+    "turnover": 800.6109653934623,
+    "avg_gross": 1.0
+  },
+  "cost_stress_price_only": {
+    "5bps_cagr": 0.07412435457082678,
+    "10bps_cagr": 0.003814477123802895,
+    "20bps_cagr": -0.1233408738126397
+  },
+  "funding": {
+    "event_rows_used": 553743,
+    "active_symbol_days": 156229,
+    "active_symbol_days_with_funding_event": 155927,
+    "active_symbol_days_without_funding_event": 302,
+    "active_symbol_day_event_coverage_ratio": 0.9980669401967625,
+    "symbols_with_no_event_days": 15,
+    "net_additive_contribution": -0.669570485520408
+  },
+  "diversification": {
+    "daily_correlation_vs_brrk_price_only": 0.05968253557260232,
+    "monthly_correlation_vs_brrk_price_only": 0.20519455358548605,
+    "daily_correlation_vs_brrk_strict_router": 0.04075373467761201,
+    "monthly_correlation_vs_brrk_strict_router": 0.29045543232606946
+  },
+  "crisis_alpha": {
+    "mean_tsmom_return_on_brrk_worst_decile_days": -0.005887522362501376,
+    "compound_tsmom_return_on_brrk_worst_decile_days": -0.5932161108290943,
+    "worst20_brrk_days_mean_tsmom": -0.018427599807769583,
+    "worst20_brrk_days_compound_tsmom": -0.33683232085297465,
+    "mean_tsmom_return_on_brrk_worst_decile_months": -0.0010829862158952652
+  },
+  "qualification": {
+    "funding_aware_economics": false,
+    "daily_correlation_below_0_50": true,
+    "nonnegative_brrk_worst_decile_day_alpha": false,
+    "qualified_for_stack_test": false
+  },
+  "data_repairs": {
+    "monthly_internal_gaps_detected": 323,
+    "official_daily_1d_gaps_repaired": 318,
+    "unresolved_internal_gaps": 5,
+    "unresolved_symbol": "ICPUSDT"
+  },
+  "stopping_rule": "Do not tune TSMOM on the same historical sample. Retain as rejected evidence and move to carry research."
+}
