@@ -9,17 +9,18 @@ Status: authoritative cross-chat handoff snapshot
 - Roadmap: `docs/IMPLEMENTATION_ROADMAP_2026-08-05.md`
 - Governance: `docs/PROJECT_GOVERNANCE_2026-08-05.md`
 - Continuity protocol: `docs/CONTEXT_CONTINUITY_PROTOCOL.md`
-- Last merged planning PR: #38
-- Continuity bootstrap commits on `main`: `7abf1260e979061960b8eda27457905473f27d4f`, `e457e7ad9610fc3dd8b7c241347709a21e595060`
-- Current governance candidate: PR #39, `governance/context-handoff`
+- Planning PR: #38 merged
+- Context-handoff governance PR: #39 merged
+- Current candidate branch: `phase0/canonical-config-registry`
 
 ## Current roadmap position
 
 ```text
 PLANNING BASELINE: complete
-CONTEXT-HANDOFF GOVERNANCE: PR #39 being closed before implementation work
-P0.1 Canonical product config: NEXT
-P0.2 Decision registry: NEXT / may be implemented in the same Phase-0 PR if acceptance gates remain clear
+CONTEXT-HANDOFF GOVERNANCE: complete
+P0.1 Canonical product config: candidate implemented, pending PR/CI closure
+P0.2 Decision registry: candidate implemented, pending PR/CI closure
+P1.1 Deterministic order identity: NEXT only after Phase 0 closes
 P1+: not authorized to skip ahead
 ```
 
@@ -41,6 +42,22 @@ P1+: not authorized to skip ahead
 - Bot may use a trading Agent/API credential only; never the master wallet private key and never automated withdrawals.
 - Strategy upgrades use candidate/shadow plus manual blue-green cutover; no hot strategy patching.
 
+## Phase 0 candidate implementation
+
+P0.1 adds:
+
+- `config/product.json` as the canonical machine-readable product baseline;
+- `execution/plan-b-bot/beta_bot/product_config.py` as a validated loader;
+- execution settings now consume the canonical product config before applying the narrower BTC-only implementation capability;
+- explicit distinction between product universe and current executor capability;
+- research and execution contract tests reading the same source file;
+- `phase0-baseline.yml` CI contract.
+
+P0.2 adds:
+
+- `config/decision_registry.json` with accepted research targets, implementation-verified evidence, shadow-only lines, stopped/rejected lines and explicit production-authorized set;
+- stopped historical lines are machine-readable so future tasks can detect that they must not be silently reopened.
+
 ## Research boundaries that must remain closed unless formally reopened
 
 - Do not silently rescue stopped carry work.
@@ -57,12 +74,12 @@ P1+: not authorized to skip ahead
 - Dynamic leverage above the current BRRK scale is not yet production-authorized.
 - Cycle-top/exit model is not yet validated; future study must include 2021 two-wave structure and 2025 multi-peak structure.
 - Bear-market Top-20 short expansion is research-only and deferred.
-- Cross-chat continuity contract now exists; PR #39 adds the mandatory PR template and automated PR-body/CURRENT_STATE check.
+- Phase 0 evidence is not final until candidate PR CI and governance checks pass.
 
 ## Production authorization
 
 ```text
-Strategy change from planning/continuity work: NONE
+Strategy change from Phase 0: NONE
 New live capital authorization: NONE
 Leverage expansion authorization: NONE
 Short authorization: NONE
@@ -70,33 +87,33 @@ Short authorization: NONE
 
 ## Open blockers / uncertainties
 
-1. Phase 0 canonical machine-readable config does not yet exist.
-2. Phase 0 decision registry does not yet exist.
-3. Execution account/order/fill truth is not yet hardened.
-4. Operating drawdown budget is intentionally not frozen until leverage research.
-5. Cycle-exit signal parameters/timeframes are intentionally not frozen until historical/walk-forward study.
+1. Phase 0 candidate must pass PR governance and Phase-0 CI before being considered closed.
+2. Execution account/order/fill truth is not yet hardened; this becomes Phase 1.
+3. Operating drawdown budget is intentionally not frozen until leverage research.
+4. Cycle-exit signal parameters/timeframes are intentionally not frozen until historical/walk-forward study.
 
 ## Latest project-drift assessment
 
 ```text
-DRIFT_1
+DRIFT_0
 ```
 
-Reason: two continuity bootstrap files were created directly on `main` before the branch/PR guard was installed: the continuity protocol and initial `CURRENT_STATE`. This is a process-only deviation. It changed no product, research, risk, credential or production behavior. PR #39 closes the gap by adding a mandatory PR template and automated check. After PR #39 merges, all material forward work must follow candidate branch + PR + handoff update.
+Reason: Phase 0 implements the exact next roadmap dependency. It does not change strategy economics, risk limits, venue, asset universe, approval boundaries or production authorization. Legacy BTC-only and beta-cap behavior is explicitly treated as current execution capability/research legacy rather than canonical product policy.
 
 ## Exact next unblocked task
 
-After PR #39 merges, implement Phase 0:
+If and only if the Phase 0 PR passes CI/review and merges:
 
 ```text
-P0.1 Canonical product config
-P0.2 Decision registry
+P1.1 Deterministic order identity
 ```
 
-Acceptance gates are defined in `docs/IMPLEMENTATION_ROADMAP_2026-08-05.md`.
-
-Do not begin P1 until Phase 0 has a closed PR with tests/evidence and this file is updated.
+Then continue Phase 1 in dependency order. Do not begin dynamic leverage, cycle-exit research or bear-short work before account/execution truth is closed.
 
 ## Fresh-chat resume instructions
 
-A fresh conversation should read the canonical files listed above, inspect PR #39 and the latest merged PRs, verify actual GitHub state, then continue P0.1/P0.2. Do not ask the user to repeat strategy decisions already captured here or in the master plan.
+A fresh conversation should read the canonical files, inspect the latest merged PR after #39, verify actual GitHub state and CI, then:
+
+- if the Phase 0 PR is still open or failing, close/fix it first;
+- if Phase 0 is merged and green, begin P1.1 Deterministic order identity;
+- do not ask the user to repeat product decisions already captured in `config/product.json`, the master plan or this handoff.
