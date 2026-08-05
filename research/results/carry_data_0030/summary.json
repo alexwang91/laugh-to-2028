@@ -1,0 +1,94 @@
+{
+  "audit_id": "CARRY-DATA-0030",
+  "status": "PASS",
+  "strategy_pnl": false,
+  "trading_changes": false,
+  "sources": {
+    "s3": "https://s3-ap-northeast-1.amazonaws.com/data.binance.vision",
+    "spot_root": "data/spot/monthly/klines/",
+    "perp_root": "data/futures/um/monthly/klines/",
+    "funding_root": "data/futures/um/monthly/fundingRate/"
+  },
+  "pass_rule": {
+    "target_assets": 5,
+    "resolved_assets": 5,
+    "all_without_errors": true,
+    "minimum_daily_spot_perp_alignment": 0.99,
+    "all_assets_pass": true
+  },
+  "assets": {
+    "BTCUSDT": {
+      "common_window": ["2020-01", "2026-07"],
+      "shared_days": 2404,
+      "daily_alignment_ratio": 1.0,
+      "funding_event_count": 7212,
+      "funding_positive_event_share": 0.8570438158624515,
+      "funding_mean_rate_per_event": 0.00010827318496949529,
+      "funding_median_rate_per_event": 0.00009422,
+      "basis_median": -0.00038228668304285396,
+      "basis_p01": -0.0008468307918649587,
+      "basis_p99": 0.0014623828161166692,
+      "basis_min": -0.007364583333333452,
+      "basis_max": 0.0031085888614290624
+    },
+    "ETHUSDT": {
+      "common_window": ["2020-01", "2026-07"],
+      "shared_days": 2404,
+      "daily_alignment_ratio": 1.0,
+      "funding_event_count": 7212,
+      "funding_positive_event_share": 0.860648918469218,
+      "funding_mean_rate_per_event": 0.0001283425221852468,
+      "funding_median_rate_per_event": 0.0001,
+      "basis_median": -0.0003702504096110282,
+      "basis_p01": -0.000831368420840819,
+      "basis_p99": 0.0018415092702387605,
+      "basis_min": -0.01029493600445186,
+      "basis_max": 0.0036076125392348057
+    },
+    "SOLUSDT": {
+      "common_window": ["2020-09", "2026-07"],
+      "shared_days": 2142,
+      "daily_alignment_ratio": 0.9916666666666667,
+      "funding_event_count": 6516,
+      "funding_positive_event_share": 0.7136279926335175,
+      "funding_mean_rate_per_event": 9.73538980969914e-7,
+      "funding_median_rate_per_event": 0.000086655,
+      "basis_median": -0.0004181210720906603,
+      "basis_p01": -0.0029804061640681147,
+      "basis_p99": 0.0029417758675399923,
+      "basis_min": -0.16903409090909094,
+      "basis_max": 0.00709428259591971,
+      "note": "Observed funding interval can compress to about 2h; account event-by-event. Early-month spot-only dates and known 2022 archive gaps explain most alignment difference."
+    },
+    "BNBUSDT": {
+      "common_window": ["2020-02", "2026-07"],
+      "shared_days": 2364,
+      "daily_alignment_ratio": 0.9962073324905183,
+      "funding_event_count": 7091,
+      "funding_positive_event_share": 0.2551121139472571,
+      "funding_zero_event_count": 3544,
+      "funding_mean_rate_per_event": -1.4297278240022565e-6,
+      "funding_median_rate_per_event": 0.0,
+      "basis_median": -4.903336428091487e-5,
+      "basis_p01": -0.00219563512914297,
+      "basis_p99": 0.0018697002983599558,
+      "basis_min": -0.012680666702930665,
+      "basis_max": 0.003865356336754333
+    },
+    "XRPUSDT": {
+      "common_window": ["2020-01", "2026-07"],
+      "shared_days": 2394,
+      "daily_alignment_ratio": 0.9958402662229617,
+      "funding_event_count": 7196,
+      "funding_positive_event_share": 0.797248471372985,
+      "funding_mean_rate_per_event": 0.00013545437187326292,
+      "funding_median_rate_per_event": 0.0001,
+      "basis_median": -0.00039512678526087974,
+      "basis_p01": -0.0014630919111502173,
+      "basis_p99": 0.0022762908433470743,
+      "basis_min": -0.06688506688506679,
+      "basis_max": 0.004880212954747165
+    }
+  },
+  "interpretation": "Same-venue Binance spot, USD-M perpetual and funding histories are sufficient to authorize a separately preregistered naive delta-neutral spot-perp carry PNL experiment. Funding must be accounted event-by-event; no assumption of persistently positive funding is valid, especially for BNB."
+}
