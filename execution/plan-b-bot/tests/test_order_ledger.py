@@ -223,6 +223,28 @@ def test_exchange_truth_overrides_conflicting_submission_status_with_audit(tmp_p
     assert any(row["status"] == "exchange_state_conflict" for row in history)
 
 
+@pytest.mark.parametrize(
+    ("status", "reason_field"),
+    [
+        ("reduceOnlyCanceled", "cancel_reason"),
+        ("perpMarginRejected", "reject_reason"),
+    ],
+)
+def test_documented_specific_terminal_statuses_are_reconciled(status, reason_field, tmp_path):
+    ledger = OrderLedger(str(tmp_path / f"{status}.sqlite3"))
+    ledger.record_intent(_intent())
+    ledger.record_submission_attempt(_intent().identity.cloid, 1_785_974_400_100)
+    result = reconcile_unresolved_orders(
+        ledger,
+        query_order_status=lambda _cloid: _order_response(status=status, remaining="0.25"),
+        fetch_fills_by_time=lambda _start, _end: [],
+    )
+    assert result["unresolved_after"] == 0
+    row = ledger.get_order(_intent().identity.cloid)
+    assert row["terminal_status"] == status
+    assert row[reason_field] == f"exchange_status:{status}"
+
+
 def test_order_status_lookup_failure_leaves_structured_uncertainty_audit(tmp_path):
     ledger = OrderLedger(str(tmp_path / "orders.sqlite3"))
     ledger.record_intent(_intent())
