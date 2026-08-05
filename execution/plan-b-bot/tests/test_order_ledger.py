@@ -164,6 +164,21 @@ def test_intent_only_restart_is_safe_to_replay_because_no_attempt_was_persisted(
     assert ledger.get_order(_intent().identity.cloid)["submission_attempt_timestamp_ms"] is None
 
 
+def test_recovered_exchange_open_order_blocks_even_without_local_attempt(tmp_path):
+    ledger = OrderLedger(str(tmp_path / "orders.sqlite3"))
+    ledger.record_intent(_intent())
+    result = reconcile_unresolved_orders(
+        ledger,
+        query_order_status=lambda _cloid: _order_response(status="open", remaining="0.25"),
+        fetch_fills_by_time=lambda _start, _end: [],
+    )
+    row = ledger.get_order(_intent().identity.cloid)
+    assert row["submission_attempt_timestamp_ms"] is None
+    assert row["exchange_oid"] == "123"
+    assert row["terminal_status"] is None
+    assert result["blocking_unresolved_after"] == 1
+
+
 def test_filled_without_complete_fill_evidence_stays_unresolved(tmp_path):
     ledger = OrderLedger(str(tmp_path / "orders.sqlite3"))
     ledger.record_intent(_intent())
@@ -178,13 +193,21 @@ def test_filled_without_complete_fill_evidence_stays_unresolved(tmp_path):
     assert row["last_exchange_status"] == "filled"
     assert row["terminal_status"] is None
     assert row["current_status"] == "reconciliation_uncertain"
+    history = ledger.list_status_history(_intent().identity.cloid)
+    assert any(
+        "exchange_truth_apply_failed" in row["detail_json"]
+        for row in history
+        if row["status"] == "reconciliation_uncertain"
+    )
 
 
 def test_exchange_truth_overrides_conflicting_submission_status_with_audit(tmp_path):
     ledger = OrderLedger(str(tmp_path / "orders.sqlite3"))
     ledger.record_intent(_intent())
     ledger.record_submission_attempt(_intent().identity.cloid, 1_785_974_400_100)
-    ledger.record_submission_response(_intent().identity.cloid, {"status": "ok"}, "filled", exchange_oid=123)
+    ledger.record_submission_response(
+        _intent().identity.cloid, {"status": "ok"}, "filled", exchange_oid=123
+    )
 
     canceled = _order_response(status="canceled", remaining="0.25")
     result = reconcile_unresolved_orders(
@@ -198,6 +221,62 @@ def test_exchange_truth_overrides_conflicting_submission_status_with_audit(tmp_p
     assert row["cancel_reason"] == "exchange_status:canceled"
     history = ledger.list_status_history(_intent().identity.cloid)
     assert any(row["status"] == "exchange_state_conflict" for row in history)
+
+
+def test_order_status_lookup_failure_leaves_structured_uncertainty_audit(tmp_path):
+    ledger = OrderLedger(str(tmp_path / "orders.sqlite3"))
+    ledger.record_intent(_intent())
+
+    def fail_lookup(_cloid):
+        raise TimeoutError("info endpoint timed out")
+
+    with pytest.raises(LedgerUncertainState, match="orderStatus lookup failed"):
+        reconcile_unresolved_orders(
+            ledger,
+            query_order_status=fail_lookup,
+            fetch_fills_by_time=lambda _start, _end: [],
+        )
+    row = ledger.get_order(_intent().identity.cloid)
+    assert row["current_status"] == "reconciliation_uncertain"
+    history = ledger.list_status_history(_intent().identity.cloid)
+    assert any(
+        "order_status_lookup_failed" in item["detail_json"]
+        for item in history
+        if item["status"] == "reconciliation_uncertain"
+    )
+
+
+def test_malformed_fill_lookup_leaves_structured_uncertainty_audit(tmp_path):
+    ledger = OrderLedger(str(tmp_path / "orders.sqlite3"))
+    ledger.record_intent(_intent())
+    ledger.record_submission_attempt(_intent().identity.cloid, 1_785_974_400_100)
+    with pytest.raises(LedgerUncertainState, match="Malformed userFillsByTime response"):
+        reconcile_unresolved_orders(
+            ledger,
+            query_order_status=lambda _cloid: _order_response(status="open", remaining="0.25"),
+            fetch_fills_by_time=lambda _start, _end: {"unexpected": True},
+        )
+    history = ledger.list_status_history(_intent().identity.cloid)
+    assert any(
+        "malformed_fill_lookup_response" in item["detail_json"]
+        for item in history
+        if item["status"] == "reconciliation_uncertain"
+    )
+
+
+def test_unknown_exchange_status_is_uncertain_and_audited(tmp_path):
+    ledger = OrderLedger(str(tmp_path / "orders.sqlite3"))
+    ledger.record_intent(_intent())
+    ledger.record_submission_attempt(_intent().identity.cloid, 1_785_974_400_100)
+    with pytest.raises(LedgerUncertainState, match="Unknown Hyperliquid order status"):
+        reconcile_unresolved_orders(
+            ledger,
+            query_order_status=lambda _cloid: _order_response(
+                status="new-undocumented-state", remaining="0.25"
+            ),
+            fetch_fills_by_time=lambda _start, _end: [],
+        )
+    assert ledger.get_order(_intent().identity.cloid)["current_status"] == "reconciliation_uncertain"
 
 
 def test_fill_api_limit_is_uncertain_not_silently_complete(tmp_path):
