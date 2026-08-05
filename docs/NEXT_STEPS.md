@@ -19,20 +19,19 @@
 ## Current authorized task
 
 ```text
-P1.3 Partial-fill correctness — CANDIDATE / AWAITING PR CI
+P1.3 Partial-fill correctness — IMPLEMENTATION VERIFIED / FINAL-HEAD CI PENDING / NOT MERGED
 ```
 
-P0.1, P0.2, P1.1 and P1.2 are merged and complete. P1.3 is the only active dependency and is being implemented on `p1-3/partial-fill-correctness`.
+P0.1, P0.2, P1.1 and P1.2 are merged and complete. P1.3 remains the only active dependency on PR #46.
 
 The exact next action is:
 
 ```text
-open P1.3 PR
--> authoritative CI
--> review/fix on the same PR if required
--> final-head CI
--> merge
--> normalize handoff
+final-head CI on PR #46
+-> fix only P1.3 findings on the same PR if required
+-> final-head CI green
+-> merge PR #46
+-> normalize handoff to P1.4
 ```
 
 Do not start P1.4 reversal safety, P2 router work, P4 leverage work, P5 cycle-exit research or P8 bear-short research early.
@@ -51,9 +50,9 @@ Acceptance criteria:
 - resting remainder is visible;
 - target versus actual exposure is continuously calculable.
 
-The P1.3 candidate consumes durable P1.2 order/fill truth rather than replacing it with requested order size or optimistic submission assumptions.
+The P1.3 implementation consumes durable P1.2 order/fill truth rather than replacing it with requested order size or optimistic submission assumptions.
 
-Current candidate design:
+Implemented candidate behavior:
 
 - persist a trustworthy pre-trade position baseline and target for same-direction economic orders;
 - derive signed position progress only from reconciled actual fills;
@@ -63,7 +62,9 @@ Current candidate design:
 - fail closed if local submitted-minus-fill truth disagrees with the exchange remaining quantity;
 - do not invent a position baseline for the reversal open leg before P1.4 provides fresh reversal-state reconciliation.
 
-P1.3 must not be described as complete merely because the candidate code exists. Final acceptance requires authoritative CI on the final PR head and merge.
+Initial candidate head `c75cd51ba2d73a6b629fb7402e6948326756c0af` passed execution tests and research integration in Phase 0 baseline contract run #24 / Actions `31055367127`. Corrected PR handoff governance run #32 / Actions `31055420052` also passed. `EXEC-PARTIAL-FILL-P1.3` is registered as `IMPLEMENTATION_VERIFIED`.
+
+P1.3 is still **not merged**. The current branch head includes decision-registry and handoff evidence updates, so final-head CI must pass before merge.
 
 Unless the roadmap is formally changed, P1.3 does **not** include or claim:
 
@@ -143,8 +144,8 @@ Current BTC-only executor capability does not redefine the BTC/ETH/SOL/BNB produ
 P0  canonical product/state registry                       COMPLETE
 P1.1 deterministic order identity                         COMPLETE
 P1.2 persistent order ledger                              COMPLETE
-P1.3 partial-fill correctness                             CANDIDATE / AWAITING PR CI
-P1.4 reversal safety                                      BLOCKED ON P1.3
+P1.3 partial-fill correctness                             VERIFIED / FINAL-HEAD CI PENDING / NOT MERGED
+P1.4 reversal safety                                      BLOCKED ON P1.3 MERGE
 P1.5 precision / metadata                                 BLOCKED
 P1.6 post-submit reconciliation                           BLOCKED
 P1.7 restart recovery                                     BLOCKED
@@ -169,7 +170,7 @@ NO_CHANGE
 production_authorized_components = []
 ```
 
-P1.3 candidate engineering work does not authorize live deployment, leverage expansion, new-asset execution, shorting, cycle-exit production or strategy cutover.
+P1.3 engineering verification does not authorize live deployment, leverage expansion, new-asset execution, shorting, cycle-exit production or strategy cutover.
 
 ---
 
@@ -192,4 +193,4 @@ main
 -> normalize post-merge handoff if needed
 ```
 
-Current execution is inside the P1.3 self-review/evidence loop. P1.4 remains blocked.
+Current execution is at the **P1.3 final-head CI gate**. P1.4 remains blocked.
