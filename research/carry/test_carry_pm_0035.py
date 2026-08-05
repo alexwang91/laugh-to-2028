@@ -34,7 +34,7 @@ class CarryPm0035Tests(unittest.TestCase):
         self.assertAlmostEqual(out["total_borrow_value"], 3.5)
         self.assertAlmostEqual(out["total_supply_value"], 5.5)
 
-    def test_compare_passes_clean_mechanism(self):
+    def test_compare_passes_clean_mechanism_with_sub_dollar_spot_dust(self):
         def snap(label, ubtc, short_ntl, short_szi, avail, pm_ratio=0.0):
             return {
                 "label": label,
@@ -65,10 +65,12 @@ class CarryPm0035Tests(unittest.TestCase):
         cash = snap("cash", 0, 0, 0, 500)
         spot = snap("spot", 0.0075, 0, 0, 470)
         matched = snap("matched", 0.0075, 478, -0.00747, 450, 0.10)
-        closed = snap("closed", 0, 0, 0, 497)
+        closed = snap("closed", 0.5 / 64000, 0, 0, 497)
         out = compare_snapshots(cash, spot, matched, closed)
         self.assertEqual(out["status"], "PASS_PM_ACCOUNT_BEHAVIOR")
         self.assertLess(out["measurements"]["incremental_maintenance_fraction_of_short_notional"], 0.25)
+        self.assertAlmostEqual(out["measurements"]["closed_stage_ubtc_notional"], 0.5)
+        self.assertTrue(out["checks"]["closed_stage_ubtc_residual_below_1_usd"])
 
     def test_compare_fails_size_mismatch(self):
         def base(spot_ntl, short_ntl, mismatch, has_spot, has_short):
