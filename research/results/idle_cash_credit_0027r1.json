@@ -1,0 +1,47 @@
+{
+  "experiment_id": "IDLE-CASH-CREDIT-F27",
+  "methodology": "Credit each variant's (1 - gross) idle-cash fraction daily at the FRED DTB3 investment-basis rate; re-measure CAGR/Sharpe on the resulting series. Gross read from the already-committed PIT-DISP-0015 daily_weights.csv, no re-fit.",
+  "window": {
+    "start": "2022-12-10",
+    "end": "2026-08-02"
+  },
+  "results": {
+    "V1_BASELINE": {
+      "label": "V1 baseline",
+      "mean_idle_fraction": 0.20477797105687454,
+      "median_idle_fraction": 0.0,
+      "raw_cagr": 0.6137305686365311,
+      "credited_cagr": 0.6272122212611846,
+      "cagr_delta_pp": 1.3481652624653506,
+      "raw_sharpe_rf0": 1.295542583536419,
+      "credited_sharpe_rf0": 1.3143005040373823,
+      "raw_excess_sharpe_field": "excess_sharpe_excess_vol_denominator",
+      "raw_excess_sharpe": 1.2732744931149376,
+      "credited_excess_sharpe_field": "excess_sharpe_excess_vol_denominator",
+      "credited_excess_sharpe": 1.3036632387834344,
+      "raw_max_drawdown": -0.37634907563779574,
+      "credited_max_drawdown": -0.36600332793616086
+    },
+    "BRRK0011_BASELINE": {
+      "label": "BRRK-0011 core",
+      "mean_idle_fraction": 0.24513355046949667,
+      "median_idle_fraction": 6.019999998496672e-08,
+      "raw_cagr": 0.6523250740192286,
+      "credited_cagr": 0.6686971575076455,
+      "cagr_delta_pp": 1.63720834884169,
+      "raw_sharpe_rf0": 1.3537501790922384,
+      "credited_sharpe_rf0": 1.3761107607639236,
+      "raw_excess_sharpe_field": "excess_sharpe_excess_vol_denominator",
+      "raw_excess_sharpe": 1.3676656837958756,
+      "credited_excess_sharpe_field": "excess_sharpe_excess_vol_denominator",
+      "credited_excess_sharpe": 1.404779879642065,
+      "raw_max_drawdown": -0.3371507034657848,
+      "credited_max_drawdown": -0.33552370668877907
+    }
+  },
+  "brrk_vs_v1_sharpe_gap": {
+    "raw": 0.05820759555581945,
+    "credited": 0.06181025672654128,
+    "shift": 0.0036026611707218326
+  }
+}
