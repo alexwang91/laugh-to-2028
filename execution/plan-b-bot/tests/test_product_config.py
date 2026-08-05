@@ -46,5 +46,35 @@ def test_execution_capability_is_distinct_from_product_universe(monkeypatch):
         Settings.from_env()
 
 
+def test_trade_mode_requires_explicit_durable_ledger(monkeypatch, tmp_path):
+    monkeypatch.setenv("TRADING_MODE", "trade")
+    monkeypatch.setenv("HL_MASTER_ADDRESS", "0x0000000000000000000000000000000000000001")
+    monkeypatch.setenv("HL_API_PRIVATE_KEY", "test-only-not-a-real-key")
+    monkeypatch.delenv("ORDER_LEDGER_PATH", raising=False)
+    monkeypatch.delenv("ORDER_LEDGER_DURABLE_STORAGE", raising=False)
+    with pytest.raises(ValueError, match="ORDER_LEDGER_PATH"):
+        Settings.from_env()
+
+    monkeypatch.setenv("ORDER_LEDGER_PATH", str(tmp_path / "orders.sqlite3"))
+    with pytest.raises(ValueError, match="ORDER_LEDGER_DURABLE_STORAGE"):
+        Settings.from_env()
+
+    monkeypatch.setenv("ORDER_LEDGER_DURABLE_STORAGE", "true")
+    settings = Settings.from_env()
+    assert settings.can_trade
+    assert settings.order_ledger_durable_storage is True
+
+
+def test_vercel_trade_mode_fails_closed_for_local_sqlite(monkeypatch, tmp_path):
+    monkeypatch.setenv("TRADING_MODE", "trade")
+    monkeypatch.setenv("HL_MASTER_ADDRESS", "0x0000000000000000000000000000000000000001")
+    monkeypatch.setenv("HL_API_PRIVATE_KEY", "test-only-not-a-real-key")
+    monkeypatch.setenv("ORDER_LEDGER_PATH", str(tmp_path / "orders.sqlite3"))
+    monkeypatch.setenv("ORDER_LEDGER_DURABLE_STORAGE", "true")
+    monkeypatch.setenv("VERCEL", "1")
+    with pytest.raises(ValueError, match="disabled on Vercel"):
+        Settings.from_env()
+
+
 def test_default_product_config_file_exists():
     assert DEFAULT_PRODUCT_CONFIG_PATH.is_file()

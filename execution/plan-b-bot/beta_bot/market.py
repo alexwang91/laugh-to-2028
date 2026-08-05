@@ -85,6 +85,42 @@ def fetch_user_state(api_url: str, account_address: str, timeout: float) -> dict
     )
 
 
+def fetch_order_status(
+    api_url: str,
+    account_address: str,
+    cloid: str,
+    timeout: float,
+) -> dict[str, Any]:
+    return _post(
+        api_url,
+        {"type": "orderStatus", "user": account_address, "oid": cloid},
+        timeout,
+    )
+
+
+def fetch_user_fills_by_time(
+    api_url: str,
+    account_address: str,
+    start_time_ms: int,
+    end_time_ms: int,
+    timeout: float,
+) -> list[dict[str, Any]]:
+    result = _post(
+        api_url,
+        {
+            "type": "userFillsByTime",
+            "user": account_address,
+            "startTime": int(start_time_ms),
+            "endTime": int(end_time_ms),
+            "aggregateByTime": False,
+        },
+        timeout,
+    )
+    if not isinstance(result, list):
+        raise RuntimeError(f"Unexpected userFillsByTime response: {result}")
+    return result
+
+
 def fetch_market_snapshot(
     api_url: str,
     coin: str,

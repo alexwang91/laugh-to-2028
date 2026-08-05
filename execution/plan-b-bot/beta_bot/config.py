@@ -47,6 +47,9 @@ class Settings:
     live_trading_confirmation: Optional[str]
     telegram_bot_token: Optional[str]
     telegram_chat_id: Optional[str]
+    order_ledger_path: Optional[str] = None
+    order_ledger_durable_storage: bool = False
+    running_on_vercel: bool = False
 
     @property
     def api_url(self) -> str:
@@ -87,6 +90,9 @@ class Settings:
             live_trading_confirmation=(os.getenv("LIVE_TRADING_CONFIRMATION") or "").strip() or None,
             telegram_bot_token=(os.getenv("TELEGRAM_BOT_TOKEN") or "").strip() or None,
             telegram_chat_id=(os.getenv("TELEGRAM_CHAT_ID") or "").strip() or None,
+            order_ledger_path=(os.getenv("ORDER_LEDGER_PATH") or "").strip() or None,
+            order_ledger_durable_storage=_env_bool("ORDER_LEDGER_DURABLE_STORAGE", False),
+            running_on_vercel=_env_bool("VERCEL", False),
         )
         settings.validate()
         return settings
@@ -120,6 +126,18 @@ class Settings:
                 raise ValueError("HL_MASTER_ADDRESS is required in trade mode")
             if not self.api_private_key:
                 raise ValueError("HL_API_PRIVATE_KEY is required in trade mode")
+            if not self.order_ledger_path:
+                raise ValueError("ORDER_LEDGER_PATH is required in trade mode")
+            if self.order_ledger_path == ":memory:":
+                raise ValueError("Trade mode cannot use an in-memory order ledger")
+            if not self.order_ledger_durable_storage:
+                raise ValueError(
+                    "Trade mode requires ORDER_LEDGER_DURABLE_STORAGE=true only when ORDER_LEDGER_PATH is on persistent storage"
+                )
+            if self.running_on_vercel:
+                raise ValueError(
+                    "Trade mode is disabled on Vercel for the local SQLite ledger backend; use a persistent mounted filesystem runtime"
+                )
             if self.network == "mainnet" and self.live_trading_confirmation != "ENABLE_MAINNET_LIVE_TRADING":
                 raise ValueError(
                     "Mainnet trade mode requires LIVE_TRADING_CONFIRMATION=ENABLE_MAINNET_LIVE_TRADING"

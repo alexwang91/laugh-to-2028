@@ -6,6 +6,8 @@ venv/
 .env
 .vercel/
 .DS_Store
+*.sqlite3
+*.sqlite3-*
 
 # Scratch experiment output directories (e.g. research/*/foo_outputs/) get
 # copied into research/results/<experiment>/ by CI before being committed --
