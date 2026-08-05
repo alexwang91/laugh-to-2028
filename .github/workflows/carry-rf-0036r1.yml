@@ -18,10 +18,6 @@ on:
       - 'research/results/carry_stack_0033/**'
       - 'research/results/pit_disp_0015/**'
       - 'research/results/funding_pnl_0003/**'
-  push:
-    branches: [agent/review-f1-f2]
-    paths:
-      - '.github/workflows/carry-rf-0036r1.yml'
 
 permissions:
   contents: read
@@ -32,7 +28,6 @@ concurrency:
 
 jobs:
   reprice:
-    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     timeout-minutes: 120
     steps:
@@ -70,61 +65,3 @@ jobs:
             research/carry/CARRY-RF-0036R1.json
             research/carry/carry_rf_0036r1.log
             research/results/carry_rf_0036r1/**
-
-  persist-first-valid-evidence:
-    if: github.event_name == 'push'
-    permissions:
-      contents: write
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: agent/review-f1-f2
-      - name: Download first valid CARRY-RF-0036R1 artifact
-        env:
-          GH_TOKEN: ${{ github.token }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          gh api \
-            -H 'Accept: application/vnd.github+json' \
-            /repos/${{ github.repository }}/actions/artifacts/8927529508/zip \
-            > /tmp/carry-rf-0036r1.zip
-          rm -rf /tmp/carry-rf-0036r1
-          mkdir -p /tmp/carry-rf-0036r1
-          unzip -q /tmp/carry-rf-0036r1.zip -d /tmp/carry-rf-0036r1
-          mkdir -p research/results/carry_rf_0036r1
-          cp -f /tmp/carry-rf-0036r1/results/carry_rf_0036r1/* research/results/carry_rf_0036r1/
-      - name: Verify first-valid evidence fingerprint and required daily files
-        shell: bash
-        run: |
-          set -euo pipefail
-          test -s research/results/carry_rf_0036r1/summary.json
-          test -s research/results/carry_rf_0036r1/daily_repricing.csv
-          test -s research/results/carry_rf_0036r1/risk_free_daily.csv
-          test -s research/results/carry_rf_0036r1/fred_dtb3_raw.csv
-          python - <<'PY'
-          import json
-          from pathlib import Path
-          p = Path('research/results/carry_rf_0036r1/summary.json')
-          report = json.loads(p.read_text())
-          assert report['status'] == 'FIRST_VALID_REPRICING_COMPLETE'
-          assert report['carry_pnl_0031']['corrected_net_economics_pass'] is False
-          assert report['carry_line_stopped_under_discipline_7'] is True
-          assert report['carry_pnl_0031']['risk_free_source']['raw_csv_sha256'] == '27b9d881b98ec90890a891c1080170fe6ade2a682ab01b6e66561479b113d0c3'
-          print('first valid evidence verified')
-          PY
-      - name: Commit exact first-valid evidence to research branch
-        shell: bash
-        run: |
-          set -euo pipefail
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add research/results/carry_rf_0036r1/
-          if git diff --cached --quiet; then
-            echo 'Evidence already persisted; nothing to commit.'
-            exit 0
-          fi
-          git commit -m 'Persist CARRY-RF-0036R1 first-valid daily evidence'
-          git push origin HEAD:agent/review-f1-f2
