@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "product_id": "brkk-laugh-to-2028",
+  "long_universe": ["BTC", "ETH", "SOL", "BNB"],
+  "primary_venue": "hyperliquid",
+  "canonical_timezone": "UTC",
+  "daily_boundary_utc": "00:00",
+  "capital": {
+    "initial_live_capital_usd": 2000.0,
+    "weekly_manual_contribution_usd": 100.0,
+    "weekly_contribution_execution": "manual_deposit_then_next_daily_decision"
+  },
+  "risk": {
+    "catastrophic_drawdown_limit": 0.70,
+    "operating_risk_budget": null,
+    "operating_risk_budget_status": "UNFROZEN_PENDING_P4_LEVERAGE_STUDY",
+    "leverage_policy": "MODEL_DETERMINED",
+    "intraday_policy": "RISK_REDUCTION_ONLY"
+  },
+  "production": {
+    "allowed_states": ["ACTIVE", "MONITOR_ONLY", "SHORT_READY", "STOPPED"],
+    "default_state": "MONITOR_ONLY",
+    "strategy_release_id": "UNRELEASED_PHASE0",
+    "model_version": "BRRK-0011_FROZEN_RESEARCH_TARGET",
+    "data_version": "UNFROZEN_PHASE0"
+  },
+  "human_approval": {
+    "flat_to_long": true,
+    "flat_to_short": true,
+    "monitor_only_to_active": true,
+    "first_short_exposure_new_bear_phase": true,
+    "automatic_risk_reduction_requires_approval": false
+  },
+  "security": {
+    "credential_type": "HYPERLIQUID_TRADING_AGENT_API",
+    "master_wallet_private_key_allowed_in_bot": false,
+    "automated_withdrawals_allowed": false,
+    "automated_external_transfers_allowed": false
+  },
+  "deployment": {
+    "upgrade_model": "BLUE_GREEN_MANUAL_CUTOVER",
+    "candidate_may_read_real_account_in_shadow": true,
+    "candidate_may_sign_production_orders": false
+  },
+  "cycle_exit": {
+    "calendar_target_is_binding": false,
+    "contextual_cycle_window": "2028-2029",
+    "flat_directional_exposure": 0.0,
+    "reentry_requires_human_approval": true
+  }
+}
