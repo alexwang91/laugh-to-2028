@@ -157,6 +157,13 @@
       "scope": "execution_truth",
       "decision": "Persistent single-account SQLite order ledger records deterministic CLOID intent before submission, a durable submission-attempt marker before the network call, submission/OID/status/fill/fee/average-price/remaining/cancel-reject truth, and restart reconciliation against Hyperliquid. Unknown or corrupt state fails closed and recovered exchange orders block new risk until resolved. This verifies P1.2 only; it does not authorize live production, complete the P1.3 partial-fill/retry lifecycle, or solve simultaneous multi-process/distributed locking.",
       "source": "PR #44"
+    },
+    {
+      "id": "EXEC-PARTIAL-FILL-P1.3",
+      "status": "IMPLEMENTATION_VERIFIED",
+      "scope": "execution_truth",
+      "decision": "Actual-fill-driven position progress is derived from reconciled fill quantity and order side, with explicit zero/partial/full fill state, live resting remainder, unfilled quantity, fill-implied actual position and target gap when a trustworthy pre-trade baseline exists. Quantity disagreement fails closed. Reversal-open deliberately does not invent a baseline before P1.4. This verifies P1.3 implementation only and authorizes no production trading or later roadmap capability.",
+      "source": "PR #46"
     }
   ]
 }

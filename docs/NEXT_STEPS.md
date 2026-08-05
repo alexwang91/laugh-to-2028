@@ -19,10 +19,20 @@
 ## Current authorized task
 
 ```text
-P1.3 Partial-fill correctness
+P1.3 Partial-fill correctness — IMPLEMENTATION VERIFIED / FINAL-HEAD CI PENDING / NOT MERGED
 ```
 
-P0.1, P0.2, P1.1 and P1.2 are merged and complete. P1.3 is now the only authorized next implementation dependency.
+P0.1, P0.2, P1.1 and P1.2 are merged and complete. P1.3 remains the only active dependency on PR #46.
+
+The exact next action is:
+
+```text
+final-head CI on PR #46
+-> fix only P1.3 findings on the same PR if required
+-> final-head CI green
+-> merge PR #46
+-> normalize handoff to P1.4
+```
 
 Do not start P1.4 reversal safety, P2 router work, P4 leverage work, P5 cycle-exit research or P8 bear-short research early.
 
@@ -40,11 +50,23 @@ Acceptance criteria:
 - resting remainder is visible;
 - target versus actual exposure is continuously calculable.
 
-P1.3 must consume the durable P1.2 order/fill truth rather than replacing it with requested order size or optimistic submission assumptions.
+The P1.3 implementation consumes durable P1.2 order/fill truth rather than replacing it with requested order size or optimistic submission assumptions.
 
-P1.3 must not be described as complete merely because P1.2 can persist partial-fill events. The missing capability is the **execution/position transition driven by actual fills**, including explicit representation of a resting remainder and a continuously computable target-versus-actual exposure gap.
+Implemented candidate behavior:
 
-Unless the roadmap is formally changed, P1.3 does **not** automatically include or claim:
+- persist a trustworthy pre-trade position baseline and target for same-direction economic orders;
+- derive signed position progress only from reconciled actual fills;
+- classify zero / partial / full fill explicitly;
+- expose exchange remaining quantity, live resting remainder and total unfilled quantity separately;
+- expose `actual_position_qty_from_fills` and `target_gap_qty` whenever the pre-trade position baseline is known;
+- fail closed if local submitted-minus-fill truth disagrees with the exchange remaining quantity;
+- do not invent a position baseline for the reversal open leg before P1.4 provides fresh reversal-state reconciliation.
+
+Initial candidate head `c75cd51ba2d73a6b629fb7402e6948326756c0af` passed execution tests and research integration in Phase 0 baseline contract run #24 / Actions `31055367127`. Corrected PR handoff governance run #32 / Actions `31055420052` also passed. `EXEC-PARTIAL-FILL-P1.3` is registered as `IMPLEMENTATION_VERIFIED`.
+
+P1.3 is still **not merged**. The current branch head includes decision-registry and handoff evidence updates, so final-head CI must pass before merge.
+
+Unless the roadmap is formally changed, P1.3 does **not** include or claim:
 
 - P1.4 reversal safety;
 - P1.5 metadata-driven precision;
@@ -122,8 +144,8 @@ Current BTC-only executor capability does not redefine the BTC/ETH/SOL/BNB produ
 P0  canonical product/state registry                       COMPLETE
 P1.1 deterministic order identity                         COMPLETE
 P1.2 persistent order ledger                              COMPLETE
-P1.3 partial-fill correctness                             CURRENT / NEXT
-P1.4 reversal safety                                      BLOCKED ON P1.3
+P1.3 partial-fill correctness                             VERIFIED / FINAL-HEAD CI PENDING / NOT MERGED
+P1.4 reversal safety                                      BLOCKED ON P1.3 MERGE
 P1.5 precision / metadata                                 BLOCKED
 P1.6 post-submit reconciliation                           BLOCKED
 P1.7 restart recovery                                     BLOCKED
@@ -148,7 +170,7 @@ NO_CHANGE
 production_authorized_components = []
 ```
 
-P1.2 being engineering-verified and merged does not authorize live deployment, leverage expansion, new-asset execution, shorting, cycle-exit production or strategy cutover.
+P1.3 engineering verification does not authorize live deployment, leverage expansion, new-asset execution, shorting, cycle-exit production or strategy cutover.
 
 ---
 
@@ -171,4 +193,4 @@ main
 -> normalize post-merge handoff if needed
 ```
 
-The exact next action after this handoff normalization is merged is to start **P1.3 Partial-fill correctness** from current main on a fresh candidate branch.
+Current execution is at the **P1.3 final-head CI gate**. P1.4 remains blocked.

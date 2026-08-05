@@ -9,6 +9,7 @@ from hyperliquid.exchange import Exchange
 from hyperliquid.utils.types import Cloid
 
 from .config import Settings
+from .fill_transition import FillTransitionError, build_fill_transition
 from .market import fetch_order_status, fetch_user_fills_by_time
 from .order_identity import OrderIdentity, build_order_identity, canonical_target_revision
 from .order_ledger import LedgerIntent, LedgerUncertainState, OrderLedger, reconcile_unresolved_orders
@@ -174,11 +175,12 @@ def _open_ledger(settings: Settings) -> OrderLedger:
 
 
 def reconcile_persistent_orders(settings: Settings) -> dict[str, Any]:
-    """Reconstruct unresolved ledger rows from Hyperliquid read-only truth."""
+    """Reconstruct unresolved rows and expose actual-fill-driven position progress."""
     if not settings.account_address:
         raise ValueError("Trading account address is missing")
     ledger = _open_ledger(settings)
-    return reconcile_unresolved_orders(
+    tracked_cloids = [row["cloid"] for row in ledger.unresolved_orders()]
+    result = reconcile_unresolved_orders(
         ledger,
         query_order_status=lambda cloid: fetch_order_status(
             settings.api_url,
@@ -194,6 +196,23 @@ def reconcile_persistent_orders(settings: Settings) -> dict[str, Any]:
             settings.request_timeout_seconds,
         ),
     )
+
+    transitions: list[dict[str, Any]] = []
+    for cloid in tracked_cloids:
+        row = ledger.get_order(cloid)
+        if row is None:
+            continue
+        try:
+            transitions.append(build_fill_transition(row).to_dict())
+        except FillTransitionError as exc:
+            ledger.record_reconciliation_uncertainty(
+                cloid, "fill_transition_failed", str(exc)
+            )
+            raise LedgerUncertainState(
+                f"CLOID {cloid} cannot produce trustworthy actual-fill position progress: {exc}"
+            ) from exc
+    result["fill_transitions"] = transitions
+    return result
 
 
 def _ledger_intent(
@@ -263,6 +282,11 @@ def execute_target_position(
         )
         quantity = _round_size(abs(delta))
 
+        transition_metadata = {
+            "position_before_qty": current_qty,
+            "target_position_qty": target_qty,
+            "position_tracking_source": "pre_trade_exchange_position",
+        }
         if reducing:
             ledger_intent = _ledger_intent(
                 identity=identity,
@@ -274,6 +298,7 @@ def execute_target_position(
                     "size": quantity,
                     "slippage": slippage,
                     "reduce_only_semantics": True,
+                    **transition_metadata,
                 },
             )
             status, existing_status = _submit_once(
@@ -299,6 +324,7 @@ def execute_target_position(
                     "is_buy": delta > 0,
                     "size": quantity,
                     "slippage": slippage,
+                    **transition_metadata,
                 },
             )
             status, existing_status = _submit_once(
@@ -325,8 +351,10 @@ def execute_target_position(
         actions.append(action)
         return actions
 
-    # P1.2 preserves the existing two-leg reversal route. It records each economic leg
-    # durably but does not claim P1.3 partial-fill correctness or P1.4 reversal safety.
+    # P1.3 records actual-fill position progress for each leg but deliberately does not
+    # solve P1.4 reversal safety. The close leg has a known pre-trade baseline. The open
+    # leg's baseline is intentionally unavailable until a future fresh reconciliation
+    # proves the close leg's actual result; P1.3 therefore never assumes it is zero.
     close_side = "sell" if current_qty > 0 else "buy"
     close_identity = _identity(
         release_id=release_id,
@@ -347,6 +375,9 @@ def execute_target_position(
             "size": close_quantity,
             "slippage": slippage,
             "reduce_only_semantics": True,
+            "position_before_qty": current_qty,
+            "target_position_qty": 0.0,
+            "position_tracking_source": "pre_trade_exchange_position",
         },
     )
     close_status, close_existing_status = _submit_once(
@@ -391,6 +422,9 @@ def execute_target_position(
             "is_buy": target_qty > 0,
             "size": open_quantity,
             "slippage": slippage,
+            "position_before_qty": None,
+            "target_position_qty": target_qty,
+            "position_tracking_source": "requires_p1_4_reversal_reconciliation",
         },
     )
     open_status, open_existing_status = _submit_once(
