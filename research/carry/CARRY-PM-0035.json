@@ -1,0 +1,79 @@
+{
+  "experiment_id": "CARRY-PM-0035-ACCOUNT-BEHAVIOR",
+  "preregistered_at": "2026-08-05",
+  "purpose": "Measure actual Hyperliquid Portfolio Margin account behavior and incremental maintenance consumption for a small matched UBTC spot + BTC short-perp pair after CARRY-IMPL-0034 passed public feasibility.",
+  "prerequisites": {
+    "CARRY_IMPL_0034": "PASS_BTC_PUBLIC_FEASIBILITY",
+    "btc_spot_representation": "official UI BTC -> HyperCore UBTC remap",
+    "ubtc_token_index": 197,
+    "ubtc_current_public_ltv_at_0034": 0.5
+  },
+  "scope": {
+    "target": "BTC only",
+    "account": "dedicated new account or subaccount",
+    "account_value_limit_usd": 1000,
+    "probe_notional_cap_usd": 500,
+    "orders_automated_by_experiment": false,
+    "private_keys_used_by_research_code": false,
+    "research_code_is_read_only": true,
+    "strategy_pnl": false,
+    "brrk_targets_changed": false,
+    "carry_0031_changed": false
+  },
+  "fixed_four_stage_sequence": [
+    {
+      "label": "cash",
+      "state": "Portfolio Margin enabled; dedicated account/subaccount; no BTC perp; no UBTC spot position used for the probe"
+    },
+    {
+      "label": "spot",
+      "state": "Acquire UBTC spot only; actual observed UBTC spot notional must be >0 and <= $500 plus 5% execution tolerance; no BTC short yet"
+    },
+    {
+      "label": "matched",
+      "state": "Hold the same UBTC spot and a BTC short-perp matched to the spot economic notional within 2%; no other perp position"
+    },
+    {
+      "label": "closed",
+      "state": "Close BTC short and exit the probe UBTC spot; verify the account returns flat in the two probe legs"
+    }
+  ],
+  "fixed_data_endpoints": [
+    "userAbstraction",
+    "spotClearinghouseState",
+    "borrowLendUserState",
+    "clearinghouseState",
+    "l2Book @142",
+    "l2Book BTC"
+  ],
+  "primary_observables": [
+    "portfolioMarginEnabled",
+    "portfolioMarginRatio",
+    "tokenToPortfolioBorrowRatio",
+    "tokenToAvailableAfterMaintenance",
+    "USDC and UBTC spot balances",
+    "BTC perp position size and notional",
+    "crossMaintenanceMarginUsed diagnostic",
+    "borrow/lend health and healthFactor",
+    "borrow/lend token states",
+    "live UBTC spot and BTC perp midpoint",
+    "spot-short notional mismatch"
+  ],
+  "fixed_gates": {
+    "account_abstraction": "portfolioMargin",
+    "portfolio_margin_enabled": true,
+    "no_other_perp_positions": true,
+    "spot_stage_btc_short_absent": true,
+    "matched_stage_ubtc_present": true,
+    "matched_stage_btc_short_present": true,
+    "matched_notional_tolerance_fraction": 0.02,
+    "matched_portfolio_margin_ratio_max": 0.5,
+    "incremental_maintenance_measurement": "USDC tokenToAvailableAfterMaintenance(spot) - USDC tokenToAvailableAfterMaintenance(matched)",
+    "max_incremental_maintenance_fraction_of_short_notional": 0.25,
+    "closed_stage_btc_flat": true,
+    "closed_stage_ubtc_near_zero": true
+  },
+  "capital_efficiency_gate_rationale": "The 25% threshold is a coarse preregistered structural discriminator, not a parameter search. It requires the short leg's observed incremental maintenance consumption to be materially below a near-fully-funded second leg before any PM-aware stack accounting is reopened.",
+  "pass_authority": "PASS_PM_ACCOUNT_BEHAVIOR authorizes only one separately preregistered PM-aware BRRK + frozen CARRY-0031 stack accounting experiment using the observed capital factor. It does not authorize production, leverage search, weight optimization, funding thresholds, asset removal, or parameter tuning.",
+  "failure_rule": "If the first valid four-stage probe fails or is inconclusive, preserve the result. Diagnose only API/state/implementation defects. Do not tune the 2% match tolerance, 0.50 PM ratio gate, 25% incremental-maintenance gate, $500 notional cap, or account structure on the observed outcome."
+}
