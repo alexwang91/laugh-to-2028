@@ -35,7 +35,7 @@
     },
     {
       "label": "closed",
-      "state": "Close BTC short and exit the probe UBTC spot; verify the account returns flat in the two probe legs"
+      "state": "Close BTC short and exit the probe UBTC spot; BTC short must be flat and residual UBTC market value must be <= $1 so mechanical spot dust does not create a false failure"
     }
   ],
   "fixed_data_endpoints": [
@@ -71,9 +71,10 @@
     "incremental_maintenance_measurement": "USDC tokenToAvailableAfterMaintenance(spot) - USDC tokenToAvailableAfterMaintenance(matched)",
     "max_incremental_maintenance_fraction_of_short_notional": 0.25,
     "closed_stage_btc_flat": true,
-    "closed_stage_ubtc_near_zero": true
+    "closed_stage_ubtc_residual_notional_usd_max": 1.0
   },
   "capital_efficiency_gate_rationale": "The 25% threshold is a coarse preregistered structural discriminator, not a parameter search. It requires the short leg's observed incremental maintenance consumption to be materially below a near-fully-funded second leg before any PM-aware stack accounting is reopened.",
+  "closed_dust_gate_rationale": "The $1 residual-notional threshold is fixed before any account result and prevents normal spot quantity dust from being treated as a failed close. It is not an economic optimization parameter.",
   "pass_authority": "PASS_PM_ACCOUNT_BEHAVIOR authorizes only one separately preregistered PM-aware BRRK + frozen CARRY-0031 stack accounting experiment using the observed capital factor. It does not authorize production, leverage search, weight optimization, funding thresholds, asset removal, or parameter tuning.",
-  "failure_rule": "If the first valid four-stage probe fails or is inconclusive, preserve the result. Diagnose only API/state/implementation defects. Do not tune the 2% match tolerance, 0.50 PM ratio gate, 25% incremental-maintenance gate, $500 notional cap, or account structure on the observed outcome."
+  "failure_rule": "If the first valid four-stage probe fails or is inconclusive, preserve the result. Diagnose only API/state/implementation defects. Do not tune the 2% match tolerance, 0.50 PM ratio gate, 25% incremental-maintenance gate, $500 notional cap, $1 closed-dust gate, or account structure on the observed outcome."
 }
