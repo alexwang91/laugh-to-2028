@@ -12,14 +12,23 @@ class CarryStack0033Tests(unittest.TestCase):
         scale = idle_scale_from_gross(gross)
         self.assertEqual(list(scale.round(12)), [1.0, 0.75, 0.0, 0.0])
 
-    def test_combined_gross_never_exceeds_one(self):
+    def test_combined_gross_fills_valid_brrk_gross_to_one(self):
         idx = pd.date_range("2024-01-01", periods=4, freq="D")
         brrk = pd.Series([0.01, -0.02, 0.03, 0.0], index=idx)
         carry = pd.Series([0.001, 0.001, 0.001, 0.001], index=idx)
-        gross = pd.Series([0.2, 0.6, 1.0, 1.2], index=idx)
+        gross = pd.Series([0.2, 0.6, 1.0, 0.85], index=idx)
         frame = combine_idle_stack(brrk, carry, gross)
         self.assertLessEqual(float(frame["combined_gross"].max()), 1.0 + 1e-12)
-        self.assertEqual(list(frame["carry_scale"].round(12)), [0.8, 0.4, 0.0, 0.0])
+        self.assertEqual(list(frame["carry_scale"].round(12)), [0.8, 0.4, 0.0, 0.15])
+        self.assertTrue((frame["combined_gross"].round(12) == 1.0).all())
+
+    def test_brrk_gross_above_one_hard_fails_in_conservative_stack(self):
+        idx = pd.date_range("2024-01-01", periods=2, freq="D")
+        brrk = pd.Series([0.01, 0.01], index=idx)
+        carry = pd.Series([0.001, 0.001], index=idx)
+        gross = pd.Series([0.9, 1.2], index=idx)
+        with self.assertRaises(RuntimeError):
+            combine_idle_stack(brrk, carry, gross)
 
     def test_scale_change_cost_and_combined_return_are_exact(self):
         idx = pd.date_range("2024-01-01", periods=3, freq="D")
