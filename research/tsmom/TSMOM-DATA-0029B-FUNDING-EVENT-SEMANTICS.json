@@ -1,0 +1,34 @@
+{
+  "audit_id": "TSMOM-DATA-0029B-FUNDING-EVENT-SEMANTICS",
+  "status": "REGISTERED_BEFORE_FIRST_VALID_PNL_RUN",
+  "registered_on": "2026-08-05",
+  "trigger": "The repaired TSMOM-ALPHA-0029 run downloaded funding histories for all 549 active symbols with zero download errors, then stopped before PNL because 302 active symbol-days had no recorded funding settlement event. Examples include a long BNXUSDT gap around the old-contract lifecycle and one ALPHAUSDT date near its contract-end period.",
+  "principle": "Funding is an event cashflow, not a daily return that is guaranteed to contain an observation on every active calendar day. Canonical accounting applies only official recorded settlement events and never manufactures a rate for an absent event.",
+  "accounting_rule": {
+    "source": "official Binance Public Data USD-M monthly fundingRate archive",
+    "per_event_return": "-held_weight * recorded_funding_rate",
+    "event_timing": "target t becomes effective t+1 00:00:01; exact 00:00 event is charged to the previous held day; later events use the current held day",
+    "active_day_without_recorded_event": "zero funding cashflow for that symbol-day because no official settlement event is present; retain as an explicit coverage diagnostic, not an imputed zero-rate observation",
+    "missing_archive_file_or_download_failure": "hard failure; never treated as zero cashflow",
+    "duplicate_or_unparseable_event": "hard failure",
+    "price_tradability": "separate hard gate remains: any held position without an official next-day perp price return is invalid and stops the run"
+  },
+  "required_diagnostics": [
+    "active symbol-day count",
+    "active symbol-days with at least one recorded funding event",
+    "active symbol-days without a recorded event",
+    "coverage ratio",
+    "symbols and contiguous no-event spans",
+    "long and short gross exposure on no-event days",
+    "recorded-event funding contribution split between long and short"
+  ],
+  "prohibited": [
+    "no synthetic 0.01% funding events",
+    "no forward fill or interpolation of funding rates",
+    "no Binance-to-Hyperliquid proxy substitution",
+    "no removal of a contract from historical eligibility merely because a later funding gap is observed",
+    "no change to TSMOM signal, universe thresholds, costs, gross, qualification gates or asset weights",
+    "no inspection-driven parameter tuning"
+  ],
+  "interpretation_limit": "If no-event coverage is economically material, the strategy cannot be promoted from this dataset alone; the coverage uncertainty must be carried into the result and forward evidence."
+}
