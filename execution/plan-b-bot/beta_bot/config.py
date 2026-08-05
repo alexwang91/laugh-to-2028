@@ -4,6 +4,8 @@ import os
 from dataclasses import dataclass
 from typing import Optional
 
+from .product_config import load_product_config
+
 
 TRUE_VALUES = {"1", "true", "yes", "on"}
 
@@ -62,10 +64,11 @@ class Settings:
 
     @classmethod
     def from_env(cls) -> "Settings":
+        product = load_product_config()
         settings = cls(
             network=os.getenv("HL_NETWORK", "testnet").strip().lower(),
             trading_mode=os.getenv("TRADING_MODE", "shadow").strip().lower(),
-            coin=os.getenv("COIN", "BTC").strip().upper(),
+            coin=os.getenv("COIN", product.long_universe[0]).strip().upper(),
             master_address=(os.getenv("HL_MASTER_ADDRESS") or "").strip() or None,
             vault_address=(os.getenv("HL_VAULT_ADDRESS") or "").strip() or None,
             api_private_key=(os.getenv("HL_API_PRIVATE_KEY") or "").strip() or None,
@@ -89,18 +92,25 @@ class Settings:
         return settings
 
     def validate(self) -> None:
+        product = load_product_config()
+        if product.primary_venue != "hyperliquid":
+            raise ValueError("This execution service requires the canonical Hyperliquid venue")
         if self.network not in {"testnet", "mainnet"}:
             raise ValueError("HL_NETWORK must be testnet or mainnet")
         if self.trading_mode not in {"shadow", "trade"}:
             raise ValueError("TRADING_MODE must be shadow or trade")
+        if self.coin not in product.long_universe:
+            raise ValueError("COIN is outside the canonical BRRK long universe")
         if self.coin != "BTC":
-            raise ValueError("The validated first version supports BTC only")
+            raise ValueError(
+                "The current execution implementation is BTC-only even though the canonical product universe is BTC/ETH/SOL/BNB"
+            )
         if not 0.0 < self.rebalance_band <= 0.5:
             raise ValueError("REBALANCE_BAND must be in (0, 0.5]")
         if not 0.0 < self.normal_beta_cap <= self.hard_beta_cap:
             raise ValueError("Beta caps are inconsistent")
         if self.hard_beta_cap > 1.5:
-            raise ValueError("HARD_BETA_CAP cannot exceed the validated 1.5 limit")
+            raise ValueError("HARD_BETA_CAP cannot exceed the validated legacy 1.5 research limit")
         if self.max_platform_leverage > 2:
             raise ValueError("MAX_PLATFORM_LEVERAGE cannot exceed 2 in this version")
         if self.external_spot_btc_qty < 0 or self.external_cash_usd < 0:
