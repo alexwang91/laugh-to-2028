@@ -3,7 +3,6 @@ from __future__ import annotations
 import hashlib
 import json
 from dataclasses import asdict, dataclass
-from decimal import Decimal, ROUND_HALF_EVEN
 
 
 CLOID_PERSON = b"brrk-order-v1"
@@ -17,16 +16,14 @@ def canonical_target_revision(target_qty: float, decimals: int = TARGET_QTY_DECI
 
     The identity is target-centric rather than delta-centric. A process restart after a
     fill changes current_qty, but the same desired target must retain the same identity.
-    Differences below the current executable quantity precision are intentionally folded
-    into the same revision.
+    Rounding deliberately matches the current executor's order-size rounding semantics.
     """
     if decimals < 0:
         raise ValueError("decimals must be non-negative")
-    quantum = Decimal(1).scaleb(-decimals)
-    quantized = Decimal(str(target_qty)).quantize(quantum, rounding=ROUND_HALF_EVEN)
-    if quantized == 0:
-        quantized = abs(quantized)
-    return f"target_qty:{quantized:.{decimals}f}"
+    rounded = round(float(target_qty), decimals)
+    if rounded == 0:
+        rounded = 0.0
+    return f"target_qty:{rounded:.{decimals}f}"
 
 
 @dataclass(frozen=True)
