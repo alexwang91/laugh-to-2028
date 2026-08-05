@@ -32,3 +32,15 @@ therefore searched first.
 No CI job imports these files: the tsmom workflows name
 `test_tsmom_alpha_0029.py` and `run_tsmom_alpha_0029_repaired.py` explicitly
 rather than discovering modules.
+
+## Deliberately not preserved
+
+Their source branches also carried `.github/workflows/tsmom-0029.yml` and
+`.github/workflows/tsmom-0027-pretest.yml`. Neither is preserved, and that is a
+decision rather than an oversight.
+
+Both trigger on `research/tsmom/**`. Carrying them into `main` would make every
+future change under that directory re-run a superseded experiment — including
+edits to this very file. CI wiring is not experiment evidence: discipline #3
+preserves registrations and results, and both of those are above. The runners
+can still be invoked by hand if anyone needs to inspect them.
