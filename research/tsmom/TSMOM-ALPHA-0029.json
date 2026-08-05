@@ -1,0 +1,80 @@
+{
+  "experiment_id": "TSMOM-ALPHA-0029",
+  "status": "PREREGISTERED_BEFORE_FIRST_RUN",
+  "registered_on": "2026-08-05",
+  "promotion_evidence": false,
+  "question": "Does a low-degree-of-freedom, survivorship-aware time-series momentum sleeve on the historical Binance USD-M perpetual universe provide positive funding-aware economics and diversification/crisis-alpha evidence versus BRRK?",
+  "universe": {
+    "source": "TSMOM-DATA-0027 + TSMOM-DATA-0028 historical Binance USD-M USDT perpetual archive",
+    "daily_eligibility": "240 contiguous completed daily bars and completed-day quote volume >= $25m",
+    "lag": "eligibility observed at UTC day t may affect positions no earlier than t+1",
+    "survivorship_rule": "preserve later-ended contracts on historical dates; never substitute current survivors"
+  },
+  "signal": {
+    "type": "time-series momentum only; no cross-sectional rank",
+    "trend_function": "exact existing project trend_score on each contract price",
+    "horizons_days": [20, 60, 120, 240],
+    "horizon_weights": [0.15, 0.25, 0.30, 0.30],
+    "position_direction": "sign(trend_score): positive=long, negative=short, zero=flat",
+    "signal_strength": "direction only; magnitude of trend_score does not size positions"
+  },
+  "risk_normalization": {
+    "volatility_estimator": "30 completed daily log-return observations, annualized sqrt(365)",
+    "weighting": "inverse realized volatility across every eligible contract with valid signal/volatility",
+    "portfolio_normalization": "sum(abs(target_weights)) = 1.0 whenever at least one contract is active",
+    "net_exposure": "unconstrained; emerges from time-series signal signs",
+    "asset_cap": null,
+    "top_k": null,
+    "cross_sectional_rank": false,
+    "portfolio_leverage": 1.0
+  },
+  "execution": {
+    "decision_time": "after completed UTC day t",
+    "held_return": "target from t applied to t+1 price return",
+    "daily_rebalance": true,
+    "rebalance_band": null,
+    "canonical_cost_bps_per_absolute_weight_change": 5.0,
+    "cost_stress_bps": [10.0, 20.0]
+  },
+  "funding": {
+    "source": "official Binance Public Data USD-M monthly fundingRate archives",
+    "sign_convention": "portfolio funding return per event = - held_weight * funding_rate; positive-rate longs pay and positive-rate shorts receive",
+    "event_timing": "daily target becomes effective at 00:00:01 UTC on t+1; the 00:00 funding event uses the previously held target while later funding events use the new target",
+    "requirement": "canonical result must report native historical funding; price-only result is diagnostic only"
+  },
+  "benchmarks": {
+    "canonical_BRRK": "BRRK0011_BASELINE daily equity",
+    "strict_router_BRRK": "ROUTER-PNL-0005 BTC-spot strict-router equity where overlap is available"
+  },
+  "required_outputs": [
+    "full-history and BRRK-overlap price-only and funding-aware CAGR/MDD/annualized volatility/Sharpe/Calmar",
+    "annual returns",
+    "turnover and 5/10/20 bps transaction-cost stress",
+    "long gross, short gross, net exposure, active-contract count and maximum single-name weight",
+    "funding contribution split between long and short positions",
+    "daily and monthly return correlation versus BRRK on common history",
+    "TSMOM return on BRRK worst decile days and worst decile months",
+    "worst 20 BRRK days attribution",
+    "performance by calendar year",
+    "evidence that later-ended contracts participate only while point-in-time eligible"
+  ],
+  "qualification_rule": {
+    "funding_aware_economics": "canonical 5 bps funding-aware CAGR > 0 and Sharpe > 0",
+    "diversification": "daily correlation with BRRK < 0.50",
+    "crisis_alpha": "mean TSMOM return on BRRK worst 10% daily returns >= 0",
+    "decision": "all three are required to authorize a separately preregistered portfolio-stack experiment; failure does not authorize parameter tuning"
+  },
+  "prohibited": [
+    "no Top-K or rolling-Sharpe asset selection",
+    "no market-cap weighting",
+    "no stop-loss/trailing-stop parameter",
+    "no horizon or horizon-weight search",
+    "no long/short side rebalance to force dollar neutrality",
+    "no asset-specific exception including SOL",
+    "no liquidity/age threshold change",
+    "no gross-cap search",
+    "no funding threshold",
+    "no same-window rescue tuning after the first valid run"
+  ],
+  "stopping_rule": "Freeze the first valid result. If qualification fails, retain as rejected evidence and move to carry rather than tuning TSMOM on the same sample. If it passes, only a separately preregistered fixed-weight/risk-budget portfolio-stack test may combine it with BRRK."
+}

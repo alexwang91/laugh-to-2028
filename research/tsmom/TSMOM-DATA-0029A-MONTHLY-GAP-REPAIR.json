@@ -1,0 +1,34 @@
+{
+  "audit_id": "TSMOM-DATA-0029A-MONTHLY-GAP-REPAIR",
+  "status": "REGISTERED_BEFORE_REPAIRED_PNL_RUN",
+  "registered_on": "2026-08-05",
+  "trigger": "The first full TSMOM-ALPHA-0029 attempt stopped before PNL because 33 held symbol-days had no next-day return; the first examples were all on 2022-02-26 across unrelated USD-M perpetuals.",
+  "external_evidence": {
+    "binance_public_data_policy": "Binance documents both daily and monthly public market-data archives and states that archived kline files may later be updated when inconsistencies are discovered.",
+    "known_multi_symbol_gap_pattern": "A public binance-public-data issue documents a separate 2022 USD-M futures kline interval missing simultaneously across many unrelated contracts, supporting treatment of clustered gaps as archive-data defects rather than automatic delistings."
+  },
+  "repair_rule": {
+    "primary_source": "official Binance USD-M monthly 1d kline archive",
+    "fallback_source": "official Binance USD-M daily 1d kline archive for the exact missing internal calendar date only",
+    "eligible_for_fallback": "a calendar date strictly between the symbol's first and last monthly-archive daily bars that is missing from the assembled monthly history",
+    "acceptance": "daily fallback ZIP must parse to exactly the requested UTC open date with numeric close and quote volume",
+    "if_daily_file_absent_or_invalid": "leave the gap unresolved; do not interpolate, forward-fill, synthesize price/volume, or assume zero return",
+    "eligibility_recalculation": "recompute the same frozen 240-contiguous-day + $25m completed-day-volume PIT eligibility on the repaired history before any target or PNL calculation",
+    "execution_validation": "any held position that still lacks a next-day return after the official daily fallback remains a hard failure"
+  },
+  "prohibited": [
+    "no interpolation or forward fill",
+    "no spot-price substitution",
+    "no current API/current-survivor substitution",
+    "no zero-return assumption",
+    "no change to TSMOM signal, 30d vol, gross, costs, funding, qualification gates, age threshold or liquidity threshold",
+    "no inspection of strategy PNL before the repair rule is applied"
+  ],
+  "required_diagnostics": [
+    "number of internal monthly gaps detected",
+    "number repaired from official daily 1d files",
+    "number unresolved",
+    "repaired and unresolved date/symbol examples",
+    "whether any held return remains missing after repair"
+  ]
+}
