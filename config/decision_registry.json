@@ -143,6 +143,13 @@
       "scope": "deployment",
       "decision": "Strategy upgrades use candidate/shadow development plus manual blue-green cutover; no hot strategy patching in ACTIVE.",
       "source": "docs/PROJECT_GOVERNANCE_2026-08-05.md"
+    },
+    {
+      "id": "EXEC-ORDER-ID-P1.1",
+      "status": "IMPLEMENTATION_VERIFIED",
+      "scope": "execution_identity",
+      "decision": "Deterministic 128-bit Hyperliquid cloid is derived from release, canonical daily decision timestamp, asset, side, route-independent economic intent and executable target revision. Sequential replay/restart checks exchange orderStatus by cloid and suppresses a known order; this does not claim persistent local ledger, partial-fill retry semantics or cross-process locking.",
+      "source": "PR #42"
     }
   ]
 }
