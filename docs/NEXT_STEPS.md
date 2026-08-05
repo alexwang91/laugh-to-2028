@@ -19,10 +19,21 @@
 ## Current authorized task
 
 ```text
-P1.3 Partial-fill correctness
+P1.3 Partial-fill correctness — CANDIDATE / AWAITING PR CI
 ```
 
-P0.1, P0.2, P1.1 and P1.2 are merged and complete. P1.3 is now the only authorized next implementation dependency.
+P0.1, P0.2, P1.1 and P1.2 are merged and complete. P1.3 is the only active dependency and is being implemented on `p1-3/partial-fill-correctness`.
+
+The exact next action is:
+
+```text
+open P1.3 PR
+-> authoritative CI
+-> review/fix on the same PR if required
+-> final-head CI
+-> merge
+-> normalize handoff
+```
 
 Do not start P1.4 reversal safety, P2 router work, P4 leverage work, P5 cycle-exit research or P8 bear-short research early.
 
@@ -40,11 +51,21 @@ Acceptance criteria:
 - resting remainder is visible;
 - target versus actual exposure is continuously calculable.
 
-P1.3 must consume the durable P1.2 order/fill truth rather than replacing it with requested order size or optimistic submission assumptions.
+The P1.3 candidate consumes durable P1.2 order/fill truth rather than replacing it with requested order size or optimistic submission assumptions.
 
-P1.3 must not be described as complete merely because P1.2 can persist partial-fill events. The missing capability is the **execution/position transition driven by actual fills**, including explicit representation of a resting remainder and a continuously computable target-versus-actual exposure gap.
+Current candidate design:
 
-Unless the roadmap is formally changed, P1.3 does **not** automatically include or claim:
+- persist a trustworthy pre-trade position baseline and target for same-direction economic orders;
+- derive signed position progress only from reconciled actual fills;
+- classify zero / partial / full fill explicitly;
+- expose exchange remaining quantity, live resting remainder and total unfilled quantity separately;
+- expose `actual_position_qty_from_fills` and `target_gap_qty` whenever the pre-trade position baseline is known;
+- fail closed if local submitted-minus-fill truth disagrees with the exchange remaining quantity;
+- do not invent a position baseline for the reversal open leg before P1.4 provides fresh reversal-state reconciliation.
+
+P1.3 must not be described as complete merely because the candidate code exists. Final acceptance requires authoritative CI on the final PR head and merge.
+
+Unless the roadmap is formally changed, P1.3 does **not** include or claim:
 
 - P1.4 reversal safety;
 - P1.5 metadata-driven precision;
@@ -122,7 +143,7 @@ Current BTC-only executor capability does not redefine the BTC/ETH/SOL/BNB produ
 P0  canonical product/state registry                       COMPLETE
 P1.1 deterministic order identity                         COMPLETE
 P1.2 persistent order ledger                              COMPLETE
-P1.3 partial-fill correctness                             CURRENT / NEXT
+P1.3 partial-fill correctness                             CANDIDATE / AWAITING PR CI
 P1.4 reversal safety                                      BLOCKED ON P1.3
 P1.5 precision / metadata                                 BLOCKED
 P1.6 post-submit reconciliation                           BLOCKED
@@ -148,7 +169,7 @@ NO_CHANGE
 production_authorized_components = []
 ```
 
-P1.2 being engineering-verified and merged does not authorize live deployment, leverage expansion, new-asset execution, shorting, cycle-exit production or strategy cutover.
+P1.3 candidate engineering work does not authorize live deployment, leverage expansion, new-asset execution, shorting, cycle-exit production or strategy cutover.
 
 ---
 
@@ -171,4 +192,4 @@ main
 -> normalize post-merge handoff if needed
 ```
 
-The exact next action after this handoff normalization is merged is to start **P1.3 Partial-fill correctness** from current main on a fresh candidate branch.
+Current execution is inside the P1.3 self-review/evidence loop. P1.4 remains blocked.
