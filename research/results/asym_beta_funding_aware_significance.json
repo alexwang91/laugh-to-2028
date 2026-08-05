@@ -1,0 +1,83 @@
+{
+  "ASYM-BETA-0021 vs core": {
+    "label_a": "BRRK0011_CORE_STRICT_ROUTER",
+    "label_b": "ASYM-BETA-0021_STRICT_ROUTER",
+    "paired_observations": 1140,
+    "daily_correlation": 1.0,
+    "sharpe": {
+      "statistic": "sharpe",
+      "mean_difference_b_minus_a": 0.0,
+      "ci_low": 0.0,
+      "ci_high": 0.0,
+      "confidence": 0.95,
+      "probability_b_better": 0.0,
+      "significant_at_confidence": false,
+      "n_resamples": 4000
+    },
+    "calmar": {
+      "statistic": "calmar",
+      "mean_difference_b_minus_a": 0.0,
+      "ci_low": 0.0,
+      "ci_high": 0.0,
+      "confidence": 0.95,
+      "probability_b_better": 0.0,
+      "significant_at_confidence": false,
+      "n_resamples": 4000
+    },
+    "interpretation": "ASYM-BETA-0021_STRICT_ROUTER vs BRRK0011_CORE_STRICT_ROUTER: Sharpe difference 95% CI [+0.0000, +0.0000] (includes zero); Calmar difference 95% CI [+0.0000, +0.0000] (includes zero)."
+  },
+  "ASYM-BETA-0022 vs core": {
+    "label_a": "BRRK0011_CORE_STRICT_ROUTER",
+    "label_b": "ASYM-BETA-0022_STRICT_ROUTER",
+    "paired_observations": 1140,
+    "daily_correlation": 0.9912709063287206,
+    "sharpe": {
+      "statistic": "sharpe",
+      "mean_difference_b_minus_a": -0.048007026741356935,
+      "ci_low": -0.1900915883560055,
+      "ci_high": 0.08807175999107247,
+      "confidence": 0.95,
+      "probability_b_better": 0.25475,
+      "significant_at_confidence": false,
+      "n_resamples": 4000
+    },
+    "calmar": {
+      "statistic": "calmar",
+      "mean_difference_b_minus_a": -0.012634711195433908,
+      "ci_low": -0.47776365577402785,
+      "ci_high": 0.6456636250208452,
+      "confidence": 0.95,
+      "probability_b_better": 0.3905,
+      "significant_at_confidence": false,
+      "n_resamples": 4000
+    },
+    "interpretation": "ASYM-BETA-0022_STRICT_ROUTER vs BRRK0011_CORE_STRICT_ROUTER: Sharpe difference 95% CI [-0.1901, +0.0881] (includes zero); Calmar difference 95% CI [-0.4778, +0.6457] (includes zero)."
+  },
+  "ASYM-BETA-0024 vs core": {
+    "label_a": "BRRK0011_CORE_STRICT_ROUTER",
+    "label_b": "ASYM-BETA-0024_STRICT_ROUTER",
+    "paired_observations": 1140,
+    "daily_correlation": 0.9917814579956297,
+    "sharpe": {
+      "statistic": "sharpe",
+      "mean_difference_b_minus_a": -0.03131428837334611,
+      "ci_low": -0.16815869893916358,
+      "ci_high": 0.1004275701306378,
+      "confidence": 0.95,
+      "probability_b_better": 0.32975,
+      "significant_at_confidence": false,
+      "n_resamples": 4000
+    },
+    "calmar": {
+      "statistic": "calmar",
+      "mean_difference_b_minus_a": 0.019612018113165534,
+      "ci_low": -0.4243830092992052,
+      "ci_high": 0.6892466047350084,
+      "confidence": 0.95,
+      "probability_b_better": 0.456,
+      "significant_at_confidence": false,
+      "n_resamples": 4000
+    },
+    "interpretation": "ASYM-BETA-0024_STRICT_ROUTER vs BRRK0011_CORE_STRICT_ROUTER: Sharpe difference 95% CI [-0.1682, +0.1004] (includes zero); Calmar difference 95% CI [-0.4244, +0.6892] (includes zero)."
+  }
+}

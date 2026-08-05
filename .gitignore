@@ -5,7 +5,15 @@ __pycache__/
 venv/
 .env
 .vercel/
-*.log
-*_report.json
-latest_*.json
 .DS_Store
+
+# Scratch experiment output directories (e.g. research/*/foo_outputs/) get
+# copied into research/results/<experiment>/ by CI before being committed --
+# the *_outputs/ copy is scratch, not evidence, and should stay ignored.
+# The blanket `*_report.json` / `*.log` rules these replaced (backlog F8)
+# also matched inside research/results/, which is committed evidence, and
+# silently dropped pit_alpha_0018's report and log until this was caught.
+research/**/[a-z]*_outputs/**/*_report.json
+*.log
+!research/results/**/*.log
+latest_*.json

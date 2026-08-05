@@ -1,3 +1,8 @@
+"""`forward_log_returns` used to live here (deleted, backlog F14): its only
+caller was `regime_model.fit_regime_model`, which was itself deleted for
+having no callers of its own anywhere in the repo. See
+`regime_model.py`'s module docstring for the leakage risk that combination
+carried."""
 import math
 
 import numpy as np
@@ -60,10 +65,6 @@ def build_features(prices: pd.DataFrame, btc_dominance: pd.Series, cfg: RegimeKe
     f["avg_corr30_btc"] = corr_to_btc.mean(axis=1)
 
     return f.loc[:, FEATURE_COLUMNS].replace([np.inf, -np.inf], np.nan)
-
-
-def forward_log_returns(prices: pd.DataFrame, horizon: int) -> pd.DataFrame:
-    return np.log(prices.shift(-horizon) / prices)
 
 
 def training_winsor_bounds(x: pd.DataFrame, lower: float, upper: float) -> tuple[pd.Series, pd.Series]:

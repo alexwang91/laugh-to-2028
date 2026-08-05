@@ -1,0 +1,53 @@
+{
+  "source": "research/stats/inference.py comparison_report, backfilled under backlog F10",
+  "reproduces": "the ad-hoc bootstrap in the F1/F2 review turn, now via the shared module",
+  "comparison": {
+    "label_a": "V1_FROZEN_BASELINE",
+    "label_b": "V1_SMOOTH_BETA_0038",
+    "paired_observations": 1920,
+    "daily_correlation": 0.9654366197568364,
+    "sharpe": {
+      "statistic": "sharpe",
+      "mean_difference_b_minus_a": 0.07272155625622444,
+      "ci_low": -0.15825793723862325,
+      "ci_high": 0.31559598888772056,
+      "confidence": 0.95,
+      "probability_b_better": 0.7235,
+      "significant_at_confidence": false,
+      "n_resamples": 4000
+    },
+    "calmar": {
+      "statistic": "calmar",
+      "mean_difference_b_minus_a": 0.10115486111560366,
+      "ci_low": -0.40354198296963867,
+      "ci_high": 0.6197082395902641,
+      "confidence": 0.95,
+      "probability_b_better": 0.71275,
+      "significant_at_confidence": false,
+      "n_resamples": 4000
+    },
+    "interpretation": "V1_SMOOTH_BETA_0038 vs V1_FROZEN_BASELINE: Sharpe difference 95% CI [-0.1583, +0.3156] (includes zero); Calmar difference 95% CI [-0.4035, +0.6197] (includes zero)."
+  },
+  "sharpe_confidence_old": {
+    "observations": 1920,
+    "years_at_365_25_days": 5.256673511293634,
+    "sharpe_annualized": 0.878135788430462,
+    "skew": -0.4522433721903345,
+    "kurtosis": 14.473935853892595,
+    "psr_above_zero": 0.976482669047065,
+    "target_sharpe_annualized": 1.0,
+    "psr_above_target": 0.3914247539630731,
+    "min_track_record_years": Infinity
+  },
+  "sharpe_confidence_new": {
+    "observations": 1920,
+    "years_at_365_25_days": 5.256673511293634,
+    "sharpe_annualized": 0.9560203471526708,
+    "skew": 0.31052831194439895,
+    "kurtosis": 8.13122434170344,
+    "psr_above_zero": 0.9862493999026325,
+    "target_sharpe_annualized": 1.0,
+    "psr_above_target": 0.4596143218142666,
+    "min_track_record_years": Infinity
+  }
+}

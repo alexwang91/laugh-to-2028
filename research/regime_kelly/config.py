@@ -10,8 +10,9 @@ class RegimeKellyConfig:
     forecast_horizon_days: int = 20
     min_train_days: int = 600
     refit_every_days: int = 30
-    purge_days: int = 20
-    embargo_days: int = 5
+    # purge_days / embargo_days were removed here (backlog F14): they were
+    # declared but never read by any caller, which reads as active leakage
+    # protection when none was in force. See regime_model.py's docstring.
     scenario_count: int = 5000
     random_seed: int = 20260804
     winsor_lower: float = 0.01

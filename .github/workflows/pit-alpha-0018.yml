@@ -18,14 +18,19 @@ on:
       - 'research/pit_universe/run_dynamic_dispersion.py'
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: pit-alpha-0018-${{ github.ref }}
   cancel-in-progress: false
 
+# Split into two jobs (backlog F11) so the write-scoped persist step never
+# shares a job -- and therefore never shares a GITHUB_TOKEN in its
+# environment -- with a step that executes PR-supplied Python. `research`
+# only ever needs contents: read; `persist` never executes repository code,
+# it only copies files already produced by `research` and pushes them.
 jobs:
-  eligibility-exit:
+  research:
     runs-on: ubuntu-latest
     timeout-minutes: 120
     steps:
@@ -49,36 +54,6 @@ jobs:
         run: |
           set -o pipefail
           python run_entry_rank_eligibility_exit.py | tee pit_alpha_0018.log
-      - name: Persist validated outputs on same-repository PR
-        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
-        env:
-          HEAD_REF: ${{ github.head_ref }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          rm -rf /tmp/pit-alpha-0018
-          mkdir -p /tmp/pit-alpha-0018
-          cp -R research/pit_universe/pit_alpha_0018_outputs/. /tmp/pit-alpha-0018/
-          cp research/pit_universe/pit_alpha_0018.log /tmp/pit-alpha-0018/pit_alpha_0018.log
-
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git fetch origin "$HEAD_REF"
-          git checkout -B "$HEAD_REF" "origin/$HEAD_REF"
-
-          DEST='research/results/pit_alpha_0018'
-          rm -rf "$DEST"
-          mkdir -p "$DEST"
-          cp -R /tmp/pit-alpha-0018/. "$DEST/"
-
-          git add "$DEST"
-          if git diff --cached --quiet; then
-            echo 'Validated outputs are already current.'
-            exit 0
-          fi
-          git commit -m 'Persist PIT-ALPHA-0018 exact outputs'
-          git pull --rebase origin "$HEAD_REF"
-          git push origin "HEAD:$HEAD_REF"
       - name: Upload exact research outputs
         if: always()
         uses: actions/upload-artifact@v4
@@ -90,3 +65,49 @@ jobs:
             research/pit_universe/pit_alpha_0018.log
             research/pit_universe/pit_alpha_0018_outputs/**
             research/pit_universe/PIT-ALPHA-0018-ENTRY-RANK-ELIGIBILITY-EXIT.json
+
+  persist:
+    needs: research
+    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
+      - uses: actions/download-artifact@v4
+        with:
+          name: pit-alpha-0018-results
+          path: /tmp/artifact
+      - name: Persist validated outputs
+        shell: bash
+        run: |
+          set -euo pipefail
+          # actions/upload-artifact@v4 roots the archive at the least common
+          # ancestor of every path in the research job's `path:` list above.
+          # Those three paths all share the research/pit_universe/ prefix, so
+          # upload-artifact strips it and the download has no such prefix
+          # (verified with `unzip -l` on the uploaded artifact: files sit at
+          # its root, e.g. pit_alpha_0018_outputs/..., not
+          # research/pit_universe/pit_alpha_0018_outputs/...). Re-check this
+          # if the upload `path:` list above ever changes.
+          SRC='/tmp/artifact'
+          DEST='research/results/pit_alpha_0018'
+          rm -rf "$DEST"
+          mkdir -p "$DEST"
+          cp -R "$SRC/pit_alpha_0018_outputs/." "$DEST/"
+          cp "$SRC/pit_alpha_0018.log" "$DEST/pit_alpha_0018.log"
+
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add "$DEST"
+          if git diff --cached --quiet; then
+            echo 'Validated outputs are already current.'
+            exit 0
+          fi
+          git commit -m 'Persist PIT-ALPHA-0018 exact outputs'
+          git pull --rebase origin "${{ github.head_ref }}"
+          git push origin "HEAD:${{ github.head_ref }}"

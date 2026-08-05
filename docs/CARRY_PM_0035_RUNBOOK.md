@@ -1,5 +1,7 @@
 # CARRY-PM-0035 controlled runbook
 
+> **Superseded and not required.** `CARRY-RF-0036R1` re-priced CARRY-PNL-0031 against cash instead of zero and the sleeve failed the corrected `net_economics` gate, so the carry line is stopped under discipline #7 and no probe capital is committed. `CARRY-PM-0037` supersedes this gate's *design* (adds snapshot-gap and mid-price-drift bounds, and a three-state outcome instead of a clamp) without editing or deleting this file. See [`docs/RESEARCH_HISTORY.md`](RESEARCH_HISTORY.md#11-carry-pm-0035--superseded-and-no-longer-required), [`docs/CARRY_PM_0037_RUNBOOK.md`](CARRY_PM_0037_RUNBOOK.md), and [`docs/RISK_FREE_METRIC_CONVENTIONS.md`](RISK_FREE_METRIC_CONVENTIONS.md). Do not run this probe with live capital. The steps below are retained as the frozen historical design, not as live guidance.
+
 This gate measures Hyperliquid Portfolio Margin account behavior for the already-verified BTC/UBTC implementation. It is **not** a strategy backtest and the research script never signs or submits orders.
 
 ## Current platform context
