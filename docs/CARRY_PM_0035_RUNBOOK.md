@@ -2,13 +2,17 @@
 
 This gate measures Hyperliquid Portfolio Margin account behavior for the already-verified BTC/UBTC implementation. It is **not** a strategy backtest and the research script never signs or submits orders.
 
+## Current platform context
+
+Hyperliquid's June 2026 official announcement states that Portfolio Margin is now in **beta** and supports BTC and HYPE as collateral. Rollout limits and eligibility can change, so current platform status should be checked before a live probe.
+
+The **<$1,000 account value** and **$500 UBTC probe notional** below are project-imposed experimental safety/isolation limits. They are deliberately much smaller than current platform limits and are not claims about Hyperliquid's current eligibility requirements.
+
 ## Safety / isolation
 
 Use a dedicated new account or subaccount with total value below **$1,000**. The probe spot notional is capped at **$500**. Keep all non-probe perp positions at zero.
 
-The current Hyperliquid Portfolio Margin documentation recommends small new accounts/subaccounts for full behavior testing because caps can cause fallback to non-portfolio-margin behavior.
-
-The account address is supplied to the script through `HL_PM_PROBE_USER`. The output stores only a SHA-256 fingerprint of the address, not the full address.
+The account address is supplied to the script through `HL_PM_PROBE_USER`. The output stores only a SHA-256 fingerprint of the address, not the full address. Never put a private key in this secret or in the research workflow.
 
 ## Four frozen snapshots
 
@@ -20,7 +24,7 @@ Requirements:
 - Portfolio Margin enabled in spot state;
 - no BTC perp position;
 - no other perp positions;
-- no probe UBTC balance.
+- no probe UBTC balance above the fixed $1 residual-value tolerance.
 
 Capture:
 
@@ -47,7 +51,7 @@ Capture `matched.json`.
 
 Close the BTC short and exit the probe UBTC spot. Capture `closed.json` after:
 
-- BTC short size is exactly flat within the API numerical tolerance; and
+- BTC short size is flat within the API numerical tolerance; and
 - residual UBTC **market value is <= $1**.
 
 The $1 residual rule was frozen before any account result. It prevents ordinary spot quantity dust from creating a false failure and is not a parameter to optimize.
@@ -81,6 +85,10 @@ incremental_maintenance_fraction
 The first valid probe passes the capital-efficiency gate only when this fraction is **<= 25%**, while the matched account's `portfolioMarginRatio` is below **0.50** and all other frozen structural checks pass.
 
 The 25% threshold is intentionally coarse. It only answers whether Portfolio Margin produces a material structural reduction versus treating the second leg as effectively fully funded. It is not a leverage target or a value to optimize.
+
+## Data-authority rule
+
+Portfolio Margin / Unified Account balances and holds are read from `spotClearinghouseState`. `clearinghouseState` is used for BTC position diagnostics, but its individual DEX balance fields are not treated as the authoritative unified balance source.
 
 ## Stopping rule
 
