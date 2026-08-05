@@ -1,0 +1,71 @@
+{
+  "experiment_id": "CARRY-RF-0036R1-RISK-FREE-HURDLE",
+  "status": "PREREGISTERED_BEFORE_FIRST_REPRICING_RUN",
+  "registered_on": "2026-08-05",
+  "promotion_evidence": false,
+  "supersedes_without_run": "CARRY-RF-0036-RISK-FREE-HURDLE",
+  "supersession_reason": "Before any repricing run, align the reported excess_sharpe_over_rf definition exactly with the independent PR #30 verification convention so the implementation can reproduce its -0.223 reference value. No strategy result was observed under the superseded preregistration.",
+  "question": "Does the already-frozen CARRY-PNL-0031 mechanism, and the already-rejected CARRY-STACK-0033 idle-capital conversion, still have positive net economics after the displaced cash return is priced with a frozen daily risk-free benchmark?",
+  "authorized_change": "Accounting benchmark only. No strategy target, asset, weight, cost, funding rule, window, threshold, or execution assumption changes.",
+  "source_experiments": [
+    "CARRY-PNL-0031",
+    "CARRY-STACK-0033-IDLE-CAPITAL"
+  ],
+  "risk_free": {
+    "provider": "Federal Reserve Bank of St. Louis FRED",
+    "series_id": "DTB3",
+    "series_name": "3-Month Treasury Bill: Secondary Market Rate",
+    "download": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DTB3&cosd={start}&coed={end}",
+    "calendarization": "Parse FRED observations as percent per annum, reindex to every calendar day in the requested closed interval, forward-fill only from the latest in-window observation, and hard-fail if the first requested day has no rate.",
+    "daily_return_conversion": "rf_daily = DTB3_percent / 100 / 365.0; simple daily accrual, compounded through time",
+    "fallback_series": "none; any change to SOFR or another series requires a new preregistered ID",
+    "persistence": "Commit the exact daily risk-free sequence used by the first valid run and source metadata/digest."
+  },
+  "frozen_windows": {
+    "carry_pnl_0031": "Unchanged 2020-09-15 through 2026-07-30 first-held/funding-end window.",
+    "carry_stack_0033": "Unchanged 2023-06-19 through 2026-07-30 common stack window."
+  },
+  "metric_definitions": {
+    "cash_cagr": "CAGR of compounded rf_daily over the identical strategy dates using elapsed calendar days / 365.25.",
+    "excess_cagr_over_rf": "strategy_cagr - matched_cash_benchmark_cagr",
+    "excess_daily_return": "strategy_return - matched_cash_benchmark_return",
+    "excess_ann_vol": "stdev(excess_daily_return, ddof=1) * sqrt(365)",
+    "excess_sharpe_over_rf": "excess_cagr_over_rf / excess_ann_vol. This geometric-excess-return convention is frozen to match research/review_2026_08_04/verify_carry_vs_cash.py; also report arithmetic_excess_sharpe_daily_mean as a diagnostic, but it is not the named review metric or a gate."
+  },
+  "carry_pnl_0031_benchmark": {
+    "strategy_return": "unchanged canonical 5 bps daily funding-aware CARRY-PNL-0031 return",
+    "matched_cash_benchmark_return": "DTB3 rf_daily for 100% of NAV on each identical day",
+    "net_economics": "PASS only if excess_cagr_over_rf > 0. No zero-return hurdle remains."
+  },
+  "carry_stack_0033_benchmark": {
+    "principle": "Only carry_scale displaces idle cash. BRRK is unchanged.",
+    "strategy_return": "unchanged combined_return from CARRY-STACK-0033",
+    "matched_cash_benchmark_return": "unchanged brrk_return + carry_scale * rf_daily",
+    "incremental_sleeve_excess_return": "scaled_carry_net - carry_scale * rf_daily",
+    "net_economics": "PASS only if combined strategy CAGR minus BRRK-plus-idle-cash benchmark CAGR > 0. Existing 0033 qualification is not retuned."
+  },
+  "required_outputs": [
+    "old published source metrics preserved verbatim alongside restated risk-free metrics",
+    "0031 CAGR approximately 2.740% and matched DTB3 cash CAGR approximately 3.165% as an implementation parity check",
+    "0031 excess_sharpe_over_rf approximately -0.223 as an implementation parity check",
+    "excess_cagr_over_rf and excess_sharpe_over_rf for 0031 and 0033",
+    "annual carry-vs-cash tables for both source experiments",
+    "exact daily risk-free series",
+    "daily 0031 strategy/cash/excess sequence",
+    "daily 0033 combined/BRRK-plus-cash/scaled-carry/scaled-cash/excess sequence",
+    "explicit corrected net_economics pass/fail",
+    "FRED source digest and requested-window metadata"
+  ],
+  "decision_rule": "If CARRY-PNL-0031 fails corrected net_economics, stop the carry research line under discipline #7, mark CARRY-PM-0035 and CARRY-PM-0037 as not required, and do not attempt a funding sign filter, asset removal, basis filter, shorter window, threshold change, leverage change, or any same-window rescue.",
+  "prohibited": [
+    "no asset removal including BNB",
+    "no funding-sign filter",
+    "no basis threshold",
+    "no Top-K",
+    "no window restriction or start-date change",
+    "no cost change",
+    "no leverage or weight change",
+    "no benchmark substitution after observing results",
+    "no threshold tuning after observing results"
+  ]
+}
