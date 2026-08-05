@@ -1,0 +1,101 @@
+{
+  "experiment_id": "CARRY-PNL-0031",
+  "status": "FIRST_VALID_RUN_COMPLETE",
+  "decision": "QUALIFIED_FOR_SEPARATELY_PREREGISTERED_STACK_TEST",
+  "promotion_evidence": false,
+  "window": {
+    "first_completed_common_day": "2020-09-14",
+    "first_held_day": "2020-09-15",
+    "end": "2026-07-30",
+    "observations": 2145
+  },
+  "portfolio": {
+    "assets": ["BTCUSDT", "ETHUSDT", "SOLUSDT", "BNBUSDT", "XRPUSDT"],
+    "spot_weight_each": 0.1,
+    "perp_weight_each": -0.1,
+    "gross": 1.0,
+    "net_at_rebalance": 0.0,
+    "initial_entry_turnover": 1.0
+  },
+  "canonical_5bps": {
+    "final_10k": 11719.827766646282,
+    "cagr": 0.027404258463378905,
+    "max_drawdown": -0.07005447665064357,
+    "ann_vol": 0.019039259485073706,
+    "sharpe": 1.4281396586508797,
+    "calmar": 0.39118497166200944,
+    "turnover": 64.39404564978872
+  },
+  "cost_stress": {
+    "10bps": {"cagr": 0.02178392154191977, "max_drawdown": -0.07550923134472187, "sharpe": 1.1381444901583335},
+    "20bps": {"cagr": 0.010634734225946074, "max_drawdown": -0.09060573512350256, "sharpe": 0.5610559869186856}
+  },
+  "mechanism_decomposition": {
+    "price_spread_only_no_cost_cagr": -0.0038097080544531314,
+    "price_spread_only_no_cost_sharpe": -0.3010633860806174,
+    "funding_only_no_cost_cagr": 0.03700600197548387,
+    "funding_only_no_cost_sharpe": 3.668091102475757,
+    "cumulative_additive_price_spread_component": -0.021947808240628485,
+    "cumulative_additive_recorded_funding_contribution": 0.21337698800000798,
+    "liquidatable_terminal_final_10k_after_extra_5bps_gross_exit": 11713.96785276296
+  },
+  "funding_coverage": {
+    "event_rows_used": 32250,
+    "active_symbol_days": 10725,
+    "active_symbol_days_with_recorded_event": 10725,
+    "active_symbol_days_without_recorded_event": 0,
+    "event_coverage_ratio": 1.0
+  },
+  "per_asset_additive_funding": {
+    "BTCUSDT": 0.0655361920000041,
+    "ETHUSDT": 0.07301782100000259,
+    "SOLUSDT": 0.0005860159999993644,
+    "BNBUSDT": -0.002518806999999976,
+    "XRPUSDT": 0.07675576600000193
+  },
+  "per_asset_additive_price_spread": {
+    "BTCUSDT": -0.00036679371276494225,
+    "ETHUSDT": -0.0006826829788893325,
+    "SOLUSDT": -0.017102374566003484,
+    "BNBUSDT": -0.0018788605112455927,
+    "XRPUSDT": -0.0019170964717251352
+  },
+  "correlation": {
+    "daily_vs_brrk_price_only": -0.09829853700422592,
+    "monthly_vs_brrk_price_only": 0.4715669934660968,
+    "daily_vs_brrk_strict_router": -0.09162245082258952,
+    "monthly_vs_brrk_strict_router": 0.5086228313767152
+  },
+  "crisis_alpha": {
+    "mean_carry_return_on_brrk_worst_decile_days": 0.00009733833151723524,
+    "compound_carry_return_on_brrk_worst_decile_days": 0.01302685978232021,
+    "worst20_brrk_days_mean_carry": 0.00018453054466686518,
+    "worst20_brrk_days_compound_carry": 0.0036962375181992524
+  },
+  "annual_net_5bps": {
+    "2020": 0.008305214669825034,
+    "2021": 0.16803690598573118,
+    "2022": -0.06516594400550979,
+    "2023": 0.012739603269520394,
+    "2024": 0.04565016526808807,
+    "2025": 0.006904041647746828,
+    "2026_through_07_30": -0.001689043331677187
+  },
+  "basis_extremes_requiring_posthoc_data_attribution_before_stack": {
+    "SOLUSDT_min": -0.16903409090909094,
+    "XRPUSDT_min": -0.06688506688506679
+  },
+  "price_repairs": {
+    "SOLUSDT_perp": ["2022-02-26", "2022-02-27", "2022-02-28", "2022-04-01", "2022-04-02"],
+    "XRPUSDT_perp": ["2022-02-26", "2022-02-27", "2022-02-28", "2022-04-01", "2022-04-02"],
+    "remaining_required_leg_gaps": 0
+  },
+  "qualification": {
+    "net_economics": true,
+    "funding_mechanism": true,
+    "daily_correlation_below_0_50": true,
+    "nonnegative_brrk_worst_decile_day_alpha": true,
+    "qualified_for_stack_test": true
+  },
+  "stopping_rule": "Freeze the first valid result. No same-window funding threshold, asset removal, Top-K, basis threshold, leverage or dynamic-weight rescue. A post-hoc basis-outlier audit may validate data/accounting but may not alter this frozen result."
+}
