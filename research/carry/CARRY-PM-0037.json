@@ -1,0 +1,63 @@
+{
+  "experiment_id": "CARRY-PM-0037-MEASUREMENT-INTEGRITY",
+  "status": "PREREGISTERED_BEFORE_FIRST_ACCOUNT_COMPARISON_RUN",
+  "registered_on": "2026-08-05",
+  "promotion_evidence": false,
+  "supersedes_gate_design": "CARRY-PM-0035-ACCOUNT-BEHAVIOR",
+  "question": "Can the read-only four-stage Hyperliquid Portfolio Margin probe distinguish genuine margin release/consumption from a measurement corrupted by elapsed time or BTC mark-price drift?",
+  "authorized_change": "Measurement-integrity gate only. Keep the same account structure, BTC/UBTC target, size cap, notional match tolerance, PM ratio threshold, maintenance-consumption threshold, dust tolerance and read-only API surface from CARRY-PM-0035.",
+  "unchanged_limits_from_0035": {
+    "target": "BTC only",
+    "max_probe_notional_usd": 500.0,
+    "execution_tolerance_fraction_above_probe_cap": 0.05,
+    "max_spot_qty_change_fraction": 0.001,
+    "matched_notional_tolerance_fraction": 0.02,
+    "max_portfolio_margin_ratio": 0.50,
+    "max_incremental_maintenance_fraction_of_short_notional": 0.25,
+    "max_cash_and_closed_ubtc_residual_usd": 1.0,
+    "no_other_perp_positions": true,
+    "research_code_read_only": true
+  },
+  "new_frozen_measurement_integrity_limits": {
+    "max_spot_to_matched_snapshot_gap_seconds": 300,
+    "max_mid_drift_fraction": 0.0025,
+    "mid_drift_definition": "Compute absolute spot midpoint drift and absolute perp midpoint drift separately from spot-stage to matched-stage; mid_drift_within_bound requires both to be present and <= 0.0025 (25 bps).",
+    "snapshot_gap_definition": "Parse observed_at_utc for spot and matched snapshots; matched must be at or after spot and elapsed time must be <= 300 seconds."
+  },
+  "outcome_states": {
+    "MEASUREMENT_INCONCLUSIVE": "Any required timestamp/midpoint/available-after-maintenance value is missing; snapshot gap or either midpoint drift exceeds its frozen bound; matched short notional is nonpositive; or raw available-after-maintenance change is exactly zero so no direction is identified.",
+    "PM_RELEASES_MARGIN": "Measurement-integrity checks pass and raw_available_after_maintenance_change_usdc < 0. Persist released_margin_usdc = -raw_change and consumed_margin_usdc = 0 explicitly.",
+    "PM_CONSUMES_MARGIN": "Measurement-integrity checks pass and raw_available_after_maintenance_change_usdc > 0. Persist consumed_margin_usdc = raw_change and released_margin_usdc = 0 explicitly."
+  },
+  "capital_efficiency_gate": {
+    "PM_RELEASES_MARGIN": "Passes the direction-specific capital-efficiency sub-gate because the matched short increased available maintenance capacity; all other structural gates still must pass.",
+    "PM_CONSUMES_MARGIN": "Passes only if consumed_margin_usdc / matched_short_notional <= 0.25; all other structural gates still must pass.",
+    "MEASUREMENT_INCONCLUSIVE": "Always fails and may not authorize any stack experiment."
+  },
+  "network_retry_policy": {
+    "max_attempts_total": 4,
+    "per_attempt_timeout_seconds": 30,
+    "backoff_seconds_before_retries": [0.5, 1.0, 2.0],
+    "retryable_http_statuses": [408, 429, 500, 502, 503, 504],
+    "retryable_transport_errors": "requests.RequestException before a valid non-retryable HTTP response",
+    "nonretryable": "other HTTP 4xx fail immediately",
+    "scope": "POST https://api.hyperliquid.xyz/info only"
+  },
+  "privacy_and_safety": {
+    "private_keys": "never accepted or used",
+    "signing": false,
+    "orders": false,
+    "endpoint": "/info only",
+    "account_output": "SHA-256 address fingerprint only; never persist the full account address"
+  },
+  "required_outputs": [
+    "snapshot_gap_seconds and snapshot_gap_within_bound",
+    "spot_mid_drift_fraction, perp_mid_drift_fraction and mid_drift_within_bound",
+    "raw_available_after_maintenance_change_usdc as a first-class signed measurement",
+    "outcome_state exactly one of PM_RELEASES_MARGIN, PM_CONSUMES_MARGIN, MEASUREMENT_INCONCLUSIVE",
+    "released_margin_usdc and consumed_margin_usdc as separate nonnegative fields",
+    "existing structural checks and frozen 0035 limits",
+    "deterministic tests for timing/drift, positive consumption, negative release, zero/missing inconclusive, retry behavior and privacy/read-only invariants"
+  ],
+  "stopping_rule": "Do not change the 300-second gap, 25-bps midpoint-drift bound, 2% notional match tolerance, 0.50 PM-ratio gate, 25% consumption gate, $500 probe cap, 5% execution tolerance, 0.1% quantity invariant, or $1 dust gate after observing an account result. A failed/inconclusive first valid probe is retained and does not authorize a rescue run."
+}
