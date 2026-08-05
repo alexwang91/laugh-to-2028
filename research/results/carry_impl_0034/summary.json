@@ -1,0 +1,56 @@
+{
+  "audit_id": "CARRY-IMPL-0034-HYPERLIQUID-PORTFOLIO-MARGIN",
+  "status": "PASS_BTC_PUBLIC_FEASIBILITY",
+  "observed_at_utc": "2026-08-05T08:36:31.510309+00:00",
+  "actions_run_id": 30989699527,
+  "artifact_id": 8923562757,
+  "trading_changes": false,
+  "strategy_pnl": false,
+  "private_account_used": false,
+  "runtime_counts": {
+    "spot_tokens": 482,
+    "spot_pairs": 322,
+    "perp_assets": 232,
+    "borrow_lend_reserves": 5,
+    "collateral_ltv_positive_reserves": 2
+  },
+  "btc": {
+    "verified_spot_identity": true,
+    "spot_api_coin": "@142",
+    "spot_pair_index": 142,
+    "spot_token": "UBTC",
+    "spot_token_index": 197,
+    "spot_token_id": "0x8f254b963e8468305d409b33aa137c67",
+    "spot_reserve_ltv": 0.5,
+    "spot_reserve_oracle_px": 64194.0,
+    "spot_reserve_total_supplied": 1398.4341005844,
+    "spot_reserve_total_borrowed": 0.0,
+    "spot_reserve_utilization": 0.0,
+    "perp_present": true,
+    "spot_book": {
+      "best_bid": 64193.0,
+      "best_ask": 64194.0,
+      "mid": 64193.5,
+      "spread_bps": 0.15577901189372756,
+      "returned_bid_notional": 442345.58783,
+      "returned_ask_notional": 433026.23670000007
+    },
+    "perp_book": {
+      "best_bid": 64209.0,
+      "best_ask": 64210.0,
+      "mid": 64209.5,
+      "spread_bps": 0.15574019420802215,
+      "returned_bid_notional": 8132732.869850001,
+      "returned_ask_notional": 6006176.121799999
+    },
+    "spot_perp_mid_basis_bps": 2.4924641903001366,
+    "public_pm_feasibility": true
+  },
+  "other_targets": {
+    "ETH": "unverified_or_wrapped_spot_candidate_no_positive_ltv_on_selected_token",
+    "SOL": "unverified_or_wrapped_spot_candidate_no_positive_ltv_on_selected_token",
+    "BNB": "perp_only_or_unavailable",
+    "XRP": "perp_only_or_unavailable"
+  },
+  "decision": "Authorize only separately preregistered small-account/subaccount Portfolio Margin behavior probe for BTC matched spot plus short perp."
+}
