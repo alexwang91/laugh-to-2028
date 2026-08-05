@@ -274,7 +274,7 @@ def main() -> None:
     )
     (OUTPUT / "summary.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
 
-    result_md = f"""# CARRY-RF-0036R1 result\n\n"
+    result_md = "# CARRY-RF-0036R1 result\n\n"
     result_md += f"- CARRY-PNL-0031 CAGR: **{carry_compare['strategy']['cagr'] * 100:.3f}%**\n"
     result_md += f"- DTB3 cash CAGR: **{carry_compare['cash_benchmark']['cagr'] * 100:.3f}%**\n"
     result_md += f"- excess CAGR over cash: **{carry_compare['excess_cagr_over_rf'] * 100:+.3f} pp/yr**\n"
