@@ -245,6 +245,45 @@ def test_documented_specific_terminal_statuses_are_reconciled(status, reason_fie
     assert row[reason_field] == f"exchange_status:{status}"
 
 
+def test_partial_fill_then_cancel_requires_fill_evidence(tmp_path):
+    ledger = OrderLedger(str(tmp_path / "partial-cancel-missing.sqlite3"))
+    ledger.record_intent(_intent())
+    ledger.record_submission_attempt(_intent().identity.cloid, 1_785_974_400_100)
+    with pytest.raises(LedgerUncertainState, match="exchange_order_size_and_fill_events_disagree"):
+        reconcile_unresolved_orders(
+            ledger,
+            query_order_status=lambda _cloid: _order_response(
+                status="canceled", remaining="0.10"
+            ),
+            fetch_fills_by_time=lambda _start, _end: [],
+        )
+    row = ledger.get_order(_intent().identity.cloid)
+    assert row["terminal_status"] is None
+    assert row["current_status"] == "reconciliation_uncertain"
+
+
+def test_partial_fill_then_cancel_reconciles_fill_price_fee_and_remaining(tmp_path):
+    ledger = OrderLedger(str(tmp_path / "partial-cancel-complete.sqlite3"))
+    ledger.record_intent(_intent())
+    ledger.record_submission_attempt(_intent().identity.cloid, 1_785_974_400_100)
+    result = reconcile_unresolved_orders(
+        ledger,
+        query_order_status=lambda _cloid: _order_response(
+            status="canceled", remaining="0.10"
+        ),
+        fetch_fills_by_time=lambda _start, _end: [
+            _fill(qty="0.15", px="101000", fee="0.30")
+        ],
+    )
+    assert result["unresolved_after"] == 0
+    row = ledger.get_order(_intent().identity.cloid)
+    assert row["terminal_status"] == "canceled"
+    assert row["fill_quantity"] == pytest.approx(0.15)
+    assert row["average_fill_price"] == pytest.approx(101000.0)
+    assert row["fees"] == pytest.approx(0.30)
+    assert row["remaining_quantity"] == pytest.approx(0.10)
+
+
 def test_order_status_lookup_failure_leaves_structured_uncertainty_audit(tmp_path):
     ledger = OrderLedger(str(tmp_path / "orders.sqlite3"))
     ledger.record_intent(_intent())
