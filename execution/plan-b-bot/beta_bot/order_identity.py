@@ -9,12 +9,7 @@ from decimal import Decimal, ROUND_HALF_EVEN
 CLOID_PERSON = b"brrk-order-v1"
 TARGET_QTY_DECIMALS = 5
 VALID_SIDES = {"buy", "sell"}
-VALID_INTENTS = {
-    "increase",
-    "reduce",
-    "close_for_reversal",
-    "open_reversal",
-}
+VALID_INTENTS = {"increase", "reduce"}
 
 
 def canonical_target_revision(target_qty: float, decimals: int = TARGET_QTY_DECIMALS) -> str:
