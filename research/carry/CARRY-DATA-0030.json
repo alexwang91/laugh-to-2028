@@ -1,0 +1,58 @@
+{
+  "audit_id": "CARRY-DATA-0030",
+  "status": "PREREGISTERED_BEFORE_FIRST_RUN",
+  "registered_on": "2026-08-05",
+  "promotion_evidence": false,
+  "question": "Can a low-degree-of-freedom delta-neutral spot-perpetual carry baseline be reconstructed from same-venue official historical data without mixing venues or using current-survivor assumptions?",
+  "mechanism": {
+    "canonical_trade": "long spot + short same-asset perpetual",
+    "purpose": "isolate funding/basis carry rather than directional crypto beta",
+    "positive_funding_cashflow": "short perpetual receives positive funding while long spot offsets first-order price exposure",
+    "negative_funding_cashflow": "the baseline would not be assumed profitable; 0030 does not define a trading rule or inspect PNL"
+  },
+  "assets": ["BTCUSDT", "ETHUSDT", "SOLUSDT", "BNBUSDT", "XRPUSDT"],
+  "primary_data_source": {
+    "venue": "Binance",
+    "reason": "official public archives expose same-venue spot 1d klines, USD-M perpetual 1d klines and USD-M fundingRate history with long historical coverage",
+    "spot_prefix": "data/spot/monthly/klines/{symbol}/1d/",
+    "perp_prefix": "data/futures/um/monthly/klines/{symbol}/1d/",
+    "funding_prefix": "data/futures/um/monthly/fundingRate/{symbol}/"
+  },
+  "required_checks": [
+    "discover monthly archive objects from official Binance public-data S3 listing rather than assuming current symbols",
+    "record first/last month and internal month gaps for spot, perpetual and funding separately",
+    "parse representative first/middle/last objects for all three datasets",
+    "construct the common monthly coverage intersection for each asset",
+    "verify spot and perpetual daily timestamps can be aligned on completed UTC days within common coverage",
+    "report missing daily bars and clustered archive gaps without interpolation",
+    "report funding settlement event count, sign distribution and observed interval distribution within common coverage",
+    "compute contemporaneous diagnostic basis = perp_close / spot_close - 1 only as a data diagnostic; no strategy PNL or entry/exit optimization",
+    "retain source-specific limitations and do not substitute Hyperliquid or other venues into missing Binance fields"
+  ],
+  "required_outputs": [
+    "per-asset archive coverage table for spot/perp/funding",
+    "per-asset common same-venue date window",
+    "daily spot/perp alignment coverage ratio",
+    "basis diagnostic distribution",
+    "funding event coverage and sign/interval diagnostics",
+    "explicit PASS/FAIL data qualification"
+  ],
+  "pass_rule": {
+    "all_five_assets_have_same_venue_overlap": true,
+    "no_unresolved_held_position_concept": "not applicable because this is a data-only audit",
+    "minimum_daily_spot_perp_alignment": 0.99,
+    "funding_archive_required": true,
+    "decision": "PASS authorizes a separately preregistered naive delta-neutral carry PNL experiment; FAIL blocks carry PNL until the data defect is resolved"
+  },
+  "prohibited": [
+    "no carry PNL",
+    "no funding threshold search",
+    "no Top-K asset selection",
+    "no leverage optimization",
+    "no basis entry/exit threshold",
+    "no current API/current-survivor substitution for historical existence",
+    "no cross-venue price/funding blending",
+    "no interpolation or forward-fill across missing official daily bars",
+    "no asset-specific exception chosen after seeing economics"
+  ]
+}
