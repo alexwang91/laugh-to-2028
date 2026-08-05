@@ -1,193 +1,125 @@
 # Next Steps
 
-当前原则：**BRRK directional core 冻结；失败的历史 alpha/sleeve 不继续同窗救援；instrument identity、capital structure、execution 和 production authorization 分开验证。**
+> **Forward source of truth changed on 2026-08-05.**
+>
+> Read these in order before starting new work:
+>
+> 1. `docs/MASTER_PLAN_2026-08-05.md`
+> 2. `docs/IMPLEMENTATION_ROADMAP_2026-08-05.md`
+> 3. `docs/PROJECT_GOVERNANCE_2026-08-05.md`
+>
+> This file is intentionally short. The detailed roadmap now lives in the documents above so future work is driven by one ordered dependency chain rather than by whichever research line was edited most recently.
 
-## Frozen completed decisions
+---
 
-### BRRK-0011
-
-Canonical directional target. Price-only CAGR **65.10%**, MDD **-33.72%**, Sharpe **1.353**, Calmar **1.931**.
-
-Do not retune BRRK on the current historical window.
-
-### Dynamic PIT alpha
-
-PIT-ALPHA-0016/0018 validated ranking/persistence information but produced unacceptable deep drawdowns and negative 2025+ economics.
-
-Decision: **portfolio line stopped**. No exit-rank/min-hold/rebalance/liquidity/named-winner rescue.
-
-### ASYM-BETA-0024
-
-Daily latency cap is the best tested bull-extra implementation, but funding-aware MDD/Sharpe remain worse than strict BRRK and April 2024 remains unresolved.
-
-Decision: parameters frozen; forward shadow only. No more historical April rescue.
-
-### TSMOM-ALPHA-0029
-
-Funding-aware first valid PIT long/short test: CAGR **-4.12%**, MDD **-88.30%**, Sharpe **0.251**. Corr vs BRRK was low but crisis-alpha gate failed.
-
-Decision: **rejected; TSMOM line stopped on this sample**.
-
-### Funding / router
-
-- FUNDING-PNL-0003: all-perp Hyperliquid implementation cuts common-window CAGR to **44.08%**.
-- ROUTER-DATA-0004: BTC spot is verified through official UI BTC->UBTC remap.
-- ROUTER-PNL-0005: BTC-only spot accounting recovers common-window CAGR to **56.20%**.
-
-Decision: all-perp default rejected; BTC spot-first remains implementation/shadow candidate.
-
-### CARRY-PNL-0031 + CARRY-RF-0036R1/R2
-
-The original CARRY-PNL-0031 report is preserved unchanged. It passed a zero-return `net_economics` hurdle with:
-
-- CAGR **2.740%**;
-- MDD **-7.005%**;
-- zero-hurdle Sharpe **1.428**;
-- daily corr vs BRRK **-0.098**;
-- mean return on BRRK worst-decile days positive.
-
-F1 preregistered a benchmark-only restatement. No asset, weight, cost, funding-accounting or window change was allowed. The first valid `CARRY-RF-0036R1` result on 2020-09-15..2026-07-30 established:
-
-- CARRY-PNL-0031 CAGR: **2.7404%**;
-- FRED `DTB3` cash CAGR: **3.1653%**;
-- excess CAGR over rf: **-0.4249 pp/yr**;
-- 2021 carry return: **+16.8037%**;
-- full-window cumulative carry return: **+17.1983%**.
-
-A subsequent registered **reporting-only** correction, `CARRY-RF-0036R2`, aligns the named `excess_sharpe_over_rf` exactly to PR #30's reference convention:
-
-- named excess Sharpe over rf: **-0.2231508** (≈ **-0.223**);
-- R1's old **-0.2215824** value is preserved as the earlier excess-return-volatility diagnostic;
-- no gate, input, return series, risk-free series or decision changed.
-
-Corrected gate:
+## Current authorized next task
 
 ```text
-net_economics = excess return over risk-free cash > 0
+P0.1 Canonical product config
++
+P0.2 Decision registry
 ```
 
-Decision: **FAIL_CORRECTED_NET_ECONOMICS_STOP_CARRY_LINE**.
+After P0 closes, proceed to **Phase 1 — Account and execution truth**.
 
-Under discipline #7, the carry line is stopped. Do not drop BNB, filter funding sign, add basis thresholds, change the window, change costs, change weights or add leverage to rescue this sample.
+Do not skip directly to cycle-top modeling, leverage deployment or a new short universe before their dependencies are complete.
 
-Exact restatement plus daily evidence: `research/results/carry_rf_0036r1/`.  
-Named-metric parity correction: `research/results/carry_rf_0036r2/`.
+---
 
-### CARRY-AUDIT-0032
+## Product baseline
 
-Extreme SOL/XRP daily-close basis observations matched exact official Binance daily archives and did not artificially create 0031 economics.
-
-Decision: source attribution passed. This does not override the F1 cash-hurdle failure.
-
-### CARRY-STACK-0033
-
-The frozen idle-capital rule had already failed:
+Current high-level decisions:
 
 ```text
-carry_scale_t = clip(1 - held_BRRK_gross_t, 0, 1)
+Long universe: BTC / ETH / SOL / BNB
+Primary venue: Hyperliquid
+Initial capital: $2,000 cash/stablecoin
+Recurring manual contribution: $100/week
+Normal decision frequency: daily
+Canonical daily boundary: 00:00 UTC
+Intraday channel: risk reduction only
+Leverage: model-determined, not a fixed user multiple
+Catastrophic drawdown tolerance: 70% boundary, not operating target
+FLAT: zero directional exposure
+FLAT -> LONG/SHORT: human approval required
+Production upgrades: blue/green manual cutover; no hot strategy patching
+Bot credential: trading Agent/API only; no master wallet private key; no automated withdrawals
 ```
 
-- BRRK CAGR **56.66%** -> combined **56.04%**;
-- Sharpe **1.235** -> **1.226**;
-- Calmar **1.621** -> **1.597**;
-- carry allocation turnover **20.87x**;
-- scale-change cost about **1.043%**;
-- net carry contribution **-1.236%**.
+---
 
-F1 further compared the combined stack with **BRRK + the same idle capital accruing DTB3 cash**. The corrected `net_economics_vs_idle_cash` also fails. Under the R2 review convention, its named excess Sharpe over rf is **-0.049529**.
+## Frozen historical decisions that remain in force
 
-Decision: **remain rejected**. The previous interpretation that standalone carry still passed while only the idle-cash conversion failed is no longer supported after F1.
+The new master plan does **not** reopen stopped research lines.
 
-### CARRY-IMPL-0034
+- BRRK-0011 remains the canonical directional research target unless a future registered replacement passes its gates.
+- Dynamic PIT alpha portfolio line remains stopped on the tested sample.
+- TSMOM-ALPHA-0029 remains rejected on the tested sample.
+- all-perp implementation remains rejected as the default; instrument routing remains required.
+- BTC verified spot-first evidence remains useful.
+- CARRY line remains stopped after corrected risk-free cash economics failed.
+- no live Portfolio Margin carry probe is authorized.
+- historical ASYM-BETA work remains evidence, but higher live gross exposure is not authorized until execution and forward gates pass.
 
-Public Hyperliquid Portfolio Margin audit passed BTC public feasibility:
+See `README.md`, `docs/RESEARCH_HISTORY.md`, `docs/REVIEW_FIX_BACKLOG.md` and the relevant `research/results/` directories for the preserved detailed evidence.
 
-- BTC UI -> HyperCore UBTC mapping verified;
-- exact UBTC token index **197**;
-- current UBTC reserve LTV **0.50**;
-- live BTC spot and perp books.
+---
 
-Decision: `PASS_BTC_PUBLIC_FEASIBILITY` remains valid as an implementation observation, but it no longer authorizes live carry work because the upstream corrected economic gate failed.
-
-Formal result: `research/results/CARRY_IMPL_0034_RESULT_2026-08-05.md`.
-
-### CARRY-PM-0035 / CARRY-PM-0037
-
-**CARRY-PM-0035 is no longer required. Do not spend live probe capital.**
-
-F2 is retained as an implementation fix because the old 0035 comparator could confuse genuine margin release with a timing/price-drift-corrupted measurement. Since this changes a frozen gate, it was preregistered separately as `CARRY-PM-0037-MEASUREMENT-INTEGRITY`; `CARRY-PM-0035.json` remains untouched.
-
-Frozen F2 integrity rules:
-
-- spot -> matched snapshot gap <= **300 seconds**;
-- UBTC spot midpoint drift <= **25 bps**;
-- BTC perp midpoint drift <= **25 bps**;
-- observed probe spot notional <= **$500 * 1.05 = $525**;
-- bounded `/info` retries: **4 attempts**, backoff **0.5 / 1 / 2 seconds**, retrying transport failures plus HTTP 408/429/5xx only;
-- research remains read-only: `/info` only, no signing, no orders, account address stored only as SHA-256 fingerprint.
-
-Measurement state is now explicit:
+## Ordered forward program
 
 ```text
-PM_RELEASES_MARGIN
-PM_CONSUMES_MARGIN
+P0  canonical product/state registry
+P1  account/order/fill reconciliation and execution hardening
+P2  Hyperliquid BRRK instrument router
+P3  production-quality daily BRRK target engine
+P4  dynamic leverage extension and operating-risk selection
+P5  2021/2025 cycle-top / late-bull / exit model
+P6  integrated live-data shadow system
+P7  limited-capital live long program
+P8  future bear-short research
+```
+
+The detailed task definitions and acceptance gates are in `docs/IMPLEMENTATION_ROADMAP_2026-08-05.md`.
+
+---
+
+## Correction loop
+
+Every task follows:
+
+```text
+PLAN
+-> define acceptance criteria
+-> IMPLEMENT
+-> TEST
+-> REVIEW
+-> classify failure
+-> FIX or STOP
+-> record evidence
+-> update roadmap status
+-> next dependency
+```
+
+Allowed evidence statuses:
+
+```text
+PASS_PRODUCTION_CANDIDATE
+PASS_SHADOW_ONLY
+FAIL_STOP
+FAIL_FIX_IMPLEMENTATION
 MEASUREMENT_INCONCLUSIVE
 ```
 
-`snapshot_gap_within_bound` and `mid_drift_within_bound` must pass before interpreting raw available-after-maintenance change. Failed timing/drift integrity is `MEASUREMENT_INCONCLUSIVE`, never a false zero-consumption pass.
-
-Decision: **0037 implementation retained but live probe NOT REQUIRED because F1 stopped the carry line.**
-
-Preregistration: `research/carry/CARRY-PM-0037.json`  
-Runbook: `docs/CARRY_PM_0037_RUNBOOK.md`
+Do not silently tune a failed historical result until it passes. Parameter changes intended to rescue a failed sample require a new registered experiment.
 
 ---
 
-# Current priority — non-carry forward implementation evidence
+## Immediate implementation intent
 
-There is no authorized historical carry rescue, no live PM carry probe, and no PM-aware carry stack experiment.
+The first implementation change after this planning set is merged should create:
 
-Continue independent work already separated from carry:
+1. a machine-readable canonical product/config registry;
+2. a machine-readable decision/status registry;
+3. tests proving the registries are the single source used by execution/research integration code.
 
-1. BTC verified long spot capacity -> spot;
-2. unverified/unavailable long exposure -> perp;
-3. short exposure -> perp;
-4. live L2 VWAP/slippage checks;
-5. account/order/fill reconciliation;
-6. partial/resting/rejected/cancelled handling;
-7. slicing/TWAP;
-8. idempotency and persistent audit logs;
-9. reduce-only emergency paths / kill switch;
-10. explicit mainnet confirmation and hard caps.
-
-UETH/USOL identity/custody/redemption validation remains separate. No PNL may upgrade token identity.
-
-This F1/F2 change set does **not** modify `execution/`.
-
----
-
-# Forward evidence
-
-Accumulate without retuning targets:
-
-- BRRK target;
-- routing instrument/reason;
-- funding;
-- spot/perp basis;
-- mark/oracle premium;
-- L2 depth and expected VWAP;
-- actual fee/fill/slippage;
-- post-trade reconciliation;
-- operational failure events.
-
-Portfolio Margin carry evidence is no longer a required forward track after the F1 failure.
-
----
-
-# Leverage last
-
-This has two separate meanings that must not be conflated, per backlog F5.
-
-**Research has already explored gross 1.30-1.50.** ASYM-BETA-0021/0022/0024 ran BRRK-0011 core plus an extra bull-tilt sleeve up to `GROSS_CAP = 1.50` (observed max held gross 1.4228), fully backtested with funding-aware accounting. The answer is already in: on the funding-aware basis, the extra sleeve is dominated by simply levering BRRK-0011 core to the same target risk (Sharpe 1.199 vs the core's 1.229, Calmar 1.564 vs 1.608, MDD -41.44% vs -34.95% — see the README's funding-aware table). Further research at this gross level does not need to "reopen" anything; it is already open, and the current finding is negative.
-
-**Deployment stays capped regardless of what research finds.** No live position may run above the currently deployed gross target until routing, execution reconciliation, slippage controls, kill paths and forward evidence are all established in `execution/plan-b-bot/`. This is an execution-readiness gate, not a research restriction — it does not become looser or tighter based on which gross level a backtest happens to test.
+Only after that should Phase 1 execution-state hardening begin.
