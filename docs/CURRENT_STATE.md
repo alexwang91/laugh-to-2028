@@ -14,6 +14,7 @@ Status: authoritative cross-chat handoff snapshot
 - P1.3 implementation PR #46 + handoff #47: PASS / MERGED
 - P1.4 implementation PR #48 + handoff #49: PASS / MERGED
 - Current main before P1.5: `41dbbcdbea26f5d811b4e60cc0d65fc0a247e4a4`
+- P1.5 implementation PR: #50 open
 - P1.5 candidate branch: `p1-5/precision-metadata`
 
 ## Current roadmap position
@@ -25,7 +26,7 @@ P1.1 Deterministic order identity: PASS / MERGED
 P1.2 Persistent order ledger: PASS / MERGED
 P1.3 Partial-fill correctness: PASS / MERGED
 P1.4 Reversal safety: PASS / MERGED
-P1.5 Precision / metadata: CANDIDATE / NOT MERGED
+P1.5 Precision / metadata: IMPLEMENTATION VERIFIED / FINAL-HEAD CI PENDING / NOT MERGED
 P1.6+ blocked until P1.5 closes its evidence/merge gate
 ```
 
@@ -56,23 +57,23 @@ Registered engineering decisions retained:
 
 P1.4 final implementation head `879ce2da3b1e4382473037650c3fca30cda7f63f` passed Phase 0 baseline contract `31078243843`, execution tests, research integration, PR handoff governance `31078243847`, and evidence-only governance `31078303601`; PR #48 merged as `7acb093af59825c39fd092f232573666682197d8`, then PR #49 normalized the handoff as main `41dbbcdbea26f5d811b4e60cc0d65fc0a247e4a4`.
 
-## P1.5 candidate behavior
+## P1.5 implementation verified on candidate
 
 Roadmap requirement: remove hardcoded size and price precision.
 
-Candidate implementation:
+PR #50 candidate implementation:
 
 - adds `beta_bot/instrument_metadata.py` as the canonical formatting layer;
 - parses Hyperliquid perp `meta.universe` and reads each asset's `szDecimals`;
 - executor fetches exchange metadata before any write action and fails closed when configured instrument metadata is absent/malformed;
-- execution quantity is formatted conservatively toward zero using the exchange-provided `szDecimals` instead of a global `5` decimal constant;
+- execution quantity is formatted conservatively toward zero using exchange-provided `szDecimals` instead of a global `5` decimal constant;
 - ledger order parameters persist `sz_decimals` and `precision_source=hyperliquid_meta`;
-- price helper enforces metadata-derived decimal cap plus the Hyperliquid five-significant-figure rule, with integer-price allowance;
+- price helper enforces metadata-derived decimal cap plus the five-significant-figure rule, with integer-price allowance;
 - formatting tests explicitly cover BTC, ETH, SOL and BNB with distinct metadata values;
 - malformed, duplicate or incomplete metadata and sizes that round to zero fail closed;
-- existing reversal executor tests now inject deterministic exchange metadata rather than relying on network access.
+- existing reversal executor tests inject deterministic exchange metadata rather than relying on network access.
 
-P1.5 does **not** authorize ETH/SOL/BNB production execution. Formatting correctness is separate from P2 instrument identity/routing and later production authorization.
+`EXEC-PRECISION-METADATA-P1.5` is registered as `IMPLEMENTATION_VERIFIED` in `config/decision_registry.json`. This is candidate engineering verification only; P1.5 is not merged and production authorization remains empty.
 
 ## P1.5 self-review notes
 
@@ -81,9 +82,22 @@ P1.5 does **not** authorize ETH/SOL/BNB production execution. Formatting correct
 - The executor no longer contains the previous `_round_size(..., decimals=5)` hardcoded precision helper.
 - Price formatting is implemented even though the current market-open/close path does not submit explicit limit prices; this satisfies the roadmap precision contract without claiming a new order type.
 
-## P1.5 evidence status
+## P1.5 evidence so far
 
-Candidate implementation is **not yet IMPLEMENTATION_VERIFIED and not merged**. Authoritative PR CI is required.
+Candidate implementation head before registry/evidence finalization:
+
+```text
+07148a8e5e542750a800142af3be66899abc6f8d
+```
+
+That head passed:
+
+- `Phase 0 baseline contract` run #34 / Actions `31078938943`: SUCCESS;
+- execution tests in that run: SUCCESS;
+- research integration contract in that run: SUCCESS;
+- `PR handoff governance` run #44 / Actions `31078938660`: SUCCESS.
+
+The branch now also contains the decision-registry record and this evidence update. **A new final-head CI run is required before merge.**
 
 ## Deliberately not solved
 
@@ -124,7 +138,7 @@ P1.5 is the exact next roadmap dependency and changes no product economics, risk
 ## Exact next action
 
 ```text
-P1.5 PR -> CI -> fix same PR if required -> final-head CI -> decision registry -> merge -> normalize handoff to P1.6
+final-head CI on PR #50 -> merge -> normalize handoff to P1.6
 ```
 
 Do not start P1.6 before P1.5 is PASS / MERGED.
