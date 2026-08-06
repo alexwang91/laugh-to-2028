@@ -11,166 +11,29 @@
   ],
   "production_authorized_components": [],
   "decisions": [
-    {
-      "id": "BRRK-0011",
-      "status": "ACCEPTED_RESEARCH_TARGET",
-      "scope": "directional_core",
-      "decision": "Frozen canonical BRRK directional research target; do not retune on the current historical window.",
-      "source": "docs/NEXT_STEPS.md"
-    },
-    {
-      "id": "PIT-ALPHA-0016-0018",
-      "status": "REJECTED_STOPPED",
-      "scope": "dynamic_pit_alpha",
-      "decision": "Portfolio line stopped after unacceptable drawdown and negative 2025+ economics; do not rescue through rank, hold, rebalance, liquidity or named-winner retuning on this sample.",
-      "source": "docs/NEXT_STEPS.md"
-    },
-    {
-      "id": "ASYM-BETA-0024",
-      "status": "SHADOW_ONLY",
-      "scope": "bull_extra_beta_sleeve",
-      "decision": "Parameters frozen; forward shadow only. Historical extra sleeve is not production leverage authorization and should not be rescued on April 2024.",
-      "source": "docs/NEXT_STEPS.md"
-    },
-    {
-      "id": "TSMOM-ALPHA-0029",
-      "status": "REJECTED_STOPPED",
-      "scope": "tsmom_long_short",
-      "decision": "Rejected on the tested sample after crisis-alpha gate failure; do not retune to rescue the historical result.",
-      "source": "docs/NEXT_STEPS.md"
-    },
-    {
-      "id": "FUNDING-PNL-0003",
-      "status": "REJECTED_STOPPED",
-      "scope": "all_perp_router_default",
-      "decision": "All-perp Hyperliquid default rejected because funding-aware economics materially reduced BRRK CAGR on the common window.",
-      "source": "docs/NEXT_STEPS.md"
-    },
-    {
-      "id": "ROUTER-DATA-0004",
-      "status": "IMPLEMENTATION_VERIFIED",
-      "scope": "btc_spot_identity",
-      "decision": "BTC UI to HyperCore UBTC mapping publicly verified; this verifies instrument identity, not broad production authorization.",
-      "source": "docs/NEXT_STEPS.md"
-    },
-    {
-      "id": "ROUTER-PNL-0005",
-      "status": "SHADOW_ONLY",
-      "scope": "btc_spot_first_router",
-      "decision": "BTC spot-first remains an implementation/shadow candidate; unverified long exposures remain perp until separately validated.",
-      "source": "docs/NEXT_STEPS.md"
-    },
-    {
-      "id": "CARRY-PNL-0031-CARRY-RF-0036",
-      "status": "REJECTED_STOPPED",
-      "scope": "carry",
-      "decision": "Carry line stopped after corrected net economics versus risk-free cash failed. Do not rescue with asset removal, funding filters, basis thresholds, window changes, cost changes, weight changes or leverage.",
-      "source": "docs/NEXT_STEPS.md"
-    },
-    {
-      "id": "CARRY-STACK-0033",
-      "status": "REJECTED_STOPPED",
-      "scope": "idle_capital_carry_stack",
-      "decision": "Rejected versus BRRK plus idle risk-free cash; do not reopen as an idle-capital sleeve on the same evidence base.",
-      "source": "docs/NEXT_STEPS.md"
-    },
-    {
-      "id": "CARRY-IMPL-0034",
-      "status": "IMPLEMENTATION_VERIFIED",
-      "scope": "portfolio_margin_public_feasibility",
-      "decision": "BTC public Portfolio Margin feasibility remains a valid implementation observation but does not authorize live carry work.",
-      "source": "docs/NEXT_STEPS.md"
-    },
-    {
-      "id": "CARRY-PM-0035",
-      "status": "SUPERSEDED",
-      "scope": "carry_live_probe",
-      "decision": "No longer required after upstream carry economics failed; no live probe capital is authorized.",
-      "source": "docs/NEXT_STEPS.md"
-    },
-    {
-      "id": "CARRY-PM-0037",
-      "status": "IMPLEMENTATION_VERIFIED",
-      "scope": "carry_measurement_integrity",
-      "decision": "Measurement-integrity implementation retained; live probe remains not required and not authorized.",
-      "source": "docs/NEXT_STEPS.md"
-    },
-    {
-      "id": "PRODUCT-LONG-UNIVERSE-2026-08-05",
-      "status": "ACCEPTED_RESEARCH_TARGET",
-      "scope": "product",
-      "decision": "Production long universe is BTC, ETH, SOL and BNB; additions require separate research and approval.",
-      "source": "docs/MASTER_PLAN_2026-08-05.md"
-    },
-    {
-      "id": "PRODUCT-VENUE-2026-08-05",
-      "status": "ACCEPTED_RESEARCH_TARGET",
-      "scope": "product",
-      "decision": "Primary venue is Hyperliquid; second venues are not default architecture and require a demonstrated capability gap or separate decision.",
-      "source": "docs/MASTER_PLAN_2026-08-05.md"
-    },
-    {
-      "id": "PRODUCT-LEVERAGE-2026-08-05",
-      "status": "ACCEPTED_RESEARCH_TARGET",
-      "scope": "risk",
-      "decision": "Leverage is model-determined; 70% drawdown is catastrophic tolerance only. Operating risk budget remains unfrozen until the dedicated leverage study.",
-      "source": "docs/MASTER_PLAN_2026-08-05.md"
-    },
-    {
-      "id": "PRODUCT-CYCLE-EXIT-2026-08-05",
-      "status": "ACCEPTED_RESEARCH_TARGET",
-      "scope": "cycle_exit",
-      "decision": "Cycle exit is state-based, not calendar-based. FLAT means zero directional exposure and re-entry requires human approval.",
-      "source": "docs/MASTER_PLAN_2026-08-05.md"
-    },
-    {
-      "id": "PRODUCT-SHORT-UNIVERSE-2026-08-05",
-      "status": "ACCEPTED_RESEARCH_TARGET",
-      "scope": "bear_research",
-      "decision": "BRRK four assets are the initial short benchmark; a future bear study may research sufficiently liquid contemporaneous Top-20 candidates, but this is not standing production authorization.",
-      "source": "docs/MASTER_PLAN_2026-08-05.md"
-    },
-    {
-      "id": "PRODUCT-SECURITY-2026-08-05",
-      "status": "ACCEPTED_RESEARCH_TARGET",
-      "scope": "security",
-      "decision": "Bot uses trading Agent/API credentials only; master wallet private key, automated withdrawals and automated external transfers are outside the approved boundary.",
-      "source": "docs/MASTER_PLAN_2026-08-05.md"
-    },
-    {
-      "id": "PRODUCT-DEPLOYMENT-2026-08-05",
-      "status": "ACCEPTED_RESEARCH_TARGET",
-      "scope": "deployment",
-      "decision": "Strategy upgrades use candidate/shadow development plus manual blue-green cutover; no hot strategy patching in ACTIVE.",
-      "source": "docs/PROJECT_GOVERNANCE_2026-08-05.md"
-    },
-    {
-      "id": "EXEC-ORDER-ID-P1.1",
-      "status": "IMPLEMENTATION_VERIFIED",
-      "scope": "execution_identity",
-      "decision": "Deterministic 128-bit Hyperliquid cloid is derived from release, canonical daily decision timestamp, asset, side, route-independent economic intent and executable target revision. Sequential replay/restart checks exchange orderStatus by cloid and suppresses a known order; this does not claim persistent local ledger, partial-fill retry semantics or cross-process locking.",
-      "source": "PR #42"
-    },
-    {
-      "id": "EXEC-ORDER-LEDGER-P1.2",
-      "status": "IMPLEMENTATION_VERIFIED",
-      "scope": "execution_truth",
-      "decision": "Persistent single-account SQLite order ledger records deterministic CLOID intent before submission, a durable submission-attempt marker before the network call, submission/OID/status/fill/fee/average-price/remaining/cancel-reject truth, and restart reconciliation against Hyperliquid. Unknown or corrupt state fails closed and recovered exchange orders block new risk until resolved. This verifies P1.2 only; it does not authorize live production, complete the P1.3 partial-fill/retry lifecycle, or solve simultaneous multi-process/distributed locking.",
-      "source": "PR #44"
-    },
-    {
-      "id": "EXEC-PARTIAL-FILL-P1.3",
-      "status": "IMPLEMENTATION_VERIFIED",
-      "scope": "execution_truth",
-      "decision": "Actual-fill-driven position progress is derived from reconciled fill quantity and order side, with explicit zero/partial/full fill state, live resting remainder, unfilled quantity, fill-implied actual position and target gap when a trustworthy pre-trade baseline exists. Quantity disagreement fails closed. Reversal-open deliberately does not invent a baseline before P1.4. This verifies P1.3 implementation only and authorizes no production trading or later roadmap capability.",
-      "source": "PR #46"
-    },
-    {
-      "id": "EXEC-REVERSAL-SAFETY-P1.4",
-      "status": "IMPLEMENTATION_VERIFIED",
-      "scope": "execution_truth",
-      "decision": "Reversal execution separates old-direction reduction from new-direction opening. The close leg uses reduce-only semantics, and the new-direction leg is blocked until a fresh Hyperliquid clearinghouseState read proves the old-direction position is flat. Partial remainder, malformed/failed fresh state, or unexpected cross-through fail closed. This verifies P1.4 implementation only and authorizes no production trading or later roadmap capability.",
-      "source": "PR #48"
-    }
+    {"id":"BRRK-0011","status":"ACCEPTED_RESEARCH_TARGET","scope":"directional_core","decision":"Frozen canonical BRRK directional research target; do not retune on the current historical window.","source":"docs/NEXT_STEPS.md"},
+    {"id":"PIT-ALPHA-0016-0018","status":"REJECTED_STOPPED","scope":"dynamic_pit_alpha","decision":"Portfolio line stopped after unacceptable drawdown and negative 2025+ economics; do not rescue through rank, hold, rebalance, liquidity or named-winner retuning on this sample.","source":"docs/NEXT_STEPS.md"},
+    {"id":"ASYM-BETA-0024","status":"SHADOW_ONLY","scope":"bull_extra_beta_sleeve","decision":"Parameters frozen; forward shadow only. Historical extra sleeve is not production leverage authorization and should not be rescued on April 2024.","source":"docs/NEXT_STEPS.md"},
+    {"id":"TSMOM-ALPHA-0029","status":"REJECTED_STOPPED","scope":"tsmom_long_short","decision":"Rejected on the tested sample after crisis-alpha gate failure; do not retune to rescue the historical result.","source":"docs/NEXT_STEPS.md"},
+    {"id":"FUNDING-PNL-0003","status":"REJECTED_STOPPED","scope":"all_perp_router_default","decision":"All-perp Hyperliquid default rejected because funding-aware economics materially reduced BRRK CAGR on the common window.","source":"docs/NEXT_STEPS.md"},
+    {"id":"ROUTER-DATA-0004","status":"IMPLEMENTATION_VERIFIED","scope":"btc_spot_identity","decision":"BTC UI to HyperCore UBTC mapping publicly verified; this verifies instrument identity, not broad production authorization.","source":"docs/NEXT_STEPS.md"},
+    {"id":"ROUTER-PNL-0005","status":"SHADOW_ONLY","scope":"btc_spot_first_router","decision":"BTC spot-first remains an implementation/shadow candidate; unverified long exposures remain perp until separately validated.","source":"docs/NEXT_STEPS.md"},
+    {"id":"CARRY-PNL-0031-CARRY-RF-0036","status":"REJECTED_STOPPED","scope":"carry","decision":"Carry line stopped after corrected net economics versus risk-free cash failed. Do not rescue with asset removal, funding filters, basis thresholds, window changes, cost changes, weight changes or leverage.","source":"docs/NEXT_STEPS.md"},
+    {"id":"CARRY-STACK-0033","status":"REJECTED_STOPPED","scope":"idle_capital_carry_stack","decision":"Rejected versus BRRK plus idle risk-free cash; do not reopen as an idle-capital sleeve on the same evidence base.","source":"docs/NEXT_STEPS.md"},
+    {"id":"CARRY-IMPL-0034","status":"IMPLEMENTATION_VERIFIED","scope":"portfolio_margin_public_feasibility","decision":"BTC public Portfolio Margin feasibility remains a valid implementation observation but does not authorize live carry work.","source":"docs/NEXT_STEPS.md"},
+    {"id":"CARRY-PM-0035","status":"SUPERSEDED","scope":"carry_live_probe","decision":"No longer required after upstream carry economics failed; no live probe capital is authorized.","source":"docs/NEXT_STEPS.md"},
+    {"id":"CARRY-PM-0037","status":"IMPLEMENTATION_VERIFIED","scope":"carry_measurement_integrity","decision":"Measurement-integrity implementation retained; live probe remains not required and not authorized.","source":"docs/NEXT_STEPS.md"},
+    {"id":"PRODUCT-LONG-UNIVERSE-2026-08-05","status":"ACCEPTED_RESEARCH_TARGET","scope":"product","decision":"Production long universe is BTC, ETH, SOL and BNB; additions require separate research and approval.","source":"docs/MASTER_PLAN_2026-08-05.md"},
+    {"id":"PRODUCT-VENUE-2026-08-05","status":"ACCEPTED_RESEARCH_TARGET","scope":"product","decision":"Primary venue is Hyperliquid; second venues are not default architecture and require a demonstrated capability gap or separate decision.","source":"docs/MASTER_PLAN_2026-08-05.md"},
+    {"id":"PRODUCT-LEVERAGE-2026-08-05","status":"ACCEPTED_RESEARCH_TARGET","scope":"risk","decision":"Leverage is model-determined; 70% drawdown is catastrophic tolerance only. Operating risk budget remains unfrozen until the dedicated leverage study.","source":"docs/MASTER_PLAN_2026-08-05.md"},
+    {"id":"PRODUCT-CYCLE-EXIT-2026-08-05","status":"ACCEPTED_RESEARCH_TARGET","scope":"cycle_exit","decision":"Cycle exit is state-based, not calendar-based. FLAT means zero directional exposure and re-entry requires human approval.","source":"docs/MASTER_PLAN_2026-08-05.md"},
+    {"id":"PRODUCT-SHORT-UNIVERSE-2026-08-05","status":"ACCEPTED_RESEARCH_TARGET","scope":"bear_research","decision":"BRRK four assets are the initial short benchmark; a future bear study may research sufficiently liquid contemporaneous Top-20 candidates, but this is not standing production authorization.","source":"docs/MASTER_PLAN_2026-08-05.md"},
+    {"id":"PRODUCT-SECURITY-2026-08-05","status":"ACCEPTED_RESEARCH_TARGET","scope":"security","decision":"Bot uses trading Agent/API credentials only; master wallet private key, automated withdrawals and automated external transfers are outside the approved boundary.","source":"docs/MASTER_PLAN_2026-08-05.md"},
+    {"id":"PRODUCT-DEPLOYMENT-2026-08-05","status":"ACCEPTED_RESEARCH_TARGET","scope":"deployment","decision":"Strategy upgrades use candidate/shadow development plus manual blue-green cutover; no hot strategy patching in ACTIVE.","source":"docs/PROJECT_GOVERNANCE_2026-08-05.md"},
+    {"id":"EXEC-ORDER-ID-P1.1","status":"IMPLEMENTATION_VERIFIED","scope":"execution_identity","decision":"Deterministic 128-bit Hyperliquid cloid is derived from release, canonical daily decision timestamp, asset, side, route-independent economic intent and executable target revision. Sequential replay/restart checks exchange orderStatus by cloid and suppresses a known order; this does not claim persistent local ledger, partial-fill retry semantics or cross-process locking.","source":"PR #42"},
+    {"id":"EXEC-ORDER-LEDGER-P1.2","status":"IMPLEMENTATION_VERIFIED","scope":"execution_truth","decision":"Persistent single-account SQLite order ledger records deterministic CLOID intent before submission, a durable submission-attempt marker before the network call, submission/OID/status/fill/fee/average-price/remaining/cancel-reject truth, and restart reconciliation against Hyperliquid. Unknown or corrupt state fails closed and recovered exchange orders block new risk until resolved. This verifies P1.2 only; it does not authorize live production, complete the P1.3 partial-fill/retry lifecycle, or solve simultaneous multi-process/distributed locking.","source":"PR #44"},
+    {"id":"EXEC-PARTIAL-FILL-P1.3","status":"IMPLEMENTATION_VERIFIED","scope":"execution_truth","decision":"Actual-fill-driven position progress is derived from reconciled fill quantity and order side, with explicit zero/partial/full fill state, live resting remainder, unfilled quantity, fill-implied actual position and target gap when a trustworthy pre-trade baseline exists. Quantity disagreement fails closed. Reversal-open deliberately does not invent a baseline before P1.4. This verifies P1.3 implementation only and authorizes no production trading or later roadmap capability.","source":"PR #46"},
+    {"id":"EXEC-REVERSAL-SAFETY-P1.4","status":"IMPLEMENTATION_VERIFIED","scope":"execution_truth","decision":"Reversal execution separates old-direction reduction from new-direction opening. The close leg uses reduce-only semantics, and the new-direction leg is blocked until a fresh Hyperliquid clearinghouseState read proves the old-direction position is flat. Partial remainder, malformed/failed fresh state, or unexpected cross-through fail closed. This verifies P1.4 implementation only and authorizes no production trading or later roadmap capability.","source":"PR #48"},
+    {"id":"EXEC-PRECISION-METADATA-P1.5","status":"IMPLEMENTATION_VERIFIED","scope":"execution_formatting","decision":"Hyperliquid perp meta szDecimals now drives order-size formatting; size truncation uses Decimal/ROUND_DOWN, metadata errors fail before economic submission, and BTC/ETH/SOL/BNB pass independent formatting tests. A metadata-derived price formatter enforces the documented decimal/significant-figure constraints. This verifies P1.5 formatting only and does not authorize multi-asset production execution, P2 routing, or live risk.","source":"PR #50"}
   ]
 }
