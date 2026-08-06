@@ -14,6 +14,7 @@ Status: authoritative cross-chat handoff snapshot
 - P2.4 post-merge handoff / Master Plan BNB-policy synchronization PR #67: PASS / MERGED
 - Current main baseline for P3.1: `221a9f7306adeee65715660a0224342881c5d9c1`
 - Full project audit: `docs/FULL_PROJECT_AUDIT_2026-08-06.md`
+- Current implementation PR: #68
 - Current candidate branch: `p3-1/data-contract`
 
 ## Current roadmap position
@@ -21,7 +22,7 @@ Status: authoritative cross-chat handoff snapshot
 ```text
 P2.1-P2.4: COMPLETE
 Phase 2: COMPLETE
-P3.1 Data contract: CANDIDATE IMPLEMENTED / CI PENDING / NOT MERGED
+P3.1 Data contract: IMPLEMENTATION VERIFIED ON CANDIDATE / FINAL-HEAD CI REQUIRED / NOT MERGED
 P3.2 Target calculation API: BLOCKED
 P3.3+: BLOCKED
 P4+: BLOCKED
@@ -29,7 +30,7 @@ P4+: BLOCKED
 
 P3.1 is the unique current task.
 
-## P3.1 candidate contract
+## P3.1 implementation contract
 
 Machine-readable authority:
 
@@ -51,6 +52,8 @@ Detailed contract note:
 ```text
 docs/P3_1_DATA_CONTRACT.md
 ```
+
+`DATA-CONTRACT-P3.1 = IMPLEMENTATION_VERIFIED` is registered after successful candidate CI. This status verifies the data-contract engineering only; it authorizes no target generation or production trading.
 
 ## Strategy daily-close semantics
 
@@ -134,11 +137,28 @@ research canonical JSON == live canonical JSON
 research SHA-256 digest  == live SHA-256 digest
 ```
 
-The byte-identical close sequence is also fed into the already-existing frozen signal component and must produce identical signal/target-beta output. P3.1 does **not** implement the P3.2 multi-asset target API.
+The byte-identical close sequence is also fed into the already-existing frozen signal component and produces identical signal/target-beta output. P3.1 does **not** implement the P3.2 multi-asset target API.
 
-## Candidate test coverage
+## Candidate CI evidence
 
-Tests currently cover:
+Candidate head before decision/evidence writeback:
+
+```text
+cd55535cf4720e259109b0080104d642183e9efe
+```
+
+passed:
+
+- `Phase 0 baseline contract` #86 / Actions `31108327909`: SUCCESS;
+- execution tests: SUCCESS;
+- research integration contract: SUCCESS;
+- `PR handoff governance` #108 / Actions `31108329917`: SUCCESS.
+
+The decision-registry and evidence writeback changes the branch head, so **one final authoritative CI run is still required on the new exact head before merge**.
+
+## Controlled test coverage
+
+Tests cover:
 
 1. canonical BTC/ETH/SOL/BNB scope and explicit no-production authorization;
 2. exact UTC `00:00:00` decision timestamp;
@@ -161,8 +181,6 @@ Tests currently cover:
 19. same-source Binance endpoint fallback;
 20. research integration contract reads the same machine-readable data contract.
 
-Authoritative GitHub Actions evidence is still pending. Do not mark P3.1 IMPLEMENTATION_VERIFIED until candidate CI passes.
-
 ## Self-review / scope audit
 
 - No BRRK model parameter or weight formula changed.
@@ -171,9 +189,10 @@ Authoritative GitHub Actions evidence is still pending. Do not mark P3.1 IMPLEME
 - Missing data fails closed rather than changing the price path through imputation.
 - Mapping changes are versioned rather than inferred from UI names.
 - Router funding/basis units and cutoff semantics are explicit and replayable.
+- P3.1 records basis observation skew but does not invent an unsupported freshness threshold.
 - No P3.2 target API, P3.3 rebalance control, P3.4 cash-contribution logic, P4 leverage or P5 cycle-exit logic is implemented.
 
-## Project drift audit — current P3.1 candidate
+## Project drift audit — current P3.1
 
 ```text
 DRIFT_0
@@ -195,11 +214,9 @@ The data contract authorizes no target, live capital, production route, leverage
 ## Exact next action
 
 ```text
-open P3.1 implementation PR
--> authoritative candidate CI
--> fix findings on the same PR
--> register P3.1 implementation evidence only after candidate CI passes
--> final-head CI on exact evidence head
--> expected-head merge
--> documentation-only post-merge normalization to P3.2
+final-head CI on PR #68
+-> expected-head merge if and only if all checks pass
+-> documentation-only post-merge normalization to P3.2 Target calculation API
 ```
+
+Do not begin P3.2 until PR #68 is merged and the canonical handoff is normalized.
