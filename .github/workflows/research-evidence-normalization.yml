@@ -17,16 +17,21 @@ jobs:
   evidence:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
+      - name: Checkout exact PR head without marketplace action dependency
+        run: |
+          git init .
+          git remote add origin "https://github.com/${GITHUB_REPOSITORY}.git"
+          git fetch --depth=1 origin "${GITHUB_SHA}"
+          git checkout --detach FETCH_HEAD
+          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+      - name: Show runner Python
+        run: python3 --version
       - name: Install evidence dependencies
-        run: pip install numpy pandas requests
+        run: python3 -m pip install numpy pandas requests
       - name: Run canonical metric regression tests
         working-directory: research/common
-        run: python -m unittest test_metrics.py
+        run: python3 -m unittest test_metrics.py
       - name: Recompute F27 R2 measurement
-        run: python research/review_2026_08_04/verify_idle_cash_credit.py
+        run: python3 research/review_2026_08_04/verify_idle_cash_credit.py
       - name: Print generated F27 R2 evidence
         run: cat research/results/idle_cash_credit_0027r2.json
