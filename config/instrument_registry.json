@@ -42,12 +42,12 @@
     },
     "BNB": {
       "economic_asset": "BNB",
-      "route_policy": "PERP_ONLY_DEFAULT",
-      "route_policy_source": "PRODUCT_DECISION_2026-08-06",
+      "route_policy": "PERP_ONLY_CURRENT_VERIFIED_DEFAULT",
+      "route_policy_source": "ROUTER-SPOT-IDENTITY-P2.2",
       "perp": {"identity":"BNB","identity_status":"VERIFIED_CANONICAL_PERP","sz_decimals":3,"max_price_decimals":3,"availability_state":"AVAILABLE","metadata_source":"Hyperliquid meta"},
-      "spot": {"ui_identity":null,"hypercore_token_candidate":null,"hypercore_pair_candidate":null,"identity_status":"NOT_IN_SCOPE_PERP_ONLY_DEFAULT","evidence_source":"Product routing decision; no spot validation required","availability_state":"NOT_ROUTABLE_BY_PRODUCT_POLICY","native_chain":"BNB Chain","token_index":null,"spot_pair_index":null,"sz_decimals":null,"wei_decimals":null,"token_id":null},
-      "custody_redemption": {"status":"NOT_REQUIRED_PERP_ONLY_DEFAULT","facts":["BNB is explicitly configured as perp-only by product routing policy"],"unresolved":[]},
-      "liquidity_metrics": {"status":"PERP_ONLY_DEFAULT","perp_source":"metaAndAssetCtxs","spot_source":"not applicable by product routing policy"}
+      "spot": {"ui_identity":null,"hypercore_token_candidate":null,"hypercore_pair_candidate":null,"identity_status":"NO_VERIFIED_UNIT_NATIVE_ROUTE","evidence_source":"Unit official supported-asset documentation","availability_state":"SPOT_UNAVAILABLE_PER_CURRENT_VERIFIED_ROUTE_SET","native_chain":"BNB Chain","token_index":null,"spot_pair_index":null,"sz_decimals":null,"wei_decimals":null,"token_id":null},
+      "custody_redemption": {"status":"NO_VERIFIED_UNIT_NATIVE_ROUTE","facts":["No Unit-native BNB route is present in the P2.2 validated official evidence set"],"unresolved":["A future separately evidenced Hyperliquid spot BNB route may reopen availability"]},
+      "liquidity_metrics": {"status":"PERP_ONLY_UNDER_CURRENT_VERIFIED_ROUTE_SET","perp_source":"metaAndAssetCtxs","spot_source":"not applicable until a separate spot route is verified"}
     }
   },
   "sources": {
