@@ -23,6 +23,11 @@ def test_negative_trend_stays_inside_defensive_bounds():
     assert 0.18 <= beta <= 0.65
 
 
+def test_positive_trend_cannot_exceed_registered_legacy_cap():
+    beta = compute_raw_beta(trend_score=1.0, realized_vol_30=0.10, normal_cap=1.30)
+    assert beta == 1.30
+
+
 def test_high_funding_disables_extra_beta():
     beta, reason = apply_funding_filter(1.30, 0.30)
     assert beta == 1.0
@@ -33,4 +38,4 @@ def test_build_signal_is_finite():
     closes = [100 + 5 * math.sin(i / 8) + i * 0.05 for i in range(300)]
     signal = build_signal(closes, funding_apr=0.05)
     assert math.isfinite(signal.target_beta)
-    assert 0.18 <= signal.target_beta <= 1.5
+    assert 0.18 <= signal.target_beta <= 1.30

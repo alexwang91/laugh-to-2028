@@ -70,20 +70,21 @@ def compute_raw_beta(
     trend_score: float,
     realized_vol_30: float,
     normal_cap: float = 1.30,
-    hard_cap: float = 1.50,
-    allow_strong_beta: bool = False,
 ) -> float:
-    """Compute the frozen asymmetric beta curve used in the latest backtest."""
+    """Compute the legacy asymmetric beta curve without unregistered >1.30 branches.
+
+    This module is not the P3.2 BRRK target engine. The former env-toggleable
+    strong-trend path to 1.50 was never represented in the frozen research
+    implementation and is intentionally removed. Any leverage extension above
+    the existing registered baseline must proceed through the P4 study.
+    """
     if trend_score < 0:
         beta = (0.65 + 0.65 * trend_score) * negative_vol_multiplier(realized_vol_30)
         return max(0.18, min(0.65, beta))
 
     vol_scaler = 1.0 if realized_vol_30 <= 0 else min(1.0, 0.45 / realized_vol_30)
     candidate = 1.0 + 0.5 * trend_score * vol_scaler
-
-    strong_trend = trend_score >= 0.70 and realized_vol_30 <= 0.45
-    cap = hard_cap if allow_strong_beta and strong_trend else normal_cap
-    return min(cap, candidate)
+    return min(normal_cap, candidate)
 
 
 def apply_funding_filter(raw_beta: float, funding_apr: float) -> tuple[float, str]:
@@ -101,19 +102,15 @@ def build_signal(
     closes: Sequence[float],
     funding_apr: float,
     normal_cap: float = 1.30,
-    hard_cap: float = 1.50,
-    allow_strong_beta: bool = False,
 ) -> Signal:
     trend_score, realized_vol_30 = compute_trend_score(closes)
     raw_beta = compute_raw_beta(
         trend_score,
         realized_vol_30,
         normal_cap=normal_cap,
-        hard_cap=hard_cap,
-        allow_strong_beta=allow_strong_beta,
     )
     target_beta, funding_adjustment = apply_funding_filter(raw_beta, funding_apr)
-    target_beta = max(0.18, min(hard_cap, target_beta))
+    target_beta = max(0.18, min(normal_cap, target_beta))
     return Signal(
         trend_score=trend_score,
         realized_vol_30=realized_vol_30,

@@ -110,7 +110,7 @@ def _account_reconciliation(
     )
 
 
-def run_strategy(settings: Settings) -> dict:
+def _run_strategy_core(settings: Settings) -> dict:
     product = load_product_config()
     snapshot = fetch_market_snapshot(
         api_url=settings.api_url,
@@ -125,8 +125,6 @@ def run_strategy(settings: Settings) -> dict:
         snapshot.closes,
         funding_apr=snapshot.funding_apr_24h,
         normal_cap=settings.normal_beta_cap,
-        hard_cap=settings.hard_beta_cap,
-        allow_strong_beta=settings.allow_strong_beta,
     )
 
     payload: dict = {
@@ -185,6 +183,12 @@ def run_strategy(settings: Settings) -> dict:
         max_platform_leverage=settings.max_platform_leverage,
     )
     payload["plan"] = plan.to_dict()
+    if plan.target_clamped_by_leverage:
+        payload["target_reachability_warning"] = {
+            "code": "TARGET_CLAMPED_BY_PLATFORM_LEVERAGE",
+            "requested_target_perp_notional_usd": plan.requested_target_perp_notional_usd,
+            "reachable_target_perp_notional_usd": plan.target_perp_notional_usd,
+        }
 
     pre_account = None
     if settings.can_trade:
@@ -264,6 +268,36 @@ def run_strategy(settings: Settings) -> dict:
     return payload
 
 
+def run_strategy(settings: Settings) -> dict:
+    """Run one strategy cycle and preserve an operator alert on unexpected failure.
+
+    The core execution exception is re-raised after the best-effort notification so
+    upstream HTTP/CLI callers still observe failure. This closes the remaining F17
+    alerting gap without changing reversal economics or swallowing the error.
+    """
+    try:
+        return _run_strategy_core(settings)
+    except Exception as exc:
+        failure_payload = {
+            "timestamp_utc": datetime.now(timezone.utc).isoformat(),
+            "network": settings.network,
+            "mode": settings.trading_mode,
+            "coin": settings.coin,
+            "result": "strategy_cycle_failed",
+            "error": {
+                "type": type(exc).__name__,
+                "message": str(exc),
+            },
+        }
+        try:
+            send_telegram(settings, failure_payload)
+        except Exception:
+            # The original execution failure remains authoritative; notification
+            # transport failure must not replace or hide it.
+            pass
+        raise
+
+
 def run_public_market_status(settings: Settings) -> dict:
     snapshot = fetch_market_snapshot(
         api_url=settings.api_url,
@@ -275,8 +309,6 @@ def run_public_market_status(settings: Settings) -> dict:
         snapshot.closes,
         funding_apr=snapshot.funding_apr_24h,
         normal_cap=settings.normal_beta_cap,
-        hard_cap=settings.hard_beta_cap,
-        allow_strong_beta=settings.allow_strong_beta,
     )
     return {
         "timestamp_utc": datetime.now(timezone.utc).isoformat(),

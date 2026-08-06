@@ -37,8 +37,6 @@ class Settings:
     rebalance_band: float
     min_trade_usd: float
     normal_beta_cap: float
-    hard_beta_cap: float
-    allow_strong_beta: bool
     max_platform_leverage: int
     max_slippage_bps: float
     request_timeout_seconds: float
@@ -81,8 +79,6 @@ class Settings:
             rebalance_band=_env_float("REBALANCE_BAND", 0.05),
             min_trade_usd=_env_float("MIN_TRADE_USD", 100.0),
             normal_beta_cap=_env_float("NORMAL_BETA_CAP", 1.30),
-            hard_beta_cap=_env_float("HARD_BETA_CAP", 1.50),
-            allow_strong_beta=_env_bool("ALLOW_STRONG_BETA", False),
             max_platform_leverage=int(_env_float("MAX_PLATFORM_LEVERAGE", 2.0)),
             max_slippage_bps=_env_float("MAX_SLIPPAGE_BPS", 15.0),
             request_timeout_seconds=_env_float("REQUEST_TIMEOUT_SECONDS", 15.0),
@@ -115,10 +111,10 @@ class Settings:
             )
         if not 0.0 < self.rebalance_band <= 0.5:
             raise ValueError("REBALANCE_BAND must be in (0, 0.5]")
-        if not 0.0 < self.normal_beta_cap <= self.hard_beta_cap:
-            raise ValueError("Beta caps are inconsistent")
-        if self.hard_beta_cap > 1.5:
-            raise ValueError("HARD_BETA_CAP cannot exceed the validated legacy 1.5 research limit")
+        if not 0.0 < self.normal_beta_cap <= 1.30:
+            raise ValueError(
+                "NORMAL_BETA_CAP must be in (0, 1.30]; higher leverage requires the registered P4 study"
+            )
         if self.max_platform_leverage > 2:
             raise ValueError("MAX_PLATFORM_LEVERAGE cannot exceed 2 in this version")
         if self.external_spot_btc_qty < 0 or self.external_cash_usd < 0:

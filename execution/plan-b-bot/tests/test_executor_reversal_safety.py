@@ -42,8 +42,6 @@ def _settings(tmp_path):
         rebalance_band=0.05,
         min_trade_usd=100.0,
         normal_beta_cap=1.0,
-        hard_beta_cap=1.5,
-        allow_strong_beta=False,
         max_platform_leverage=2,
         max_slippage_bps=15.0,
         request_timeout_seconds=15.0,
