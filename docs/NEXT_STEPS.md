@@ -5,55 +5,55 @@
 ## Current authorized task
 
 ```text
-P1.7 Restart recovery
+P1.8 Kill and emergency paths
 ```
 
-P0.1, P0.2 and P1.1 through P1.6 are PASS / MERGED. P1.7 is the only authorized next implementation dependency.
+P0.1, P0.2 and P1.1 through P1.7 are PASS / MERGED. P1.8 is the only authorized next implementation dependency.
 
-Do not start P1.8, P2, P3, P4, P5 or P8 early.
+Do not start P2, P3, P4, P5, P6, P7 or P8 early.
 
-## P1.7 acceptance boundary
+## P1.8 acceptance boundary
 
-Required cold-restart cases:
+Implement:
 
-- open order;
-- partial fill;
-- network timeout with unknown submit result;
-- actual position differing from stale local state.
+- cancel-all;
+- reduce-only close;
+- emergency FLAT;
+- disable-new-risk switch.
 
-All cases must resolve safely and idempotently.
+Acceptance criteria:
 
-P1.7 must consume the durable CLOID/OID/fill truth from P1.2, actual-fill transition logic from P1.3, reversal safety from P1.4, metadata formatting from P1.5 and account-level risk gate from P1.6.
+- testnet / controlled test proves each path;
+- emergency path does not depend on the normal target engine being healthy.
 
-P1.7 does **not** include P1.8 cancel-all/emergency-FLAT commands or P2 instrument routing.
+P1.8 is execution hardening only. It does not include P2 instrument routing, multi-asset production authorization, leverage expansion, strategy changes or live-capital approval.
 
-## P1.6 closure baseline
+## P1.7 closure baseline
 
-P1.6 Post-submit reconciliation is PASS / MERGED through PR #52.
+P1.7 Restart recovery is PASS / MERGED through PR #54.
 
 Final implementation head:
 
 ```text
-fd8ac395189bd6ce134eaeb5c1ae4bf1ac1a6ae5
+56cc6d6a4547297dae93e33c390c26570c364bf6
 ```
 
 Final evidence:
 
-- Phase 0 baseline contract #40 / `31093119316`: SUCCESS;
+- Phase 0 baseline contract #46 / `31095951858`: SUCCESS;
 - execution tests: SUCCESS;
 - research integration: SUCCESS;
-- PR handoff governance #51 / `31093117491`: SUCCESS;
-- evidence-only governance #52 / `31093191350`: SUCCESS.
+- PR handoff governance #60 / `31095951582`: SUCCESS.
 
 Squash/main commit:
 
 ```text
-1a8addc6225446d287ab0465f0f9b555242b6739
+03ee46bf234175bb54745de79b225711ecbc740b
 ```
 
-`EXEC-POST-SUBMIT-RECON-P1.6 = IMPLEMENTATION_VERIFIED`.
+`EXEC-RESTART-RECOVERY-P1.7 = IMPLEMENTATION_VERIFIED`.
 
-P1.6 established that unexplained account/exchange/local differences block risk-increasing orders while same-direction reductions remain available when the durable ledger remains usable.
+P1.7 established safe and idempotent cold-start recovery for open orders, partial fills, unknown-submit results and stale local position state without blind resubmission.
 
 ## Frozen product baseline
 
@@ -83,9 +83,9 @@ P1.3 COMPLETE
 P1.4 COMPLETE
 P1.5 COMPLETE
 P1.6 COMPLETE
-P1.7 CURRENT / NEXT
-P1.8 BLOCKED ON P1.7
-P2   BLOCKED
+P1.7 COMPLETE
+P1.8 CURRENT / NEXT
+P2   BLOCKED ON P1.8
 P3   BLOCKED
 P4   BLOCKED
 P5   BLOCKED
@@ -101,6 +101,12 @@ NO_CHANGE
 production_authorized_components = []
 ```
 
+## Project drift audit
+
+```text
+DRIFT_0
+```
+
 ## Exact next action
 
-After this normalization PR is green and merged, start P1.7 Restart recovery from then-current main on a fresh candidate branch and close its four-case evidence matrix before any P1.8 work.
+After this normalization PR is green and merged, start **P1.8 Kill and emergency paths** from then-current main on a fresh candidate branch. Close the four emergency-command acceptance paths before beginning P2.
