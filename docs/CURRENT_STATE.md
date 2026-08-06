@@ -9,169 +9,109 @@ Status: authoritative cross-chat handoff snapshot
 - Roadmap: `docs/IMPLEMENTATION_ROADMAP_2026-08-05.md`
 - Governance: `docs/PROJECT_GOVERNANCE_2026-08-05.md`
 - Continuity protocol: `docs/CONTEXT_CONTINUITY_PROTOCOL.md`
-- Planning PR: #38 merged
-- Context-handoff governance PR: #39 merged
-- Phase 0 PR: #40 merged; squash commit `1feffd07208a741e53766fe126dc9cb7add3d3d1`
-- Phase 0 handoff normalization PR: #41 merged
-- P1.1 implementation PR: #42 merged; squash commit `937db648b4ddaf8322c7bd9ce9b03f39321e2508`
-- P1.1 handoff normalization PR: #43 merged; main commit `83ef2b44616269213f371ddbd2c0d352749c1c50`
-- P1.2 implementation PR: #44 merged; squash/main commit `a4e1ebc98039ffee7e53f2acd7c38feaebbb2769`
-- P1.2 handoff normalization PR: #45 merged; main commit `0a461cb541e85c5287177a0c46ae9905d9fede25`
-- P1.3 implementation PR: #46 merged; squash/main commit `fe663a0e8115baaa5c2ae9f1a59338e8f4a0c868`
-- P1.3 handoff normalization PR: #47 merged; main commit `19445de8fc689ea4f5f7d7e123934fbac2751f83`
-- P1.4 implementation PR: #48 merged; squash/main commit `7acb093af59825c39fd092f232573666682197d8`
-- P1.4 final implementation head before merge: `879ce2da3b1e4382473037650c3fca30cda7f63f`
+- P1.1 implementation PR #42 + handoff #43: PASS / MERGED
+- P1.2 implementation PR #44 + handoff #45: PASS / MERGED
+- P1.3 implementation PR #46 + handoff #47: PASS / MERGED
+- P1.4 implementation PR #48 + handoff #49: PASS / MERGED
+- Current main before P1.5: `41dbbcdbea26f5d811b4e60cc0d65fc0a247e4a4`
+- P1.5 candidate branch: `p1-5/precision-metadata`
 
 ## Current roadmap position
 
 ```text
-PLANNING BASELINE: complete
-CONTEXT-HANDOFF GOVERNANCE: complete
 P0.1 Canonical product config: PASS / MERGED
 P0.2 Decision registry: PASS / MERGED
 P1.1 Deterministic order identity: PASS / MERGED
 P1.2 Persistent order ledger: PASS / MERGED
 P1.3 Partial-fill correctness: PASS / MERGED
 P1.4 Reversal safety: PASS / MERGED
-P1.5 Precision / metadata: NEXT
-P1.6+ blocked until dependency order is satisfied
+P1.5 Precision / metadata: CANDIDATE / NOT MERGED
+P1.6+ blocked until P1.5 closes its evidence/merge gate
 ```
 
-The unique next implementation task is **P1.5 Precision / metadata**. Do not start P1.6, P2, P3, P4, P5 or P8 before P1.5 closes its own evidence/merge gate.
+The only active implementation task is **P1.5 Precision / metadata**. Do not start P1.6, P2, P3, P4, P5 or P8 before P1.5 merges.
 
-## Product state frozen by the master plan
+## Frozen product state
 
 - Long universe: BTC / ETH / SOL / BNB.
 - Initial managed capital: $2,000 cash/stablecoin.
-- Recurring capital: user manually contributes about $100/week.
+- Recurring manual contribution: about $100/week.
 - Primary venue: Hyperliquid.
 - Official daily boundary: 00:00 UTC.
 - Daily strategy decisions; intraday automation may only reduce risk.
-- Concentration/diversification is dynamic.
-- Leverage is model-determined, not a user-fixed constant.
-- 70% drawdown is catastrophic tolerance only, not an operating target.
-- Cycle exit is market-state based, not tied to a literal 2028 date.
-- FLAT = zero directional exposure.
-- Re-entry from FLAT and first short activation in a new bear phase require human approval.
-- Bot may use a trading Agent/API credential only; never the master wallet private key and never automated withdrawals or external transfers.
-- Strategy upgrades use candidate/shadow plus manual blue-green cutover; no hot strategy patching.
-- Current BTC-only executor capability does not redefine the BTC/ETH/SOL/BNB product universe.
+- Leverage is model-determined; 70% drawdown is catastrophic tolerance only.
+- FLAT = zero directional exposure; re-entry and first short activation require human approval.
+- Bot uses trading Agent/API credentials only; no master wallet private key, automated withdrawals or external transfers.
+- Strategy upgrades use candidate/shadow + manual blue-green cutover.
+- BTC-only executor capability does not redefine the four-asset product universe.
 
-## P1.1–P1.3 retained baseline
+## P1.1–P1.4 closure baseline
 
-P1.1 established deterministic economic order identity. P1.2 established durable local/exchange order, fill and restart truth. P1.3 made position progress actual-fill-driven with explicit zero/partial/full fill states, resting remainder visibility and target-gap calculation when baseline truth exists.
-
-Registered decisions retained:
+Registered engineering decisions retained:
 
 - `EXEC-ORDER-ID-P1.1 = IMPLEMENTATION_VERIFIED`
 - `EXEC-ORDER-LEDGER-P1.2 = IMPLEMENTATION_VERIFIED`
 - `EXEC-PARTIAL-FILL-P1.3 = IMPLEMENTATION_VERIFIED`
+- `EXEC-REVERSAL-SAFETY-P1.4 = IMPLEMENTATION_VERIFIED`
 
-## P1.4 PASS / MERGED
+P1.4 final implementation head `879ce2da3b1e4382473037650c3fca30cda7f63f` passed Phase 0 baseline contract `31078243843`, execution tests, research integration, PR handoff governance `31078243847`, and evidence-only governance `31078303601`; PR #48 merged as `7acb093af59825c39fd092f232573666682197d8`, then PR #49 normalized the handoff as main `41dbbcdbea26f5d811b4e60cc0d65fc0a247e4a4`.
 
-PR #48 established reversal safety:
+## P1.5 candidate behavior
 
-- old-direction reduction and new-direction opening are distinct `reduce` and `increase` economic intents;
-- reversal close uses `market_close` with explicit reduce-only semantics;
-- after the close leg, executor fetches a fresh Hyperliquid `clearinghouseState` account position;
-- the new-direction open leg is not constructed or submitted until that fresh account position proves the old direction is flat;
-- partial old-direction remainder blocks the new-direction open leg;
-- unexpected cross-through into the opposite sign blocks the new-direction open leg rather than compounding risk;
-- malformed account-position state and failed state reads fail closed;
-- a verified-flat open leg persists `position_before_qty=0`, `reversal_flat_verified=true`, and source `fresh_exchange_flat_after_reversal_close`.
+Roadmap requirement: remove hardcoded size and price precision.
 
-Self-review correction: close submission status is not sufficient evidence of a flat account position, so the second leg is gated by fresh account-level position truth.
+Candidate implementation:
 
-`EXEC-REVERSAL-SAFETY-P1.4` is registered as `IMPLEMENTATION_VERIFIED`. This is engineering verification only; production authorization remains empty.
+- adds `beta_bot/instrument_metadata.py` as the canonical formatting layer;
+- parses Hyperliquid perp `meta.universe` and reads each asset's `szDecimals`;
+- executor fetches exchange metadata before any write action and fails closed when configured instrument metadata is absent/malformed;
+- execution quantity is formatted conservatively toward zero using the exchange-provided `szDecimals` instead of a global `5` decimal constant;
+- ledger order parameters persist `sz_decimals` and `precision_source=hyperliquid_meta`;
+- price helper enforces metadata-derived decimal cap plus the Hyperliquid five-significant-figure rule, with integer-price allowance;
+- formatting tests explicitly cover BTC, ETH, SOL and BNB with distinct metadata values;
+- malformed, duplicate or incomplete metadata and sizes that round to zero fail closed;
+- existing reversal executor tests now inject deterministic exchange metadata rather than relying on network access.
 
-## P1.4 final evidence
+P1.5 does **not** authorize ETH/SOL/BNB production execution. Formatting correctness is separate from P2 instrument identity/routing and later production authorization.
 
-Exact final implementation head:
+## P1.5 self-review notes
 
-```text
-879ce2da3b1e4382473037650c3fca30cda7f63f
-```
+- Size rounding uses `Decimal` and `ROUND_DOWN`, so formatting cannot increase requested economic risk through rounding up.
+- Metadata is fetched before wallet/exchange order write actions, so missing metadata fails before economic submission.
+- The executor no longer contains the previous `_round_size(..., decimals=5)` hardcoded precision helper.
+- Price formatting is implemented even though the current market-open/close path does not submit explicit limit prices; this satisfies the roadmap precision contract without claiming a new order type.
 
-Final-head evidence:
+## P1.5 evidence status
 
-- `Phase 0 baseline contract` run #32 / Actions run `31078243843`: SUCCESS;
-- execution tests: SUCCESS;
-- research integration contract: SUCCESS;
-- `PR handoff governance` run #41 / Actions run `31078243847`: SUCCESS;
-- evidence-only PR-body governance run #42 / Actions run `31078303601`: SUCCESS.
+Candidate implementation is **not yet IMPLEMENTATION_VERIFIED and not merged**. Authoritative PR CI is required.
 
-Earlier governance run #38 failed only because the forward PR had not directly modified `docs/CURRENT_STATE.md`; that governance defect was corrected on the same PR and later governance runs passed.
+## Deliberately not solved
 
-PR #48 squash-merged to main as:
+P1.5 does not claim:
 
-```text
-7acb093af59825c39fd092f232573666682197d8
-```
-
-## P1.4 boundaries deliberately not solved
-
-P1.4 does **not** claim:
-
-- P1.5 metadata-driven size/price precision;
-- P1.6 full open-order/fill/position/equity/margin post-submit reconciliation;
-- P1.7 complete restart-recovery matrix;
+- P1.6 full post-submit account reconciliation;
+- P1.7 complete restart recovery;
 - P1.8 kill/emergency paths;
-- simultaneous multi-process race elimination or distributed locking;
-- order slicing;
-- P2 router capability;
-- P3 production-quality daily target engine;
+- P2 route selection or spot identity completion;
+- P3 production-quality daily BRRK target engine;
 - P4 leverage research completion;
 - P5 cycle-top research completion;
-- production readiness;
-- multi-asset production execution.
+- multi-asset production readiness;
+- production authorization.
 
-## Current unique next task: P1.5 Precision / metadata
-
-Roadmap requirement:
-
-> Remove hardcoded size and price precision.
-
-Acceptance criteria:
-
-- asset metadata drives valid order formatting;
-- all BRRK instruments pass formatting tests.
-
-P1.5 must remove the current hardcoded BTC quantity precision and introduce metadata-driven formatting without claiming P2 routing or production-ready multi-asset execution.
-
-## Research boundaries that remain closed unless formally reopened
+## Frozen research boundaries
 
 - Do not rescue stopped carry work.
-- Do not rescue rejected TSMOM or historical alpha lines by parameter/window/asset retuning.
-- Do not treat historical ASYM-BETA extra sleeve as approved leverage expansion.
-- Do not infer spot identity from PnL.
-- ETH/SOL/BNB execution support is not production-ready merely because those assets are in the product universe.
+- Do not rescue rejected TSMOM / failed historical alpha lines by retuning the same sample.
+- Historical ASYM-BETA evidence is not leverage authorization.
+- Spot identity cannot be inferred from PnL.
 
 ## Production authorization
 
 ```text
-Strategy economics change from P1.4: NONE
-New live capital authorization: NONE
-Leverage expansion authorization: NONE
-New asset execution authorization: NONE
-Short authorization: NONE
-Cycle-exit production authorization: NONE
-Strategy cutover authorization: NONE
-Production-authorized component set: EMPTY
+NO_CHANGE
+production_authorized_components = []
 ```
-
-P1.4 engineering verification does not authorize live deployment or increase risk.
-
-## Open blockers / uncertainties
-
-1. P1.5 metadata-driven precision remains unimplemented.
-2. P1.6 full post-submit account reconciliation remains unimplemented.
-3. P1.7 complete restart recovery remains unimplemented.
-4. P1.8 kill/emergency paths remain unimplemented.
-5. Cross-process simultaneous submission races/distributed locking remain unimplemented.
-6. Order slicing remains unimplemented.
-7. SQLite durability still depends on real persistent deployment storage; Vercel trade mode remains rejected by the current backend.
-8. `userFillsByTime` pagination beyond the guarded response limit remains a fail-closed blocker.
-9. Production authorization remains empty.
 
 ## Latest project-drift assessment
 
@@ -179,24 +119,12 @@ P1.4 engineering verification does not authorize live deployment or increase ris
 DRIFT_0
 ```
 
-Reason: P1.4 followed the roadmap dependency order and changed no BRRK objective, strategy economics, product universe, Hyperliquid-first venue, leverage philosophy, 70% catastrophic-only boundary, human approval rule, ACTIVE/CANDIDATE separation, credential boundary, stopped research line or production authorization.
+P1.5 is the exact next roadmap dependency and changes no product economics, risk philosophy, human-approval rule, security boundary, stopped research line or production authorization.
 
 ## Exact next action
 
 ```text
-P1.5 Precision / metadata
+P1.5 PR -> CI -> fix same PR if required -> final-head CI -> decision registry -> merge -> normalize handoff to P1.6
 ```
 
-Start only from current main after this post-merge normalization is merged. Keep P1.6+ blocked until P1.5 passes its implementation/test/review/PR/final-head-CI/merge gate.
-
-## Fresh-chat resume instructions
-
-A fresh conversation should:
-
-1. read the canonical files in repository-defined order;
-2. verify actual main, latest merged PR, open PR/issues and final CI rather than trusting handoff prose alone;
-3. confirm P1.4 / PR #48 is merged and `EXEC-REVERSAL-SAFETY-P1.4` is registered;
-4. confirm production authorization remains empty;
-5. if this post-merge normalization is present on main, start only P1.5 from a fresh candidate branch.
-
-Do not ask the user to repeat product decisions already captured in GitHub.
+Do not start P1.6 before P1.5 is PASS / MERGED.
