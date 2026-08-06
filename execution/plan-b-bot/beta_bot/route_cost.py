@@ -138,11 +138,15 @@ def estimate_route_cost(
     - positive perp funding means the long pays; negative funding is a benefit;
     - positive entry basis means perp is above verified spot. Entry basis minus
       expected exit basis is the relative-performance cost versus spot;
-    - quoted spread is charged as half-spread on entry plus half-spread on exit;
-    - entry/exit slippage is measured *beyond* quoted half-spread;
+    - `spread_bps` is the route-specific expected round-trip spread cost. The
+      canonical L2 constructor below produces a taker observation and therefore
+      sets it to one full quoted spread (half on entry + half on exit);
+    - entry/exit slippage is measured *beyond* the quoted half-spread;
     - vwap_impact_bps is diagnostic and is not charged a second time;
     - fee cost is normalized to entry notional and assumes the selected order
-      style on both entry and exit. P2.4 may supply different route scenarios.
+      style on both entry and exit. Maker observations require separately modeled
+      passive-fill / adverse-selection assumptions; they are not inferred from
+      the taker L2 constructor.
     """
     observation.validate()
     fee_schedule = fees or FeeSchedule()
@@ -343,19 +347,24 @@ def observation_from_l2_book(
     book: dict[str, Any],
     notional_usd: float,
     holding_hours: float,
-    order_style: OrderStyle = "taker",
     funding_bps_per_hour: float = 0.0,
     entry_basis_bps: float = 0.0,
     expected_exit_basis_bps: float = 0.0,
     custody_redemption_bps: float = 0.0,
 ) -> RouteObservation:
+    """Create a *taker* route observation from an L2 snapshot.
+
+    Passive maker queue/fill/adverse-selection economics cannot be inferred from
+    an aggressive book walk. Maker scenarios must construct RouteObservation
+    explicitly with their own evidence-backed spread/slippage assumptions.
+    """
     diagnostics = analyze_l2_book(book, notional_usd=notional_usd)
     return RouteObservation(
         asset=asset,
         route=route,
         notional_usd=notional_usd,
         holding_hours=holding_hours,
-        order_style=order_style,
+        order_style="taker",
         spread_bps=diagnostics.spread_bps,
         entry_slippage_bps=diagnostics.entry_slippage_beyond_half_spread_bps,
         exit_slippage_bps=diagnostics.exit_slippage_beyond_half_spread_bps,
