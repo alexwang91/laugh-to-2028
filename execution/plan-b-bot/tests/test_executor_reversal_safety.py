@@ -63,6 +63,11 @@ def _install_common(monkeypatch):
     monkeypatch.setattr(executor.Account, "from_key", lambda _key: object())
     monkeypatch.setattr(executor, "Exchange", lambda *_args, **_kwargs: exchange)
     monkeypatch.setattr(executor, "_open_ledger", lambda _settings: DummyLedger())
+    monkeypatch.setattr(
+        executor,
+        "fetch_perp_metadata",
+        lambda *_args, **_kwargs: {"universe": [{"name": "BTC", "szDecimals": 5}]},
+    )
 
     submitted = []
 
@@ -96,6 +101,7 @@ def test_reversal_opens_only_after_fresh_exchange_flat(monkeypatch, tmp_path):
     assert exchange.open_calls == 1
     assert submitted[0].route_action == "close_for_reversal"
     assert submitted[0].submitted_order_parameters["reduce_only_semantics"] is True
+    assert submitted[0].submitted_order_parameters["sz_decimals"] == 5
     assert submitted[1].route_action == "open_reversal"
     assert submitted[1].submitted_order_parameters["position_before_qty"] == 0.0
     assert submitted[1].submitted_order_parameters["reversal_flat_verified"] is True

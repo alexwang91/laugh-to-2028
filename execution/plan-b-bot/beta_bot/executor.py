@@ -10,17 +10,16 @@ from hyperliquid.utils.types import Cloid
 
 from .config import Settings
 from .fill_transition import FillTransitionError, build_fill_transition
-from .market import fetch_order_status, fetch_user_fills_by_time, fetch_user_state
+from .instrument_metadata import InstrumentMetadataError, format_size, parse_perp_metadata
+from .market import (
+    fetch_order_status,
+    fetch_perp_metadata,
+    fetch_user_fills_by_time,
+    fetch_user_state,
+)
 from .order_identity import OrderIdentity, build_order_identity, canonical_target_revision
 from .order_ledger import LedgerIntent, LedgerUncertainState, OrderLedger, reconcile_unresolved_orders
 from .reversal import ReversalSafetyError, verify_reversal_flat
-
-
-def _round_size(size: float, decimals: int = 5) -> float:
-    rounded = round(abs(size), decimals)
-    if rounded <= 0:
-        raise ValueError("Rounded order size is zero")
-    return rounded
 
 
 def _parse_submission_response(response: dict[str, Any]) -> tuple[str, str | None, str | None]:
@@ -251,6 +250,18 @@ def _fresh_reversal_flat_gate(settings: Settings, previous_position_qty: float) 
     return verified.observed_position_qty
 
 
+def _current_instrument_metadata(settings: Settings):
+    try:
+        metadata = parse_perp_metadata(
+            fetch_perp_metadata(settings.api_url, settings.request_timeout_seconds)
+        )
+        return metadata[settings.coin]
+    except KeyError as exc:
+        raise InstrumentMetadataError(
+            f"Hyperliquid perp metadata does not contain {settings.coin}"
+        ) from exc
+
+
 def execute_target_position(
     settings: Settings,
     current_qty: float,
@@ -259,13 +270,14 @@ def execute_target_position(
     release_id: str,
     decision_timestamp_ms: int,
 ) -> list[dict[str, Any]]:
-    """Move a BTC perp position to the target with durable deterministic order truth."""
+    """Move the configured perp position to target with metadata-valid order size."""
     if not settings.api_private_key or not settings.master_address:
         raise ValueError("Trading credentials are missing")
     if not settings.account_address:
         raise ValueError("Trading account address is missing")
 
     ledger = _open_ledger(settings)
+    instrument_metadata = _current_instrument_metadata(settings)
 
     wallet = Account.from_key(settings.api_private_key)
     exchange = Exchange(
@@ -300,11 +312,13 @@ def execute_target_position(
             intent=intent_name,
             target_revision=target_revision,
         )
-        quantity = _round_size(abs(delta))
+        quantity = format_size(abs(delta), instrument_metadata)
         transition_metadata = {
             "position_before_qty": current_qty,
             "target_position_qty": target_qty,
             "position_tracking_source": "pre_trade_exchange_position",
+            "sz_decimals": instrument_metadata.sz_decimals,
+            "precision_source": "hyperliquid_meta",
         }
         if reducing:
             ledger_intent = _ledger_intent(
@@ -358,7 +372,7 @@ def execute_target_position(
             )
         action = {
             "action": intent_name,
-            "size": abs(delta),
+            "size": quantity,
             "status": status,
             "order_identity": identity.to_dict(),
         }
@@ -367,9 +381,6 @@ def execute_target_position(
         actions.append(action)
         return actions
 
-    # P1.4 reversal safety: old-direction reduction and new-direction opening are
-    # separate economic intents. The close leg is reduce-only and the open leg is
-    # forbidden until a fresh exchange account read proves the old direction is flat.
     close_side = "sell" if current_qty > 0 else "buy"
     close_identity = _identity(
         release_id=release_id,
@@ -379,7 +390,7 @@ def execute_target_position(
         intent="reduce",
         target_revision=target_revision,
     )
-    close_quantity = _round_size(current_qty)
+    close_quantity = format_size(current_qty, instrument_metadata)
     close_ledger_intent = _ledger_intent(
         identity=close_identity,
         route_action="close_for_reversal",
@@ -393,6 +404,8 @@ def execute_target_position(
             "position_before_qty": current_qty,
             "target_position_qty": 0.0,
             "position_tracking_source": "pre_trade_exchange_position",
+            "sz_decimals": instrument_metadata.sz_decimals,
+            "precision_source": "hyperliquid_meta",
         },
     )
     close_status, close_existing_status = _submit_once(
@@ -406,7 +419,7 @@ def execute_target_position(
     )
     close_action = {
         "action": "close_for_reversal",
-        "size": abs(current_qty),
+        "size": close_quantity,
         "status": close_status,
         "order_identity": close_identity.to_dict(),
         "reduce_only": True,
@@ -415,10 +428,6 @@ def execute_target_position(
         close_action["existing_order_status"] = close_existing_status
     actions.append(close_action)
 
-    # Critical P1.4 gate. Submission success is insufficient: the exchange account
-    # position itself must freshly prove flat. Any partial fill, stale old-direction
-    # remainder, unexpected cross-through, malformed response, or read failure blocks
-    # the risk-increasing open leg.
     fresh_position_qty = _fresh_reversal_flat_gate(settings, current_qty)
 
     open_side = "buy" if target_qty > 0 else "sell"
@@ -430,7 +439,7 @@ def execute_target_position(
         intent="increase",
         target_revision=target_revision,
     )
-    open_quantity = _round_size(target_qty)
+    open_quantity = format_size(target_qty, instrument_metadata)
     open_ledger_intent = _ledger_intent(
         identity=open_identity,
         route_action="open_reversal",
@@ -445,6 +454,8 @@ def execute_target_position(
             "target_position_qty": target_qty,
             "position_tracking_source": "fresh_exchange_flat_after_reversal_close",
             "reversal_flat_verified": True,
+            "sz_decimals": instrument_metadata.sz_decimals,
+            "precision_source": "hyperliquid_meta",
         },
     )
     open_status, open_existing_status = _submit_once(
@@ -462,7 +473,7 @@ def execute_target_position(
     )
     open_action = {
         "action": "open_reversal",
-        "size": abs(target_qty),
+        "size": open_quantity,
         "status": open_status,
         "order_identity": open_identity.to_dict(),
         "fresh_position_before_open": fresh_position_qty,
