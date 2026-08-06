@@ -11,50 +11,61 @@ Status: authoritative cross-chat handoff snapshot
 - Continuity protocol: `docs/CONTEXT_CONTINUITY_PROTOCOL.md`
 - P1.1 through P1.8: PASS / MERGED
 - Phase 1 Account and execution truth: COMPLETE
-- Current main before P2.1: `f064d70da970e3b5d0b98bda094adff8eb7378bb`
-- P2.1 implementation PR: #58 open
+- P2.1 implementation PR #58: PASS / MERGED
+- P2.1 final implementation head: `85ab49f0c29fad58f3dbc5d327fdaa581811fe58`
+- P2.1 squash/main commit: `67ac0e2e9f85a35a4c987d28f7ddfb9a95f76f48`
 
 ## Current roadmap position
 
 ```text
 P0.1-P0.2: PASS / MERGED
 P1.1-P1.8: PASS / MERGED
-P2.1 Canonical instrument registry: IMPLEMENTATION VERIFIED / FINAL-HEAD CI PENDING / NOT MERGED
-P2.2+ blocked
+P2.1 Canonical instrument registry: PASS / MERGED
+P2.2 UETH / USOL / BNB validation: NEXT
+P2.3+ blocked
 ```
 
-## P2.1 implementation verified on candidate
+The unique next implementation task is **P2.2 UETH / USOL / BNB validation**.
 
-- `config/instrument_registry.json` is the machine-readable canonical registry for BTC / ETH / SOL / BNB;
-- canonical perp identities and precision expectations are recorded;
-- BTC HyperCore spot identity `UBTC/USDC` imports prior `ROUTER-DATA-0004` evidence;
-- UETH/USOL remain candidate-only and BNB spot identity remains unknown; ETH/SOL/BNB are explicitly non-routable until P2.2;
-- custody/redemption evidence state and availability state are explicit instead of inferred;
-- liquidity metric names/sources are defined as a live-observation contract, not frozen route authorization;
-- loader validation rejects missing BRRK assets, precision inconsistency and silent P2.2 spot promotion.
+## P2.1 PASS / MERGED
 
-`ROUTER-INSTRUMENT-REGISTRY-P2.1 = IMPLEMENTATION_VERIFIED` is registered. Production authorization remains empty.
+P2.1 established the canonical machine-readable instrument registry for BTC / ETH / SOL / BNB, including canonical perp identity/precision, spot identity evidence state, custody/redemption evidence state, liquidity metric contract and availability state.
 
-## Evidence boundary / self-review
+BTC imports prior `ROUTER-DATA-0004` evidence for the UI BTC/USDC -> HyperCore UBTC/USDC mapping. ETH/SOL/BNB remain explicitly non-routable until P2.2 verification. No PnL result is accepted as token-identity evidence.
 
-Official Hyperliquid documentation establishes `meta`/`spotMeta` identity semantics, distinct spot token/pair IDs, the BTC UI-to-UBTC remap, and `szDecimals`-driven precision. P2.1 deliberately does not fabricate unresolved spot indexes/token IDs, custody/redemption facts, or transient liquidity values. It does not perform P2.2 validation.
+`ROUTER-INSTRUMENT-REGISTRY-P2.1 = IMPLEMENTATION_VERIFIED` is registered.
 
-## Candidate CI evidence
+## P2.1 final evidence
 
-Candidate head:
+Final implementation head:
 
 ```text
-89ce55b18351e0fa3250fa253695e1e59c889d32
+85ab49f0c29fad58f3dbc5d327fdaa581811fe58
 ```
 
 passed:
 
-- `Phase 0 baseline contract` #52 / Actions `31097513898`: SUCCESS;
+- `Phase 0 baseline contract` #54 / Actions `31097667694`: SUCCESS;
 - execution tests: SUCCESS;
 - research integration contract: SUCCESS;
-- `PR handoff governance` #67 / Actions `31097513890`: SUCCESS.
+- `PR handoff governance` #69 / Actions `31097667779`: SUCCESS.
 
-The branch now contains the decision-registry record and this evidence writeback. A new final-head CI run is required before merge.
+PR #58 squash-merged to main as:
+
+```text
+67ac0e2e9f85a35a4c987d28f7ddfb9a95f76f48
+```
+
+## Current unique next task: P2.2 UETH / USOL / BNB validation
+
+Verify official identity and actual implementation constraints for the non-BTC spot candidates.
+
+Acceptance boundary:
+
+- no PnL study can substitute for token-identity evidence;
+- unavailable or ambiguous spot assets must be explicitly marked;
+- perp fallback is only an implementation status unless separately permitted by later routing logic;
+- P2.2 must not silently include P2.3 cost modeling or P2.4 routing decisions.
 
 ## Production authorization
 
@@ -72,5 +83,7 @@ DRIFT_0
 ## Exact next action
 
 ```text
-final-head CI on PR #58 -> expected-head merge -> post-merge normalization to P2.2
+P2.2 UETH / USOL / BNB validation
 ```
+
+Start from current main after this post-merge normalization is merged, on a fresh candidate branch.
