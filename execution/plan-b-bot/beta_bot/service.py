@@ -110,7 +110,7 @@ def _account_reconciliation(
     )
 
 
-def run_strategy(settings: Settings) -> dict:
+def _run_strategy_core(settings: Settings) -> dict:
     product = load_product_config()
     snapshot = fetch_market_snapshot(
         api_url=settings.api_url,
@@ -266,6 +266,36 @@ def run_strategy(settings: Settings) -> dict:
 
     send_telegram(settings, payload)
     return payload
+
+
+def run_strategy(settings: Settings) -> dict:
+    """Run one strategy cycle and preserve an operator alert on unexpected failure.
+
+    The core execution exception is re-raised after the best-effort notification so
+    upstream HTTP/CLI callers still observe failure. This closes the remaining F17
+    alerting gap without changing reversal economics or swallowing the error.
+    """
+    try:
+        return _run_strategy_core(settings)
+    except Exception as exc:
+        failure_payload = {
+            "timestamp_utc": datetime.now(timezone.utc).isoformat(),
+            "network": settings.network,
+            "mode": settings.trading_mode,
+            "coin": settings.coin,
+            "result": "strategy_cycle_failed",
+            "error": {
+                "type": type(exc).__name__,
+                "message": str(exc),
+            },
+        }
+        try:
+            send_telegram(settings, failure_payload)
+        except Exception:
+            # The original execution failure remains authoritative; notification
+            # transport failure must not replace or hide it.
+            pass
+        raise
 
 
 def run_public_market_status(settings: Settings) -> dict:
