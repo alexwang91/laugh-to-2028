@@ -30,6 +30,24 @@ def fetch_perp_metadata(api_url: str, timeout: float) -> dict[str, Any]:
     return result
 
 
+def fetch_l2_book(api_url: str, coin: str, timeout: float) -> dict[str, Any]:
+    """Fetch one canonical Hyperliquid L2 snapshot for a perp or spot asset ID.
+
+    Perp callers pass the canonical coin name. Spot callers pass the runtime
+    `@{spot_pair_index}` identity resolved from `spotMeta`; UI display names are
+    not substituted here because HyperCore spot names may be remapped.
+    """
+    result = _post(api_url, {"type": "l2Book", "coin": coin}, timeout)
+    if not isinstance(result, dict):
+        raise RuntimeError(f"Unexpected l2Book response: {result}")
+    levels = result.get("levels")
+    if not isinstance(levels, list) or len(levels) != 2:
+        raise RuntimeError(f"Unexpected l2Book levels: {result}")
+    if not all(isinstance(side, list) for side in levels):
+        raise RuntimeError(f"Unexpected l2Book side shape: {result}")
+    return result
+
+
 def fetch_open_orders(api_url: str, account_address: str, timeout: float) -> list[dict[str, Any]]:
     result = _post(api_url, {"type": "openOrders", "user": account_address}, timeout)
     if not isinstance(result, list):
