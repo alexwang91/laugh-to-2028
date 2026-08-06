@@ -10,32 +10,47 @@ Status: authoritative cross-chat handoff snapshot
 - P2.1 implementation PR #58: PASS / MERGED
 - P2.2 implementation PR #60: PASS / MERGED
 - Current main before P2.3: `71cd245a093dc9024940513a0fc06d55703c037a`
-- P2.3 candidate branch: `p2-3/spot-perp-cost-model`
+- P2.3 implementation PR: #62 OPEN
 
 ## Current roadmap position
 
 ```text
 P2.1 Canonical instrument registry: PASS / MERGED
 P2.2 ETH / SOL spot validation + BNB perp-only policy: PASS / MERGED
-P2.3 Spot vs perp cost model: CANDIDATE / NOT MERGED
+P2.3 Spot vs perp cost model: IMPLEMENTATION VERIFIED / FINAL-HEAD CI PENDING / NOT MERGED
 P2.4+ blocked
 ```
 
-## P2.3 candidate implementation
+## P2.3 implementation verified on candidate
 
-- Adds `beta_bot/route_cost.py` for same-asset, equal-notional, equal-horizon spot/perp economic comparison.
-- Models taker/maker fees, full spread, expected entry/exit slippage, live depth, observed VWAP impact, signed funding, basis/premium evolution, custody/redemption friction and holding duration.
-- Positive perp funding is a long cost; negative funding is a long benefit.
-- Basis cost is explicit as entry perp premium minus expected exit premium.
-- Live depth and VWAP impact are preserved as capacity/measurement diagnostics.
-- VWAP impact is **not** added a second time when expected slippage is derived from the same order-book observation.
-- Adds explicit positive-funding break-even horizon calculation.
-- Adds `config/route_cost_model.json` with reproducible comparison scope, fee baseline, holding horizons and measurement definitions.
-- Comparison scope is BTC / ETH / SOL. BNB is excluded by `ROUTER-BNB-PERP-ONLY-2026-08-06`.
+- `beta_bot/route_cost.py` compares spot/perp only for the same asset, equal economic notional and equal holding horizon.
+- Models configurable taker/maker fees, full quoted spread, beyond-spread entry/exit slippage, live depth, VWAP diagnostics, signed funding, basis/premium evolution and spot custody/redemption friction.
+- Positive perp funding is a long cost; negative funding is a benefit.
+- Basis cost is entry perp premium minus expected exit premium.
+- Live depth/VWAP are retained for capacity and slippage diagnostics without double counting VWAP impact when it is the source of slippage.
+- Explicit funding break-even horizon is available.
+- `config/route_cost_model.json` freezes the model contract, comparison scope and reproducible holding-horizon scenarios, not a route decision.
+- BTC/ETH/SOL are comparison assets; BNB is excluded by `ROUTER-BNB-PERP-ONLY-2026-08-06`.
+- `ROUTER-COST-MODEL-P2.3 = IMPLEMENTATION_VERIFIED` is registered.
+
+## Candidate CI evidence
+
+Candidate head before decision/evidence writeback:
+
+```text
+cc9ee0834520168e313e5bba4a3587d17518c98b
+```
+
+passed:
+
+- `Phase 0 baseline contract` #72 / Actions `31099792353`: SUCCESS;
+- execution tests: SUCCESS;
+- research integration contract: SUCCESS;
+- `PR handoff governance` #90 / Actions `31099792997`: SUCCESS.
 
 ## Fee baseline
 
-Current configurable baseline uses Hyperliquid Tier-0 base fees with no staking discount:
+The configurable no-staking Tier-0 baseline is:
 
 ```text
 perp taker 4.5 bps
@@ -44,19 +59,18 @@ spot taker 7.0 bps
 spot maker 4.0 bps
 ```
 
-Fee schedule is explicitly an input, not a permanent constant: account volume tier and staking discount must refresh it when used for live routing analysis.
+The model requires effective account fees to be refreshed when volume/staking tier changes.
 
 ## Self-review corrections
 
-1. Initial model added both order-book VWAP impact and expected slippage to total cost. Because slippage can be derived from the same VWAP observation, that can double count impact. Corrected: VWAP/depth are diagnostics; total cost charges explicitly defined slippage beyond spread once.
-2. No static conclusion such as `spot always wins` is encoded. Holding horizon, signed funding, basis and liquidity remain explicit inputs so P2.4 can make reproducible decisions later.
+1. Removed double counting of VWAP impact and expected slippage. VWAP/depth are diagnostics; explicitly defined beyond-spread slippage is charged once.
+2. No `spot always wins` rule is encoded. Holding horizon, signed funding, basis and liquidity remain explicit inputs for P2.4.
 
 ## Deliberately not solved
 
-- No P2.4 route-selection reason codes or execution plan.
-- No fixed historical funding forecast is declared canonical in P2.3.
+- No P2.4 route-selection reason codes or implementation plan.
+- No fixed historical funding forecast is declared canonical.
 - No production authorization.
-- BNB spot remains outside scope by canonical policy.
 
 ## Production authorization
 
@@ -74,5 +88,5 @@ DRIFT_0
 ## Exact next action
 
 ```text
-open P2.3 PR -> authoritative CI -> fix same PR -> register evidence -> final-head CI -> merge -> normalize to P2.4
+final-head CI on PR #62 -> expected-head merge -> post-merge normalization to P2.4
 ```
