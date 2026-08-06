@@ -72,12 +72,34 @@ class InstrumentRegistry:
         if btc.get("hypercore_token_candidate") != "UBTC":
             raise ValueError("Verified BTC HyperCore token identity must remain UBTC")
 
-        for asset in ("ETH", "SOL", "BNB"):
+        expected_unit_spot = {
+            "ETH": ("UETH", "UETH/USDC", "Ethereum"),
+            "SOL": ("USOL", "USOL/USDC", "Solana"),
+        }
+        for asset, (token, pair, native_chain) in expected_unit_spot.items():
             spot = self.assets[asset]["spot"]
-            if spot.get("identity_status") != "UNVERIFIED_PENDING_P2_2":
-                raise ValueError(f"{asset} spot identity must remain pending P2.2")
-            if spot.get("availability_state") not in {"CANDIDATE_NOT_ROUTABLE", "UNKNOWN_NOT_ROUTABLE"}:
-                raise ValueError(f"{asset} spot must not become routable in P2.1")
+            custody = self.assets[asset]["custody_redemption"]
+            if spot.get("identity_status") != "VERIFIED_UNIT_NATIVE_ASSET":
+                raise ValueError(f"{asset} spot identity must be verified by Unit evidence")
+            if spot.get("hypercore_token_candidate") != token or spot.get("hypercore_pair_candidate") != pair:
+                raise ValueError(f"{asset} Unit spot identity mismatch")
+            if spot.get("native_chain") != native_chain:
+                raise ValueError(f"{asset} native-chain mapping mismatch")
+            if spot.get("availability_state") != "IDENTITY_VERIFIED_ROUTING_NOT_AUTHORIZED":
+                raise ValueError(f"{asset} spot must remain routing-not-authorized after P2.2")
+            if custody.get("status") != "VERIFIED_UNIT_NATIVE_DEPOSIT_WITHDRAWAL":
+                raise ValueError(f"{asset} native deposit/withdrawal evidence must be explicit")
+
+        bnb_spot = self.assets["BNB"]["spot"]
+        bnb_custody = self.assets["BNB"]["custody_redemption"]
+        if bnb_spot.get("identity_status") != "NO_VERIFIED_UNIT_NATIVE_ROUTE":
+            raise ValueError("BNB must not claim a verified Unit spot route")
+        if bnb_spot.get("availability_state") != "SPOT_UNAVAILABLE_PER_VALIDATED_UNIT_ROUTE":
+            raise ValueError("BNB spot availability must remain unavailable under validated Unit evidence")
+        if any(bnb_spot.get(k) is not None for k in ("hypercore_token_candidate", "hypercore_pair_candidate")):
+            raise ValueError("BNB must not invent a HyperCore spot token or pair")
+        if bnb_custody.get("status") != "NO_VERIFIED_UNIT_NATIVE_ROUTE":
+            raise ValueError("BNB custody/redemption status must reflect unavailable validated route")
 
     def asset(self, asset: str) -> dict[str, Any]:
         key = asset.upper()
