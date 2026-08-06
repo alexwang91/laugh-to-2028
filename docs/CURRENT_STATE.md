@@ -12,6 +12,7 @@ Status: authoritative cross-chat handoff snapshot
 - P2.2 ETH/SOL spot validation + BNB perp-only policy: PASS / MERGED through PR #60
 - P2.3 core cost-model PR #62: MERGED to main `e890aebc1764ab872b9446ab755fde793c48a77d`
 - Full project audit: `docs/FULL_PROJECT_AUDIT_2026-08-06.md`
+- P2.3 correction PR: #64 OPEN
 - Current correction branch: `p2-3/live-l2-measurement-correction`
 
 ## Current roadmap position
@@ -19,7 +20,7 @@ Status: authoritative cross-chat handoff snapshot
 ```text
 P2.1 Canonical instrument registry: PASS / MERGED
 P2.2 ETH / SOL spot validation + BNB perp-only policy: PASS / MERGED
-P2.3 Spot vs perp cost model: CORRECTION REQUIRED / CURRENT
+P2.3 Spot vs perp cost model: CORRECTION IMPLEMENTED / FINAL-HEAD CI REQUIRED / NOT MERGED
 P2.4 Router decision: BLOCKED
 P3+: BLOCKED
 ```
@@ -48,22 +49,9 @@ Completed P0, P1.1-P1.8, P2.1 and P2.2 remain valid and are not being redone. Th
 
 No universe, venue, risk, security, human-approval, stopped-research or production boundary changed.
 
-## P2.3 audit finding and correction
+## P2.3 correction implementation
 
-Merged PR #62 correctly implemented the cost arithmetic for BTC / ETH / SOL:
-
-- configurable spot/perp fees;
-- same-asset / equal-notional / equal-horizon comparison;
-- spread + beyond-spread slippage accounting;
-- signed funding by holding horizon;
-- basis/premium evolution;
-- custody/redemption friction input;
-- capacity/VWAP diagnostic fields;
-- no P2.4 route decision.
-
-But #62 accepted live depth / VWAP as caller-supplied values. The Roadmap requires **live depth / VWAP**, so P2.3 is reopened only for this narrow measurement-completeness correction.
-
-The correction now adds:
+Merged PR #62 correctly implemented the core cost arithmetic for BTC / ETH / SOL, but accepted live depth / VWAP as caller-supplied values. PR #64 closes that roadmap measurement gap by adding:
 
 - Hyperliquid `l2Book` fetch support in the market layer;
 - target-notional buy/sell VWAP from returned bid/ask levels;
@@ -72,7 +60,27 @@ The correction now adds:
 - fail-closed behavior when the target cannot be filled from Hyperliquid's returned book levels instead of extrapolating unseen liquidity;
 - explicit Hyperliquid funding decimal -> bps/hour conversion;
 - explicit perp-vs-verified-spot basis conversion;
-- tests that prevent VWAP/slippage double counting.
+- tests that prevent VWAP/slippage double counting;
+- taker-only L2-derived observations, so passive maker queue/fill economics cannot be falsely inferred from an aggressive book walk.
+
+Maker/taker fee rates remain configurable. A future maker scenario must provide explicit evidence-backed passive execution assumptions rather than reuse taker VWAP geometry.
+
+## Candidate CI evidence
+
+Candidate head after the maker/taker self-review correction:
+
+```text
+6e67f071c1dc74b920d51b52c85327ca83c230a9
+```
+
+passed:
+
+- `Phase 0 baseline contract` #77 / Actions `31101417884`: SUCCESS;
+- execution tests: SUCCESS;
+- research integration contract: SUCCESS;
+- `PR handoff governance` #97 / Actions `31101417954`: SUCCESS.
+
+This evidence writeback changes the branch, so one final authoritative CI run is still required on the new exact head before merge.
 
 ## Router product boundary
 
@@ -103,12 +111,9 @@ Reason: process/handoff and P2.3 measurement-completeness correction only. Produ
 ## Exact next action
 
 ```text
-finish P2.3 live-L2 correction
--> authoritative candidate CI
--> self-review / same-PR fixes if needed
--> final-head CI
--> expected-head merge
--> post-merge normalization to P2.4
+final-head CI on PR #64
+-> expected-head merge if and only if all checks pass
+-> documentation-only post-merge normalization to P2.4
 ```
 
 Do not begin P2.4 until this correction is merged and P2.3 is explicitly closed again.
