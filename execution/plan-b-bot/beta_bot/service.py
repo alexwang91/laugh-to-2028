@@ -155,39 +155,22 @@ def run_strategy(settings: Settings) -> dict:
         send_telegram(settings, payload)
         return payload
 
-    # P1.6 retained pre-trade persistent reconciliation. It remains a direct safety
-    # layer and is deliberately not removed by P1.7.
-    pre_persistent = None
-    if settings.can_trade:
-        try:
-            pre_persistent = reconcile_persistent_orders(settings)
-        except LedgerUncertainState as exc:
-            pre_persistent = {
-                "blocking_unresolved_after": 1,
-                "reconciliation_uncertain": True,
-                "error": str(exc),
-            }
-        payload["order_reconciliation"] = {"pre_trade": pre_persistent}
-
     user_state = fetch_user_state(
         settings.api_url,
         settings.account_address,
         settings.request_timeout_seconds,
     )
 
-    # P1.7 explicit cold-start recovery replays the durable ledger against exchange
-    # truth and records which restart case was encountered. It has no submit/cancel
-    # capability, so running it repeatedly cannot create an economic order.
+    # P1.7 is the single pre-trade replay orchestrator. Internally it runs the P1.2
+    # persistent reconciliation and adds cold-start case classification plus fresh
+    # account-position precedence. It has no economic write capability.
+    pre_persistent = None
     restart_report = None
     if settings.can_trade:
         restart_report = _restart_recovery(settings, user_state=user_state)
+        pre_persistent = restart_report.persistent_reconciliation
         payload["restart_recovery"] = restart_report.to_dict()
-        # Use the stricter/newer persistent result if recovery still sees blockers.
-        if restart_report.persistent_reconciliation.get("blocking_unresolved_after", 0) > int(
-            (pre_persistent or {}).get("blocking_unresolved_after", 0)
-        ):
-            pre_persistent = restart_report.persistent_reconciliation
-            payload.setdefault("order_reconciliation", {})["pre_trade"] = pre_persistent
+        payload["order_reconciliation"] = {"pre_trade": pre_persistent}
 
     equity = parse_account_equity(user_state)
     current_qty = parse_position_qty(user_state, settings.coin)
