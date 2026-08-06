@@ -10,94 +10,34 @@ Status: authoritative cross-chat handoff snapshot
 - Governance: `docs/PROJECT_GOVERNANCE_2026-08-05.md`
 - Continuity protocol: `docs/CONTEXT_CONTINUITY_PROTOCOL.md`
 - P1.1 through P1.8: PASS / MERGED
-- P1.8 implementation PR: #56 PASS / MERGED
-- P1.8 final implementation head: `3d1715dafda8edc5d8a37d1de7a2a2de56b0e587`
-- P1.8 squash/main commit: `765fc53dfcb3699ffc1de530717349cf926b42ed`
+- Phase 1 Account and execution truth: COMPLETE
+- Current main before P2.1: `f064d70da970e3b5d0b98bda094adff8eb7378bb`
+- P2.1 candidate branch: `p2-1/canonical-instrument-registry`
 
 ## Current roadmap position
 
 ```text
 P0.1-P0.2: PASS / MERGED
 P1.1-P1.8: PASS / MERGED
-Phase 1 Account and execution truth: COMPLETE
-P2.1 Canonical instrument registry: NEXT
+P2.1 Canonical instrument registry: CANDIDATE / NOT MERGED
 P2.2+ blocked
 ```
 
-The unique next implementation task is **P2.1 Canonical instrument registry**.
+## P2.1 candidate implementation
 
-## Frozen product state
+- adds `config/instrument_registry.json` as the machine-readable canonical registry for BTC / ETH / SOL / BNB;
+- records canonical perp identities, size precision and derived price-decimal caps;
+- imports BTC HyperCore spot identity `UBTC/USDC` from prior decision `ROUTER-DATA-0004` rather than rediscovering it;
+- records UETH and USOL only as P2.2 candidates and leaves BNB spot identity unknown; none are routable in P2.1;
+- records custody/redemption evidence status explicitly rather than inferring it from UI names or PnL;
+- defines the live liquidity metric contract and official Hyperliquid metadata sources without freezing transient market observations into routing authorization;
+- adds a validated loader and tests that reject silent P2.2 spot authorization.
 
-- Long universe: BTC / ETH / SOL / BNB.
-- Primary venue: Hyperliquid.
-- Initial capital: $2,000; recurring manual contribution about $100/week.
-- Daily boundary: 00:00 UTC; intraday automation is risk-reduction only.
-- Leverage is model-determined; 70% drawdown remains catastrophic tolerance only.
-- FLAT means zero directional exposure; re-entry and first short activation require human approval.
-- Trading Agent/API credential only; no master wallet private key, automated withdrawals or external transfers.
-- Production authorization remains empty.
+## Evidence boundary
 
-## P1.8 PASS / MERGED
+Official Hyperliquid API documentation establishes that perp identity comes from `meta`, spot identity/token fields come from `spotMeta`, spot pair IDs differ from token IDs, UI names may be remapped (explicitly BTC/USDC -> UBTC/USDC), and precision is driven by `szDecimals` with 6-perp / 8-spot decimal bases and five significant price figures.
 
-PR #56 closed the Phase 1 emergency-control acceptance boundary:
-
-- cancel-all follows fresh exchange open-order truth;
-- reduce-only close follows fresh clearinghouse position and metadata-driven size formatting;
-- emergency FLAT cancels open orders, closes every observed non-zero perp position, then requires a second fresh clearinghouse read proving zero remaining position before reporting success;
-- explicit non-ok/rejected exchange responses fail closed;
-- durable atomic disable-new-risk switch blocks normal risk-increasing transitions while preserving same-direction reductions;
-- malformed/unreadable switch state fails closed for new risk without disabling reductions;
-- `emergency_once.py` provides a direct control-plane entrypoint independent of signal/portfolio/target-engine health.
-
-`EXEC-KILL-EMERGENCY-P1.8 = IMPLEMENTATION_VERIFIED` is registered.
-
-## P1.8 review corrections retained
-
-1. Kill-switch uncertainty originally raised in trade mode and could also block reduction. Corrected so uncertainty is treated as new-risk disabled while reduction remains available.
-2. Emergency actions originally treated a returned API call as sufficient success. Corrected to reject explicit exchange errors; emergency FLAT additionally requires fresh verified-flat account truth.
-
-## P1.8 final evidence
-
-Candidate head `3d2f0f662d5fb98d42a6d809004b3ad4bd6592ed` passed:
-
-- `Phase 0 baseline contract` #48 / Actions `31096773496`: SUCCESS;
-- execution tests: SUCCESS;
-- research integration contract: SUCCESS;
-- `PR handoff governance` #62 / Actions `31096773499`: SUCCESS.
-
-Final implementation head:
-
-```text
-3d1715dafda8edc5d8a37d1de7a2a2de56b0e587
-```
-
-passed:
-
-- `Phase 0 baseline contract` #50 / Actions `31096925400`: SUCCESS;
-- execution tests: SUCCESS;
-- research integration contract: SUCCESS;
-- `PR handoff governance` #64 / Actions `31096925378`: SUCCESS.
-
-PR #56 squash-merged to main as:
-
-```text
-765fc53dfcb3699ffc1de530717349cf926b42ed
-```
-
-## Current unique next task: P2.1 Canonical instrument registry
-
-For BTC, ETH, SOL and BNB record:
-
-- spot token identity;
-- perp identity;
-- decimals / tick size;
-- custody/redemption facts where relevant;
-- liquidity metrics;
-- availability state.
-
-BTC spot identity already has prior evidence and should be imported rather than rediscovered.
-
-P2.1 must not silently perform P2.2 UETH/USOL/BNB validation, P2.3 cost modeling, P2.4 routing decisions, or production authorization.
+P2.1 deliberately does not validate UETH/USOL/BNB identity, token IDs, custody/redemption mechanisms or routing economics. Those remain P2.2+.
 
 ## Production authorization
 
@@ -115,7 +55,5 @@ DRIFT_0
 ## Exact next action
 
 ```text
-P2.1 Canonical instrument registry
+open P2.1 PR -> authoritative CI -> self-review corrections if any -> register evidence -> final-head CI -> merge -> normalize handoff to P2.2
 ```
-
-Start from current main after this post-merge normalization is merged, on a fresh candidate branch.
