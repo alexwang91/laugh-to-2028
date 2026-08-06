@@ -13,9 +13,8 @@ Status: authoritative cross-chat handoff snapshot
 - P1.2 implementation PR #44 + handoff #45: PASS / MERGED
 - P1.3 implementation PR #46 + handoff #47: PASS / MERGED
 - P1.4 implementation PR #48 + handoff #49: PASS / MERGED
-- Current main before P1.5: `41dbbcdbea26f5d811b4e60cc0d65fc0a247e4a4`
-- P1.5 implementation PR: #50 open
-- P1.5 candidate branch: `p1-5/precision-metadata`
+- P1.5 implementation PR #50 merged; squash/main commit `f23aa681e04ba0fdb37ff413270380e60036e9af`
+- P1.5 final implementation head: `f62eb4edcf22aa47dccd521f119ddff688cbe289`
 
 ## Current roadmap position
 
@@ -26,11 +25,12 @@ P1.1 Deterministic order identity: PASS / MERGED
 P1.2 Persistent order ledger: PASS / MERGED
 P1.3 Partial-fill correctness: PASS / MERGED
 P1.4 Reversal safety: PASS / MERGED
-P1.5 Precision / metadata: IMPLEMENTATION VERIFIED / FINAL-HEAD CI PENDING / NOT MERGED
-P1.6+ blocked until P1.5 closes its evidence/merge gate
+P1.5 Precision / metadata: PASS / MERGED
+P1.6 Post-submit reconciliation: NEXT
+P1.7+ blocked until dependency order is satisfied
 ```
 
-The only active implementation task is **P1.5 Precision / metadata**. Do not start P1.6, P2, P3, P4, P5 or P8 before P1.5 merges.
+The unique next implementation task is **P1.6 Post-submit reconciliation**. Do not start P1.7, P1.8, P2, P3, P4 or P5 before P1.6 closes its evidence/merge gate.
 
 ## Frozen product state
 
@@ -55,70 +55,41 @@ Registered engineering decisions retained:
 - `EXEC-PARTIAL-FILL-P1.3 = IMPLEMENTATION_VERIFIED`
 - `EXEC-REVERSAL-SAFETY-P1.4 = IMPLEMENTATION_VERIFIED`
 
-P1.4 final implementation head `879ce2da3b1e4382473037650c3fca30cda7f63f` passed Phase 0 baseline contract `31078243843`, execution tests, research integration, PR handoff governance `31078243847`, and evidence-only governance `31078303601`; PR #48 merged as `7acb093af59825c39fd092f232573666682197d8`, then PR #49 normalized the handoff as main `41dbbcdbea26f5d811b4e60cc0d65fc0a247e4a4`.
+## P1.5 PASS / MERGED
 
-## P1.5 implementation verified on candidate
+PR #50 established metadata-driven formatting:
 
-Roadmap requirement: remove hardcoded size and price precision.
+- Hyperliquid perp `meta.universe` supplies each asset's `szDecimals`;
+- executor fetches metadata before economic write actions;
+- order sizes use metadata-driven Decimal/ROUND_DOWN formatting instead of a global 5-decimal helper;
+- ledger parameters record `sz_decimals` and `precision_source=hyperliquid_meta`;
+- metadata-derived price formatting enforces decimal/significant-figure constraints with integer-price allowance;
+- BTC, ETH, SOL and BNB each pass independent formatting tests;
+- malformed, duplicate, incomplete metadata and quantities that round to zero fail closed;
+- formatting verification does not imply multi-asset production execution or P2 routing.
 
-PR #50 candidate implementation:
+`EXEC-PRECISION-METADATA-P1.5 = IMPLEMENTATION_VERIFIED` is registered. Production authorization remains empty.
 
-- adds `beta_bot/instrument_metadata.py` as the canonical formatting layer;
-- parses Hyperliquid perp `meta.universe` and reads each asset's `szDecimals`;
-- executor fetches exchange metadata before any write action and fails closed when configured instrument metadata is absent/malformed;
-- execution quantity is formatted conservatively toward zero using exchange-provided `szDecimals` instead of a global `5` decimal constant;
-- ledger order parameters persist `sz_decimals` and `precision_source=hyperliquid_meta`;
-- price helper enforces metadata-derived decimal cap plus the five-significant-figure rule, with integer-price allowance;
-- formatting tests explicitly cover BTC, ETH, SOL and BNB with distinct metadata values;
-- malformed, duplicate or incomplete metadata and sizes that round to zero fail closed;
-- existing reversal executor tests inject deterministic exchange metadata rather than relying on network access.
+Final evidence on `f62eb4edcf22aa47dccd521f119ddff688cbe289`:
 
-`EXEC-PRECISION-METADATA-P1.5` is registered as `IMPLEMENTATION_VERIFIED` in `config/decision_registry.json`. This is candidate engineering verification only; P1.5 is not merged and production authorization remains empty.
+- Phase 0 baseline contract run #36 / Actions `31079063482`: SUCCESS;
+- execution tests: SUCCESS;
+- research integration contract: SUCCESS;
+- PR handoff governance run #46 / Actions `31079063679`: SUCCESS;
+- evidence-only governance run #47 / Actions `31079123985`: SUCCESS.
 
-## P1.5 self-review notes
+PR #50 squash-merged to main as `f23aa681e04ba0fdb37ff413270380e60036e9af`.
 
-- Size rounding uses `Decimal` and `ROUND_DOWN`, so formatting cannot increase requested economic risk through rounding up.
-- Metadata is fetched before wallet/exchange order write actions, so missing metadata fails before economic submission.
-- The executor no longer contains the previous `_round_size(..., decimals=5)` hardcoded precision helper.
-- Price formatting is implemented even though the current market-open/close path does not submit explicit limit prices; this satisfies the roadmap precision contract without claiming a new order type.
+## Current unique next task: P1.6 Post-submit reconciliation
 
-## P1.5 evidence so far
+Roadmap requirement: after every trading cycle fetch open orders, fills, positions, and account equity/margin; compare with local ledger and target.
 
-Candidate implementation head before registry/evidence finalization:
+Acceptance criteria:
 
-```text
-07148a8e5e542750a800142af3be66899abc6f8d
-```
+- unexplained differences block further risk-increasing orders;
+- reduce-risk actions remain available.
 
-That head passed:
-
-- `Phase 0 baseline contract` run #34 / Actions `31078938943`: SUCCESS;
-- execution tests in that run: SUCCESS;
-- research integration contract in that run: SUCCESS;
-- `PR handoff governance` run #44 / Actions `31078938660`: SUCCESS.
-
-The branch now also contains the decision-registry record and this evidence update. **A new final-head CI run is required before merge.**
-
-## Deliberately not solved
-
-P1.5 does not claim:
-
-- P1.6 full post-submit account reconciliation;
-- P1.7 complete restart recovery;
-- P1.8 kill/emergency paths;
-- P2 route selection or spot identity completion;
-- P3 production-quality daily BRRK target engine;
-- P4 leverage research completion;
-- P5 cycle-top research completion;
-- multi-asset production readiness;
-- production authorization.
-
-## Frozen research boundaries
-
-- Do not rescue stopped carry work.
-- Do not rescue rejected TSMOM / failed historical alpha lines by retuning the same sample.
-- Historical ASYM-BETA evidence is not leverage authorization.
-- Spot identity cannot be inferred from PnL.
+P1.6 must consume P1.2 durable ledger truth, P1.3 actual-fill transitions, P1.4 reversal safety, and P1.5 metadata formatting. It must not silently escalate into P1.7 restart-matrix or P1.8 emergency-path work.
 
 ## Production authorization
 
@@ -133,12 +104,10 @@ production_authorized_components = []
 DRIFT_0
 ```
 
-P1.5 is the exact next roadmap dependency and changes no product economics, risk philosophy, human-approval rule, security boundary, stopped research line or production authorization.
-
 ## Exact next action
 
 ```text
-final-head CI on PR #50 -> merge -> normalize handoff to P1.6
+P1.6 Post-submit reconciliation
 ```
 
-Do not start P1.6 before P1.5 is PASS / MERGED.
+Start from current main after this normalization merges, using a fresh candidate branch.
