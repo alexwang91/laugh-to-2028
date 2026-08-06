@@ -5,61 +5,62 @@
 ## Current authorized task
 
 ```text
-P2.2 UETH / USOL / BNB validation
+P2.3 Spot vs perp cost model
 ```
 
-P0.1, P0.2 and P1.1 through P1.8 are PASS / MERGED. Phase 1 is complete. P2.1 Canonical instrument registry is PASS / MERGED. P2.2 is the only authorized next implementation dependency.
+P0.1, P0.2, P1.1-P1.8, P2.1 and P2.2 are PASS / MERGED. P2.3 is the only authorized next implementation dependency.
 
-Do not start P2.3, P2.4, P3, P4, P5, P6, P7 or P8 early.
+Do not start P2.4, P3, P4, P5, P6, P7 or P8 early.
 
-## P2.2 acceptance boundary
+## P2.3 acceptance boundary
 
-Verify official identity and actual implementation constraints for UETH / USOL / BNB spot candidates.
+For BTC / ETH / SOL compare spot and perp economics using the same economic exposure and explicit holding horizons.
 
-Acceptance criteria:
+Model at minimum:
+- spot and perp execution fees;
+- spread/slippage assumptions or live observations;
+- perp funding drag/benefit;
+- liquidity/capacity constraints;
+- custody/redemption or bridge friction where economically relevant;
+- sensitivity to holding horizon and funding regime.
 
-- no PnL study can substitute for token-identity evidence;
-- unavailable or ambiguous spot assets are explicitly marked;
-- any perp-only fallback remains an implementation status, not a routing decision;
-- token/pair IDs, canonical naming and custody/redemption constraints must be evidenced rather than inferred.
+BNB is excluded from spot-vs-perp comparison because `ROUTER-BNB-PERP-ONLY-2026-08-06` fixes it to `PERP_ONLY_DEFAULT` unless separately reopened and approved.
 
-P2.2 does **not** include route cost modeling (P2.3), route decisions (P2.4), strategy changes or production authorization.
+P2.3 does not include P2.4 route-selection implementation or production authorization.
 
-## P2.1 closure baseline
+## P2.2 closure baseline
 
-P2.1 Canonical instrument registry is PASS / MERGED through PR #58.
+P2.2 is PASS / MERGED through PR #60.
 
 Final implementation head:
 
 ```text
-85ab49f0c29fad58f3dbc5d327fdaa581811fe58
+882f404d5bda11839c52ed92167fb96cb3097353
 ```
 
 Final evidence:
-
-- Phase 0 baseline contract #54 / `31097667694`: SUCCESS;
+- Phase 0 baseline contract #70 / `31099064883`: SUCCESS;
 - execution tests: SUCCESS;
 - research integration: SUCCESS;
-- PR handoff governance #69 / `31097667779`: SUCCESS.
+- PR handoff governance #88 / `31099065127`: SUCCESS.
 
 Squash/main commit:
 
 ```text
-67ac0e2e9f85a35a4c987d28f7ddfb9a95f76f48
+d8a2554ea520f73e77eee9816108261fdaaf762f
 ```
 
-`ROUTER-INSTRUMENT-REGISTRY-P2.1 = IMPLEMENTATION_VERIFIED`.
-
-P2.1 established a canonical registry with BTC prior spot evidence imported, while ETH/SOL/BNB remain explicitly non-routable pending P2.2.
+`ROUTER-SPOT-IDENTITY-P2.2 = IMPLEMENTATION_VERIFIED`.
+`ROUTER-BNB-PERP-ONLY-2026-08-06 = ACCEPTED_RESEARCH_TARGET`.
 
 ## Ordered forward program
 
 ```text
 P1.1-P1.8 COMPLETE
 P2.1 COMPLETE
-P2.2 CURRENT / NEXT
-P2.3 BLOCKED ON P2.2
-P2.4 BLOCKED
+P2.2 COMPLETE
+P2.3 CURRENT / NEXT
+P2.4 BLOCKED ON P2.3
 P3   BLOCKED
 P4   BLOCKED
 P5   BLOCKED
@@ -83,4 +84,4 @@ DRIFT_0
 
 ## Exact next action
 
-After this normalization PR is green and merged, start **P2.2 UETH / USOL / BNB validation** from then-current main on a fresh candidate branch. Close only the identity/implementation-constraint evidence boundary before beginning P2.3.
+After this normalization PR is green and merged, start **P2.3 Spot vs perp cost model** from then-current main on a fresh candidate branch. Do not implement P2.4 before P2.3 closes.
