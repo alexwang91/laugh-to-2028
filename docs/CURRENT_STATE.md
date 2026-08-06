@@ -11,6 +11,7 @@ Status: authoritative cross-chat handoff snapshot
 - P3.1 Data contract: PASS / MERGED
 - Audit correction PR #71: PASS / MERGED
 - Research/evidence normalization PR #72: PASS / MERGED
+- Post-merge handoff normalization PR #73: ACTIVE / CI REQUIRED
 - Current authoritative `main`: `6edaff4bb62bba8316722265dd216ba6e5e7d541`
 - Legacy backlog/roadmap bridge: `docs/BACKLOG_ROADMAP_CROSSWALK_2026-08-06.md`
 - Historical stale-main PR #70: INVALID / CLOSED / DO NOT REVIVE
@@ -21,7 +22,8 @@ Status: authoritative cross-chat handoff snapshot
 P3.1     PASS / MERGED
 #71      PASS / MERGED
 #72      PASS / MERGED
-P3.2     UNIQUE NEXT ROADMAP IMPLEMENTATION
+#73      ACTIVE POST-MERGE HANDOFF NORMALIZATION
+P3.2     UNIQUE NEXT ROADMAP IMPLEMENTATION AFTER #73
 P3.3+    BLOCKED
 ```
 
@@ -119,12 +121,14 @@ No live capital, leverage expansion, new asset, short, withdrawal, transfer, or 
 DRIFT_0
 ```
 
-The pre-P3.2 audit/evidence correction chain is now closed on main. No known roadmap/handoff mismatch blocks P3.2. This does not change product scope, research authority, risk philosophy, human-approval boundaries, credential/security boundaries, stopped-line policy, or production authorization.
+The pre-P3.2 audit/evidence correction chain is closed on main. PR #73 only normalizes the post-merge handoff record; no known roadmap/research mismatch remains once that docs-only PR is merged. This does not change product scope, research authority, risk philosophy, human-approval boundaries, credential/security boundaries, stopped-line policy, or production authorization.
 
 ## Exact next action
 
 ```text
-complete this narrow post-merge handoff normalization
+#73 final-head governance CI
+-> expected-head squash merge #73
+-> verify new main
 -> create a fresh P3.2 branch from then-current main
 -> recover exact frozen BRRK-0011 allocation / regime / corrected defensive-scale chain from GitHub
 -> implement canonical Target calculation API only
