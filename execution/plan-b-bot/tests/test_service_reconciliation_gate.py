@@ -43,17 +43,25 @@ def _report(*, actual_qty, target_qty, clean=False):
     )
 
 
-def _restart_report(actual_qty):
+def _restart_report(actual_qty, *, clean=True):
+    reasons = () if clean else ("RESTART_RECONCILIATION_UNCERTAIN",)
+    persistent = {"blocking_unresolved_after": 0}
+    if not clean:
+        persistent = {
+            "blocking_unresolved_after": 1,
+            "reconciliation_uncertain": True,
+            "error": "unknown submit result",
+        }
     return RestartRecoveryReport(
         coin="BTC",
         actual_position_qty=actual_qty,
         local_position_expectation_qty=actual_qty,
         position_truth_source="fresh_clearinghouse_state",
         recovery_cases=(),
-        blocking_reasons=(),
-        blocking_unresolved_after=0,
-        persistent_reconciliation={"blocking_unresolved_after": 0},
-        risk_increase_allowed=True,
+        blocking_reasons=reasons,
+        blocking_unresolved_after=0 if clean else 1,
+        persistent_reconciliation=persistent,
+        risk_increase_allowed=clean,
     )
 
 
@@ -97,11 +105,11 @@ def _install_common(monkeypatch, *, current_qty, target_qty):
 
 def test_unexplained_reconciliation_blocks_risk_increase(monkeypatch):
     _install_common(monkeypatch, current_qty=0.25, target_qty=0.4)
-
-    def uncertain(_settings):
-        raise LedgerUncertainState("unknown submit result")
-
-    monkeypatch.setattr(service, "reconcile_persistent_orders", uncertain)
+    monkeypatch.setattr(
+        service,
+        "_restart_recovery",
+        lambda *_args, **_kwargs: _restart_report(0.25, clean=False),
+    )
     monkeypatch.setattr(
         service,
         "_account_reconciliation",
@@ -125,6 +133,11 @@ def test_unexplained_reconciliation_blocks_risk_increase(monkeypatch):
 
 def test_same_direction_reduce_remains_available_during_reconciliation_uncertainty(monkeypatch):
     _install_common(monkeypatch, current_qty=0.5, target_qty=0.2)
+    monkeypatch.setattr(
+        service,
+        "_restart_recovery",
+        lambda *_args, **_kwargs: _restart_report(0.5, clean=False),
+    )
 
     def uncertain(_settings):
         raise LedgerUncertainState("unknown submit result")
