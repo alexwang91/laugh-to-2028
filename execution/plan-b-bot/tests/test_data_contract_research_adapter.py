@@ -2,7 +2,12 @@ import importlib.util
 from datetime import datetime, timezone
 from pathlib import Path
 
-from beta_bot.data_contract import DAY_MS, build_canonical_daily_dataset, load_data_contract
+from beta_bot.data_contract import (
+    DAY_MS,
+    STRATEGY_SIGNAL_ASSETS,
+    build_canonical_daily_dataset,
+    load_data_contract,
+)
 
 
 def kline(day, close):
@@ -26,7 +31,7 @@ def kline(day, close):
 def batches():
     policy = load_data_contract()
     output = {}
-    for index, asset in enumerate(("BTC", "ETH", "SOL", "BNB")):
+    for index, asset in enumerate(STRATEGY_SIGNAL_ASSETS):
         symbol = policy.source_symbol(asset, DAY_MS)
         output[asset] = [(symbol, [kline(day, 100 + index + day) for day in range(1, 5)])]
     return output
@@ -56,3 +61,4 @@ def test_research_and_live_adapters_emit_byte_identical_canonical_payload():
     )
     assert research.canonical_json() == live.canonical_json()
     assert research.digest() == live.digest()
+    assert live.close_values("XRP") == research.close_values("XRP")

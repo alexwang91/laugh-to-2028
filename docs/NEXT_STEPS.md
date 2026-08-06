@@ -2,33 +2,72 @@
 
 > Read canonical sources in repository-defined order. GitHub actual state wins over stale prose.
 
-## Current roadmap task
+## Current dependency
 
 ```text
-P3.2 Target calculation API
+P3.1 feature-input parity correction
 ```
 
-P0.1, P0.2, P1.1-P1.8, P2.1-P2.4 and P3.1 are PASS / MERGED.
+P0.1/P0.2, P1.1-P1.8, P2.1-P2.4 and the original P3.1 contract are merged. PR #71 and #72 are merged. PR #73 was manually merged as `89b095d7a7d746b768afca8245b963ecf15ffabc`; do not retroactively label #73 CI VERIFIED.
 
-Pre-P3.2 audit corrections are also closed:
+P3.2 remains the unique next roadmap implementation, but it is temporarily blocked by a concrete P3.1 parity defect discovered while recovering the frozen BRRK-0011 implementation.
 
-- PR #71: PASS / MERGED;
-- PR #72: PASS / MERGED as `6edaff4bb62bba8316722265dd216ba6e5e7d541`;
-- F27 R2 is the authoritative corrected measurement while R1 remains preserved as superseded history;
-- EXPOSURE-SMOOTH-0038 is recorded as mechanism validated but NOT PROMOTED / BASELINE UNCHANGED.
+## Why P3.2 is blocked
 
-P3.2 is now the unique next roadmap implementation. Do not start P3.3, P3.4, P4, P5, P6, P7 or P8 early.
+Frozen BRRK-0011 target weights are only for:
 
-## P3.2 acceptance boundary
+```text
+BTC ETH SOL BNB
+```
+
+However its frozen regime feature model consumes an additional Binance spot series:
+
+```text
+XRPUSDT — feature-only, never a target/router asset
+```
+
+The original P3.1 payload contains only four price series. Removing XRP from the HMM feature panel would alter the frozen model; proceeding with only four canonical inputs would therefore fail the required research/live golden-parity gate.
+
+The active correction makes the distinction explicit:
+
+```text
+target_assets  = BTC, ETH, SOL, BNB
+feature_assets = XRP
+strategy-signal daily payload = BTC, ETH, SOL, BNB, XRP
+router-eligible assets         = BTC, ETH, SOL, BNB only
+```
+
+## Active correction scope
+
+Branch:
+
+```text
+fix/p3-1-feature-input-parity
+```
+
+Required closure:
+
+- schema-v2 machine data contract;
+- XRPUSDT source mapping as feature-only;
+- five-series fail-closed canonical strategy payload;
+- four-asset router boundary preserved;
+- research/live adapter parity regression;
+- missing-XRP and router-rejection regression tests;
+- CURRENT_STATE / P3.1 docs / crosswalk normalization;
+- tests, self-review, PR governance, final-head CI, expected-head merge.
+
+No decision-registry change is required because this correction does not promote research or authorize a new asset.
+
+## P3.2 acceptance boundary after correction
 
 Input:
-- canonical daily data from P3.1;
+- corrected canonical strategy-signal daily data;
 - account equity;
 - current positions;
 - approved config.
 
 Output must expose at least:
-- relative target weights for BTC / ETH / SOL / BNB;
+- BTC/ETH/SOL/BNB relative/target weights;
 - cash share;
 - base gross target;
 - risk state and corrected defensive scale;
@@ -38,74 +77,46 @@ Output must expose at least:
 - data-contract digest/version;
 - target-engine version.
 
-The implementation must deterministically reproduce the frozen BRRK-0011 directional core from the same canonical historical input.
-
-Canonical frozen research chain to reproduce:
+Frozen chain:
 
 ```text
 build_brrk0011_scale
+-> fit_variational_regime_model_nd
+-> filtered_posterior
 -> fit_state_v1_distribution
 -> sample_v1_paths
 -> choose_scale_corrected
--> corrected 0-1 regime scale
--> BRRK_0011_BASELINE = v1_raw.mul(brrk_scale, axis=0)
+-> final_scale = 1 - P(RISK_OFF) * (1 - meta_scale)
+-> BRRK_0011_BASELINE = v1_raw.mul(final_scale, axis=0)
 ```
 
-The P3.2 gross target must remain within `[0, 1]`; cash is the residual `1 - gross`.
+Gross target remains within `[0, 1]`; cash is residual `1 - gross`.
 
-P3.2 is target calculation only. Do not add:
+Do not add:
 - P3.3 rebalance/turnover bands;
 - P3.4 weekly contribution handling;
 - F23 funding-response redesign;
-- P4 leverage-above-1 research;
+- P4 leverage above 1;
 - P5 cycle-exit intelligence;
 - short logic;
+- XRP target exposure;
 - production authorization.
 
-`EXPOSURE-SMOOTH-0038` is not the P3.2 baseline. It is mechanism-validation evidence that was not promoted. `ASYM-BETA-0024` is also not P3.2 authority.
+## Required P3.2 parity evidence
 
-## Required parity evidence
+After the correction is on main, create a **new fresh P3.2 branch**. Do not continue `p3-2/target-calculation-api-v2`, which was created before this dependency correction and intentionally contains no P3.2 implementation.
 
-P3.2 must include deterministic research/live golden-parity tests across multiple historical decision dates using the same canonical P3.1 data and frozen parameters.
-
-The parity set should cover materially different regimes, including:
-- bull / full-exposure behavior;
-- risk-off / low-exposure behavior;
-- regime transitions;
-- 2021 stress;
-- 2022 bear conditions;
-- 2024 stress;
-- recent 2025/2026 decisions.
+P3.2 must include deterministic research/live golden parity across materially different historical decisions, including bull/full exposure, risk-off/low exposure, transitions, 2021 stress, 2022 bear, 2024 stress and recent 2025/2026 decisions.
 
 Compare at least:
 - per-asset target weights;
 - gross target;
 - cash share;
 - risk state / scale;
-- feature snapshot and version metadata.
+- feature snapshot;
+- model/data/engine version metadata.
 
-No same-window retuning is allowed merely to make parity pass.
-
-## Dependency architecture requirement
-
-Research code currently depends on scientific Python packages including numpy/pandas/scipy/sklearn/hmmlearn. P3.2 must establish an explicit canonical target-engine dependency boundary suitable for live deterministic execution. Do not simply import ad-hoc research scripts into runtime without a versioned architecture and parity evidence.
-
-## Ordered forward program
-
-```text
-P1.1-P1.8 COMPLETE
-P2.1-P2.4 COMPLETE
-P3.1 COMPLETE
-AUDIT CORRECTIONS COMPLETE
-P3.2 NEXT ROADMAP IMPLEMENTATION
-P3.3 BLOCKED ON P3.2
-P3.4 BLOCKED
-P4   BLOCKED
-P5   BLOCKED
-P6   BLOCKED
-P7   BLOCKED
-P8   BLOCKED
-```
+No same-window retuning is permitted.
 
 ## Production authorization
 
@@ -116,22 +127,20 @@ production_authorized_components = []
 
 ## Project drift audit
 
-Current audit finding after the #72 normalization chain:
-
 ```text
-DRIFT_0
+DRIFT_1
 ```
 
-No known roadmap/handoff correction now blocks P3.2. This does not alter product objective, universe, venue, research authority, risk philosophy, human-approval, wallet/security, stopped-line policy, or production authorization.
+The drift is an implementation/data-contract mismatch: XRP was part of the frozen feature model but absent from P3.1 canonical inputs. Product universe, venue, BRRK research authority, risk philosophy, human approval and security boundaries remain unchanged.
 
 ## Exact next action
 
 ```text
-merge this narrow post-#72 handoff normalization
--> create a fresh P3.2 target-calculation branch from then-current main
--> recover the exact frozen BRRK-0011 allocation / regime / corrected defensive-scale implementation from GitHub
--> define the canonical deterministic target-engine boundary
--> implement P3.2 only
--> add multi-date research/live golden parity
--> tests / self-review / drift audit / PR / CI / expected-head merge
+complete and verify fix/p3-1-feature-input-parity
+-> correction PR / CI / expected-head merge
+-> post-merge normalization
+-> fresh P3.2 branch from corrected main
+-> canonical target-engine implementation
+-> multi-date research/live golden parity
+-> self-review / CI / expected-head merge
 ```
