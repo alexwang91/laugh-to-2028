@@ -13,8 +13,10 @@ Status: authoritative cross-chat handoff snapshot
 - P1.2 implementation PR #44 + handoff #45: PASS / MERGED
 - P1.3 implementation PR #46 + handoff #47: PASS / MERGED
 - P1.4 implementation PR #48 + handoff #49: PASS / MERGED
-- P1.5 implementation PR #50 merged; squash/main commit `f23aa681e04ba0fdb37ff413270380e60036e9af`
-- P1.5 final implementation head: `f62eb4edcf22aa47dccd521f119ddff688cbe289`
+- P1.5 implementation PR #50 + handoff #51: PASS / MERGED
+- Current main before P1.6: `181ebe60cb5d74649ee24c518ca05317ca1c7012`
+- P1.6 implementation PR: #52 open
+- P1.6 candidate branch: `p1-6/post-submit-reconciliation`
 
 ## Current roadmap position
 
@@ -26,70 +28,85 @@ P1.2 Persistent order ledger: PASS / MERGED
 P1.3 Partial-fill correctness: PASS / MERGED
 P1.4 Reversal safety: PASS / MERGED
 P1.5 Precision / metadata: PASS / MERGED
-P1.6 Post-submit reconciliation: NEXT
-P1.7+ blocked until dependency order is satisfied
+P1.6 Post-submit reconciliation: IMPLEMENTATION VERIFIED / FINAL-HEAD CI PENDING / NOT MERGED
+P1.7+ blocked
 ```
 
-The unique next implementation task is **P1.6 Post-submit reconciliation**. Do not start P1.7, P1.8, P2, P3, P4 or P5 before P1.6 closes its evidence/merge gate.
+The only active implementation task is **P1.6 Post-submit reconciliation**.
 
 ## Frozen product state
 
 - Long universe: BTC / ETH / SOL / BNB.
-- Initial managed capital: $2,000 cash/stablecoin.
-- Recurring manual contribution: about $100/week.
 - Primary venue: Hyperliquid.
-- Official daily boundary: 00:00 UTC.
-- Daily strategy decisions; intraday automation may only reduce risk.
-- Leverage is model-determined; 70% drawdown is catastrophic tolerance only.
-- FLAT = zero directional exposure; re-entry and first short activation require human approval.
-- Bot uses trading Agent/API credentials only; no master wallet private key, automated withdrawals or external transfers.
-- Strategy upgrades use candidate/shadow + manual blue-green cutover.
-- BTC-only executor capability does not redefine the four-asset product universe.
+- Initial capital: $2,000; recurring manual contribution about $100/week.
+- Daily boundary: 00:00 UTC; intraday automation is risk-reduction only.
+- Leverage is model-determined; 70% drawdown remains catastrophic tolerance only.
+- FLAT means zero directional exposure; re-entry and first short activation require human approval.
+- Trading Agent/API credential only; no master wallet private key, automated withdrawals or external transfers.
+- Production authorization remains empty.
 
-## P1.1–P1.4 closure baseline
+## P1.5 closure baseline
 
-Registered engineering decisions retained:
+P1.5 removed hardcoded execution precision, consumes Hyperliquid `meta.universe.szDecimals`, formats size conservatively with Decimal/ROUND_DOWN, provides metadata-driven price formatting, and passed BTC/ETH/SOL/BNB formatting tests. `EXEC-PRECISION-METADATA-P1.5 = IMPLEMENTATION_VERIFIED`.
 
-- `EXEC-ORDER-ID-P1.1 = IMPLEMENTATION_VERIFIED`
-- `EXEC-ORDER-LEDGER-P1.2 = IMPLEMENTATION_VERIFIED`
-- `EXEC-PARTIAL-FILL-P1.3 = IMPLEMENTATION_VERIFIED`
-- `EXEC-REVERSAL-SAFETY-P1.4 = IMPLEMENTATION_VERIFIED`
+## P1.6 implementation verified on candidate
 
-## P1.5 PASS / MERGED
+Roadmap requirement: after every trading cycle fetch open orders, fills, positions and account equity/margin, then compare them with local ledger and current target.
 
-PR #50 established metadata-driven formatting:
+PR #52 candidate:
 
-- Hyperliquid perp `meta.universe` supplies each asset's `szDecimals`;
-- executor fetches metadata before economic write actions;
-- order sizes use metadata-driven Decimal/ROUND_DOWN formatting instead of a global 5-decimal helper;
-- ledger parameters record `sz_decimals` and `precision_source=hyperliquid_meta`;
-- metadata-derived price formatting enforces decimal/significant-figure constraints with integer-price allowance;
-- BTC, ETH, SOL and BNB each pass independent formatting tests;
-- malformed, duplicate, incomplete metadata and quantities that round to zero fail closed;
-- formatting verification does not imply multi-asset production execution or P2 routing.
+- adds an account-level reconciliation report containing actual position, target gap, account equity, total margin used, exchange open-order CLOIDs, local active CLOIDs, recent-fill count and deterministic blocking reason codes;
+- fetches Hyperliquid open orders, recent fills and fresh clearinghouse state around each trade cycle in addition to the existing persistent order reconciliation;
+- compares exchange open orders with local active ledger truth;
+- treats malformed/uncorrelatable open-order and fill evidence as explicit reconciliation blockers rather than silently ignoring it;
+- carries P1.2 persistent unresolved truth into the account-level gate;
+- classifies whether the planned target transition increases directional risk;
+- any unexplained difference blocks opening, increasing or reversing directional exposure;
+- same-direction reduction and target-to-FLAT remain available when exchange discrepancies exist;
+- `LedgerUncertainState` from P1.2 is converted by the service into a risk-increase blocker so reduce-risk execution can still proceed when the durable ledger itself remains usable;
+- core account position/equity/margin parse failure still fails closed because safe risk classification is impossible;
+- post-submit persistent and account reconciliation are both recorded in the cycle payload.
 
-`EXEC-PRECISION-METADATA-P1.5 = IMPLEMENTATION_VERIFIED` is registered. Production authorization remains empty.
+`EXEC-POST-SUBMIT-RECON-P1.6 = IMPLEMENTATION_VERIFIED` is registered in `config/decision_registry.json`. This is candidate engineering verification only; P1.6 is not merged and production authorization remains empty.
 
-Final evidence on `f62eb4edcf22aa47dccd521f119ddff688cbe289`:
+## P1.6 self-review corrections
 
-- Phase 0 baseline contract run #36 / Actions `31079063482`: SUCCESS;
-- execution tests: SUCCESS;
+1. Initial design treated malformed exchange open-order/fill evidence as a global exception. That would also block reductions, violating P1.6. It was corrected to deterministic blocking reason codes that prohibit risk increase but preserve same-direction reductions.
+2. Initial service path still let P1.2 `LedgerUncertainState` abort the cycle before target classification. It was corrected so this uncertainty feeds the P1.6 risk gate; durable-ledger infrastructure failure is not relaxed.
+
+## Candidate test coverage
+
+- clean reconciliation allows risk increase;
+- unknown exchange open order blocks risk increase;
+- local active order missing from exchange blocks risk increase;
+- P1.2 unresolved truth propagates into the account gate;
+- open order without CLOID and malformed rows become blocking reason codes;
+- recent fill without OID/TID becomes a blocking reason code;
+- risk classifier covers increase, decrease, FLAT and reversal cases;
+- service test proves unexplained reconciliation blocks an increase;
+- service test proves the same uncertainty still permits same-direction reduction;
+- missing core margin truth fails closed.
+
+## Candidate CI evidence
+
+Candidate head before registry/evidence finalization:
+
+```text
+dde987bf89b92aa75621fad91bb6a53eda738576
+```
+
+That head passed:
+
+- `Phase 0 baseline contract` run #38 / Actions `31092971639`: SUCCESS;
+- execution tests inside the contract: SUCCESS;
 - research integration contract: SUCCESS;
-- PR handoff governance run #46 / Actions `31079063679`: SUCCESS;
-- evidence-only governance run #47 / Actions `31079123985`: SUCCESS.
+- `PR handoff governance` run #49 / Actions `31092972019`: SUCCESS.
 
-PR #50 squash-merged to main as `f23aa681e04ba0fdb37ff413270380e60036e9af`.
+The branch now also contains the decision-registry record and this evidence update. A new final-head CI run is required before merge.
 
-## Current unique next task: P1.6 Post-submit reconciliation
+## Deliberately not solved
 
-Roadmap requirement: after every trading cycle fetch open orders, fills, positions, and account equity/margin; compare with local ledger and target.
-
-Acceptance criteria:
-
-- unexplained differences block further risk-increasing orders;
-- reduce-risk actions remain available.
-
-P1.6 must consume P1.2 durable ledger truth, P1.3 actual-fill transitions, P1.4 reversal safety, and P1.5 metadata formatting. It must not silently escalate into P1.7 restart-matrix or P1.8 emergency-path work.
+P1.6 does not claim P1.7 restart matrix, P1.8 emergency/kill paths, cross-process locking, order slicing, P2 router completion, multi-asset production readiness or production authorization.
 
 ## Production authorization
 
@@ -98,16 +115,16 @@ NO_CHANGE
 production_authorized_components = []
 ```
 
-## Latest project-drift assessment
+## Project drift audit
 
 ```text
 DRIFT_0
 ```
 
+P1.6 is the exact roadmap dependency after P1.5 and changes no strategy economics or product authorization.
+
 ## Exact next action
 
 ```text
-P1.6 Post-submit reconciliation
+final-head CI on PR #52 -> merge -> normalize handoff to P1.7
 ```
-
-Start from current main after this normalization merges, using a fresh candidate branch.
