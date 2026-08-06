@@ -18,7 +18,7 @@ from .market import (
 )
 from .model import build_signal
 from .notify import send_telegram
-from .order_ledger import OrderLedger
+from .order_ledger import LedgerUncertainState, OrderLedger
 from .portfolio import build_portfolio_plan, parse_account_equity, parse_position_qty
 from .product_config import load_product_config
 
@@ -126,7 +126,17 @@ def run_strategy(settings: Settings) -> dict:
 
     pre_persistent = None
     if settings.can_trade:
-        pre_persistent = reconcile_persistent_orders(settings)
+        try:
+            pre_persistent = reconcile_persistent_orders(settings)
+        except LedgerUncertainState as exc:
+            # P1.2 uncertainty still forbids fresh risk. P1.6 deliberately turns
+            # that uncertainty into a gate input instead of terminating the whole
+            # cycle so a later same-direction reduction can remain available.
+            pre_persistent = {
+                "blocking_unresolved_after": 1,
+                "reconciliation_uncertain": True,
+                "error": str(exc),
+            }
         payload["order_reconciliation"] = {"pre_trade": pre_persistent}
 
     user_state = fetch_user_state(
@@ -186,7 +196,14 @@ def run_strategy(settings: Settings) -> dict:
                 release_id=product.strategy_release_id,
                 decision_timestamp_ms=decision_timestamp_ms,
             )
-            post_persistent = reconcile_persistent_orders(settings)
+            try:
+                post_persistent = reconcile_persistent_orders(settings)
+            except LedgerUncertainState as exc:
+                post_persistent = {
+                    "blocking_unresolved_after": 1,
+                    "reconciliation_uncertain": True,
+                    "error": str(exc),
+                }
             payload.setdefault("order_reconciliation", {})["post_trade"] = post_persistent
             post_account = _account_reconciliation(
                 settings,
