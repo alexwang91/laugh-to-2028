@@ -15,43 +15,47 @@ Status: authoritative cross-chat handoff snapshot
 
 ```text
 P2.1 Canonical instrument registry: PASS / MERGED
-P2.2 UETH / USOL / BNB validation: IMPLEMENTATION VERIFIED / FINAL-HEAD CI PENDING / NOT MERGED
+P2.2 ETH / SOL spot validation + BNB perp-only policy: IMPLEMENTATION VERIFIED / NEW FINAL-HEAD CI REQUIRED / NOT MERGED
 P2.3+ blocked
 ```
 
-## P2.2 implementation verified on candidate
+## P2.2 implementation state
 
 - UETH is verified as Unit's Ethereum-native tokenized spot representation on Hyperliquid; Unit documents native Ethereum deposits and withdrawals.
 - USOL is verified as Unit's Solana-native tokenized spot representation on Hyperliquid; Unit documents native Solana deposits and withdrawals.
-- BNB has no verified Unit-native route in the validated official evidence set and remains spot-unavailable under that route set.
 - ETH/SOL remain `IDENTITY_VERIFIED_ROUTING_NOT_AUTHORIZED`; P2.2 does not implement a route decision.
+- **BNB is now an explicit product routing policy: `PERP_ONLY_DEFAULT`.** P2.2 no longer validates or searches for a BNB spot route.
+- BNB spot is `NOT_ROUTABLE_BY_PRODUCT_POLICY`; no UBNB identity, custody/redemption path or spot-liquidity route is required by the current product.
+- Later routing logic must keep BNB on canonical BNB perp unless the product decision is explicitly reopened and approved.
 - Dynamic HyperCore spot token/pair indexes remain runtime `spotMeta` data and are not fabricated as constants.
-- `ROUTER-SPOT-IDENTITY-P2.2 = IMPLEMENTATION_VERIFIED` is registered.
+- No PnL evidence is used as identity evidence.
 
-## Candidate evidence
+## Previous candidate evidence
 
-Candidate head before decision/evidence writeback:
+Candidate head before the BNB product-policy refinement passed:
 
 ```text
 f337663cc0e697e3840beeef9459cea1e46ec3a8
 ```
 
-passed:
+with:
 
 - `Phase 0 baseline contract` #56 / Actions `31098385353`: SUCCESS;
 - execution tests: SUCCESS;
 - research integration contract: SUCCESS;
 - `PR handoff governance` #72 / Actions `31098385377`: SUCCESS.
 
-External identity evidence:
+The later final head `8fbced6edae9a0457ddf32d9dd5d6a53ec06457e` also passed baseline #58 and governance #74, but the BNB policy refinement changed the branch afterward, so those runs are no longer final-head authority. A new final-head CI run is required.
 
-- Unit official About documentation: native Bitcoin, Ethereum and Solana assets can flow between native chains and Hyperliquid.
-- Unit official API documentation: Ethereum and Solana are supported finalized chains.
-- Unit Generate Address documentation: Ethereum and Solana native deposit/withdrawal address generation is supported.
+## Evidence sources
+
+- Unit official About/API/Generate Address documentation verifies Ethereum and Solana native deposit/withdrawal support.
+- Hyperliquid canonical `spotMeta` remains the runtime source for dynamic spot token/pair metadata.
+- BNB perp-only is a product routing decision, not a claim that no BNB spot market can ever exist.
 
 ## Self-review boundary
 
-P2.2 records identity and availability only. It does not decide that spot is economically superior, does not model funding/spread/slippage, and does not implement routing. BNB remains unavailable rather than receiving an invented `UBNB` identity.
+P2.2 records ETH/SOL identity and availability and freezes BNB as perp-only by product policy. It does not model funding/spread/slippage and does not implement P2.4 routing logic.
 
 ## Production authorization
 
@@ -66,8 +70,10 @@ production_authorized_components = []
 DRIFT_0
 ```
 
+This is an in-scope product clarification that reduces router search space; it does not expand universe, leverage, credentials, execution authority or production authorization.
+
 ## Exact next action
 
 ```text
-final-head CI on PR #60 -> expected-head merge -> post-merge normalization to P2.3
+update decision registry + PR #60 body -> authoritative CI on new head -> final-head CI/evidence -> expected-head merge -> normalize to P2.3
 ```
