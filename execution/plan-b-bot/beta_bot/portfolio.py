@@ -83,18 +83,19 @@ def build_portfolio_plan(
     platform_leverage = abs(target_perp_notional) / hyperliquid_equity_usd if hyperliquid_equity_usd > 0 else 0.0
 
     beta_gap = abs(target_beta - current_beta)
-    if target_clamped_by_leverage and abs(delta_notional) < min_trade_usd:
-        should_rebalance = False
-        reason = "target_unreachable_leverage_cap"
+    if target_clamped_by_leverage:
+        if abs(delta_notional) < min_trade_usd:
+            should_rebalance = False
+            reason = "target_unreachable_leverage_cap"
+        else:
+            should_rebalance = True
+            reason = "rebalance_required_target_clamped_by_leverage"
     elif beta_gap < rebalance_band:
         should_rebalance = False
         reason = "inside_beta_band"
     elif abs(delta_notional) < min_trade_usd:
         should_rebalance = False
         reason = "below_min_trade"
-    elif target_clamped_by_leverage:
-        should_rebalance = True
-        reason = "rebalance_required_target_clamped_by_leverage"
     else:
         should_rebalance = True
         reason = "rebalance_required"
