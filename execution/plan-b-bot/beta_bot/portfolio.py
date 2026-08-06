@@ -15,11 +15,13 @@ class PortfolioPlan:
     current_perp_notional_usd: float
     current_beta: float
     target_beta: float
+    requested_target_perp_notional_usd: float
     target_perp_qty: float
     target_perp_notional_usd: float
     delta_perp_qty: float
     delta_notional_usd: float
     platform_effective_leverage: float
+    target_clamped_by_leverage: bool
     should_rebalance: bool
     rebalance_reason: str
 
@@ -62,13 +64,17 @@ def build_portfolio_plan(
         raise ValueError("Total strategy NAV must be positive")
 
     target_total_notional = target_beta * nav
-    target_perp_notional = target_total_notional - spot_notional
+    requested_target_perp_notional = target_total_notional - spot_notional
+    target_perp_notional = requested_target_perp_notional
+    target_clamped_by_leverage = False
 
     max_perp_notional = max_platform_leverage * hyperliquid_equity_usd
     if hyperliquid_equity_usd <= 0 and abs(target_perp_notional) > 0:
         target_perp_notional = 0.0
+        target_clamped_by_leverage = True
     elif abs(target_perp_notional) > max_perp_notional:
         target_perp_notional = max_perp_notional if target_perp_notional > 0 else -max_perp_notional
+        target_clamped_by_leverage = True
 
     target_perp_qty = target_perp_notional / mark_price
     delta_qty = target_perp_qty - current_perp_qty
@@ -77,12 +83,18 @@ def build_portfolio_plan(
     platform_leverage = abs(target_perp_notional) / hyperliquid_equity_usd if hyperliquid_equity_usd > 0 else 0.0
 
     beta_gap = abs(target_beta - current_beta)
-    if beta_gap < rebalance_band:
+    if target_clamped_by_leverage and abs(delta_notional) < min_trade_usd:
+        should_rebalance = False
+        reason = "target_unreachable_leverage_cap"
+    elif beta_gap < rebalance_band:
         should_rebalance = False
         reason = "inside_beta_band"
     elif abs(delta_notional) < min_trade_usd:
         should_rebalance = False
         reason = "below_min_trade"
+    elif target_clamped_by_leverage:
+        should_rebalance = True
+        reason = "rebalance_required_target_clamped_by_leverage"
     else:
         should_rebalance = True
         reason = "rebalance_required"
@@ -97,11 +109,13 @@ def build_portfolio_plan(
         current_perp_notional_usd=current_perp_notional,
         current_beta=current_beta,
         target_beta=target_beta,
+        requested_target_perp_notional_usd=requested_target_perp_notional,
         target_perp_qty=target_perp_qty,
         target_perp_notional_usd=target_perp_notional,
         delta_perp_qty=delta_qty,
         delta_notional_usd=delta_notional,
         platform_effective_leverage=platform_leverage,
+        target_clamped_by_leverage=target_clamped_by_leverage,
         should_rebalance=should_rebalance,
         rebalance_reason=reason,
     )
