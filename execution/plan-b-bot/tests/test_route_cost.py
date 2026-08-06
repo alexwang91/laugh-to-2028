@@ -44,9 +44,17 @@ def test_spot_round_trip_cost_has_no_funding_or_basis():
     assert estimate.execution_fee_bps == 14.0
     assert estimate.funding_cost_bps == 0.0
     assert estimate.basis_cost_bps == 0.0
-    assert estimate.total_cost_bps == pytest.approx(16.6)
-    assert estimate.total_cost_usd == pytest.approx(1.66)
+    assert estimate.total_cost_bps == pytest.approx(16.4)
+    assert estimate.total_cost_usd == pytest.approx(1.64)
     assert estimate.notional_to_depth_ratio == pytest.approx(0.01)
+
+
+def test_vwap_impact_is_diagnostic_not_double_counted():
+    low = estimate_route_cost(obs("spot", vwap_impact_bps=0.2))
+    high = estimate_route_cost(obs("spot", vwap_impact_bps=9.0))
+    assert low.total_cost_bps == high.total_cost_bps
+    assert low.observed_vwap_impact_bps == pytest.approx(0.2)
+    assert high.observed_vwap_impact_bps == pytest.approx(9.0)
 
 
 def test_perp_positive_funding_accumulates_with_holding_horizon():
@@ -63,22 +71,23 @@ def test_negative_funding_is_a_long_benefit():
 
 
 def test_basis_compression_is_a_cost_to_perp_long():
-    estimate = estimate_route_cost(
-        obs("perp", entry_basis_bps=8.0, expected_exit_basis_bps=2.0)
-    )
+    estimate = estimate_route_cost(obs("perp", entry_basis_bps=8.0, expected_exit_basis_bps=2.0))
     assert estimate.basis_cost_bps == pytest.approx(6.0)
 
 
 def test_same_exposure_comparison_can_flip_with_holding_horizon():
     fees = FeeSchedule()
-    spot_1h = obs("spot", holding_hours=1, spread_bps=1.0)
-    perp_1h = obs("perp", holding_hours=1, spread_bps=1.0, funding_bps_per_hour=0.2)
-    short = compare_spot_perp(spot_1h, perp_1h, fees=fees)
+    short = compare_spot_perp(
+        obs("spot", holding_hours=1),
+        obs("perp", holding_hours=1, funding_bps_per_hour=0.2),
+        fees=fees,
+    )
     assert short.lower_cost_route == "perp"
-
-    spot_100h = obs("spot", holding_hours=100, spread_bps=1.0)
-    perp_100h = obs("perp", holding_hours=100, spread_bps=1.0, funding_bps_per_hour=0.2)
-    long = compare_spot_perp(spot_100h, perp_100h, fees=fees)
+    long = compare_spot_perp(
+        obs("spot", holding_hours=100),
+        obs("perp", holding_hours=100, funding_bps_per_hour=0.2),
+        fees=fees,
+    )
     assert long.lower_cost_route == "spot"
 
 
