@@ -12,8 +12,6 @@ class DummySettings:
     candle_lookback_days = 450
     request_timeout_seconds = 1.0
     normal_beta_cap = 1.0
-    hard_beta_cap = 1.5
-    allow_strong_beta = False
     network = "testnet"
     trading_mode = "trade"
     account_address = "0x0000000000000000000000000000000000000001"
@@ -83,7 +81,14 @@ def _install_common(monkeypatch, *, current_qty, target_qty):
         target_perp_qty=target_qty,
         should_rebalance=True,
         rebalance_reason="rebalance_required",
-        to_dict=lambda: {"target_perp_qty": target_qty, "should_rebalance": True},
+        target_clamped_by_leverage=False,
+        requested_target_perp_notional_usd=target_qty * snapshot.mark_price,
+        target_perp_notional_usd=target_qty * snapshot.mark_price,
+        to_dict=lambda: {
+            "target_perp_qty": target_qty,
+            "should_rebalance": True,
+            "target_clamped_by_leverage": False,
+        },
     )
     state = {
         "marginSummary": {"accountValue": "2000", "totalMarginUsed": "100"},
