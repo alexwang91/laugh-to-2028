@@ -1,0 +1,51 @@
+{
+  "experiment_id": "IDLE-CASH-CREDIT-F27-R2-MEASUREMENT-FIX",
+  "status": "MEASUREMENT_FIX",
+  "supersedes_measurement": "research/results/idle_cash_credit_0027r1.json",
+  "decision": "R1 dropped the first realized equity observation. R2 preserves day-one PnL from the known $10,000 base. Absolute metrics are restated; the qualitative F27 conclusion is unchanged.",
+  "methodology": "Credit each variant's (1 - gross) idle-cash fraction daily at the FRED DTB3 investment-basis rate; reconstruct returns from committed PIT-DISP-0015 equity with day one seeded from the known $10,000 base; no strategy re-fit or weight change.",
+  "window": {
+    "start": "2022-12-10",
+    "end": "2026-08-02"
+  },
+  "results": {
+    "V1_BASELINE": {
+      "label": "V1 baseline",
+      "mean_idle_fraction": 0.20518267071493995,
+      "median_idle_fraction": 0.0,
+      "raw_cagr": 0.6131265293182961,
+      "credited_cagr": 0.6266320267157632,
+      "cagr_delta_pp": 1.3505497397467092,
+      "raw_sharpe_rf0": 1.2950208119949227,
+      "credited_sharpe_rf0": 1.3138257876115051,
+      "raw_excess_sharpe_field": "excess_sharpe_excess_vol_denominator",
+      "raw_excess_sharpe": 1.272398029887278,
+      "credited_excess_sharpe_field": "excess_sharpe_excess_vol_denominator",
+      "credited_excess_sharpe": 1.3028518978732844,
+      "raw_max_drawdown": -0.37634907563779585,
+      "credited_max_drawdown": -0.36600332793616064
+    },
+    "BRRK0011_BASELINE": {
+      "label": "BRRK-0011 core",
+      "mean_idle_fraction": 0.24570026699729736,
+      "median_idle_fraction": 6.019999998496672e-08,
+      "raw_cagr": 0.6516609785339962,
+      "credited_cagr": 0.6680679733470085,
+      "cagr_delta_pp": 1.6406994813012332,
+      "raw_sharpe_rf0": 1.3531836730182638,
+      "credited_sharpe_rf0": 1.3756090320868788,
+      "raw_excess_sharpe_field": "excess_sharpe_excess_vol_denominator",
+      "raw_excess_sharpe": 1.3666807679409847,
+      "credited_excess_sharpe_field": "excess_sharpe_excess_vol_denominator",
+      "credited_excess_sharpe": 1.403888018724672,
+      "raw_max_drawdown": -0.3371507034657847,
+      "credited_max_drawdown": -0.3355237066887795
+    }
+  },
+  "brrk_vs_v1_sharpe_gap": {
+    "raw": 0.05816286102334112,
+    "credited": 0.061783244475373644,
+    "shift": 0.0036203834520325273
+  },
+  "r1_preserved_at": "research/results/idle_cash_credit_0027r1.json"
+}
