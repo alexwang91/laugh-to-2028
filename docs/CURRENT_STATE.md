@@ -30,16 +30,17 @@ P3.2 remains the unique next roadmap implementation task. Before coding it, the 
 
 ## Active audit-correction candidate
 
-Branch:
+PR:
+
+```text
+#71 Audit correction: close legacy execution/security gaps before P3.2
+```
+
+Branch / base:
 
 ```text
 audit/f19-f21-governance-corrections
-```
-
-Base:
-
-```text
-34165f8481b8c38f7f824b2f18f7592da731223b
+base = 34165f8481b8c38f7f824b2f18f7592da731223b
 ```
 
 Scope:
@@ -51,15 +52,40 @@ Scope:
 - F22 residual timing gap: move Vercel cron from 01:10 UTC to 00:05 UTC while preserving the canonical 00:00 UTC decision timestamp;
 - add a durable backlog↔roadmap crosswalk and require fresh sessions/forward PRs to consult it.
 
-Evidence status for this candidate:
+## Candidate evidence
+
+Initial PR head `e5fb8db0e130fb0c262d040af9441fc3543913cb` exposed eight compatibility failures in the full execution suite:
+
+- four reversal tests still constructed removed `hard_beta_cap` / `allow_strong_beta` Settings fields;
+- four service reconciliation tests returned plan stubs missing the new F19 reachability contract.
+
+These were corrected on the same PR without restoring the removed runtime bypass.
+
+Self-review also caught one F19 ordering defect before PR creation: a leverage-clamped target could have been suppressed by `inside_beta_band` even when the current position exceeded the reachable platform cap. Clamp reachability now takes precedence and the required reduction case is regression-tested.
+
+Verified candidate head before this evidence writeback:
 
 ```text
-IMPLEMENTED ON CANDIDATE
-CI / FINAL REVIEW: PENDING
+1146b00c62e713537dad50c7e070d913dea05a6a
+```
+
+Evidence:
+
+- PR handoff governance #115 / Actions `31115188630`: SUCCESS;
+- Phase 0 baseline contract #92 / Actions `31115188583`: SUCCESS after an infrastructure-only first retry where runner `Set up job` failed before checkout;
+- execution tests: SUCCESS;
+- research integration contract: SUCCESS.
+
+Current status:
+
+```text
+CANDIDATE IMPLEMENTATION EVIDENCE: GREEN
+FINAL-HEAD CI AFTER EVIDENCE WRITEBACK: PENDING
+MERGE: PENDING
 PRODUCTION AUTHORIZATION: NO_CHANGE
 ```
 
-Do not call these corrections `IMPLEMENTATION_VERIFIED` until final-head CI is green and the PR is merged.
+Do not call the correction PASS/MERGED until the final evidence-writeback head is green and PR #71 is merged.
 
 ## P3.1 retained contract
 
@@ -125,11 +151,8 @@ No audit correction authorizes live capital, >1 BRRK leverage, new assets, short
 ## Exact next action
 
 ```text
-finish audit/f19-f21-governance-corrections tests + self-review
--> update evidence/decision handoff if CI is green
--> PR with mandatory governance sections
--> final-head CI
--> merge
+final-head CI for PR #71 after evidence writeback
+-> merge #71 only if final head is green
 -> normalize merged handoff if needed
 -> complete narrow 0038/F27 evidence-normalization correction from fresh main
 -> rebuild a fresh P3.2 target-calculation branch from then-current main
