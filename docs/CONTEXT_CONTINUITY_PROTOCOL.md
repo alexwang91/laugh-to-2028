@@ -13,8 +13,9 @@ Before proposing or implementing work, read in this order:
 3. `docs/PROJECT_GOVERNANCE_2026-08-05.md`
 4. `docs/CURRENT_STATE.md`
 5. `docs/NEXT_STEPS.md`
-6. the most recent merged PR(s) referenced by `CURRENT_STATE.md`
-7. any task-specific code, tests and evidence needed for the next roadmap item
+6. `docs/BACKLOG_ROADMAP_CROSSWALK_2026-08-06.md` while any legacy review item remains unresolved
+7. the most recent merged PR(s) referenced by `CURRENT_STATE.md`
+8. any task-specific code, tests and evidence needed for the next roadmap item
 
 Then verify against live repository state:
 
@@ -26,6 +27,8 @@ Then verify against live repository state:
 - whether `CURRENT_STATE.md` is stale or inconsistent.
 
 If repository reality conflicts with `CURRENT_STATE.md`, repository reality wins and the first action is to correct `CURRENT_STATE.md` in the next PR.
+
+The legacy review backlog predates the Master Plan. A roadmap task is not considered fully closed merely because it touched the same files as an older finding. Check the crosswalk acceptance sub-items so unresolved security, measurement or execution semantics cannot disappear during roadmap reorganization.
 
 ## 2. Every material PR is a handoff checkpoint
 
@@ -56,7 +59,8 @@ Each material PR must compare the completed work against:
 - research-discipline rules;
 - production/shadow separation;
 - credential/security boundary;
-- stopped/rejected research lines.
+- stopped/rejected research lines;
+- unresolved legacy backlog items mapped to the touched roadmap phase.
 
 Use this drift classification:
 
@@ -119,8 +123,9 @@ For each roadmap step:
 ```text
 READ CURRENT STATE
 -> verify repo reality
+-> check legacy backlog crosswalk for mapped unresolved acceptance items
 -> restate acceptance gate
--> implement only the next dependency
+-> implement only the next dependency or an explicitly justified correction blocker
 -> test / collect evidence
 -> review against master plan
 -> run project-drift audit
@@ -159,7 +164,8 @@ First recover the project state from GitHub. Read, in order:
 4. docs/CONTEXT_CONTINUITY_PROTOCOL.md
 5. docs/CURRENT_STATE.md
 6. docs/NEXT_STEPS.md
-7. the latest merged PR(s) referenced by CURRENT_STATE.md
+7. docs/BACKLOG_ROADMAP_CROSSWALK_2026-08-06.md while legacy review items remain unresolved
+8. the latest merged PR(s) referenced by CURRENT_STATE.md
 
 Then verify the actual repository state: latest main commit, open PRs/issues, CI status and any active candidate branch. If CURRENT_STATE conflicts with repository reality, correct the handoff state first.
 
@@ -183,7 +189,7 @@ For every material development PR, you must:
 - update docs/CURRENT_STATE.md;
 - write the exact next step so another fresh conversation can continue without this chat.
 
-Do not silently reopen stopped research lines, change strategy parameters to rescue historical results, skip roadmap dependencies, or change production/security boundaries without the required plan update.
+Do not silently reopen stopped research lines, change strategy parameters to rescue historical results, skip roadmap dependencies, lose an unresolved legacy backlog acceptance item, or change production/security boundaries without the required plan update.
 ```
 
 ## 9. Definition of successful handoff
