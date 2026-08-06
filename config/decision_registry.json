@@ -164,6 +164,13 @@
       "scope": "execution_truth",
       "decision": "Actual-fill-driven position progress is derived from reconciled fill quantity and order side, with explicit zero/partial/full fill state, live resting remainder, unfilled quantity, fill-implied actual position and target gap when a trustworthy pre-trade baseline exists. Quantity disagreement fails closed. Reversal-open deliberately does not invent a baseline before P1.4. This verifies P1.3 implementation only and authorizes no production trading or later roadmap capability.",
       "source": "PR #46"
+    },
+    {
+      "id": "EXEC-REVERSAL-SAFETY-P1.4",
+      "status": "IMPLEMENTATION_VERIFIED",
+      "scope": "execution_truth",
+      "decision": "Reversal execution separates old-direction reduction from new-direction opening. The close leg uses reduce-only semantics, and the new-direction leg is blocked until a fresh Hyperliquid clearinghouseState read proves the old-direction position is flat. Partial remainder, malformed/failed fresh state, or unexpected cross-through fail closed. This verifies P1.4 implementation only and authorizes no production trading or later roadmap capability.",
+      "source": "PR #48"
     }
   ]
 }
