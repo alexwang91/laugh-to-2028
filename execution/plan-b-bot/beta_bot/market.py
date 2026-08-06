@@ -23,6 +23,13 @@ def _post(api_url: str, payload: dict[str, Any], timeout: float) -> Any:
     return response.json()
 
 
+def fetch_perp_metadata(api_url: str, timeout: float) -> dict[str, Any]:
+    result = _post(api_url, {"type": "meta"}, timeout)
+    if not isinstance(result, dict):
+        raise RuntimeError(f"Unexpected Hyperliquid meta response: {result}")
+    return result
+
+
 def fetch_completed_daily_closes(
     api_url: str,
     coin: str,
