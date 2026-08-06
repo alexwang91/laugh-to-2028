@@ -5,57 +5,55 @@
 ## Current authorized task
 
 ```text
-P1.6 Post-submit reconciliation
+P1.7 Restart recovery
 ```
 
-P0.1, P0.2 and P1.1 through P1.5 are PASS / MERGED. P1.6 is the only authorized next implementation dependency.
+P0.1, P0.2 and P1.1 through P1.6 are PASS / MERGED. P1.7 is the only authorized next implementation dependency.
 
-Do not start P1.7, P1.8, P2, P3, P4, P5 or P8 early.
+Do not start P1.8, P2, P3, P4, P5 or P8 early.
 
-## P1.6 acceptance boundary
+## P1.7 acceptance boundary
 
-After every trading cycle:
+Required cold-restart cases:
 
-- fetch open orders;
-- fetch fills;
-- fetch positions;
-- fetch account equity/margin;
-- compare with local ledger and target.
+- open order;
+- partial fill;
+- network timeout with unknown submit result;
+- actual position differing from stale local state.
 
-Acceptance criteria:
+All cases must resolve safely and idempotently.
 
-- unexplained differences block further risk-increasing orders;
-- reduce-risk actions remain available.
+P1.7 must consume the durable CLOID/OID/fill truth from P1.2, actual-fill transition logic from P1.3, reversal safety from P1.4, metadata formatting from P1.5 and account-level risk gate from P1.6.
 
-P1.6 is reconciliation/hardening only. It does not include the complete P1.7 restart-recovery matrix or P1.8 emergency command paths.
+P1.7 does **not** include P1.8 cancel-all/emergency-FLAT commands or P2 instrument routing.
 
-## P1.5 closure baseline
+## P1.6 closure baseline
 
-P1.5 Precision / metadata is PASS / MERGED through PR #50.
+P1.6 Post-submit reconciliation is PASS / MERGED through PR #52.
 
 Final implementation head:
 
 ```text
-f62eb4edcf22aa47dccd521f119ddff688cbe289
+fd8ac395189bd6ce134eaeb5c1ae4bf1ac1a6ae5
 ```
 
 Final evidence:
 
-- Phase 0 baseline contract #36 / `31079063482`: SUCCESS;
+- Phase 0 baseline contract #40 / `31093119316`: SUCCESS;
 - execution tests: SUCCESS;
 - research integration: SUCCESS;
-- PR handoff governance #46 / `31079063679`: SUCCESS;
-- evidence-only governance #47 / `31079123985`: SUCCESS.
+- PR handoff governance #51 / `31093117491`: SUCCESS;
+- evidence-only governance #52 / `31093191350`: SUCCESS.
 
 Squash/main commit:
 
 ```text
-f23aa681e04ba0fdb37ff413270380e60036e9af
+1a8addc6225446d287ab0465f0f9b555242b6739
 ```
 
-`EXEC-PRECISION-METADATA-P1.5 = IMPLEMENTATION_VERIFIED`.
+`EXEC-POST-SUBMIT-RECON-P1.6 = IMPLEMENTATION_VERIFIED`.
 
-P1.5 established metadata-driven `szDecimals` quantity formatting and BTC/ETH/SOL/BNB formatting tests without authorizing multi-asset production execution.
+P1.6 established that unexplained account/exchange/local differences block risk-increasing orders while same-direction reductions remain available when the durable ledger remains usable.
 
 ## Frozen product baseline
 
@@ -84,9 +82,9 @@ P1.2 COMPLETE
 P1.3 COMPLETE
 P1.4 COMPLETE
 P1.5 COMPLETE
-P1.6 CURRENT / NEXT
-P1.7 BLOCKED ON P1.6
-P1.8 BLOCKED
+P1.6 COMPLETE
+P1.7 CURRENT / NEXT
+P1.8 BLOCKED ON P1.7
 P2   BLOCKED
 P3   BLOCKED
 P4   BLOCKED
@@ -105,4 +103,4 @@ production_authorized_components = []
 
 ## Exact next action
 
-Start P1.6 from current main on a fresh candidate branch after this normalization PR merges. Follow the full implementation/test/self-review/PR/final-head-CI/merge loop.
+After this normalization PR is green and merged, start P1.7 Restart recovery from then-current main on a fresh candidate branch and close its four-case evidence matrix before any P1.8 work.
