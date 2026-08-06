@@ -95,6 +95,7 @@ def test_persistent_unresolved_truth_is_carried_into_account_gate():
         persistent_blocking_unresolved=1,
     )
     assert "PERSISTENT_ORDER_RECONCILIATION_UNRESOLVED" in report.blocking_reasons
+    assert report.risk_increase_allowed is False
 
 
 @pytest.mark.parametrize(
@@ -113,28 +114,46 @@ def test_directional_risk_classifier(current_qty, target_qty, expected):
     assert transition_increases_directional_risk(current_qty, target_qty) is expected
 
 
-def test_open_order_without_cloid_fails_closed():
-    with pytest.raises(AccountReconciliationError, match="no CLOID"):
-        build_account_reconciliation(
-            ledger=FakeLedger(),
-            coin="BTC",
-            target_position_qty=0.4,
-            open_orders=[{"coin": "BTC", "oid": 101}],
-            fills=[],
-            user_state=_state(),
-        )
+def test_open_order_without_cloid_becomes_blocking_reason_not_global_failure():
+    report = build_account_reconciliation(
+        ledger=FakeLedger(),
+        coin="BTC",
+        target_position_qty=0.1,
+        open_orders=[{"coin": "BTC", "oid": 101}],
+        fills=[],
+        user_state=_state(),
+    )
+    assert report.risk_increase_allowed is False
+    assert "EXCHANGE_OPEN_ORDER_UNCORRELATABLE" in report.blocking_reasons
+    assert transition_increases_directional_risk(report.actual_position_qty, 0.1) is False
 
 
-def test_fill_without_oid_or_tid_fails_closed():
-    with pytest.raises(AccountReconciliationError, match="lacks oid/tid"):
-        build_account_reconciliation(
-            ledger=FakeLedger(),
-            coin="BTC",
-            target_position_qty=0.4,
-            open_orders=[],
-            fills=[{"coin": "BTC", "oid": 101}],
-            user_state=_state(),
-        )
+def test_fill_without_oid_or_tid_becomes_blocking_reason_not_global_failure():
+    report = build_account_reconciliation(
+        ledger=FakeLedger(),
+        coin="BTC",
+        target_position_qty=0.1,
+        open_orders=[],
+        fills=[{"coin": "BTC", "oid": 101}],
+        user_state=_state(),
+    )
+    assert report.risk_increase_allowed is False
+    assert report.recent_fill_count == 1
+    assert "RECENT_FILL_UNCORRELATABLE" in report.blocking_reasons
+
+
+def test_malformed_open_order_and_fill_rows_are_auditable_blockers():
+    report = build_account_reconciliation(
+        ledger=FakeLedger(),
+        coin="BTC",
+        target_position_qty=0.0,
+        open_orders=[None],
+        fills=[None],
+        user_state=_state(),
+    )
+    assert report.risk_increase_allowed is False
+    assert "EXCHANGE_OPEN_ORDER_UNAUDITABLE" in report.blocking_reasons
+    assert "RECENT_FILL_UNAUDITABLE" in report.blocking_reasons
 
 
 def test_missing_margin_truth_fails_closed():
