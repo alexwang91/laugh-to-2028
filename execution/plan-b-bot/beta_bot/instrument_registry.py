@@ -53,11 +53,11 @@ class InstrumentRegistry:
             if row["custody_redemption"].get("status") != "VERIFIED_UNIT_NATIVE_DEPOSIT_WITHDRAWAL": raise ValueError(f"{asset} native deposit/withdrawal evidence must be explicit")
 
         bnb = self.assets["BNB"]; spot = bnb["spot"]
-        if bnb.get("route_policy") != "PERP_ONLY_CURRENT_VERIFIED_DEFAULT": raise ValueError("BNB must remain perp-only under the current verified route set")
-        if bnb.get("route_policy_source") != "ROUTER-SPOT-IDENTITY-P2.2": raise ValueError("BNB current default must reference P2.2 evidence")
-        if spot.get("identity_status") != "NO_VERIFIED_UNIT_NATIVE_ROUTE" or spot.get("availability_state") != "SPOT_UNAVAILABLE_PER_CURRENT_VERIFIED_ROUTE_SET": raise ValueError("BNB spot state must reflect the current verified route set")
-        if any(spot.get(k) is not None for k in ("hypercore_token_candidate", "hypercore_pair_candidate")): raise ValueError("BNB must not invent a spot token or pair")
-        if bnb["custody_redemption"].get("status") != "NO_VERIFIED_UNIT_NATIVE_ROUTE": raise ValueError("BNB custody/redemption status must remain evidence-scoped")
+        if bnb.get("route_policy") != "PERP_ONLY_DEFAULT": raise ValueError("BNB must remain PERP_ONLY_DEFAULT by canonical routing decision")
+        if bnb.get("route_policy_source") != "ROUTER-BNB-PERP-ONLY-2026-08-06": raise ValueError("BNB perp-only default must reference canonical decision")
+        if spot.get("identity_status") != "NOT_IN_SCOPE_PERP_ONLY_DEFAULT" or spot.get("availability_state") != "NOT_ROUTABLE_BY_PRODUCT_POLICY": raise ValueError("BNB spot must remain out of scope under canonical perp-only policy")
+        if any(spot.get(k) is not None for k in ("hypercore_token_candidate", "hypercore_pair_candidate")): raise ValueError("BNB must not carry a spot token or pair under perp-only policy")
+        if bnb["custody_redemption"].get("status") != "NOT_REQUIRED_PERP_ONLY_DEFAULT": raise ValueError("BNB custody/redemption evidence is not required under canonical perp-only policy")
 
     def asset(self, asset: str) -> dict[str, Any]:
         key = asset.upper()
