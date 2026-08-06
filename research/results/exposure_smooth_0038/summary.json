@@ -1,5 +1,7 @@
 {
   "experiment_id": "EXPOSURE-SMOOTH-0038-CONTINUOUS-BETA",
+  "status": "MECHANISM_VALIDATED_NOT_PROMOTED_BASELINE_UNCHANGED",
+  "decision": "The preregistered continuous-beta mechanism passed its mechanism and non-regression gates, but it is not promoted into V1 or BRRK-0011 authority. Frozen V1/BRRK baselines remain unchanged. Promotion would require a separate registered decision and a full downstream BRRK/ref-table rerun; no same-window retuning is authorized.",
   "preregistration": "research/exposure_smooth_0038/EXPOSURE-SMOOTH-0038.json",
   "promotion_evidence": false,
   "trading_changes": false,
