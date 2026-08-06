@@ -80,13 +80,11 @@ def kill_switch_path(settings: Settings) -> str:
 
 
 def normal_new_risk_disabled(settings: Settings) -> bool:
-    """Fail closed if the durable switch exists but cannot be parsed."""
+    """Uncertain switch state blocks new risk but must not disable reduction paths."""
     try:
         return NewRiskKillSwitch(kill_switch_path(settings)).new_risk_disabled
     except EmergencyPathError:
-        if settings.can_trade:
-            raise
-        return False
+        return bool(settings.can_trade)
 
 
 def _positions(user_state: dict[str, Any]) -> list[tuple[str, float]]:
@@ -161,100 +159,40 @@ class EmergencyController:
             if not isinstance(coin, str) or oid is None:
                 raise EmergencyPathError(f"Open order lacks coin/oid: {order}")
             response = self.exchange.cancel(coin, int(oid))
-            actions.append(
-                EmergencyAction(
-                    action="cancel_all",
-                    coin=coin,
-                    status="submitted",
-                    detail={"oid": str(oid), "response": response},
-                )
-            )
+            actions.append(EmergencyAction("cancel_all", coin, "submitted", {"oid": str(oid), "response": response}))
         return actions
 
     def reduce_only_close(self, coin: str | None = None) -> list[EmergencyAction]:
         target_coin = (coin or self.settings.coin).upper()
-        state = self.fetch_user_state_fn(
-            self.settings.api_url,
-            self.settings.account_address or "",
-            self.settings.request_timeout_seconds,
-        )
+        state = self.fetch_user_state_fn(self.settings.api_url, self.settings.account_address or "", self.settings.request_timeout_seconds)
         positions = dict(_positions(state))
         qty = float(positions.get(target_coin, 0.0))
         if abs(qty) <= 1e-12:
             return []
-        metadata = parse_perp_metadata(
-            self.fetch_perp_metadata_fn(
-                self.settings.api_url, self.settings.request_timeout_seconds
-            )
-        )
+        metadata = parse_perp_metadata(self.fetch_perp_metadata_fn(self.settings.api_url, self.settings.request_timeout_seconds))
         try:
             size = format_size(abs(qty), metadata[target_coin])
         except KeyError as exc:
             raise InstrumentMetadataError(f"No perp metadata for emergency close {target_coin}") from exc
-        response = self.exchange.market_close(
-            target_coin,
-            sz=size,
-            slippage=self.settings.max_slippage_bps / 10_000,
-        )
-        return [
-            EmergencyAction(
-                action="reduce_only_close",
-                coin=target_coin,
-                status="submitted",
-                detail={
-                    "pre_close_position_qty": qty,
-                    "size": size,
-                    "reduce_only_semantics": True,
-                    "response": response,
-                },
-            )
-        ]
+        response = self.exchange.market_close(target_coin, sz=size, slippage=self.settings.max_slippage_bps / 10_000)
+        return [EmergencyAction("reduce_only_close", target_coin, "submitted", {"pre_close_position_qty": qty, "size": size, "reduce_only_semantics": True, "response": response})]
 
     def emergency_flat(self) -> list[EmergencyAction]:
         actions = self.cancel_all()
-        state = self.fetch_user_state_fn(
-            self.settings.api_url,
-            self.settings.account_address or "",
-            self.settings.request_timeout_seconds,
-        )
+        state = self.fetch_user_state_fn(self.settings.api_url, self.settings.account_address or "", self.settings.request_timeout_seconds)
         positions = _positions(state)
         if not positions:
             return actions
-        metadata = parse_perp_metadata(
-            self.fetch_perp_metadata_fn(
-                self.settings.api_url, self.settings.request_timeout_seconds
-            )
-        )
+        metadata = parse_perp_metadata(self.fetch_perp_metadata_fn(self.settings.api_url, self.settings.request_timeout_seconds))
         for coin, qty in positions:
             try:
                 size = format_size(abs(qty), metadata[coin])
             except KeyError as exc:
                 raise InstrumentMetadataError(f"No perp metadata for emergency FLAT {coin}") from exc
-            response = self.exchange.market_close(
-                coin,
-                sz=size,
-                slippage=self.settings.max_slippage_bps / 10_000,
-            )
-            actions.append(
-                EmergencyAction(
-                    action="emergency_flat",
-                    coin=coin,
-                    status="submitted",
-                    detail={
-                        "pre_close_position_qty": qty,
-                        "size": size,
-                        "reduce_only_semantics": True,
-                        "response": response,
-                    },
-                )
-            )
+            response = self.exchange.market_close(coin, sz=size, slippage=self.settings.max_slippage_bps / 10_000)
+            actions.append(EmergencyAction("emergency_flat", coin, "submitted", {"pre_close_position_qty": qty, "size": size, "reduce_only_semantics": True, "response": response}))
         return actions
 
     def disable_new_risk(self, *, reason: str = "operator_emergency_switch") -> EmergencyAction:
         state = NewRiskKillSwitch(kill_switch_path(self.settings)).disable(reason=reason)
-        return EmergencyAction(
-            action="disable_new_risk",
-            coin=None,
-            status="active",
-            detail=state,
-        )
+        return EmergencyAction("disable_new_risk", None, "active", state)
