@@ -84,7 +84,7 @@ class RouteCostEstimate:
     execution_fee_bps: float
     spread_cost_bps: float
     slippage_cost_bps: float
-    vwap_impact_bps: float
+    observed_vwap_impact_bps: float
     funding_cost_bps: float
     basis_cost_bps: float
     custody_redemption_bps: float
@@ -103,14 +103,16 @@ def estimate_route_cost(
 ) -> RouteCostEstimate:
     """Estimate round-trip implementation cost for one economic long exposure.
 
-    Sign conventions:
+    Sign conventions and measurement contract:
     - positive perp funding means the long pays and is a cost;
     - negative funding is a benefit and reduces total cost;
     - positive entry basis means perp trades above spot; if expected exit basis is
-      lower, the compression is a cost to the long. Basis cost is therefore
-      entry_basis_bps - expected_exit_basis_bps.
-    - spread is charged as half-spread on entry plus half-spread on exit, so the
-      round-trip spread contribution equals one observed full spread.
+      lower, the compression is a cost to the long;
+    - spread is charged as half-spread on entry plus half-spread on exit, so one
+      observed full spread represents the round-trip spread contribution;
+    - entry/exit slippage must be measured beyond the quoted half-spread;
+    - vwap_impact_bps is a liquidity diagnostic used to derive/check slippage and
+      is deliberately not added again to total cost.
     """
     observation.validate()
     fee_schedule = fees or FeeSchedule()
@@ -134,7 +136,6 @@ def estimate_route_cost(
         execution_fee_bps
         + spread_cost_bps
         + slippage_cost_bps
-        + observation.vwap_impact_bps
         + funding_cost_bps
         + basis_cost_bps
         + custody_cost_bps
@@ -151,7 +152,7 @@ def estimate_route_cost(
         execution_fee_bps=execution_fee_bps,
         spread_cost_bps=spread_cost_bps,
         slippage_cost_bps=slippage_cost_bps,
-        vwap_impact_bps=observation.vwap_impact_bps,
+        observed_vwap_impact_bps=observation.vwap_impact_bps,
         funding_cost_bps=funding_cost_bps,
         basis_cost_bps=basis_cost_bps,
         custody_redemption_bps=custody_cost_bps,
@@ -219,11 +220,7 @@ def funding_break_even_hours(
     perp_nonfunding_cost_bps: float,
     positive_funding_bps_per_hour: float,
 ) -> float | None:
-    """Hours until positive long funding offsets spot's higher non-funding cost.
-
-    Returns 0 when spot is already cheaper before funding and None when positive
-    funding cannot produce a crossover.
-    """
+    """Hours until positive long funding offsets spot's higher non-funding cost."""
     if positive_funding_bps_per_hour <= 0:
         return None
     gap = spot_nonfunding_cost_bps - perp_nonfunding_cost_bps
