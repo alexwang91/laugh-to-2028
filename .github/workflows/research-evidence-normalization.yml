@@ -1,0 +1,32 @@
+name: Research evidence normalization
+
+on:
+  pull_request:
+    paths:
+      - "research/common/**"
+      - "research/review_2026_08_04/verify_idle_cash_credit.py"
+      - "research/results/idle_cash_credit_0027r*.json"
+      - "research/results/exposure_smooth_0038/**"
+      - "docs/RESEARCH_HISTORY.md"
+      - "docs/REVIEW_FIX_BACKLOG.md"
+      - "docs/P3_1_DATA_CONTRACT.md"
+      - "docs/CURRENT_STATE.md"
+      - ".github/workflows/research-evidence-normalization.yml"
+
+jobs:
+  evidence:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install evidence dependencies
+        run: pip install numpy pandas requests
+      - name: Run canonical metric regression tests
+        working-directory: research/common
+        run: python -m unittest test_metrics.py
+      - name: Recompute F27 R2 measurement
+        run: python research/review_2026_08_04/verify_idle_cash_credit.py
+      - name: Print generated F27 R2 evidence
+        run: cat research/results/idle_cash_credit_0027r2.json
