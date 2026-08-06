@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "model_id": "BRRK-ROUTE-COST-P2.3-2026-08-06",
+  "comparison_assets": ["BTC", "ETH", "SOL"],
+  "excluded_assets": {
+    "BNB": "ROUTER-BNB-PERP-ONLY-2026-08-06"
+  },
+  "fee_baseline": {
+    "profile": "HYPERLIQUID_TIER0_BASE_NO_STAKING_DISCOUNT",
+    "perp_taker_bps": 4.5,
+    "perp_maker_bps": 1.5,
+    "spot_taker_bps": 7.0,
+    "spot_maker_bps": 4.0,
+    "policy": "fee schedule is an input and must be refreshed when account tier or staking discount changes"
+  },
+  "holding_horizons_hours": [24, 168, 720, 2160, 8760],
+  "measurement_contract": {
+    "spread": "full quoted spread in bps; round-trip model charges one full spread",
+    "slippage": "entry plus exit expected price impact beyond quoted half-spread",
+    "live_depth": "USD depth relevant to target notional; diagnostic/capacity input",
+    "vwap": "observed book VWAP impact; diagnostic used to derive/check slippage and not added twice",
+    "funding": "signed bps per hour for a long; positive means long pays",
+    "basis": "perp premium in bps versus verified spot; cost contribution is entry premium minus expected exit premium",
+    "custody_redemption": "explicit spot-only friction in bps when economically relevant"
+  },
+  "authorization": "MODEL_ONLY_NO_ROUTE_DECISION"
+}
