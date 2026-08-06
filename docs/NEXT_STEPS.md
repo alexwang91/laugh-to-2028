@@ -5,89 +5,95 @@
 ## Current authorized task
 
 ```text
-P2.4 Router decision
+P3.1 Data contract
 ```
 
-P0.1, P0.2, P1.1-P1.8, P2.1, P2.2 and P2.3 are PASS / MERGED. P2.4 is the only authorized next implementation dependency.
+P0.1, P0.2, P1.1-P1.8 and P2.1-P2.4 are PASS / MERGED. Phase 2 is COMPLETE.
 
-Do not start P3, P4, P5, P6, P7 or P8 early.
+Do not start P3.2, P3.3, P3.4, P4, P5, P6, P7 or P8 early.
 
-## P2.4 acceptance boundary
+## P3.1 acceptance boundary
 
-The target engine requests **economic exposure**. The router returns an **implementation plan and deterministic reason code**.
+Phase 3 goal: make the frozen BRRK directional core reproducible in live operation before adding new leverage or cycle-top intelligence.
 
-Roadmap example reason codes:
+P3.1 defines canonical sources and transformations for:
 
-```text
-SPOT_VERIFIED_LOWER_COST
-PERP_SPOT_UNVERIFIED
-PERP_REQUIRED_FOR_SHORT
-PERP_REQUIRED_FOR_LEVERAGE_OVERLAY
-NO_TRADE_LIQUIDITY_FAIL
-```
+- daily close;
+- missing data;
+- corporate/token mapping changes where relevant;
+- funding/basis inputs used by the router.
 
 Acceptance criteria:
 
-- all routing decisions are logged;
-- research/backtest can reproduce router assumptions;
-- production can compare expected versus realized cost;
-- P2.4 consumes the canonical instrument identity and cost evidence from P2.1-P2.3 rather than inventing new identities or silently changing cost units;
-- BNB remains `PERP_ONLY_DEFAULT` under `ROUTER-BNB-PERP-ONLY-2026-08-06` unless that product decision is explicitly reopened and approved.
+- UTC `00:00` daily boundary is identical in research and live;
+- the same canonical historical input produces the same downstream target inputs/results.
 
-P2.4 does **not** include P3 target-engine changes, P4 leverage research, P5 cycle-exit research or production authorization.
+P3.1 must define data semantics and deterministic transformations only. It must not implement P3.2 target-calculation API, P3.3 rebalance bands, P3.4 weekly cash-contribution handling, P4 leverage research or P5 cycle-exit research.
 
-## P2.3 audited closure baseline
+## Phase 2 closure baseline
 
-P2.3 closed in two implementation pieces:
-
-1. PR #62 — core spot-vs-perp cost arithmetic;
-2. PR #64 — full-project-audit correction that derives live depth/VWAP from Hyperliquid `l2Book`, makes L2 snapshots fetchable, freezes funding/basis units, fails closed on insufficient returned book depth and prevents maker execution from being inferred from taker VWAP.
-
-Final P2.3 correction head:
+P2.4 final implementation head:
 
 ```text
-8501e9ad0a6622689a8331fee28fbda3b315c23b
+122124bf9d16f38fcb699f1d87d2750833d515d5
 ```
 
 Final evidence:
 
-- Phase 0 baseline contract #78 / `31101519237`: SUCCESS;
+- Phase 0 baseline contract #84 / Actions `31106165098`: SUCCESS;
 - execution tests: SUCCESS;
-- research integration: SUCCESS;
-- PR handoff governance #98 / `31101516714`: SUCCESS.
+- research integration contract: SUCCESS;
+- PR handoff governance #105 / Actions `31106164750`: SUCCESS.
 
-P2.3 audited closure main commit:
+P2.4 implementation PR #66 squash-merged as:
 
 ```text
-c2fa4ac79038d3ed800f5a167dd7703a8ef5946a
+19b586c3ef08d02203d09c48b469063857d0a6b3
 ```
 
-Full audit record:
+`ROUTER-DECISION-P2.4 = IMPLEMENTATION_VERIFIED`.
+
+Phase 2 final routing boundary:
+
+```text
+BTC base long: verified spot candidate + perp fallback by cost/capacity
+ETH base long: verified UETH spot candidate + perp fallback by cost/capacity
+SOL base long: verified USOL spot candidate + perp fallback by cost/capacity
+BNB base long: PERP_ONLY_DEFAULT
+short instrument role: perp required, no bear-program authorization
+leverage-overlay instrument role: perp required, no leverage-level authorization
+```
+
+Router outputs are deterministic/replayable, persistable as canonical JSONL and expose expected-versus-realized implementation-cost attribution. Production authorization remains separate.
+
+## Full audit baseline
+
+Full project audit:
 
 ```text
 docs/FULL_PROJECT_AUDIT_2026-08-06.md
 ```
 
-## Frozen router baseline
+Historical audit `DRIFT_1` records process/implementation-detail history only. P2.4 itself closed `DRIFT_0`.
+
+The authoritative BNB policy is:
 
 ```text
-BTC: verified spot candidate + perp fallback
-ETH: verified UETH spot candidate + perp fallback
-SOL: verified USOL spot candidate + perp fallback
-BNB: PERP_ONLY_DEFAULT
+ROUTER-BNB-PERP-ONLY-2026-08-06
+BNB = PERP_ONLY_DEFAULT
 ```
 
-The old Master Plan §6 BNB working-policy sentence is superseded by the later explicit BNB perp-only decision. This does not change the frozen four-asset long universe or Hyperliquid-first venue.
+The P2.4 post-merge handoff synchronizes stale Master Plan wording with that already-approved policy; this is not a new routing decision.
 
 ## Ordered forward program
 
 ```text
 P1.1-P1.8 COMPLETE
-P2.1 COMPLETE
-P2.2 COMPLETE
-P2.3 COMPLETE
-P2.4 CURRENT / NEXT
-P3   BLOCKED ON P2.4
+P2.1-P2.4 COMPLETE
+P3.1 NEXT
+P3.2 BLOCKED ON P3.1
+P3.3 BLOCKED
+P3.4 BLOCKED
 P4   BLOCKED
 P5   BLOCKED
 P6   BLOCKED
@@ -104,14 +110,14 @@ production_authorized_components = []
 
 ## Project drift audit
 
-Latest audit/correction PR #64 was:
+P2.4 implementation:
 
 ```text
-DRIFT_1
+DRIFT_0
 ```
 
-This was process/implementation-detail drift only; product/strategy drift was zero. A fresh P2.4 PR should be classified on its own facts and may be `DRIFT_0` if it follows the canonical plan without new deviation.
+Post-merge Master Plan BNB wording synchronization should be recorded as documentation/authority reconciliation only; it does not create a new product, risk or production behavior.
 
 ## Exact next action
 
-After this post-merge normalization PR is green and merged, start **P2.4 Router decision** from then-current main on a fresh candidate branch. Close only the P2.4 router acceptance boundary before beginning P3.
+After the P2.4 post-merge handoff PR is green and merged, create a **fresh P3.1 Data contract branch from then-current main** and close only the P3.1 acceptance gate before beginning P3.2.
