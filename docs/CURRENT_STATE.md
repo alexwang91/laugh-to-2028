@@ -30,7 +30,7 @@ P1.3 Partial-fill correctness: PASS / MERGED
 P1.4 Reversal safety: PASS / MERGED
 P1.5 Precision / metadata: PASS / MERGED
 P1.6 Post-submit reconciliation: PASS / MERGED
-P1.7 Restart recovery: IMPLEMENTATION VERIFIED / FINAL-HEAD CI PENDING / NOT MERGED
+P1.7 Restart recovery: IMPLEMENTATION VERIFIED / FINAL-HEAD EVIDENCE RECORDED / NOT MERGED
 P1.8+ blocked
 ```
 
@@ -47,55 +47,54 @@ The only active implementation task is **P1.7 Restart recovery**.
 - Trading Agent/API credential only; no master wallet private key, automated withdrawals or external transfers.
 - Production authorization remains empty.
 
-## P1.6 closure baseline
+## P1.7 implementation verified
 
-P1.6 cross-checks open orders, recent fills, actual position, equity and margin against durable local truth/current target. Unexplained differences block risk-increasing transitions while same-direction reductions remain available when the durable ledger is usable. `EXEC-POST-SUBMIT-RECON-P1.6 = IMPLEMENTATION_VERIFIED`.
-
-## P1.7 implementation verified on candidate
-
-PR #54 implements the four-case cold-start matrix:
+PR #54 implements the required cold-start matrix:
 
 - `COLD_OPEN_ORDER_RECOVERED`: live exchange order is restored by deterministic CLOID/OID and remains blocking instead of being duplicated;
 - `COLD_PARTIAL_FILL_RECOVERED`: fill quantity and resting remainder are reconstructed from exchange order size and deduplicated TID fill truth;
 - `COLD_UNKNOWN_SUBMIT_RESULT_RECOVERED`: durable attempt with no locally persisted submission response is recovered if exchange later exposes the CLOID;
-- `COLD_UNKNOWN_SUBMIT_RESULT_BLOCKED`: if the exchange still returns `unknownOid`, the durable row remains unresolved and blind retry is forbidden;
+- `COLD_UNKNOWN_SUBMIT_RESULT_BLOCKED`: if exchange still returns `unknownOid`, the durable row remains unresolved and blind retry is forbidden;
 - `COLD_STALE_POSITION_OVERRIDDEN_BY_EXCHANGE`: fresh clearinghouse position overrides a differing stale fill-implied local position expectation.
 
 The recovery orchestrator has no submit/cancel/resize/leverage-write capability. `run_strategy` uses it as the single pre-trade persistent replay path, followed by the independent P1.6 account reconciliation/risk gate. Repeated recovery is economically idempotent and fill events remain deduplicated by TID.
 
-`EXEC-RESTART-RECOVERY-P1.7 = IMPLEMENTATION_VERIFIED` is registered. This is candidate engineering verification only; P1.7 is not merged and production authorization remains empty.
+`EXEC-RESTART-RECOVERY-P1.7 = IMPLEMENTATION_VERIFIED` is registered. This is engineering verification only; production authorization remains empty.
 
 ## P1.7 self-review / CI corrections
 
-1. Initial service integration layered P1.7 after the previous pre-trade P1.6 persistent reconciliation. This duplicated reads and could consume an unknown-submit recovery before P1.7 classified it. Corrected so P1.7 is the single pre-trade replay orchestrator and internally reuses P1.2 reconciliation; P1.6 account reconciliation remains downstream.
-2. First authoritative Phase 0 run #42 / Actions `31094167207` failed execution tests because the unknown-submit recovery label was not report-idempotent: after first exchange discovery, the newly persisted OID caused the second recovery to lose the original unknown-submit lineage. Corrected lineage semantics to `submission_attempt_timestamp_ms != null && submission_response_timestamp_ms == null`; exchange OID now determines recovered-vs-blocked state without erasing lineage.
+1. Initial service integration layered P1.7 after the previous pre-trade P1.6 persistent reconciliation. That duplicated reads and could consume an unknown-submit recovery before P1.7 classified it. Corrected so P1.7 is the single pre-trade replay orchestrator and internally reuses P1.2 reconciliation; P1.6 account reconciliation remains downstream.
+2. First authoritative Phase 0 run #42 / Actions `31094167207` failed execution tests because unknown-submit recovery lineage was not report-idempotent after first exchange discovery. Corrected lineage semantics to `submission_attempt_timestamp_ms != null && submission_response_timestamp_ms == null`; exchange OID now determines recovered-vs-blocked state without erasing lineage.
 
-## Candidate test coverage
+## CI evidence
 
-- open-order cold restart and repeated recovery;
-- partial-fill cold restart and repeated fill deduplication;
-- unknown submit later recovered by CLOID;
-- still-unknown submit remains blocked across repeated recovery with no blind retry;
-- fresh actual position overrides stale local expectation;
-- repeated stale-position recovery returns the same classification;
-- prior P1.6 risk-increase and reduce-risk service gate remains preserved.
-
-## Candidate CI evidence
-
-Corrected candidate head before registry/evidence finalization:
+Corrected candidate head:
 
 ```text
 8e8f600cec1af1c3c9262f827275bdcc25562ed0
 ```
 
-That head passed:
+passed:
 
-- `Phase 0 baseline contract` run #43 / Actions `31094408611`: SUCCESS;
+- `Phase 0 baseline contract` #43 / Actions `31094408611`: SUCCESS;
 - execution tests: SUCCESS;
 - research integration contract: SUCCESS;
-- `PR handoff governance` run #55 / Actions `31094408568`: SUCCESS.
+- `PR handoff governance` #55 / Actions `31094408568`: SUCCESS.
 
-The branch now also contains the P1.7 decision-registry record and this evidence update. A new final-head CI run is required before merge.
+Evidence/registry head:
+
+```text
+7ac2f19892ef227888f5b696e332f6a6e40a3ec7
+```
+
+passed:
+
+- `Phase 0 baseline contract` #45 / Actions `31094573012`: SUCCESS;
+- execution tests: SUCCESS;
+- research integration contract: SUCCESS;
+- `PR handoff governance` #57 / Actions `31094572979`: SUCCESS.
+
+This CURRENT_STATE evidence writeback creates one final head. That exact head must pass authoritative CI before merge.
 
 ## Deliberately not solved
 
@@ -119,5 +118,5 @@ P1.7 is the exact dependency after P1.6 and changes no BRRK economics or authori
 ## Exact next action
 
 ```text
-final-head CI on PR #54 -> merge -> normalize handoff to P1.8
+final-head CI on PR #54 -> expected-head merge -> post-merge normalization to P1.8
 ```
