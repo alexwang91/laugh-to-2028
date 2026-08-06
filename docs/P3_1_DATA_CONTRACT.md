@@ -1,28 +1,56 @@
 # P3.1 Canonical Data Contract
 
-Status: **PASS / MERGED — canonical P3.1 data contract.** This document defines data semantics only; it does not authorize P3.2 target generation or production trading.
+Status: **P3.1 base PASS / MERGED; feature-input parity correction candidate.** This document defines data semantics only; it does not authorize P3.2 target generation or production trading.
 
 Machine-readable authority: `config/data_contract.json`.
 Implementation: `execution/plan-b-bot/beta_bot/data_contract.py`.
 
-## 1. Separation of data roles
+## 1. Separation of asset roles
 
-P3.1 deliberately separates **strategy signal data** from **router/execution market data**.
+P3.1 separates three different roles that must not be conflated.
 
-### Strategy signal price
+### Target / tradable universe
 
-The frozen BRRK directional research core used Binance spot UTC daily closes for:
+The BRRK product long universe remains exactly:
 
 ```text
-BTCUSDT
-ETHUSDT
-SOLUSDT
-BNBUSDT
+BTC
+ETH
+SOL
+BNB
 ```
 
-P3.1 preserves that economic-price source rather than silently replacing it with Hyperliquid perpetual candles merely because Hyperliquid is the execution venue.
+Only these four assets may appear in P3.2 target weights or in the Hyperliquid router. This correction does **not** add XRP to the product universe.
 
-Canonical request semantics:
+### Strategy feature-only input
+
+Recovery of the exact frozen BRRK-0011 implementation during P3.2 preparation found that the frozen regime feature model also consumed:
+
+```text
+XRPUSDT
+```
+
+as a **feature-only** Binance spot daily series. `RegimeKellyConfig` includes XRP in the major/alt feature panels, and `features_no_dominance.py` uses that panel for breadth, relative-strength dispersion and BTC-correlation features. XRP never receives a BRRK target weight.
+
+Therefore the canonical strategy-signal dataset is:
+
+```text
+BTCUSDT  target asset
+ETHUSDT  target asset
+SOLUSDT  target asset
+BNBUSDT  target asset
+XRPUSDT  feature-only asset
+```
+
+The original P3.1 v1 contract omitted XRP and incorrectly described the frozen model as requiring only the four target assets. That omission made exact BRRK-0011 research/live golden parity impossible. The corrected contract is schema v2 and makes the role distinction explicit rather than silently changing the frozen model.
+
+### Router market inputs
+
+Instrument-routing observations remain Hyperliquid execution-venue data for BTC/ETH/SOL/BNB only. XRP is rejected by funding/basis router canonicalizers and cannot become tradable through the feature-input path.
+
+## 2. Strategy price semantics
+
+All five strategy-signal price series use the frozen research source:
 
 ```text
 source      = Binance Spot klines
@@ -40,28 +68,9 @@ close_time_ms < D 00:00 UTC
 
 are eligible. The latest required session therefore opens at `D-1 00:00 UTC` and closes at `D-1 23:59:59.999 UTC`.
 
-Official Binance Spot API documentation states that klines are uniquely identified by open time and that the default kline timezone is UTC; the P3.1 request makes `timeZone=0` explicit rather than relying on a default.
+Strategy-source mappings are versioned in `source_mappings` in `config/data_contract.json`; the current mappings are BTCUSDT/ETHUSDT/SOLUSDT/BNBUSDT/XRPUSDT.
 
-Reference:
-
-- https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#klinecandlestick-data
-
-### Router market inputs
-
-Instrument-routing observations remain Hyperliquid execution-venue data. They do not replace the frozen BRRK strategy close series.
-
-P3.1 normalizes:
-
-- Hyperliquid `fundingHistory` into `bps_per_hour`;
-- perp-versus-verified-spot basis into bps;
-- observation timestamps needed to reproduce the router assumption set.
-
-Hyperliquid Info API references:
-
-- https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint
-- https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint/perpetuals
-
-## 2. Missing-data policy
+## 3. Missing-data policy
 
 Price gaps are not repaired economically.
 
@@ -72,18 +81,18 @@ NO cross-venue price substitution
 NO incomplete-candle substitution
 ```
 
-For a decision to publish a canonical four-asset daily dataset:
+For a decision to publish the canonical strategy-signal dataset:
 
-1. each canonical asset must contain the latest completed UTC session;
-2. common history starts on the latest first-available canonical day among BTC/ETH/SOL/BNB;
-3. from that common start through the latest required day, every UTC daily session must be present for every asset;
-4. an internal or latest-session gap fails closed and no target input is published.
+1. BTC, ETH, SOL, BNB and feature-only XRP must each contain the latest completed UTC session;
+2. common history starts on the latest first-available day across all five required series;
+3. every UTC session from common start through the latest required day must exist for every required series;
+4. any internal or latest-session gap fails closed and no target input is published.
 
-This is stricter than silently reproducing a `dropna()` result after a data outage and makes missing-data behavior observable.
+This is intentionally stricter than silently reproducing a `dropna()` result after a data outage.
 
-## 3. Asset / token mapping changes
+## 4. Asset / token mapping changes
 
-Economic asset identity remains:
+Target economic identity remains:
 
 ```text
 BTC
@@ -92,7 +101,7 @@ SOL
 BNB
 ```
 
-Strategy-source symbols are versioned in `source_mappings` in `config/data_contract.json`.
+XRP has only `strategy_feature_assets` identity under this contract. It is not a target asset, route candidate, leverage overlay instrument or production authorization.
 
 Mapping periods use:
 
@@ -102,11 +111,9 @@ valid_from_utc <= session < valid_to_utc
 
 with `null` representing an open boundary. A consumed session must resolve to exactly one mapping. Overlap, ambiguity or an uncovered consumed date fails closed. Historical mappings must be appended/versioned rather than silently rewriting old observations.
 
-The current source mappings are the unchanged Binance spot symbols used by the frozen BRRK research core.
+## 5. Funding contract
 
-## 4. Funding contract
-
-For router as-of time `T`, canonical funding uses the exact trailing 24 completed hourly Hyperliquid funding slots strictly before `T`.
+For router as-of time `T`, canonical funding uses the exact trailing 24 completed hourly Hyperliquid funding slots strictly before `T` for target/tradable assets only.
 
 ```text
 API unit       = decimal rate per hour
@@ -117,11 +124,11 @@ aggregation    = arithmetic mean of exact 24 completed hourly slots
 
 Input order does not matter. Duplicate slots, non-hour-aligned slots, malformed rates or any missing required hour fail closed as `cost input unavailable`; a future/boundary funding record is not used early.
 
-This is a routing-cost input contract, not a funding forecast model.
+This is a routing-cost input contract, not a funding forecast model. Feature-only XRP is explicitly router-ineligible.
 
-## 5. Basis contract
+## 6. Basis contract
 
-Canonical basis is:
+Canonical basis for target/tradable assets is:
 
 ```text
 (perp_mark_price / verified_spot_price - 1) * 10,000
@@ -129,22 +136,30 @@ Canonical basis is:
 
 where the spot reference is the verified spot instrument for the same economic asset. Both source observation timestamps are retained, neither may be after router `as_of`, and their observation skew is preserved for replay/audit.
 
-P3.1 does not invent an arbitrary freshness threshold. P2.4 records the observed assumptions; later live orchestration may add an evidence-backed operational freshness gate without changing the basis unit or formula.
+Feature-only XRP is rejected by the basis canonicalizer.
 
-## 6. Research/live determinism
+## 7. Research/live determinism
 
-Research does not get a separate candle-cleaning implementation. `research/integration/p3_1_data_contract_adapter.py` calls the exact same `beta_bot.data_contract` canonicalizer used by the production package.
+Research does not get a separate candle-cleaning implementation. `research/integration/p3_1_data_contract_adapter.py` calls the exact same `beta_bot.data_contract` canonicalizer used by the live package.
 
-For the same raw observations and the same decision/as-of timestamps:
+For the same raw observations and decision timestamp:
 
 ```text
 research canonical JSON == live canonical JSON
 research SHA-256 digest  == live SHA-256 digest
 ```
 
-The controlled tests also feed the byte-identical close sequence into the already-existing frozen signal component and require identical output. P3.1 does **not** create the P3.2 target calculation API.
+Schema v2 serializes the role boundary explicitly:
 
-## 7. Deliberately not implemented in P3.1
+```text
+target_assets  = BTC, ETH, SOL, BNB
+feature_assets = XRP
+closes_by_asset = BTC, ETH, SOL, BNB, XRP
+```
+
+This correction is required before P3.2 golden parity because the frozen BRRK-0011 HMM feature path cannot be reconstructed from only four price series.
+
+## 8. Deliberately not implemented here
 
 - no new BRRK weighting formula;
 - no target-calculation API;
@@ -152,6 +167,7 @@ The controlled tests also feed the byte-identical close sequence into the alread
 - no weekly cash-contribution logic;
 - no leverage research;
 - no cycle-exit research;
+- no XRP target or routing support;
 - no production trading authorization.
 
 Production authorization remains controlled separately by `config/decision_registry.json` and remains empty unless explicitly changed by a later approved gate.
