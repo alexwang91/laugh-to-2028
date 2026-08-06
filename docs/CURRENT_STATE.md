@@ -32,7 +32,7 @@ P0.2 Decision registry: PASS / MERGED
 P1.1 Deterministic order identity: PASS / MERGED
 P1.2 Persistent order ledger: PASS / MERGED
 P1.3 Partial-fill correctness: PASS / MERGED
-P1.4 Reversal safety: CANDIDATE / PR #48 / CI IN PROGRESS / NOT MERGED
+P1.4 Reversal safety: IMPLEMENTATION VERIFIED / FINAL-HEAD CI PENDING / NOT MERGED
 P1.5+ blocked until P1.4 closes its final evidence/merge gate
 ```
 
@@ -91,7 +91,7 @@ PR #46 established actual-fill-driven position progress on top of P1.2 ledger tr
 
 Exact final implementation head `68bd96f86945ab0fd42ad977142fdacef6a2642d` passed Phase 0 baseline contract run `31055589418`, execution tests, research integration and PR handoff governance before merge. `EXEC-PARTIAL-FILL-P1.3` is registered as `IMPLEMENTATION_VERIFIED`.
 
-## P1.4 candidate behavior
+## P1.4 implementation verified on candidate
 
 PR #48 implements the roadmap reversal-safety gate without changing strategy economics:
 
@@ -116,13 +116,26 @@ Candidate tests cover:
 
 Self-review correction: checking close submission status alone is insufficient because submitted/filled response is not equivalent to current account position truth. The implementation therefore gates on a fresh account-level position read.
 
-## P1.4 evidence status
+`EXEC-REVERSAL-SAFETY-P1.4` is registered as `IMPLEMENTATION_VERIFIED` in `config/decision_registry.json`. This is candidate engineering verification only; P1.4 is not merged and production authorization remains empty.
 
-Candidate branch head before this CURRENT_STATE update was `6061a7d8df13c73f16c17076af43663ed4260aa7`.
+## P1.4 evidence so far
 
-Initial PR governance run #38 / Actions run `31078002807` failed only because the forward PR had not directly modified `docs/CURRENT_STATE.md`; this file update corrects that governance requirement. Phase 0 baseline contract run #29 / Actions run `31078002906` was still running at the time of this handoff update.
+Candidate head after the mandatory CURRENT_STATE correction:
 
-P1.4 is **not yet IMPLEMENTATION_VERIFIED and not merged**. Final-head CI must pass before any registry update or merge.
+```text
+b6a068bbe63f299bbaed680fc0aa5732c02cb2eb
+```
+
+That head passed:
+
+- `PR handoff governance` run #39 / Actions run `31078103004`: SUCCESS;
+- `Phase 0 baseline contract` run #30 / Actions run `31078103076`: SUCCESS;
+- execution tests inside Phase 0 baseline contract: SUCCESS;
+- research integration contract inside Phase 0 baseline contract: SUCCESS.
+
+Earlier governance run #38 / Actions run `31078002807` failed only because the forward PR had not directly modified `docs/CURRENT_STATE.md`. That governance defect was corrected on the same PR; no implementation semantics changed for that correction.
+
+The branch now also contains the verified decision-registry record and this evidence handoff update. **A new final-head CI run is required before merge.**
 
 ## P1.4 boundaries deliberately not solved
 
@@ -188,7 +201,7 @@ Reason: P1.4 is the exact roadmap dependency after P1.3. It only hardens reversa
 ## Exact next action
 
 ```text
-PR #48 CI -> fix P1.4 only on same PR if required -> final-head CI -> register P1.4 evidence -> merge -> normalize handoff to P1.5
+final-head CI on PR #48 -> merge -> normalize handoff to P1.5
 ```
 
 Do not begin P1.5 until PR #48 is merged.
@@ -200,8 +213,8 @@ A fresh conversation should:
 1. read the canonical files in the repository-defined order;
 2. verify actual main, PR #48 head, open PR/issues and final-head CI rather than trusting handoff prose alone;
 3. confirm P1.3 / PR #46 and handoff PR #47 are merged;
-4. confirm production authorization remains empty;
-5. if PR #48 is still open, continue only its P1.4 CI/fix/merge loop;
+4. confirm `EXEC-REVERSAL-SAFETY-P1.4` is registered but production authorization remains empty;
+5. if PR #48 is still open, continue only its P1.4 final-head CI/merge loop;
 6. begin P1.5 only after P1.4 is PASS / MERGED and post-merge handoff is normalized.
 
 Do not ask the user to repeat product decisions already captured in GitHub.
