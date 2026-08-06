@@ -3,6 +3,7 @@ from types import SimpleNamespace
 import beta_bot.service as service
 from beta_bot.account_reconciliation import AccountReconciliationReport
 from beta_bot.order_ledger import LedgerUncertainState
+from beta_bot.restart_recovery import RestartRecoveryReport
 
 
 class DummySettings:
@@ -42,6 +43,20 @@ def _report(*, actual_qty, target_qty, clean=False):
     )
 
 
+def _restart_report(actual_qty):
+    return RestartRecoveryReport(
+        coin="BTC",
+        actual_position_qty=actual_qty,
+        local_position_expectation_qty=actual_qty,
+        position_truth_source="fresh_clearinghouse_state",
+        recovery_cases=(),
+        blocking_reasons=(),
+        blocking_unresolved_after=0,
+        persistent_reconciliation={"blocking_unresolved_after": 0},
+        risk_increase_allowed=True,
+    )
+
+
 def _install_common(monkeypatch, *, current_qty, target_qty):
     snapshot = SimpleNamespace(
         closes=[100.0] * 300,
@@ -73,6 +88,11 @@ def _install_common(monkeypatch, *, current_qty, target_qty):
     monkeypatch.setattr(service, "fetch_user_state", lambda *_args, **_kwargs: state)
     monkeypatch.setattr(service, "build_portfolio_plan", lambda **_kwargs: plan)
     monkeypatch.setattr(service, "send_telegram", lambda *_args, **_kwargs: None)
+    monkeypatch.setattr(
+        service,
+        "_restart_recovery",
+        lambda *_args, **_kwargs: _restart_report(current_qty),
+    )
 
 
 def test_unexplained_reconciliation_blocks_risk_increase(monkeypatch):
