@@ -50,6 +50,7 @@ class Settings:
     order_ledger_path: Optional[str] = None
     order_ledger_durable_storage: bool = False
     running_on_vercel: bool = False
+    new_risk_kill_switch_path: Optional[str] = None
 
     @property
     def api_url(self) -> str:
@@ -93,6 +94,7 @@ class Settings:
             order_ledger_path=(os.getenv("ORDER_LEDGER_PATH") or "").strip() or None,
             order_ledger_durable_storage=_env_bool("ORDER_LEDGER_DURABLE_STORAGE", False),
             running_on_vercel=_env_bool("VERCEL", False),
+            new_risk_kill_switch_path=(os.getenv("NEW_RISK_KILL_SWITCH_PATH") or "").strip() or None,
         )
         settings.validate()
         return settings
