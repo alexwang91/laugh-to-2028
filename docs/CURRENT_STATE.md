@@ -7,85 +7,101 @@ Status: authoritative cross-chat handoff snapshot
 
 - P0.1 / P0.2: PASS / MERGED
 - P1.1 through P1.8: PASS / MERGED for their canonical roadmap gates
-- Phase 1 Account and execution truth: COMPLETE, with a narrow legacy-backlog alerting correction now being closed for F17
+- Phase 1 Account and execution truth: COMPLETE
 - P2.1 through P2.4: PASS / MERGED
 - Phase 2 Hyperliquid instrument router: COMPLETE
 - P3.1 Data contract PR #68: PASS / MERGED
 - P3.1 post-merge handoff PR #69: MERGED
-- Authoritative main before the current audit-correction candidate: `34165f8481b8c38f7f824b2f18f7592da731223b`
+- Audit correction PR #71: PASS / MERGED
+- Current main after #71: `0f8a46d9aadb0374da40baf04762d10fa72c1eeb`
 - Historical audit record: `docs/FULL_PROJECT_AUDIT_2026-08-06.md`
 - Legacy backlog/roadmap bridge: `docs/BACKLOG_ROADMAP_CROSSWALK_2026-08-06.md`
+
+## Audit correction #71 closure
+
+#71 closed residual pre-Master-Plan execution/security acceptance gaps without changing strategy economics:
+
+- F17: unexpected strategy-cycle execution failure now preserves best-effort operator notification while re-raising the original error;
+- F19: leverage-clamped requested targets are explicitly separated from reachable targets and cannot be mislabeled as ordinary below-minimum/no-op states;
+- F20: `/api/cron` requires bearer `CRON_SECRET` in shadow and trade, uses constant-time comparison, removes spoofable User-Agent authorization, and redacts external exception text;
+- F21: unregistered `ALLOW_STRONG_BETA` / `HARD_BETA_CAP` and the runtime path to 1.50 were removed; P4 remains the authority for >1 leverage research;
+- F22 residual timing: Vercel cron moved from 01:10 UTC to 00:05 UTC while the canonical strategy decision boundary remains 00:00 UTC;
+- legacy backlog ↔ roadmap crosswalk is now part of the continuity protocol.
+
+Final #71 head before merge:
+
+```text
+020b4b6e78ec762481497cd4c7eaedd0f4a496a3
+```
+
+Final evidence:
+
+- Phase 0 baseline contract #93 / Actions `31115747347`: SUCCESS;
+- execution tests: SUCCESS;
+- research integration contract: SUCCESS;
+- PR handoff governance #117 / Actions `31115876962`: SUCCESS.
+
+#71 squash-merged as:
+
+```text
+0f8a46d9aadb0374da40baf04762d10fa72c1eeb
+```
+
+Production authorization remained unchanged.
 
 ## Current roadmap position
 
 ```text
 P3.1 Data contract: PASS / MERGED
-P3.2 Target calculation API: NEXT ROADMAP TASK
+RESEARCH/EVIDENCE NORMALIZATION: ACTIVE CORRECTION GATE
+P3.2 Target calculation API: NEXT ROADMAP TASK AFTER CORRECTION GATE
 P3.3 Rebalance band / turnover controls: BLOCKED
 P3.4 Weekly cash contribution handling: BLOCKED
 P4+: BLOCKED
 ```
 
-P3.2 remains the unique next roadmap implementation task. Before coding it, the repository is closing audit-discovered legacy backlog/handoff defects that predate the Master Plan. These corrections do not authorize or implement P3.2, P4 or production trading.
+P3.2 remains the unique next roadmap implementation. The active correction is evidence/handoff normalization only; it does not introduce a new strategy hypothesis or change P3.2's economic baseline.
 
-## Active audit-correction candidate
+## Active research/evidence normalization candidate
 
-PR:
+Branch:
 
 ```text
-#71 Audit correction: close legacy execution/security gaps before P3.2
+audit/research-evidence-normalization
 ```
 
-Branch / base:
+Base:
 
 ```text
-audit/f19-f21-governance-corrections
-base = 34165f8481b8c38f7f824b2f18f7592da731223b
+0f8a46d9aadb0374da40baf04762d10fa72c1eeb
 ```
 
 Scope:
 
-- F17 residual alerting gap: preserve best-effort operator notification when a strategy cycle raises, while re-raising the original failure;
-- F19: distinguish a leverage-clamped unreachable target from a genuine below-minimum/no-trade state;
-- F20: make `/api/cron` bearer-secret-only in shadow and trade, use constant-time comparison, remove spoofable User-Agent authorization, and redact external exception text;
-- F21: remove the unregistered env-toggleable strong-beta path to 1.50 and its `HARD_BETA_CAP` / `ALLOW_STRONG_BETA` settings;
-- F22 residual timing gap: move Vercel cron from 01:10 UTC to 00:05 UTC while preserving the canonical 00:00 UTC decision timestamp;
-- add a durable backlog↔roadmap crosswalk and require fresh sessions/forward PRs to consult it.
+1. F27 measurement fix:
+   - preserve the original `idle_cash_credit_0027r1.json` as superseded evidence;
+   - reconstruct day-one returns from the known $10,000 starting capital instead of `pct_change().dropna()`;
+   - emit a separate R2 measurement and verify that the raw BRRK CAGR reproduces the frozen calendar-span anchor `0.6516609785`;
+   - restate all affected metrics, not just CAGR;
+   - qualitative F27 decision is expected to remain unchanged and must be checked from regenerated evidence.
+2. `EXPOSURE-SMOOTH-0038` governance normalization:
+   - explicitly record mechanism validation;
+   - explicitly record **NOT PROMOTED / BASELINE UNCHANGED**;
+   - prevent a fresh session from rerunning or silently substituting 0038 into V1/BRRK authority.
+3. stale documentation normalization:
+   - P3.1 data-contract status must no longer say candidate;
+   - current-main / historical-audit wording must remain distinguishable from current roadmap state.
 
-## Candidate evidence
+A dedicated research evidence CI recomputes F27 R2 from committed equity/weights and the canonical risk-free loader instead of hand-editing metrics.
 
-Initial PR head `e5fb8db0e130fb0c262d040af9441fc3543913cb` exposed eight compatibility failures in the full execution suite:
-
-- four reversal tests still constructed removed `hard_beta_cap` / `allow_strong_beta` Settings fields;
-- four service reconciliation tests returned plan stubs missing the new F19 reachability contract.
-
-These were corrected on the same PR without restoring the removed runtime bypass.
-
-Self-review also caught one F19 ordering defect before PR creation: a leverage-clamped target could have been suppressed by `inside_beta_band` even when the current position exceeded the reachable platform cap. Clamp reachability now takes precedence and the required reduction case is regression-tested.
-
-Verified candidate head before this evidence writeback:
+Current evidence status:
 
 ```text
-1146b00c62e713537dad50c7e070d913dea05a6a
-```
-
-Evidence:
-
-- PR handoff governance #115 / Actions `31115188630`: SUCCESS;
-- Phase 0 baseline contract #92 / Actions `31115188583`: SUCCESS after an infrastructure-only first retry where runner `Set up job` failed before checkout;
-- execution tests: SUCCESS;
-- research integration contract: SUCCESS.
-
-Current status:
-
-```text
-CANDIDATE IMPLEMENTATION EVIDENCE: GREEN
-FINAL-HEAD CI AFTER EVIDENCE WRITEBACK: PENDING
+IMPLEMENTATION IN PROGRESS
+R2 RECOMPUTATION: PENDING PR CI
 MERGE: PENDING
 PRODUCTION AUTHORIZATION: NO_CHANGE
 ```
-
-Do not call the correction PASS/MERGED until the final evidence-writeback head is green and PR #71 is merged.
 
 ## P3.1 retained contract
 
@@ -111,33 +127,23 @@ Missing data remains fail-closed. Research and live adapters share one canonical
 ## Research / strategy boundaries retained
 
 - BRRK-0011 remains the frozen canonical directional research target.
-- `EXPOSURE-SMOOTH-0038` is a mechanism-validation result only and is **not promoted**; its governance record still needs explicit normalization so future sessions cannot miss that decision.
+- `EXPOSURE-SMOOTH-0038` is a mechanism-validation result only and is **not promoted**; V1 and BRRK-0011 authority remain unchanged.
 - ASYM-BETA-0024 remains shadow-only historical evidence, not production leverage authorization.
 - stopped PIT-alpha, TSMOM and carry lines remain stopped on their tested evidence bases.
 - F23 funding-filter redesign remains a separately registered-research boundary and must not be slipped into P3.2.
-- P4 remains the dedicated >1 leverage study; the audit correction only removes an unregistered 1.50 runtime branch.
-
-## Remaining evidence-normalization correction
-
-After the execution/security audit correction closes, one narrow research/evidence normalization should be completed before P3.2 implementation begins:
-
-1. record `EXPOSURE-SMOOTH-0038` in the authoritative research-history / decision layer as mechanism validated but not promoted;
-2. repair F27 idle-cash-credit absolute CAGR measurement by preserving the first equity observation relative to the known $10,000 initial capital; retain old published values as superseded measurement evidence and state that the qualitative F27 conclusion is unchanged;
-3. update stale P3.1 documentation labels/main references where needed.
-
-This is evidence bookkeeping / measurement correction, not a new research hypothesis.
+- P4 remains the dedicated >1 leverage study.
 
 ## Project drift audit
 
-Current repository finding:
+Current audit finding:
 
 ```text
 DRIFT_1
 ```
 
-Reason: legacy implementation/handoff defects survived the transition from the old review backlog into the canonical roadmap. No long-universe, venue, product objective, stopped-line, catastrophic-risk, human-approval, wallet/security boundary or production authorization has changed.
+The remaining work is measurement/bookkeeping normalization from the pre-Master-Plan research history. No product objective, universe, venue, risk philosophy, stopped-line rule, human-approval boundary, credential boundary or production authorization changes.
 
-Closed PR #70 is explicitly invalid as forward evidence because it was authored from a parent 34 commits behind the canonical program. Do not revive or merge its stale roadmap rewrite. Isolated findings must be reimplemented from current main under normal governance.
+Closed PR #70 remains explicitly invalid as forward evidence because it was authored from a parent 34 commits behind the canonical program. Do not revive or merge its stale roadmap rewrite.
 
 ## Production authorization
 
@@ -146,15 +152,17 @@ NO_CHANGE
 production_authorized_components = []
 ```
 
-No audit correction authorizes live capital, >1 BRRK leverage, new assets, shorts, withdrawals, external transfers or production cutover.
+No correction authorizes live capital, leverage expansion, new assets, shorts, withdrawals, transfers or production cutover.
 
 ## Exact next action
 
 ```text
-final-head CI for PR #71 after evidence writeback
--> merge #71 only if final head is green
--> normalize merged handoff if needed
--> complete narrow 0038/F27 evidence-normalization correction from fresh main
--> rebuild a fresh P3.2 target-calculation branch from then-current main
+open research/evidence normalization PR
+-> run F27 R2 recomputation + regression tests
+-> write regenerated evidence and 0038 authority record
+-> self-review / drift audit / final-head CI
+-> merge
+-> post-merge handoff normalization if needed
+-> rebuild fresh P3.2 branch from then-current main
 -> implement frozen BRRK-0011 target API only
 ```
