@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "contract_id": "BRRK-DATA-CONTRACT-P3.1-2026-08-06",
+  "canonical_assets": ["BTC", "ETH", "SOL", "BNB"],
+  "decision_boundary": {
+    "timezone": "UTC",
+    "time": "00:00:00",
+    "decision_timestamp_semantics": "the decision at D 00:00 UTC may use only source observations completed strictly before D 00:00 UTC"
+  },
+  "strategy_daily_close": {
+    "source_id": "BINANCE_SPOT_KLINES_V1",
+    "source_role": "frozen_brrk_directional_signal_price",
+    "endpoint_priority": [
+      "https://data-api.binance.vision/api/v3/klines",
+      "https://api.binance.com/api/v3/klines"
+    ],
+    "interval": "1d",
+    "time_zone": "0",
+    "quote_asset": "USDT",
+    "canonical_candle_key": "open_time_ms",
+    "expected_duration_ms": 86400000,
+    "availability_rule": "close_time_ms < decision_timestamp_ms",
+    "latest_required_session": "decision_timestamp_ms - 86400000",
+    "duplicate_policy": "FAIL_CLOSED",
+    "missing_policy": "FAIL_CLOSED_NO_TARGET",
+    "forward_fill": false,
+    "common_history_policy": "start at the latest first available canonical day across BTC/ETH/SOL/BNB, then require every UTC day through the latest required session",
+    "source_mappings": {
+      "BTC": [
+        {"source_symbol": "BTCUSDT", "valid_from_utc": null, "valid_to_utc": null}
+      ],
+      "ETH": [
+        {"source_symbol": "ETHUSDT", "valid_from_utc": null, "valid_to_utc": null}
+      ],
+      "SOL": [
+        {"source_symbol": "SOLUSDT", "valid_from_utc": null, "valid_to_utc": null}
+      ],
+      "BNB": [
+        {"source_symbol": "BNBUSDT", "valid_from_utc": null, "valid_to_utc": null}
+      ]
+    },
+    "mapping_change_policy": "mapping periods must be explicit, non-overlapping and gap-free for any session consumed; historical mappings are never silently rewritten"
+  },
+  "router_market_inputs": {
+    "venue": "HYPERLIQUID",
+    "funding": {
+      "source": "fundingHistory",
+      "api_unit": "decimal_rate_per_hour",
+      "canonical_unit": "bps_per_hour",
+      "lookback_completed_hours": 24,
+      "cutoff_rule": "record_time_ms < router_as_of_ms",
+      "aggregation": "arithmetic_mean_of_exact_completed_hour_slots",
+      "missing_policy": "COST_INPUT_UNAVAILABLE_FAIL_CLOSED"
+    },
+    "basis": {
+      "perp_price": "Hyperliquid perp mark price",
+      "verified_spot_price": "midpoint of the verified Hyperliquid spot L2 book for the same economic asset",
+      "canonical_unit": "bps",
+      "formula": "(perp_mark_price / verified_spot_price - 1) * 10000",
+      "timestamp_policy": "record both source observation timestamps; neither observation may be after router_as_of_ms; preserve observed skew for replay",
+      "missing_policy": "COST_INPUT_UNAVAILABLE_FAIL_CLOSED"
+    }
+  },
+  "determinism": {
+    "canonical_serialization": "sorted-key compact JSON",
+    "digest": "sha256",
+    "numeric_policy": "finite positive daily closes; no implicit rounding before model consumption",
+    "research_live_rule": "research and live adapters must emit byte-equivalent canonical payloads for the same raw observations and decision/as-of timestamps"
+  },
+  "authorization": "DATA_CONTRACT_ONLY_NO_TARGET_OR_PRODUCTION_AUTHORIZATION",
+  "source_notes": [
+    "Frozen BRRK research core used Binance spot BTCUSDT/ETHUSDT/SOLUSDT/BNBUSDT daily closes.",
+    "Binance klines are keyed by open time and default timezone 0 is UTC; P3.1 makes timeZone=0 explicit.",
+    "Hyperliquid router market inputs remain execution-venue observations and are not substituted for the frozen BRRK strategy close series."
+  ]
+}
