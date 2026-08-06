@@ -1,3 +1,5 @@
+# CI retrigger marker: no semantic change; used to emit a fresh pull_request synchronize event.
+
 from beta_bot.data_contract import (
     CANONICAL_ASSETS,
     STRATEGY_FEATURE_ASSETS,
