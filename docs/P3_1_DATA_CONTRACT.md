@@ -25,208 +25,133 @@ P3.1 preserves that economic-price source rather than silently replacing it with
 Canonical request semantics:
 
 ```text
-source = Binance public spot klines
-interval = 1d
-timeZone = 0
+source      = Binance Spot klines
+interval    = 1d
+timeZone    = 0 (UTC, explicit)
+candle key  = open_time_ms
+decision    = 00:00:00 UTC
 ```
 
-The machine-readable mapping is in `config/data_contract.json`. Source mappings are versioned by UTC effective range. For every requested asset/session exactly one source mapping must resolve; gaps, overlaps and ambiguous mappings fail closed.
-
-### Router / execution market data
-
-Hyperliquid remains canonical for instrument identity, funding, basis/perp observations and execution evidence. These observations do not substitute for the strategy signal close series.
-
----
-
-## 2. Canonical decision boundary
-
-The product boundary is:
+At decision timestamp `D 00:00 UTC`, only candles with:
 
 ```text
-00:00:00 UTC
+close_time_ms < D 00:00 UTC
 ```
 
-For a daily Binance kline to be usable at decision timestamp `D`, its close timestamp must satisfy:
+are eligible. The latest required session therefore opens at `D-1 00:00 UTC` and closes at `D-1 23:59:59.999 UTC`.
+
+Official Binance Spot API documentation states that klines are uniquely identified by open time and that the default kline timezone is UTC; the P3.1 request makes `timeZone=0` explicit rather than relying on a default.
+
+Reference:
+
+- https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md#klinecandlestick-data
+
+### Router market inputs
+
+Instrument-routing observations remain Hyperliquid execution-venue data. They do not replace the frozen BRRK strategy close series.
+
+P3.1 normalizes:
+
+- Hyperliquid `fundingHistory` into `bps_per_hour`;
+- perp-versus-verified-spot basis into bps;
+- observation timestamps needed to reproduce the router assumption set.
+
+Hyperliquid Info API references:
+
+- https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint
+- https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint/perpetuals
+
+## 2. Missing-data policy
+
+Price gaps are not repaired economically.
 
 ```text
-close_time_ms < D_ms
+NO forward fill
+NO previous-close substitution
+NO cross-venue price substitution
+NO incomplete-candle substitution
 ```
 
-A candle closing exactly at or after the decision boundary is not completed information for that decision.
+For a decision to publish a canonical four-asset daily dataset:
 
-The canonical decision timestamp is distinct from scheduler wall-clock invocation time. The service may execute shortly after the boundary while still labeling the economic decision with the exact 00:00 UTC boundary.
+1. each canonical asset must contain the latest completed UTC session;
+2. common history starts on the latest first-available canonical day among BTC/ETH/SOL/BNB;
+3. from that common start through the latest required day, every UTC daily session must be present for every asset;
+4. an internal or latest-session gap fails closed and no target input is published.
 
----
+This is stricter than silently reproducing a `dropna()` result after a data outage and makes missing-data behavior observable.
 
-## 3. Canonical daily-row contract
+## 3. Asset / token mapping changes
 
-Every canonical row contains:
+Economic asset identity remains:
 
 ```text
-asset
-source_id
-source_symbol
-session_start_ms
-session_end_ms
-close
+BTC
+ETH
+SOL
+BNB
 ```
 
-Required properties:
+Strategy-source symbols are versioned in `source_mappings` in `config/data_contract.json`.
 
-- canonical asset belongs to BTC / ETH / SOL / BNB;
-- close is finite and positive;
-- session is exactly one UTC calendar day;
-- `session_end_ms = session_start_ms + 86,400,000 - 1`;
-- the row is completed before the decision boundary;
-- each asset has the same ordered session set;
-- no duplicate session per asset;
-- sessions are contiguous;
-- no forward-fill, previous-close fill or cross-venue price substitution.
-
-If the four-asset common history is not complete and contiguous, target generation must fail closed rather than modify the historical path.
-
----
-
-## 4. Source mapping versioning
-
-`config/data_contract.json` maps canonical economic assets to source symbols by effective UTC interval.
-
-P3.1 intentionally does not assume that one symbol name remains valid forever. A future source migration must add a new versioned mapping rather than overwrite history.
-
-Resolution rule:
+Mapping periods use:
 
 ```text
-requested session start
--> exactly one mapping whose effective range covers that session
--> use that source_id + source_symbol
+valid_from_utc <= session < valid_to_utc
 ```
 
-Zero matches or more than one match is a data-contract failure.
+with `null` representing an open boundary. A consumed session must resolve to exactly one mapping. Overlap, ambiguity or an uncovered consumed date fails closed. Historical mappings must be appended/versioned rather than silently rewriting old observations.
 
----
+The current source mappings are the unchanged Binance spot symbols used by the frozen BRRK research core.
 
-## 5. Research/live identity
+## 4. Funding contract
 
-Research and live code must call the same canonicalizer:
+For router as-of time `T`, canonical funding uses the exact trailing 24 completed hourly Hyperliquid funding slots strictly before `T`.
 
 ```text
-execution/plan-b-bot/beta_bot/data_contract.py
+API unit       = decimal rate per hour
+canonical unit = bps per hour
+conversion     = api_rate * 10,000
+aggregation    = arithmetic mean of exact 24 completed hourly slots
 ```
 
-Research adapter:
+Input order does not matter. Duplicate slots, non-hour-aligned slots, malformed rates or any missing required hour fail closed as `cost input unavailable`; a future/boundary funding record is not used early.
+
+This is a routing-cost input contract, not a funding forecast model.
+
+## 5. Basis contract
+
+Canonical basis is:
 
 ```text
-research/integration/p3_1_data_contract_adapter.py
+(perp_mark_price / verified_spot_price - 1) * 10,000
 ```
 
-The adapter contains no independent candle-cleaning implementation. Given identical raw source batches and decision timestamp, research and live must emit byte-identical canonical JSON and SHA-256 digest.
+where the spot reference is the verified spot instrument for the same economic asset. Both source observation timestamps are retained, neither may be after router `as_of`, and their observation skew is preserved for replay/audit.
 
-This protects against a common failure mode where research and production appear to use the same market but differ in boundary handling, incomplete-candle inclusion, fill policy or symbol migration.
+P3.1 does not invent an arbitrary freshness threshold. P2.4 records the observed assumptions; later live orchestration may add an evidence-backed operational freshness gate without changing the basis unit or formula.
 
----
+## 6. Research/live determinism
 
-## 6. Router funding contract
+Research does not get a separate candle-cleaning implementation. `research/integration/p3_1_data_contract_adapter.py` calls the exact same `beta_bot.data_contract` canonicalizer used by the production package.
 
-Funding is a router/execution input, not strategy-price data.
-
-Canonical source:
+For the same raw observations and the same decision/as-of timestamps:
 
 ```text
-Hyperliquid fundingHistory
+research canonical JSON == live canonical JSON
+research SHA-256 digest  == live SHA-256 digest
 ```
 
-Canonical unit:
+The controlled tests also feed the byte-identical close sequence into the already-existing frozen signal component and require identical output. P3.1 does **not** create the P3.2 target calculation API.
 
-```text
-bps_per_hour
-```
+## 7. Deliberately not implemented in P3.1
 
-Hyperliquid's decimal funding rate converts as:
+- no new BRRK weighting formula;
+- no target-calculation API;
+- no rebalance band;
+- no weekly cash-contribution logic;
+- no leverage research;
+- no cycle-exit research;
+- no production trading authorization.
 
-```text
-bps_per_hour = funding_rate_decimal * 10,000
-```
-
-At decision timestamp `D`, P3.1 requires the exact 24 completed hourly slots immediately preceding `D`.
-
-Requirements:
-
-- each expected slot appears exactly once;
-- timestamp belongs to the required completed-hour set;
-- no missing slot;
-- no duplicate slot;
-- no boundary/future slot consumed early;
-- values are finite.
-
-Missing required funding history fails closed for a route comparison that requires the 24-hour funding observation.
-
----
-
-## 7. Basis / premium observation contract
-
-P3.1 defines verified spot/perp basis as:
-
-```text
-basis_bps = (perp_mark_price / verified_spot_price - 1) * 10,000
-```
-
-The observation retains:
-
-```text
-spot source
-spot instrument
-spot timestamp
-spot price
-perp source
-perp instrument
-perp timestamp
-perp mark price
-observation skew
-basis bps
-```
-
-P3.1 does not hide asynchronous observations behind a single timestamp. Later router policy may define acceptable skew/freshness limits, but the data contract preserves the evidence needed to make that decision.
-
----
-
-## 8. Missing-data policy
-
-Canonical policy:
-
-```text
-FAIL_CLOSED_NO_TARGET
-```
-
-Forbidden fallbacks include:
-
-- forward-fill;
-- previous-close substitution;
-- Hyperliquid perp candle substituted for missing Binance strategy close;
-- another exchange substituted without an explicit versioned contract change;
-- incomplete current-day candle;
-- silently dropping one asset and continuing with a smaller product universe.
-
-This is intentional. A skipped decision is preferable to silently changing the strategy input path.
-
----
-
-## 9. P3.1 authorization boundary
-
-P3.1 verifies only the data contract.
-
-It does **not** authorize or implement:
-
-- P3.2 full BRRK target calculation;
-- P3.3 rebalance / turnover controls;
-- P3.4 weekly contribution handling;
-- P4 leverage above 1;
-- P5 cycle-exit state intelligence;
-- production trading.
-
-Machine-readable decision:
-
-```text
-DATA-CONTRACT-P3.1 = IMPLEMENTATION_VERIFIED
-```
-
-Production authorization remains unchanged and empty.
+Production authorization remains controlled separately by `config/decision_registry.json` and remains empty unless explicitly changed by a later approved gate.
