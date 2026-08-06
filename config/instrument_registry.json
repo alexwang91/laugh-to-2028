@@ -1,0 +1,159 @@
+{
+  "schema_version": 1,
+  "registry_id": "BRRK-INSTRUMENTS-2026-08-06",
+  "venue": "hyperliquid",
+  "quote_asset": "USDC",
+  "precision_rules": {
+    "perp_max_price_decimals_base": 6,
+    "spot_max_price_decimals_base": 8,
+    "max_price_significant_figures": 5,
+    "size_precision_source": "Hyperliquid meta/spotMeta szDecimals"
+  },
+  "liquidity_contract": {
+    "perp": ["dayNtlVlm", "openInterest", "markPx"],
+    "spot": ["dayNtlVlm", "markPx", "midPx", "circulatingSupply"],
+    "source": "Hyperliquid metaAndAssetCtxs / spotMetaAndAssetCtxs",
+    "policy": "live metrics are observations, not frozen routing authorization"
+  },
+  "assets": {
+    "BTC": {
+      "economic_asset": "BTC",
+      "perp": {
+        "identity": "BTC",
+        "identity_status": "VERIFIED_CANONICAL_PERP",
+        "sz_decimals": 5,
+        "max_price_decimals": 1,
+        "availability_state": "AVAILABLE",
+        "metadata_source": "Hyperliquid meta"
+      },
+      "spot": {
+        "ui_identity": "BTC/USDC",
+        "hypercore_token_candidate": "UBTC",
+        "hypercore_pair_candidate": "UBTC/USDC",
+        "identity_status": "VERIFIED_PRIOR_EVIDENCE",
+        "evidence_decision_id": "ROUTER-DATA-0004",
+        "availability_state": "IDENTITY_VERIFIED_ROUTING_NOT_AUTHORIZED",
+        "token_index": null,
+        "spot_pair_index": null,
+        "sz_decimals": null,
+        "wei_decimals": null,
+        "token_id": null
+      },
+      "custody_redemption": {
+        "status": "IDENTITY_EVIDENCE_ONLY",
+        "facts": ["Hyperliquid UI BTC/USDC maps to HyperCore UBTC/USDC"],
+        "unresolved": ["custody/redemption mechanics are not frozen by P2.1 and require evidence before routing reliance"]
+      },
+      "liquidity_metrics": {
+        "status": "LIVE_LOOKUP_REQUIRED",
+        "perp_source": "metaAndAssetCtxs",
+        "spot_source": "spotMetaAndAssetCtxs"
+      }
+    },
+    "ETH": {
+      "economic_asset": "ETH",
+      "perp": {
+        "identity": "ETH",
+        "identity_status": "VERIFIED_CANONICAL_PERP",
+        "sz_decimals": 4,
+        "max_price_decimals": 2,
+        "availability_state": "AVAILABLE",
+        "metadata_source": "Hyperliquid meta"
+      },
+      "spot": {
+        "ui_identity": "ETH/USDC",
+        "hypercore_token_candidate": "UETH",
+        "hypercore_pair_candidate": "UETH/USDC",
+        "identity_status": "UNVERIFIED_PENDING_P2_2",
+        "availability_state": "CANDIDATE_NOT_ROUTABLE",
+        "token_index": null,
+        "spot_pair_index": null,
+        "sz_decimals": null,
+        "wei_decimals": null,
+        "token_id": null
+      },
+      "custody_redemption": {
+        "status": "UNVERIFIED_PENDING_P2_2",
+        "facts": [],
+        "unresolved": ["token identity, custody and redemption evidence"]
+      },
+      "liquidity_metrics": {
+        "status": "LIVE_LOOKUP_REQUIRED",
+        "perp_source": "metaAndAssetCtxs",
+        "spot_source": "spotMetaAndAssetCtxs only after identity verification"
+      }
+    },
+    "SOL": {
+      "economic_asset": "SOL",
+      "perp": {
+        "identity": "SOL",
+        "identity_status": "VERIFIED_CANONICAL_PERP",
+        "sz_decimals": 2,
+        "max_price_decimals": 4,
+        "availability_state": "AVAILABLE",
+        "metadata_source": "Hyperliquid meta"
+      },
+      "spot": {
+        "ui_identity": "SOL/USDC",
+        "hypercore_token_candidate": "USOL",
+        "hypercore_pair_candidate": "USOL/USDC",
+        "identity_status": "UNVERIFIED_PENDING_P2_2",
+        "availability_state": "CANDIDATE_NOT_ROUTABLE",
+        "token_index": null,
+        "spot_pair_index": null,
+        "sz_decimals": null,
+        "wei_decimals": null,
+        "token_id": null
+      },
+      "custody_redemption": {
+        "status": "UNVERIFIED_PENDING_P2_2",
+        "facts": [],
+        "unresolved": ["token identity, custody and redemption evidence"]
+      },
+      "liquidity_metrics": {
+        "status": "LIVE_LOOKUP_REQUIRED",
+        "perp_source": "metaAndAssetCtxs",
+        "spot_source": "spotMetaAndAssetCtxs only after identity verification"
+      }
+    },
+    "BNB": {
+      "economic_asset": "BNB",
+      "perp": {
+        "identity": "BNB",
+        "identity_status": "VERIFIED_CANONICAL_PERP",
+        "sz_decimals": 3,
+        "max_price_decimals": 3,
+        "availability_state": "AVAILABLE",
+        "metadata_source": "Hyperliquid meta"
+      },
+      "spot": {
+        "ui_identity": null,
+        "hypercore_token_candidate": null,
+        "hypercore_pair_candidate": null,
+        "identity_status": "UNVERIFIED_PENDING_P2_2",
+        "availability_state": "UNKNOWN_NOT_ROUTABLE",
+        "token_index": null,
+        "spot_pair_index": null,
+        "sz_decimals": null,
+        "wei_decimals": null,
+        "token_id": null
+      },
+      "custody_redemption": {
+        "status": "UNVERIFIED_PENDING_P2_2",
+        "facts": [],
+        "unresolved": ["whether a canonical BNB spot token/pair exists and any custody/redemption mechanics"]
+      },
+      "liquidity_metrics": {
+        "status": "LIVE_LOOKUP_REQUIRED",
+        "perp_source": "metaAndAssetCtxs",
+        "spot_source": "not applicable until spot identity is verified"
+      }
+    }
+  },
+  "sources": {
+    "hyperliquid_info_endpoint": "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint",
+    "hyperliquid_spot": "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint/spot",
+    "hyperliquid_asset_ids": "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/asset-ids",
+    "hyperliquid_tick_lot": "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/tick-and-lot-size"
+  }
+}
