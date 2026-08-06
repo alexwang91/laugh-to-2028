@@ -45,6 +45,8 @@ class InstrumentRegistry:
             row = self.assets[asset]
             if row.get("economic_asset") != asset:
                 raise ValueError(f"Economic asset mismatch for {asset}")
+            if not isinstance(row.get("route_policy"), str):
+                raise ValueError(f"Route policy missing for {asset}")
             perp = row.get("perp")
             spot = row.get("spot")
             liquidity = row.get("liquidity_metrics")
@@ -64,12 +66,15 @@ class InstrumentRegistry:
             if "status" not in liquidity or "status" not in custody:
                 raise ValueError(f"Evidence status missing for {asset}")
 
-        btc = self.assets["BTC"]["spot"]
-        if btc.get("identity_status") != "VERIFIED_PRIOR_EVIDENCE":
+        btc = self.assets["BTC"]
+        if btc.get("route_policy") != "SPOT_CANDIDATE_WITH_PERP_FALLBACK":
+            raise ValueError("BTC route policy must preserve spot candidate with perp fallback")
+        btc_spot = btc["spot"]
+        if btc_spot.get("identity_status") != "VERIFIED_PRIOR_EVIDENCE":
             raise ValueError("BTC spot identity must import prior verification")
-        if btc.get("evidence_decision_id") != "ROUTER-DATA-0004":
+        if btc_spot.get("evidence_decision_id") != "ROUTER-DATA-0004":
             raise ValueError("BTC spot identity must reference ROUTER-DATA-0004")
-        if btc.get("hypercore_token_candidate") != "UBTC":
+        if btc_spot.get("hypercore_token_candidate") != "UBTC":
             raise ValueError("Verified BTC HyperCore token identity must remain UBTC")
 
         expected_unit_spot = {
@@ -77,8 +82,11 @@ class InstrumentRegistry:
             "SOL": ("USOL", "USOL/USDC", "Solana"),
         }
         for asset, (token, pair, native_chain) in expected_unit_spot.items():
-            spot = self.assets[asset]["spot"]
-            custody = self.assets[asset]["custody_redemption"]
+            row = self.assets[asset]
+            if row.get("route_policy") != "SPOT_CANDIDATE_WITH_PERP_FALLBACK":
+                raise ValueError(f"{asset} route policy must preserve spot candidate with perp fallback")
+            spot = row["spot"]
+            custody = row["custody_redemption"]
             if spot.get("identity_status") != "VERIFIED_UNIT_NATIVE_ASSET":
                 raise ValueError(f"{asset} spot identity must be verified by Unit evidence")
             if spot.get("hypercore_token_candidate") != token or spot.get("hypercore_pair_candidate") != pair:
@@ -90,16 +98,19 @@ class InstrumentRegistry:
             if custody.get("status") != "VERIFIED_UNIT_NATIVE_DEPOSIT_WITHDRAWAL":
                 raise ValueError(f"{asset} native deposit/withdrawal evidence must be explicit")
 
-        bnb_spot = self.assets["BNB"]["spot"]
-        bnb_custody = self.assets["BNB"]["custody_redemption"]
-        if bnb_spot.get("identity_status") != "NO_VERIFIED_UNIT_NATIVE_ROUTE":
-            raise ValueError("BNB must not claim a verified Unit spot route")
-        if bnb_spot.get("availability_state") != "SPOT_UNAVAILABLE_PER_VALIDATED_UNIT_ROUTE":
-            raise ValueError("BNB spot availability must remain unavailable under validated Unit evidence")
+        bnb = self.assets["BNB"]
+        if bnb.get("route_policy") != "PERP_ONLY_DEFAULT":
+            raise ValueError("BNB must remain PERP_ONLY_DEFAULT by product decision")
+        bnb_spot = bnb["spot"]
+        bnb_custody = bnb["custody_redemption"]
+        if bnb_spot.get("identity_status") != "NOT_IN_SCOPE_PERP_ONLY_DEFAULT":
+            raise ValueError("BNB spot identity must stay out of scope under perp-only policy")
+        if bnb_spot.get("availability_state") != "NOT_ROUTABLE_BY_PRODUCT_POLICY":
+            raise ValueError("BNB spot must remain non-routable by product policy")
         if any(bnb_spot.get(k) is not None for k in ("hypercore_token_candidate", "hypercore_pair_candidate")):
-            raise ValueError("BNB must not invent a HyperCore spot token or pair")
-        if bnb_custody.get("status") != "NO_VERIFIED_UNIT_NATIVE_ROUTE":
-            raise ValueError("BNB custody/redemption status must reflect unavailable validated route")
+            raise ValueError("BNB must not carry a spot token/pair under perp-only policy")
+        if bnb_custody.get("status") != "NOT_REQUIRED_PERP_ONLY_DEFAULT":
+            raise ValueError("BNB custody/redemption evidence is not required under perp-only policy")
 
     def asset(self, asset: str) -> dict[str, Any]:
         key = asset.upper()
