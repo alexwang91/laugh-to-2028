@@ -125,8 +125,6 @@ def run_strategy(settings: Settings) -> dict:
         snapshot.closes,
         funding_apr=snapshot.funding_apr_24h,
         normal_cap=settings.normal_beta_cap,
-        hard_cap=settings.hard_beta_cap,
-        allow_strong_beta=settings.allow_strong_beta,
     )
 
     payload: dict = {
@@ -185,6 +183,12 @@ def run_strategy(settings: Settings) -> dict:
         max_platform_leverage=settings.max_platform_leverage,
     )
     payload["plan"] = plan.to_dict()
+    if plan.target_clamped_by_leverage:
+        payload["target_reachability_warning"] = {
+            "code": "TARGET_CLAMPED_BY_PLATFORM_LEVERAGE",
+            "requested_target_perp_notional_usd": plan.requested_target_perp_notional_usd,
+            "reachable_target_perp_notional_usd": plan.target_perp_notional_usd,
+        }
 
     pre_account = None
     if settings.can_trade:
@@ -275,8 +279,6 @@ def run_public_market_status(settings: Settings) -> dict:
         snapshot.closes,
         funding_apr=snapshot.funding_apr_24h,
         normal_cap=settings.normal_beta_cap,
-        hard_cap=settings.hard_beta_cap,
-        allow_strong_beta=settings.allow_strong_beta,
     )
     return {
         "timestamp_utc": datetime.now(timezone.utc).isoformat(),
