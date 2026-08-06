@@ -47,8 +47,6 @@ def _latest_fill_implied_position(
         try:
             transition = build_fill_transition(row).to_dict()
         except FillTransitionError:
-            # An unresolved/malformed row remains visible through the blocking ledger
-            # state. It must not be converted into a guessed position expectation.
             continue
         transitions.append(transition)
         if (
@@ -80,11 +78,15 @@ def recover_cold_start(
     Fresh clearinghouse position always wins over stale fill-implied local position.
     """
     before = ledger.unresolved_orders()
-    prior_unknown_attempt_cloids = {
+    # Unknown-submit lineage is defined by durable local evidence: a network attempt
+    # exists but no submission response was ever persisted. Once exchange discovery
+    # later supplies an OID, that lineage must remain visible on every subsequent
+    # recovery so the recovery report itself is idempotent.
+    unknown_submit_lineage_cloids = {
         str(row["cloid"])
         for row in before
         if row.get("submission_attempt_timestamp_ms") is not None
-        and row.get("exchange_oid") is None
+        and row.get("submission_response_timestamp_ms") is None
     }
 
     reconciliation_error: str | None = None
@@ -96,8 +98,6 @@ def recover_cold_start(
             now_ms=now_ms,
         )
     except LedgerUncertainState as exc:
-        # P1.7 resolves uncertainty by making it explicit and blocking new risk;
-        # it does not blind-retry. Non-uncertainty LedgerError failures propagate.
         reconciliation_error = str(exc)
         persistent = {
             "unresolved_before": len(before),
@@ -120,14 +120,14 @@ def recover_cold_start(
             elif filled < submitted - TOLERANCE:
                 cases.append(PARTIAL_FILL_RECOVERED)
 
-    if prior_unknown_attempt_cloids:
+    if unknown_submit_lineage_cloids:
         recovered_unknown = any(
-            str(row.get("cloid")) in prior_unknown_attempt_cloids
+            str(row.get("cloid")) in unknown_submit_lineage_cloids
             and row.get("exchange_oid") is not None
             for row in after
         )
         still_unknown = any(
-            str(row.get("cloid")) in prior_unknown_attempt_cloids
+            str(row.get("cloid")) in unknown_submit_lineage_cloids
             and row.get("exchange_oid") is None
             for row in after
         )
