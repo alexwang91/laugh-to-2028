@@ -323,6 +323,21 @@ def decide_route(
     row = registry.asset(request.asset)
     fee_schedule = fees or FeeSchedule()
 
+    # Zero economic exposure is terminal at the router boundary. Do not require
+    # market/cost observations for a target that cannot create economic risk.
+    if request.notional_usd == 0:
+        return _finalize(
+            policy=policy,
+            request=request,
+            selected_route="no_trade",
+            reason_code="NO_TRADE_ZERO_EXPOSURE",
+            plan=None,
+            spot_runtime_identity=None,
+            spot_candidate=None,
+            perp_candidate=None,
+            fees=fee_schedule,
+        )
+
     spot_candidate = _candidate_from_observation(
         request,
         "spot",
@@ -337,19 +352,6 @@ def decide_route(
         policy=policy,
         fees=fee_schedule,
     )
-
-    if request.notional_usd == 0:
-        return _finalize(
-            policy=policy,
-            request=request,
-            selected_route="no_trade",
-            reason_code="NO_TRADE_ZERO_EXPOSURE",
-            plan=None,
-            spot_runtime_identity=spot_runtime_identity,
-            spot_candidate=spot_candidate,
-            perp_candidate=perp_candidate,
-            fees=fee_schedule,
-        )
 
     if request.direction == "short":
         return _forced_perp_or_no_trade(
@@ -569,6 +571,8 @@ def replay_logged_decision(
     )
     if replayed.decision_id != record.get("decision_id"):
         raise RouterDecisionError("Logged router decision is not reproducible under the recorded assumptions")
+    if replayed.to_dict() != record:
+        raise RouterDecisionError("Logged router record was modified or contains non-reproducible derived fields")
     return replayed
 
 
