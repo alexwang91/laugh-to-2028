@@ -1,19 +1,23 @@
 from http.server import BaseHTTPRequestHandler
+import hmac
 import json
-import os
 
 from beta_bot.config import Settings
 from beta_bot.service import run_strategy
 
 
 def _authorized(headers, settings: Settings) -> bool:
-    auth = headers.get("Authorization")
-    if settings.cron_secret:
-        return auth == f"Bearer {settings.cron_secret}"
-    # A secret is mandatory before trade mode can run. Shadow mode may be invoked by Vercel Cron.
-    if settings.can_trade:
+    """Fail closed unless the caller presents the configured cron bearer secret."""
+    if not settings.cron_secret:
         return False
-    return headers.get("User-Agent") == "vercel-cron/1.0" or os.getenv("VERCEL") is None
+    auth = headers.get("Authorization") or ""
+    expected = f"Bearer {settings.cron_secret}"
+    return hmac.compare_digest(auth, expected)
+
+
+def _public_error_payload(exc: Exception) -> dict:
+    """Expose only the exception class; detailed messages stay server-side."""
+    return {"ok": False, "error": type(exc).__name__}
 
 
 class handler(BaseHTTPRequestHandler):
@@ -27,7 +31,7 @@ class handler(BaseHTTPRequestHandler):
                 payload = run_strategy(settings)
                 status = 200
         except Exception as exc:
-            payload = {"ok": False, "error": type(exc).__name__, "message": str(exc)}
+            payload = _public_error_payload(exc)
             status = 500
 
         body = json.dumps(payload, ensure_ascii=False).encode()
