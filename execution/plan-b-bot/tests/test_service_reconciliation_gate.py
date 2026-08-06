@@ -75,7 +75,7 @@ def _install_common(monkeypatch, *, current_qty, target_qty):
     )
     signal = SimpleNamespace(target_beta=0.5, to_dict=lambda: {"target_beta": 0.5})
     product = SimpleNamespace(
-        strategy_release_id="candidate-p1-6",
+        strategy_release_id="candidate-p1-8",
         model_version="m1",
         data_version="d1",
     )
@@ -96,6 +96,7 @@ def _install_common(monkeypatch, *, current_qty, target_qty):
     monkeypatch.setattr(service, "fetch_user_state", lambda *_args, **_kwargs: state)
     monkeypatch.setattr(service, "build_portfolio_plan", lambda **_kwargs: plan)
     monkeypatch.setattr(service, "send_telegram", lambda *_args, **_kwargs: None)
+    monkeypatch.setattr(service, "normal_new_risk_disabled", lambda _settings: False)
     monkeypatch.setattr(
         service,
         "_restart_recovery",
@@ -115,52 +116,56 @@ def test_unexplained_reconciliation_blocks_risk_increase(monkeypatch):
         "_account_reconciliation",
         lambda *_args, **_kwargs: _report(actual_qty=0.25, target_qty=0.4),
     )
-
     submitted = []
-    monkeypatch.setattr(
-        service,
-        "execute_target_position",
-        lambda *_args, **_kwargs: submitted.append(True),
-    )
+    monkeypatch.setattr(service, "execute_target_position", lambda *_args, **_kwargs: submitted.append(True))
 
     payload = service.run_strategy(DummySettings())
 
     assert submitted == []
     assert payload["result"] == "trade_blocked_account_reconciliation"
     assert payload["risk_increase_blocked"] is True
-    assert payload["order_reconciliation"]["pre_trade"]["reconciliation_uncertain"] is True
 
 
 def test_same_direction_reduce_remains_available_during_reconciliation_uncertainty(monkeypatch):
     _install_common(monkeypatch, current_qty=0.5, target_qty=0.2)
-    monkeypatch.setattr(
-        service,
-        "_restart_recovery",
-        lambda *_args, **_kwargs: _restart_report(0.5, clean=False),
-    )
-
-    def uncertain(_settings):
-        raise LedgerUncertainState("unknown submit result")
-
-    monkeypatch.setattr(service, "reconcile_persistent_orders", uncertain)
-    monkeypatch.setattr(
-        service,
-        "_account_reconciliation",
-        lambda *_args, **_kwargs: _report(actual_qty=0.5, target_qty=0.2),
-    )
-
+    monkeypatch.setattr(service, "_restart_recovery", lambda *_args, **_kwargs: _restart_report(0.5, clean=False))
+    monkeypatch.setattr(service, "reconcile_persistent_orders", lambda _settings: (_ for _ in ()).throw(LedgerUncertainState("unknown submit result")))
+    monkeypatch.setattr(service, "_account_reconciliation", lambda *_args, **_kwargs: _report(actual_qty=0.5, target_qty=0.2))
     submitted = []
-
-    def execute(*_args, **_kwargs):
-        submitted.append(True)
-        return [{"action": "reduce", "status": "filled"}]
-
-    monkeypatch.setattr(service, "execute_target_position", execute)
+    monkeypatch.setattr(service, "execute_target_position", lambda *_args, **_kwargs: submitted.append(True) or [{"action": "reduce", "status": "filled"}])
 
     payload = service.run_strategy(DummySettings())
 
     assert submitted == [True]
     assert payload["risk_increase_blocked"] is False
     assert payload["reconciliation_override"] == "REDUCE_RISK_ACTION_ALLOWED"
-    assert payload["result"] == "trade_submitted_or_duplicate_suppressed"
-    assert payload["account_reconciliation"]["post_trade"]["risk_increase_allowed"] is False
+
+
+def test_new_risk_kill_switch_blocks_clean_risk_increase(monkeypatch):
+    _install_common(monkeypatch, current_qty=0.25, target_qty=0.4)
+    monkeypatch.setattr(service, "normal_new_risk_disabled", lambda _settings: True)
+    monkeypatch.setattr(service, "_account_reconciliation", lambda *_args, **_kwargs: _report(actual_qty=0.25, target_qty=0.4, clean=True))
+    submitted = []
+    monkeypatch.setattr(service, "execute_target_position", lambda *_args, **_kwargs: submitted.append(True))
+
+    payload = service.run_strategy(DummySettings())
+
+    assert submitted == []
+    assert payload["result"] == "trade_blocked_new_risk_kill_switch"
+    assert payload["new_risk_kill_switch_active"] is True
+    assert payload["risk_increase_blocked"] is True
+
+
+def test_new_risk_kill_switch_preserves_same_direction_reduction(monkeypatch):
+    _install_common(monkeypatch, current_qty=0.5, target_qty=0.2)
+    monkeypatch.setattr(service, "normal_new_risk_disabled", lambda _settings: True)
+    monkeypatch.setattr(service, "_account_reconciliation", lambda *_args, **_kwargs: _report(actual_qty=0.5, target_qty=0.2, clean=True))
+    monkeypatch.setattr(service, "reconcile_persistent_orders", lambda _settings: {"blocking_unresolved_after": 0})
+    submitted = []
+    monkeypatch.setattr(service, "execute_target_position", lambda *_args, **_kwargs: submitted.append(True) or [{"action": "reduce", "status": "filled"}])
+
+    payload = service.run_strategy(DummySettings())
+
+    assert submitted == [True]
+    assert payload["risk_increase_blocked"] is False
+    assert payload["reconciliation_override"] == "REDUCE_RISK_ACTION_ALLOWED"

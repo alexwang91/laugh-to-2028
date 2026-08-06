@@ -9,6 +9,7 @@ from .account_reconciliation import (
     transition_increases_directional_risk,
 )
 from .config import Settings
+from .emergency import normal_new_risk_disabled
 from .executor import execute_target_position, reconcile_persistent_orders
 from .market import (
     fetch_market_snapshot,
@@ -161,9 +162,6 @@ def run_strategy(settings: Settings) -> dict:
         settings.request_timeout_seconds,
     )
 
-    # P1.7 is the single pre-trade replay orchestrator. Internally it runs the P1.2
-    # persistent reconciliation and adds cold-start case classification plus fresh
-    # account-position precedence. It has no economic write capability.
     pre_persistent = None
     restart_report = None
     if settings.can_trade:
@@ -209,6 +207,8 @@ def run_strategy(settings: Settings) -> dict:
             current_qty,
             plan.target_perp_qty,
         )
+        kill_switch_active = normal_new_risk_disabled(settings)
+        payload["new_risk_kill_switch_active"] = kill_switch_active
         restart_blocks_increase = bool(
             restart_report
             and not restart_report.risk_increase_allowed
@@ -219,8 +219,13 @@ def run_strategy(settings: Settings) -> dict:
             and not pre_account.risk_increase_allowed
             and increases_risk
         )
-        if restart_blocks_increase or account_blocks_increase:
-            payload["result"] = "trade_blocked_account_reconciliation"
+        kill_switch_blocks_increase = bool(kill_switch_active and increases_risk)
+        if restart_blocks_increase or account_blocks_increase or kill_switch_blocks_increase:
+            payload["result"] = (
+                "trade_blocked_new_risk_kill_switch"
+                if kill_switch_blocks_increase
+                else "trade_blocked_account_reconciliation"
+            )
             payload["orders"] = []
             payload["risk_increase_blocked"] = True
         else:
@@ -228,6 +233,7 @@ def run_strategy(settings: Settings) -> dict:
             if (
                 (pre_account and not pre_account.is_clean)
                 or (restart_report and not restart_report.is_resolved)
+                or kill_switch_active
             ) and not increases_risk:
                 payload["reconciliation_override"] = "REDUCE_RISK_ACTION_ALLOWED"
             payload["orders"] = execute_target_position(
