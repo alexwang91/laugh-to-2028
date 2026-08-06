@@ -14,6 +14,8 @@ DEFAULT_DATA_CONTRACT_PATH = REPO_ROOT / "config" / "data_contract.json"
 DAY_MS = 86_400_000
 HOUR_MS = 3_600_000
 CANONICAL_ASSETS = ("BTC", "ETH", "SOL", "BNB")
+STRATEGY_FEATURE_ASSETS = ("XRP",)
+STRATEGY_SIGNAL_ASSETS = CANONICAL_ASSETS + STRATEGY_FEATURE_ASSETS
 
 
 class DataContractError(ValueError):
@@ -38,6 +40,7 @@ class DataContractPolicy:
     schema_version: int
     contract_id: str
     canonical_assets: tuple[str, ...]
+    strategy_feature_assets: tuple[str, ...]
     decision_timezone: str
     decision_time: str
     strategy_source_id: str
@@ -48,6 +51,10 @@ class DataContractPolicy:
     source_mappings: dict[str, tuple[SourceMapping, ...]]
     funding_lookback_hours: int
     authorization: str
+
+    @property
+    def strategy_signal_assets(self) -> tuple[str, ...]:
+        return self.canonical_assets + self.strategy_feature_assets
 
     @classmethod
     def from_mapping(cls, raw: Mapping[str, Any]) -> "DataContractPolicy":
@@ -72,6 +79,7 @@ class DataContractPolicy:
             schema_version=int(raw["schema_version"]),
             contract_id=str(raw["contract_id"]),
             canonical_assets=tuple(str(x).upper() for x in raw["canonical_assets"]),
+            strategy_feature_assets=tuple(str(x).upper() for x in raw["strategy_feature_assets"]),
             decision_timezone=str(boundary["timezone"]),
             decision_time=str(boundary["time"]),
             strategy_source_id=str(strategy["source_id"]),
@@ -87,10 +95,14 @@ class DataContractPolicy:
         return policy
 
     def validate(self) -> None:
-        if self.schema_version != 1:
+        if self.schema_version != 2:
             raise DataContractError("Unsupported data contract schema_version")
         if self.canonical_assets != CANONICAL_ASSETS:
-            raise DataContractError("Canonical data assets must be BTC/ETH/SOL/BNB in order")
+            raise DataContractError("Canonical target assets must be BTC/ETH/SOL/BNB in order")
+        if self.strategy_feature_assets != STRATEGY_FEATURE_ASSETS:
+            raise DataContractError("Frozen BRRK feature-only assets must be XRP")
+        if set(self.canonical_assets).intersection(self.strategy_feature_assets):
+            raise DataContractError("Target and feature-only strategy assets must be disjoint")
         if self.decision_timezone != "UTC" or self.decision_time != "00:00:00":
             raise DataContractError("Canonical daily boundary must be 00:00:00 UTC")
         if self.strategy_source_id != "BINANCE_SPOT_KLINES_V1":
@@ -103,9 +115,9 @@ class DataContractPolicy:
             raise DataContractError("At least one strategy-data endpoint is required")
         if self.funding_lookback_hours <= 0:
             raise DataContractError("Funding lookback must be positive")
-        if set(self.source_mappings) != set(CANONICAL_ASSETS):
-            raise DataContractError("Every canonical asset requires an explicit source mapping")
-        for asset in CANONICAL_ASSETS:
+        if set(self.source_mappings) != set(self.strategy_signal_assets):
+            raise DataContractError("Every strategy-signal asset requires an explicit source mapping")
+        for asset in self.strategy_signal_assets:
             mappings = self.source_mappings[asset]
             if not mappings:
                 raise DataContractError(f"No source mappings for {asset}")
@@ -134,7 +146,7 @@ class DataContractPolicy:
     def source_symbol(self, asset: str, session_open_ms: int) -> str:
         key = asset.upper()
         if key not in self.source_mappings:
-            raise DataContractError(f"Asset {key} is outside canonical BRRK universe")
+            raise DataContractError(f"Asset {key} is outside the BRRK strategy-signal universe")
         matches = [item for item in self.source_mappings[key] if item.contains(int(session_open_ms))]
         if len(matches) != 1:
             raise DataContractError(
@@ -167,7 +179,7 @@ class CanonicalDailyDataset:
     def close_values(self, asset: str) -> tuple[float, ...]:
         key = asset.upper()
         if key not in self.closes_by_asset:
-            raise DataContractError(f"Missing canonical asset {key}")
+            raise DataContractError(f"Missing strategy-signal asset {key}")
         return tuple(row.close for row in self.closes_by_asset[key])
 
     def to_dict(self) -> dict[str, Any]:
@@ -175,11 +187,13 @@ class CanonicalDailyDataset:
             "schema_version": self.schema_version,
             "contract_id": self.contract_id,
             "decision_timestamp": self.decision_timestamp,
+            "target_assets": list(CANONICAL_ASSETS),
+            "feature_assets": list(STRATEGY_FEATURE_ASSETS),
             "common_start_ms": self.common_start_ms,
             "latest_session_open_ms": self.latest_session_open_ms,
             "closes_by_asset": {
                 asset: [row.to_dict() for row in self.closes_by_asset[asset]]
-                for asset in CANONICAL_ASSETS
+                for asset in STRATEGY_SIGNAL_ASSETS
             },
         }
 
@@ -243,8 +257,8 @@ def canonicalize_binance_daily_rows(
     decision_ms = _timestamp_ms(decision)
     key = asset.upper()
     symbol = source_symbol.upper()
-    if key not in CANONICAL_ASSETS:
-        raise DataContractError(f"Asset {key} is outside canonical BRRK universe")
+    if key not in policy.strategy_signal_assets:
+        raise DataContractError(f"Asset {key} is outside the BRRK strategy-signal universe")
 
     by_open: dict[int, DailyClose] = {}
     for raw in rows:
@@ -267,7 +281,6 @@ def canonicalize_binance_daily_rows(
             raise DataContractError(
                 f"Source symbol {symbol} does not match canonical mapping {expected_symbol} for {key}"
             )
-        # Current/in-progress/future daily candles are not canonical inputs yet.
         if close_ms >= decision_ms:
             continue
         if open_ms in by_open:
@@ -293,11 +306,15 @@ def build_canonical_daily_dataset(
     latest_required = decision_ms - DAY_MS
     canonical: dict[str, dict[int, DailyClose]] = {}
 
-    if set(asset.upper() for asset in source_batches) != set(CANONICAL_ASSETS):
-        raise DataContractError("Canonical daily dataset requires BTC/ETH/SOL/BNB source batches")
+    supplied_assets = set(asset.upper() for asset in source_batches)
+    required_assets = set(policy.strategy_signal_assets)
+    if supplied_assets != required_assets:
+        raise DataContractError(
+            "Canonical strategy dataset requires BTC/ETH/SOL/BNB target series plus XRP feature-only series"
+        )
 
     normalized_batches = {asset.upper(): batches for asset, batches in source_batches.items()}
-    for asset in CANONICAL_ASSETS:
+    for asset in policy.strategy_signal_assets:
         rows_by_open: dict[int, DailyClose] = {}
         for source_symbol, raw_rows in normalized_batches[asset]:
             parsed = canonicalize_binance_daily_rows(
@@ -321,10 +338,10 @@ def build_canonical_daily_dataset(
 
     common_start = max(min(rows) for rows in canonical.values())
     if common_start > latest_required:
-        raise DataContractError("No common canonical BRRK daily history")
+        raise DataContractError("No common canonical BRRK strategy-signal history")
     expected_days = range(common_start, latest_required + DAY_MS, DAY_MS)
     output: dict[str, tuple[DailyClose, ...]] = {}
-    for asset in CANONICAL_ASSETS:
+    for asset in policy.strategy_signal_assets:
         missing = [day for day in expected_days if day not in canonical[asset]]
         if missing:
             raise DataContractError(
@@ -333,7 +350,7 @@ def build_canonical_daily_dataset(
         output[asset] = tuple(canonical[asset][day] for day in expected_days)
 
     return CanonicalDailyDataset(
-        schema_version=1,
+        schema_version=policy.schema_version,
         contract_id=policy.contract_id,
         decision_timestamp=_iso_z(decision),
         common_start_ms=common_start,
