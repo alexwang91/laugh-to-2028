@@ -14,8 +14,9 @@ Status: authoritative cross-chat handoff snapshot
 - P1.3 implementation PR #46 + handoff #47: PASS / MERGED
 - P1.4 implementation PR #48 + handoff #49: PASS / MERGED
 - P1.5 implementation PR #50 + handoff #51: PASS / MERGED
-- P1.6 implementation PR #52 merged; squash/main commit `1a8addc6225446d287ab0465f0f9b555242b6739`
-- P1.6 final implementation head: `fd8ac395189bd6ce134eaeb5c1ae4bf1ac1a6ae5`
+- P1.6 implementation PR #52 + handoff #53: PASS / MERGED
+- Current main before P1.7: `ed5cf7ab8818e26583d8140c6ad7b8303655ac6c`
+- P1.7 candidate branch: `p1-7/restart-recovery`
 
 ## Current roadmap position
 
@@ -28,11 +29,11 @@ P1.3 Partial-fill correctness: PASS / MERGED
 P1.4 Reversal safety: PASS / MERGED
 P1.5 Precision / metadata: PASS / MERGED
 P1.6 Post-submit reconciliation: PASS / MERGED
-P1.7 Restart recovery: NEXT
+P1.7 Restart recovery: CANDIDATE / NOT MERGED
 P1.8+ blocked
 ```
 
-The unique next implementation task is **P1.7 Restart recovery**.
+The only active implementation task is **P1.7 Restart recovery**.
 
 ## Frozen product state
 
@@ -45,49 +46,13 @@ The unique next implementation task is **P1.7 Restart recovery**.
 - Trading Agent/API credential only; no master wallet private key, automated withdrawals or external transfers.
 - Production authorization remains empty.
 
-## P1.6 PASS / MERGED
+## P1.6 closure baseline
 
-PR #52 established account-level post-submit reconciliation:
+P1.6 cross-checks open orders, recent fills, actual position, equity and margin against durable local truth/current target. Unexplained differences block risk-increasing transitions while same-direction reductions remain available when the durable ledger is usable. `EXEC-POST-SUBMIT-RECON-P1.6 = IMPLEMENTATION_VERIFIED`.
 
-- each trade-capable cycle fetches exchange open orders, recent fills and fresh clearinghouse state;
-- actual position, target gap, account equity and total margin used are included in an account reconciliation report;
-- exchange open orders are compared with local active ledger truth;
-- malformed/uncorrelatable open-order and fill evidence becomes deterministic blocking reason codes;
-- persistent P1.2 unresolved truth propagates into the account-level gate;
-- unexplained differences prohibit opening, increasing or reversing directional exposure;
-- same-direction reductions and target-to-FLAT remain available when the durable ledger itself is still usable;
-- P1.2 `LedgerUncertainState` is converted at service level into a risk-increase blocker rather than globally preventing reduction;
-- core account position/equity/margin parse failure remains fail-closed;
-- pre/post persistent and account reconciliation are recorded in each cycle payload.
+## P1.7 candidate implementation
 
-Self-review corrections retained:
-
-1. malformed exchange evidence was changed from a global exception to blocking reason codes so reductions remain available;
-2. P1.2 uncertainty was changed from a service-level abort to a P1.6 risk gate input while durable-ledger infrastructure failures remain fail-closed.
-
-`EXEC-POST-SUBMIT-RECON-P1.6 = IMPLEMENTATION_VERIFIED` is registered. Production authorization remains empty.
-
-## P1.6 final evidence
-
-Final implementation head:
-
-```text
-fd8ac395189bd6ce134eaeb5c1ae4bf1ac1a6ae5
-```
-
-Final evidence:
-
-- `Phase 0 baseline contract` run #40 / Actions `31093119316`: SUCCESS;
-- execution tests: SUCCESS;
-- research integration contract: SUCCESS;
-- `PR handoff governance` run #51 / Actions `31093117491`: SUCCESS;
-- evidence-only PR-body governance run #52 / Actions `31093191350`: SUCCESS.
-
-PR #52 squash-merged to main as `1a8addc6225446d287ab0465f0f9b555242b6739`.
-
-## Current unique next task: P1.7 Restart recovery
-
-Acceptance criteria:
+Roadmap acceptance matrix:
 
 - cold restart with open order;
 - cold restart with partial fill;
@@ -95,7 +60,42 @@ Acceptance criteria:
 - cold restart with actual position differing from stale local state;
 - all cases resolve safely and idempotently.
 
-P1.7 must build on P1.2 durable order truth, P1.3 actual-fill transitions and P1.6 account reconciliation. It must not silently include P1.8 emergency commands or P2 routing.
+Current candidate:
+
+- adds `beta_bot/restart_recovery.py` as the explicit cold-start recovery orchestrator;
+- recovery has no submit, cancel, resize or leverage-write capability;
+- reuses P1.2 `reconcile_unresolved_orders()` to replay deterministic CLOID/OID/order/fill truth;
+- durable asset order history is exposed read-only so the newest fill-implied local position expectation can be compared with fresh clearinghouse position;
+- open orders are classified as `COLD_OPEN_ORDER_RECOVERED` and remain blocking unresolved risk rather than being duplicated;
+- partial fills are reconstructed from exchange order size plus deduplicated TID fills and classified as `COLD_PARTIAL_FILL_RECOVERED`;
+- a prior durable submission attempt with previously unknown result is classified as `COLD_UNKNOWN_SUBMIT_RESULT_RECOVERED` if the CLOID later becomes known at exchange;
+- if that prior submit is still `unknownOid`, recovery returns `COLD_UNKNOWN_SUBMIT_RESULT_BLOCKED`, preserves the unresolved row and forbids blind retry;
+- fresh clearinghouse position overrides a differing stale fill-implied local expectation and is classified as `COLD_STALE_POSITION_OVERRIDDEN_BY_EXCHANGE`;
+- repeated recovery calls are economically idempotent: no order submission occurs and fill persistence remains deduplicated by TID;
+- `run_strategy` now uses P1.7 as the single pre-trade replay orchestrator; P1.6 account reconciliation remains the downstream risk gate;
+- post-trade P1.2/P1.6 reconciliation remains unchanged.
+
+## P1.7 self-review correction
+
+Initial integration layered P1.7 after the existing P1.6 pre-trade persistent reconciliation. That duplicated exchange reads and could consume an unknown-submit recovery before P1.7 classified it. The service was corrected so P1.7 is the single pre-trade replay orchestrator and internally calls the established P1.2 reconciliation. P1.6 account-level reconciliation remains the next independent safety layer.
+
+## Candidate test coverage
+
+- cold restart with a live open order restores OID/status and remains blocking without duplicate submission;
+- repeated open-order recovery is economically idempotent;
+- cold restart with partial fill reconstructs fill quantity and resting remainder;
+- repeated partial-fill recovery keeps one deduplicated fill event;
+- network-timeout/unknown-submit later becoming known by CLOID is recovered without resubmission;
+- still-unknown submit remains explicitly blocked across repeated recoveries;
+- fully reconciled local fill-implied position differing from fresh clearinghouse position is overridden by fresh account truth;
+- repeated stale-position recovery produces the same safe classification;
+- prior P1.6 service risk-gate tests remain isolated and preserved.
+
+Authoritative GitHub Actions evidence is pending.
+
+## Deliberately not solved
+
+P1.7 does not implement P1.8 cancel-all, reduce-only emergency close, emergency FLAT or disable-new-risk command paths. It does not solve cross-process/distributed locking, order slicing, P2 routing or production readiness.
 
 ## Production authorization
 
@@ -110,10 +110,10 @@ production_authorized_components = []
 DRIFT_0
 ```
 
+P1.7 is the exact dependency after P1.6 and changes no BRRK economics or authorization.
+
 ## Exact next action
 
 ```text
-P1.7 Restart recovery
+open P1.7 PR -> authoritative CI -> fix same PR -> final-head CI -> merge -> normalize to P1.8
 ```
-
-Start from current main after this post-merge normalization is merged, on a fresh candidate branch.
