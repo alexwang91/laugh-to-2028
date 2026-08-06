@@ -9,31 +9,45 @@ Status: authoritative cross-chat handoff snapshot
 - Phase 1: COMPLETE
 - P2.1 implementation PR #58: PASS / MERGED
 - Current main before P2.2: `bfb8ce4b59c36db4075a0c931e7d3d376fa97eef`
-- P2.2 candidate branch: `p2-2/validate-spot-identities`
+- P2.2 implementation PR: #60 OPEN
 
 ## Current roadmap position
 
 ```text
 P2.1 Canonical instrument registry: PASS / MERGED
-P2.2 UETH / USOL / BNB validation: CANDIDATE / NOT MERGED
+P2.2 UETH / USOL / BNB validation: IMPLEMENTATION VERIFIED / FINAL-HEAD CI PENDING / NOT MERGED
 P2.3+ blocked
 ```
 
-## P2.2 candidate findings
+## P2.2 implementation verified on candidate
 
-- UETH is validated as Unit's Ethereum-native tokenized spot representation on Hyperliquid; Unit documents native Ethereum deposits and withdrawals.
-- USOL is validated as Unit's Solana-native tokenized spot representation on Hyperliquid; Unit documents native Solana deposits and withdrawals.
-- BNB has no verified Unit-native route in the official evidence set reviewed for P2.2 and remains spot-unavailable under the validated Unit route set.
-- ETH/SOL spot identity verification does not authorize routing; both remain `IDENTITY_VERIFIED_ROUTING_NOT_AUTHORIZED` until P2.3/P2.4.
-- Dynamic HyperCore spot token/pair indexes are runtime metadata and are not fabricated as frozen constants.
-- No PnL evidence is used as identity evidence.
+- UETH is verified as Unit's Ethereum-native tokenized spot representation on Hyperliquid; Unit documents native Ethereum deposits and withdrawals.
+- USOL is verified as Unit's Solana-native tokenized spot representation on Hyperliquid; Unit documents native Solana deposits and withdrawals.
+- BNB has no verified Unit-native route in the validated official evidence set and remains spot-unavailable under that route set.
+- ETH/SOL remain `IDENTITY_VERIFIED_ROUTING_NOT_AUTHORIZED`; P2.2 does not implement a route decision.
+- Dynamic HyperCore spot token/pair indexes remain runtime `spotMeta` data and are not fabricated as constants.
+- `ROUTER-SPOT-IDENTITY-P2.2 = IMPLEMENTATION_VERIFIED` is registered.
 
-## Evidence sources
+## Candidate evidence
+
+Candidate head before decision/evidence writeback:
+
+```text
+f337663cc0e697e3840beeef9459cea1e46ec3a8
+```
+
+passed:
+
+- `Phase 0 baseline contract` #56 / Actions `31098385353`: SUCCESS;
+- execution tests: SUCCESS;
+- research integration contract: SUCCESS;
+- `PR handoff governance` #72 / Actions `31098385377`: SUCCESS.
+
+External identity evidence:
 
 - Unit official About documentation: native Bitcoin, Ethereum and Solana assets can flow between native chains and Hyperliquid.
-- Unit official API documentation: protocol supports chain-finalized deposit/withdrawal operations and explicitly lists Ethereum and Solana confirmation requirements.
-- Unit Generate Address documentation: Ethereum and Solana are supported protocol assets with native-chain deposit/withdrawal address generation.
-- Hyperliquid canonical `spotMeta` remains the runtime source for dynamic spot token/pair metadata.
+- Unit official API documentation: Ethereum and Solana are supported finalized chains.
+- Unit Generate Address documentation: Ethereum and Solana native deposit/withdrawal address generation is supported.
 
 ## Self-review boundary
 
@@ -55,5 +69,5 @@ DRIFT_0
 ## Exact next action
 
 ```text
-open P2.2 PR -> authoritative CI -> evidence registry -> final-head CI -> merge -> normalize to P2.3
+final-head CI on PR #60 -> expected-head merge -> post-merge normalization to P2.3
 ```
