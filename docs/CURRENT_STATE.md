@@ -9,21 +9,22 @@ Status: authoritative cross-chat handoff snapshot
 - Roadmap: `docs/IMPLEMENTATION_ROADMAP_2026-08-05.md`
 - Governance: `docs/PROJECT_GOVERNANCE_2026-08-05.md`
 - Continuity protocol: `docs/CONTEXT_CONTINUITY_PROTOCOL.md`
-- P1.1 through P1.7: PASS / MERGED
-- Current main before P1.8: `4af547a96ca15a419ba7c3e3ae7892e5e912def6`
-- P1.8 implementation PR: #56 open
-- P1.8 candidate branch: `p1-8/kill-emergency-paths`
+- P1.1 through P1.8: PASS / MERGED
+- P1.8 implementation PR: #56 PASS / MERGED
+- P1.8 final implementation head: `3d1715dafda8edc5d8a37d1de7a2a2de56b0e587`
+- P1.8 squash/main commit: `765fc53dfcb3699ffc1de530717349cf926b42ed`
 
 ## Current roadmap position
 
 ```text
 P0.1-P0.2: PASS / MERGED
-P1.1-P1.7: PASS / MERGED
-P1.8 Kill and emergency paths: IMPLEMENTATION VERIFIED / FINAL-HEAD CI PENDING / NOT MERGED
-P2+ blocked
+P1.1-P1.8: PASS / MERGED
+Phase 1 Account and execution truth: COMPLETE
+P2.1 Canonical instrument registry: NEXT
+P2.2+ blocked
 ```
 
-The only active implementation task is **P1.8 Kill and emergency paths**.
+The unique next implementation task is **P2.1 Canonical instrument registry**.
 
 ## Frozen product state
 
@@ -36,56 +37,67 @@ The only active implementation task is **P1.8 Kill and emergency paths**.
 - Trading Agent/API credential only; no master wallet private key, automated withdrawals or external transfers.
 - Production authorization remains empty.
 
-## P1.8 implementation verified on candidate
+## P1.8 PASS / MERGED
 
-- `cancel_all()` reads fresh exchange open orders and cancels each exact coin/OID;
-- `reduce_only_close()` reads fresh clearinghouse position and uses Hyperliquid market-close reduce-only semantics with metadata-driven size formatting;
-- `emergency_flat()` cancels open orders, closes every non-zero perp position found in fresh clearinghouse state, then performs a second fresh read and only reports `verified_flat` if no position remains;
+PR #56 closed the Phase 1 emergency-control acceptance boundary:
+
+- cancel-all follows fresh exchange open-order truth;
+- reduce-only close follows fresh clearinghouse position and metadata-driven size formatting;
+- emergency FLAT cancels open orders, closes every observed non-zero perp position, then requires a second fresh clearinghouse read proving zero remaining position before reporting success;
 - explicit non-ok/rejected exchange responses fail closed;
-- durable atomic `NewRiskKillSwitch` blocks normal risk-increasing transitions while preserving same-direction reductions;
-- malformed/unreadable switch state fails closed for new risk without disabling reduction;
-- `emergency_once.py` invokes emergency controls directly and does not depend on signal/portfolio/target-engine health;
-- `EXEC-KILL-EMERGENCY-P1.8 = IMPLEMENTATION_VERIFIED` is registered.
+- durable atomic disable-new-risk switch blocks normal risk-increasing transitions while preserving same-direction reductions;
+- malformed/unreadable switch state fails closed for new risk without disabling reductions;
+- `emergency_once.py` provides a direct control-plane entrypoint independent of signal/portfolio/target-engine health.
 
-## Controlled test coverage
+`EXEC-KILL-EMERGENCY-P1.8 = IMPLEMENTATION_VERIFIED` is registered.
 
-- cancel-all follows exchange open-order truth;
-- reduce-only close uses fresh position and never opens direction;
-- emergency FLAT cancels, closes all observed positions and requires fresh verified-flat state;
-- remaining position after close causes emergency FLAT failure;
-- explicit exchange rejection is not reported as success;
-- disable-new-risk persists atomically;
-- malformed switch state blocks new risk;
-- normal service blocks a clean risk increase while preserving same-direction reduction.
+## P1.8 review corrections retained
 
-## Self-review corrections
+1. Kill-switch uncertainty originally raised in trade mode and could also block reduction. Corrected so uncertainty is treated as new-risk disabled while reduction remains available.
+2. Emergency actions originally treated a returned API call as sufficient success. Corrected to reject explicit exchange errors; emergency FLAT additionally requires fresh verified-flat account truth.
 
-1. Initial kill-switch uncertainty handling raised an exception in trade mode, which could also prevent reduction. Corrected so uncertainty is interpreted as `new risk disabled` while reduction remains available.
-2. Initial emergency actions only recorded that API calls returned. Corrected to reject explicit non-ok/error responses; emergency FLAT additionally requires a second fresh clearinghouse read proving zero remaining perp positions before reporting success.
+## P1.8 final evidence
 
-## Candidate CI evidence
-
-Candidate implementation head before registry/evidence finalization:
-
-```text
-3d2f0f662d5fb98d42a6d809004b3ad4bd6592ed
-```
-
-passed:
+Candidate head `3d2f0f662d5fb98d42a6d809004b3ad4bd6592ed` passed:
 
 - `Phase 0 baseline contract` #48 / Actions `31096773496`: SUCCESS;
 - execution tests: SUCCESS;
 - research integration contract: SUCCESS;
 - `PR handoff governance` #62 / Actions `31096773499`: SUCCESS.
 
-The branch now contains the P1.8 decision record and this evidence writeback. A new final-head CI run is required before merge.
+Final implementation head:
 
-## Deliberately not solved
+```text
+3d1715dafda8edc5d8a37d1de7a2a2de56b0e587
+```
 
-- No P2 instrument routing or spot identity work.
-- No new production authorization.
-- No leverage expansion or strategy economics changes.
-- Cross-process locking and order slicing remain outside this task.
+passed:
+
+- `Phase 0 baseline contract` #50 / Actions `31096925400`: SUCCESS;
+- execution tests: SUCCESS;
+- research integration contract: SUCCESS;
+- `PR handoff governance` #64 / Actions `31096925378`: SUCCESS.
+
+PR #56 squash-merged to main as:
+
+```text
+765fc53dfcb3699ffc1de530717349cf926b42ed
+```
+
+## Current unique next task: P2.1 Canonical instrument registry
+
+For BTC, ETH, SOL and BNB record:
+
+- spot token identity;
+- perp identity;
+- decimals / tick size;
+- custody/redemption facts where relevant;
+- liquidity metrics;
+- availability state.
+
+BTC spot identity already has prior evidence and should be imported rather than rediscovered.
+
+P2.1 must not silently perform P2.2 UETH/USOL/BNB validation, P2.3 cost modeling, P2.4 routing decisions, or production authorization.
 
 ## Production authorization
 
@@ -100,10 +112,10 @@ production_authorized_components = []
 DRIFT_0
 ```
 
-P1.8 is exact execution hardening from the roadmap and changes no BRRK economics or authorization.
-
 ## Exact next action
 
 ```text
-final-head CI on PR #56 -> expected-head merge -> post-merge normalization to P2.1
+P2.1 Canonical instrument registry
 ```
+
+Start from current main after this post-merge normalization is merged, on a fresh candidate branch.
