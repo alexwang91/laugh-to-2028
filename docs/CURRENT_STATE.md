@@ -5,72 +5,93 @@ Status: authoritative cross-chat handoff snapshot
 
 ## Authoritative baseline
 
+- P0.1 / P0.2: PASS / MERGED
 - P1.1 through P1.8: PASS / MERGED
-- Phase 1: COMPLETE
-- P2.1 implementation PR #58: PASS / MERGED
-- P2.2 implementation PR #60: PASS / MERGED
-- Current main before P2.3: `71cd245a093dc9024940513a0fc06d55703c037a`
-- P2.3 implementation PR: #62 OPEN
+- Phase 1 Account and execution truth: COMPLETE
+- P2.1 Canonical instrument registry: PASS / MERGED through PR #58
+- P2.2 ETH/SOL spot validation + BNB perp-only policy: PASS / MERGED through PR #60
+- P2.3 core cost-model PR #62: MERGED to main `e890aebc1764ab872b9446ab755fde793c48a77d`
+- Full project audit: `docs/FULL_PROJECT_AUDIT_2026-08-06.md`
+- P2.3 correction PR: #64 OPEN
+- Current correction branch: `p2-3/live-l2-measurement-correction`
 
 ## Current roadmap position
 
 ```text
 P2.1 Canonical instrument registry: PASS / MERGED
 P2.2 ETH / SOL spot validation + BNB perp-only policy: PASS / MERGED
-P2.3 Spot vs perp cost model: IMPLEMENTATION VERIFIED / FINAL-HEAD CI PENDING / NOT MERGED
-P2.4+ blocked
+P2.3 Spot vs perp cost model: CORRECTION IMPLEMENTED / FINAL-HEAD CI REQUIRED / NOT MERGED
+P2.4 Router decision: BLOCKED
+P3+: BLOCKED
 ```
 
-## P2.3 implementation verified on candidate
+PR #63, which would have advanced the handoff to P2.4, was closed without merge after the audit found the P2.3 live-L2 measurement gap.
 
-- `beta_bot/route_cost.py` compares spot/perp only for the same asset, equal economic notional and equal holding horizon.
-- Models configurable taker/maker fees, full quoted spread, beyond-spread entry/exit slippage, live depth, VWAP diagnostics, signed funding, basis/premium evolution and spot custody/redemption friction.
-- Positive perp funding is a long cost; negative funding is a benefit.
-- Basis cost is entry perp premium minus expected exit premium.
-- Live depth/VWAP are retained for capacity and slippage diagnostics without double counting VWAP impact when it is the source of slippage.
-- Explicit funding break-even horizon is available.
-- `config/route_cost_model.json` freezes the model contract, comparison scope and reproducible holding-horizon scenarios, not a route decision.
-- BTC/ETH/SOL are comparison assets; BNB is excluded by `ROUTER-BNB-PERP-ONLY-2026-08-06`.
-- `ROUTER-COST-MODEL-P2.3 = IMPLEMENTATION_VERIFIED` is registered.
+## Full-project audit result
+
+The audit re-read the Master Plan, Roadmap, Governance, continuity protocol, canonical configs/registries, merged implementation PR chain and current code modules.
+
+Result:
+
+```text
+PRODUCT / STRATEGY DRIFT: NONE
+PRODUCTION AUTHORIZATION DRIFT: NONE
+PROCESS / HANDOFF DRIFT: DRIFT_1
+```
+
+Completed P0, P1.1-P1.8, P2.1 and P2.2 remain valid and are not being redone. Their implementation PRs are merged and their decision-registry evidence remains present.
+
+`DRIFT_1` records process/implementation-detail issues only:
+
+1. many historical merged/research branches remain despite the Governance branch-hygiene preference;
+2. one earlier BNB policy documentation commit was written directly to main before returning to the required branch/PR flow;
+3. #63 was stopped before merge because the P2.3 predecessor was found incomplete.
+
+No universe, venue, risk, security, human-approval, stopped-research or production boundary changed.
+
+## P2.3 correction implementation
+
+Merged PR #62 correctly implemented the core cost arithmetic for BTC / ETH / SOL, but accepted live depth / VWAP as caller-supplied values. PR #64 closes that roadmap measurement gap by adding:
+
+- Hyperliquid `l2Book` fetch support in the market layer;
+- target-notional buy/sell VWAP from returned bid/ask levels;
+- full spread and beyond-half-spread slippage derivation;
+- displayed bid/ask USD depth and conservative two-sided depth;
+- fail-closed behavior when the target cannot be filled from Hyperliquid's returned book levels instead of extrapolating unseen liquidity;
+- explicit Hyperliquid funding decimal -> bps/hour conversion;
+- explicit perp-vs-verified-spot basis conversion;
+- tests that prevent VWAP/slippage double counting;
+- taker-only L2-derived observations, so passive maker queue/fill economics cannot be falsely inferred from an aggressive book walk.
+
+Maker/taker fee rates remain configurable. A future maker scenario must provide explicit evidence-backed passive execution assumptions rather than reuse taker VWAP geometry.
 
 ## Candidate CI evidence
 
-Candidate head before decision/evidence writeback:
+Candidate head after the maker/taker self-review correction:
 
 ```text
-cc9ee0834520168e313e5bba4a3587d17518c98b
+6e67f071c1dc74b920d51b52c85327ca83c230a9
 ```
 
 passed:
 
-- `Phase 0 baseline contract` #72 / Actions `31099792353`: SUCCESS;
+- `Phase 0 baseline contract` #77 / Actions `31101417884`: SUCCESS;
 - execution tests: SUCCESS;
 - research integration contract: SUCCESS;
-- `PR handoff governance` #90 / Actions `31099792997`: SUCCESS.
+- `PR handoff governance` #97 / Actions `31101417954`: SUCCESS.
 
-## Fee baseline
+This evidence writeback changes the branch, so one final authoritative CI run is still required on the new exact head before merge.
 
-The configurable no-staking Tier-0 baseline is:
+## Router product boundary
 
 ```text
-perp taker 4.5 bps
-perp maker 1.5 bps
-spot taker 7.0 bps
-spot maker 4.0 bps
+BTC: spot candidate + perp fallback
+ETH: verified UETH spot candidate + perp fallback
+SOL: verified USOL spot candidate + perp fallback
+BNB: PERP_ONLY_DEFAULT
 ```
 
-The model requires effective account fees to be refreshed when volume/staking tier changes.
-
-## Self-review corrections
-
-1. Removed double counting of VWAP impact and expected slippage. VWAP/depth are diagnostics; explicitly defined beyond-spread slippage is charged once.
-2. No `spot always wins` rule is encoded. Holding horizon, signed funding, basis and liquidity remain explicit inputs for P2.4.
-
-## Deliberately not solved
-
-- No P2.4 route-selection reason codes or implementation plan.
-- No fixed historical funding forecast is declared canonical.
-- No production authorization.
+`ROUTER-BNB-PERP-ONLY-2026-08-06` is authoritative. The older Master Plan §6 BNB working-policy sentence that says to choose spot/perp by availability/cost is superseded by this later explicit routing decision; it is not a change to the frozen BTC/ETH/SOL/BNB long universe or Hyperliquid-first venue.
 
 ## Production authorization
 
@@ -82,11 +103,17 @@ production_authorized_components = []
 ## Project drift audit
 
 ```text
-DRIFT_0
+DRIFT_1
 ```
+
+Reason: process/handoff and P2.3 measurement-completeness correction only. Product/research objective drift is zero.
 
 ## Exact next action
 
 ```text
-final-head CI on PR #62 -> expected-head merge -> post-merge normalization to P2.4
+final-head CI on PR #64
+-> expected-head merge if and only if all checks pass
+-> documentation-only post-merge normalization to P2.4
 ```
+
+Do not begin P2.4 until this correction is merged and P2.3 is explicitly closed again.

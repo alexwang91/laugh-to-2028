@@ -6,22 +6,32 @@
     "BNB": "ROUTER-BNB-PERP-ONLY-2026-08-06"
   },
   "fee_baseline": {
-    "profile": "HYPERLIQUID_TIER0_BASE_NO_STAKING_DISCOUNT",
+    "as_of": "2026-08-06",
+    "profile": "HYPERLIQUID_TIER0_BASE_NO_STAKING_OR_REFERRAL_DISCOUNT",
     "perp_taker_bps": 4.5,
     "perp_maker_bps": 1.5,
     "spot_taker_bps": 7.0,
     "spot_maker_bps": 4.0,
-    "policy": "fee schedule is an input and must be refreshed when account tier or staking discount changes"
+    "policy": "fee schedule is a model input and must be refreshed from the actual account tier/staking/referral state before live routing"
   },
   "holding_horizons_hours": [24, 168, 720, 2160, 8760],
   "measurement_contract": {
-    "spread": "full quoted spread in bps; round-trip model charges one full spread",
-    "slippage": "entry plus exit expected price impact beyond quoted half-spread",
-    "live_depth": "USD depth relevant to target notional; diagnostic/capacity input",
-    "vwap": "observed book VWAP impact; diagnostic used to derive/check slippage and not added twice",
-    "funding": "signed bps per hour for a long; positive means long pays",
-    "basis": "perp premium in bps versus verified spot; cost contribution is entry premium minus expected exit premium",
-    "custody_redemption": "explicit spot-only friction in bps when economically relevant"
+    "economic_comparison": "same economic asset, equal entry notional, equal holding horizon",
+    "spread": "full quoted spread in bps; round-trip model charges half-spread on entry plus half-spread on exit",
+    "slippage": "entry plus exit expected VWAP impact beyond the quoted half-spread; never add full VWAP impact again",
+    "live_depth": "derive displayed bid/ask USD depth from the Hyperliquid l2Book snapshot and use min(bid_depth, ask_depth) as conservative two-sided capacity diagnostic",
+    "vwap": "consume returned l2Book levels to the target quantity for buy and sell VWAP; Hyperliquid returns at most 20 levels per side, so insufficient returned depth is a measurement/capacity failure rather than an extrapolation",
+    "spot_l2_identity": "resolve the runtime @spot_pair_index from spotMeta before l2Book fetch; UI display names are not assumed to be HyperCore asset IDs",
+    "funding_api_unit": "Hyperliquid funding values are decimal rate per hour; convert to bps/hour by multiplying by 10000 before cost accumulation",
+    "funding": "signed bps per hour for a long; positive means long pays, negative means long receives; multiply by explicit holding hours",
+    "basis": "perp premium in bps versus verified spot; relative cost contribution is entry premium minus expected exit premium",
+    "custody_redemption": "explicit spot-only friction in bps when economically relevant; do not invent bridge/redemption cost when no such operational movement is assumed"
+  },
+  "sources": {
+    "fees": "https://hyperliquid.gitbook.io/hyperliquid-docs/trading/fees",
+    "funding": "https://hyperliquid.gitbook.io/hyperliquid-docs/trading/funding",
+    "l2_book": "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint",
+    "spot_identity": "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint/spot"
   },
   "authorization": "MODEL_ONLY_NO_ROUTE_DECISION"
 }

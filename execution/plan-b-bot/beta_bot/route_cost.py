@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import asdict, dataclass
 from math import isfinite
-from typing import Literal
+from typing import Any, Iterable, Literal
 
 RouteType = Literal["spot", "perp"]
 OrderStyle = Literal["taker", "maker"]
@@ -18,10 +18,33 @@ class FeeSchedule:
     spot_maker_bps: float = 4.0
     perp_taker_bps: float = 4.5
     perp_maker_bps: float = 1.5
-    source: str = "Hyperliquid tier-0 base rate; no staking discount"
+    source: str = "Hyperliquid tier-0 base rate; no staking/referral/account-tier discount"
 
     def fee_bps(self, route: RouteType, style: OrderStyle) -> float:
         return float(getattr(self, f"{route}_{style}_bps"))
+
+
+@dataclass(frozen=True)
+class BookExecutionDiagnostics:
+    reference_notional_usd: float
+    target_quantity: float
+    best_bid: float
+    best_ask: float
+    mid_price: float
+    spread_bps: float
+    buy_vwap: float
+    sell_vwap: float
+    buy_total_impact_bps: float
+    sell_total_impact_bps: float
+    entry_slippage_beyond_half_spread_bps: float
+    exit_slippage_beyond_half_spread_bps: float
+    bid_depth_usd: float
+    ask_depth_usd: float
+    two_sided_depth_usd: float
+
+    @property
+    def round_trip_vwap_impact_bps(self) -> float:
+        return self.buy_total_impact_bps + self.sell_total_impact_bps
 
 
 @dataclass(frozen=True)
@@ -57,6 +80,10 @@ class RouteObservation:
         }
         if any(not isfinite(float(value)) for value in values.values()):
             raise RouteCostError("Route-cost inputs must be finite")
+        if self.route not in {"spot", "perp"}:
+            raise RouteCostError("route must be spot or perp")
+        if self.order_style not in {"taker", "maker"}:
+            raise RouteCostError("order_style must be taker or maker")
         if self.notional_usd <= 0:
             raise RouteCostError("notional_usd must be positive")
         if self.holding_hours < 0:
@@ -74,6 +101,10 @@ class RouteObservation:
                 raise RouteCostError(f"{name} cannot be negative")
         if self.route == "spot" and abs(self.funding_bps_per_hour) > 1e-12:
             raise RouteCostError("spot route cannot carry perp funding")
+        if self.route == "spot" and (
+            abs(self.entry_basis_bps) > 1e-12 or abs(self.expected_exit_basis_bps) > 1e-12
+        ):
+            raise RouteCostError("spot route cannot carry perp basis")
 
 
 @dataclass(frozen=True)
@@ -101,18 +132,21 @@ def estimate_route_cost(
     *,
     fees: FeeSchedule | None = None,
 ) -> RouteCostEstimate:
-    """Estimate round-trip implementation cost for one economic long exposure.
+    """Estimate normalized round-trip implementation cost for one long exposure.
 
-    Sign conventions and measurement contract:
-    - positive perp funding means the long pays and is a cost;
-    - negative funding is a benefit and reduces total cost;
-    - positive entry basis means perp trades above spot; if expected exit basis is
-      lower, the compression is a cost to the long;
-    - spread is charged as half-spread on entry plus half-spread on exit, so one
-      observed full spread represents the round-trip spread contribution;
-    - entry/exit slippage must be measured beyond the quoted half-spread;
-    - vwap_impact_bps is a liquidity diagnostic used to derive/check slippage and
-      is deliberately not added again to total cost.
+    Sign/measurement contract:
+    - positive perp funding means the long pays; negative funding is a benefit;
+    - positive entry basis means perp is above verified spot. Entry basis minus
+      expected exit basis is the relative-performance cost versus spot;
+    - `spread_bps` is the route-specific expected round-trip spread cost. The
+      canonical L2 constructor below produces a taker observation and therefore
+      sets it to one full quoted spread (half on entry + half on exit);
+    - entry/exit slippage is measured *beyond* the quoted half-spread;
+    - vwap_impact_bps is diagnostic and is not charged a second time;
+    - fee cost is normalized to entry notional and assumes the selected order
+      style on both entry and exit. Maker observations require separately modeled
+      passive-fill / adverse-selection assumptions; they are not inferred from
+      the taker L2 constructor.
     """
     observation.validate()
     fee_schedule = fees or FeeSchedule()
@@ -227,3 +261,151 @@ def funding_break_even_hours(
     if gap <= 0:
         return 0.0
     return gap / positive_funding_bps_per_hour
+
+
+def funding_decimal_to_bps_per_hour(rate: float) -> float:
+    """Convert Hyperliquid hourly funding decimal (e.g. 0.0000125) to bps/hour."""
+    value = float(rate)
+    if not isfinite(value):
+        raise RouteCostError("funding rate must be finite")
+    return value * 10_000.0
+
+
+def average_funding_bps_per_hour(rates: Iterable[float]) -> float:
+    converted = [funding_decimal_to_bps_per_hour(rate) for rate in rates]
+    if not converted:
+        raise RouteCostError("at least one funding observation is required")
+    return sum(converted) / len(converted)
+
+
+def basis_bps(*, perp_price: float, verified_spot_price: float) -> float:
+    perp = float(perp_price)
+    spot = float(verified_spot_price)
+    if not isfinite(perp) or not isfinite(spot) or perp <= 0 or spot <= 0:
+        raise RouteCostError("basis prices must be finite and positive")
+    return (perp / spot - 1.0) * 10_000.0
+
+
+def analyze_l2_book(book: dict[str, Any], *, notional_usd: float) -> BookExecutionDiagnostics:
+    """Compute reproducible taker execution geometry from a Hyperliquid l2Book snapshot.
+
+    Hyperliquid returns bids in levels[0] and asks in levels[1]. The API exposes
+    at most 20 levels per side, so inability to fill the target quantity from the
+    returned snapshot is treated as an explicit capacity failure rather than
+    extrapolating unseen liquidity.
+    """
+    if not isfinite(float(notional_usd)) or notional_usd <= 0:
+        raise RouteCostError("notional_usd must be positive")
+    levels = book.get("levels") if isinstance(book, dict) else None
+    if not isinstance(levels, list) or len(levels) != 2:
+        raise RouteCostError("l2Book must contain bid and ask levels")
+    bids = _parse_levels(levels[0], side="bid")
+    asks = _parse_levels(levels[1], side="ask")
+    if not bids or not asks:
+        raise RouteCostError("l2Book requires non-empty bid and ask sides")
+    bids.sort(key=lambda x: x[0], reverse=True)
+    asks.sort(key=lambda x: x[0])
+    best_bid = bids[0][0]
+    best_ask = asks[0][0]
+    if best_bid >= best_ask:
+        raise RouteCostError("l2Book is crossed or locked")
+    mid = (best_bid + best_ask) / 2.0
+    target_quantity = notional_usd / mid
+    buy_vwap = _vwap_for_quantity(asks, target_quantity)
+    sell_vwap = _vwap_for_quantity(bids, target_quantity)
+    spread_bps = (best_ask - best_bid) / mid * 10_000.0
+    half_spread_bps = spread_bps / 2.0
+    buy_total = max((buy_vwap - mid) / mid * 10_000.0, 0.0)
+    sell_total = max((mid - sell_vwap) / mid * 10_000.0, 0.0)
+    entry_beyond = max(buy_total - half_spread_bps, 0.0)
+    exit_beyond = max(sell_total - half_spread_bps, 0.0)
+    bid_depth = sum(px * qty for px, qty in bids)
+    ask_depth = sum(px * qty for px, qty in asks)
+    return BookExecutionDiagnostics(
+        reference_notional_usd=float(notional_usd),
+        target_quantity=target_quantity,
+        best_bid=best_bid,
+        best_ask=best_ask,
+        mid_price=mid,
+        spread_bps=spread_bps,
+        buy_vwap=buy_vwap,
+        sell_vwap=sell_vwap,
+        buy_total_impact_bps=buy_total,
+        sell_total_impact_bps=sell_total,
+        entry_slippage_beyond_half_spread_bps=entry_beyond,
+        exit_slippage_beyond_half_spread_bps=exit_beyond,
+        bid_depth_usd=bid_depth,
+        ask_depth_usd=ask_depth,
+        two_sided_depth_usd=min(bid_depth, ask_depth),
+    )
+
+
+def observation_from_l2_book(
+    *,
+    asset: str,
+    route: RouteType,
+    book: dict[str, Any],
+    notional_usd: float,
+    holding_hours: float,
+    funding_bps_per_hour: float = 0.0,
+    entry_basis_bps: float = 0.0,
+    expected_exit_basis_bps: float = 0.0,
+    custody_redemption_bps: float = 0.0,
+) -> RouteObservation:
+    """Create a *taker* route observation from an L2 snapshot.
+
+    Passive maker queue/fill/adverse-selection economics cannot be inferred from
+    an aggressive book walk. Maker scenarios must construct RouteObservation
+    explicitly with their own evidence-backed spread/slippage assumptions.
+    """
+    diagnostics = analyze_l2_book(book, notional_usd=notional_usd)
+    return RouteObservation(
+        asset=asset,
+        route=route,
+        notional_usd=notional_usd,
+        holding_hours=holding_hours,
+        order_style="taker",
+        spread_bps=diagnostics.spread_bps,
+        entry_slippage_bps=diagnostics.entry_slippage_beyond_half_spread_bps,
+        exit_slippage_bps=diagnostics.exit_slippage_beyond_half_spread_bps,
+        live_depth_usd=diagnostics.two_sided_depth_usd,
+        vwap_impact_bps=diagnostics.round_trip_vwap_impact_bps,
+        funding_bps_per_hour=funding_bps_per_hour,
+        entry_basis_bps=entry_basis_bps,
+        expected_exit_basis_bps=expected_exit_basis_bps,
+        custody_redemption_bps=custody_redemption_bps,
+    )
+
+
+def _parse_levels(raw: Any, *, side: str) -> list[tuple[float, float]]:
+    if not isinstance(raw, list):
+        raise RouteCostError(f"l2Book {side} levels must be a list")
+    parsed: list[tuple[float, float]] = []
+    for level in raw:
+        if not isinstance(level, dict):
+            raise RouteCostError(f"l2Book {side} level must be an object")
+        try:
+            px = float(level["px"])
+            qty = float(level["sz"])
+        except (KeyError, TypeError, ValueError) as exc:
+            raise RouteCostError(f"invalid l2Book {side} level") from exc
+        if not isfinite(px) or not isfinite(qty) or px <= 0 or qty <= 0:
+            raise RouteCostError(f"invalid l2Book {side} price/size")
+        parsed.append((px, qty))
+    return parsed
+
+
+def _vwap_for_quantity(levels: list[tuple[float, float]], quantity: float) -> float:
+    remaining = quantity
+    filled = 0.0
+    notional = 0.0
+    for px, available in levels:
+        take = min(remaining, available)
+        filled += take
+        notional += take * px
+        remaining -= take
+        if remaining <= max(quantity * 1e-12, 1e-15):
+            break
+    if remaining > max(quantity * 1e-12, 1e-15) or filled <= 0:
+        raise RouteCostError("target notional exceeds returned l2Book depth")
+    return notional / filled
