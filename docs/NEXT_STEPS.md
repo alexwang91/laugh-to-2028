@@ -10,21 +10,14 @@ P3.2 Target calculation API
 
 P0.1, P0.2, P1.1-P1.8, P2.1-P2.4 and P3.1 are PASS / MERGED.
 
-P3.2 remains the unique next roadmap implementation. Before coding it, close the audit-discovered legacy backlog/handoff corrections recorded in `docs/CURRENT_STATE.md` and `docs/BACKLOG_ROADMAP_CROSSWALK_2026-08-06.md`.
+Pre-P3.2 audit corrections are also closed:
 
-Do not start P3.3, P3.4, P4, P5, P6, P7 or P8 early.
+- PR #71: PASS / MERGED;
+- PR #72: PASS / MERGED as `6edaff4bb62bba8316722265dd216ba6e5e7d541`;
+- F27 R2 is the authoritative corrected measurement while R1 remains preserved as superseded history;
+- EXPOSURE-SMOOTH-0038 is recorded as mechanism validated but NOT PROMOTED / BASELINE UNCHANGED.
 
-## Pre-P3.2 correction gate
-
-The correction gate does not advance roadmap scope and does not authorize production. It closes residual findings that predate the Master Plan:
-
-- F17 residual failure-notification gap;
-- F19 target-unreachable semantics;
-- F20 HTTP cron authorization / error redaction;
-- F21 unregistered strong-beta 1.50 runtime branch;
-- F22 remaining 01:10 UTC operational schedule drift;
-- legacy backlog ↔ roadmap reconciliation so old acceptance items cannot disappear by omission;
-- a separate narrow evidence normalization for EXPOSURE-SMOOTH-0038 and F27 measurement bookkeeping.
+P3.2 is now the unique next roadmap implementation. Do not start P3.3, P3.4, P4, P5, P6, P7 or P8 early.
 
 ## P3.2 acceptance boundary
 
@@ -34,14 +27,31 @@ Input:
 - current positions;
 - approved config.
 
-Output:
-- BRRK relative weights;
+Output must expose at least:
+- relative target weights for BTC / ETH / SOL / BNB;
 - cash share;
 - base gross target;
-- risk state;
-- version and feature snapshot.
+- risk state and corrected defensive scale;
+- model/version;
+- economic decision timestamp;
+- feature snapshot;
+- data-contract digest/version;
+- target-engine version.
 
-The implementation must reproduce the frozen BRRK directional core from the same canonical historical input. It must expose deterministic/versioned output suitable for research/live comparison.
+The implementation must deterministically reproduce the frozen BRRK-0011 directional core from the same canonical historical input.
+
+Canonical frozen research chain to reproduce:
+
+```text
+build_brrk0011_scale
+-> fit_state_v1_distribution
+-> sample_v1_paths
+-> choose_scale_corrected
+-> corrected 0-1 regime scale
+-> BRRK_0011_BASELINE = v1_raw.mul(brrk_scale, axis=0)
+```
+
+The P3.2 gross target must remain within `[0, 1]`; cash is the residual `1 - gross`.
 
 P3.2 is target calculation only. Do not add:
 - P3.3 rebalance/turnover bands;
@@ -49,43 +59,36 @@ P3.2 is target calculation only. Do not add:
 - F23 funding-response redesign;
 - P4 leverage-above-1 research;
 - P5 cycle-exit intelligence;
+- short logic;
 - production authorization.
 
-`EXPOSURE-SMOOTH-0038` is not the P3.2 baseline. It is a mechanism-validation result that was not promoted. ASYM-BETA-0024 is also not P3.2 authority.
+`EXPOSURE-SMOOTH-0038` is not the P3.2 baseline. It is mechanism-validation evidence that was not promoted. `ASYM-BETA-0024` is also not P3.2 authority.
 
-## P3.1 closure baseline
+## Required parity evidence
 
-Final implementation head:
+P3.2 must include deterministic research/live golden-parity tests across multiple historical decision dates using the same canonical P3.1 data and frozen parameters.
 
-```text
-05a3216a402e161b056a452a23f984bac41c7520
-```
+The parity set should cover materially different regimes, including:
+- bull / full-exposure behavior;
+- risk-off / low-exposure behavior;
+- regime transitions;
+- 2021 stress;
+- 2022 bear conditions;
+- 2024 stress;
+- recent 2025/2026 decisions.
 
-PR #68 squash-merged as:
+Compare at least:
+- per-asset target weights;
+- gross target;
+- cash share;
+- risk state / scale;
+- feature snapshot and version metadata.
 
-```text
-3afbdc165f4b5bde1e1dfbed6f8ceefdbb7dd0ae
-```
+No same-window retuning is allowed merely to make parity pass.
 
-P3.1 post-merge handoff PR #69 advanced authoritative main to:
+## Dependency architecture requirement
 
-```text
-34165f8481b8c38f7f824b2f18f7592da731223b
-```
-
-`DATA-CONTRACT-P3.1 = IMPLEMENTATION_VERIFIED`.
-
-Canonical P3.1 boundary:
-
-```text
-strategy price = frozen Binance spot UTC 1d BTC/ETH/SOL/BNB series
-missing data   = fail closed, no forward fill or cross-venue substitution
-mapping        = explicit versioned source mapping
-funding        = exact completed Hyperliquid hourly slots, bps/hour
-basis          = verified spot/perp basis in bps with timestamps/skew retained
-```
-
-Research/live share one canonicalizer and produce byte-identical canonical payloads for the same observations.
+Research code currently depends on scientific Python packages including numpy/pandas/scipy/sklearn/hmmlearn. P3.2 must establish an explicit canonical target-engine dependency boundary suitable for live deterministic execution. Do not simply import ad-hoc research scripts into runtime without a versioned architecture and parity evidence.
 
 ## Ordered forward program
 
@@ -93,7 +96,7 @@ Research/live share one canonicalizer and produce byte-identical canonical paylo
 P1.1-P1.8 COMPLETE
 P2.1-P2.4 COMPLETE
 P3.1 COMPLETE
-AUDIT CORRECTIONS -> CLOSE FIRST
+AUDIT CORRECTIONS COMPLETE
 P3.2 NEXT ROADMAP IMPLEMENTATION
 P3.3 BLOCKED ON P3.2
 P3.4 BLOCKED
@@ -113,21 +116,22 @@ production_authorized_components = []
 
 ## Project drift audit
 
-Current audit finding:
+Current audit finding after the #72 normalization chain:
 
 ```text
-DRIFT_1
+DRIFT_0
 ```
 
-This is implementation/handoff debt from the pre-Master-Plan backlog transition. No product objective, universe, venue, risk philosophy, human-approval, wallet/security or production-authorization assumption changed.
+No known roadmap/handoff correction now blocks P3.2. This does not alter product objective, universe, venue, research authority, risk philosophy, human-approval, wallet/security, stopped-line policy, or production authorization.
 
 ## Exact next action
 
 ```text
-close current audit correction with tests / self-review / CI / merge
--> close narrow EXPOSURE-SMOOTH-0038 + F27 evidence-normalization correction from fresh main
+merge this narrow post-#72 handoff normalization
 -> create a fresh P3.2 target-calculation branch from then-current main
--> recover exact frozen BRRK allocation/risk logic from GitHub
+-> recover the exact frozen BRRK-0011 allocation / regime / corrected defensive-scale implementation from GitHub
+-> define the canonical deterministic target-engine boundary
 -> implement P3.2 only
+-> add multi-date research/live golden parity
 -> tests / self-review / drift audit / PR / CI / expected-head merge
 ```
