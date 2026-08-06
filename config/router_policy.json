@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "policy_id": "BRRK-ROUTER-P2.4-2026-08-06",
+  "cost_model_id": "BRRK-ROUTE-COST-P2.3-2026-08-06",
+  "base_long_spot_candidates": ["BTC", "ETH", "SOL"],
+  "perp_only_assets": {
+    "BNB": "ROUTER-BNB-PERP-ONLY-2026-08-06"
+  },
+  "tie_break": {
+    "route": "spot",
+    "epsilon_bps": 1e-09,
+    "reason": "for a verified 1x/base long candidate with economically equal modeled cost, prefer spot rather than create perpetual funding/liquidation path dependency"
+  },
+  "capacity_contract": {
+    "require_positive_live_depth": true,
+    "max_notional_to_displayed_two_sided_depth_ratio": 1.0,
+    "policy": "a route quote without enough measured displayed capacity for the target notional is not viable; do not extrapolate unseen book depth"
+  },
+  "exposure_roles": ["base", "leverage_overlay"],
+  "reason_codes": [
+    "SPOT_VERIFIED_LOWER_COST",
+    "SPOT_VERIFIED_COST_TIE",
+    "SPOT_ONLY_VIABLE_ROUTE",
+    "PERP_LOWER_COST",
+    "PERP_SPOT_UNVERIFIED",
+    "PERP_SPOT_COST_UNAVAILABLE",
+    "PERP_SPOT_LIQUIDITY_FAIL",
+    "PERP_PRODUCT_POLICY",
+    "PERP_REQUIRED_FOR_SHORT",
+    "PERP_REQUIRED_FOR_LEVERAGE_OVERLAY",
+    "NO_TRADE_LIQUIDITY_FAIL",
+    "NO_TRADE_COST_UNAVAILABLE",
+    "NO_TRADE_ZERO_EXPOSURE"
+  ],
+  "logging": {
+    "format": "canonical-jsonl",
+    "deterministic_decision_id": true,
+    "production_entrypoint_requires_persistent_log": true,
+    "record_candidate_assumptions": true,
+    "record_expected_cost_breakdown": true
+  },
+  "authorization": "IMPLEMENTATION_PLAN_ONLY_NO_PRODUCTION_AUTHORIZATION"
+}
