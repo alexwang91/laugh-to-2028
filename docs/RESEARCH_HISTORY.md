@@ -296,11 +296,69 @@ Two reporting caveats are recorded in `docs/RISK_FREE_METRIC_CONVENTIONS.md`: `e
 
 Evidence: `research/results/carry_rf_0036r1/` (including daily sequences and the raw FRED CSV) and `research/results/carry_rf_0036r2/`.
 
+## 11b. EXPOSURE-SMOOTH-0038 — mechanism validated, not promoted
+
+`EXPOSURE-SMOOTH-0038-CONTINUOUS-BETA` tested one structural change to the frozen V1 exposure function: replace the discontinuous BTC `btc_last_drop_beta` branches with one continuous function using only constants already present in the frozen formula.
+
+Full-panel evidence from 2021-05-01:
+
+| Metric | Frozen V1 | Smooth-beta 0038 |
+|---|---:|---:|
+| CAGR | 36.38% | 34.13% |
+| MDD | -59.72% | -43.20% |
+| Sharpe | 0.888 | 0.966 |
+| Calmar | 0.609 | 0.790 |
+
+The 2021-05 crash drawdown improved from -59.72% to -30.11%, and turnover fell. The cost is also retained: 2023-style one-way bull performance was materially lower, the 2021-2022 bear Sharpe worsened, and the paired-bootstrap Sharpe difference still included zero.
+
+Canonical decision:
+
+```text
+MECHANISM_VALIDATED_NOT_PROMOTED_BASELINE_UNCHANGED
+```
+
+Meaning:
+
+- the mechanism result remains valid historical/shadow evidence;
+- the 0038 function is not the canonical V1 exposure function;
+- BRRK-0011 remains the frozen canonical directional research target;
+- P3.2 must not substitute 0038 for the frozen baseline;
+- no same-window retuning, leverage authorization, production authorization, or silent promotion is created;
+- promotion would require a separate registered decision plus a full downstream BRRK regime/ref-table rerun.
+
+Authority: `docs/EXPOSURE_SMOOTH_0038_DECISION_2026-08-06.md`, `config/decision_registry.json`, and `research/results/exposure_smooth_0038/summary.json`.
+
+## 11c. F27 idle-cash-credit measurement normalization
+
+The original F27 R1 overlay dropped the first realized equity observation by using `pct_change().dropna()`. The committed `daily_equity.csv` starts after the first realized strategy day, so R1 both discarded day-one PnL and shortened the measured calendar span by one day.
+
+R2 preserves R1 as superseded historical measurement evidence and reconstructs day one from the known $10,000 base. It first reproduces the frozen calendar-span BRRK-0011 raw CAGR anchor `0.6516609785` before emitting any restated metrics.
+
+Corrected R2 headline evidence:
+
+| | V1 baseline | BRRK-0011 core |
+|---|---:|---:|
+| mean idle cash | 20.52% | 24.57% |
+| raw CAGR | 61.3127% | 65.1661% |
+| credited CAGR | 62.6632% | 66.8068% |
+| CAGR delta | +1.3505 pp | +1.6407 pp |
+| raw Sharpe (rf=0) | 1.2950 | 1.3532 |
+| credited Sharpe (rf=0) | 1.3138 | 1.3756 |
+| raw excess Sharpe | 1.2724 | 1.3667 |
+| credited excess Sharpe | 1.3029 | 1.4039 |
+| raw MDD | -37.6349% | -33.7151% |
+| credited MDD | -36.6003% | -33.5524% |
+
+BRRK-vs-V1 rf=0 Sharpe gap changes from `+0.0581629` to `+0.0617832`, a `+0.0036204` shift. The qualitative F27 conclusion is unchanged: crediting idle cash improves both variants and does not change the BRRK-0011 promotion decision.
+
+Evidence: `research/results/idle_cash_credit_0027r1.json` (superseded measurement) and `research/results/idle_cash_credit_0027r2.json` (corrected measurement).
+
 ## 12. Current evidence hierarchy
 
 | Component | Status |
 |---|---|
 | **BRRK-0011** | **Canonical directional core** |
+| EXPOSURE-SMOOTH-0038 | Mechanism validated, **not promoted**; frozen V1/BRRK baseline unchanged |
 | PIT dispersion | Diagnostic/shadow risk information |
 | Dynamic PIT alpha | Mechanisms interesting; portfolio line stopped |
 | ASYM-BETA-0024 | Forward-shadow bull-extra candidate only |
