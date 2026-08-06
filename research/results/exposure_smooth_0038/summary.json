@@ -3,6 +3,8 @@
   "preregistration": "research/exposure_smooth_0038/EXPOSURE-SMOOTH-0038.json",
   "promotion_evidence": false,
   "trading_changes": false,
+  "status": "MECHANISM_VALIDATED_NOT_PROMOTED_BASELINE_UNCHANGED",
+  "decision": "The preregistered structural change (continuous exposure replacing the trend=0 discontinuity) met its own criteria: full-panel Sharpe 0.888 -> 0.966, Calmar 0.609 -> 0.790, and the 2021-05 crash drawdown -59.72% -> -30.11%. It is NOT promoted and V1 remains the frozen baseline. Two reasons, both recorded before this field was written: (1) the paired bootstrap Sharpe difference is +0.073 with 95% CI [-0.158, +0.316], which does not exclude zero, so under backlog F10 this does not qualify as a promotion claim; (2) promotion would require re-running every published table and the BRRK-0011 regime fit on the new exposure function, which is a separate and larger decision needing its own authorization. Cost side is real and not hidden: 2023-style one-way bull markets give up ~46pp, and 2021-2022 bear Sharpe worsens. Forward-candidate only; do not retune on this window.",
   "methodology": {
     "data": "Binance spot UTC daily closes via public market-data REST endpoint",
     "raw_common_start": "2020-08-11",

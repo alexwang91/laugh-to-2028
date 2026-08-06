@@ -47,6 +47,22 @@ def elapsed_years(index: pd.Index) -> float:
     """Calendar-span year count: (last - first).days / 365.25.
 
     Floored at 1 day so a single-observation series doesn't divide by zero.
+
+    **Caller trap, found the hard way 2026-08-06.** This measures the span of
+    the index it is handed, so it is only right if that index covers the
+    strategy's whole life. Deriving returns from an equity curve with
+    ``equity.pct_change().dropna()`` silently drops the first row, which both
+    discards a day of PNL and shortens the span by one day — on the 1331-day
+    BRRK-0011 window that alone inflates CAGR by ~0.06 pp and produced a third
+    published CAGR next to the two this module exists to reconcile. When
+    converting an equity curve, seed the first return off the known base
+    capital instead::
+
+        ret = equity.pct_change()
+        ret.iloc[0] = equity.iloc[0] / BASE_CAPITAL - 1.0
+
+    That is the convention ``verify_psr_dsr_mintrl.py`` and
+    ``verify_idle_cash_credit.py`` use, and ``test_metrics.py`` pins.
     """
     if len(index) < 2:
         return 1.0 / DAYS_PER_YEAR

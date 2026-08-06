@@ -22,6 +22,16 @@ Daily latency cap is the best tested bull-extra implementation, but funding-awar
 
 Decision: parameters frozen; forward shadow only. No more historical April rescue.
 
+### EXPOSURE-SMOOTH-0038
+
+V1's `btc_last_drop_beta` is discontinuous at `trend = 0` (the two branches differ by 0.35-0.61 in exposure) and its volatility term is nullified by the downstream gross<=1 renormalization whenever trend is positive. 0038 replaced both branches with one continuous line, reusing only constants already in the frozen formula and adding no new parameter.
+
+Full panel from 2021-05-01: MDD **-59.72% -> -43.20%**, Sharpe **0.888 -> 0.966**, Calmar **0.609 -> 0.790**, CAGR 36.38% -> 34.13%. The 2021-05 crash drawdown alone went **-59.72% -> -30.11%**. Costs are real: ~46pp given up in 2023-style one-way bull markets, and 2021-2022 bear Sharpe worsens. Paired bootstrap Sharpe difference **+0.073, 95% CI [-0.158, +0.316]** — does not exclude zero.
+
+Decision: **mechanism validated, NOT promoted.** V1's exposure function remains frozen and BRRK-0011 remains the canonical directional core. Promotion would require re-running every published table and the BRRK regime fit on the new function — a separate, larger, separately-authorized decision. No further retuning of this on the same window.
+
+Evidence: `research/results/EXPOSURE_SMOOTH_0038_RESULT_2026-08-05.md`.
+
 ### TSMOM-ALPHA-0029
 
 Funding-aware first valid PIT long/short test: CAGR **-4.12%**, MDD **-88.30%**, Sharpe **0.251**. Corr vs BRRK was low but crisis-alpha gate failed.
@@ -144,6 +154,23 @@ Runbook: `docs/CARRY_PM_0037_RUNBOOK.md`
 ---
 
 # Current priority — non-carry forward implementation evidence
+
+> **Status check, 2026-08-06. This section describes work that has not started.**
+> `execution/` has not been touched in 107 commits (last change 2026-08-04). Every
+> PR since — #30 through #37 — has been research, evidence infrastructure or
+> documentation: the code review, the carry cash-hurdle (F1/F2), the Chinese
+> README rewrite, EXPOSURE-SMOOTH-0038, and backlog items F5-F14/F12/F27. That
+> redirection was deliberate and requested, and the backlog work was worth doing,
+> but this heading has been claiming "current priority" for something nobody was
+> working on. Recording that plainly rather than leaving the plan looking on-track.
+>
+> The list below is still the right list, and it maps onto backlog F15-F23 —
+> items 5/8/9 are F15/F16/F17 restated. Two things gate it: the executor is
+> live-money-moving code whose deploy trigger needs confirming before it is
+> edited, and the highest-value *research* item (backlog F23, the funding filter
+> that cannot reach the exposure range where FUNDING-PNL-0003 actually measured
+> the -25.19% BTC / -13.40% SOL drag) is cheaper and does not touch capital.
+> Sequence: F23 first, then the execution list below under explicit authorization.
 
 There is no authorized historical carry rescue, no live PM carry probe, and no PM-aware carry stack experiment.
 

@@ -84,6 +84,61 @@ class MetricsReproductionTests(unittest.TestCase):
         self.assertGreater(abs(got - PIT_DISP_0015_BRRK0011_CAGR), 1e-5)
 
 
+class EquityToReturnsConventionTests(unittest.TestCase):
+    """Pins the caller trap that produced a third BRRK-0011 CAGR on 2026-08-06.
+
+    `elapsed_years` measures the span of the index it is given. Converting an
+    equity curve with `pct_change().dropna()` drops the first row, losing both
+    a day of PNL and a day of calendar span. These tests fix the size and the
+    direction of that error so nobody has to rediscover it.
+    """
+
+    def _equity_curve(self):
+        """Same shape as research/results/pit_disp_0015/daily_equity.csv.
+
+        1332 rows, 1331-day span, ending on the published final_10k. The first
+        row is deliberately ~flat (9999.10 in the real file): BRRK-0011's first
+        walk-forward decision day carries essentially no position, so day one's
+        return is ~0 while the rest of the window compounds hard. That
+        asymmetry is *why* dropping the first row inflates CAGR -- a curve with
+        uniform daily growth would hide the effect, because losing an
+        average-sized day and losing a day of span roughly cancel.
+        """
+        idx = pd.date_range("2022-12-10", periods=1332, freq="D")
+        first_close = 9999.10
+        final_multiple = ASYM_BETA_0024_BRRK0011_FINAL_10K / first_close
+        daily_growth = final_multiple ** (1.0 / (len(idx) - 1))
+        nav = first_close * daily_growth ** np.arange(len(idx))
+        return pd.Series(nav, index=idx)
+
+    def test_seeding_first_return_off_base_capital_matches_published_cagr(self):
+        equity = self._equity_curve()
+        ret = equity.pct_change()
+        ret.iloc[0] = equity.iloc[0] / 10_000.0 - 1.0
+        self.assertAlmostEqual(cagr_from_returns(ret), ASYM_BETA_0024_BRRK0011_CAGR, places=6)
+
+    def test_dropna_loses_a_day_and_inflates_cagr(self):
+        equity = self._equity_curve()
+        dropped = cagr_from_returns(equity.pct_change().dropna())
+        self.assertGreater(dropped, ASYM_BETA_0024_BRRK0011_CAGR)
+        # The observed inflation was ~0.06 pp; hold it in a tight band so a
+        # future change to elapsed_years can't quietly widen or hide it.
+        inflation_pp = (dropped - ASYM_BETA_0024_BRRK0011_CAGR) * 100.0
+        self.assertGreater(inflation_pp, 0.03)
+        self.assertLess(inflation_pp, 0.12)
+
+    def test_dropna_shortens_the_span_by_exactly_one_day(self):
+        equity = self._equity_curve()
+        seeded = equity.pct_change()
+        seeded.iloc[0] = equity.iloc[0] / 10_000.0 - 1.0
+        dropped = equity.pct_change().dropna()
+        self.assertEqual(len(seeded) - len(dropped), 1)
+        span_seeded = round(elapsed_years(seeded.index) * 365.25)
+        span_dropped = round(elapsed_years(dropped.index) * 365.25)
+        self.assertEqual(span_seeded, 1331)
+        self.assertEqual(span_dropped, 1330)
+
+
 class MetricsDictTests(unittest.TestCase):
     def test_full_dict_shape_and_bounds(self):
         idx = pd.date_range("2024-01-01", periods=400, freq="D")

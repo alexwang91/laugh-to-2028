@@ -15,6 +15,46 @@ place (discipline #3).
 
 ---
 
+## Status index
+
+Added 2026-08-06. Until then this list carried no completion tracking at all: 14 of 28 items were
+finished across PRs #31/#34/#36/#37 but were textually indistinguishable from the ones nobody had
+started, so "what is actually left?" could only be answered by reading git history. Update the row
+when you close an item.
+
+| # | Item | Status |
+|---|---|---|
+| F1 | Carry re-priced against risk-free | **Done** — PR #31, `carry_rf_0036r1/r2`; carry line stopped |
+| F2 | CARRY-PM measurement integrity | **Done** — PR #31, superseded by `CARRY-PM-0037` (not run; carry stopped) |
+| F3 | README headline window is 3.65y | **Done** — PR #34 |
+| F4 | README funding-aware comparison in one table | **Done** — PR #34 |
+| F5 | gross-1.42 vs "leverage last" contradiction | **Done** — PR #36 |
+| F6 | README `capital_factor` clamp | **Moot** — the formula text no longer exists after the PR #34 rewrite |
+| F7 | One metrics implementation | **Done** — PR #36, `research/common/metrics.py`. See F27's correction note: the module was then misused once, which is now pinned by a test |
+| F8 | Reports/logs silently gitignored | **Done** — PR #36, PIT-ALPHA-0018 evidence recovered |
+| F9 | Daily series for every PNL experiment | **Partly done** — PR #36 covered asym_beta_0021/0022/0024 + audit_0023/0025/0026. **`tsmom_data_0027` / `tsmom_pit_0028` still missing**, and must follow the diff-first protocol below |
+| F10 | Shared statistical inference | **Done** — PR #36, `research/stats/inference.py`. Step 2 (emit PSR/CI into *every* `summary.json`) is **not** done; it is applied where claims are made, not universally |
+| F11 | Workflow permissions | **Done** — PR #36, plus the artifact-path fix in `54e8db5` |
+| F12 | Weighted covariance bias | **Closed, not fixed** — PR #37; measured at 0.15-0.94% variance understatement, immaterial |
+| F13 | One drawdown implementation | **Done** — PR #36 |
+| F14 | Dead forward-return leakage path | **Done** — PR #36 |
+| F15 | Order idempotency | **Open** — `execution/` untouched in 107 commits |
+| F16 | Partial fills treated as complete | **Open** |
+| F17 | Non-atomic reversal, silent alert | **Open** |
+| F18 | Size precision / rounding | **Open** |
+| F19 | "No trade" vs "target unreachable" | **Open** |
+| F20 | `api/cron.py` authorization | **Open** |
+| F21 | Delete `ALLOW_STRONG_BETA` | **Open** — branch still present in `beta_bot/config.py` |
+| F22 | Research/execution price + timing parity | **Open** |
+| F23 | Funding filter scope **[REGISTER]** | **Open — highest-value remaining research item** |
+| F24 | Dispersion estimator scale-invariance **[REGISTER]** | **Open, low priority** — verified not on the BRRK-0011 baseline path |
+| F25 | Delisting stress in 0018 | **Deferred** by its own terms — PIT-ALPHA line stopped |
+| F26 | PIT fetch error tolerance | **Open, low priority** — same reason as F24 |
+| F27 | Risk-free rate / idle cash | **Measured** — PR #37 + correction 2026-08-06. Standing wiring into the four `metrics()` functions **not** done |
+| F28 | Impact-cost term | **Open** — revisit as deployed size grows |
+
+---
+
 ## P0 — before CARRY-PM-0035 spends live capital
 
 ### F1. Re-price CARRY-PNL-0031 and CARRY-STACK-0033 against the risk-free rate **[REGISTER]**
@@ -563,12 +603,29 @@ committed weights, cash fraction is `1 - gross`, credited at the daily investmen
 
 | | V1 baseline | BRRK-0011 core |
 |---|---:|---:|
-| mean idle-cash fraction | 20.5% | 24.5% |
-| CAGR, raw → credited | 61.373% → 62.721% | 65.233% → 66.870% |
-| CAGR delta | **+1.348 pp** | **+1.637 pp** |
-| Sharpe (rf=0), raw → credited | 1.2955 → 1.3143 | 1.3538 → 1.3761 |
-| Sharpe (excess over rf), raw → credited | 1.2733 → 1.3037 | 1.3677 → 1.4048 |
+| mean idle-cash fraction | 20.5% | 24.6% |
+| CAGR, raw → credited | 61.313% → 62.663% | 65.166% → 66.807% |
+| CAGR delta | **+1.351 pp** | **+1.641 pp** |
+| Sharpe (rf=0), raw → credited | 1.2950 → 1.3138 | 1.3532 → 1.3756 |
+| Sharpe (excess over rf), raw → credited | 1.2724 → 1.3029 | 1.3667 → 1.4039 |
 | Max drawdown, raw → credited | -37.63% → -36.60% | -33.72% → -33.55% |
+
+> **Corrected 2026-08-06.** The first published version of this table read
+> 61.373% / 65.233% for the raw CAGRs, with deltas +1.348 / +1.637 pp. Those raw
+> figures were wrong, and wrong in a way this backlog already has an item about:
+> the script built its return series with `pct_change().dropna()`, which drops
+> `daily_equity.csv`'s first row. That row is not a placeholder — V1 opens at
+> 9999.459168, already one day of trading from the $10,000 base — so dropping it
+> discarded a day of PNL *and* shortened the series' calendar span from 1331 to
+> 1330 days, inflating CAGR by ~0.06 pp. The result was a **third** BRRK-0011
+> CAGR (65.233%) sitting next to the two F7 exists to explain (65.10%
+> observation-count, 65.17% calendar-span). The script now seeds the first
+> return off the $10,000 base — the convention `verify_psr_dsr_mintrl.py`
+> already used and `test_metrics.py` already pinned — and asserts on startup
+> that its raw BRRK-0011 CAGR reproduces the published 0.6516609785 to 1e-6,
+> so this cannot silently regress. **Every conclusion below survived the
+> correction unchanged**: Sharpe still rises on crediting for both variants, and
+> the BRRK-vs-V1 gap shift is still +0.0036.
 
 The CAGR direction and rough size (+1.3-1.6pp) match the preliminary estimate. **The Sharpe
 direction does not**: both variants' Sharpe *rises* on crediting, on both the rf=0 and the

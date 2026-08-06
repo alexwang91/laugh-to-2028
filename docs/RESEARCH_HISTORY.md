@@ -296,11 +296,42 @@ Two reporting caveats are recorded in `docs/RISK_FREE_METRIC_CONVENTIONS.md`: `e
 
 Evidence: `research/results/carry_rf_0036r1/` (including daily sequences and the raw FRED CSV) and `research/results/carry_rf_0036r2/`.
 
+## 11b. EXPOSURE-SMOOTH-0038 — V1 的仓位函数不连续，可以修，但没有推广
+
+**这一节 2026-08-06 补记。** 0038 在 2026-08-05 已经完成、合并并写进 README，但当时没有同步到本文件和 `NEXT_STEPS.md`，导致"已决定事项"的两份权威记录里查不到这个实验。补上。
+
+V1 的 `btc_last_drop_beta` 有两个可以从代码上精确定位的缺陷：趋势跨过 0 时两条分支公式给出的仓位相差 0.35~0.61（硬拐点，不是连续函数）；且趋势为正时波动率调节被下游"总仓位 ≤ 1.0"的归一化完全抹掉。2021-05-19 至 21 日总仓位在 1.00 → 0.37 → 1.00 之间来回跳，就是这个缺陷的直接后果。
+
+0038 用一条连续直线替换两条分支，全部系数取自原公式已有的值，**没有新增任何参数**：
+
+```text
+raw  = (0.65 + 0.65 * trend) * vol_multiplier(vol)
+beta = clip(raw, 0.18, 1.30)
+```
+
+全历史面板（2021-05-01 起，5.25 年）：
+
+| | V1 冻结基线 | 0038 平滑版 |
+|---|---:|---:|
+| CAGR | 36.38% | 34.13% |
+| MDD | **-59.72%** | **-43.20%** |
+| Sharpe | 0.888 | **0.966** |
+| Calmar | 0.609 | **0.790** |
+
+2021-05 那次崩盘自身的回撤从 **-59.72%** 降到 **-30.11%**。代价是真实的且已记录：2023 那类单边牛市少赚约 46pp，2021-2022 熊市 Sharpe 反而变差。
+
+配对 bootstrap：Sharpe 差 **+0.073**，95% CI **[-0.158, +0.316]**，不排除 0。
+
+Decision: **`MECHANISM_VALIDATED_NOT_PROMOTED_BASELINE_UNCHANGED`。** 机制通过了自己的预登记判据，但（1）CI 不排除 0，按 F10 不构成 promotion claim；（2）真要替换基线，README 所有表格和 BRRK-0011 的 regime 拟合都必须在新仓位函数上重跑，那是需要单独授权的更大决策。**V1 仍是冻结基线，BRRK-0011 仍是 canonical directional core。** 不允许在这段历史上继续调参抢救。
+
+证据：`research/results/EXPOSURE_SMOOTH_0038_RESULT_2026-08-05.md`、`research/results/exposure_smooth_0038/`。
+
 ## 12. Current evidence hierarchy
 
 | Component | Status |
 |---|---|
 | **BRRK-0011** | **Canonical directional core** |
+| EXPOSURE-SMOOTH-0038 | Mechanism validated, **not promoted**; V1 exposure function stays frozen |
 | PIT dispersion | Diagnostic/shadow risk information |
 | Dynamic PIT alpha | Mechanisms interesting; portfolio line stopped |
 | ASYM-BETA-0024 | Forward-shadow bull-extra candidate only |

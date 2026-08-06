@@ -8,40 +8,40 @@
   "results": {
     "V1_BASELINE": {
       "label": "V1 baseline",
-      "mean_idle_fraction": 0.20477797105687454,
+      "mean_idle_fraction": 0.20518267071493995,
       "median_idle_fraction": 0.0,
-      "raw_cagr": 0.6137305686365311,
-      "credited_cagr": 0.6272122212611846,
-      "cagr_delta_pp": 1.3481652624653506,
-      "raw_sharpe_rf0": 1.295542583536419,
-      "credited_sharpe_rf0": 1.3143005040373823,
+      "raw_cagr": 0.6131265293182961,
+      "credited_cagr": 0.6266320267157632,
+      "cagr_delta_pp": 1.3505497397467092,
+      "raw_sharpe_rf0": 1.2950208119949227,
+      "credited_sharpe_rf0": 1.3138257876115051,
       "raw_excess_sharpe_field": "excess_sharpe_excess_vol_denominator",
-      "raw_excess_sharpe": 1.2732744931149376,
+      "raw_excess_sharpe": 1.272398029887278,
       "credited_excess_sharpe_field": "excess_sharpe_excess_vol_denominator",
-      "credited_excess_sharpe": 1.3036632387834344,
-      "raw_max_drawdown": -0.37634907563779574,
-      "credited_max_drawdown": -0.36600332793616086
+      "credited_excess_sharpe": 1.3028518978732844,
+      "raw_max_drawdown": -0.37634907563779585,
+      "credited_max_drawdown": -0.36600332793616064
     },
     "BRRK0011_BASELINE": {
       "label": "BRRK-0011 core",
-      "mean_idle_fraction": 0.24513355046949667,
+      "mean_idle_fraction": 0.24570026699729736,
       "median_idle_fraction": 6.019999998496672e-08,
-      "raw_cagr": 0.6523250740192286,
-      "credited_cagr": 0.6686971575076455,
-      "cagr_delta_pp": 1.63720834884169,
-      "raw_sharpe_rf0": 1.3537501790922384,
-      "credited_sharpe_rf0": 1.3761107607639236,
+      "raw_cagr": 0.6516609785339962,
+      "credited_cagr": 0.6680679733470085,
+      "cagr_delta_pp": 1.6406994813012332,
+      "raw_sharpe_rf0": 1.3531836730182638,
+      "credited_sharpe_rf0": 1.3756090320868788,
       "raw_excess_sharpe_field": "excess_sharpe_excess_vol_denominator",
-      "raw_excess_sharpe": 1.3676656837958756,
+      "raw_excess_sharpe": 1.3666807679409847,
       "credited_excess_sharpe_field": "excess_sharpe_excess_vol_denominator",
-      "credited_excess_sharpe": 1.404779879642065,
-      "raw_max_drawdown": -0.3371507034657848,
-      "credited_max_drawdown": -0.33552370668877907
+      "credited_excess_sharpe": 1.403888018724672,
+      "raw_max_drawdown": -0.3371507034657847,
+      "credited_max_drawdown": -0.3355237066887795
     }
   },
   "brrk_vs_v1_sharpe_gap": {
-    "raw": 0.05820759555581945,
-    "credited": 0.06181025672654128,
-    "shift": 0.0036026611707218326
+    "raw": 0.05816286102334112,
+    "credited": 0.061783244475373644,
+    "shift": 0.0036203834520325273
   }
 }

@@ -27,12 +27,37 @@ sys.path.insert(0, str(REPO / "research" / "common"))
 import numpy as np
 import pandas as pd
 
+from metrics import ASYM_BETA_0024_BRRK0011_CAGR
 from metrics import metrics as metrics_dict
 from risk_free import excess_return_metrics, load_fred_daily_risk_free_investment_basis
 
 EQUITY = REPO / "research" / "results" / "pit_disp_0015" / "daily_equity.csv"
 WEIGHTS = REPO / "research" / "results" / "pit_disp_0015" / "daily_weights.csv"
 VARIANTS = {"V1_BASELINE": "V1 baseline", "BRRK0011_BASELINE": "BRRK-0011 core"}
+BASE_CAPITAL = 10_000.0
+
+
+def equity_to_returns(equity: pd.Series) -> pd.Series:
+    """Daily returns from an equity curve, preserving the first day.
+
+    `daily_equity.csv`'s first row is **already one day of trading** away from
+    the $10,000 base (V1 opens at 9999.459168, not 10000.0), so a plain
+    `pct_change().dropna()` silently does two wrong things at once: it throws
+    away that first day's PNL, and it shortens the series' calendar span from
+    1331 days to 1330, which inflates CAGR by ~0.06 pp. That is how an earlier
+    version of this script produced 65.233% for BRRK-0011 -- a *third* value
+    next to the two the repo already documents (65.10% observation-count,
+    65.17% calendar-span), which is exactly the confusion backlog F7 existed to
+    end.
+
+    Seeding the first return off `BASE_CAPITAL` is the convention
+    `verify_psr_dsr_mintrl.py` already uses (`r.iloc[0] = e.iloc[0]/10_000 - 1`)
+    and the one `research/common/test_metrics.py` pins. With it, this function
+    reproduces the published calendar-span CAGR (0.6516609785) to 8 decimals.
+    """
+    ret = equity.astype(float).pct_change()
+    ret.iloc[0] = equity.iloc[0] / BASE_CAPITAL - 1.0
+    return ret
 
 
 def load_gross(weights: pd.DataFrame, variant: str) -> pd.Series:
@@ -62,9 +87,23 @@ def main():
     print(f"DTB3 investment-basis rate: mean {rf_load.daily['investment_basis_rate'].mean()*100:.3f}%  "
           f"(fetched {rf_load.metadata.get('fetched_at', 'n/a')})\n")
 
+    # Anchor check: the raw (uncredited) BRRK-0011 CAGR this script computes
+    # must land on the already-published calendar-span number. If it does not,
+    # the return-construction convention has drifted again and every delta
+    # below is being measured against the wrong baseline -- fail loudly rather
+    # than print a fourth version of a number the repo has already litigated.
+    anchor = metrics_dict(equity_to_returns(equity["BRRK0011_BASELINE"]))["cagr"]
+    if abs(anchor - ASYM_BETA_0024_BRRK0011_CAGR) > 1e-6:
+        raise AssertionError(
+            f"BRRK-0011 raw CAGR {anchor:.9f} does not match the published "
+            f"calendar-span value {ASYM_BETA_0024_BRRK0011_CAGR:.9f}; "
+            "return construction has drifted (see equity_to_returns docstring)"
+        )
+    print(f"anchor check OK: raw BRRK-0011 CAGR {anchor:.6%} matches published calendar-span value\n")
+
     results = {}
     for variant, label in VARIANTS.items():
-        raw_ret = equity[variant].pct_change().dropna()
+        raw_ret = equity_to_returns(equity[variant])
         gross = load_gross(weights, variant).reindex(raw_ret.index).fillna(0.0)
         idle_fraction = (1.0 - gross).clip(lower=0.0)
         credited_ret = raw_ret + idle_fraction * rf_daily.reindex(raw_ret.index)
