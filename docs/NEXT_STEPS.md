@@ -19,79 +19,78 @@
 ## Current authorized task
 
 ```text
-P1.4 Reversal safety
+P1.5 Precision / metadata
 ```
 
-P0.1, P0.2, P1.1, P1.2 and P1.3 are merged and complete. P1.4 is now the only authorized next implementation dependency.
+P0.1, P0.2, P1.1, P1.2, P1.3 and P1.4 are merged and complete. P1.5 is now the only authorized next implementation dependency.
 
-Do not start P1.5 precision/metadata, P2 router work, P4 leverage work, P5 cycle-exit research or P8 bear-short research early.
+Do not start P1.6 post-submit reconciliation, P2 router work, P3 target-engine work, P4 leverage work, P5 cycle-exit research or P8 bear-short research early.
 
 ---
 
-## P1.4 acceptance boundary
+## P1.5 acceptance boundary
 
 Roadmap requirement:
 
-> No non-atomic long-to-short or short-to-long assumption.
+> Remove hardcoded size and price precision.
 
 Acceptance criteria:
 
-- reduction and new-direction opening are distinct intents;
-- reduce-only is used where applicable;
-- failure during reversal cannot accidentally double directional risk.
+- asset metadata drives valid order formatting;
+- all BRRK instruments pass formatting tests.
 
-P1.4 should consume P1.2 durable order truth and P1.3 actual-fill transition truth. It must not assume that a reversal close leg fully filled merely because it was requested or submitted.
+P1.5 should introduce a canonical metadata-driven formatting layer for BTC / ETH / SOL / BNB. It must remove the current hardcoded BTC order-size rounding assumption from execution code.
 
-The key unresolved boundary handed forward from P1.3 is deliberate: a reversal-open leg currently has no trustworthy `position_before_qty` until fresh state proves the close leg result. P1.4 must solve that safety problem explicitly rather than assigning an optimistic zero baseline.
+P1.5 does **not** by itself authorize multi-asset production execution. Product-universe membership and formatting correctness are separate from P2 routing/identity validation and later production authorization.
 
-Unless the roadmap is formally changed, P1.4 does **not** automatically include or claim:
+Unless the roadmap is formally changed, P1.5 does not include or claim:
 
-- P1.5 metadata-driven size/price precision;
 - P1.6 full post-submit account reconciliation;
-- P1.7 complete restart-recovery matrix;
+- P1.7 complete restart recovery;
 - P1.8 emergency/kill paths;
-- simultaneous multi-process/distributed locking;
+- P2 route selection;
+- P3 production-quality BRRK target generation;
+- P4 leverage research completion;
+- P5 cycle-top research completion;
 - production readiness.
 
 ---
 
-## P1.3 closure baseline
+## P1.4 closure baseline
 
-P1.3 Partial-fill correctness is `PASS / MERGED` through PR #46.
+P1.4 Reversal safety is `PASS / MERGED` through PR #48.
 
 Final implementation head:
 
 ```text
-68bd96f86945ab0fd42ad977142fdacef6a2642d
+879ce2da3b1e4382473037650c3fca30cda7f63f
 ```
 
 Final-head evidence:
 
-- `Phase 0 baseline contract` run #27 / Actions `31055589418`: SUCCESS;
+- `Phase 0 baseline contract` run #32 / Actions `31078243843`: SUCCESS;
 - execution tests: SUCCESS;
 - research integration contract: SUCCESS;
-- `PR handoff governance` run #35 / Actions `31055589427`: SUCCESS;
-- evidence-only PR-body governance run #36 / Actions `31055704431`: SUCCESS.
+- `PR handoff governance` run #41 / Actions `31078243847`: SUCCESS;
+- evidence-only PR-body governance run #42 / Actions `31078303601`: SUCCESS.
 
 Squash/main commit:
 
 ```text
-fe663a0e8115baaa5c2ae9f1a59338e8f4a0c868
+7acb093af59825c39fd092f232573666682197d8
 ```
 
-`EXEC-PARTIAL-FILL-P1.3` is registered as `IMPLEMENTATION_VERIFIED`.
+`EXEC-REVERSAL-SAFETY-P1.4` is registered as `IMPLEMENTATION_VERIFIED`.
 
-P1.3 established:
+P1.4 established:
 
-- zero / partial / full fill classification from actual reconciled fills;
-- signed position movement from actual fills and order side;
-- fill-implied actual position and target gap when a trustworthy baseline exists;
-- separate live resting remainder versus canceled unfilled remainder;
-- fail-closed local/exchange quantity consistency;
-- explicit baseline-unavailable state rather than invented exposure truth;
-- reversal-close actual-fill progress toward zero while leaving fresh reversal-open baseline safety to P1.4.
+- distinct `reduce` and `increase` intents during reversal;
+- reduce-only close semantics;
+- fresh account-position verification after the close leg;
+- no new-direction open until old-direction exposure is proven flat;
+- fail-closed behavior for partial close, unexpected cross-through, malformed state and fresh-state read failure.
 
-It did not authorize production risk and did not complete P1.4.
+P1.4 did not authorize production risk and did not implement P1.5.
 
 ---
 
@@ -137,9 +136,9 @@ P0  canonical product/state registry                       COMPLETE
 P1.1 deterministic order identity                         COMPLETE
 P1.2 persistent order ledger                              COMPLETE
 P1.3 partial-fill correctness                             COMPLETE
-P1.4 reversal safety                                      CURRENT / NEXT
-P1.5 precision / metadata                                 BLOCKED ON P1.4
-P1.6 post-submit reconciliation                           BLOCKED
+P1.4 reversal safety                                      COMPLETE
+P1.5 precision / metadata                                 CURRENT / NEXT
+P1.6 post-submit reconciliation                           BLOCKED ON P1.5
 P1.7 restart recovery                                     BLOCKED
 P1.8 kill and emergency paths                             BLOCKED
 P2  Hyperliquid BRRK instrument router                    BLOCKED
@@ -162,7 +161,7 @@ NO_CHANGE
 production_authorized_components = []
 ```
 
-P1.3 being engineering-verified and merged does not authorize live deployment, leverage expansion, new-asset execution, shorting, cycle-exit production or strategy cutover.
+P1.4 engineering verification does not authorize live deployment, leverage expansion, new-asset execution, shorting, cycle-exit production or strategy cutover.
 
 ---
 
@@ -185,4 +184,4 @@ main
 -> normalize post-merge handoff if needed
 ```
 
-The exact next action after this handoff normalization is merged is to start **P1.4 Reversal safety** from current main on a fresh candidate branch.
+The exact next action after this handoff normalization is merged is to start **P1.5 Precision / metadata** from current main on a fresh candidate branch.
