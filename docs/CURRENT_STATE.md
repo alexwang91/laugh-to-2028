@@ -15,6 +15,7 @@ Status: authoritative cross-chat handoff snapshot
 - P1.4 implementation PR #48 + handoff #49: PASS / MERGED
 - P1.5 implementation PR #50 + handoff #51: PASS / MERGED
 - Current main before P1.6: `181ebe60cb5d74649ee24c518ca05317ca1c7012`
+- P1.6 implementation PR: #52 open
 - P1.6 candidate branch: `p1-6/post-submit-reconciliation`
 
 ## Current roadmap position
@@ -27,7 +28,7 @@ P1.2 Persistent order ledger: PASS / MERGED
 P1.3 Partial-fill correctness: PASS / MERGED
 P1.4 Reversal safety: PASS / MERGED
 P1.5 Precision / metadata: PASS / MERGED
-P1.6 Post-submit reconciliation: CANDIDATE / NOT MERGED
+P1.6 Post-submit reconciliation: IMPLEMENTATION VERIFIED / FINAL-HEAD CI PENDING / NOT MERGED
 P1.7+ blocked
 ```
 
@@ -48,11 +49,11 @@ The only active implementation task is **P1.6 Post-submit reconciliation**.
 
 P1.5 removed hardcoded execution precision, consumes Hyperliquid `meta.universe.szDecimals`, formats size conservatively with Decimal/ROUND_DOWN, provides metadata-driven price formatting, and passed BTC/ETH/SOL/BNB formatting tests. `EXEC-PRECISION-METADATA-P1.5 = IMPLEMENTATION_VERIFIED`.
 
-## P1.6 candidate implementation
+## P1.6 implementation verified on candidate
 
 Roadmap requirement: after every trading cycle fetch open orders, fills, positions and account equity/margin, then compare them with local ledger and current target.
 
-Current candidate:
+PR #52 candidate:
 
 - adds an account-level reconciliation report containing actual position, target gap, account equity, total margin used, exchange open-order CLOIDs, local active CLOIDs, recent-fill count and deterministic blocking reason codes;
 - fetches Hyperliquid open orders, recent fills and fresh clearinghouse state around each trade cycle in addition to the existing persistent order reconciliation;
@@ -66,7 +67,9 @@ Current candidate:
 - core account position/equity/margin parse failure still fails closed because safe risk classification is impossible;
 - post-submit persistent and account reconciliation are both recorded in the cycle payload.
 
-## Self-review corrections
+`EXEC-POST-SUBMIT-RECON-P1.6 = IMPLEMENTATION_VERIFIED` is registered in `config/decision_registry.json`. This is candidate engineering verification only; P1.6 is not merged and production authorization remains empty.
+
+## P1.6 self-review corrections
 
 1. Initial design treated malformed exchange open-order/fill evidence as a global exception. That would also block reductions, violating P1.6. It was corrected to deterministic blocking reason codes that prohibit risk increase but preserve same-direction reductions.
 2. Initial service path still let P1.2 `LedgerUncertainState` abort the cycle before target classification. It was corrected so this uncertainty feeds the P1.6 risk gate; durable-ledger infrastructure failure is not relaxed.
@@ -84,7 +87,22 @@ Current candidate:
 - service test proves the same uncertainty still permits same-direction reduction;
 - missing core margin truth fails closed.
 
-Authoritative GitHub Actions evidence is still pending.
+## Candidate CI evidence
+
+Candidate head before registry/evidence finalization:
+
+```text
+dde987bf89b92aa75621fad91bb6a53eda738576
+```
+
+That head passed:
+
+- `Phase 0 baseline contract` run #38 / Actions `31092971639`: SUCCESS;
+- execution tests inside the contract: SUCCESS;
+- research integration contract: SUCCESS;
+- `PR handoff governance` run #49 / Actions `31092972019`: SUCCESS.
+
+The branch now also contains the decision-registry record and this evidence update. A new final-head CI run is required before merge.
 
 ## Deliberately not solved
 
@@ -108,5 +126,5 @@ P1.6 is the exact roadmap dependency after P1.5 and changes no strategy economic
 ## Exact next action
 
 ```text
-open P1.6 PR -> authoritative CI -> fix same PR -> final-head CI -> merge -> normalize to P1.7
+final-head CI on PR #52 -> merge -> normalize handoff to P1.7
 ```
