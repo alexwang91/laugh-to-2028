@@ -1,137 +1,134 @@
 # BRRK Current State
 
 Last updated: 2026-08-06
-Status: authoritative cross-chat handoff snapshot
+Status: authoritative cross-chat handoff snapshot for candidate branch `fix/p3-1-feature-input-parity`
 
-## Authoritative baseline
+## Authoritative main baseline
 
 - P0.1 / P0.2: PASS / MERGED
 - P1.1 through P1.8: PASS / MERGED; Phase 1 COMPLETE
 - P2.1 through P2.4: PASS / MERGED; Phase 2 COMPLETE
-- P3.1 Data contract: PASS / MERGED
-- Audit correction PR #71: PASS / MERGED
-- Research/evidence normalization PR #72: PASS / MERGED
-- Post-merge handoff normalization PR #73: ACTIVE / CI REQUIRED
-- Current authoritative `main`: `6edaff4bb62bba8316722265dd216ba6e5e7d541`
-- Legacy backlog/roadmap bridge: `docs/BACKLOG_ROADMAP_CROSSWALK_2026-08-06.md`
+- P3.1 original data contract: PASS / MERGED
+- PR #71: PASS / MERGED
+- PR #72: PASS / MERGED as `6edaff4bb62bba8316722265dd216ba6e5e7d541`
+- PR #73: **MERGED MANUALLY** as `89b095d7a7d746b768afca8245b963ecf15ffabc`; required governance CI was not recorded green before the manual merge and must not be retroactively labeled CI VERIFIED
+- Current authoritative `main`: `89b095d7a7d746b768afca8245b963ecf15ffabc`
 - Historical stale-main PR #70: INVALID / CLOSED / DO NOT REVIVE
 
 ## Current roadmap position
 
 ```text
-P3.1     PASS / MERGED
-#71      PASS / MERGED
-#72      PASS / MERGED
-#73      ACTIVE POST-MERGE HANDOFF NORMALIZATION
-P3.2     UNIQUE NEXT ROADMAP IMPLEMENTATION AFTER #73
-P3.3+    BLOCKED
+P3.1 base          PASS / MERGED
+P3.1 parity fix    ACTIVE CANDIDATE — REQUIRED BEFORE P3.2
+P3.2               BLOCKED ON PARITY FIX
+P3.3+              BLOCKED
 ```
 
-P3.2 is target calculation only. It must reproduce the frozen BRRK-0011 baseline and must not absorb F23 funding redesign, EXPOSURE-SMOOTH-0038 promotion, ASYM-BETA promotion, >1 leverage, cycle-exit logic, short logic, P3.3 rebalance/turnover behavior, P3.4 contributions, or production authorization.
+A fresh P3.2 branch `p3-2/target-calculation-api-v2` was created from `89b095d7...`, but **no P3.2 code was committed** before the dependency mismatch below was discovered. Do not continue that branch after this correction merges; create another fresh P3.2 branch from then-current main.
 
-## PR #72 closure
+## Newly discovered P3.1 parity defect
 
-PR `#72 Audit normalization: repair F27 measurement and record EXPOSURE-SMOOTH-0038` was squash-merged after final-head CI passed.
-
-Final PR head:
+During recovery of the exact frozen BRRK-0011 target chain, GitHub source proved that the frozen regime feature model consumes five Binance spot daily series:
 
 ```text
-fb13142082d0f2b0ca15dc61103954708e87af15
+BTC  target/tradable
+ETH  target/tradable
+SOL  target/tradable
+BNB  target/tradable
+XRP  feature-only
 ```
 
-Squash merge on `main`:
+The original P3.1 canonical contract exposed only BTC/ETH/SOL/BNB and described those four as the complete frozen strategy input. That is inconsistent with the actual BRRK-0011 HMM feature implementation:
+
+- `RegimeKellyConfig` includes XRP in the major/alt feature panels;
+- `features_no_dominance.py` uses those panels for breadth, relative-strength dispersion and BTC-correlation features;
+- `build_brrk0011_scale()` consumes those features before fitting the regime model.
+
+Therefore exact research/live BRRK-0011 golden parity is impossible from the P3.1 v1 payload.
+
+This is an implementation/data-contract parity correction, **not** a new research hypothesis and not an expansion of the product universe.
+
+## Candidate correction
+
+Branch:
 
 ```text
-6edaff4bb62bba8316722265dd216ba6e5e7d541
+fix/p3-1-feature-input-parity
+base = 89b095d7a7d746b768afca8245b963ecf15ffabc
 ```
 
-### IMPLEMENTED
+Implemented candidate behavior:
 
-F27 measurement correction:
+- canonical target/tradable assets remain exactly BTC/ETH/SOL/BNB;
+- add `strategy_feature_assets = [XRP]`;
+- canonical strategy-signal daily payload requires BTC/ETH/SOL/BNB/XRP complete UTC daily history;
+- XRP source mapping is frozen as `XRPUSDT`;
+- common-history and missing-data fail-closed rules apply across all five signal series;
+- router funding/basis canonicalizers remain restricted to BTC/ETH/SOL/BNB and reject XRP;
+- contract schema advances from v1 to v2 because payload role/content and digest semantics change;
+- no BRRK parameter, weight formula, HMM parameter, risk budget or risk-scaling rule changes.
 
-- `research/results/idle_cash_credit_0027r1.json` is preserved as superseded historical measurement evidence;
-- day-one return is reconstructed from the known `$10,000` base instead of being dropped by `pct_change().dropna()`;
-- the script refuses to emit R2 unless BRRK-0011 raw CAGR reproduces the frozen calendar-span anchor `0.6516609785...`;
-- corrected evidence is committed as `research/results/idle_cash_credit_0027r2.json`;
-- no BRRK/V1 weights, parameters, regime fit, source convention, or strategy economics changed.
-
-Corrected F27 R2 headline metrics:
-
-| Metric | V1 baseline | BRRK-0011 core |
-|---|---:|---:|
-| mean idle cash | 20.5183% | 24.5700% |
-| raw CAGR | 61.3127% | 65.1661% |
-| credited CAGR | 62.6632% | 66.8068% |
-| CAGR delta | +1.3505 pp | +1.6407 pp |
-| raw Sharpe (rf=0) | 1.2950 | 1.3532 |
-| credited Sharpe (rf=0) | 1.3138 | 1.3756 |
-| raw excess Sharpe | 1.2724 | 1.3667 |
-| credited excess Sharpe | 1.3029 | 1.4039 |
-| raw MDD | -37.6349% | -33.7151% |
-| credited MDD | -36.6003% | -33.5524% |
-
-BRRK-vs-V1 rf=0 Sharpe gap moves from `+0.0581629` to `+0.0617832`, shift `+0.0036204`. Qualitative F27 conclusion is unchanged.
-
-EXPOSURE-SMOOTH-0038 authority normalization:
-
-- result summary states `MECHANISM_VALIDATED_NOT_PROMOTED_BASELINE_UNCHANGED`;
-- `docs/EXPOSURE_SMOOTH_0038_DECISION_2026-08-06.md` records the governance decision;
-- `config/decision_registry.json` records `EXPOSURE-SMOOTH-0038` as `SHADOW_ONLY` historical/mechanism evidence;
-- frozen V1 and BRRK-0011 authority remain unchanged;
-- 0038 must not be substituted into P3.2 and is not leverage or production authorization.
-
-### TESTED / CI VERIFIED
-
-Final head `fb13142082d0f2b0ca15dc61103954708e87af15` completed the required gates successfully:
-
-- `Research evidence normalization` run `31119256543`: SUCCESS;
-- `Phase 0 baseline contract` run `31119256293`: SUCCESS;
-- `PR handoff governance` run `31119364631`: SUCCESS;
-- incidental `CARRY RF 0036R1` run `31119256178`: SUCCESS.
-
-Earlier setup-only `Service Unavailable` / queued-timeout failures occurred during the GitHub Actions outage and were retried without lowering any gate.
-
-### MERGED
+## Frozen BRRK-0011 chain recovered
 
 ```text
-YES — PR #72 squash-merged to main as 6edaff4bb62bba8316722265dd216ba6e5e7d541.
+build_brrk0011_scale
+-> fit_variational_regime_model_nd
+-> filtered_posterior
+-> fit_state_v1_distribution
+-> sample_v1_paths
+-> choose_scale_corrected
+-> meta_scale
+-> final_scale = 1 - P(RISK_OFF) * (1 - meta_scale)
+-> BRRK_0011_BASELINE = v1_raw.mul(final_scale, axis=0)
 ```
 
-### PRODUCTION AUTHORIZED
+Frozen target assets remain BTC/ETH/SOL/BNB. Frozen risk scaler remains 0–1. `EXPOSURE-SMOOTH-0038` remains NOT PROMOTED / BASELINE UNCHANGED.
+
+## P3.2 boundary retained
+
+After the parity correction is merged, P3.2 remains target calculation only. It must output at least:
+
+- BTC/ETH/SOL/BNB target/relative weights;
+- cash share;
+- base gross target <= 1;
+- risk state and corrected defensive scale;
+- decision timestamp;
+- feature snapshot;
+- model/data-contract/target-engine versions and data digest.
+
+P3.2 must not add P3.3 rebalance/turnover bands, P3.4 contributions, F23 funding-response redesign, P4 >1 leverage, P5 exit intelligence, shorts, XRP target exposure, or production authorization.
+
+## Evidence status for active correction
 
 ```text
-NO_CHANGE
-production_authorized_components = []
+IMPLEMENTED:          IN PROGRESS / CORE CONTRACT + TEST UPDATES WRITTEN
+TESTED:               NOT YET CLAIMED
+CI VERIFIED:          NO
+MERGED:               NO
+PRODUCTION AUTHORIZED:NO_CHANGE
 ```
 
-No live capital, leverage expansion, new asset, short, withdrawal, transfer, or cutover authorization was created by #72.
-
-## Research / strategy boundaries retained
-
-- `BRRK-0011` remains the frozen canonical directional research target; do not retune it on the current historical window.
-- `EXPOSURE-SMOOTH-0038` is mechanism-valid evidence only: **NOT PROMOTED / BASELINE UNCHANGED**.
-- `ASYM-BETA-0024` remains shadow-only evidence, not leverage authorization.
-- stopped PIT-alpha, TSMOM and carry lines remain stopped.
-- F23 funding-response redesign remains a separately registered research boundary and must not enter P3.2.
-- P4 is the first phase allowed to research >1 gross exposure.
+`production_authorized_components = []`
 
 ## Project drift audit
 
 ```text
-DRIFT_0
+DRIFT_1
 ```
 
-The pre-P3.2 audit/evidence correction chain is closed on main. PR #73 only normalizes the post-merge handoff record; no known roadmap/research mismatch remains once that docs-only PR is merged. This does not change product scope, research authority, risk philosophy, human-approval boundaries, credential/security boundaries, stopped-line policy, or production authorization.
+Reason: the original P3.1 contract omitted a feature-only series actually consumed by the frozen BRRK-0011 regime model. The correction restores parity without changing product scope or research authority.
 
 ## Exact next action
 
 ```text
-#73 final-head governance CI
--> expected-head squash merge #73
--> verify new main
--> create a fresh P3.2 branch from then-current main
--> recover exact frozen BRRK-0011 allocation / regime / corrected defensive-scale chain from GitHub
--> implement canonical Target calculation API only
--> add deterministic multi-date research/live golden parity
--> self-review / CI / expected-head merge
+finish P3.1 parity correction docs/tests
+-> run local/CI tests
+-> self-review diff
+-> open correction PR with normal governance
+-> final-head CI
+-> expected-head merge
+-> post-merge handoff normalization
+-> create a NEW fresh P3.2 branch from then-current main
+-> implement frozen BRRK-0011 Target calculation API only
+-> deterministic multi-date research/live golden parity
 ```
