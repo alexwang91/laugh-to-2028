@@ -118,8 +118,6 @@ class OrderLedger:
     def _initialize(self) -> None:
         try:
             with self._connect() as conn:
-                # DELETE keeps committed truth in the configured database file rather
-                # than depending on a long-lived WAL sidecar surviving separately.
                 conn.execute("PRAGMA journal_mode = DELETE")
                 check = conn.execute("PRAGMA quick_check").fetchone()
                 if not check or check[0] != "ok":
@@ -227,6 +225,23 @@ class OrderLedger:
                 return dict(row) if row else None
         except sqlite3.Error as exc:
             raise LedgerError(f"Order ledger read failed: {exc}") from exc
+
+    def orders_for_asset(self, asset: str) -> list[dict[str, Any]]:
+        """Return durable order history for an asset, newest first.
+
+        P1.7 uses this read-only view to compare the latest fill-implied local position
+        expectation with fresh account position truth after a cold restart.
+        """
+        try:
+            with self._connect() as conn:
+                rows = conn.execute(
+                    """SELECT * FROM orders WHERE asset=?
+                       ORDER BY decision_timestamp_ms DESC, created_at_ms DESC, cloid DESC""",
+                    (asset,),
+                ).fetchall()
+                return [dict(row) for row in rows]
+        except sqlite3.Error as exc:
+            raise LedgerError(f"Could not enumerate asset order history: {exc}") from exc
 
     def list_status_history(self, cloid: str) -> list[dict[str, Any]]:
         try:
@@ -459,7 +474,6 @@ class OrderLedger:
             raise LedgerError(f"Could not persist reconciliation uncertainty: {exc}") from exc
 
     def record_exchange_discovery(self, cloid: str, response: dict[str, Any]) -> str:
-        """Persist a known exchange order before full fill reconciliation."""
         if response.get("status") != "order":
             self.record_reconciliation_uncertainty(cloid, "non_order_exchange_discovery", response)
             raise LedgerUncertainState(f"Cannot record non-order discovery: {response}")

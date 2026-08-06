@@ -13,6 +13,7 @@ from .executor import execute_target_position, reconcile_persistent_orders
 from .market import (
     fetch_market_snapshot,
     fetch_open_orders,
+    fetch_order_status,
     fetch_user_fills_by_time,
     fetch_user_state,
 )
@@ -21,6 +22,7 @@ from .notify import send_telegram
 from .order_ledger import LedgerUncertainState, OrderLedger
 from .portfolio import build_portfolio_plan, parse_account_equity, parse_position_qty
 from .product_config import load_product_config
+from .restart_recovery import RestartRecoveryReport, recover_cold_start
 
 
 DAY_MS = 86_400_000
@@ -32,6 +34,35 @@ def _canonical_decision_timestamp_ms(last_completed_candle_start_ms: int) -> int
     if last_completed_candle_start_ms <= 0:
         raise ValueError("last_completed_candle_start_ms must be positive")
     return last_completed_candle_start_ms + DAY_MS
+
+
+def _restart_recovery(
+    settings: Settings,
+    *,
+    user_state: dict,
+) -> RestartRecoveryReport:
+    if not settings.account_address:
+        raise ValueError("Trading account address is missing")
+    if not settings.order_ledger_path:
+        raise ValueError("Restart recovery requires ORDER_LEDGER_PATH")
+    return recover_cold_start(
+        ledger=OrderLedger(settings.order_ledger_path),
+        coin=settings.coin,
+        user_state=user_state,
+        query_order_status=lambda cloid: fetch_order_status(
+            settings.api_url,
+            settings.account_address or "",
+            cloid,
+            settings.request_timeout_seconds,
+        ),
+        fetch_fills_by_time=lambda start_ms, end_ms: fetch_user_fills_by_time(
+            settings.api_url,
+            settings.account_address or "",
+            start_ms,
+            end_ms,
+            settings.request_timeout_seconds,
+        ),
+    )
 
 
 def _account_reconciliation(
@@ -124,26 +155,23 @@ def run_strategy(settings: Settings) -> dict:
         send_telegram(settings, payload)
         return payload
 
-    pre_persistent = None
-    if settings.can_trade:
-        try:
-            pre_persistent = reconcile_persistent_orders(settings)
-        except LedgerUncertainState as exc:
-            # P1.2 uncertainty still forbids fresh risk. P1.6 deliberately turns
-            # that uncertainty into a gate input instead of terminating the whole
-            # cycle so a later same-direction reduction can remain available.
-            pre_persistent = {
-                "blocking_unresolved_after": 1,
-                "reconciliation_uncertain": True,
-                "error": str(exc),
-            }
-        payload["order_reconciliation"] = {"pre_trade": pre_persistent}
-
     user_state = fetch_user_state(
         settings.api_url,
         settings.account_address,
         settings.request_timeout_seconds,
     )
+
+    # P1.7 is the single pre-trade replay orchestrator. Internally it runs the P1.2
+    # persistent reconciliation and adds cold-start case classification plus fresh
+    # account-position precedence. It has no economic write capability.
+    pre_persistent = None
+    restart_report = None
+    if settings.can_trade:
+        restart_report = _restart_recovery(settings, user_state=user_state)
+        pre_persistent = restart_report.persistent_reconciliation
+        payload["restart_recovery"] = restart_report.to_dict()
+        payload["order_reconciliation"] = {"pre_trade": pre_persistent}
+
     equity = parse_account_equity(user_state)
     current_qty = parse_position_qty(user_state, settings.coin)
 
@@ -181,13 +209,26 @@ def run_strategy(settings: Settings) -> dict:
             current_qty,
             plan.target_perp_qty,
         )
-        if pre_account and not pre_account.risk_increase_allowed and increases_risk:
+        restart_blocks_increase = bool(
+            restart_report
+            and not restart_report.risk_increase_allowed
+            and increases_risk
+        )
+        account_blocks_increase = bool(
+            pre_account
+            and not pre_account.risk_increase_allowed
+            and increases_risk
+        )
+        if restart_blocks_increase or account_blocks_increase:
             payload["result"] = "trade_blocked_account_reconciliation"
             payload["orders"] = []
             payload["risk_increase_blocked"] = True
         else:
             payload["risk_increase_blocked"] = False
-            if pre_account and not pre_account.is_clean and not increases_risk:
+            if (
+                (pre_account and not pre_account.is_clean)
+                or (restart_report and not restart_report.is_resolved)
+            ) and not increases_risk:
                 payload["reconciliation_override"] = "REDUCE_RISK_ACTION_ALLOWED"
             payload["orders"] = execute_target_position(
                 settings,
