@@ -10,9 +10,10 @@ from hyperliquid.utils.types import Cloid
 
 from .config import Settings
 from .fill_transition import FillTransitionError, build_fill_transition
-from .market import fetch_order_status, fetch_user_fills_by_time
+from .market import fetch_order_status, fetch_user_fills_by_time, fetch_user_state
 from .order_identity import OrderIdentity, build_order_identity, canonical_target_revision
 from .order_ledger import LedgerIntent, LedgerUncertainState, OrderLedger, reconcile_unresolved_orders
+from .reversal import ReversalSafetyError, verify_reversal_flat
 
 
 def _round_size(size: float, decimals: int = 5) -> float:
@@ -85,13 +86,7 @@ def _submit_once(
     intent: LedgerIntent,
     submit: Callable[[Cloid], dict[str, Any]],
 ) -> tuple[str, str | None]:
-    """Persist-before-submit and suppress/recover one deterministic economic order.
-
-    Durable ordering is intentional:
-      intent -> exchange CLOID lookup -> durable submission-attempt marker -> network submit.
-    If a prior attempt exists and the exchange later says unknownOid, P1.2 does not retry.
-    That retry policy belongs to a later lifecycle task; this path fails closed instead.
-    """
+    """Persist-before-submit and suppress/recover one deterministic economic order."""
     identity = intent.identity
     local = ledger.record_intent(intent)
     cloid = Cloid.from_str(identity.cloid)
@@ -205,9 +200,7 @@ def reconcile_persistent_orders(settings: Settings) -> dict[str, Any]:
         try:
             transitions.append(build_fill_transition(row).to_dict())
         except FillTransitionError as exc:
-            ledger.record_reconciliation_uncertainty(
-                cloid, "fill_transition_failed", str(exc)
-            )
+            ledger.record_reconciliation_uncertainty(cloid, "fill_transition_failed", str(exc))
             raise LedgerUncertainState(
                 f"CLOID {cloid} cannot produce trustworthy actual-fill position progress: {exc}"
             ) from exc
@@ -230,6 +223,34 @@ def _ledger_intent(
     )
 
 
+def _fresh_reversal_flat_gate(settings: Settings, previous_position_qty: float) -> float:
+    """Require a fresh exchange account read proving flat before the new-direction leg."""
+    if not settings.account_address:
+        raise ValueError("Trading account address is missing")
+    try:
+        state = fetch_user_state(
+            settings.api_url,
+            settings.account_address,
+            settings.request_timeout_seconds,
+        )
+        verified = verify_reversal_flat(
+            state,
+            coin=settings.coin,
+            previous_position_qty=previous_position_qty,
+        )
+    except ReversalSafetyError:
+        raise
+    except Exception as exc:
+        raise ReversalSafetyError(
+            f"Fresh reversal position verification failed for {settings.coin}: {exc}"
+        ) from exc
+    if not verified.safe_to_open_new_direction:
+        raise ReversalSafetyError(
+            f"Fresh reversal state did not authorize opening new direction for {settings.coin}"
+        )
+    return verified.observed_position_qty
+
+
 def execute_target_position(
     settings: Settings,
     current_qty: float,
@@ -244,7 +265,6 @@ def execute_target_position(
     if not settings.account_address:
         raise ValueError("Trading account address is missing")
 
-    # Open and integrity-check durable state before any exchange write action.
     ledger = _open_ledger(settings)
 
     wallet = Account.from_key(settings.api_private_key)
@@ -281,7 +301,6 @@ def execute_target_position(
             target_revision=target_revision,
         )
         quantity = _round_size(abs(delta))
-
         transition_metadata = {
             "position_before_qty": current_qty,
             "target_position_qty": target_qty,
@@ -307,10 +326,7 @@ def execute_target_position(
                 ledger=ledger,
                 intent=ledger_intent,
                 submit=lambda cloid: exchange.market_close(
-                    settings.coin,
-                    sz=quantity,
-                    slippage=slippage,
-                    cloid=cloid,
+                    settings.coin, sz=quantity, slippage=slippage, cloid=cloid
                 ),
             )
         else:
@@ -351,10 +367,9 @@ def execute_target_position(
         actions.append(action)
         return actions
 
-    # P1.3 records actual-fill position progress for each leg but deliberately does not
-    # solve P1.4 reversal safety. The close leg has a known pre-trade baseline. The open
-    # leg's baseline is intentionally unavailable until a future fresh reconciliation
-    # proves the close leg's actual result; P1.3 therefore never assumes it is zero.
+    # P1.4 reversal safety: old-direction reduction and new-direction opening are
+    # separate economic intents. The close leg is reduce-only and the open leg is
+    # forbidden until a fresh exchange account read proves the old direction is flat.
     close_side = "sell" if current_qty > 0 else "buy"
     close_identity = _identity(
         release_id=release_id,
@@ -386,10 +401,7 @@ def execute_target_position(
         ledger=ledger,
         intent=close_ledger_intent,
         submit=lambda cloid: exchange.market_close(
-            settings.coin,
-            sz=close_quantity,
-            slippage=slippage,
-            cloid=cloid,
+            settings.coin, sz=close_quantity, slippage=slippage, cloid=cloid
         ),
     )
     close_action = {
@@ -397,10 +409,17 @@ def execute_target_position(
         "size": abs(current_qty),
         "status": close_status,
         "order_identity": close_identity.to_dict(),
+        "reduce_only": True,
     }
     if close_existing_status is not None:
         close_action["existing_order_status"] = close_existing_status
     actions.append(close_action)
+
+    # Critical P1.4 gate. Submission success is insufficient: the exchange account
+    # position itself must freshly prove flat. Any partial fill, stale old-direction
+    # remainder, unexpected cross-through, malformed response, or read failure blocks
+    # the risk-increasing open leg.
+    fresh_position_qty = _fresh_reversal_flat_gate(settings, current_qty)
 
     open_side = "buy" if target_qty > 0 else "sell"
     open_identity = _identity(
@@ -422,9 +441,10 @@ def execute_target_position(
             "is_buy": target_qty > 0,
             "size": open_quantity,
             "slippage": slippage,
-            "position_before_qty": None,
+            "position_before_qty": fresh_position_qty,
             "target_position_qty": target_qty,
-            "position_tracking_source": "requires_p1_4_reversal_reconciliation",
+            "position_tracking_source": "fresh_exchange_flat_after_reversal_close",
+            "reversal_flat_verified": True,
         },
     )
     open_status, open_existing_status = _submit_once(
@@ -445,6 +465,7 @@ def execute_target_position(
         "size": abs(target_qty),
         "status": open_status,
         "order_identity": open_identity.to_dict(),
+        "fresh_position_before_open": fresh_position_qty,
     }
     if open_existing_status is not None:
         open_action["existing_order_status"] = open_existing_status
