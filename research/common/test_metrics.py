@@ -84,6 +84,48 @@ class MetricsReproductionTests(unittest.TestCase):
         self.assertGreater(abs(got - PIT_DISP_0015_BRRK0011_CAGR), 1e-5)
 
 
+class EquityCurveReturnConventionTests(unittest.TestCase):
+    """Pins the F27 R1 bug: first realized equity is not a placeholder."""
+
+    def _equity_curve(self):
+        idx = pd.date_range("2022-12-10", periods=1332, freq="D")
+        first_close = 9999.10
+        final_close = ASYM_BETA_0024_BRRK0011_FINAL_10K
+        remaining_growth = final_close / first_close
+        daily_growth = remaining_growth ** (1.0 / (len(idx) - 1))
+        nav = first_close * daily_growth ** np.arange(len(idx))
+        return pd.Series(nav, index=idx)
+
+    def test_seeded_first_return_preserves_full_span_and_anchor(self):
+        equity = self._equity_curve()
+        ret = equity.pct_change()
+        ret.iloc[0] = equity.iloc[0] / 10_000.0 - 1.0
+        self.assertEqual(len(ret), 1332)
+        self.assertEqual(round(elapsed_years(ret.index) * 365.25), 1331)
+        self.assertAlmostEqual(
+            cagr_from_returns(ret),
+            ASYM_BETA_0024_BRRK0011_CAGR,
+            places=6,
+        )
+
+    def test_dropna_loses_one_realized_day_and_one_calendar_day(self):
+        equity = self._equity_curve()
+        seeded = equity.pct_change()
+        seeded.iloc[0] = equity.iloc[0] / 10_000.0 - 1.0
+        dropped = equity.pct_change().dropna()
+
+        self.assertEqual(len(seeded) - len(dropped), 1)
+        self.assertEqual(round(elapsed_years(seeded.index) * 365.25), 1331)
+        self.assertEqual(round(elapsed_years(dropped.index) * 365.25), 1330)
+
+        seeded_cagr = cagr_from_returns(seeded)
+        dropped_cagr = cagr_from_returns(dropped)
+        self.assertGreater(dropped_cagr, seeded_cagr)
+        inflation_pp = (dropped_cagr - seeded_cagr) * 100.0
+        self.assertGreater(inflation_pp, 0.03)
+        self.assertLess(inflation_pp, 0.12)
+
+
 class MetricsDictTests(unittest.TestCase):
     def test_full_dict_shape_and_bounds(self):
         idx = pd.date_range("2024-01-01", periods=400, freq="D")

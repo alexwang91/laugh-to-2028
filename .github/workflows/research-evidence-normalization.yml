@@ -1,0 +1,37 @@
+name: Research evidence normalization
+
+on:
+  pull_request:
+    paths:
+      - "research/common/**"
+      - "research/review_2026_08_04/verify_idle_cash_credit.py"
+      - "research/results/idle_cash_credit_0027r*.json"
+      - "research/results/exposure_smooth_0038/**"
+      - "docs/RESEARCH_HISTORY.md"
+      - "docs/REVIEW_FIX_BACKLOG.md"
+      - "docs/P3_1_DATA_CONTRACT.md"
+      - "docs/CURRENT_STATE.md"
+      - ".github/workflows/research-evidence-normalization.yml"
+
+jobs:
+  evidence:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact PR head without marketplace action dependency
+        run: |
+          git init .
+          git remote add origin "https://github.com/${GITHUB_REPOSITORY}.git"
+          git fetch --depth=1 origin "${GITHUB_SHA}"
+          git checkout --detach FETCH_HEAD
+          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+      - name: Show runner Python
+        run: python3 --version
+      - name: Install evidence dependencies
+        run: python3 -m pip install numpy pandas requests
+      - name: Run canonical metric regression tests
+        working-directory: research/common
+        run: python3 -m unittest test_metrics.py
+      - name: Recompute F27 R2 measurement
+        run: python3 research/review_2026_08_04/verify_idle_cash_credit.py
+      - name: Print generated F27 R2 evidence
+        run: cat research/results/idle_cash_credit_0027r2.json

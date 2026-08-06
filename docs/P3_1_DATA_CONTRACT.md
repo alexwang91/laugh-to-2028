@@ -1,6 +1,6 @@
 # P3.1 Canonical Data Contract
 
-Status: candidate implementation for roadmap P3.1 only.
+Status: **PASS / MERGED — canonical P3.1 data contract.** This document defines data semantics only; it does not authorize P3.2 target generation or production trading.
 
 Machine-readable authority: `config/data_contract.json`.
 Implementation: `execution/plan-b-bot/beta_bot/data_contract.py`.

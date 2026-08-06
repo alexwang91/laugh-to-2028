@@ -47,6 +47,19 @@ def elapsed_years(index: pd.Index) -> float:
     """Calendar-span year count: (last - first).days / 365.25.
 
     Floored at 1 day so a single-observation series doesn't divide by zero.
+
+    Caller warning (F27 R2, 2026-08-06): the index must cover the complete
+    realized strategy life being measured. Converting an equity curve with
+    ``equity.pct_change().dropna()`` drops the first timestamp. If the first
+    equity row is already a realized close relative to known starting capital,
+    that simultaneously discards day-one PnL and shortens the calendar span.
+    Seed the first return explicitly instead::
+
+        ret = equity.pct_change()
+        ret.iloc[0] = equity.iloc[0] / BASE_CAPITAL - 1.0
+
+    This is now regression-tested because the old F27 overlay reproduced a
+    third, incorrect BRRK-0011 CAGR by dropping that first realized row.
     """
     if len(index) < 2:
         return 1.0 / DAYS_PER_YEAR

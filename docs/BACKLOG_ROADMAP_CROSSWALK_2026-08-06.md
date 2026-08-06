@@ -22,12 +22,12 @@ A roadmap task touching a legacy defect must not be called complete solely becau
 | --- | --- | --- | --- |
 | F15 order duplication | P1.1 deterministic identity + P1.2 persistent ledger | RESOLVED | deterministic CLOID, durable attempt truth, replay suppression and idempotency tests |
 | F16 partial fills | P1.3 partial-fill correctness | RESOLVED | fill-transition accounting uses actual fills and exposes residual target gap |
-| F17 reversal non-atomic / silent failure | P1.4 reversal safety + P1.8 emergency paths | PARTIAL -> audit correction | directional double-risk defect was resolved by fresh-flat reversal gating; the separate requirement that unexpected strategy-cycle failures still notify the operator remained open because `send_telegram` sat after the execution path. Audit correction adds best-effort failure notification and re-raises the original error. |
+| F17 reversal non-atomic / silent failure | P1.4 reversal safety + P1.8 emergency paths | RESOLVED | PR #71 preserved best-effort operator notification on unexpected strategy-cycle failure and re-raises the original error; the earlier reversal double-risk defect was already closed by P1.4. |
 | F18 size precision | P1.5 precision / metadata | RESOLVED | Hyperliquid metadata drives formatting; truncation and multi-asset formatting tests exist |
-| F19 unreachable leverage target reported as no-op | execution-plan semantics, discovered before P3.2 | OPEN -> audit correction | add requested-vs-reachable target, `target_clamped_by_leverage`, explicit unreachable/rebalance reason, and warning payload |
-| F20 `/api/cron` authorization | security hardening before any live phase | OPEN -> audit correction | require bearer `CRON_SECRET` for HTTP cron in both shadow/trade, constant-time compare, remove spoofable User-Agent authorization, redact external exception messages. CLI/emergency paths intentionally do not depend on cron auth. |
-| F21 unbacktested `ALLOW_STRONG_BETA` / 1.50 branch | P4 leverage-governance boundary | OPEN -> audit correction | remove the env-toggleable 1.50 branch and `HARD_BETA_CAP` / `ALLOW_STRONG_BETA` settings. This does not implement P4 or promote a new leverage model. |
-| F22 research/execution price + timing parity | P3.1 data contract plus operational schedule | PARTIAL -> audit correction | P3.1 resolved source/timestamp semantics and 00:00 UTC decision boundary; old Vercel schedule remained 01:10 UTC. Audit correction moves cron to 00:05 UTC while retaining the canonical decision timestamp at 00:00. |
+| F19 unreachable leverage target reported as no-op | execution-plan semantics, discovered before P3.2 | RESOLVED | PR #71 records requested vs reachable target, explicit leverage-clamp state/reasons, and makes clamp reduction take precedence when the current position exceeds the reachable cap. |
+| F20 `/api/cron` authorization | security hardening before any live phase | RESOLVED | PR #71 requires configured bearer `CRON_SECRET` in shadow/trade, uses constant-time comparison, removes User-Agent authorization, and redacts external exception text. |
+| F21 unbacktested `ALLOW_STRONG_BETA` / 1.50 branch | P4 leverage-governance boundary | RESOLVED | PR #71 removed the env-toggleable 1.50 branch and `HARD_BETA_CAP` / `ALLOW_STRONG_BETA`; >1 research remains P4-only. |
+| F22 research/execution price + timing parity | P3.1 data contract plus operational schedule | RESOLVED_FOR_PRE_P3.2_SCOPE | P3.1 fixed canonical source/timestamp semantics; PR #71 moved Vercel cron to 00:05 UTC while preserving the 00:00 UTC economic decision boundary. P3.3 will separately own rebalance-band/turnover semantics. |
 | F23 funding filter scope | future registered research only; must not be slipped into P3.2 | DEFERRED_REGISTERED_BOUNDARY | current legacy filter thresholds are not canonical BRRK research. P3.2 must reproduce frozen BRRK-0011 without treating this filter as promoted logic. Any whole-range funding response requires a new registered experiment; do not retune existing thresholds. |
 | F28 impact cost / capacity | P2.3 cost model | RESOLVED_FOR_CURRENT_SCOPE | canonical Hyperliquid L2 depth/VWAP, capacity fail-closed behavior and beyond-spread accounting were completed in P2.3 + correction. Revalidate capacity if deployment size materially changes. |
 
@@ -35,10 +35,35 @@ A roadmap task touching a legacy defect must not be called complete solely becau
 
 The remaining legacy research items are not silently promoted by this crosswalk. Their status remains governed by `config/decision_registry.json`, `docs/RESEARCH_HISTORY.md`, experiment preregistrations/results and stopped-line discipline.
 
-Two evidence-governance corrections identified during the 2026-08-06 audit remain separate from the execution correction above:
+### EXPOSURE-SMOOTH-0038 authority normalization
 
-1. `EXPOSURE-SMOOTH-0038` must be recorded as mechanism-validated but **not promoted** so a fresh session cannot accidentally rerun or promote it as canonical V1/BRRK logic.
-2. F27 idle-cash-credit absolute CAGR values must be restated from a return series that preserves the first equity observation relative to the known $10,000 initial capital. This is a `MEASUREMENT_FIX`; it does not change the F27 qualitative decision.
+PR #72 records the already-run experiment as:
+
+```text
+MECHANISM VALIDATED
+NOT PROMOTED
+BASELINE UNCHANGED
+```
+
+The frozen V1 exposure function and BRRK-0011 remain authoritative. `EXPOSURE-SMOOTH-0038` must not be substituted into P3.2 and does not authorize leverage or production trading. Treat this correction as closed only after #72 merges with final-head CI.
+
+### F27 idle-cash-credit measurement normalization
+
+The F27 table currently retained inside `docs/REVIEW_FIX_BACKLOG.md` is **R1 historical measurement evidence**. Its `pct_change().dropna()` return reconstruction dropped the first realized equity row and shortened the calendar span by one day. The sentence in that historical F27 section calling the R1 table the “current source of truth” is therefore superseded by the R2 correction and must not be used as authority after #72 merges.
+
+PR #72 preserves R1 and adds:
+
+```text
+research/results/idle_cash_credit_0027r2.json
+```
+
+R2 reconstructs day one from the known `$10,000` base, first reproduces the frozen BRRK-0011 calendar-span CAGR anchor `0.6516609785...`, and then restates the full metric set. Corrected headline values are:
+
+- V1 raw CAGR `61.3126529%`, credited CAGR `62.6632027%`;
+- BRRK-0011 raw CAGR `65.1660979%`, credited CAGR `66.8067973%`;
+- BRRK-vs-V1 rf=0 Sharpe gap `+0.0581629 -> +0.0617832`.
+
+The F27 qualitative conclusion remains unchanged: idle-cash credit improves both variants and does not change the BRRK-0011 promotion decision. Treat R2 as authoritative corrected measurement only after #72 merges with final-head CI; R1 remains preserved as superseded historical evidence.
 
 ## Forward sequencing
 
