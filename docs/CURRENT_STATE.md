@@ -5,67 +5,39 @@ Status: authoritative cross-chat handoff snapshot
 
 ## Authoritative baseline
 
-- Master plan: `docs/MASTER_PLAN_2026-08-05.md`
-- Roadmap: `docs/IMPLEMENTATION_ROADMAP_2026-08-05.md`
-- Governance: `docs/PROJECT_GOVERNANCE_2026-08-05.md`
-- Continuity protocol: `docs/CONTEXT_CONTINUITY_PROTOCOL.md`
 - P1.1 through P1.8: PASS / MERGED
-- Phase 1 Account and execution truth: COMPLETE
+- Phase 1: COMPLETE
 - P2.1 implementation PR #58: PASS / MERGED
-- P2.1 final implementation head: `85ab49f0c29fad58f3dbc5d327fdaa581811fe58`
-- P2.1 squash/main commit: `67ac0e2e9f85a35a4c987d28f7ddfb9a95f76f48`
+- Current main before P2.2: `bfb8ce4b59c36db4075a0c931e7d3d376fa97eef`
+- P2.2 candidate branch: `p2-2/validate-spot-identities`
 
 ## Current roadmap position
 
 ```text
-P0.1-P0.2: PASS / MERGED
-P1.1-P1.8: PASS / MERGED
 P2.1 Canonical instrument registry: PASS / MERGED
-P2.2 UETH / USOL / BNB validation: NEXT
+P2.2 UETH / USOL / BNB validation: CANDIDATE / NOT MERGED
 P2.3+ blocked
 ```
 
-The unique next implementation task is **P2.2 UETH / USOL / BNB validation**.
+## P2.2 candidate findings
 
-## P2.1 PASS / MERGED
+- UETH is validated as Unit's Ethereum-native tokenized spot representation on Hyperliquid; Unit documents native Ethereum deposits and withdrawals.
+- USOL is validated as Unit's Solana-native tokenized spot representation on Hyperliquid; Unit documents native Solana deposits and withdrawals.
+- BNB has no verified Unit-native route in the official evidence set reviewed for P2.2 and remains spot-unavailable under the validated Unit route set.
+- ETH/SOL spot identity verification does not authorize routing; both remain `IDENTITY_VERIFIED_ROUTING_NOT_AUTHORIZED` until P2.3/P2.4.
+- Dynamic HyperCore spot token/pair indexes are runtime metadata and are not fabricated as frozen constants.
+- No PnL evidence is used as identity evidence.
 
-P2.1 established the canonical machine-readable instrument registry for BTC / ETH / SOL / BNB, including canonical perp identity/precision, spot identity evidence state, custody/redemption evidence state, liquidity metric contract and availability state.
+## Evidence sources
 
-BTC imports prior `ROUTER-DATA-0004` evidence for the UI BTC/USDC -> HyperCore UBTC/USDC mapping. ETH/SOL/BNB remain explicitly non-routable until P2.2 verification. No PnL result is accepted as token-identity evidence.
+- Unit official About documentation: native Bitcoin, Ethereum and Solana assets can flow between native chains and Hyperliquid.
+- Unit official API documentation: protocol supports chain-finalized deposit/withdrawal operations and explicitly lists Ethereum and Solana confirmation requirements.
+- Unit Generate Address documentation: Ethereum and Solana are supported protocol assets with native-chain deposit/withdrawal address generation.
+- Hyperliquid canonical `spotMeta` remains the runtime source for dynamic spot token/pair metadata.
 
-`ROUTER-INSTRUMENT-REGISTRY-P2.1 = IMPLEMENTATION_VERIFIED` is registered.
+## Self-review boundary
 
-## P2.1 final evidence
-
-Final implementation head:
-
-```text
-85ab49f0c29fad58f3dbc5d327fdaa581811fe58
-```
-
-passed:
-
-- `Phase 0 baseline contract` #54 / Actions `31097667694`: SUCCESS;
-- execution tests: SUCCESS;
-- research integration contract: SUCCESS;
-- `PR handoff governance` #69 / Actions `31097667779`: SUCCESS.
-
-PR #58 squash-merged to main as:
-
-```text
-67ac0e2e9f85a35a4c987d28f7ddfb9a95f76f48
-```
-
-## Current unique next task: P2.2 UETH / USOL / BNB validation
-
-Verify official identity and actual implementation constraints for the non-BTC spot candidates.
-
-Acceptance boundary:
-
-- no PnL study can substitute for token-identity evidence;
-- unavailable or ambiguous spot assets must be explicitly marked;
-- perp fallback is only an implementation status unless separately permitted by later routing logic;
-- P2.2 must not silently include P2.3 cost modeling or P2.4 routing decisions.
+P2.2 records identity and availability only. It does not decide that spot is economically superior, does not model funding/spread/slippage, and does not implement routing. BNB remains unavailable rather than receiving an invented `UBNB` identity.
 
 ## Production authorization
 
@@ -83,7 +55,5 @@ DRIFT_0
 ## Exact next action
 
 ```text
-P2.2 UETH / USOL / BNB validation
+open P2.2 PR -> authoritative CI -> evidence registry -> final-head CI -> merge -> normalize to P2.3
 ```
-
-Start from current main after this post-merge normalization is merged, on a fresh candidate branch.
