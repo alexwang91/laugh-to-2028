@@ -12,11 +12,10 @@ Status: authoritative cross-chat handoff snapshot
 - P2.2 ETH/SOL spot validation + BNB perp-only policy: PASS / MERGED through PR #60
 - P2.3 core cost arithmetic: PASS / MERGED through PR #62
 - P2.3 live-L2 measurement correction: PASS / MERGED through PR #64
-- P2.3 post-audit handoff: PASS / MERGED through PR #65
-- Current main baseline for P2.4: `adea5af174aa3212128c95024f0047b54463af52`
+- P2.4 Router decision: PASS / MERGED through PR #66
+- Phase 2 Hyperliquid instrument router: COMPLETE
+- Current main after P2.4: `19b586c3ef08d02203d09c48b469063857d0a6b3`
 - Full project audit: `docs/FULL_PROJECT_AUDIT_2026-08-06.md`
-- Current implementation PR: #66
-- Current candidate branch: `p2-4/router-decision`
 
 ## Current roadmap position
 
@@ -24,75 +23,39 @@ Status: authoritative cross-chat handoff snapshot
 P2.1 Canonical instrument registry: PASS / MERGED
 P2.2 ETH / SOL spot validation + BNB perp-only policy: PASS / MERGED
 P2.3 Spot vs perp cost model: PASS / MERGED
-P2.4 Router decision: IMPLEMENTATION VERIFIED ON CANDIDATE / FINAL-HEAD CI REQUIRED / NOT MERGED
-P3+: BLOCKED
+P2.4 Router decision: PASS / MERGED
+Phase 2: COMPLETE
+P3.1 Data contract: NEXT
+P3.2+: BLOCKED
+P4+: BLOCKED
 ```
 
-P2.4 is the unique current task. Do not start P3 before the P2.4 final-head evidence and merge loop closes.
+The unique next implementation task is **P3.1 Data contract**.
 
-## P2.4 implementation boundary
+## P2.4 closure
 
-The router consumes an **economic exposure request** and returns an **implementation plan + deterministic reason code**. It does not decide BRRK weights, leverage level, cycle state or whether a bear program should exist.
+P2.4 establishes a deterministic boundary from **economic exposure** to **implementation instrument plan + reason code**. It does not choose BRRK weights, leverage level, cycle state or whether a bear program exists.
 
-Economic request fields are explicit and replayable:
-
-- UTC decision timestamp;
-- canonical BRRK asset;
-- long/short direction;
-- exposure role (`base` or `leverage_overlay`);
-- economic notional;
-- expected holding horizon;
-- target revision.
-
-The implementation consumes P2.1-P2.3 evidence rather than inventing identity or cost assumptions.
-
-## Routing policy
+Canonical routing behavior:
 
 ```text
 BTC base long: verified spot candidate vs perp by P2.3 expected cost/capacity
 ETH base long: verified UETH spot candidate vs perp by P2.3 expected cost/capacity
 SOL base long: verified USOL spot candidate vs perp by P2.3 expected cost/capacity
 BNB base long: PERP_ONLY_DEFAULT
-short role: perp required by instrument type; this does not authorize a bear strategy
-leverage_overlay role: perp required by instrument type; this does not select or authorize leverage
+short role: perp required by instrument type only; no bear-program authorization
+leverage_overlay role: perp required by instrument type only; no leverage-level authorization
 ```
 
-Spot runtime identity is resolved from Hyperliquid `spotMeta` using verified token identity plus dynamic token/pair indexes. API spot instrument identity is `@<spot_pair_index>`; UI display names are not treated as HyperCore asset IDs.
+Spot runtime identity is resolved from Hyperliquid `spotMeta`; API identity uses dynamic `@<spot_pair_index>`. UI labels are not treated as HyperCore asset IDs.
 
-## Reason-code contract
+Registered routing reasons include verified spot/perp cost outcomes, identity/cost/liquidity fallbacks, product-policy perp, forced-perp instrument roles, and fail-closed NO_TRADE states.
 
-Registered reason codes include:
+All router decisions can be persisted as canonical JSONL, replayed from recorded assumptions, and compared later against realized implementation cost. Replay verifies both the deterministic decision ID and full canonical-record equality so modified reason/plan/estimate/extra fields fail closed. Zero economic exposure short-circuits before market-observation validation.
 
-```text
-SPOT_VERIFIED_LOWER_COST
-SPOT_VERIFIED_COST_TIE
-SPOT_ONLY_VIABLE_ROUTE
-PERP_LOWER_COST
-PERP_SPOT_UNVERIFIED
-PERP_SPOT_COST_UNAVAILABLE
-PERP_SPOT_LIQUIDITY_FAIL
-PERP_PRODUCT_POLICY
-PERP_REQUIRED_FOR_SHORT
-PERP_REQUIRED_FOR_LEVERAGE_OVERLAY
-NO_TRADE_LIQUIDITY_FAIL
-NO_TRADE_COST_UNAVAILABLE
-NO_TRADE_ZERO_EXPOSURE
-```
+`ROUTER-DECISION-P2.4 = IMPLEMENTATION_VERIFIED` is registered. This is engineering evidence only, not production authorization.
 
-The router fails closed when required route evidence is unavailable or capacity is insufficient rather than guessing an instrument.
-
-## Reproducibility / logging
-
-- `RouterDecision.decision_id` is a deterministic hash of the request, policy, selected plan, recorded route candidates, runtime spot identity and fee schedule.
-- `route_and_log()` appends canonical JSONL with fsync-backed persistence.
-- `replay_logged_decision()` reconstructs the decision from recorded assumptions, verifies the deterministic decision ID, and now also requires the **entire canonical logged record** to match the replayed result; modified reason/plan/estimate/extra fields fail closed.
-- `compare_expected_realized_cost()` provides the P2.4 boundary for later production attribution of expected versus realized implementation cost.
-- Zero economic exposure short-circuits before market/cost observation validation and returns `NO_TRADE_ZERO_EXPOSURE`.
-- The policy explicitly remains `IMPLEMENTATION_PLAN_ONLY_NO_PRODUCTION_AUTHORIZATION`.
-
-`ROUTER-DECISION-P2.4 = IMPLEMENTATION_VERIFIED` is registered after successful candidate CI. This is engineering evidence only, not production authorization.
-
-## Candidate CI evidence
+## P2.4 evidence
 
 Candidate head after self-review corrections:
 
@@ -107,56 +70,62 @@ passed:
 - research integration contract: SUCCESS;
 - `PR handoff governance` #103 / Actions `31105888025`: SUCCESS.
 
-The decision-registry and evidence writeback after this successful run changes the branch head, so **one final authoritative CI run is still required on the new exact head before merge**.
+Final implementation head:
 
-## Controlled test coverage
+```text
+122124bf9d16f38fcb699f1d87d2750833d515d5
+```
 
-Tests cover:
+passed:
 
-1. canonical BTC/ETH/SOL spot-candidate + BNB perp-only scope;
-2. runtime `spotMeta` pair-index resolution and UI/HyperCore identity separation;
-3. spot lower-cost selection;
-4. perp lower-cost selection;
-5. verified cost-tie policy;
-6. BNB perp-only enforcement and rejection of spot inputs;
-7. short forced-perp routing without bear-strategy authorization;
-8. leverage-overlay forced-perp routing without leverage selection;
-9. spot liquidity failure -> viable perp fallback;
-10. both routes liquidity fail -> NO_TRADE;
-11. missing spot cost / runtime identity reason codes;
-12. no cost evidence -> fail-closed NO_TRADE;
-13. zero economic exposure -> NO_TRADE without requiring market observations;
-14. runtime spot identity mismatch -> fail closed;
-15. same-asset / same-notional / same-horizon observation contract;
-16. deterministic decision ID and JSONL replay;
-17. policy/decision-ID tamper detection;
-18. derived reason/plan/estimate/extra-field tamper detection through strict full-record replay;
-19. expected-versus-realized cost attribution;
-20. `spotMeta` market-layer request/shape validation.
+- `Phase 0 baseline contract` #84 / Actions `31106165098`: SUCCESS;
+- execution tests: SUCCESS;
+- research integration contract: SUCCESS;
+- `PR handoff governance` #105 / Actions `31106164750`: SUCCESS.
 
-## Self-review corrections
+PR #66 squash-merged to main as:
 
-1. A partial file read initially made the runtime identity validation call appear absent. Full-function review confirmed `_validate_runtime_identity()` was already invoked before base-long spot selection, so no unnecessary code change was made.
-2. Replay integrity was strengthened: decision-ID equality alone was insufficient to detect modifications to derived logged fields. Replay now requires full canonical-record equality.
-3. Zero exposure is now handled before route-candidate construction so a zero target never requires or validates unnecessary market observations.
-4. BNB spot inputs are explicitly rejected under the canonical perp-only decision.
-5. Short and leverage-overlay reason codes only select instrument type; they do not authorize the future P8 short program or P4 leverage level.
-6. Missing/insufficient cost or capacity evidence produces an explicit fallback or NO_TRADE result.
-7. P2.4 does not submit orders and does not modify the P1 execution path.
+```text
+19b586c3ef08d02203d09c48b469063857d0a6b3
+```
 
-## Historical audit context
+## P2.4 self-review corrections retained
 
-The latest full-project audit recorded `DRIFT_1` for historical process/implementation-detail issues only: branch-hygiene debt, one prior direct-main documentation incident, and the P2.3 live-L2 acceptance correction. PR #64 closed the P2.3 implementation gap before P2.4 began.
+1. Full-function review confirmed runtime spot identity validation occurs before base-long spot selection.
+2. Replay integrity was strengthened from decision-ID-only verification to full canonical-record equality.
+3. Zero exposure was moved ahead of route-candidate construction so a zero target requires no unnecessary market evidence.
+4. BNB spot inputs are explicitly rejected rather than silently reopening the perp-only product policy.
+5. Short and leverage-overlay routing only select instrument type; they do not authorize P8 short logic or P4 leverage.
+6. Missing/insufficient identity, cost or capacity evidence produces explicit fallback or NO_TRADE rather than a guessed route.
 
-For the current P2.4 implementation itself, no new product, sequencing, research, risk, security or production deviation has been identified.
+## Full-project audit / drift history
 
-## Project drift audit — current P2.4
+The full audit recorded historical `DRIFT_1` for process/implementation-detail history only:
+
+1. historical merged/research branches remain despite branch-hygiene preference;
+2. one earlier BNB policy documentation commit was written directly to main before returning to branch/PR flow;
+3. PR #63 was closed without merge when the P2.3 live-L2 acceptance gap was discovered.
+
+PR #64 closed the P2.3 implementation gap before P2.4 began.
+
+P2.4 itself closed as:
 
 ```text
 DRIFT_0
 ```
 
-The earlier audit `DRIFT_1` remains preserved as history; it is not reclassified away.
+No long-universe, venue, risk, human-approval, security, stopped-research or production boundary changed.
+
+## Router product boundary
+
+```text
+BTC: verified spot candidate + perp fallback
+ETH: verified UETH spot candidate + perp fallback
+SOL: verified USOL spot candidate + perp fallback
+BNB: PERP_ONLY_DEFAULT
+```
+
+`ROUTER-BNB-PERP-ONLY-2026-08-06` is authoritative. The Master Plan instrument-policy prose is being synchronized in the P2.4 post-merge handoff so fresh conversations do not encounter stale BNB routing text before reading the decision registry.
 
 ## Production authorization
 
@@ -165,14 +134,31 @@ NO_CHANGE
 production_authorized_components = []
 ```
 
-No live capital, route, leverage, short, withdrawal/external transfer, strategy release or cutover is authorized by P2.4 implementation verification.
+No live capital, production route, leverage, short, withdrawal/external transfer, strategy release or cutover is authorized.
+
+## Unique next task: P3.1 Data contract
+
+Phase 3 goal: make the frozen BRRK directional core reproducible in live operation before adding leverage or cycle-exit intelligence.
+
+P3.1 must define canonical sources and transformations for:
+
+- daily close;
+- missing data;
+- corporate/token mapping changes where relevant;
+- funding/basis inputs used by the router.
+
+Acceptance criteria:
+
+- the UTC `00:00` daily boundary is identical in research and live;
+- the same canonical historical input produces the same downstream target inputs/results.
+
+P3.1 is a **data-contract** task only. Do not implement P3.2 target calculation API, P3.3 turnover controls, P3.4 contribution handling, P4 leverage, P5 cycle-exit, P6 shadow, P7 live or P8 bear research inside the P3.1 PR.
 
 ## Exact next action
 
 ```text
-final-head CI on PR #66
--> expected-head merge if and only if all checks pass
--> documentation-only post-merge normalization to P3.1 Data contract
+finish and merge P2.4 post-merge handoff
+-> from then-current main create a fresh P3.1/data-contract candidate branch
+-> implement P3.1 only
+-> tests / self-review / drift audit / PR / CI / expected-head merge
 ```
-
-Do not begin P3.1 until PR #66 is merged and the canonical handoff is normalized.
