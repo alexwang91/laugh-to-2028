@@ -232,9 +232,11 @@ Working policy:
 - BTC long: spot-first where identity and implementation are validated;
 - ETH long: spot candidate versus perp based on verified identity, liquidity and net cost;
 - SOL long: spot candidate versus perp, with special attention to funding drag;
-- BNB long: choose spot/perp based on actual Hyperliquid instrument availability and cost;
+- BNB long: `PERP_ONLY_DEFAULT` under `ROUTER-BNB-PERP-ONLY-2026-08-06`; BNB spot routing is out of scope unless this product decision is explicitly reopened and approved;
 - shorts: perp / derivative instrument as required;
 - leverage above spot exposure: derivative overlay only after validation.
+
+The BNB line above synchronizes this Master Plan with the later explicit product decision adopted on 2026-08-06. It does not change the frozen BTC/ETH/SOL/BNB long universe or the Hyperliquid-first venue boundary.
 
 All-perp is not the default simply because it is easier to code.
 
