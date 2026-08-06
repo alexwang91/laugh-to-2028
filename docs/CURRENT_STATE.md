@@ -9,62 +9,68 @@ Status: authoritative cross-chat handoff snapshot
 - Phase 1: COMPLETE
 - P2.1 implementation PR #58: PASS / MERGED
 - P2.2 implementation PR #60: PASS / MERGED
-- P2.2 final implementation head: `882f404d5bda11839c52ed92167fb96cb3097353`
-- P2.2 squash/main commit: `d8a2554ea520f73e77eee9816108261fdaaf762f`
+- Current main before P2.3: `71cd245a093dc9024940513a0fc06d55703c037a`
+- P2.3 implementation PR: #62 OPEN
 
 ## Current roadmap position
 
 ```text
 P2.1 Canonical instrument registry: PASS / MERGED
 P2.2 ETH / SOL spot validation + BNB perp-only policy: PASS / MERGED
-P2.3 Spot vs perp cost model: NEXT
+P2.3 Spot vs perp cost model: IMPLEMENTATION VERIFIED / FINAL-HEAD CI PENDING / NOT MERGED
 P2.4+ blocked
 ```
 
-## P2.2 PASS / MERGED
+## P2.3 implementation verified on candidate
 
-- UETH is verified as Unit's Ethereum-native tokenized spot representation on Hyperliquid, with native Ethereum deposit/withdrawal support.
-- USOL is verified as Unit's Solana-native tokenized spot representation on Hyperliquid, with native Solana deposit/withdrawal support.
-- ETH/SOL remain `IDENTITY_VERIFIED_ROUTING_NOT_AUTHORIZED`; identity verification alone does not authorize routing.
-- `ROUTER-BNB-PERP-ONLY-2026-08-06 = ACCEPTED_RESEARCH_TARGET` freezes BNB as `PERP_ONLY_DEFAULT`; BNB spot is outside current router scope unless that decision is explicitly reopened.
-- `ROUTER-SPOT-IDENTITY-P2.2 = IMPLEMENTATION_VERIFIED` records the P2.2 identity boundary.
-- Dynamic HyperCore token/pair indexes remain runtime `spotMeta` metadata rather than fabricated constants.
+- `beta_bot/route_cost.py` compares spot/perp only for the same asset, equal economic notional and equal holding horizon.
+- Models configurable taker/maker fees, full quoted spread, beyond-spread entry/exit slippage, live depth, VWAP diagnostics, signed funding, basis/premium evolution and spot custody/redemption friction.
+- Positive perp funding is a long cost; negative funding is a benefit.
+- Basis cost is entry perp premium minus expected exit premium.
+- Live depth/VWAP are retained for capacity and slippage diagnostics without double counting VWAP impact when it is the source of slippage.
+- Explicit funding break-even horizon is available.
+- `config/route_cost_model.json` freezes the model contract, comparison scope and reproducible holding-horizon scenarios, not a route decision.
+- BTC/ETH/SOL are comparison assets; BNB is excluded by `ROUTER-BNB-PERP-ONLY-2026-08-06`.
+- `ROUTER-COST-MODEL-P2.3 = IMPLEMENTATION_VERIFIED` is registered.
 
-## P2.2 final evidence
+## Candidate CI evidence
 
-Final implementation head:
+Candidate head before decision/evidence writeback:
 
 ```text
-882f404d5bda11839c52ed92167fb96cb3097353
+cc9ee0834520168e313e5bba4a3587d17518c98b
 ```
 
 passed:
 
-- `Phase 0 baseline contract` #70 / Actions `31099064883`: SUCCESS;
+- `Phase 0 baseline contract` #72 / Actions `31099792353`: SUCCESS;
 - execution tests: SUCCESS;
 - research integration contract: SUCCESS;
-- `PR handoff governance` #88 / Actions `31099065127`: SUCCESS.
+- `PR handoff governance` #90 / Actions `31099792997`: SUCCESS.
 
-PR #60 squash-merged to main as:
+## Fee baseline
+
+The configurable no-staking Tier-0 baseline is:
 
 ```text
-d8a2554ea520f73e77eee9816108261fdaaf762f
+perp taker 4.5 bps
+perp maker 1.5 bps
+spot taker 7.0 bps
+spot maker 4.0 bps
 ```
 
-## Current unique next task: P2.3 Spot vs perp cost model
+The model requires effective account fees to be refreshed when volume/staking tier changes.
 
-Build the economic comparison for BTC / ETH / SOL only:
+## Self-review corrections
 
-- spot trading fees/spread/slippage;
-- perp trading fees/spread/slippage;
-- realized/expected funding drag or benefit;
-- holding-horizon sensitivity;
-- liquidity/capacity observations;
-- explicit treatment of custody/redemption or bridge friction where economically relevant.
+1. Removed double counting of VWAP impact and expected slippage. VWAP/depth are diagnostics; explicitly defined beyond-spread slippage is charged once.
+2. No `spot always wins` rule is encoded. Holding horizon, signed funding, basis and liquidity remain explicit inputs for P2.4.
 
-BNB is not part of the spot-vs-perp comparison because the canonical product decision fixes BNB to `PERP_ONLY_DEFAULT`.
+## Deliberately not solved
 
-P2.3 must not silently implement P2.4 route decisions or production authorization.
+- No P2.4 route-selection reason codes or implementation plan.
+- No fixed historical funding forecast is declared canonical.
+- No production authorization.
 
 ## Production authorization
 
@@ -82,7 +88,5 @@ DRIFT_0
 ## Exact next action
 
 ```text
-P2.3 Spot vs perp cost model
+final-head CI on PR #62 -> expected-head merge -> post-merge normalization to P2.4
 ```
-
-Start from current main after this post-merge normalization is merged, on a fresh candidate branch.
