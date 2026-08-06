@@ -15,7 +15,7 @@ Status: authoritative cross-chat handoff snapshot
 
 ```text
 P2.1 Canonical instrument registry: PASS / MERGED
-P2.2 ETH / SOL spot validation + BNB perp-only policy: IMPLEMENTATION VERIFIED / NEW FINAL-HEAD CI REQUIRED / NOT MERGED
+P2.2 ETH / SOL spot validation + BNB perp-only policy: IMPLEMENTATION VERIFIED / EVIDENCE WRITTEN / FINAL-HEAD CI REQUIRED / NOT MERGED
 P2.3+ blocked
 ```
 
@@ -27,27 +27,27 @@ P2.3+ blocked
 - **BNB is an explicit product routing policy: `PERP_ONLY_DEFAULT`.** P2.2 no longer validates or searches for a BNB spot route.
 - BNB spot is `NOT_ROUTABLE_BY_PRODUCT_POLICY`; no UBNB identity, custody/redemption path or spot-liquidity route is required by the current product.
 - `ROUTER-BNB-PERP-ONLY-2026-08-06 = ACCEPTED_RESEARCH_TARGET` records this policy.
-- `ROUTER-SPOT-IDENTITY-P2.2 = IMPLEMENTATION_VERIFIED` now covers ETH/SOL identity validation and explicitly treats BNB spot as out of scope under the frozen perp-only policy.
+- `ROUTER-SPOT-IDENTITY-P2.2 = IMPLEMENTATION_VERIFIED` covers ETH/SOL identity validation and explicitly treats BNB spot as out of scope under the frozen perp-only policy.
 - Later routing logic must keep BNB on canonical BNB perp unless the product decision is explicitly reopened and approved.
 - Dynamic HyperCore spot token/pair indexes remain runtime `spotMeta` data and are not fabricated as constants.
 - No PnL evidence is used as identity evidence.
 
-## Previous candidate evidence
+## Candidate / pre-evidence CI
 
-Candidate head before the BNB product-policy refinement passed:
+After the BNB policy refinement, implementation head:
 
 ```text
-f337663cc0e697e3840beeef9459cea1e46ec3a8
+1babe0ea09f53027c3af17bf316f4ac6045678e9
 ```
 
-with:
+passed:
 
-- `Phase 0 baseline contract` #56 / Actions `31098385353`: SUCCESS;
+- `Phase 0 baseline contract` #67 / Actions `31098933403`: SUCCESS;
 - execution tests: SUCCESS;
 - research integration contract: SUCCESS;
-- `PR handoff governance` #72 / Actions `31098385377`: SUCCESS.
+- `PR handoff governance` #85 / Actions `31098967909`: SUCCESS.
 
-The later head `8fbced6edae9a0457ddf32d9dd5d6a53ec06457e` also passed baseline #58 and governance #74, but the BNB policy refinement changed the branch afterward, so those runs are no longer final-head authority. A new final-head CI run is required.
+Because this evidence writeback itself changes the branch, the new head created by this commit still requires one final authoritative CI run before merge.
 
 ## Evidence sources
 
@@ -77,5 +77,5 @@ This is an in-scope product clarification that reduces router search space; it d
 ## Exact next action
 
 ```text
-update PR #60 body -> authoritative CI on new head -> final-head evidence -> expected-head merge -> normalize to P2.3
+final-head CI on PR #60 -> expected-head merge -> post-merge normalization to P2.3
 ```
