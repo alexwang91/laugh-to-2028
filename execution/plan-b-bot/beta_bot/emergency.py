@@ -109,6 +109,17 @@ def _positions(user_state: dict[str, Any]) -> list[tuple[str, float]]:
     return positions
 
 
+def _require_ok_response(response: Any, action: str) -> dict[str, Any]:
+    if not isinstance(response, dict) or response.get("status") != "ok":
+        raise EmergencyPathError(f"{action} returned non-ok response: {response}")
+    statuses = response.get("response", {}).get("data", {}).get("statuses", [])
+    if isinstance(statuses, list):
+        for status in statuses:
+            if isinstance(status, dict) and status.get("error"):
+                raise EmergencyPathError(f"{action} rejected: {status['error']}")
+    return response
+
+
 def build_exchange(settings: Settings) -> Exchange:
     if not settings.api_private_key or not settings.master_address:
         raise EmergencyPathError("Trading Agent/API credentials are required")
@@ -158,8 +169,8 @@ class EmergencyController:
             oid = order.get("oid")
             if not isinstance(coin, str) or oid is None:
                 raise EmergencyPathError(f"Open order lacks coin/oid: {order}")
-            response = self.exchange.cancel(coin, int(oid))
-            actions.append(EmergencyAction("cancel_all", coin, "submitted", {"oid": str(oid), "response": response}))
+            response = _require_ok_response(self.exchange.cancel(coin, int(oid)), "cancel_all")
+            actions.append(EmergencyAction("cancel_all", coin, "accepted", {"oid": str(oid), "response": response}))
         return actions
 
     def reduce_only_close(self, coin: str | None = None) -> list[EmergencyAction]:
@@ -174,23 +185,38 @@ class EmergencyController:
             size = format_size(abs(qty), metadata[target_coin])
         except KeyError as exc:
             raise InstrumentMetadataError(f"No perp metadata for emergency close {target_coin}") from exc
-        response = self.exchange.market_close(target_coin, sz=size, slippage=self.settings.max_slippage_bps / 10_000)
-        return [EmergencyAction("reduce_only_close", target_coin, "submitted", {"pre_close_position_qty": qty, "size": size, "reduce_only_semantics": True, "response": response})]
+        response = _require_ok_response(
+            self.exchange.market_close(target_coin, sz=size, slippage=self.settings.max_slippage_bps / 10_000),
+            "reduce_only_close",
+        )
+        return [EmergencyAction("reduce_only_close", target_coin, "accepted", {"pre_close_position_qty": qty, "size": size, "reduce_only_semantics": True, "response": response})]
 
     def emergency_flat(self) -> list[EmergencyAction]:
         actions = self.cancel_all()
         state = self.fetch_user_state_fn(self.settings.api_url, self.settings.account_address or "", self.settings.request_timeout_seconds)
         positions = _positions(state)
-        if not positions:
-            return actions
-        metadata = parse_perp_metadata(self.fetch_perp_metadata_fn(self.settings.api_url, self.settings.request_timeout_seconds))
-        for coin, qty in positions:
-            try:
-                size = format_size(abs(qty), metadata[coin])
-            except KeyError as exc:
-                raise InstrumentMetadataError(f"No perp metadata for emergency FLAT {coin}") from exc
-            response = self.exchange.market_close(coin, sz=size, slippage=self.settings.max_slippage_bps / 10_000)
-            actions.append(EmergencyAction("emergency_flat", coin, "submitted", {"pre_close_position_qty": qty, "size": size, "reduce_only_semantics": True, "response": response}))
+        if positions:
+            metadata = parse_perp_metadata(self.fetch_perp_metadata_fn(self.settings.api_url, self.settings.request_timeout_seconds))
+            for coin, qty in positions:
+                try:
+                    size = format_size(abs(qty), metadata[coin])
+                except KeyError as exc:
+                    raise InstrumentMetadataError(f"No perp metadata for emergency FLAT {coin}") from exc
+                response = _require_ok_response(
+                    self.exchange.market_close(coin, sz=size, slippage=self.settings.max_slippage_bps / 10_000),
+                    f"emergency_flat:{coin}",
+                )
+                actions.append(EmergencyAction("emergency_flat", coin, "accepted", {"pre_close_position_qty": qty, "size": size, "reduce_only_semantics": True, "response": response}))
+
+        verified_state = self.fetch_user_state_fn(
+            self.settings.api_url,
+            self.settings.account_address or "",
+            self.settings.request_timeout_seconds,
+        )
+        remaining = _positions(verified_state)
+        if remaining:
+            raise EmergencyPathError(f"Emergency FLAT not yet verified; remaining positions: {remaining}")
+        actions.append(EmergencyAction("emergency_flat_verify", None, "verified_flat", {"remaining_positions": []}))
         return actions
 
     def disable_new_risk(self, *, reason: str = "operator_emergency_switch") -> EmergencyAction:
