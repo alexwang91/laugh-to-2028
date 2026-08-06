@@ -30,6 +30,18 @@ def fetch_perp_metadata(api_url: str, timeout: float) -> dict[str, Any]:
     return result
 
 
+def fetch_spot_metadata(api_url: str, timeout: float) -> dict[str, Any]:
+    """Fetch Hyperliquid spotMeta used to resolve token and pair indexes at runtime."""
+    result = _post(api_url, {"type": "spotMeta"}, timeout)
+    if not isinstance(result, dict):
+        raise RuntimeError(f"Unexpected spotMeta response: {result}")
+    tokens = result.get("tokens")
+    universe = result.get("universe")
+    if not isinstance(tokens, list) or not isinstance(universe, list):
+        raise RuntimeError(f"Unexpected spotMeta shape: {result}")
+    return result
+
+
 def fetch_l2_book(api_url: str, coin: str, timeout: float) -> dict[str, Any]:
     """Fetch one canonical Hyperliquid L2 snapshot for a perp or spot asset ID.
 
