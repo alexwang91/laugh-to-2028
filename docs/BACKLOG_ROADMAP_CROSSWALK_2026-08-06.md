@@ -27,7 +27,7 @@ A roadmap task touching a legacy defect must not be called complete solely becau
 | F19 unreachable leverage target reported as no-op | execution-plan semantics, discovered before P3.2 | RESOLVED | PR #71 records requested vs reachable target, explicit leverage-clamp state/reasons, and makes clamp reduction take precedence when the current position exceeds the reachable cap. |
 | F20 `/api/cron` authorization | security hardening before any live phase | RESOLVED | PR #71 requires configured bearer `CRON_SECRET` in shadow/trade, uses constant-time comparison, removes User-Agent authorization, and redacts external exception text. |
 | F21 unbacktested `ALLOW_STRONG_BETA` / 1.50 branch | P4 leverage-governance boundary | RESOLVED | PR #71 removed the env-toggleable 1.50 branch and `HARD_BETA_CAP` / `ALLOW_STRONG_BETA`; >1 research remains P4-only. |
-| F22 research/execution price + timing parity | P3.1 data contract plus operational schedule | PARTIAL | Source/timestamp semantics and 00:00 UTC economic boundary are already fixed, but P3.2 recovery exposed a P3.1 input-parity residual: frozen BRRK-0011 regime features consume XRPUSDT as feature-only input while the v1 canonical payload exposed only BTC/ETH/SOL/BNB. `fix/p3-1-feature-input-parity` must merge before F22 returns to resolved-for-P3.2 status. P3.3 separately owns rebalance-band/turnover semantics. |
+| F22 research/execution price + timing parity | P3.1 data contract plus operational schedule | PARTIAL | PR #74 merged the schema-v2 correction that restores XRPUSDT as feature-only strategy input while preserving BTC/ETH/SOL/BNB as the target/router universe. Implementation parity is now on main, but #74 and its merge SHA received zero Actions runs during the GitHub Actions incident. F22 remains PARTIAL only because post-merge validation evidence is missing. P3.3 separately owns rebalance-band/turnover semantics. |
 | F23 funding filter scope | future registered research only; must not be slipped into P3.2 | DEFERRED_REGISTERED_BOUNDARY | current legacy filter thresholds are not canonical BRRK research. P3.2 must reproduce frozen BRRK-0011 without treating this filter as promoted logic. Any whole-range funding response requires a new registered experiment; do not retune existing thresholds. |
 | F28 impact cost / capacity | P2.3 cost model | RESOLVED_FOR_CURRENT_SCOPE | canonical Hyperliquid L2 depth/VWAP, capacity fail-closed behavior and beyond-spread accounting were completed in P2.3 + correction. Revalidate capacity if deployment size materially changes. |
 
@@ -45,16 +45,24 @@ The exact frozen BRRK-0011 regime feature implementation additionally consumes:
 XRPUSDT — feature-only
 ```
 
-The v1 P3.1 contract omitted that feature-only series. Removing XRP from the model would change frozen BRRK-0011, so the correction instead versions the canonical strategy payload to include XRP while preserving a four-asset target/router boundary.
+PR #74 merged the schema-v2 contract that makes this role split explicit:
 
-Required evidence before this residual closes:
+```text
+target_assets  = BTC, ETH, SOL, BNB
+feature_assets = XRP
+strategy-signal daily payload = BTC, ETH, SOL, BNB, XRP
+router-eligible assets         = BTC, ETH, SOL, BNB only
+```
 
-- machine contract explicitly distinguishes target assets from feature-only assets;
-- canonical daily payload fails closed if XRP is missing or gapped;
-- research/live canonical payload remains byte/digest identical for identical observations;
-- router funding/basis rejects XRP;
-- no BRRK weight, regime parameter, risk budget or research promotion changes;
-- normal tests/governance/CI and expected-head merge complete.
+The merged implementation requires complete five-series strategy history, fails closed on XRP gaps, keeps research/live canonicalization shared, and rejects XRP from funding/basis routing. No BRRK weight, regime parameter, risk budget or research promotion changed.
+
+Residual before F22 can return to resolved-for-P3.2 status:
+
+- obtain a real post-merge Phase 0 run covering the complete execution pytest suite and research integration contract;
+- obtain normal PR handoff governance on the validation PR;
+- preserve `production_authorized_components = []`.
+
+The absence of #74 CI is missing evidence caused by the Actions incident, not a recorded test failure.
 
 ## Research / evidence backlog relationship
 
@@ -76,21 +84,13 @@ The frozen V1 exposure function and BRRK-0011 remain authoritative. `EXPOSURE-SM
 
 ### F27 idle-cash-credit measurement normalization
 
-The F27 table retained inside `docs/REVIEW_FIX_BACKLOG.md` is **R1 superseded historical measurement evidence**. Its `pct_change().dropna()` return reconstruction dropped the first realized equity row and shortened the calendar span by one day. Any sentence in that historical F27 section calling R1 the “current source of truth” is superseded by the merged R2 correction and must not be used as current authority.
-
-PR #72 preserves R1 and adds the authoritative corrected measurement:
+The F27 table retained inside `docs/REVIEW_FIX_BACKLOG.md` is **R1 superseded historical measurement evidence**. PR #72 preserves R1 and adds the authoritative corrected measurement:
 
 ```text
 research/results/idle_cash_credit_0027r2.json
 ```
 
-R2 reconstructs day one from the known `$10,000` base, first reproduces the frozen BRRK-0011 calendar-span CAGR anchor `0.6516609785...`, and then restates the full metric set. Corrected headline values are:
-
-- V1 raw CAGR `61.3126529%`, credited CAGR `62.6632027%`;
-- BRRK-0011 raw CAGR `65.1660979%`, credited CAGR `66.8067973%`;
-- BRRK-vs-V1 rf=0 Sharpe gap `+0.0581629 -> +0.0617832`.
-
-The F27 qualitative conclusion remains unchanged: idle-cash credit improves both variants and does not change the BRRK-0011 promotion decision.
+R2 reconstructs day one from the known `$10,000` base and reproduces the frozen BRRK-0011 calendar-span CAGR anchor before restating the full metric set.
 
 Disposition: `RESOLVED` for measurement/authority normalization. R2 is authoritative corrected evidence; R1 remains preserved as superseded historical evidence.
 
@@ -99,7 +99,7 @@ Disposition: `RESOLVED` for measurement/authority normalization. R2 is authorita
 Current dependency ordering is:
 
 ```text
-P3.1 feature-input parity correction
+P3.1 schema-v2 post-merge validation
 -> P3.2 Target calculation API
 -> P3.3
 -> P3.4
