@@ -10,7 +10,8 @@ Status: authoritative cross-chat handoff snapshot
 - P2.1 through P2.4: PASS / MERGED; Phase 2 COMPLETE
 - P3.1 Data contract: PASS / MERGED
 - Audit correction PR #71: PASS / MERGED
-- Current authoritative `main`: `0f8a46d9aadb0374da40baf04762d10fa72c1eeb`
+- Research/evidence normalization PR #72: PASS / MERGED
+- Current authoritative `main`: `6edaff4bb62bba8316722265dd216ba6e5e7d541`
 - Legacy backlog/roadmap bridge: `docs/BACKLOG_ROADMAP_CROSSWALK_2026-08-06.md`
 - Historical stale-main PR #70: INVALID / CLOSED / DO NOT REVIVE
 
@@ -18,29 +19,35 @@ Status: authoritative cross-chat handoff snapshot
 
 ```text
 P3.1     PASS / MERGED
-#72      ACTIVE PRE-P3.2 EVIDENCE-NORMALIZATION GATE
-P3.2     UNIQUE NEXT ROADMAP IMPLEMENTATION AFTER #72
+#71      PASS / MERGED
+#72      PASS / MERGED
+P3.2     UNIQUE NEXT ROADMAP IMPLEMENTATION
 P3.3+    BLOCKED
 ```
 
-P3.2 remains target calculation only. It must reproduce the frozen BRRK-0011 baseline and must not absorb F23 funding redesign, EXPOSURE-SMOOTH-0038 promotion, ASYM-BETA promotion, >1 leverage, cycle-exit logic, short logic, or production authorization.
+P3.2 is target calculation only. It must reproduce the frozen BRRK-0011 baseline and must not absorb F23 funding redesign, EXPOSURE-SMOOTH-0038 promotion, ASYM-BETA promotion, >1 leverage, cycle-exit logic, short logic, P3.3 rebalance/turnover behavior, P3.4 contributions, or production authorization.
 
-## PR #72 — research/evidence normalization
+## PR #72 closure
 
-PR: `#72 Audit normalization: repair F27 measurement and record EXPOSURE-SMOOTH-0038`
+PR `#72 Audit normalization: repair F27 measurement and record EXPOSURE-SMOOTH-0038` was squash-merged after final-head CI passed.
 
-Branch:
+Final PR head:
 
 ```text
-audit/research-evidence-normalization
-base = 0f8a46d9aadb0374da40baf04762d10fa72c1eeb
+fb13142082d0f2b0ca15dc61103954708e87af15
+```
+
+Squash merge on `main`:
+
+```text
+6edaff4bb62bba8316722265dd216ba6e5e7d541
 ```
 
 ### IMPLEMENTED
 
 F27 measurement correction:
 
-- original `research/results/idle_cash_credit_0027r1.json` is preserved as superseded historical measurement evidence;
+- `research/results/idle_cash_credit_0027r1.json` is preserved as superseded historical measurement evidence;
 - day-one return is reconstructed from the known `$10,000` base instead of being dropped by `pct_change().dropna()`;
 - the script refuses to emit R2 unless BRRK-0011 raw CAGR reproduces the frozen calendar-span anchor `0.6516609785...`;
 - corrected evidence is committed as `research/results/idle_cash_credit_0027r2.json`;
@@ -65,41 +72,27 @@ BRRK-vs-V1 rf=0 Sharpe gap moves from `+0.0581629` to `+0.0617832`, shift `+0.00
 
 EXPOSURE-SMOOTH-0038 authority normalization:
 
-- `research/results/exposure_smooth_0038/summary.json` now states `MECHANISM_VALIDATED_NOT_PROMOTED_BASELINE_UNCHANGED`;
+- result summary states `MECHANISM_VALIDATED_NOT_PROMOTED_BASELINE_UNCHANGED`;
 - `docs/EXPOSURE_SMOOTH_0038_DECISION_2026-08-06.md` records the governance decision;
-- `config/decision_registry.json` records `EXPOSURE-SMOOTH-0038` as non-promoted historical/shadow evidence;
-- `docs/RESEARCH_HISTORY.md` records the result and the explicit prohibition on substituting 0038 into P3.2;
-- frozen V1 and BRRK-0011 authority remain unchanged.
+- `config/decision_registry.json` records `EXPOSURE-SMOOTH-0038` as `SHADOW_ONLY` historical/mechanism evidence;
+- frozen V1 and BRRK-0011 authority remain unchanged;
+- 0038 must not be substituted into P3.2 and is not leverage or production authorization.
 
-Stale handoff normalization:
+### TESTED / CI VERIFIED
 
-- `docs/P3_1_DATA_CONTRACT.md` status is `PASS / MERGED — canonical P3.1 data contract`;
-- `docs/CURRENT_STATE.md` reflects #71 merged and #72 as the active correction gate.
+Final head `fb13142082d0f2b0ca15dc61103954708e87af15` completed the required gates successfully:
 
-### TESTED
+- `Research evidence normalization` run `31119256543`: SUCCESS;
+- `Phase 0 baseline contract` run `31119256293`: SUCCESS;
+- `PR handoff governance` run `31119364631`: SUCCESS;
+- incidental `CARRY RF 0036R1` run `31119256178`: SUCCESS.
 
-On PR head `8c347e12c3c938b16d70728fe83f11e8b66aa484`, Actions run `31118002035` (`Research evidence normalization`) completed successfully:
-
-- canonical metric regression: **12 passed**;
-- F27 R2 recomputation: **SUCCESS**;
-- anchor check: BRRK-0011 raw CAGR **65.166098%**;
-- exact R2 JSON printed and subsequently committed without hand-editing metric values.
-
-The same head's `PR handoff governance` run `31118002045` failed before checkout at GitHub runner action-resolution setup with `Service Unavailable / Failed to resolve action download info`. This is infrastructure failure, not code/test failure, and does not count as a green governance gate.
-
-### CI VERIFIED
-
-```text
-INTERMEDIATE EVIDENCE CI: VERIFIED GREEN
-FINAL-HEAD CI AFTER EVIDENCE/AUTHORITY WRITEBACK: REQUIRED BEFORE MERGE
-```
-
-Do not merge #72 until the current final head has the required successful evidence/governance CI. If marketplace action resolution fails again before checkout, retry the failed governance job; do not lower the gate.
+Earlier setup-only `Service Unavailable` / queued-timeout failures occurred during the GitHub Actions outage and were retried without lowering any gate.
 
 ### MERGED
 
 ```text
-NO — PR #72 remains unmerged until final-head gates pass.
+YES — PR #72 squash-merged to main as 6edaff4bb62bba8316722265dd216ba6e5e7d541.
 ```
 
 ### PRODUCTION AUTHORIZED
@@ -109,7 +102,7 @@ NO_CHANGE
 production_authorized_components = []
 ```
 
-No live capital, leverage expansion, new asset, short, withdrawal, transfer, or cutover authorization is created by #72.
+No live capital, leverage expansion, new asset, short, withdrawal, transfer, or cutover authorization was created by #72.
 
 ## Research / strategy boundaries retained
 
@@ -123,20 +116,18 @@ No live capital, leverage expansion, new asset, short, withdrawal, transfer, or 
 ## Project drift audit
 
 ```text
-DRIFT_1
+DRIFT_0
 ```
 
-Reason: #72 repairs measurement and authority/handoff bookkeeping inherited from pre-Master-Plan work. It does not change the product objective, universe, venue, research target, risk philosophy, human-approval boundary, credential/security boundary, stopped-line policy, or production authorization.
+The pre-P3.2 audit/evidence correction chain is now closed on main. No known roadmap/handoff mismatch blocks P3.2. This does not change product scope, research authority, risk philosophy, human-approval boundaries, credential/security boundaries, stopped-line policy, or production authorization.
 
 ## Exact next action
 
 ```text
-#72 current-head CI
--> retry infrastructure-only failed governance job if required
--> self-review current diff / confirm DRIFT_1
--> expected-head merge only after final-head gates are green
--> post-merge handoff normalization
--> create fresh P3.2 branch from then-current main
--> implement frozen BRRK-0011 Target calculation API only
--> build multi-date research/live golden parity
+complete this narrow post-merge handoff normalization
+-> create a fresh P3.2 branch from then-current main
+-> recover exact frozen BRRK-0011 allocation / regime / corrected defensive-scale chain from GitHub
+-> implement canonical Target calculation API only
+-> add deterministic multi-date research/live golden parity
+-> self-review / CI / expected-head merge
 ```
