@@ -30,6 +30,13 @@ def fetch_perp_metadata(api_url: str, timeout: float) -> dict[str, Any]:
     return result
 
 
+def fetch_open_orders(api_url: str, account_address: str, timeout: float) -> list[dict[str, Any]]:
+    result = _post(api_url, {"type": "openOrders", "user": account_address}, timeout)
+    if not isinstance(result, list):
+        raise RuntimeError(f"Unexpected openOrders response: {result}")
+    return result
+
+
 def fetch_completed_daily_closes(
     api_url: str,
     coin: str,
@@ -85,11 +92,14 @@ def fetch_funding_apr_24h(api_url: str, coin: str, timeout: float) -> float:
 
 
 def fetch_user_state(api_url: str, account_address: str, timeout: float) -> dict[str, Any]:
-    return _post(
+    result = _post(
         api_url,
         {"type": "clearinghouseState", "user": account_address},
         timeout,
     )
+    if not isinstance(result, dict):
+        raise RuntimeError(f"Unexpected clearinghouseState response: {result}")
+    return result
 
 
 def fetch_order_status(
