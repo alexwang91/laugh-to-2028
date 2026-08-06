@@ -9,68 +9,76 @@ Status: authoritative cross-chat handoff snapshot
 - Phase 1: COMPLETE
 - P2.1 implementation PR #58: PASS / MERGED
 - P2.2 implementation PR #60: PASS / MERGED
-- Current main before P2.3: `71cd245a093dc9024940513a0fc06d55703c037a`
-- P2.3 implementation PR: #62 OPEN
+- P2.3 implementation PR #62: PASS / MERGED
+- P2.3 final implementation head: `3a6dc02a560aa47be9a95e58942fe7814ae6c511`
+- P2.3 squash/main commit: `e890aebc1764ab872b9446ab755fde793c48a77d`
 
 ## Current roadmap position
 
 ```text
 P2.1 Canonical instrument registry: PASS / MERGED
 P2.2 ETH / SOL spot validation + BNB perp-only policy: PASS / MERGED
-P2.3 Spot vs perp cost model: IMPLEMENTATION VERIFIED / FINAL-HEAD CI PENDING / NOT MERGED
-P2.4+ blocked
+P2.3 Spot vs perp cost model: PASS / MERGED
+P2.4 Router decision: NEXT
+P3+ blocked
 ```
 
-## P2.3 implementation verified on candidate
+## P2.3 PASS / MERGED
 
-- `beta_bot/route_cost.py` compares spot/perp only for the same asset, equal economic notional and equal holding horizon.
-- Models configurable taker/maker fees, full quoted spread, beyond-spread entry/exit slippage, live depth, VWAP diagnostics, signed funding, basis/premium evolution and spot custody/redemption friction.
-- Positive perp funding is a long cost; negative funding is a benefit.
-- Basis cost is entry perp premium minus expected exit premium.
-- Live depth/VWAP are retained for capacity and slippage diagnostics without double counting VWAP impact when it is the source of slippage.
-- Explicit funding break-even horizon is available.
-- `config/route_cost_model.json` freezes the model contract, comparison scope and reproducible holding-horizon scenarios, not a route decision.
-- BTC/ETH/SOL are comparison assets; BNB is excluded by `ROUTER-BNB-PERP-ONLY-2026-08-06`.
-- `ROUTER-COST-MODEL-P2.3 = IMPLEMENTATION_VERIFIED` is registered.
+P2.3 established a reproducible BTC/ETH/SOL spot-versus-perp economic comparison using equal asset, equal notional and equal holding horizon.
 
-## Candidate CI evidence
+Model inputs include configurable maker/taker fees, quoted spread, beyond-spread slippage, live depth/VWAP diagnostics, signed perp funding, basis evolution and spot custody/redemption friction. Positive funding costs the long; negative funding benefits it. VWAP impact is not double-counted when it is used to derive slippage.
 
-Candidate head before decision/evidence writeback:
+`config/route_cost_model.json` freezes the measurement contract and holding-horizon scenarios, not a route choice. BNB remains excluded under `ROUTER-BNB-PERP-ONLY-2026-08-06`.
+
+`ROUTER-COST-MODEL-P2.3 = IMPLEMENTATION_VERIFIED` is registered.
+
+## P2.3 final evidence
+
+Final implementation head:
 
 ```text
-cc9ee0834520168e313e5bba4a3587d17518c98b
+3a6dc02a560aa47be9a95e58942fe7814ae6c511
 ```
 
 passed:
 
-- `Phase 0 baseline contract` #72 / Actions `31099792353`: SUCCESS;
+- `Phase 0 baseline contract` #74 / Actions `31100005137`: SUCCESS;
 - execution tests: SUCCESS;
 - research integration contract: SUCCESS;
-- `PR handoff governance` #90 / Actions `31099792997`: SUCCESS.
+- `PR handoff governance` #92 / Actions `31100003917`: SUCCESS.
 
-## Fee baseline
-
-The configurable no-staking Tier-0 baseline is:
+PR #62 squash-merged to main as:
 
 ```text
-perp taker 4.5 bps
-perp maker 1.5 bps
-spot taker 7.0 bps
-spot maker 4.0 bps
+e890aebc1764ab872b9446ab755fde793c48a77d
 ```
 
-The model requires effective account fees to be refreshed when volume/staking tier changes.
+## Current unique next task: P2.4 Router decision
 
-## Self-review corrections
+The target engine requests economic exposure; the router must return an implementation plan plus deterministic reason code.
 
-1. Removed double counting of VWAP impact and expected slippage. VWAP/depth are diagnostics; explicitly defined beyond-spread slippage is charged once.
-2. No `spot always wins` rule is encoded. Holding horizon, signed funding, basis and liquidity remain explicit inputs for P2.4.
+Required behavior:
 
-## Deliberately not solved
+- use the P2.1/P2.2 verified instrument registry;
+- use P2.3 cost-model inputs and assumptions;
+- keep BNB `PERP_ONLY_DEFAULT`;
+- shorts require perp;
+- leverage-overlay exposure requires perp;
+- fail closed when liquidity/identity evidence is insufficient;
+- log every routing decision and assumptions so research can reproduce it.
 
-- No P2.4 route-selection reason codes or implementation plan.
-- No fixed historical funding forecast is declared canonical.
-- No production authorization.
+Example reason-code family from roadmap:
+
+```text
+SPOT_VERIFIED_LOWER_COST
+PERP_SPOT_UNVERIFIED
+PERP_REQUIRED_FOR_SHORT
+PERP_REQUIRED_FOR_LEVERAGE_OVERLAY
+NO_TRADE_LIQUIDITY_FAIL
+```
+
+P2.4 does not authorize production trading or change BRRK economics.
 
 ## Production authorization
 
@@ -88,5 +96,7 @@ DRIFT_0
 ## Exact next action
 
 ```text
-final-head CI on PR #62 -> expected-head merge -> post-merge normalization to P2.4
+P2.4 Router decision
 ```
+
+Start from current main after this documentation-only normalization is merged, on a fresh candidate branch.
