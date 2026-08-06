@@ -27,9 +27,34 @@ A roadmap task touching a legacy defect must not be called complete solely becau
 | F19 unreachable leverage target reported as no-op | execution-plan semantics, discovered before P3.2 | RESOLVED | PR #71 records requested vs reachable target, explicit leverage-clamp state/reasons, and makes clamp reduction take precedence when the current position exceeds the reachable cap. |
 | F20 `/api/cron` authorization | security hardening before any live phase | RESOLVED | PR #71 requires configured bearer `CRON_SECRET` in shadow/trade, uses constant-time comparison, removes User-Agent authorization, and redacts external exception text. |
 | F21 unbacktested `ALLOW_STRONG_BETA` / 1.50 branch | P4 leverage-governance boundary | RESOLVED | PR #71 removed the env-toggleable 1.50 branch and `HARD_BETA_CAP` / `ALLOW_STRONG_BETA`; >1 research remains P4-only. |
-| F22 research/execution price + timing parity | P3.1 data contract plus operational schedule | RESOLVED_FOR_PRE_P3.2_SCOPE | P3.1 fixed canonical source/timestamp semantics; PR #71 moved Vercel cron to 00:05 UTC while preserving the 00:00 UTC economic decision boundary. P3.3 separately owns rebalance-band/turnover semantics. |
+| F22 research/execution price + timing parity | P3.1 data contract plus operational schedule | PARTIAL | Source/timestamp semantics and 00:00 UTC economic boundary are already fixed, but P3.2 recovery exposed a P3.1 input-parity residual: frozen BRRK-0011 regime features consume XRPUSDT as feature-only input while the v1 canonical payload exposed only BTC/ETH/SOL/BNB. `fix/p3-1-feature-input-parity` must merge before F22 returns to resolved-for-P3.2 status. P3.3 separately owns rebalance-band/turnover semantics. |
 | F23 funding filter scope | future registered research only; must not be slipped into P3.2 | DEFERRED_REGISTERED_BOUNDARY | current legacy filter thresholds are not canonical BRRK research. P3.2 must reproduce frozen BRRK-0011 without treating this filter as promoted logic. Any whole-range funding response requires a new registered experiment; do not retune existing thresholds. |
 | F28 impact cost / capacity | P2.3 cost model | RESOLVED_FOR_CURRENT_SCOPE | canonical Hyperliquid L2 depth/VWAP, capacity fail-closed behavior and beyond-spread accounting were completed in P2.3 + correction. Revalidate capacity if deployment size materially changes. |
+
+## P3.1 feature-input parity residual
+
+The product/tradable long universe remains:
+
+```text
+BTC ETH SOL BNB
+```
+
+The exact frozen BRRK-0011 regime feature implementation additionally consumes:
+
+```text
+XRPUSDT — feature-only
+```
+
+The v1 P3.1 contract omitted that feature-only series. Removing XRP from the model would change frozen BRRK-0011, so the correction instead versions the canonical strategy payload to include XRP while preserving a four-asset target/router boundary.
+
+Required evidence before this residual closes:
+
+- machine contract explicitly distinguishes target assets from feature-only assets;
+- canonical daily payload fails closed if XRP is missing or gapped;
+- research/live canonical payload remains byte/digest identical for identical observations;
+- router funding/basis rejects XRP;
+- no BRRK weight, regime parameter, risk budget or research promotion changes;
+- normal tests/governance/CI and expected-head merge complete.
 
 ## Research / evidence backlog relationship
 
@@ -71,14 +96,15 @@ Disposition: `RESOLVED` for measurement/authority normalization. R2 is authorita
 
 ## Forward sequencing
 
-The pre-P3.2 audit/evidence corrections are closed on main. Forward sequencing is now:
+Current dependency ordering is:
 
 ```text
-P3.2 Target calculation API
+P3.1 feature-input parity correction
+-> P3.2 Target calculation API
 -> P3.3
 -> P3.4
 -> P4
 -> P5
 ```
 
-P3.2 remains target calculation only. It must not absorb F23 funding-response research, >1 leverage, cycle-exit logic, P3.3 turnover/rebalance behavior, P3.4 contribution handling, or production authorization.
+P3.2 remains target calculation only. It must not absorb F23 funding-response research, >1 leverage, cycle-exit logic, P3.3 turnover/rebalance behavior, P3.4 contribution handling, XRP target exposure, or production authorization.
