@@ -25,7 +25,9 @@ def test_perp_precision_is_canonical_and_metadata_driven():
 
 
 def test_btc_imports_prior_spot_identity_without_reopening_research():
-    spot = load_instrument_registry().asset("BTC")["spot"]
+    row = load_instrument_registry().asset("BTC")
+    spot = row["spot"]
+    assert row["route_policy"] == "SPOT_CANDIDATE_WITH_PERP_FALLBACK"
     assert spot["hypercore_token_candidate"] == "UBTC"
     assert spot["hypercore_pair_candidate"] == "UBTC/USDC"
     assert spot["identity_status"] == "VERIFIED_PRIOR_EVIDENCE"
@@ -41,6 +43,7 @@ def test_eth_and_sol_are_verified_unit_native_assets_but_not_routing_authorized(
     for asset, (token, pair, chain) in expected.items():
         row = registry.asset(asset)
         spot = row["spot"]
+        assert row["route_policy"] == "SPOT_CANDIDATE_WITH_PERP_FALLBACK"
         assert spot["identity_status"] == "VERIFIED_UNIT_NATIVE_ASSET"
         assert spot["hypercore_token_candidate"] == token
         assert spot["hypercore_pair_candidate"] == pair
@@ -49,14 +52,16 @@ def test_eth_and_sol_are_verified_unit_native_assets_but_not_routing_authorized(
         assert row["custody_redemption"]["status"] == "VERIFIED_UNIT_NATIVE_DEPOSIT_WITHDRAWAL"
 
 
-def test_bnb_has_no_verified_unit_native_spot_route():
+def test_bnb_is_product_default_perp_only():
     row = load_instrument_registry().asset("BNB")
     spot = row["spot"]
-    assert spot["identity_status"] == "NO_VERIFIED_UNIT_NATIVE_ROUTE"
-    assert spot["availability_state"] == "SPOT_UNAVAILABLE_PER_VALIDATED_UNIT_ROUTE"
+    assert row["route_policy"] == "PERP_ONLY_DEFAULT"
+    assert spot["identity_status"] == "NOT_IN_SCOPE_PERP_ONLY_DEFAULT"
+    assert spot["availability_state"] == "NOT_ROUTABLE_BY_PRODUCT_POLICY"
     assert spot["hypercore_token_candidate"] is None
     assert spot["hypercore_pair_candidate"] is None
-    assert row["custody_redemption"]["status"] == "NO_VERIFIED_UNIT_NATIVE_ROUTE"
+    assert row["custody_redemption"]["status"] == "NOT_REQUIRED_PERP_ONLY_DEFAULT"
+    assert row["liquidity_metrics"]["status"] == "PERP_ONLY_DEFAULT"
 
 
 def test_registry_rejects_silent_routing_authorization(tmp_path: Path):
@@ -69,13 +74,13 @@ def test_registry_rejects_silent_routing_authorization(tmp_path: Path):
         load_instrument_registry(path)
 
 
-def test_registry_rejects_invented_bnb_spot_identity(tmp_path: Path):
+def test_registry_rejects_bnb_spot_promotion(tmp_path: Path):
     source = Path(__file__).resolve().parents[3] / "config" / "instrument_registry.json"
     raw = json.loads(source.read_text(encoding="utf-8"))
-    raw["assets"]["BNB"]["spot"]["hypercore_token_candidate"] = "UBNB"
+    raw["assets"]["BNB"]["route_policy"] = "SPOT_CANDIDATE_WITH_PERP_FALLBACK"
     path = tmp_path / "bad-bnb.json"
     path.write_text(json.dumps(raw), encoding="utf-8")
-    with pytest.raises(ValueError, match="BNB must not invent"):
+    with pytest.raises(ValueError, match="BNB must remain PERP_ONLY_DEFAULT"):
         load_instrument_registry(path)
 
 
