@@ -6,27 +6,62 @@ Status: authoritative cross-chat handoff snapshot
 ## Authoritative baseline
 
 - P0.1 / P0.2: PASS / MERGED
-- P1.1 through P1.8: PASS / MERGED
-- Phase 1 Account and execution truth: COMPLETE
+- P1.1 through P1.8: PASS / MERGED for their canonical roadmap gates
+- Phase 1 Account and execution truth: COMPLETE, with a narrow legacy-backlog alerting correction now being closed for F17
 - P2.1 through P2.4: PASS / MERGED
 - Phase 2 Hyperliquid instrument router: COMPLETE
-- P3.1 Data contract implementation PR #68: PASS / MERGED
-- Current main after P3.1: `3afbdc165f4b5bde1e1dfbed6f8ceefdbb7dd0ae`
-- Full project audit: `docs/FULL_PROJECT_AUDIT_2026-08-06.md`
+- P3.1 Data contract PR #68: PASS / MERGED
+- P3.1 post-merge handoff PR #69: MERGED
+- Authoritative main before the current audit-correction candidate: `34165f8481b8c38f7f824b2f18f7592da731223b`
+- Historical audit record: `docs/FULL_PROJECT_AUDIT_2026-08-06.md`
+- Legacy backlog/roadmap bridge: `docs/BACKLOG_ROADMAP_CROSSWALK_2026-08-06.md`
 
 ## Current roadmap position
 
 ```text
 P3.1 Data contract: PASS / MERGED
-P3.2 Target calculation API: NEXT
+P3.2 Target calculation API: NEXT ROADMAP TASK
 P3.3 Rebalance band / turnover controls: BLOCKED
 P3.4 Weekly cash contribution handling: BLOCKED
 P4+: BLOCKED
 ```
 
-The unique next implementation task is **P3.2 Target calculation API**.
+P3.2 remains the unique next roadmap implementation task. Before coding it, the repository is closing audit-discovered legacy backlog/handoff defects that predate the Master Plan. These corrections do not authorize or implement P3.2, P4 or production trading.
 
-## P3.1 closure
+## Active audit-correction candidate
+
+Branch:
+
+```text
+audit/f19-f21-governance-corrections
+```
+
+Base:
+
+```text
+34165f8481b8c38f7f824b2f18f7592da731223b
+```
+
+Scope:
+
+- F17 residual alerting gap: preserve best-effort operator notification when a strategy cycle raises, while re-raising the original failure;
+- F19: distinguish a leverage-clamped unreachable target from a genuine below-minimum/no-trade state;
+- F20: make `/api/cron` bearer-secret-only in shadow and trade, use constant-time comparison, remove spoofable User-Agent authorization, and redact external exception text;
+- F21: remove the unregistered env-toggleable strong-beta path to 1.50 and its `HARD_BETA_CAP` / `ALLOW_STRONG_BETA` settings;
+- F22 residual timing gap: move Vercel cron from 01:10 UTC to 00:05 UTC while preserving the canonical 00:00 UTC decision timestamp;
+- add a durable backlog↔roadmap crosswalk and require fresh sessions/forward PRs to consult it.
+
+Evidence status for this candidate:
+
+```text
+IMPLEMENTED ON CANDIDATE
+CI / FINAL REVIEW: PENDING
+PRODUCTION AUTHORIZATION: NO_CHANGE
+```
+
+Do not call these corrections `IMPLEMENTATION_VERIFIED` until final-head CI is green and the PR is merged.
+
+## P3.1 retained contract
 
 Machine-readable authority:
 
@@ -35,21 +70,7 @@ config/data_contract.json
 contract_id = BRRK-DATA-CONTRACT-P3.1-2026-08-06
 ```
 
-Implementation:
-
-```text
-execution/plan-b-bot/beta_bot/data_contract.py
-execution/plan-b-bot/beta_bot/strategy_data_source.py
-research/integration/p3_1_data_contract_adapter.py
-```
-
-Detailed semantics:
-
-```text
-docs/P3_1_DATA_CONTRACT.md
-```
-
-Canonical strategy-price source remains the frozen BRRK research source:
+Canonical strategy-price source remains:
 
 ```text
 Binance spot BTCUSDT / ETHUSDT / SOLUSDT / BNBUSDT
@@ -59,69 +80,38 @@ decision boundary = 00:00:00 UTC
 usable candle = close_time_ms < decision_timestamp_ms
 ```
 
-Missing data is fail-closed: no forward fill, previous-close substitution, cross-venue substitution or incomplete-candle substitution. Versioned source mappings must resolve exactly once for every consumed session.
+Missing data remains fail-closed. Research and live adapters share one canonicalizer. P3.1 does not authorize target generation or production trading.
 
-Research and live use the same canonicalizer; for identical raw observations and decision timestamp they emit byte-identical canonical JSON and SHA-256 digest. The resulting close sequence also produces identical output from the existing frozen signal component.
+## Research / strategy boundaries retained
 
-Router funding/basis semantics are canonicalized separately from strategy-price data:
-- exact completed Hyperliquid funding-history hourly slots -> bps/hour;
-- missing required slots fail closed;
-- basis = `(perp_mark_price / verified_spot_price - 1) * 10000` bps;
-- both observation timestamps and skew are retained.
+- BRRK-0011 remains the frozen canonical directional research target.
+- `EXPOSURE-SMOOTH-0038` is a mechanism-validation result only and is **not promoted**; its governance record still needs explicit normalization so future sessions cannot miss that decision.
+- ASYM-BETA-0024 remains shadow-only historical evidence, not production leverage authorization.
+- stopped PIT-alpha, TSMOM and carry lines remain stopped on their tested evidence bases.
+- F23 funding-filter redesign remains a separately registered-research boundary and must not be slipped into P3.2.
+- P4 remains the dedicated >1 leverage study; the audit correction only removes an unregistered 1.50 runtime branch.
 
-`DATA-CONTRACT-P3.1 = IMPLEMENTATION_VERIFIED` is registered. This is data-contract engineering evidence only and does not authorize target generation or production trading.
+## Remaining evidence-normalization correction
 
-## P3.1 evidence
+After the execution/security audit correction closes, one narrow research/evidence normalization should be completed before P3.2 implementation begins:
 
-Candidate head before decision/evidence writeback:
+1. record `EXPOSURE-SMOOTH-0038` in the authoritative research-history / decision layer as mechanism validated but not promoted;
+2. repair F27 idle-cash-credit absolute CAGR measurement by preserving the first equity observation relative to the known $10,000 initial capital; retain old published values as superseded measurement evidence and state that the qualitative F27 conclusion is unchanged;
+3. update stale P3.1 documentation labels/main references where needed.
 
-```text
-cd55535cf4720e259109b0080104d642183e9efe
-```
-
-passed:
-- Phase 0 baseline contract #86 / Actions `31108327909`: SUCCESS;
-- execution tests: SUCCESS;
-- research integration contract: SUCCESS;
-- PR handoff governance #108 / Actions `31108329917`: SUCCESS.
-
-Final implementation head:
-
-```text
-05a3216a402e161b056a452a23f984bac41c7520
-```
-
-passed:
-- Phase 0 baseline contract #88 / Actions `31108606737`: SUCCESS;
-- execution tests: SUCCESS;
-- research integration contract: SUCCESS;
-- PR handoff governance #110 / Actions `31108607058`: SUCCESS.
-
-PR #68 squash-merged to main as:
-
-```text
-3afbdc165f4b5bde1e1dfbed6f8ceefdbb7dd0ae
-```
-
-## P3.1 self-review conclusions retained
-
-1. Strategy signal data and execution/router observations are separate namespaces; Hyperliquid execution does not silently change the frozen Binance spot research price path.
-2. Strategy-price outages fail closed rather than altering the path through imputation or cross-venue substitution.
-3. Source mappings are versioned and gap/overlap/ambiguity fail closed.
-4. Funding uses exact completed hourly slots and cannot consume boundary/future values early.
-5. Basis preserves source timestamps/skew instead of hiding a freshness assumption.
-6. Research has no independent candle-cleaning logic; it calls the same canonicalizer as live.
-7. P3.1 did not implement the full P3.2 target API or later controls.
+This is evidence bookkeeping / measurement correction, not a new research hypothesis.
 
 ## Project drift audit
 
-P3.1 closed as:
+Current repository finding:
 
 ```text
-DRIFT_0
+DRIFT_1
 ```
 
-Historical full-audit `DRIFT_1` remains preserved as process history; no product, universe, venue, risk, human-approval, security or production boundary changed in P3.1.
+Reason: legacy implementation/handoff defects survived the transition from the old review backlog into the canonical roadmap. No long-universe, venue, product objective, stopped-line, catastrophic-risk, human-approval, wallet/security boundary or production authorization has changed.
+
+Closed PR #70 is explicitly invalid as forward evidence because it was authored from a parent 34 commits behind the canonical program. Do not revive or merge its stale roadmap rewrite. Isolated findings must be reimplemented from current main under normal governance.
 
 ## Production authorization
 
@@ -130,29 +120,18 @@ NO_CHANGE
 production_authorized_components = []
 ```
 
-## Unique next task: P3.2 Target calculation API
-
-Input contract:
-- canonical daily data from P3.1;
-- account equity;
-- current positions;
-- approved config.
-
-Required output:
-- BRRK relative weights;
-- cash share;
-- base gross target;
-- risk state;
-- version and feature snapshot.
-
-P3.2 must reproduce the frozen BRRK directional core from canonical input. It must not implement P3.3 rebalance/turnover bands, P3.4 contribution handling, P4 leverage-above-1 extension, P5 cycle-exit intelligence or production authorization.
+No audit correction authorizes live capital, >1 BRRK leverage, new assets, shorts, withdrawals, external transfers or production cutover.
 
 ## Exact next action
 
 ```text
-merge P3.1 post-merge handoff
--> create fresh P3.2/target-calculation-api branch from then-current main
--> recover exact frozen BRRK allocation/risk logic from GitHub
--> implement P3.2 only
--> tests / self-review / drift audit / PR / CI / expected-head merge
+finish audit/f19-f21-governance-corrections tests + self-review
+-> update evidence/decision handoff if CI is green
+-> PR with mandatory governance sections
+-> final-head CI
+-> merge
+-> normalize merged handoff if needed
+-> complete narrow 0038/F27 evidence-normalization correction from fresh main
+-> rebuild a fresh P3.2 target-calculation branch from then-current main
+-> implement frozen BRRK-0011 target API only
 ```
