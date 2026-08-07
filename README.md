@@ -123,13 +123,9 @@ Calendar windows are frozen first and anchors are mechanically resolved from can
 
 Contract: `P5.2-FEATURE-FAMILIES-V1`.
 
-Immutable result commit:
+Immutable result commit: `61d585afb64afbe3ead6422e7e62cde6c59fad40`.
 
-`61d585afb64afbe3ead6422e7e62cde6c59fad40`
-
-Immutable summary SHA256:
-
-`3f6dc3c512d22ac8f71d43ed155f2602cd40d5caf3d617c0e130e170727e0627`
+Immutable summary SHA256: `3f6dc3c512d22ac8f71d43ed155f2602cd40d5caf3d617c0e130e170727e0627`.
 
 P5.2 evaluated **29 frozen causal features** across BTC trend maturity, momentum exhaustion, leadership migration and canonical breadth. All 29 passed the frozen coverage gate.
 
@@ -187,9 +183,26 @@ EXHAUSTION_TRANSITION
 TREND_DAMAGE
 ```
 
-Continuous inputs are normalized causally using trailing 365-observation empirical percentiles with a 252-observation minimum. Future data is forbidden; missing data cannot automatically de-escalate/re-add risk.
+#### Exact causal percentile normalization
 
-Three sensitivity profiles were frozen **before state-path evaluation**:
+Before any P5.3 state path was evaluated, prereg correction `P5.3-PREREG-COMPLETENESS-R1` froze the previously unspecified percentile formula and corrected an early-history coverage problem.
+
+For each continuous feature at date `t`:
+
+```text
+window          last up to 365 completed daily dates ending at t
+minimum N       20 nonmissing feature observations
+percentile      (average_rank(current) - 1) / (N - 1)
+future data     forbidden
+20 <= N < 365   use available causal history and report N
+N < 20          unavailable
+```
+
+The original `252`-observation minimum was removed before any state evaluation because it would exclude required 2021 windows given the immutable P5.2 start date and feature warm-ups. CI must prove every continuous runtime input has at least 20 observations by `2021-01-31`, the earliest P5.1 control `early_warning` date.
+
+Before all continuous inputs are initialized the research path emits `DATA_INSUFFICIENT`. After initialization, missing evidence may not de-escalate or automatically re-add risk. Calibration depth is a mandatory output.
+
+Three sensitivity profiles remain frozen before evaluation:
 
 | Profile | Moderate | Strong | Escalation | Clear period |
 | --- | --- | --- | ---: | ---: |
