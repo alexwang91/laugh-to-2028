@@ -36,7 +36,7 @@ Active PR / branch:
 - PR: `#80`
 - branch: `p3-4/contribution-handling-v1`
 - fresh base: `1d9dbebf5087936d0454f631145b176c62da4ec8`
-- latest fully validated implementation checkpoint before this handoff update: `e8a03a18727d04e654ffc01a050adceb798af4f3`
+- latest fully validated implementation checkpoint before this handoff update: `ec641f555826ae3484fa1ef52cd2f90d05e43fa7`
 
 ## Frozen upstream chain
 
@@ -49,7 +49,7 @@ P3.1 canonical daily data
 -> P3.4 contribution timing/equity handling
 ```
 
-Frozen asset/control boundaries remain:
+Frozen boundaries remain:
 
 ```text
 target assets = BTC, ETH, SOL, BNB
@@ -59,9 +59,7 @@ short targets forbidden
 P3.3 routine L1 band = 0.05
 ```
 
-P3.2 committed golden vectors remain unchanged at:
-
-`research/results/p3_2_target_parity/golden_v1.json`
+P3.2 committed golden vectors remain unchanged at `research/results/p3_2_target_parity/golden_v1.json`.
 
 ## P3.4 roadmap authority
 
@@ -78,11 +76,9 @@ P3.4 does not require a fixed weekday, does not require an exact `$100` contribu
 
 ## P3.4 machine policy
 
-`config/contribution_policy.json`
+Machine policy: `config/contribution_policy.json`
 
-Version:
-
-`P3.4-EQUITY-CHANGE-DAILY-V1`
+Version: `P3.4-EQUITY-CHANGE-DAILY-V1`
 
 Frozen semantics:
 
@@ -111,9 +107,9 @@ weekly ~$100:
   not a scheduling trigger
 ```
 
-Account equity alone is not used to claim whether a positive change came from a deposit or PnL. Positive change is deliberately a contribution candidate rather than a confirmed transfer-source attribution.
+Account equity alone is not used to claim whether a positive change came from a deposit or PnL. Positive change is deliberately a contribution candidate rather than confirmed source attribution.
 
-## P3.4 timing boundary
+## P3.4 timing and allocation semantics
 
 Example intraday observation:
 
@@ -123,22 +119,18 @@ positive equity change:     2026-08-07 13:45 UTC
 next eligible allocation:   2026-08-08 00:00 UTC
 ```
 
-The intraday observation itself can never invoke P3.2/P3.3 or authorize increased risk.
+The intraday observation can never invoke P3.2/P3.3 or authorize increased risk.
 
 If a change is observed exactly at a future 00:00 boundary before that boundary is accepted, it may enter that decision. If the observation timestamp equals an already-accepted baseline decision, P3.4 rolls it to the following day rather than replaying the same daily decision.
 
-## P3.4 allocation semantics
-
-At the scheduled daily decision P3.4 uses **fresh full account equity**, not just the observed contribution-candidate amount:
+At the scheduled daily decision P3.4 uses **fresh full account equity**, not merely the observed contribution-candidate amount:
 
 ```text
 calculate_target(... fresh account equity ...)
 -> calculate_rebalance_control(... same fresh account equity ...)
 ```
 
-Thus new cash follows the same BRRK target engine and the same P3.3 control. Contribution amount is diagnostic only.
-
-P3.4 does not bypass P3.3 merely because cash was added. Venue minimum-size/precision/routing remain downstream.
+Thus new cash follows the same BRRK target engine and the same P3.3 control. Contribution amount is diagnostic only. P3.4 does not bypass P3.3 merely because cash was added.
 
 ## P3.4 implementation candidate
 
@@ -150,32 +142,15 @@ Implemented in PR #80:
 - `execution/plan-b-bot/tests/test_contribution_boundary_p3_4.py`
 - `docs/P3_4_CONTRIBUTION_HANDLING.md`
 
-Observation audit fields include:
+Observation output records previous accepted decision/equity, observed timestamp/equity, signed equity change, contribution-candidate amount, no-source-attribution classification, scheduled decision, explicit intraday prohibitions and deterministic digest.
 
-- previous accepted decision timestamp/equity;
-- observation timestamp/equity;
-- signed equity change;
-- positive contribution-candidate amount;
-- explicit no-source-attribution classification;
-- scheduled daily decision;
-- explicit no intraday target recalculation / no intraday risk increase;
-- deterministic observation digest.
-
-Daily-decision audit fields include:
-
-- observation digest;
-- contribution candidate;
-- fresh full decision equity;
-- P3.2 target engine/version/digest/result;
-- P3.3 control version/digest/plan;
-- deterministic P3.4 decision digest;
-- no production authorization.
+Daily-decision output records observation digest, contribution candidate, fresh full decision equity, P3.2 version/digest/result, P3.3 version/digest/plan, deterministic P3.4 digest and `production_authorized = false`.
 
 ## P3.4 regression coverage
 
 Tests cover:
 
-- frozen P3.4 daily-only policy and P3.2->P3.3 allocation path;
+- frozen P3.4 daily-only policy and P3.2 -> P3.3 allocation path;
 - policy timing/allocation path cannot silently drift under V1;
 - intraday positive change schedules next UTC midnight and has no intraday risk permission;
 - +$37 and +$250 both detected, proving `$100/week` is not a threshold;
@@ -183,38 +158,43 @@ Tests cover:
 - future exact 00:00 observation may enter that boundary;
 - an already-accepted baseline 00:00 cannot be replayed;
 - wrong/intraday application timestamp fails closed;
-- fresh full daily equity is passed to the same P3.2 target engine and then same P3.3 control;
+- fresh full daily equity is passed through the same P3.2 target engine and P3.3 control;
 - observation and contribution-aware decision digests are deterministic;
+- canonical approved product ID is used consistently in the P3.4 chain fixture;
 - no production authorization.
 
-## P3.4 validated checkpoint
+## P3.4 validated implementation checkpoint
 
 Checkpoint head:
 
-`e8a03a18727d04e654ffc01a050adceb798af4f3`
+`ec641f555826ae3484fa1ef52cd2f90d05e43fa7`
 
 Evidence:
 
-- `Phase 0 baseline contract` run `31158894159` (#116): **SUCCESS**
-  - execution pytest: **215 passed in 6.14s**
+- `Phase 0 baseline contract` run `31159462257` (#119): **SUCCESS**
+  - execution pytest: **215 passed in 6.27s**
   - research integration contract: **5 tests / OK**
-- `Research evidence normalization` run `31158894139` (#27): **SUCCESS**
-- `P3.2 target research-live parity` run `31158895607` (#14): **SUCCESS**
+- `Research evidence normalization` run `31159462313` (#30): **SUCCESS**
+- `P3.2 target research-live parity` run `31159463430` (#17): **SUCCESS**
   - independent multi-date BRRK target parity: SUCCESS
   - committed historical golden enforcement: SUCCESS
-- `PR handoff governance` run `31158893906` (#151): **SUCCESS**
+- latest `PR handoff governance` on this checkpoint: run `31159462403` (#155): **SUCCESS**
 
-The initial PR head `5c3c126434eb7490c9c66b9e85bd241407aed51a` had one real Phase-0 test failure: a P3.4 chain test hard-coded `BRRK-PLAN-B` while the canonical approved product ID is `brkk-laugh-to-2028`. The implementation was not changed; the incorrect test expectation was corrected in the same PR. The initial run had **214 passed / 1 failed**. The corrected checkpoint above passed all 215 execution tests and all upstream gates.
+History of same-PR corrections:
+
+1. Initial PR head `5c3c126434eb7490c9c66b9e85bd241407aed51a` had one Phase-0 test failure: a chain assertion hard-coded `BRRK-PLAN-B` while the canonical product ID is `brkk-laugh-to-2028`. Result: **214 passed / 1 failed**. Runtime implementation was unchanged.
+2. The assertion was corrected in the same PR; checkpoint `e8a03a18727d04e654ffc01a050adceb798af4f3` passed **215 tests + 5/5 integration** and all upstream gates.
+3. Final self-review found the synthetic `TargetCalculationResult` fixture still carried the old product-ID label even though it did not affect runtime behavior. The fixture was aligned to canonical `brkk-laugh-to-2028`; checkpoint `ec641f55...` then re-passed all four gates above.
 
 ## Checkpoint self-review
 
 Versus fresh base `1d9dbebf5087936d0454f631145b176c62da4ec8`:
 
-- ahead 10 / behind 0;
-- exactly 7 changed files;
-- scope limited to P3.4 policy/module/tests/contract/handoff;
+- scope remains exactly 7 changed files;
+- only P3.4 policy/module/tests/contract/handoff changed;
 - no P3.2/P3.3 runtime or golden mutation;
-- no router/executor/product-config/decision-registry/authorization mutation.
+- no router/executor/product-config/decision-registry/authorization mutation;
+- no F23/P4/P5 behavior introduced.
 
 ```text
 DRIFT_0
@@ -225,12 +205,12 @@ DRIFT_0
 ```text
 IMPLEMENTED:           YES
 TESTED:                YES
-CI VERIFIED:           YES at checkpoint e8a03a18...
+CI VERIFIED:           YES at checkpoint ec641f55...
 MERGED:                NO
 PRODUCTION AUTHORIZED: NO_CHANGE
 ```
 
-This CURRENT_STATE update itself moves the PR head. The new final code/handoff head must therefore re-run the normal PR workflows. No further code mutation is planned. Only after final-head CI is fully green may PR metadata be updated and expected-head merge occur.
+This handoff update itself moves the PR head. That new final handoff head must re-run the normal PR workflows. No further branch-file mutation is planned after this update. Only after final-head CI is fully green may PR metadata be updated and expected-head merge occur.
 
 ## Explicit P3.4 exclusions
 
@@ -271,5 +251,5 @@ final-head Phase 0 + research evidence + P3.2 parity/golden + PR governance
 -> verify new main
 -> fresh docs-only post-merge normalization PR
 -> merge normalization
--> P4 only after P3.4 closure and exact P4 roadmap reread
+-> reread exact P4 roadmap before any P4 implementation
 ```
