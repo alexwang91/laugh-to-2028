@@ -1,0 +1,24 @@
+name: P4.4 LEVERAGE-0040 immutable result validation
+
+on:
+  push:
+    branches:
+      - "p4-4/leverage-0040-one-time-study-v1"
+    paths:
+      - "research/results/leverage_0040/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-result:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate committed result without rerunning study
+        run: python research/leverage_0040/validate_leverage_0040_result.py
