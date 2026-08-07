@@ -1,0 +1,234 @@
+{
+  "contract_id": "P5.3-STATE-MODEL-STRUCTURE-V1",
+  "status": "FROZEN_BEFORE_STATE_PATH_EVALUATION",
+  "registered_at_utc": "2026-08-07T22:35:00Z",
+  "base_main": "4b5f41b449b2e9ac3d8ec9125644bc0a10e36963",
+  "prereg_correction": {
+    "id": "P5.3-PREREG-COMPLETENESS-R1",
+    "timing": "BEFORE_ANY_P5_3_STATE_PATH_EVALUATION",
+    "reason": "The initial preregistration did not define the exact empirical-percentile rank mapping and a 252-feature-observation minimum would exclude required early-2021 taxonomy windows because the immutable P5.2 panel begins 2020-10-01.",
+    "change": "Freeze an exact average-rank percentile formula, a 365 completed-date maximum window, a 20 nonmissing-feature-observation minimum, DATA_INSUFFICIENT pre-initialization semantics, and mandatory calibration-depth reporting.",
+    "observed_p5_3_state_paths_used": false,
+    "p5_1_or_p5_2_mutation": false,
+    "production_change": false
+  },
+  "transition_prereg_correction": {
+    "id": "P5.3-PREREG-COMPLETENESS-R2",
+    "timing": "BEFORE_ANY_P5_3_STATE_PATH_EVALUATION",
+    "reason": "The initial preregistration did not fully specify ordinary escalation/de-escalation counter mechanics or initialization, and two listed runtime inputs were not referenced by any frozen evidence atom.",
+    "change": "Freeze exact severity-index hysteresis mechanics, initialization/reset behavior, partial-missing behavior, and remove unused BNB/BTC40 and daily-RSI14 runtime inputs rather than leaving dead inputs in the state engine.",
+    "observed_p5_3_state_paths_used": false,
+    "p5_1_or_p5_2_mutation": false,
+    "profile_threshold_change": false,
+    "evidence_atom_threshold_change": false,
+    "production_change": false
+  },
+  "dependencies": {
+    "p5_1_taxonomy_contract": "P5.1-EVENT-TAXONOMY-V1",
+    "p5_1_taxonomy_git_blob_sha": "73d010666fbfd957ec15214a00883a90a8adba5a",
+    "p5_2_feature_contract": "P5.2-FEATURE-FAMILIES-V1",
+    "p5_2_result_summary_sha256": "3f6dc3c512d22ac8f71d43ed155f2602cd40d5caf3d617c0e130e170727e0627",
+    "p5_2_result_commit": "61d585afb64afbe3ead6422e7e62cde6c59fad40"
+  },
+  "scope": "P5.3 research state classification and transition structure only. No production authorization and no P5.4 gross-risk multiplier selection.",
+  "research_integrity": {
+    "p5_1_events_immutable": true,
+    "p5_2_result_immutable": true,
+    "no_single_indicator_top_switch": true,
+    "late_bull_rotation_not_automatically_bearish": true,
+    "only_one_explicit_terminal_event_acknowledged": true,
+    "no_missing_source_proxy_laundering": true,
+    "brrk_relative_ranking_unchanged": true,
+    "production_authorization": "NONE"
+  },
+  "states": [
+    "NORMAL_BULL",
+    "BTC_LEADERSHIP_MATURING",
+    "LATE_BULL_ROTATION",
+    "EXHAUSTION_WATCH",
+    "DE_RISK_1",
+    "DE_RISK_2",
+    "FLAT"
+  ],
+  "severity_order": [
+    "NORMAL_BULL",
+    "BTC_LEADERSHIP_MATURING",
+    "LATE_BULL_ROTATION",
+    "EXHAUSTION_WATCH",
+    "DE_RISK_1",
+    "DE_RISK_2",
+    "FLAT"
+  ],
+  "preinitialization_state": "DATA_INSUFFICIENT",
+  "state_semantics": {
+    "NORMAL_BULL": "Constructive regime without sufficient maturity, rotation, exhaustion or damage evidence to enter a later-cycle state.",
+    "BTC_LEADERSHIP_MATURING": "BTC remains structurally constructive but regime texture indicates late/mature conditions; rotation evidence is not yet sufficient and this state is not bearish by itself.",
+    "LATE_BULL_ROTATION": "BTC remains structurally viable while ETH/alt leadership and breadth rotation strengthen. Rotation may coexist with lower future total risk but is not itself an exit signal.",
+    "EXHAUSTION_WATCH": "Multi-family exhaustion/transition evidence is present without sufficient confirmed damage for de-risk states.",
+    "DE_RISK_1": "Exhaustion plus moderate structural damage or persistent multi-family hazard supports the first de-risk state.",
+    "DE_RISK_2": "Stronger or persistent multi-family exhaustion and structural damage supports a more conservative de-risk state.",
+    "FLAT": "Hard-risk state with zero directional exposure semantics. The research classifier may enter FLAT on the frozen hard-risk rule; automatic exit from FLAT is forbidden."
+  },
+  "runtime_feature_inputs": {
+    "REGIME_TEXTURE": [
+      "btc_rv20_ann",
+      "btc_rv20_to_rv60",
+      "btc_distance_from_90d_high",
+      "btc_kama_gap"
+    ],
+    "LEADERSHIP_ROTATION": [
+      "eth_btc_log_return_20d",
+      "eth_btc_log_return_40d",
+      "breadth_acceleration_10d",
+      "canonical5_outperformance_breadth_20d"
+    ],
+    "EXHAUSTION_TRANSITION": [
+      "btc_price_rsi_rank_divergence_20d",
+      "btc_rsi14_failure_from_14d_max",
+      "btc_4h_rsi14",
+      "btc_4h_rsi28",
+      "breadth_acceleration_10d",
+      "breadth_contraction_from_10d_max"
+    ],
+    "TREND_DAMAGE": [
+      "btc_kama_gap",
+      "btc_distance_from_90d_high",
+      "btc_log_return_20d",
+      "btc_log_return_40d"
+    ]
+  },
+  "excluded_pending_inputs": [
+    "btc_dominance",
+    "broad_market_breadth",
+    "historical_funding",
+    "historical_open_interest",
+    "historical_basis_premium",
+    "liquidation_proxy"
+  ],
+  "causal_normalization": {
+    "method": "TRAILING_EMPIRICAL_PERCENTILE",
+    "lookback_completed_daily_dates": 365,
+    "window_semantics": "At date t take the last up to 365 completed daily dates ending at t, then drop missing values for the feature being normalized.",
+    "minimum_nonmissing_feature_observations": 20,
+    "percentile_formula": "(average_rank_of_current_value_among_nonmissing_window_values - 1) / (N - 1)",
+    "percentile_range": "[0,1] with sample minimum=0 and sample maximum=1 when N>1",
+    "include_current_completed_observation": true,
+    "future_observations_allowed": false,
+    "tie_method": "average",
+    "early_history_rule": "When 20 <= N < 365, use the available causal nonmissing feature history and report N. When N < 20, that normalized feature is unavailable.",
+    "initialization_rule": "The P5.3 state path remains DATA_INSUFFICIENT until every continuous runtime feature used by any evidence atom has at least 20 nonmissing observations under the causal window. DATA_INSUFFICIENT rows are reported and excluded from ordinary state-occupancy denominators.",
+    "calibration_depth_must_be_reported": true,
+    "missing_rule": "FAIL_CLOSED_NO_DEESCALATION"
+  },
+  "raw_fraction_inputs": {
+    "canonical5_outperformance_breadth_20d": "Use the raw [0,1] breadth fraction in ROTATION; do not percentile-normalize it for the 0.75 threshold."
+  },
+  "profiles": {
+    "EARLY": {
+      "moderate_high_percentile": 0.65,
+      "strong_high_percentile": 0.80,
+      "moderate_low_percentile": 0.35,
+      "strong_low_percentile": 0.20,
+      "escalation_persistence_days": 2,
+      "deescalation_clear_days": 5
+    },
+    "BALANCED": {
+      "moderate_high_percentile": 0.70,
+      "strong_high_percentile": 0.85,
+      "moderate_low_percentile": 0.30,
+      "strong_low_percentile": 0.15,
+      "escalation_persistence_days": 3,
+      "deescalation_clear_days": 5
+    },
+    "CONSERVATIVE": {
+      "moderate_high_percentile": 0.75,
+      "strong_high_percentile": 0.90,
+      "moderate_low_percentile": 0.25,
+      "strong_low_percentile": 0.10,
+      "escalation_persistence_days": 3,
+      "deescalation_clear_days": 7
+    }
+  },
+  "evidence_atoms": {
+    "MATURE_TEXTURE": {
+      "rule": "At least 2 of: btc_rv20_ann <= moderate_low; btc_rv20_to_rv60 <= moderate_low; btc_distance_from_90d_high >= moderate_high; btc_kama_gap >= 0.50 percentile.",
+      "purpose": "Late/mature regime texture only; never sufficient for de-risk."
+    },
+    "ROTATION": {
+      "rule": "eth_btc_log_return_20d >= moderate_high AND at least 1 of: eth_btc_log_return_40d >= moderate_high; breadth_acceleration_10d >= moderate_high; canonical5_outperformance_breadth_20d >= 0.75 raw fraction.",
+      "purpose": "Identify late-bull leadership migration without treating it as bearish."
+    },
+    "EXHAUSTION": {
+      "rule": "At least 2 independent subchannels are active: divergence (price-rsi divergence >= moderate_high); momentum failure (rsi14 failure >= moderate_high OR both 4h RSI14 and 4h RSI28 >= moderate_high); breadth transition (breadth contraction >= moderate_high OR breadth acceleration <= moderate_low).",
+      "purpose": "Require multi-family transition evidence rather than raw RSI alone."
+    },
+    "STRONG_EXHAUSTION": {
+      "rule": "price-rsi divergence >= strong_high AND at least 1 additional exhaustion subchannel is active at moderate threshold, OR at least 3 exhaustion subchannels are active at moderate threshold.",
+      "purpose": "Stronger exhaustion evidence, still requiring more than one indicator."
+    },
+    "DAMAGE": {
+      "rule": "At least 2 of: btc_kama_gap <= moderate_low; btc_distance_from_90d_high <= moderate_low; btc_log_return_20d <= moderate_low; btc_log_return_40d <= moderate_low.",
+      "purpose": "Confirmed structural deterioration."
+    },
+    "STRONG_DAMAGE": {
+      "rule": "At least 2 TREND_DAMAGE inputs <= strong_low, including at least one of btc_kama_gap or btc_distance_from_90d_high.",
+      "purpose": "Harder trend damage used for stronger de-risk / hard-risk paths."
+    }
+  },
+  "raw_candidate_state_priority": [
+    {"state": "FLAT", "rule": "STRONG_DAMAGE AND STRONG_EXHAUSTION"},
+    {"state": "DE_RISK_2", "rule": "STRONG_DAMAGE AND EXHAUSTION, OR DAMAGE AND STRONG_EXHAUSTION"},
+    {"state": "DE_RISK_1", "rule": "DAMAGE AND EXHAUSTION"},
+    {"state": "EXHAUSTION_WATCH", "rule": "EXHAUSTION OR STRONG_EXHAUSTION"},
+    {"state": "LATE_BULL_ROTATION", "rule": "ROTATION AND NOT DAMAGE"},
+    {"state": "BTC_LEADERSHIP_MATURING", "rule": "MATURE_TEXTURE AND NOT DAMAGE"},
+    {"state": "NORMAL_BULL", "rule": "otherwise"}
+  ],
+  "transition_rules": {
+    "daily_boundary": "00:00 UTC",
+    "state_index": "Use severity_order zero-based indices for all later/earlier comparisons.",
+    "initialization": "On the first date when all required continuous runtime inputs are calibrated, evaluate the raw candidate. If it is FLAT, initialize FLAT immediately; otherwise initialize NORMAL_BULL with escalation_count=0 and deescalation_count=0.",
+    "ordinary_escalation_condition": "When raw_index > current_index, increment an escalation streak only while every consecutive initialized date continues to have raw_index > current_index. Reset the streak whenever raw_index <= current_index or current_state changes.",
+    "ordinary_escalation_target": "After profile.escalation_persistence_days consecutive dates above current_state, set current_state to the minimum-severity raw candidate observed over that persistence window. This is the strongest state continuously supported by every date in the window. Multi-state jumps are permitted only to that continuously supported minimum. Reset both counters after the transition.",
+    "hard_flat": "If the fully evaluated raw candidate is FLAT, enter FLAT immediately without ordinary persistence.",
+    "ordinary_deescalation_condition": "When raw_index < current_index and current_state is not FLAT, increment a deescalation streak only while every consecutive initialized date remains below current_index. Reset the streak whenever raw_index >= current_index or current_state changes.",
+    "ordinary_deescalation_target": "After profile.deescalation_clear_days consecutive dates below current_state, move exactly one severity_order step lower and reset both counters. Every further deescalation step therefore requires a fresh clear period.",
+    "equal_candidate": "When raw_index == current_index, reset both escalation and deescalation counters and hold current_state.",
+    "flat_absorbing": true,
+    "flat_exit": "EXPLICIT_HUMAN_APPROVAL_REQUIRED_OUTSIDE_P5.3",
+    "missing_data": "Before initialization emit DATA_INSUFFICIENT. After initialization, if any input required for ordinary raw-candidate evaluation is missing, hold current_state and reset ordinary transition counters. A hard FLAT escalation is still allowed only if every normalized/raw input needed to prove both STRONG_DAMAGE and STRONG_EXHAUSTION is present and those atoms are true; otherwise missing data cannot change state.",
+    "intraday": "No P5.3 intraday risk addition. Intraday emergency risk reduction remains governed by existing execution/risk controls."
+  },
+  "research_outputs_required": [
+    "daily state path for EARLY/BALANCED/CONSERVATIVE profiles",
+    "raw candidate state and evidence-atom booleans by date/profile",
+    "per-feature normalization observation count and minimum calibration depth by date",
+    "DATA_INSUFFICIENT date range and initialization date",
+    "event-window state occupancy and first-entry dates",
+    "lead/lag relative to frozen P5.1 anchors",
+    "state transitions and churn counts",
+    "second-wind false-terminal / FLAT behavior",
+    "non-top-control conservative-state occupancy",
+    "missing-data diagnostics",
+    "profile sensitivity"
+  ],
+  "selection_rule": {
+    "p5_3_final_production_state_model_selected": false,
+    "rule": "P5.3 may identify a research candidate/profile for downstream P5.4/P5.5, but no profile may be production-authorized and no profile may be selected solely because it best predicts the sole 2021 terminal event. Robustness selection belongs to P5.5 after behavior/economic mapping is defined."
+  },
+  "forbidden": [
+    "move or relabel P5.1 events",
+    "modify immutable P5.2 evidence",
+    "add a post-result feature because it improves 2021 November",
+    "use robust-z versus controls as a live feature input",
+    "use future observations in trailing normalization",
+    "treat ETH/BTC or alt leadership alone as bearish",
+    "treat raw RSI alone as a top switch",
+    "treat low volatility alone as a top switch",
+    "fabricate pending data sources",
+    "automatically exit FLAT",
+    "rewrite BRRK-0011 relative ranking",
+    "select P5.4 gross multipliers",
+    "authorize production"
+  ]
+}

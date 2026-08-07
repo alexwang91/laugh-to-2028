@@ -19,7 +19,7 @@
 | P4.6 production leverage | **NOT ENTERED / BLOCKED** |
 | P5.1 cycle-top event taxonomy | **COMPLETE / MERGED / FROZEN** |
 | P5.2 feature-family evidence | **COMPLETE / IMMUTABLE / DESCRIPTIVE CLOSEOUT** |
-| P5.3 state model | **NEXT** |
+| P5.3 state-model structure | **PREREGISTERED / R1+R2 FROZEN / NOT YET EVALUATED** |
 | P5.4–P5.6 | **NOT STARTED** |
 | Phase 6 integrated shadow | **NOT STARTED** |
 | Phase 7 limited-capital live long | **NOT STARTED / EXPLICIT APPROVAL REQUIRED** |
@@ -77,9 +77,9 @@ At 5 bps execution cost:
 | 1.25 | 64.89% | -40.19% | 1.2387 | **FAIL** |
 | 1.30 | 66.28% | -40.93% | 1.2360 | **FAIL** |
 
-Every cap above 1.0 failed before the broad-region promotion stage. No >1 cap is eligible for P4.6. Do not rerun, rescue or reinterpret `LEVERAGE-0040` / `LEVERAGE-0041` under the same experiment IDs.
+Every cap above 1.0 failed before broad-region promotion. No >1 cap is eligible for P4.6. Do not rerun, rescue or reinterpret `LEVERAGE-0040` / `LEVERAGE-0041` under the same experiment IDs.
 
-## Completed implementation chain
+## Completed implementation / research chain
 
 ```text
 Phase 0 governance/config
@@ -95,6 +95,7 @@ Phase 0 governance/config
 -> LEVERAGE-0041 COMPLETE / NO_PROMOTION
 -> P5.1 EVENT TAXONOMY FROZEN
 -> P5.2 IMMUTABLE FEATURE EVIDENCE / DESCRIPTIVE CLOSEOUT
+-> P5.3 STATE-MODEL STRUCTURE R1+R2 PREREGISTERED BEFORE EVALUATION
 ```
 
 Historical rejected or shadow research lines remain preserved as evidence; they are not silently promoted into BRRK or production.
@@ -107,7 +108,7 @@ A full task/deviation review is recorded in `docs/ROADMAP_AUDIT_2026-08-07.md`.
 
 P5.1 is frozen in `research/cycle_exit/p5_1_event_taxonomy.json` and documented in `docs/P5_1_EVENT_TAXONOMY.md`.
 
-It distinguishes before feature/model fitting:
+It distinguishes before model fitting:
 
 - 2021 spring major top / May crash as nonterminal;
 - 2021 summer second-wind transition;
@@ -122,13 +123,9 @@ Calendar windows are frozen first and anchors are mechanically resolved from can
 
 Contract: `P5.2-FEATURE-FAMILIES-V1`.
 
-Immutable result commit:
+Immutable result commit: `61d585afb64afbe3ead6422e7e62cde6c59fad40`.
 
-`61d585afb64afbe3ead6422e7e62cde6c59fad40`
-
-Immutable summary SHA256:
-
-`3f6dc3c512d22ac8f71d43ed155f2602cd40d5caf3d617c0e130e170727e0627`
+Immutable summary SHA256: `3f6dc3c512d22ac8f71d43ed155f2602cd40d5caf3d617c0e130e170727e0627`.
 
 P5.2 evaluated **29 frozen causal features** across BTC trend maturity, momentum exhaustion, leadership migration and canonical breadth. All 29 passed the frozen coverage gate.
 
@@ -149,19 +146,22 @@ Derived non-authorizing diagnostics: `research/analysis/p5_2_closeout/`.
 
 ### What P5.2 says structurally
 
-The evidence argues against a one-indicator “cycle top” score:
+The evidence argues against a one-indicator cycle-top score:
 
-- realized-volatility state is powerful context but also appears in second-wind and nonterminal events, so it is not a terminal trigger by itself;
-- ETH/BTC leadership is strong near terminal **and** second-wind/nonterminal structures, which requires a distinct `LATE_BULL_ROTATION` state rather than treating alt leadership as bearish;
-- 20d price-versus-RSI rank divergence is the strongest 2021 terminal target-lead hypothesis, but there is only one explicit terminal event, so it cannot be promoted as a cross-cycle terminal rule;
-- breadth acceleration describes transition shape but is not terminal-specific in the lead window;
-- raw daily/4h RSI levels are not sufficient as standalone exit rules;
-- distance from recent BTC highs contains useful second-wind versus top-like context;
-- discrete breadth/consolidation features require categorical treatment where control MAD is zero.
+- realized-volatility state is powerful context but is not terminal-specific;
+- ETH/BTC leadership is strong near terminal and second-wind/nonterminal structures, requiring `LATE_BULL_ROTATION` rather than treating rotation as bearish;
+- 20d price-versus-RSI rank divergence is the strongest 2021 terminal target-lead hypothesis, but one terminal event cannot establish cross-cycle terminal robustness;
+- breadth acceleration describes transition shape but is not terminal-specific;
+- raw daily/4h RSI is not a sufficient standalone exit;
+- distance from recent BTC highs contains useful second-wind versus top-like context.
 
-### P5.3 — NEXT: multi-state cycle model
+### P5.3 — frozen multi-state preregistration
 
-Target state vocabulary:
+Contract: `P5.3-STATE-MODEL-STRUCTURE-V1`.
+
+Documentation: `docs/P5_3_STATE_MODEL_PREREG.md`.
+
+Target state vocabulary / severity order:
 
 ```text
 NORMAL_BULL
@@ -173,9 +173,85 @@ DE_RISK_2
 FLAT
 ```
 
-P5.3 must preregister state semantics and allowed evidence before numerical threshold fitting. It must preserve BRRK relative ranking and use the cycle layer only to decide **how much total directional risk** to take.
+The model uses four complementary evidence channels:
 
-Key boundary:
+```text
+REGIME_TEXTURE
+LEADERSHIP_ROTATION
+EXHAUSTION_TRANSITION
+TREND_DAMAGE
+```
+
+Runtime inputs are intentionally limited to features actually used by frozen evidence atoms. R2 removed unused `BNB/BTC40` and raw daily RSI14 from the runtime input set; their P5.2 evidence remains immutable and available for audit.
+
+#### Pre-evaluation R1 — causal percentile calibration
+
+For each continuous feature at date `t`:
+
+```text
+window          last up to 365 completed daily dates ending at t
+minimum N       20 nonmissing observations
+percentile      (average_rank(current) - 1) / (N - 1)
+future data     forbidden
+20 <= N < 365   use available causal history and report N
+N < 20          unavailable
+```
+
+Before all continuous inputs are initialized, emit `DATA_INSUFFICIENT`. CI must prove initialization by `2021-01-31`. Calibration depth is mandatory research output.
+
+#### Pre-evaluation R2 — exact state-transition mechanics
+
+Before any state path was evaluated, R2 froze independent-implementation semantics:
+
+- first calibrated date initializes FLAT only if fully evaluated raw candidate is FLAT; otherwise starts NORMAL_BULL;
+- ordinary escalation requires consecutive raw candidates above current state;
+- after persistence, transition to the **minimum raw severity continuously supported over the persistence window**;
+- raw FLAT enters immediately when fully evaluated;
+- de-escalation requires consecutive raw candidates below current and moves exactly one severity step after each clear period;
+- equality resets ordinary counters;
+- ordinary missing data holds state and resets counters;
+- missing-data hard FLAT is allowed only with complete proof of both strong damage and strong exhaustion;
+- FLAT is absorbing and re-risk requires explicit human approval outside P5.3.
+
+Neither R1 nor R2 used a P5.3 state-path result; both happened before state evaluation.
+
+Three sensitivity profiles remain frozen:
+
+| Profile | Moderate | Strong | Escalation | Clear period |
+| --- | --- | --- | ---: | ---: |
+| EARLY | 65/35 | 80/20 | 2d | 5d |
+| BALANCED | 70/30 | 85/15 | 3d | 5d |
+| CONSERVATIVE | 75/25 | 90/10 | 3d | 7d |
+
+Architecture boundary:
+
+```text
+volatility alone            != top
+ETH/BTC leadership alone    != bearish
+raw RSI alone               != top
+rotation without damage     -> LATE_BULL_ROTATION candidate
+exhaustion without damage   -> EXHAUSTION_WATCH candidate
+exhaustion + damage         -> de-risk candidate
+strong exhaustion + damage  -> hard-risk / FLAT candidate
+```
+
+P5.3 explicitly excludes the six pending P5.2 data sources and does not fabricate proxies for them.
+
+The next research action after preregistration CI/merge is deterministic implementation of all three frozen profiles against the immutable P5.2 feature panel. **Do not retune after state paths are observed.**
+
+### Phase 5 order
+
+1. **P5.1 Event taxonomy — COMPLETE / FROZEN**.
+2. **P5.2 Feature evidence — COMPLETE / IMMUTABLE / DESCRIPTIVE CLOSEOUT**.
+3. **P5.3 State model — R1+R2 STRUCTURE PREREGISTERED / EVIDENCE NOT YET RUN**.
+4. **P5.4 Required behavior** — map accepted state semantics to total-risk behavior while preserving BRRK ranking.
+5. **P5.5 Validation** — event-level / leave-one-event-out robustness, lead/lag, false positives, missed upside, drawdown avoided, terminal wealth, second-wind behavior and state churn.
+6. **P5.6 Integration** — cycle layer above BRRK as total-risk control only.
+7. **Phase 6** — integrated live-data shadow system with zero signing/trading authority.
+8. **Phase 7** — limited-capital live long only after explicit production approval and shadow/operational evidence.
+9. **Phase 8** — bear-short research later; first short remains human-gated.
+
+## Layer separation
 
 ```text
 BRRK        = which assets / relative weights
@@ -184,19 +260,7 @@ Router      = which instruments implement it
 Execution   = how to reach actual target safely
 ```
 
-ETH/BTC/alt rotation is not automatically bearish. A top/de-risk transition must depend on multi-family deterioration/exhaustion evidence, not on RSI, volatility or relative leadership alone.
-
-### Remaining Phase 5 order
-
-1. **P5.1 Event taxonomy — COMPLETE / FROZEN**.
-2. **P5.2 Feature evidence — COMPLETE / IMMUTABLE / DESCRIPTIVE CLOSEOUT**.
-3. **P5.3 State model — NEXT** — preregister multi-state structure, then fit/evaluate without retuning P5.1/P5.2.
-4. **P5.4 Required behavior** — map accepted state semantics to total-risk behavior while preserving BRRK ranking.
-5. **P5.5 Validation** — event-level / leave-one-event-out robustness, lead/lag, false-positive duration, missed upside, drawdown avoided, terminal wealth and second-wind behavior.
-6. **P5.6 Integration** — cycle layer above BRRK as total-risk control only.
-7. **Phase 6** — integrated live-data shadow system with zero signing/trading authority.
-8. **Phase 7** — limited-capital live long only after explicit production approval and shadow/operational evidence.
-9. **Phase 8** — bear-short research later; first short remains human-gated.
+P5.3 may classify risk state. It does not rewrite BRRK ranking, choose P5.4 gross multipliers, or authorize production.
 
 ## Source-of-truth order
 
@@ -209,4 +273,4 @@ ETH/BTC/alt rotation is not automatically bearish. A top/de-risk transition must
 7. `config/decision_registry.json`
 8. dated audit/research/runbook documents as historical evidence
 
-Immutable study outputs live under `research/results/`. The presence of a result means evidence exists; it does not imply promotion or production authorization.
+Immutable study outputs live under `research/results/`. Evidence does not imply promotion or production authorization.
