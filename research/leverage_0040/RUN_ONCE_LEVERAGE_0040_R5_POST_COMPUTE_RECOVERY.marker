@@ -1,0 +1,10 @@
+LEVERAGE-0040-R5-POST-COMPUTE-RECOVERY-V1
+study_id=LEVERAGE-0040
+failed_run_id=31200299149
+failed_head=4cb336ef9d61c0230fd16b9dc29877a17ec2bb5a
+failure_stage=post_compute_result_validation_bool_serialization
+acknowledge_full_candidate_matrix_computed=true
+acknowledge_no_candidate_metrics_emitted=true
+acknowledge_no_candidate_metrics_committed=true
+acknowledge_no_economic_logic_change=true
+acknowledge_no_post_result_retuning=true
