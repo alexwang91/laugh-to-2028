@@ -12,6 +12,17 @@
     "p5_1_or_p5_2_mutation": false,
     "production_change": false
   },
+  "transition_prereg_correction": {
+    "id": "P5.3-PREREG-COMPLETENESS-R2",
+    "timing": "BEFORE_ANY_P5_3_STATE_PATH_EVALUATION",
+    "reason": "The initial preregistration did not fully specify ordinary escalation/de-escalation counter mechanics or initialization, and two listed runtime inputs were not referenced by any frozen evidence atom.",
+    "change": "Freeze exact severity-index hysteresis mechanics, initialization/reset behavior, partial-missing behavior, and remove unused BNB/BTC40 and daily-RSI14 runtime inputs rather than leaving dead inputs in the state engine.",
+    "observed_p5_3_state_paths_used": false,
+    "p5_1_or_p5_2_mutation": false,
+    "profile_threshold_change": false,
+    "evidence_atom_threshold_change": false,
+    "production_change": false
+  },
   "dependencies": {
     "p5_1_taxonomy_contract": "P5.1-EVENT-TAXONOMY-V1",
     "p5_1_taxonomy_git_blob_sha": "73d010666fbfd957ec15214a00883a90a8adba5a",
@@ -31,6 +42,15 @@
     "production_authorization": "NONE"
   },
   "states": [
+    "NORMAL_BULL",
+    "BTC_LEADERSHIP_MATURING",
+    "LATE_BULL_ROTATION",
+    "EXHAUSTION_WATCH",
+    "DE_RISK_1",
+    "DE_RISK_2",
+    "FLAT"
+  ],
+  "severity_order": [
     "NORMAL_BULL",
     "BTC_LEADERSHIP_MATURING",
     "LATE_BULL_ROTATION",
@@ -59,14 +79,12 @@
     "LEADERSHIP_ROTATION": [
       "eth_btc_log_return_20d",
       "eth_btc_log_return_40d",
-      "bnb_btc_log_return_40d",
       "breadth_acceleration_10d",
       "canonical5_outperformance_breadth_20d"
     ],
     "EXHAUSTION_TRANSITION": [
       "btc_price_rsi_rank_divergence_20d",
       "btc_rsi14_failure_from_14d_max",
-      "btc_daily_rsi14",
       "btc_4h_rsi14",
       "btc_4h_rsi28",
       "breadth_acceleration_10d",
@@ -101,6 +119,9 @@
     "initialization_rule": "The P5.3 state path remains DATA_INSUFFICIENT until every continuous runtime feature used by any evidence atom has at least 20 nonmissing observations under the causal window. DATA_INSUFFICIENT rows are reported and excluded from ordinary state-occupancy denominators.",
     "calibration_depth_must_be_reported": true,
     "missing_rule": "FAIL_CLOSED_NO_DEESCALATION"
+  },
+  "raw_fraction_inputs": {
+    "canonical5_outperformance_breadth_20d": "Use the raw [0,1] breadth fraction in ROTATION; do not percentile-normalize it for the 0.75 threshold."
   },
   "profiles": {
     "EARLY": {
@@ -137,10 +158,6 @@
       "rule": "eth_btc_log_return_20d >= moderate_high AND at least 1 of: eth_btc_log_return_40d >= moderate_high; breadth_acceleration_10d >= moderate_high; canonical5_outperformance_breadth_20d >= 0.75 raw fraction.",
       "purpose": "Identify late-bull leadership migration without treating it as bearish."
     },
-    "STRONG_ROTATION": {
-      "rule": "eth_btc_log_return_20d >= strong_high AND at least 1 of: eth_btc_log_return_40d >= strong_high; breadth_acceleration_10d >= strong_high; canonical5_outperformance_breadth_20d >= 1.00 raw fraction.",
-      "purpose": "High-confidence rotation evidence; still not sufficient for de-risk alone."
-    },
     "EXHAUSTION": {
       "rule": "At least 2 independent subchannels are active: divergence (price-rsi divergence >= moderate_high); momentum failure (rsi14 failure >= moderate_high OR both 4h RSI14 and 4h RSI28 >= moderate_high); breadth transition (breadth contraction >= moderate_high OR breadth acceleration <= moderate_low).",
       "purpose": "Require multi-family transition evidence rather than raw RSI alone."
@@ -169,15 +186,22 @@
   ],
   "transition_rules": {
     "daily_boundary": "00:00 UTC",
-    "escalation": "A raw candidate at a later state must persist for profile.escalation_persistence_days before ordinary escalation; FLAT hard-risk may be entered immediately when STRONG_DAMAGE AND STRONG_EXHAUSTION are simultaneously true.",
-    "deescalation": "De-escalation requires profile.deescalation_clear_days with raw candidate below the current state and may move at most one state per completed daily decision.",
+    "state_index": "Use severity_order zero-based indices for all later/earlier comparisons.",
+    "initialization": "On the first date when all required continuous runtime inputs are calibrated, evaluate the raw candidate. If it is FLAT, initialize FLAT immediately; otherwise initialize NORMAL_BULL with escalation_count=0 and deescalation_count=0.",
+    "ordinary_escalation_condition": "When raw_index > current_index, increment an escalation streak only while every consecutive initialized date continues to have raw_index > current_index. Reset the streak whenever raw_index <= current_index or current_state changes.",
+    "ordinary_escalation_target": "After profile.escalation_persistence_days consecutive dates above current_state, set current_state to the minimum-severity raw candidate observed over that persistence window. This is the strongest state continuously supported by every date in the window. Multi-state jumps are permitted only to that continuously supported minimum. Reset both counters after the transition.",
+    "hard_flat": "If the fully evaluated raw candidate is FLAT, enter FLAT immediately without ordinary persistence.",
+    "ordinary_deescalation_condition": "When raw_index < current_index and current_state is not FLAT, increment a deescalation streak only while every consecutive initialized date remains below current_index. Reset the streak whenever raw_index >= current_index or current_state changes.",
+    "ordinary_deescalation_target": "After profile.deescalation_clear_days consecutive dates below current_state, move exactly one severity_order step lower and reset both counters. Every further deescalation step therefore requires a fresh clear period.",
+    "equal_candidate": "When raw_index == current_index, reset both escalation and deescalation counters and hold current_state.",
     "flat_absorbing": true,
     "flat_exit": "EXPLICIT_HUMAN_APPROVAL_REQUIRED_OUTSIDE_P5.3",
-    "missing_data": "Before initialization emit DATA_INSUFFICIENT. After initialization, missing required normalized evidence cannot cause de-escalation or automatic re-risk; hold current state unless available hard-risk evidence independently requires a more conservative state.",
+    "missing_data": "Before initialization emit DATA_INSUFFICIENT. After initialization, if any input required for ordinary raw-candidate evaluation is missing, hold current_state and reset ordinary transition counters. A hard FLAT escalation is still allowed only if every normalized/raw input needed to prove both STRONG_DAMAGE and STRONG_EXHAUSTION is present and those atoms are true; otherwise missing data cannot change state.",
     "intraday": "No P5.3 intraday risk addition. Intraday emergency risk reduction remains governed by existing execution/risk controls."
   },
   "research_outputs_required": [
     "daily state path for EARLY/BALANCED/CONSERVATIVE profiles",
+    "raw candidate state and evidence-atom booleans by date/profile",
     "per-feature normalization observation count and minimum calibration depth by date",
     "DATA_INSUFFICIENT date range and initialization date",
     "event-window state occupancy and first-entry dates",
