@@ -1,0 +1,8 @@
+LEVERAGE-0040-R3-RECOVERY-V1
+study_id=LEVERAGE-0040
+failed_run_id=31198649428
+failed_head=c3ec4a747b68349ceb0c1d17fdd5b8593e0e9af5
+failure_stage=liquidation_distance_start_already_liquidatable
+acknowledge_no_result_committed=true
+acknowledge_no_cap_gt_1_metrics_emitted=true
+acknowledge_no_post_result_retuning=true
