@@ -32,6 +32,38 @@ def test_p4_1_freezes_corrected_brrk0011_zero_to_one_baseline():
     assert baseline["production_authorized"] is False
 
 
+def test_p4_1_authority_pins_exact_frozen_base_blobs():
+    baseline = _load(BASELINE_PATH)
+    authority = baseline["authority"]
+    assert authority["research_corrected_risk"] == {
+        "path": "research/risk_metric_fix/corrected_risk.py",
+        "blob_sha": "bdf7cd6cb32961765716e4cb07288739e869703e",
+        "role": "F13-corrected CVaR/CDaR path-tail risk and 0-1 scale selection",
+    }
+    assert authority["product_target_math"]["path"] == (
+        "execution/plan-b-bot/beta_bot/target_math.py"
+    )
+    assert authority["product_target_math"]["blob_sha"] == (
+        "4a0b26943438045f2baacbe06d92650a486a8967"
+    )
+    assert authority["regime_config"]["path"] == "research/regime_kelly/config.py"
+    assert authority["regime_config"]["blob_sha"] == (
+        "eecd092ac45c5fa86992a8de2f31d470405e6b5a"
+    )
+    assert authority["correction_result"]["path"] == (
+        "research/results/BRRK_0011_CDAR_CORRECTION_2026-08-04.md"
+    )
+    assert authority["correction_result"]["blob_sha"] == (
+        "40cd0e90a357a2c2e5be0b9de69feaf0f1e75eaf"
+    )
+    assert authority["measurement_normalization"]["path"] == (
+        "research/results/idle_cash_credit_0027r2.json"
+    )
+    assert authority["measurement_normalization"]["blob_sha"] == (
+        "46b509bf1b59a9d87a9092f9708eb41e5f8e50af"
+    )
+
+
 def test_baseline_preserves_metric_provenance_instead_of_reconciling_cagr_labels():
     baseline = _load(BASELINE_PATH)
     correction = baseline["corrected_brrk0011_result"]
