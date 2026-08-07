@@ -4,7 +4,7 @@
   "contract_id": "LEVERAGE-0040-STUDY-IMPLEMENTATION-V1",
   "status": "FROZEN_BEFORE_FIRST_ECONOMIC_RUN",
   "frozen_on_main_sha": "98396a5b510c5f0a717b954568921c1daef6edc8",
-  "study_branch": "p4-4/leverage-0040-one-time-study-v1",
+  "study_branch": "p4-4/leverage-0040-one-time-study-v2",
   "production_authorized": false,
   "result_observed_before_freeze": false,
   "authoritative_inputs": {
