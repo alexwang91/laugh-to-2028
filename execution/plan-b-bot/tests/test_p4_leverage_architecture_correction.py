@@ -85,21 +85,24 @@ def test_liquidation_snapshot_is_reused_without_re_capture_requirement():
     assert data["liquidation_distance"]["missing_model_rule"] == "FAIL_CLOSED_NO_PROMOTION"
 
 
-def test_decision_registry_preserves_closed_0040_and_new_research_direction_without_authorization():
+def test_decision_registry_preserves_closed_leverage_history_without_authorization():
     registry = _load(DECISIONS)
     assert registry["production_authorized_components"] == []
     decisions = {row["id"]: row for row in registry["decisions"]}
 
     assert decisions["LEVERAGE-0039"]["status"] == "REJECTED_STOPPED"
 
-    closed = decisions["LEVERAGE-0040"]
-    assert closed["status"] == "REJECTED_STOPPED"
-    assert "NO_PROMOTION" in closed["decision"]
-    assert "no production leverage was authorized" in closed["decision"]
+    closed_0040 = decisions["LEVERAGE-0040"]
+    assert closed_0040["status"] == "REJECTED_STOPPED"
+    assert "NO_PROMOTION" in closed_0040["decision"]
+    assert "no production leverage was authorized" in closed_0040["decision"]
 
     follow_on = decisions["P4-LEVERAGE-SWEET-SPOT-2026-08-07"]
-    assert follow_on["status"] == "ACCEPTED_RESEARCH_TARGET"
-    assert "1.20" in follow_on["decision"]
-    assert "focal design point" in follow_on["decision"]
-    assert "not as a selected or production-authorized cap" in follow_on["decision"]
-    assert "new experiment ID" in follow_on["decision"]
+    assert follow_on["status"] == "SUPERSEDED"
+    assert "consumed by preregistered LEVERAGE-0041" in follow_on["decision"]
+    assert "new registered hypothesis and experiment ID" in follow_on["decision"]
+
+    closed_0041 = decisions["LEVERAGE-0041"]
+    assert closed_0041["status"] == "REJECTED_STOPPED"
+    assert "NO_PROMOTION" in closed_0041["decision"]
+    assert "production_authorized=false" in closed_0041["decision"]
