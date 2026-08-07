@@ -5,146 +5,83 @@
 ## Current dependency
 
 ```text
-P3.4 weekly contribution handling
+P4 dynamic leverage / operating risk budget
 ```
 
-Post-P3.3 normalization PR #79 is merged. Current main / P3.4 base:
+Phase 3 is complete:
 
-`1d9dbebf5087936d0454f631145b176c62da4ec8`
+```text
+P3.1 data contract                 PASS / MERGED
+P3.2 target calculation API       PASS / MERGED
+P3.3 rebalance / turnover control PASS / MERGED
+P3.4 contribution handling        PASS / MERGED
+```
 
-Fresh candidate branch:
+P3.4 PR #80 merged by expected-head squash as:
 
-`p3-4/contribution-handling-v1`
+`949fb9f1d079df7c2462a4b13b0eb778e91bb3ae`
 
-## Exact roadmap contract
+Final #80 evidence:
 
-P3.4 roadmap requirement was reread before coding:
+- Phase 0 #121 / run `31159909523`: SUCCESS, **215 passed in 7.58s** and 5/5 research integration OK
+- Research evidence #32 / run `31159909467`: SUCCESS
+- P3.2 parity/golden #19 / run `31159909468`: SUCCESS, independent parity + committed golden enforcement
+- final body-edit governance #159 / run `31160307257`: SUCCESS
 
-> Manual deposit is detected as equity change and included at the next daily decision.
+## Frozen upstream Phase 3 interfaces
 
-Acceptance:
+P4 must not rewrite the completed Phase 3 chain merely to study leverage:
 
-- deposit does not trigger unscheduled intraday risk increase;
-- new cash allocation follows the same target engine.
-
-## Frozen upstream interfaces
-
-P3.4 consumes, not rewrites:
-
-1. P3.2 `TargetCalculationResult` / `P3.2-BRRK0011-V1`;
-2. P3.3 `RebalanceControlPlan` / `P3.3-L1-BAND-V1`.
+```text
+P3.1 canonical daily data
+-> P3.2-BRRK0011-V1
+-> P3.3-L1-BAND-V1
+-> P3.4-EQUITY-CHANGE-DAILY-V1
+```
 
 Frozen role boundary:
 
 ```text
 target assets = BTC, ETH, SOL, BNB
 feature-only  = XRP
-P3.2 gross    <= 1
+current approved base gross <= 1
 short targets forbidden
-P3.3 L1 band  = 0.05
+production_authorized_components = []
 ```
 
-P3.2 golden vectors and P3.3 policy semantics must remain unchanged.
+P3.2 target goldens, P3.3 0.05 L1 control semantics, and P3.4 next-daily contribution timing remain authoritative unless a later explicitly registered decision changes their own scope.
 
-## Registered P3.4 policy
+## P4 entry rule
 
-Machine policy:
+Before any P4 implementation or experiment, reread the exact Phase 4 section of:
 
-`config/contribution_policy.json`
+`docs/IMPLEMENTATION_ROADMAP_2026-08-05.md`
 
-Version:
+Do not infer the P4 objective, search domain, operating drawdown budget, hard gross cap, funding/cost treatment or stress acceptance thresholds from memory.
 
-`P3.4-EQUITY-CHANGE-DAILY-V1`
+The roadmap already makes several high-level boundaries explicit:
 
-Semantics:
+- preserve the current 0–1 corrected CVaR/CDaR scaler as the defensive baseline;
+- do not overwrite historical BRRK results;
+- preregister the leverage study before running it;
+- candidate search may include gross >1, but deployment remains separately capped;
+- optimize long-run compounded wealth subject to operating drawdown, catastrophe, tail-risk, liquidation-distance, cost and robustness constraints;
+- P4 must include the roadmap-defined historical and synthetic stress suite.
 
-```text
-reference = previous accepted daily-decision account equity
-observe signed equity change without source attribution
-positive change = contribution candidate, not confirmed transfer
-intraday = record only, no target recalculation, no risk increase
-allocation = next eligible 00:00 UTC daily decision
-allocation path = P3.2 target -> P3.3 control
-```
+These are entry constraints only. The exact P4 subsections must be reread before a fresh P4 branch is created.
 
-The approximately `$100/week` product assumption is not a detection threshold and is not a scheduler trigger.
+## Explicit boundaries that remain separate
 
-## Candidate implementation
+Do not silently absorb into P4 without explicit registered ownership:
 
-Present on branch:
-
-- `config/contribution_policy.json`
-- `execution/plan-b-bot/beta_bot/contribution_handling.py`
-- `execution/plan-b-bot/tests/test_contribution_handling_p3_4.py`
-- `execution/plan-b-bot/tests/test_contribution_boundary_p3_4.py`
-- `docs/P3_4_CONTRIBUTION_HANDLING.md`
-- updated `docs/CURRENT_STATE.md`
-
-### Observation path
-
-`observe_equity_change(...)` records:
-
-- baseline/observed equity and timestamps;
-- signed equity change;
-- positive contribution candidate;
-- no source attribution;
-- next eligible daily decision;
-- explicit no intraday action / no target recalculation / no risk increase;
-- deterministic digest.
-
-A future exact 00:00 observation may enter that not-yet-accepted daily decision. An observation at an already-accepted baseline 00:00 rolls to the next day and cannot replay the same daily cycle.
-
-### Daily application path
-
-`apply_at_daily_decision(...)` requires the scheduled 00:00 UTC decision and uses the fresh **full** account equity at that decision:
-
-```text
-P3.2 calculate_target(fresh full equity)
--> P3.3 calculate_rebalance_control(same full equity)
-```
-
-The observed contribution-candidate amount remains diagnostic; there is no separate contribution allocation formula.
-
-## Required P3.4 acceptance evidence
-
-Before merge require:
-
-1. `Phase 0 baseline contract` SUCCESS on final head;
-2. all P3.4 unit tests SUCCESS;
-3. existing research integration SUCCESS;
-4. P3.2 historical parity/golden remains green if applicable/triggered;
-5. PR handoff governance SUCCESS;
-6. self-review confirms no P3.2/P3.3 mutation, F23/P4/P5 leakage or production authorization;
-7. `production_authorized_components = []`.
-
-Key regression cases:
-
-- intraday +$100 change schedules next UTC midnight and never authorizes intraday risk;
-- +$37 and +$250 both follow the same detection rule;
-- negative change is not a contribution candidate;
-- exact future boundary eligibility;
-- already-accepted boundary cannot be replayed;
-- wrong/intraday application timestamp fails closed;
-- fresh full daily equity is passed to P3.2 then P3.3;
-- deterministic observation and daily-decision digests.
-
-## Explicit exclusions
-
-Do not add in P3.4:
-
-- transfer-source attribution;
-- fixed weekday or mandatory `$100` amount;
-- automatic deposit scheduling;
-- intraday target recalculation/risk increase;
-- contribution-specific target logic;
-- P3.2 target changes;
-- P3.3 band/safety changes;
 - F23 funding-response redesign;
-- P4 >1 leverage / operating risk budget;
 - P5 exit intelligence;
-- short/XRP targets;
-- venue min-size/precision/routing/order submission;
-- production authorization.
+- short targets;
+- XRP target exposure;
+- production authorization;
+- withdrawals/master-wallet-key handling.
+
+The historical `EXPOSURE-SMOOTH-0038` experiment remains mechanism-validated but NOT PROMOTED and must not become a P4 baseline by implication.
 
 ## Production authorization
 
@@ -162,15 +99,11 @@ DRIFT_0
 ## Exact next action
 
 ```text
-self-review P3.4 diff
--> open P3.4 PR
--> run Phase 0 / applicable P3.2 parity / research evidence / governance
--> fix every real failure in same PR
--> final-head CI
--> record exact evidence in PR body
--> newest body-edit governance GREEN
--> expected-head squash merge
--> verify main
--> post-merge normalization
--> P4 only after P3.4 closure
+finish post-P3.4 docs normalization
+-> applicable CI / parity / governance
+-> expected-head merge normalization
+-> verify latest main
+-> reread exact P4 roadmap section in full
+-> create fresh P4 branch from that main
+-> preregister / implement only the first P4 dependency authorized by the roadmap
 ```
