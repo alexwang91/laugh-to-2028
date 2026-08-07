@@ -9,7 +9,7 @@ This document records research evidence only. It does not authorize live trading
 - State-model contract: `P5.3-STATE-MODEL-STRUCTURE-V1`
 - Evidence contract: `P5.3-STATE-PATH-EVIDENCE-V1`
 - Result commit: `7703b3ffec906a9d2ea58b33ee7feea5cd2f0a89`
-- Summary SHA256: `a2e5ece89fec93a24e1a65e134a78824629b4b418e106294a6b0821fbd52608b`
+- Summary SHA256: `a2e5be8d605af5a2c8206235402fe3a66b08fd994eaa8a71e84cfb1e3cbfed8f`
 - `profile_selected=false`
 - `state_model_production_selected=false`
 - `production_authorized=false`
@@ -20,9 +20,9 @@ All three frozen profiles entered `FLAT` on `2021-02-23` and, because V1 defined
 
 | Profile | Initialization | First FLAT | Classified days | FLAT days | FLAT fraction |
 | --- | --- | --- | ---: | ---: | ---: |
-| EARLY | 2021-01-11 | 2021-02-23 | 1874 | 1837 | 98.0256% |
-| BALANCED | 2021-01-11 | 2021-02-23 | 1874 | 1837 | 98.0256% |
-| CONSERVATIVE | 2021-01-11 | 2021-02-23 | 1874 | 1837 | 98.0256% |
+| EARLY | 2021-01-17 | 2021-02-23 | 1869 | 1832 | 98.0203% |
+| BALANCED | 2021-01-17 | 2021-02-23 | 1869 | 1832 | 98.0203% |
+| CONSERVATIVE | 2021-01-17 | 2021-02-23 | 1869 | 1832 | 98.0203% |
 
 No profile is eligible for promotion to P5.4.
 
