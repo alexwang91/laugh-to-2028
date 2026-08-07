@@ -13,12 +13,22 @@ Before `LEVERAGE-0040` may execute:
 - [x] Degraded-fill/depth/capacity stress preregistered.
 - [x] Official Hyperliquid margin metadata captured and hashed before first result.
 - [x] Architecture-correction PR #84 merged with CI evidence.
-- [x] Fresh P4.3 runner branch created from corrected/normalized main.
-- [x] Separate leverage-multiplier composition implemented without modifying the frozen defensive selector.
-- [x] Cap `1.00` exact historical BRRK parity proven on six committed full-BRRK decisions by P4.3 cap1 parity run #1 (`31175967899`).
-- [ ] Liquidation-distance implementation validated against frozen margin snapshot.
-- [ ] >1 multiplier-selection algorithm frozen before observing any >1 result.
+- [x] Separate leverage-multiplier composition merged without modifying the frozen defensive selector.
+- [x] Cap `1.00` exact historical BRRK parity merged by PR #86.
+- [ ] Liquidation-distance implementation validated and merged against the frozen margin snapshot. **Implementation + contract are TESTED / CI VERIFIED at #88 checkpoint; merge pending.**
+- [ ] >1 multiplier-selection algorithm frozen and merged before observing any >1 result. **`1 + (cap-1) * defensive_scale` addendum is TESTED / CI VERIFIED at #88 checkpoint; merge pending.**
 - [ ] `LEVERAGE-0040` first and only preregistered search run executed.
+
+#88 checkpoint evidence on `b6b309a5eb9ba4a876b67f631576b608eaa4c8e2`:
+
+- dedicated prerequisite run #1 / `31177869882`: SUCCESS, 14/14 tests;
+- Phase 0 #146 / `31177869757`: SUCCESS, 257 tests + 5/5 integration;
+- P3.2 parity/golden #39 / `31177869824`: SUCCESS;
+- P4 cap=1 parity #5 / `31177869840`: SUCCESS;
+- research evidence #52 / `31177869856`: SUCCESS;
+- governance #204 / `31177869853`: SUCCESS.
+
+The current prerequisite branch contains no 1.10/1.20/1.30 historical candidate output. The multiplier policy was frozen before any >1 result observation.
 
 Cap=1 parity is a wiring/baseline gate only. It produced no >1 candidate, no leverage selection and no production authorization.
 

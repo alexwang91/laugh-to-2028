@@ -1,0 +1,65 @@
+{
+  "model_id": "P4.3-HYPERLIQUID-CROSS-LIQUIDATION-V1",
+  "status": "FROZEN_BEFORE_FIRST_LEVERAGE_0040_RUN",
+  "experiment": "LEVERAGE-0040",
+  "venue": "Hyperliquid mainnet",
+  "margin_mode": "cross",
+  "portfolio_margin_supported": false,
+  "isolated_margin_supported": false,
+  "official_sources": [
+    "https://hyperliquid.gitbook.io/hyperliquid-docs/trading/liquidations",
+    "https://hyperliquid.gitbook.io/hyperliquid-docs/trading/margining",
+    "https://hyperliquid.gitbook.io/hyperliquid-docs/trading/margin-tiers"
+  ],
+  "frozen_margin_snapshot": {
+    "path": "research/leverage_0039/hyperliquid_margin_snapshot.json",
+    "snapshot_id": "HYPERLIQUID-MAINNET-MARGIN-META-P4.3-V1",
+    "captured_at_utc": "2026-08-07T09:11:25Z",
+    "relevant_margin_inputs_sha256": "38060892f1976315084de4dc4ed1c9f3885d909ffccc47bce7ad589315d8b9dd"
+  },
+  "maintenance_margin_formula": {
+    "tier_mmr": "1 / (2 * tier_max_leverage)",
+    "tier_0_deduction": 0.0,
+    "tier_n_deduction": "previous_deduction + tier_lower_bound * (tier_mmr - previous_tier_mmr)",
+    "maintenance_margin": "stressed_abs_notional * active_tier_mmr - active_tier_deduction",
+    "active_tier": "highest tier lowerBound <= stressed_abs_notional"
+  },
+  "cross_account_stress_formula": {
+    "stressed_account_equity": "current_cross_account_equity + sum(current_signed_perp_notional * relative_mark_return)",
+    "stressed_abs_notional": "abs(current_signed_perp_notional) * (1 + relative_mark_return)",
+    "total_maintenance_margin": "sum(asset maintenance_margin at stressed_abs_notional)",
+    "liquidation_condition": "stressed_account_equity <= total_maintenance_margin",
+    "price_basis": "mark-price stress; Hyperliquid uses mark price for margining/liquidation"
+  },
+  "distance_definition": {
+    "uniform_long_down_move": "smallest d in [0,1) such that all modeled long-perp mark prices are multiplied by (1-d) and cross account equity <= total maintenance margin",
+    "general_stress_ray": "smallest nonnegative scalar lambda along a preregistered relative-return vector that reaches the liquidation condition",
+    "solver": "deterministic bisection after bracket verification",
+    "bisection_iterations": 80
+  },
+  "required_inputs": [
+    "current_cross_account_equity_usd",
+    "actual cross-margin perp notionals by BTC/ETH/SOL/BNB from the implementation plan",
+    "frozen Hyperliquid margin snapshot"
+  ],
+  "collateral_rules": [
+    "Do not assume ordinary spot balances are cross-margin collateral.",
+    "Do not assume Portfolio Margin is enabled.",
+    "If implementation accounting cannot state cross-account equity and actual perp notionals, liquidation evidence fails closed.",
+    "A route/candidate that cannot fund its required perp margin from the explicit implementation plan fails implementation feasibility before promotion."
+  ],
+  "scope_rules": [
+    "LEVERAGE-0040 remains long-only; negative perp notionals are rejected by this model version.",
+    "The model evaluates margin/liquidation mechanics only and does not choose leverage multiplier, route, alpha, funding signal or operating drawdown budget.",
+    "Tier metadata are read only from the frozen pre-result snapshot; live API changes do not silently change this study."
+  ],
+  "validation_requirements": [
+    "Tier maintenance-margin continuity at every frozen lowerBound.",
+    "Single-position first-tier bisection distance matches Hyperliquid official liquidation-price formula within deterministic tolerance.",
+    "Cross-asset maintenance is the sum of per-position tier maintenance requirements under the same stressed mark vector.",
+    "Malformed/missing asset, tier, equity or notional input fails closed.",
+    "No modeled liquidation in mandatory LEVERAGE-0040 historical/synthetic stress is required for promotion."
+  ],
+  "production_authorized": false,
+  "leverage_search_run": false
+}
