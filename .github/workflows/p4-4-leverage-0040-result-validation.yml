@@ -3,7 +3,7 @@ name: P4.4 LEVERAGE-0040 immutable result validation
 on:
   push:
     branches:
-      - "p4-4/leverage-0040-one-time-study-v1"
+      - "p4-4/leverage-0040-one-time-study-v2"
     paths:
       - "research/results/leverage_0040/**"
   workflow_dispatch:
