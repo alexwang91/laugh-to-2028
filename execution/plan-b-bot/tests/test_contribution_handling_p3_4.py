@@ -65,6 +65,10 @@ def _target(*, equity: float, current_positions: dict[str, float]) -> TargetCalc
     )
 
 
+def _notionals(weights: dict[str, float], equity: float = 10_000.0) -> dict[str, float]:
+    return {asset: float(weights.get(asset, 0.0)) * equity for asset in ASSETS}
+
+
 def test_registered_p3_4_policy_freezes_daily_only_same_chain_semantics():
     policy = load_contribution_policy()
     assert policy.policy_id == CONTRIBUTION_HANDLING_VERSION
@@ -170,7 +174,7 @@ def test_daily_application_rejects_unscheduled_intraday_or_wrong_boundary():
         observed_at="2026-08-07T13:00:00Z",
         observed_equity_usd=2_100.0,
     )
-    with pytest.raises(ContributionHandlingError, match="scheduled daily decision"):
+    with pytest.raises(ContributionHandlingError, match="exactly 00:00 UTC"):
         apply_at_daily_decision(
             observation=observation,
             daily_dataset=_dataset("2026-08-07T13:01:00Z"),
