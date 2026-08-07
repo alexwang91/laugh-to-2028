@@ -1,0 +1,7 @@
+LEVERAGE-0041-RUN-ONCE-V1
+study_id=LEVERAGE-0041
+prereg_base_main=baaa5776892411990734ef2121cf54a5dbbab047
+implementation_contract=LEVERAGE-0041-STUDY-IMPLEMENTATION-V1
+owner_run_once_authorized=true
+acknowledge_no_post_result_retuning=true
+production_authorized=false
