@@ -1,0 +1,6 @@
+P5.2-FEATURE-EVIDENCE-RUN-ONCE-R2
+contract_id=P5.2-FEATURE-FAMILIES-V1
+taxonomy_contract=P5.1-EVENT-TAXONOMY-V1
+prior_run=31217880218
+correction=POST_COMPUTE_SERIES_RESET_INDEX_COMPAT
+acknowledge_no_post_result_retuning=true

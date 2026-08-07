@@ -1,0 +1,123 @@
+{
+  "contract_id": "P5.2-FEATURE-FAMILIES-V1",
+  "status": "FROZEN_BEFORE_FIRST_FEATURE_EVIDENCE_RUN",
+  "registered_at_utc": "2026-08-07T20:40:00Z",
+  "base_main": "86497cdd663a89ca4d54c898b7acbac1cc07d836",
+  "taxonomy_contract": "P5.1-EVENT-TAXONOMY-V1",
+  "taxonomy_blob_sha": "73d010666fbfd957ec15214a00883a90a8adba5a",
+  "roadmap_decision": "PRODUCT-CYCLE-EXIT-2026-08-05",
+  "scope": "P5.2 descriptive causal feature-family evidence only; no P5.3 state thresholds or production logic",
+  "research_integrity": {
+    "p5_1_windows_and_anchor_rules_immutable": true,
+    "feature_definitions_frozen_before_first_event_evidence_run": true,
+    "no_feature_added_removed_or_reparameterized_after_event_results": true,
+    "no_brrk_retune": true,
+    "no_leverage_rescue": true,
+    "production_authorization": "NONE"
+  },
+  "canonical_price_data": {
+    "daily_symbols": ["BTCUSDT", "ETHUSDT", "SOLUSDT", "BNBUSDT", "XRPUSDT"],
+    "daily_source": "Binance spot klines using the existing P3.1 authority semantics",
+    "daily_interval": "1d",
+    "intraday_symbols": ["BTCUSDT"],
+    "intraday_source": "Binance spot klines",
+    "intraday_interval": "4h",
+    "intraday_alignment": "At a UTC 00:00 daily evaluation boundary, only 4h bars fully completed at or before that boundary may be used; the bar opening at the boundary is excluded.",
+    "fetch_start": "2020-10-01",
+    "fetch_end": "2026-02-28",
+    "missing_required_price_data": "FAIL_CLOSED",
+    "forward_fill": "FORBIDDEN"
+  },
+  "feature_families": {
+    "BTC_TREND_MATURITY": {
+      "source_status": "AVAILABLE_V1",
+      "features": [
+        {"id":"btc_log_return_20d","formula":"log(BTC_close / BTC_close[t-20d])"},
+        {"id":"btc_log_return_40d","formula":"log(BTC_close / BTC_close[t-40d])"},
+        {"id":"btc_log_slope_20d_ann","formula":"OLS slope of log BTC close on integer days over trailing 20 observations, multiplied by 365"},
+        {"id":"btc_log_slope_40d_ann","formula":"OLS slope of log BTC close on integer days over trailing 40 observations, multiplied by 365"},
+        {"id":"btc_kama_gap","formula":"BTC_close / KAMA(10,2,30) - 1"},
+        {"id":"btc_kama_slope_10d","formula":"KAMA / KAMA[t-10d] - 1"},
+        {"id":"btc_distance_from_90d_high","formula":"BTC_close / trailing_90d_max_close - 1"},
+        {"id":"btc_consolidation_duration_5pct","formula":"consecutive completed daily observations with BTC_close >= 95% of trailing_90d_max_close"},
+        {"id":"btc_rv20_ann","formula":"std(log daily returns,20) * sqrt(365)"},
+        {"id":"btc_rv20_to_rv60","formula":"RV20 / RV60"}
+      ]
+    },
+    "MOMENTUM_EXHAUSTION": {
+      "source_status": "AVAILABLE_V1",
+      "features": [
+        {"id":"btc_daily_rsi14","formula":"Wilder RSI(14) on canonical daily BTC closes"},
+        {"id":"btc_daily_rsi28","formula":"Wilder RSI(28) on canonical daily BTC closes"},
+        {"id":"btc_4h_rsi14","formula":"Wilder RSI(14) on completed BTC 4h closes, sampled at the daily 00:00 UTC boundary"},
+        {"id":"btc_4h_rsi28","formula":"Wilder RSI(28) on completed BTC 4h closes, sampled at the daily 00:00 UTC boundary"},
+        {"id":"btc_price_rsi_rank_divergence_20d","formula":"percentile rank of current BTC close within trailing 20 closes minus percentile rank of current daily RSI14 within trailing 20 RSI14 values"},
+        {"id":"btc_rsi14_extreme_persistence_14d","formula":"fraction of trailing 14 daily RSI14 observations >=70"},
+        {"id":"btc_rsi14_failure_from_14d_max","formula":"max(trailing 14 daily RSI14) - current RSI14"}
+      ]
+    },
+    "LEADERSHIP_MIGRATION": {
+      "source_status": "PARTIAL_V1",
+      "features": [
+        {"id":"eth_btc_log_return_20d","formula":"log((ETH/BTC) / (ETH/BTC)[t-20d])"},
+        {"id":"sol_btc_log_return_20d","formula":"log((SOL/BTC) / (SOL/BTC)[t-20d])"},
+        {"id":"bnb_btc_log_return_20d","formula":"log((BNB/BTC) / (BNB/BTC)[t-20d])"},
+        {"id":"eth_btc_log_return_40d","formula":"log((ETH/BTC) / (ETH/BTC)[t-40d])"},
+        {"id":"sol_btc_log_return_40d","formula":"log((SOL/BTC) / (SOL/BTC)[t-40d])"},
+        {"id":"bnb_btc_log_return_40d","formula":"log((BNB/BTC) / (BNB/BTC)[t-40d])"},
+        {"id":"brkk_return_dispersion_20d","formula":"cross-sectional standard deviation of 20d log returns for BTC/ETH/SOL/BNB"}
+      ],
+      "pending": [
+        {"id":"btc_dominance","status":"DATA_SOURCE_PENDING","reason":"No repository-validated historical BTC-dominance source is currently available without introducing a new external data authority."}
+      ]
+    },
+    "BREADTH": {
+      "source_status": "PARTIAL_V1",
+      "features": [
+        {"id":"alt_outperformance_breadth_20d","formula":"fraction of ETH/SOL/BNB whose 20d log return exceeds BTC 20d log return"},
+        {"id":"canonical5_outperformance_breadth_20d","formula":"fraction of ETH/SOL/BNB/XRP whose 20d log return exceeds BTC 20d log return; XRP remains feature-only"},
+        {"id":"high_beta_participation_20d","formula":"fraction of SOL and BNB whose 20d log return exceeds BTC 20d log return"},
+        {"id":"breadth_acceleration_10d","formula":"canonical5_outperformance_breadth_20d minus its trailing 10d mean"},
+        {"id":"breadth_contraction_from_10d_max","formula":"trailing 10d max canonical5 breadth minus current canonical5 breadth"}
+      ],
+      "pending": [
+        {"id":"broad_market_breadth","status":"DATA_SOURCE_PENDING","reason":"No frozen broader-market universe/data contract exists yet; the V1 canonical-five breadth is explicitly not claimed to be total-market breadth."}
+      ]
+    },
+    "LEVERAGE_SPECULATION": {
+      "source_status": "DATA_SOURCE_PENDING_V1",
+      "features": [],
+      "pending": [
+        {"id":"historical_funding","status":"DATA_SOURCE_PENDING","reason":"P5 requires a cross-event market-positioning source with 2021 and 2025 coverage; existing Hyperliquid funding authority begins too late for 2021 comparability."},
+        {"id":"historical_open_interest","status":"DATA_SOURCE_PENDING","reason":"No frozen reproducible historical OI source is currently in the repository."},
+        {"id":"historical_basis_premium","status":"DATA_SOURCE_PENDING","reason":"No P5-specific fixed historical spot/perp basis panel has yet been frozen across all required events."},
+        {"id":"liquidation_proxy","status":"DATA_SOURCE_PENDING","reason":"No validated continuous historical liquidation proxy is currently frozen."}
+      ]
+    }
+  },
+  "event_summary_rule": {
+    "buckets": "Use exactly the P5.1 relative calendar buckets.",
+    "statistics_per_event_bucket_feature": ["count", "mean", "median", "min", "max", "first", "last", "delta_last_minus_first"],
+    "control_comparison": "For each feature and bucket, pool HIGH_VOLATILITY_NON_TOP_CONTROL event-bucket daily observations; report control median and MAD plus signed robust-z of each event median versus controls when MAD>0.",
+    "selection_rule": "P5.2 does not select a final feature set or state threshold. It reports coverage and descriptive separation evidence only."
+  },
+  "coverage_rule": {
+    "available_feature_min_nonmissing_fraction": 0.95,
+    "rule": "An AVAILABLE_V1 feature below 95% nonmissing coverage across required evaluation rows is flagged COVERAGE_FAIL, not silently imputed. Warm-up rows before sufficient lookback are excluded only when they occur before the earliest required P5.1 evaluation bucket."
+  },
+  "forbidden": [
+    "move or relabel P5.1 event windows after feature results",
+    "choose RSI timeframe from visual intuition before common evaluation",
+    "invent a BTC-dominance or broad-market-breadth proxy and label it as the requested feature",
+    "use future data in a feature evaluated at date t",
+    "fit P5.3 state thresholds in the P5.2 evidence run",
+    "rewrite BRRK-0011 relative ranking",
+    "authorize production trading, leverage, withdrawals or external transfers"
+  ],
+  "run_once": {
+    "authorized_under_standing_research_authorization": true,
+    "marker": "research/cycle_exit/RUN_ONCE_P5_2_FEATURE_EVIDENCE.marker",
+    "result_directory": "research/results/p5_2_feature_evidence",
+    "rule": "After implementation/preflight CI is green, run the frozen feature-evidence suite once. Non-economic implementation defects may be corrected with an audited correction record; feature definitions/windows/metrics may not be retuned after evidence is observed."
+  }
+}

@@ -11,16 +11,15 @@ Phase 1                         COMPLETE / MERGED
 Phase 2                         COMPLETE / MERGED
 Phase 3                         COMPLETE / MERGED
 P4.1 defensive scaler          COMPLETE / MERGED / frozen [0,1]
-P4 architecture + cap1         COMPLETE / MERGED
-P4 margin/liquidation prereqs  COMPLETE / MERGED
 LEVERAGE-0039                  STOPPED PRE-RUN / NO RESULT
 LEVERAGE-0040                  COMPLETE / IMMUTABLE / NO_PROMOTION
 LEVERAGE-0041                  COMPLETE / IMMUTABLE / NO_PROMOTION
 Phase 4 leverage research      FAIL_STOP / no eligible >1 candidate
 P4.6 production leverage gate  NOT ENTERED / BLOCKED by no candidate
-P5.1 event taxonomy            COMPLETE / FROZEN BEFORE FEATURE SELECTION
-P5.2 feature families          NEXT
-P5.3-P5.6                      NOT STARTED
+P5.1 event taxonomy            COMPLETE / MERGED / FROZEN
+P5.2 feature families          COMPLETE / IMMUTABLE EVIDENCE / DESCRIPTIVE CLOSEOUT
+P5.3 state model               NEXT
+P5.4-P5.6                      NOT STARTED
 Phase 6 integrated shadow      NOT STARTED
 Phase 7 limited live long      NOT STARTED / explicit approval required
 Phase 8 bear-short research    NOT STARTED
@@ -33,113 +32,131 @@ Current production gross cap remains `1.0`.
 
 ## Phase 4 immutable truth
 
-### LEVERAGE-0040
+`LEVERAGE-0040` and `LEVERAGE-0041` are complete immutable `NO_PROMOTION` studies. No research cap, operating drawdown budget or prospective P4.6 cap was selected. Do not rerun, rescue, retune, reinterpret or reuse either experiment ID.
 
-- result commit: `bd256e77a9800556e97769858fbb3ba5054c4389`;
-- summary SHA256: `3bb4dc46c61a5e9c7e049862575a89b2771830410ce4bc2bb25c83e469f52fc0`;
-- result status: `ONE_TIME_PREREGISTERED_STUDY_COMPLETE`;
-- selection: `NO_PROMOTION`;
-- selected research cap: none;
-- selected operating DD budget: none;
-- production authorization: none.
-
-Do not rerun, rescue, retune, reinterpret, or reuse `LEVERAGE-0040`.
-
-### LEVERAGE-0041
-
-One-time result commit:
+LEVERAGE-0041 result commit:
 
 `8ea784830cfffbf892a258cb329d437725d41982`
 
-Immutable summary SHA256:
+LEVERAGE-0041 immutable summary SHA256:
 
 `e41a5895263e7aa9206df9fa99fcbb71e5f937abc4746a567fbeb462cca88d17`
 
-Final selection:
+## P5.1 immutable taxonomy truth
 
-```text
-status                                  ONE_TIME_PREREGISTERED_STUDY_COMPLETE
-selection.status                        NO_PROMOTION
-selected_research_cap                   NONE
-selected_operating_max_drawdown_budget  NONE
-prospective_live_cap_if_authorized      NONE
-production_authorized                   false
-```
-
-All caps above 1.0 failed `pass_pre_broad_region`; no candidate reaches P4.6. The corrected architecture removed the old 0040 zero-distance accounting pathology, but still failed the frozen `>55%` liquidation-distance safety threshold.
-
-Do not rerun, rescue, retune, reinterpret, or reuse `LEVERAGE-0041` under the same experiment ID.
-
-## P5.1 frozen event-taxonomy truth
+P5.1 merged in PR #97 on main `86497cdd663a89ca4d54c898b7acbac1cc07d836`.
 
 Contract:
 
 `P5.1-EVENT-TAXONOMY-V1`
 
-Files:
+Taxonomy blob SHA:
+
+`73d010666fbfd957ec15214a00883a90a8adba5a`
+
+Required 2021/2025 events and four high-volatility non-top controls were frozen before feature selection. Only 2021 November is explicitly terminal in V1. Search windows, anchor rules and evaluation buckets remain immutable for P5.2/P5.3 use.
+
+## P5.2 immutable feature-evidence truth
+
+Contract:
+
+`P5.2-FEATURE-FAMILIES-V1`
+
+Immutable result commit:
+
+`61d585afb64afbe3ead6422e7e62cde6c59fad40`
+
+Immutable summary SHA256:
+
+`3f6dc3c512d22ac8f71d43ed155f2602cd40d5caf3d617c0e130e170727e0627`
+
+Final evidence state:
 
 ```text
-research/cycle_exit/p5_1_event_taxonomy.json
-research/cycle_exit/p5_1_event_taxonomy.py
-docs/P5_1_EVENT_TAXONOMY.md
+status                    ONE_TIME_FROZEN_FEATURE_EVIDENCE_COMPLETE
+available features        29
+coverage                   ALL PASS
+resolved events            11
+non-top controls           4
+pending data sources       6
+feature_set_selected       false
+state_thresholds_selected  false
+selection.status           DESCRIPTIVE_EVIDENCE_ONLY
+production_authorized      false
 ```
 
-The taxonomy was frozen before P5.2 feature/model selection. It references the existing product decision `PRODUCT-CYCLE-EXIT-2026-08-05` and changes no production authority.
+The six explicit `DATA_SOURCE_PENDING` items are:
 
-Required roadmap cases are present:
+- BTC dominance;
+- broad-market breadth;
+- comparable 2021/2025 historical funding;
+- historical open interest;
+- fixed historical basis/premium panel;
+- continuous liquidation proxy.
+
+No unnamed or favorable proxy substitutes them.
+
+### R2 recovery
+
+Original run `31217880218` passed the frozen authority guard and failed only during CSV serialization because pandas 3.0 rejected `Series.reset_index(names=...)`. Validator and result commit were skipped; no immutable result existed.
+
+Audited correction `P5.2-POST-COMPUTE-SERIALIZATION-R2` changed only serialization syntax and changed no feature/event/lookback/bucket/coverage/research definition. No observed feature metric was used to choose the correction.
+
+R2 run `31218363897` completed calculation, immutable validation and result commit successfully.
+
+### P5.2 descriptive closeout
+
+Formal closeout:
+
+`docs/P5_2_FEATURE_EVIDENCE_CLOSEOUT.md`
+
+Derived diagnostics:
+
+`research/analysis/p5_2_closeout/`
+
+The closeout analyzer is non-authorizing and proves the immutable P5.2 result directory is byte-for-byte unchanged before/after analysis.
+
+Key structural conclusions for P5.3:
+
+1. no single family or indicator is sufficient for a cycle-top model;
+2. realized-volatility state is strong regime context but appears across terminal, second-wind, nonterminal-toplike and deterioration cases, so it is not a terminal trigger by itself;
+3. ETH/BTC relative leadership is strong in terminal **and** second-wind/nonterminal structures, requiring a distinct `LATE_BULL_ROTATION` state rather than automatic de-risk;
+4. price-versus-RSI rank divergence is the strongest 2021 terminal target-lead hypothesis, but there is only one explicit terminal event, so it cannot be treated as cross-cycle validation;
+5. breadth acceleration is useful transition-shape evidence but is not terminal-specific in the lead window;
+6. raw daily/4h RSI level alone is insufficient; it is more defensible as one part of a multi-family exhaustion/failure state;
+7. distance from the trailing high contains useful second-wind versus top-like state context;
+8. discrete breadth/consolidation variables with zero control MAD cannot be judged solely by robust-z rankings.
+
+P5.2 selected **no final feature set and no threshold**. Those decisions belong to P5.3 under a new governed research contract.
+
+## P5.3 required architecture boundary
+
+Target state vocabulary remains:
 
 ```text
-2021 spring major top / May crash        LOCAL_MAJOR_TOP_NONTERMINAL
-2021 summer recovery                     SECOND_WIND_TRANSITION
-2021 November final peak                 TERMINAL_TOP_BEAR_TRANSITION
-2025 June new-high phase                 TEMPORARY_NEW_HIGH_PHASE
-2025 August new-high phase               SECOND_WIND_NEW_HIGH_PHASE
-2025 October new-high / deleveraging     NEW_HIGH_DELEVERAGING_PHASE
-late-2025 deterioration                  POST_DELEVERAGING_DETERIORATION
+NORMAL_BULL
+BTC_LEADERSHIP_MATURING
+LATE_BULL_ROTATION
+EXHAUSTION_WATCH
+DE_RISK_1
+DE_RISK_2
+FLAT
 ```
 
-Only the 2021 November case is explicitly terminal in V1. The 2025 sequence is not silently treated as a terminal cycle top.
+P5.3 must use multi-family state evidence and preserve these constraints:
 
-V1 also includes four `HIGH_VOLATILITY_NON_TOP_CONTROL` windows spanning 2021, 2024 and 2025.
-
-### Anchor discipline
-
-P5.1 does not hand-pick the prettiest indicator date. It freezes calendar search windows and resolves anchors mechanically from canonical P3.1 BTCUSDT UTC daily closes using one of:
-
-```text
-BTC_CLOSE_MAX_IN_SEARCH_WINDOW
-BTC_CLOSE_MIN_IN_SEARCH_WINDOW
-MAX_10D_DRAWDOWN_END
-PARENT_EVENT_ANCHOR
-```
-
-Missing canonical daily data fails closed. Forward fill is forbidden.
-
-### Evaluation buckets
-
-```text
-early_warning    -28 .. -15 calendar days
-target_lead      -14 ..  -7 calendar days
-near_event        -6 ..   0 calendar days
-immediate_after   +1 .. +28 calendar days
-medium_after     +29 .. +90 calendar days
-```
-
-The 7–14 day target is an evaluation bucket, not a requirement to force a model to emit a warning there.
-
-### Leakage boundary
-
-Historical outcome labels may use realized future outcome to define what happened. P5.2+ feature values evaluated at day `t` may use only information observable by `t`.
-
-Event windows/anchors may not be moved after feature performance is observed.
+- BRRK-0011 continues to decide relative asset ranking;
+- cycle layer controls total directional risk, not BRRK ranking;
+- ETH/BTC/alt leadership is not automatically bearish;
+- no single RSI/volatility/relative-strength switch;
+- no threshold hand-tuning to the sole 2021 terminal event;
+- no fabricated dominance/OI/funding/basis/liquidation proxies;
+- P5.1 windows and P5.2 immutable evidence remain unchanged;
+- no production authorization.
 
 ## Roadmap audit status
 
-Full review: `docs/ROADMAP_AUDIT_2026-08-07.md`.
-
-All historical deviations identified by the 2026-08-07 program-wide audit have recorded **CLOSED** dispositions. Current unresolved product/strategy/production drift: **none identified**.
-
-Current product-state classification: **DRIFT_0**.
+All historical deviations identified by the 2026-08-07 program-wide audit have recorded CLOSED dispositions. Current canonical product/strategy/production drift: **DRIFT_0**.
 
 ## Frozen product boundaries
 
@@ -149,24 +166,21 @@ Current product-state classification: **DRIFT_0**.
 - primary venue: Hyperliquid;
 - daily decision boundary: 00:00 UTC;
 - FLAT = zero directional exposure;
-- FLAT -> LONG / SHORT requires human approval;
-- MONITOR_ONLY -> ACTIVE requires human approval;
-- first short of a new bear phase requires human approval;
+- FLAT -> LONG / SHORT and MONITOR_ONLY -> ACTIVE require explicit human approval;
+- first short of a new bear phase requires explicit human approval;
 - intraday automation may reduce but not autonomously add directional exposure;
-- trading Agent/API credentials only;
-- master key, withdrawals and external transfers remain outside scope;
-- P4.1 defensive scaler stays `[0,1]`;
+- master key, automated withdrawals and external transfers remain outside scope;
+- P4.1 defensive scale stays `[0,1]`;
 - production gross remains `1.0`.
 
 ## Exact next action
 
-After this P5.1 taxonomy PR is CI/governance verified and merged:
-
 ```text
-CREATE A FRESH P5.2 BRANCH FROM NEW MAIN
-EVALUATE FEATURE FAMILIES UNDER P5.1-EVENT-TAXONOMY-V1
-DO NOT MOVE EVENT WINDOWS OR ANCHORS BASED ON FEATURE PERFORMANCE
-PRESERVE BRRK-0011 RELATIVE RANKING
-DO NOT START P5.3 STATE-MODEL SELECTION BEFORE P5.2 FEATURE EVIDENCE IS REVIEWABLE
-DO NOT START P6/P7/P8 BEFORE P5 CLOSES ITS OWN GATES
+CLOSE AND MERGE P5.2 ONLY AFTER FRESH FINAL-HEAD CI/GOVERNANCE
+VERIFY NEW MAIN
+CREATE FRESH P5.3 STATE-MODEL RESEARCH BRANCH
+PREREGISTER MULTI-STATE STRUCTURE BEFORE FITTING THRESHOLDS
+USE P5.1 TAXONOMY + IMMUTABLE P5.2 EVIDENCE WITHOUT RETUNING THEM
+KEEP LATE_BULL_ROTATION DISTINCT FROM DE-RISK STATES
+DO NOT PRODUCTION-AUTHORIZE ANYTHING
 ```

@@ -1,0 +1,21 @@
+{
+  "correction_id": "P5.2-POST-COMPUTE-SERIALIZATION-R2",
+  "study_id": "P5.2-FEATURE-FAMILIES-V1",
+  "prior_run": 31217880218,
+  "prior_run_head": "c1e5411da7649f487e2708f2d3ebdb7d7d124a14",
+  "classification": "NON_ECONOMIC_POST_COMPUTE_SERIALIZATION_COMPATIBILITY",
+  "failure": "TypeError: Series.reset_index() got an unexpected keyword argument 'names'",
+  "failure_stage": "artifact serialization after feature/summary/coverage computation, before immutable validation or result commit",
+  "result_committed": false,
+  "summary_generated": false,
+  "candidate_or_feature_metrics_printed": false,
+  "metrics_used_to_choose_correction": false,
+  "economic_change": false,
+  "feature_definition_change": false,
+  "p5_1_event_change": false,
+  "bucket_or_metric_change": false,
+  "coverage_threshold_change": false,
+  "correction": "Replace pandas-version-specific Series.reset_index(names=...) artifact conversion with rename(value)->to_frame(), set index.name, then reset_index(). Data and table semantics are unchanged.",
+  "allowed_under_standing_research_authorization": true,
+  "production_authorized": false
+}

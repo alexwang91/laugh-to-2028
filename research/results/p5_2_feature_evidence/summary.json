@@ -1,0 +1,44 @@
+{
+  "artifact_sha256": {
+    "btc_4h_close.csv": "8bb535bef97a8d46deb14f2b65efbdad04ba9665311ea100c8dd2875f58912bd",
+    "daily_close_panel.csv": "81b848c45e451e77f84eab89677ee0cb3e70e0560ed11dcd01faaceda86790ec",
+    "event_feature_summary.csv": "8b2370302f6300a2e553fcc50f4f0cfedd64630b758645d7bbb4ebc979309f93",
+    "feature_coverage.csv": "6fea182d466c2f7829b4a3ae3ecca76ad99556be32c855bcecf9713b55656f3a",
+    "feature_panel.csv": "f150029f2c43014546a51d4c1efce4c2441ab75b4aa26b81a88d8f63fb917c8f",
+    "pending_features.csv": "fcee7818e0733021ff860ae1f87234e38923bb3edd8298d15a9d1f15165a7a3f",
+    "resolved_events.csv": "f74dc3cfbb9bd5160e9f57b934fee83edc3173977fea76c5c141d996d6b5fa69"
+  },
+  "available_feature_count": 29,
+  "control_event_count": 4,
+  "coverage_all_pass": true,
+  "data_window": [
+    "2020-10-01",
+    "2026-02-28"
+  ],
+  "family_feature_counts": {
+    "BREADTH": 5,
+    "BTC_TREND_MATURITY": 10,
+    "LEADERSHIP_MIGRATION": 7,
+    "MOMENTUM_EXHAUSTION": 7
+  },
+  "feature_contract": "P5.2-FEATURE-FAMILIES-V1",
+  "pending_feature_count": 6,
+  "production_authorized": false,
+  "recovery_provenance": {
+    "correction_id": "P5.2-POST-COMPUTE-SERIALIZATION-R2",
+    "economic_or_feature_definition_change": false,
+    "observed_metrics_used_for_correction": false,
+    "prior_failed_run": 31217880218,
+    "reason": "pandas 3.0 Series.reset_index does not accept names=; R2 uses rename/to_frame/index.name/reset_index with identical table semantics"
+  },
+  "resolved_event_count": 11,
+  "selection": {
+    "feature_set_selected": false,
+    "state_thresholds_selected": false,
+    "status": "DESCRIPTIVE_EVIDENCE_ONLY"
+  },
+  "status": "ONE_TIME_FROZEN_FEATURE_EVIDENCE_COMPLETE",
+  "study_id": "P5.2-FEATURE-FAMILIES-V1",
+  "taxonomy_blob_sha": "73d010666fbfd957ec15214a00883a90a8adba5a",
+  "taxonomy_contract": "P5.1-EVENT-TAXONOMY-V1"
+}

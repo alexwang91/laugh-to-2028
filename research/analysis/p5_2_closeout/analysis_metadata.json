@@ -1,0 +1,28 @@
+{
+  "analysis_status": "POST_RESULT_DESCRIPTIVE_DIAGNOSTICS_ONLY",
+  "event_groups": {
+    "DETERIORATION": [
+      "P5E-2025-LATE-DETERIORATION"
+    ],
+    "NONTERMINAL_TOPLIKE": [
+      "P5E-2021-SPRING-MAJOR-TOP",
+      "P5E-2025-JUNE-NEW-HIGH",
+      "P5E-2025-OCT-NEW-HIGH-DELEVERAGING"
+    ],
+    "SECOND_WIND": [
+      "P5E-2021-SUMMER-SECOND-WIND",
+      "P5E-2025-AUG-NEW-HIGH"
+    ],
+    "TERMINAL": [
+      "P5E-2021-NOV-TERMINAL-TOP"
+    ]
+  },
+  "important_limitation": "Only one explicit terminal event exists in P5.1 V1; terminal-specific rankings are hypothesis-generating and cannot establish cross-cycle terminal robustness.",
+  "primary_buckets": [
+    "target_lead",
+    "near_event"
+  ],
+  "selection_or_threshold_authority": "NONE",
+  "source_study": "P5.2-FEATURE-FAMILIES-V1",
+  "source_summary_sha256": "3f6dc3c512d22ac8f71d43ed155f2602cd40d5caf3d617c0e130e170727e0627"
+}
