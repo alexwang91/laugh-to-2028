@@ -28,8 +28,8 @@ A roadmap task touching a legacy defect must not be called complete solely becau
 | F20 `/api/cron` authorization | security hardening before any live phase | RESOLVED | PR #71 requires configured bearer `CRON_SECRET` in shadow/trade, uses constant-time comparison, removes User-Agent authorization, and redacts external exception text. |
 | F21 unbacktested `ALLOW_STRONG_BETA` / 1.50 branch | P4 leverage-governance boundary | RESOLVED | PR #71 removed the env-toggleable 1.50 branch and `HARD_BETA_CAP` / `ALLOW_STRONG_BETA`; >1 research remains P4-only. |
 | F22 research/execution price + timing + target/control parity | P3.1 data contract + P3.2 target parity + P3.3 target-to-position control | RESOLVED | PR #74 implemented schema-v2 five-series signal / four-asset target roles; PR #75 restored validation evidence; PR #76 independently reproduced BRRK-0011 and committed immutable target goldens; PR #78 added explicit four-asset L1 rebalance/turnover control with complete theoretical-gap measurement and preserved upstream P3.2 parity/goldens. |
-| F23 funding filter scope | future registered research only; must not be slipped into completed Phase 3 or silently absorbed into P4 | DEFERRED_REGISTERED_BOUNDARY | current legacy filter thresholds are not canonical BRRK research. Any whole-range funding response requires a new registered experiment and explicit roadmap ownership. |
-| F28 impact cost / capacity | P2.3 cost model | RESOLVED_FOR_CURRENT_SCOPE | canonical Hyperliquid L2 depth/VWAP, capacity fail-closed behavior and beyond-spread accounting were completed in P2.3 + correction. Revalidate capacity if deployment size materially changes. |
+| F23 funding filter scope | future registered research only; must not be slipped into completed Phase 3 or silently absorbed into P4 | DEFERRED_REGISTERED_BOUNDARY | current legacy filter thresholds are not canonical BRRK research. Any whole-range funding response requires a new registered experiment and explicit roadmap ownership. P4 LEVERAGE-0040 uses funding as exogenous cost/stress only; no signal/filter threshold is authorized. |
+| F28 impact cost / capacity | P2.3 cost model + P4 degraded-fill stress reuse | RESOLVED_FOR_CURRENT_SCOPE | canonical Hyperliquid L2 depth/VWAP, capacity fail-closed behavior and beyond-spread accounting were completed in P2.3 + correction. P4 LEVERAGE-0040 preregisters stressed depth/slippage/partial-fill scenarios that reuse these semantics. Revalidate capacity if deployment size materially changes. |
 
 ## Phase 3 execution-parity closure
 
@@ -57,33 +57,12 @@ router-eligible assets         = BTC, ETH, SOL, BNB only
 Closure evidence:
 
 1. PR #74 merged the schema-v2 contract and fail-closed five-series strategy history while keeping XRP out of targets/router inputs.
-2. PR #75 validated the merged schema-v2 state after the GitHub Actions outage:
-   - Phase 0 run `31152649985` (#101): SUCCESS;
-   - Research evidence run `31152649957` (#13): SUCCESS;
-   - final governance run `31152716966` (#133): SUCCESS.
-3. PR #76 implemented and merged the canonical P3.2 target engine:
-   - final head `351df262d9dfda6e7900f6acc74bdb0a67c5ae1c`;
-   - Phase 0 run `31154665875` (#108): SUCCESS;
-   - Research evidence run `31154665880` (#19): SUCCESS;
-   - P3.2 independent parity + committed-golden run `31154665888` (#6): SUCCESS;
-   - final body-edit governance run `31154835417` (#140): SUCCESS;
-   - expected-head squash merge `70e279bcb1e7f78cfed1d62376a7aa2fef17ac45`.
-4. PR #78 implemented and merged P3.3 target-to-position control:
-   - final head `53885b993b662991cd28370d4542e48a31f648b5`;
-   - Phase 0 run `31156709738` (#113): SUCCESS, 204 tests + 5/5 research integration;
-   - Research evidence run `31156709594` (#24): SUCCESS;
-   - P3.2 parity/golden preservation run `31156709586` (#11): SUCCESS;
-   - final body-edit governance run `31156872098` (#147): SUCCESS;
-   - expected-head squash merge `a503e64da4641e434620aa6a04bf9f6448d00135`.
-5. PR #80 implemented and merged P3.4 contribution timing/equity handling:
-   - final head `f8069823428879e05309995870af8f293ce4289b`;
-   - Phase 0 run `31159909523` (#121): SUCCESS, 215 tests + 5/5 research integration;
-   - Research evidence run `31159909467` (#32): SUCCESS;
-   - P3.2 parity/golden preservation run `31159909468` (#19): SUCCESS;
-   - final body-edit governance run `31160307257` (#159): SUCCESS;
-   - expected-head squash merge `949fb9f1d079df7c2462a4b13b0eb778e91bb3ae`.
+2. PR #75 validated the merged schema-v2 state after the GitHub Actions outage.
+3. PR #76 implemented and merged the canonical P3.2 target engine with independent research/live parity and committed historical goldens.
+4. PR #78 implemented and merged P3.3 explicit target-to-position L1 control.
+5. PR #80 implemented and merged P3.4 contribution timing/equity handling.
 
-P3.2 parity covers two early V1-only decisions and six full BRRK decisions spanning 2022-12 through 2026-08, all four semantic regimes, near-flat through near-full defensive scales, exact canonical data digests and committed target vectors.
+P3.2 parity spans early V1-only and full BRRK decisions, all four semantic regimes, near-flat through near-full defensive scales, exact canonical data digests and committed target vectors.
 
 P3.3 provides the explicit downstream control boundary:
 
@@ -104,13 +83,45 @@ The approximately `$100/week` assumption is not a threshold or scheduler trigger
 
 Disposition for F22 remains `RESOLVED` across the required P3.1 data, P3.2 target and P3.3 target-to-position control boundaries. P3.4 completes the separate roadmap requirement for contribution timing without changing that disposition.
 
+## Phase 4 pre-run architecture correction
+
+The Master Plan defines leverage as a separate layer after the frozen regime/risk scaler:
+
+```text
+BRRK directional weights
+× frozen defensive scaler in [0,1]
+× optional leverage multiplier
+= final target economic exposure
+```
+
+The original `LEVERAGE-0039` preregistration proposed extending the corrected defensive selector itself above 1.0. Pre-run review found that this conflicts with the frozen defensive formula: retaining the final clip removes leverage, while removing the clip can make greater RISK_OFF probability increase exposure.
+
+No leverage search, candidate matrix, selection or economic result had been produced. Therefore:
+
+```text
+LEVERAGE-0039 = STOPPED_PRE_RUN / NO_RESULT_EVER_PRODUCED
+LEVERAGE-0040 = new preregistered two-layer hypothesis / NOT RUN
+```
+
+`LEVERAGE-0040` restores Master Plan coverage by preregistering:
+
+- separate post-defensive leverage multiplier;
+- mandatory BTC buy-and-hold benchmark;
+- mandatory BTC/ETH/SOL/BNB equal-weight buy-and-hold benchmark;
+- frozen BRRK <=1 benchmark;
+- explicit Hyperliquid native funding-spike stress;
+- explicit degraded-fill/depth/capacity stress;
+- liquidation-distance evidence from the official pre-result Hyperliquid margin snapshot.
+
+This correction changes no Phase-3 target/control behavior and authorizes no >1 production exposure.
+
 ## Research / evidence backlog relationship
 
 The remaining legacy research items are not silently promoted by this crosswalk. Their status remains governed by `config/decision_registry.json`, `docs/RESEARCH_HISTORY.md`, experiment preregistrations/results and stopped-line discipline.
 
 ### EXPOSURE-SMOOTH-0038 authority normalization
 
-PR #72 is merged on main and records the experiment as:
+PR #72 records the experiment as:
 
 ```text
 MECHANISM VALIDATED
@@ -124,13 +135,7 @@ The frozen V1 exposure function and BRRK-0011 remain authoritative. `EXPOSURE-SM
 
 ### F27 idle-cash-credit measurement normalization
 
-The F27 table retained inside `docs/REVIEW_FIX_BACKLOG.md` is **R1 superseded historical measurement evidence**. PR #72 preserves R1 and adds the authoritative corrected measurement:
-
-```text
-research/results/idle_cash_credit_0027r2.json
-```
-
-R2 reconstructs day one from the known `$10,000` base and reproduces the frozen BRRK-0011 calendar-span CAGR anchor before restating the full metric set.
+The F27 table retained inside `docs/REVIEW_FIX_BACKLOG.md` is R1 superseded historical measurement evidence. PR #72 preserves R1 and adds the authoritative corrected measurement `research/results/idle_cash_credit_0027r2.json`.
 
 Disposition: `RESOLVED` for measurement/authority normalization. R2 is authoritative corrected evidence; R1 remains preserved as superseded historical evidence.
 
@@ -144,8 +149,14 @@ P3.1 schema-v2 data contract      PASS / MERGED
 -> P3.3 rebalance / turnover      PASS / MERGED
 -> P3.4 contributions             PASS / MERGED
 => PHASE 3                        COMPLETE
--> P4 dynamic leverage            UNIQUE NEXT
+-> P4.1 frozen <=1 baseline       PASS / MERGED
+-> LEVERAGE-0039                  STOPPED_PRE_RUN / NO RESULT
+-> LEVERAGE-0040 prereg           CANDIDATE / NOT RUN
+-> P4.3 two-layer runner/parity   NEXT AFTER CORRECTION MERGE
+-> P4.4 stress execution
+-> P4.5 selection decision
+-> P4.6 deployment gate
 -> P5 exit intelligence
 ```
 
-Before any P4 implementation, reread the exact Phase 4 roadmap. P4 must preserve the completed Phase 3 baseline unless an explicitly registered P4 decision changes a defined downstream scope. It must not silently absorb F23 funding-response research, P5 exit logic, short/XRP target exposure, or production authorization.
+Before any LEVERAGE-0040 execution, the correction preregistration must be merged and cap=1 exact frozen-BRRK parity must pass. P4 must not silently absorb F23 funding-response research, P5 exit logic, short/XRP target exposure, EXPOSURE-SMOOTH-0038 promotion or production authorization.
