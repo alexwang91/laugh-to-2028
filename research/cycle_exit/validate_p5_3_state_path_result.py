@@ -74,11 +74,9 @@ def validate() -> str:
     # FLAT must be absorbing for every profile after its first occurrence.
     for profile, sub in paths.groupby("profile"):
         sub = sub.sort_values("date")
-        flat = sub.index[sub["state"].eq("FLAT")]
-        if len(flat):
-            first_pos = int(flat[0])
-            # group index is inherited from CSV; locate by positional date instead.
-            first_date = sub.loc[first_pos, "date"] if first_pos in sub.index else sub.loc[sub["state"].eq("FLAT"), "date"].iloc[0]
+        flat_rows = sub.loc[sub["state"].eq("FLAT")]
+        if len(flat_rows):
+            first_date = flat_rows["date"].iloc[0]
             after = sub.loc[sub["date"] >= first_date, "state"]
             if not after.eq("FLAT").all():
                 raise ValidationError(f"FLAT is not absorbing for {profile}")
