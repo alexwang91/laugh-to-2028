@@ -9,11 +9,14 @@ on:
       - "research/cycle_exit/run_p5_2_feature_evidence_r2.py"
       - "research/cycle_exit/P5.2-POST-COMPUTE-CORRECTION-R2.json"
       - "research/cycle_exit/validate_p5_2_feature_result.py"
+      - "research/results/p5_2_feature_evidence/**"
+      - "research/analysis/p5_2_closeout/**"
       - "execution/plan-b-bot/tests/test_p5_2_feature_contract.py"
       - "execution/plan-b-bot/tests/test_p5_2_r2_serialization.py"
       - ".github/workflows/p5-2-feature-contract.yml"
       - ".github/workflows/p5-2-feature-run-once.yml"
       - ".github/workflows/p5-2-feature-run-once-r2.yml"
+      - ".github/workflows/p5-2-closeout-analysis.yml"
   push:
     branches: [main]
     paths:
@@ -23,15 +26,18 @@ on:
       - "research/cycle_exit/run_p5_2_feature_evidence_r2.py"
       - "research/cycle_exit/P5.2-POST-COMPUTE-CORRECTION-R2.json"
       - "research/cycle_exit/validate_p5_2_feature_result.py"
+      - "research/results/p5_2_feature_evidence/**"
+      - "research/analysis/p5_2_closeout/**"
       - "execution/plan-b-bot/tests/test_p5_2_feature_contract.py"
       - "execution/plan-b-bot/tests/test_p5_2_r2_serialization.py"
       - ".github/workflows/p5-2-feature-contract.yml"
+      - ".github/workflows/p5-2-closeout-analysis.yml"
 
 permissions:
   contents: read
 
 jobs:
-  contract-preflight:
+  contract-lifecycle:
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
@@ -48,12 +54,30 @@ jobs:
           pytest -q \
             execution/plan-b-bot/tests/test_p5_2_feature_contract.py \
             execution/plan-b-bot/tests/test_p5_2_r2_serialization.py
-      - name: Run blinded data-access preflight only
+      - name: Validate correct lifecycle state
         env:
           OMP_NUM_THREADS: "1"
           OPENBLAS_NUM_THREADS: "1"
           MKL_NUM_THREADS: "1"
           NUMEXPR_NUM_THREADS: "1"
         run: |
-          python research/cycle_exit/run_p5_2_feature_evidence.py --preflight-only
-          test ! -e research/results/p5_2_feature_evidence/summary.json
+          set -euo pipefail
+          if test -e research/results/p5_2_feature_evidence/summary.json; then
+            python research/cycle_exit/validate_p5_2_feature_result.py
+            test "$(cat research/results/p5_2_feature_evidence/summary.sha256)" = "3f6dc3c512d22ac8f71d43ed155f2602cd40d5caf3d617c0e130e170727e0627"
+            python - <<'PY'
+          import json
+          from pathlib import Path
+          p = json.loads(Path('research/results/p5_2_feature_evidence/summary.json').read_text())
+          assert p['status'] == 'ONE_TIME_FROZEN_FEATURE_EVIDENCE_COMPLETE'
+          assert p['selection']['feature_set_selected'] is False
+          assert p['selection']['state_thresholds_selected'] is False
+          assert p['selection']['status'] == 'DESCRIPTIVE_EVIDENCE_ONLY'
+          assert p['production_authorized'] is False
+          assert p['recovery_provenance']['correction_id'] == 'P5.2-POST-COMPUTE-SERIALIZATION-R2'
+          assert p['recovery_provenance']['economic_or_feature_definition_change'] is False
+          PY
+          else
+            python research/cycle_exit/run_p5_2_feature_evidence.py --preflight-only
+            test ! -e research/results/p5_2_feature_evidence/summary.json
+          fi
