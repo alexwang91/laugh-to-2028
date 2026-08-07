@@ -1,0 +1,93 @@
+{
+  "schema_version": 1,
+  "snapshot_id": "HYPERLIQUID-MAINNET-MARGIN-META-P4.3-V1",
+  "captured_at_utc": "2026-08-07T09:11:25Z",
+  "source": {
+    "endpoint": "https://api.hyperliquid.xyz/info",
+    "request": {"type": "meta"},
+    "network": "mainnet",
+    "workflow_run_id": 31164707591,
+    "workflow_run_number": 1,
+    "workflow_head_sha": "e1f30529bb0f4f1f82ad8cc231777e46f8e511f1",
+    "artifact_id": 8988513159,
+    "artifact_zip_sha256": "9ac01e8efa08c975bebb249bf465a0fed2bd1dca17156cb9b6613521c660d881"
+  },
+  "target_assets": ["BTC", "ETH", "SOL", "BNB"],
+  "relevant_margin_inputs": {
+    "assets": {
+      "BTC": {
+        "name": "BTC",
+        "szDecimals": 5,
+        "maxLeverage": 40,
+        "marginTableId": 56,
+        "onlyIsolated": false,
+        "isDelisted": false
+      },
+      "ETH": {
+        "name": "ETH",
+        "szDecimals": 4,
+        "maxLeverage": 25,
+        "marginTableId": 55,
+        "onlyIsolated": false,
+        "isDelisted": false
+      },
+      "SOL": {
+        "name": "SOL",
+        "szDecimals": 2,
+        "maxLeverage": 20,
+        "marginTableId": 54,
+        "onlyIsolated": false,
+        "isDelisted": false
+      },
+      "BNB": {
+        "name": "BNB",
+        "szDecimals": 3,
+        "maxLeverage": 10,
+        "marginTableId": 51,
+        "onlyIsolated": false,
+        "isDelisted": false
+      }
+    },
+    "marginTables": {
+      "51": {
+        "description": "tiered 10x",
+        "marginTiers": [
+          {"lowerBound": "0.0", "maxLeverage": 10},
+          {"lowerBound": "3000000.0", "maxLeverage": 5}
+        ]
+      },
+      "54": {
+        "description": "tiered 20x (2)",
+        "marginTiers": [
+          {"lowerBound": "0.0", "maxLeverage": 20},
+          {"lowerBound": "70000000.0", "maxLeverage": 10}
+        ]
+      },
+      "55": {
+        "description": "tiered 25x",
+        "marginTiers": [
+          {"lowerBound": "0.0", "maxLeverage": 25},
+          {"lowerBound": "100000000.0", "maxLeverage": 15}
+        ]
+      },
+      "56": {
+        "description": "tiered 40x",
+        "marginTiers": [
+          {"lowerBound": "0.0", "maxLeverage": 40},
+          {"lowerBound": "150000000.0", "maxLeverage": 20}
+        ]
+      }
+    },
+    "singleTierRule": "marginTableId < 50 => single tier with maxLeverage equal to marginTableId"
+  },
+  "relevant_margin_inputs_sha256": "38060892f1976315084de4dc4ed1c9f3885d909ffccc47bce7ad589315d8b9dd",
+  "raw_meta_sha256": "ef4b108e65806d05dab615f533dd113fd86210d2e55a82a005fcad89a7f9aff8",
+  "raw_meta_universe_count": 232,
+  "raw_meta_margin_tables_count": 7,
+  "official_docs_crosscheck": {
+    "margin_tier_formula": "maintenance_margin_rate = (1 / maxLeverage) / 2; maintenance deduction preserves continuity across tiers",
+    "source": "Hyperliquid Docs / trading / margin-tiers and margining",
+    "status": "API_SNAPSHOT_MATCHED_DOCS_FOR_BTC_ETH_SOL_BNB"
+  },
+  "production_authorized": false
+}
