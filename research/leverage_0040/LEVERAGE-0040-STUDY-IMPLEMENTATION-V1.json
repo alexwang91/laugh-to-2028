@@ -7,12 +7,49 @@
   "study_branch": "p4-4/leverage-0040-one-time-study-v2",
   "production_authorized": false,
   "result_observed_before_freeze": false,
+  "pre_result_corrections": [
+    {
+      "id": "PREFLIGHT-RAW-TARGET-001",
+      "trigger": "contract workflow #1 failed in --preflight-only before any cap>1 construction",
+      "correction": "do not infer defensive scale from independently banded published V1/BRRK holdings; rebuild frozen raw V1 target and BRRK-0011 scale from the canonical research authority",
+      "economic_parameter_change": false,
+      "cap_gt_1_observed_before_correction": false
+    },
+    {
+      "id": "PREFLIGHT-SESSION-TIMING-002",
+      "trigger": "same pre-result source review",
+      "correction": "evaluation return session t uses the accepted target from decision day t-1; the full-BRRK evaluation session 2022-12-10 therefore starts from decision date 2022-12-09",
+      "economic_parameter_change": false,
+      "cap_gt_1_observed_before_correction": false
+    }
+  ],
   "authoritative_inputs": {
     "preregistration": "research/leverage_0040/LEVERAGE-0040.json",
     "pre_run_addendum": "research/leverage_0040/LEVERAGE-0040-PRE-RUN-ADDENDUM-V1.json",
+    "raw_target_authority": {
+      "build_brrk0011_scale": {
+        "path": "research/dispersion_overlay/run_dispersion_overlay.py",
+        "blob_sha": "cdcedd24a343a625e7b34c317633f68533de9ef3"
+      },
+      "build_benchmark_v1_and_portfolio_timing": {
+        "path": "research/hybrid_meta/walkforward_v1_meta.py",
+        "blob_sha": "13746a52e561f049ff2f5de4cd58c359a78fa143"
+      },
+      "feature_authority": {
+        "path": "research/regime_kelly/features_no_dominance.py",
+        "blob_sha": "e36612f7f7c6bea8744b5753bc20611f6580f13a"
+      },
+      "corrected_tail_risk": {
+        "path": "research/risk_metric_fix/corrected_risk.py",
+        "blob_sha": "bdf7cd6cb32961765716e4cb07288739e869703e"
+      },
+      "feature_assets": ["BTC", "ETH", "SOL", "BNB", "XRP"],
+      "target_assets": ["BTC", "ETH", "SOL", "BNB"]
+    },
     "published_daily_weights": {
       "path": "research/results/pit_disp_0015/daily_weights.csv",
-      "blob_sha": "2f6c8d3a8c25d3cafeaa0128f1c425dac248370b"
+      "blob_sha": "2f6c8d3a8c25d3cafeaa0128f1c425dac248370b",
+      "role": "legacy banded-holdings evidence only; never a defensive-scale source"
     },
     "published_daily_equity": {
       "path": "research/results/pit_disp_0015/daily_equity.csv",
@@ -29,26 +66,33 @@
   },
   "historical_input": {
     "price_source": "Binance spot 1d closes via frozen research/core/crypto_rotation_backtest.py fetch_daily",
-    "assets": ["BTC", "ETH", "SOL", "BNB"],
-    "decision_timing": "target dated t is held over the next UTC daily return t->t+1",
-    "full_brrk_window": ["2022-12-10", "2026-08-02"],
-    "pre_brrk_stress_proxy": "V1_BASELINE with defensive_scale=1.0; proxy only, never promotion-performance evidence",
+    "feature_assets": ["BTC", "ETH", "SOL", "BNB", "XRP"],
+    "target_assets": ["BTC", "ETH", "SOL", "BNB"],
+    "full_brrk_evaluation_sessions": ["2022-12-10", "2026-08-02"],
+    "first_full_brrk_decision_date": "2022-12-09",
+    "decision_timing": "target dated t is held over the next UTC daily return session t+1",
+    "pre_brrk_stress_proxy": "frozen V1 raw target with defensive_scale=1.0; proxy only, never promotion-performance evidence",
     "input_digest_required_in_result": true
   },
   "defensive_scale_recovery": {
-    "formula": "gross(BRRK0011_BASELINE four target assets) / gross(V1_BASELINE four target assets)",
-    "zero_v1_gross": "defensive_scale=0 only when both V1 and BRRK gross are zero; otherwise fail closed",
-    "bounds": [0.0, 1.0]
+    "authority": "rebuild from frozen BRRK-0011 research source, not published banded-holdings ratios",
+    "formula": "build_brrk0011_scale(feature_prices, frozen_features, frozen_V1_model_returns, RegimeKellyConfig(hmm_restarts=3,hmm_iter=250))",
+    "raw_brrk_target": "frozen V1 raw target multiplied by rebuilt defensive scale",
+    "bounds": [0.0, 1.0],
+    "published_banded_ratio_forbidden": true,
+    "cap1_preflight": "legacy apply_band(raw BRRK,0.05) + prior-day holding timing must reproduce frozen BRRK-0011 baseline metrics before any cap>1 construction"
   },
   "candidate_construction": {
     "caps": [1.0, 1.1, 1.2, 1.3],
     "multiplier_formula": "1 + (cap - 1) * frozen_defensive_scale",
-    "final_target_formula": "frozen_brrk_target * multiplier",
+    "final_target_formula": "frozen raw BRRK target * multiplier",
     "no_second_alpha": true
   },
   "p3_3_rebalance_adapter": {
     "policy_id": "P4.4-P3.3-ECONOMIC-DRIFT-ADAPTER-V1",
     "l1_band": 0.05,
+    "evaluation_session_first": "2022-12-10",
+    "first_decision_date": "2022-12-09",
     "current_weights_definition": "current economic asset notionals divided by current account equity immediately before the daily decision",
     "decision_rule": "rebalance iff sum(abs(target-current_weights)) >= 0.05",
     "inside_band": "preserve current economic weights",
@@ -61,9 +105,9 @@
   "transaction_cost": {
     "formula": "executed_L1_turnover * bps / 10000",
     "grid_bps": [5, 10, 20, 50],
-    "legacy_baseline_continuity": "published legacy BRRK uses frozen apply_band target-vs-last-accepted-target semantics",
+    "legacy_baseline_continuity": "frozen legacy BRRK applies 5% target-vs-last-accepted-target band to raw BRRK then shift(1) into the evaluation session",
     "matched_comparator": "candidate must also be compared with a cap=1 path using the same P3.3 economic-drift adapter",
-    "promotion_comparator_rule": "candidate must satisfy mandatory economic gates versus both the frozen/legacy BRRK comparator and matched P3.3 cap=1 comparator where comparable"
+    "promotion_comparator_rule": "candidate must satisfy mandatory economic gates versus both frozen legacy BRRK and matched P3.3 cap1 where comparable"
   },
   "routing_and_funding": {
     "primary": {
