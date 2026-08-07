@@ -4,9 +4,11 @@ on:
   pull_request:
     paths:
       - "research/leverage_0041/**"
+      - "research/results/leverage_0041/**"
       - "execution/plan-b-bot/tests/test_leverage_0041_*.py"
       - ".github/workflows/p4-5-leverage-0041-*.yml"
       - "docs/LEVERAGE_0041_*"
+      - "docs/ROADMAP_AUDIT_2026-08-07.md"
       - "docs/CURRENT_STATE.md"
       - "docs/NEXT_STEPS.md"
       - "README.md"
@@ -39,11 +41,15 @@ jobs:
             research/leverage_0041/runner_support_b_0041.py \
             research/leverage_0041/run_leverage_0041_once.py \
             research/leverage_0041/validate_leverage_0041_result.py
-      - name: Enforce pre-result boundary
+      - name: Enforce study lifecycle boundary
         run: |
           set -euo pipefail
-          test ! -e research/results/leverage_0041/summary.json
-          python - <<'PY'
+          if [[ -e research/results/leverage_0041/summary.json ]]; then
+            echo "Post-result lifecycle: validate immutable result rather than requiring result absence."
+            python research/leverage_0041/validate_leverage_0041_result.py
+          else
+            echo "Pre-result lifecycle: enforce frozen preregistration/implementation boundary."
+            python - <<'PY'
           import json
           from pathlib import Path
           p = json.loads(Path("research/leverage_0041/LEVERAGE-0041.json").read_text())
@@ -55,3 +61,4 @@ jobs:
           assert c["owner_run_once_authorized"] is True
           assert c["production_authorized"] is False
           PY
+          fi
