@@ -5,100 +5,143 @@
 ## Current dependency
 
 ```text
-P4.3 generalized corrected-risk leverage runner
+P4.3 pre-run architecture correction in draft PR #84
 ```
 
-P4.1 and P4.2 are merged by PR #82 as main `6d0e497583607e09991593588e62df7fb418087c`.
+Current authoritative main after PR #83:
 
-Final #82 evidence:
+`86045e6aefef81053fa8a9b624cbc4d9cb7a8c80`
 
-- Phase 0 #126 / run `31163656193`: SUCCESS, 224 execution tests + 5/5 integration
-- Research evidence #37 / run `31163656181`: SUCCESS
-- P3.2 parity/golden #24 / run `31163656179`: SUCCESS
-- final body-edit governance #166 / run `31163843751`: SUCCESS
+## What changed in pre-run review
 
-## Frozen P4.1 baseline
-
-`research/leverage_0039/P4_1_BASELINE_FREEZE.json`
-
-`P4.1-BRRK0011-CORRECTED-0-1-V1`
+The Master Plan defines dynamic leverage as two layers:
 
 ```text
-corrected scale domain       0 .. 1
-scenario CVaR/CDaR budget    20%
-production gross cap         1.0
-operating risk budget        UNFROZEN
-catastrophic DD boundary     70% termination boundary only
+BRRK directional weights
+× frozen 0-1 regime/risk defensive scaler
+× separate leverage multiplier
+= final target economic exposure
 ```
 
-Historical BRRK artifacts and separate metric-provenance conventions remain frozen.
+The merged `LEVERAGE-0039` preregistration had instead proposed extending the corrected defensive selector itself above 1.0. Review found that this is not equivalent under the frozen BRRK defensive formula: keeping the final clip removes >1 leverage, while removing the clip can make higher RISK_OFF probability increase exposure.
 
-## Frozen P4.2 prereg
+No leverage search or result had been produced.
 
-`research/leverage_0039/LEVERAGE-0039.json`
-
-Status:
-
-`PREREGISTERED_BEFORE_FIRST_RUN`
+Therefore:
 
 ```text
-research caps               1.00 / 1.10 / 1.20 / 1.30
-operating MDD constraints   35% / 40% / 45% / 50%
-matched costs               5 / 10 / 20 / 50 bps
-scenario tail budget        20%
-catastrophe boundary        70%
+LEVERAGE-0039   STOPPED_PRE_RUN / NO_RESULT_EVER_PRODUCED
+LEVERAGE-0040   PREREGISTERED CANDIDATE / NOT RUN
 ```
 
-Funding remains cost-only; Hyperliquid native evidence is mandatory; Binance is proxy/stress-only; no funding signal/threshold; F23 remains separate.
+Do not rescue or reuse 0039. The corrected architecture receives the new experiment ID 0040.
 
-## P4.3 required order
+## LEVERAGE-0040 frozen pre-run architecture
 
-Do not run `LEVERAGE-0039` immediately after normalization. First:
+Machine preregistration:
 
-1. create a fresh P4.3 branch from latest main;
-2. snapshot and hash the canonical Hyperliquid margin/leverage-tier inputs needed for liquidation-distance modeling;
-3. implement a generalized version of the **same corrected CVaR/CDaR selector**, changing only its maximum scale/cap;
-4. preserve BRRK relative targets, HMM states/features, Student-t model, 20% scenario tail budget and Phase-3 semantics;
-5. build a deterministic runner that can reproduce the frozen <=1 baseline;
-6. require cap=1 exact parity before any >1 candidate is evaluated;
-7. only then execute the preregistered candidate/stress suite exactly once.
+`research/leverage_0040/LEVERAGE-0040.json`
 
-No prereg thresholds, cap grid, stress windows, funding treatment or promotion gates may be retuned after results are seen. Material change requires a new experiment ID.
+```text
+defensive_scale              frozen 0 .. 1
+leverage multiplier          1 .. selected research cap
+final scale                  defensive_scale × leverage_multiplier
+research caps                1.00 / 1.10 / 1.20 / 1.30
+operating MDD candidates     35% / 40% / 45% / 50%
+scenario tail budget         frozen 20%
+transaction-cost grid        5 / 10 / 20 / 50 bps
+catastrophe boundary         70%
+```
+
+`cap=1.00` means the leverage multiplier is exactly `1.0`; the complete historical path must therefore reproduce frozen BRRK before any >1 candidate may be evaluated.
+
+## Mandatory comparison set
+
+Every material 0040 result must report:
+
+```text
+BTC buy-and-hold
+BTC/ETH/SOL/BNB equal-weight buy-and-hold
+frozen corrected BRRK-0011 <=1 baseline
+P4 leverage candidates
+```
+
+Matched windows and clearly labeled cost/metric conventions are mandatory.
+
+## Mandatory P4 stress coverage
+
+0040 preregisters:
+
+- 2021 spring crash;
+- 2021 November/bear transition;
+- 2022 severe drawdown;
+- 2024 identified stress;
+- 2025 full multi-peak/deleveraging year;
+- recent 2026 window;
+- synthetic -10/-20/-30/-40/-50% one-day gaps;
+- cross-asset crash scenarios;
+- 1.5x/2x/3x volatility shocks;
+- Hyperliquid native funding debit stress at 2x/3x/5x;
+- degraded depth/slippage scenarios;
+- partial-fill/capacity stress using P2 fail-closed semantics;
+- liquidation-distance checks against the captured official Hyperliquid margin snapshot.
+
+Funding remains cost-only. No funding alpha/filter/threshold is allowed; F23 remains separate.
+
+## Hyperliquid margin snapshot already captured
+
+Candidate artifact in PR #84:
+
+`research/leverage_0039/hyperliquid_margin_snapshot.json`
+
+```text
+relevant SHA-256  38060892f1976315084de4dc4ed1c9f3885d909ffccc47bce7ad589315d8b9dd
+raw meta SHA-256  ef4b108e65806d05dab615f533dd113fd86210d2e55a82a005fcad89a7f9aff8
+```
+
+This snapshot is reusable evidence for 0040 because it was captured before any leverage result and its content is independent of the stopped selector architecture.
 
 ## Still blocked
 
 ```text
-LEVERAGE SEARCH RUN:         NO
-RESULT SELECTED:             NO
-OPERATING BUDGET FROZEN:     NO
->1 RUNTIME IMPLEMENTED:      NO
-PRODUCTION AUTHORIZED:       NO_CHANGE
+LEVERAGE-0040 SEARCH RUN:     NO
+RESULT SELECTED:              NO
+OPERATING BUDGET FROZEN:      NO
+>1 RUNTIME IMPLEMENTED:       NO
+CAP=1 PARITY:                 NOT RUN
+PRODUCTION AUTHORIZED:        NO_CHANGE
 ```
 
 Also blocked/separate:
 
-- search >1.30 under LEVERAGE-0039;
+- search >1.30 without a new experiment ID;
 - EXPOSURE-SMOOTH-0038 promotion;
-- F23 funding response;
-- shorts / XRP targets;
+- F23 funding-response redesign;
+- shorts / XRP target exposure;
 - P5 exit intelligence;
-- production authorization.
+- production leverage authorization.
 
 `production_authorized_components = []` remains unchanged.
 
 ## Project drift audit
 
 ```text
-DRIFT_0
+PRE-RUN REVIEW DISCOVERY: DRIFT_2
+TARGET AFTER PR #84:      DRIFT_0
 ```
+
+The drift is limited to P4 architecture/benchmark/stress preregistration. Phase ordering and production/security/human-control boundaries were not crossed.
 
 ## Exact next action
 
 ```text
-finish post-P4.1/P4.2 normalization
--> fresh P4.3 branch
--> freeze Hyperliquid liquidation inputs
--> generalized selector/runner
--> cap=1 parity
--> execute LEVERAGE-0039 once only after parity passes
+finish PR #84 contract + governance validation
+-> merge the 0039 stop / 0040 prereg correction
+-> fresh P4.3 runner branch
+-> implement separate leverage multiplier after frozen defensive scaler
+-> prove cap=1 exact historical parity
+-> execute LEVERAGE-0040 once only after parity passes
+-> run preregistered P4.4 stress suite
+-> P4.5 selection / fail decision
+-> P4.6 separate deployment cap and production authorization gate
 ```

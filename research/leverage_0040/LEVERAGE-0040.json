@@ -1,0 +1,187 @@
+{
+  "experiment_id": "LEVERAGE-0040",
+  "status": "PREREGISTERED_BEFORE_FIRST_RUN",
+  "registered_at_utc": "2026-08-07T11:20:00Z",
+  "supersedes_pre_run_experiment": "LEVERAGE-0039",
+  "roadmap_scope": ["P4.3", "P4.4", "P4.5", "P4.6"],
+  "question": "Does a separate leverage multiplier applied after the frozen BRRK-0011 corrected 0-1 defensive scaler improve after-cost compounded wealth without violating the preregistered operating drawdown, tail-risk, stress, liquidation-distance, benchmark, funding-cost or implementation-robustness constraints?",
+  "architecture": {
+    "master_plan_formula": "BRRK directional weights × frozen defensive_scale × leverage_multiplier = final target economic exposure",
+    "frozen_defensive_scale_domain": [0.0, 1.0],
+    "leverage_multiplier_domain_by_cap": {
+      "1.00": [1.0, 1.0],
+      "1.10": [1.0, 1.1],
+      "1.20": [1.0, 1.2],
+      "1.30": [1.0, 1.3]
+    },
+    "final_scale_rule": "final_scale = frozen_defensive_scale * leverage_multiplier",
+    "risk_off_monotonicity_rule": "For a fixed leverage_multiplier, lower frozen defensive_scale may never produce higher final gross exposure.",
+    "cap_1_parity_gate": "At research cap 1.00, leverage_multiplier is identically 1.0 and the complete path must reproduce the frozen BRRK-0011 <=1 baseline before any >1 result is valid."
+  },
+  "baseline": {
+    "freeze": "research/leverage_0039/P4_1_BASELINE_FREEZE.json",
+    "freeze_id": "P4.1-BRRK0011-CORRECTED-0-1-V1",
+    "historical_result_reference": "research/results/BRRK_0011_CDAR_CORRECTION_2026-08-04.md",
+    "scenario_cvar_cdar_budget": 0.20,
+    "production_gross_cap": 1.0,
+    "operating_budget_status": "UNFROZEN"
+  },
+  "only_structural_change": {
+    "component": "separate post-defensive leverage multiplier",
+    "rule": "Do not extend or reinterpret the frozen corrected defensive selector above 1.0. Preserve V1 relative weights, HMM, semantic states, filtered posterior, state-return fit, Student-t family, defensive-scale formula, 20 percent scenario tail budget, P3.3 rebalance semantics and P3.4 contribution handling.",
+    "forbidden_shortcut": "Do not obtain >1 gross by changing the upper bound of the frozen defensive selector."
+  },
+  "candidate_research_caps": [1.0, 1.10, 1.20, 1.30],
+  "search_above_1_30_rule": "Requires a new experiment ID and preregistration before execution.",
+  "operating_drawdown_candidate_budgets": [0.35, 0.40, 0.45, 0.50],
+  "catastrophic_drawdown_limit": 0.70,
+  "tail_risk": {
+    "scenario_alpha": 0.95,
+    "scenario_cvar_cdar_budget": 0.20,
+    "rule": "The frozen defensive layer remains responsible for its existing 20 percent scenario CVaR/CDaR gate. The leverage layer may not weaken that gate and must additionally satisfy full-path operating/stress constraints."
+  },
+  "objective": {
+    "primary": "maximize after-cost long-run compounded terminal wealth / CAGR",
+    "secondary_tiebreakers_in_order": ["higher Calmar", "higher Sharpe", "lower MaxDD", "lower turnover", "lower gross cap"]
+  },
+  "mandatory_benchmarks": [
+    {
+      "id": "BTC_BUY_AND_HOLD",
+      "description": "BTC buy-and-hold on the matched evaluation window"
+    },
+    {
+      "id": "BRRK_EQUAL_WEIGHT_BUY_AND_HOLD",
+      "description": "BTC/ETH/SOL/BNB equal-weight buy-and-hold on the matched evaluation window"
+    },
+    {
+      "id": "P4_1_FROZEN_BRRK_0_1",
+      "description": "Frozen corrected BRRK-0011 <=1 baseline"
+    }
+  ],
+  "benchmark_rule": "Every material candidate result must report all three mandatory benchmarks using matched windows and clearly labeled metric/cost conventions. Promotion cannot rely only on comparison with the frozen BRRK baseline.",
+  "transaction_cost_treatment": {
+    "cost_bps_per_abs_weight_change_grid": [5.0, 10.0, 20.0, 50.0],
+    "rule": "Candidate and frozen BRRK baseline use identical matched transaction-cost assumptions. Benchmark-specific unavoidable costs must be reported separately rather than silently normalized away."
+  },
+  "funding_treatment": {
+    "signal_use": "FORBIDDEN",
+    "threshold_optimization": "FORBIDDEN",
+    "role": "exogenous implementation cost only",
+    "native_panel": {
+      "name": "HYPERLIQUID_NATIVE_COMMON_WINDOW",
+      "window": ["2023-06-18", "2026-07-31"],
+      "rule": "Use Hyperliquid native funding for actual perp exposure / leverage overlay on the common window. Do not charge spot exposure perpetual funding."
+    },
+    "binance_proxy": {
+      "window": ["2022-12-10", "2026-07-31"],
+      "role": "sign/regime/full-history stress proxy only; never a Hyperliquid level estimate"
+    },
+    "funding_spike_stress": {
+      "method": "multiply the absolute observed native funding debit on perp exposure while preserving its debit direction",
+      "multipliers": [2.0, 3.0, 5.0],
+      "rule": "If the native observation is a credit, do not turn the stress into a larger favorable credit; clamp the stressed contribution at no better than the observed credit and report separately."
+    },
+    "missing_data_rule": "Missing required native funding evidence is not zero-filled and blocks promotion."
+  },
+  "router_and_instrument_rule": {
+    "baseline_exposure": "Use the frozen P2 router economics for base long exposure where historical evidence supports the route.",
+    "leverage_overlay": "Gross exposure above unlevered economic exposure is derivative/perp overlay only.",
+    "all_perp_role": "Allowed as a conservative stress panel, not the sole primary implementation economics."
+  },
+  "historical_stress_windows": [
+    {"name": "2021_SPRING_CRASH", "start": "2021-05-01", "end": "2021-07-31", "mode": "PRE_BRRK_CONSERVATIVE_PROXY"},
+    {"name": "2021_NOV_BEAR_TRANSITION", "start": "2021-11-01", "end": "2022-03-31", "mode": "PRE_BRRK_CONSERVATIVE_PROXY_IF_NEEDED"},
+    {"name": "2022_SEVERE_DRAWDOWN", "start": "2022-05-01", "end": "2022-12-31", "mode": "FULL_BRRK_WHERE_ELIGIBLE_OTHERWISE_CONSERVATIVE_PROXY"},
+    {"name": "2024_APRIL_MASKING_EPISODE", "start": "2024-03-01", "end": "2024-05-15", "mode": "FULL_BRRK"},
+    {"name": "2025_MULTI_PEAK_DELEVERAGING", "start": "2025-01-01", "end": "2025-12-31", "mode": "FULL_BRRK"},
+    {"name": "RECENT_2026_TO_FROZEN_END", "start": "2026-01-01", "end": "2026-08-02", "mode": "FULL_BRRK"}
+  ],
+  "synthetic_market_stress": {
+    "uniform_one_day_gap_returns": [-0.10, -0.20, -0.30, -0.40, -0.50],
+    "cross_asset_gap_scenarios": [
+      {"name": "ALT_CRASH", "BTC": -0.25, "ETH": -0.35, "SOL": -0.50, "BNB": -0.40},
+      {"name": "BTC_LED_CRASH", "BTC": -0.40, "ETH": -0.25, "SOL": -0.30, "BNB": -0.25}
+    ],
+    "volatility_multipliers_on_worst_realized_20d_blocks": [1.5, 2.0, 3.0],
+    "execution_rule": "No favorable same-day rebalance is assumed inside a one-day gap shock."
+  },
+  "degraded_fill_stress": {
+    "required": true,
+    "scenarios": [
+      {"name": "DEPTH_50_PCT", "available_depth_fraction": 0.50, "forced_taker_fraction": 1.0, "slippage_multiplier": 1.5},
+      {"name": "DEPTH_25_PCT", "available_depth_fraction": 0.25, "forced_taker_fraction": 1.0, "slippage_multiplier": 2.0},
+      {"name": "PARTIAL_FILL_50_PCT", "fill_fraction": 0.50, "unfilled_remainder_rule": "remain at prior exposure until next legal decision; do not assume favorable immediate completion"}
+    ],
+    "capacity_rule": "Reuse P2.3/P2.4 capacity semantics: if required notional cannot be supported by stressed available depth, the candidate fails that implementation scenario rather than assuming an executable fill.",
+    "no_double_count_rule": "VWAP/slippage degradation and generic bps stress must be itemized so the same impact is not silently counted twice."
+  },
+  "liquidation_distance": {
+    "required": true,
+    "snapshot": "research/leverage_0039/hyperliquid_margin_snapshot.json",
+    "missing_model_rule": "FAIL_CLOSED_NO_PROMOTION",
+    "acceptance": "No modeled liquidation in mandatory historical or synthetic stress. Minimum adverse-move distance to modeled liquidation must exceed the largest applicable preregistered one-day gap stress for the evaluated position mix."
+  },
+  "robustness": {
+    "start_dates": ["2022-12-10", "2023-03-01", "2023-06-01", "2024-01-01"],
+    "stationary_block_bootstrap_mean_days": [7, 21, 63],
+    "bootstrap_resamples": 10000,
+    "minimum_terminal_outperformance_probability_each_block": 0.80,
+    "minimum_five_percent_annualized_return_difference_pp": -1.0,
+    "no_single_start_cagr_underperformance_worse_than_pp": -2.0
+  },
+  "selection_rule": "Do not select the best in-sample CAGR point. Prefer a broad neighboring region with strong terminal wealth, robust Calmar/Sharpe, non-knife-edge drawdown sensitivity and lower gross cap when economics are comparable.",
+  "promotion_success_conditions": [
+    "cap=1.00 exactly reproduces frozen BRRK before any >1 candidate is considered",
+    "all three mandatory benchmarks are reported on matched windows",
+    "after-cost compounded wealth is strictly higher than frozen BRRK at matched 5 bps and 10 bps cases",
+    "candidate is not dominated by frozen BRRK at 20 bps",
+    "selected operating drawdown budget is respected",
+    "70 percent catastrophe boundary is never breached",
+    "frozen 20 percent defensive scenario CVaR/CDaR gate is not weakened",
+    "all mandatory historical, synthetic gap/volatility, funding-spike and degraded-fill scenarios pass",
+    "liquidation-distance evidence passes and missing venue evidence fails closed",
+    "start-date and stationary-block robustness thresholds pass",
+    "candidate uses no funding alpha/filter, shorts, XRP target, EXPOSURE-SMOOTH-0038 substitution or P5 exit logic"
+  ],
+  "deployment_cap_rule": {
+    "research_only": true,
+    "rule_if_promoted": "Live cap must be the next lower preregistered cap grid point than the selected research cap and may never exceed 1.20 under LEVERAGE-0040. A selected research cap of 1.10 therefore implies live cap 1.00.",
+    "authorization": "Separate production authorization remains mandatory."
+  },
+  "stopping_rule": "Run the preregistered cap/budget/cost/funding/stress/robustness suite once after cap=1 parity. Do not retune after seeing results. Material changes require a new experiment ID.",
+  "forbidden": [
+    "run LEVERAGE-0040 before this preregistration is committed",
+    "run any >1 candidate before cap=1 exact baseline parity",
+    "extend or reinterpret the frozen defensive selector above 1.0",
+    "change BRRK-0011 relative targets, HMM/regime features or defensive-scale formula",
+    "change the frozen 20 percent scenario CVaR/CDaR budget",
+    "search above gross 1.30 under this experiment ID",
+    "use funding as alpha/filter/position threshold",
+    "silently promote EXPOSURE-SMOOTH-0038",
+    "absorb F23 funding-response redesign",
+    "add shorts or XRP target exposure",
+    "add P5 exit intelligence",
+    "overwrite historical BRRK result artifacts",
+    "authorize production leverage or production trading"
+  ],
+  "required_result_artifacts": [
+    "cap=1 exact baseline parity report",
+    "machine-readable full candidate matrix",
+    "BTC buy-and-hold benchmark",
+    "BTC/ETH/SOL/BNB equal-weight buy-and-hold benchmark",
+    "frozen BRRK baseline comparison",
+    "matched-cost table",
+    "native funding and funding-spike panels",
+    "historical and synthetic stress tables",
+    "degraded-fill/capacity table",
+    "liquidation-distance table",
+    "start-date robustness",
+    "stationary-block bootstrap",
+    "selection/failure decision with no post-result retuning"
+  ],
+  "hypotheses": {
+    "H1": "A separate post-defensive leverage multiplier with cap in (1.0,1.30] improves matched after-cost compounded wealth while satisfying the complete preregistered gate.",
+    "H0": "No cap above 1.0 satisfies the complete gate; preserve the frozen <=1 baseline."
+  },
+  "production_authorized": false
+}

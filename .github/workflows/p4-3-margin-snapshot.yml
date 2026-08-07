@@ -1,0 +1,44 @@
+name: P4.3 Hyperliquid margin snapshot
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/p4-3-margin-snapshot.yml'
+      - 'research/leverage_0039/capture_hyperliquid_margin_snapshot.py'
+      - 'research/leverage_0039/hyperliquid_margin_snapshot.json'
+      - 'execution/plan-b-bot/tests/test_p4_3_margin_snapshot.py'
+
+permissions:
+  contents: read
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Capture Hyperliquid mainnet margin metadata
+        run: |
+          python3 research/leverage_0039/capture_hyperliquid_margin_snapshot.py \
+            --output /tmp/hyperliquid_margin_snapshot.json
+      - name: Show canonical snapshot summary
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          p = Path('/tmp/hyperliquid_margin_snapshot.json')
+          data = json.loads(p.read_text())
+          print(json.dumps({
+              'snapshot_id': data['snapshot_id'],
+              'captured_at_utc': data['captured_at_utc'],
+              'relevant_margin_inputs_sha256': data['relevant_margin_inputs_sha256'],
+              'raw_meta_sha256': data['raw_meta_sha256'],
+              'assets': data['relevant_margin_inputs']['assets'],
+              'marginTables': data['relevant_margin_inputs']['marginTables'],
+          }, indent=2, sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: p4-3-hyperliquid-margin-snapshot
+          path: /tmp/hyperliquid_margin_snapshot.json
+          if-no-files-found: error
+          retention-days: 7
