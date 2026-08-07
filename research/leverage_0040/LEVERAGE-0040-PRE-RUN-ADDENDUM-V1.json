@@ -1,0 +1,56 @@
+{
+  "addendum_id": "LEVERAGE-0040-PRE-RUN-ADDENDUM-V1",
+  "experiment_id": "LEVERAGE-0040",
+  "status": "FROZEN_BEFORE_FIRST_0040_SEARCH",
+  "frozen_at_utc": "2026-08-07T12:20:00Z",
+  "result_observation_before_freeze": false,
+  "purpose": "Freeze the remaining P4.3 implementation semantics that materially affect >1 economics before any 1.10/1.20/1.30 historical result is generated.",
+  "original_preregistration": "research/leverage_0040/LEVERAGE-0040.json",
+  "liquidation_model": "research/leverage_0040/P4_3_LIQUIDATION_MODEL_V1.json",
+  "multiplier_policy": {
+    "policy_id": "P4.3-DEFENSIVE-MONOTONE-MULTIPLIER-V1",
+    "allowed_inputs": ["frozen_defensive_scale", "candidate_research_cap"],
+    "formula": "leverage_multiplier = 1 + (candidate_research_cap - 1) * frozen_defensive_scale",
+    "final_scale_formula": "final_scale = frozen_defensive_scale * leverage_multiplier = frozen_defensive_scale + (candidate_research_cap - 1) * frozen_defensive_scale^2",
+    "domains": {
+      "frozen_defensive_scale": [0.0, 1.0],
+      "candidate_research_cap": [1.0, 1.10, 1.20, 1.30]
+    },
+    "properties": [
+      "cap=1.00 implies leverage_multiplier=1.0 for every defensive state and therefore exact frozen-BRRK identity",
+      "frozen_defensive_scale=0 implies final_scale=0 regardless of candidate cap",
+      "for fixed cap, leverage_multiplier is nondecreasing in frozen_defensive_scale",
+      "for fixed cap, final_scale is strictly nondecreasing in frozen_defensive_scale",
+      "candidate cap is reached only when frozen_defensive_scale=1",
+      "because base P3.2 gross is <=1 and multiplier <= candidate cap, final gross cannot exceed candidate cap"
+    ],
+    "rationale": "Use the already-frozen defensive output as the sole risk-state input to the new leverage layer. The policy introduces no thresholds, no second alpha model and no post-result optimizer. Extra leverage fades continuously as the defensive layer de-risks.",
+    "forbidden_inputs": [
+      "future returns or candidate PnL",
+      "funding as signal or threshold",
+      "raw HMM state labels or posterior probabilities beyond their already-frozen effect in defensive_scale",
+      "P5 cycle-exit features or states",
+      "EXPOSURE-SMOOTH-0038",
+      "short or XRP target signals",
+      "historically selected threshold or hand-picked date"
+    ],
+    "candidate_evaluation_rule": "Evaluate the exact same frozen formula separately for the preregistered caps 1.00/1.10/1.20/1.30. Do not optimize a continuous cap and do not alter the formula after observing candidate results.",
+    "production_authorized": false
+  },
+  "implementation_plan_requirements": {
+    "actual_perp_notionals_required": true,
+    "cross_account_equity_required": true,
+    "spot_as_cross_collateral_assumed": false,
+    "portfolio_margin_assumed": false,
+    "missing_route_or_collateral_accounting": "FAIL_CLOSED_NO_PROMOTION"
+  },
+  "search_unlock_conditions": [
+    "P4 cap=1 exact historical parity is merged",
+    "P4.3 Hyperliquid cross-margin liquidation model passes official-formula and frozen-tier tests",
+    "this multiplier policy/addendum passes contract tests and is merged",
+    "no >1 historical candidate result existed before this addendum freeze"
+  ],
+  "post_result_rule": "Any material change to the multiplier formula, allowed inputs, margin mode, collateral assumptions or liquidation equations after a >1 result is observed requires a new experiment ID; LEVERAGE-0040 may not be rescued by amendment.",
+  "production_authorized": false,
+  "leverage_search_run": false
+}
