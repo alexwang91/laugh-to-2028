@@ -1,0 +1,7 @@
+family,feature,status,reason
+LEADERSHIP_MIGRATION,btc_dominance,DATA_SOURCE_PENDING,No repository-validated historical BTC-dominance source is currently available without introducing a new external data authority.
+BREADTH,broad_market_breadth,DATA_SOURCE_PENDING,No frozen broader-market universe/data contract exists yet; the V1 canonical-five breadth is explicitly not claimed to be total-market breadth.
+LEVERAGE_SPECULATION,historical_funding,DATA_SOURCE_PENDING,P5 requires a cross-event market-positioning source with 2021 and 2025 coverage; existing Hyperliquid funding authority begins too late for 2021 comparability.
+LEVERAGE_SPECULATION,historical_open_interest,DATA_SOURCE_PENDING,No frozen reproducible historical OI source is currently in the repository.
+LEVERAGE_SPECULATION,historical_basis_premium,DATA_SOURCE_PENDING,No P5-specific fixed historical spot/perp basis panel has yet been frozen across all required events.
+LEVERAGE_SPECULATION,liquidation_proxy,DATA_SOURCE_PENDING,No validated continuous historical liquidation proxy is currently frozen.
