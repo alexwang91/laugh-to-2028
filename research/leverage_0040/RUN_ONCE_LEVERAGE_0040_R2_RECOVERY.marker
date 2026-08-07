@@ -1,0 +1,7 @@
+LEVERAGE-0040-R2-RECOVERY-V1
+study_id=LEVERAGE-0040
+failed_run_id=31197608453
+failed_head=78e8530cbef614e42e274828068f45a1f3e7542a
+failure_stage=cap1_gap_stress_before_cap_gt_1
+acknowledge_cap_gt_1_not_constructed=true
+acknowledge_no_post_result_retuning=true
