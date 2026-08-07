@@ -18,7 +18,8 @@
 | LEVERAGE-0041 | **COMPLETE / IMMUTABLE / NO_PROMOTION** |
 | Phase 4 dynamic-leverage research line | **FAIL_STOP / NO ELIGIBLE >1 CANDIDATE** |
 | P4.6 production leverage | **NOT ENTERED / BLOCKED — no promoted candidate** |
-| Phase 5 cycle-top / exit intelligence | **NEXT** |
+| P5.1 cycle-top event taxonomy | **COMPLETE / FROZEN BEFORE FEATURE SELECTION** |
+| P5.2 feature families | **NEXT** |
 | Phase 6 integrated shadow | **NOT STARTED** |
 | Phase 7 limited-capital live long | **NOT STARTED / EXPLICIT APPROVAL REQUIRED** |
 | Phase 8 bear-short research | **NOT STARTED** |
@@ -95,20 +96,34 @@ Phase 0 governance/config
 -> LEVERAGE-0039 STOPPED PRE-RUN
 -> LEVERAGE-0040 COMPLETE / NO_PROMOTION
 -> LEVERAGE-0041 COMPLETE / NO_PROMOTION
+-> P5.1 EVENT TAXONOMY FROZEN
 ```
 
 Historical rejected or shadow research lines remain preserved as evidence; they are not silently promoted into BRRK or production.
 
 A full task/deviation review is recorded in `docs/ROADMAP_AUDIT_2026-08-07.md`.
 
-## Next roadmap work
+## Phase 5 cycle-top / exit program
 
-The next forward program is **Phase 5 — cycle-top / late-bull / exit model**, which is a new research program rather than a retune of BRRK or either leverage study.
+P5.1 is frozen in `research/cycle_exit/p5_1_event_taxonomy.json` and documented in `docs/P5_1_EVENT_TAXONOMY.md`.
+
+Its purpose is to define the historical situations the future cycle model must distinguish **before** feature/model evaluation:
+
+- 2021 spring major top / May crash as a nonterminal major top;
+- 2021 summer second-wind transition;
+- 2021 November terminal top / bear transition;
+- 2025 June, August and October new-high/deleveraging phases;
+- subsequent late-2025 deterioration without silently declaring it a terminal cycle top;
+- multiple high-volatility non-top controls from 2021, 2024 and 2025.
+
+Calendar search windows are frozen first. Event anchors are then mechanically resolved from canonical BTCUSDT UTC daily closes. P5.2 may not move these windows or anchor rules based on indicator performance.
+
+The next task is **P5.2 Feature Families** under this unchanged taxonomy.
 
 Order:
 
-1. **P5.1 Event taxonomy** — label terminal-top, second-wind, and non-top high-volatility controls.
-2. **P5.2 Feature families** — trend maturity, momentum exhaustion, leadership migration, breadth, leverage/speculation.
+1. **P5.1 Event taxonomy — COMPLETE / FROZEN.**
+2. **P5.2 Feature families — NEXT** — trend maturity, momentum exhaustion, leadership migration, breadth, leverage/speculation.
 3. **P5.3 State model** — `NORMAL_BULL`, `BTC_LEADERSHIP_MATURING`, `LATE_BULL_ROTATION`, `EXHAUSTION_WATCH`, `DE_RISK_1`, `DE_RISK_2`, `FLAT`.
 4. **P5.4 Required behavior** — allow late-bull rotation while reducing total gross as cycle hazard rises; hard-risk combinations may force FLAT.
 5. **P5.5 Validation** — event-level / leave-one-event-out robustness, lead/lag, false-positive duration, missed upside, drawdown avoided, terminal wealth, second-wind behavior.

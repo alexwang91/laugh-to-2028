@@ -18,7 +18,9 @@ LEVERAGE-0040                  COMPLETE / IMMUTABLE / NO_PROMOTION
 LEVERAGE-0041                  COMPLETE / IMMUTABLE / NO_PROMOTION
 Phase 4 leverage research      FAIL_STOP / no eligible >1 candidate
 P4.6 production leverage gate  NOT ENTERED / BLOCKED by no candidate
-P5 cycle-top / exit research   NEXT
+P5.1 event taxonomy            COMPLETE / FROZEN BEFORE FEATURE SELECTION
+P5.2 feature families          NEXT
+P5.3-P5.6                      NOT STARTED
 Phase 6 integrated shadow      NOT STARTED
 Phase 7 limited live long      NOT STARTED / explicit approval required
 Phase 8 bear-short research    NOT STARTED
@@ -29,9 +31,9 @@ production authorization       NONE
 
 Current production gross cap remains `1.0`.
 
-Phase-4 closeout PR #94 is merged into `main`.
+## Phase 4 immutable truth
 
-## LEVERAGE-0040 immutable truth
+### LEVERAGE-0040
 
 - result commit: `bd256e77a9800556e97769858fbb3ba5054c4389`;
 - summary SHA256: `3bb4dc46c61a5e9c7e049862575a89b2771830410ce4bc2bb25c83e469f52fc0`;
@@ -43,11 +45,7 @@ Phase-4 closeout PR #94 is merged into `main`.
 
 Do not rerun, rescue, retune, reinterpret, or reuse `LEVERAGE-0040`.
 
-## LEVERAGE-0041 immutable truth
-
-Implementation/prereg base main:
-
-`baaa5776892411990734ef2121cf54a5dbbab047`
+### LEVERAGE-0041
 
 One-time result commit:
 
@@ -68,57 +66,78 @@ prospective_live_cap_if_authorized      NONE
 production_authorized                   false
 ```
 
-Frozen search grid:
-
-`1.00 / 1.05 / 1.10 / 1.15 / 1.20 / 1.25 / 1.30`
-
-5 bps result summary:
-
-```text
-cap 1.00  CAGR 61.28%  MDD -33.83%  Sharpe 1.3005  comparator
-cap 1.05  CAGR 62.56%  MDD -35.30%  Sharpe 1.2935  FAIL
-cap 1.10  CAGR 62.84%  MDD -36.59%  Sharpe 1.2746  FAIL
-cap 1.15  CAGR 62.96%  MDD -37.90%  Sharpe 1.2544  FAIL
-cap 1.20  CAGR 64.90%  MDD -39.16%  Sharpe 1.2574  FAIL
-cap 1.25  CAGR 64.89%  MDD -40.19%  Sharpe 1.2387  FAIL
-cap 1.30  CAGR 66.28%  MDD -40.93%  Sharpe 1.2360  FAIL
-```
-
-All caps above 1.0 failed `pass_pre_broad_region`; therefore no contiguous all-pass neighborhood exists and no cap reaches the frozen selection stage.
-
-The liquidation-distance gate remained binding under the corrected spot/perp/collateral accounting. Frozen acceptance was strictly `>55%`; measured minimum uniform adverse-move distance was:
-
-```text
-cap 1.00  45.98%  FAIL
-cap 1.05  42.52%  FAIL
-cap 1.10  38.54%  FAIL
-cap 1.15  35.19%  FAIL
-cap 1.20  32.33%  FAIL
-cap 1.25  29.86%  FAIL
-cap 1.30  27.71%  FAIL
-```
-
-`starting_liquidatable_state_seen=false` in the corrected 0041 implementation; unlike the old 0040 architecture, this is not the former zero-distance accounting pathology. It is a genuine failure of the preregistered >55% reserve/liquidation safety threshold under the tested architecture.
+All caps above 1.0 failed `pass_pre_broad_region`; no candidate reaches P4.6. The corrected architecture removed the old 0040 zero-distance accounting pathology, but still failed the frozen `>55%` liquidation-distance safety threshold.
 
 Do not rerun, rescue, retune, reinterpret, or reuse `LEVERAGE-0041` under the same experiment ID.
+
+## P5.1 frozen event-taxonomy truth
+
+Contract:
+
+`P5.1-EVENT-TAXONOMY-V1`
+
+Files:
+
+```text
+research/cycle_exit/p5_1_event_taxonomy.json
+research/cycle_exit/p5_1_event_taxonomy.py
+docs/P5_1_EVENT_TAXONOMY.md
+```
+
+The taxonomy was frozen before P5.2 feature/model selection. It references the existing product decision `PRODUCT-CYCLE-EXIT-2026-08-05` and changes no production authority.
+
+Required roadmap cases are present:
+
+```text
+2021 spring major top / May crash        LOCAL_MAJOR_TOP_NONTERMINAL
+2021 summer recovery                     SECOND_WIND_TRANSITION
+2021 November final peak                 TERMINAL_TOP_BEAR_TRANSITION
+2025 June new-high phase                 TEMPORARY_NEW_HIGH_PHASE
+2025 August new-high phase               SECOND_WIND_NEW_HIGH_PHASE
+2025 October new-high / deleveraging     NEW_HIGH_DELEVERAGING_PHASE
+late-2025 deterioration                  POST_DELEVERAGING_DETERIORATION
+```
+
+Only the 2021 November case is explicitly terminal in V1. The 2025 sequence is not silently treated as a terminal cycle top.
+
+V1 also includes four `HIGH_VOLATILITY_NON_TOP_CONTROL` windows spanning 2021, 2024 and 2025.
+
+### Anchor discipline
+
+P5.1 does not hand-pick the prettiest indicator date. It freezes calendar search windows and resolves anchors mechanically from canonical P3.1 BTCUSDT UTC daily closes using one of:
+
+```text
+BTC_CLOSE_MAX_IN_SEARCH_WINDOW
+BTC_CLOSE_MIN_IN_SEARCH_WINDOW
+MAX_10D_DRAWDOWN_END
+PARENT_EVENT_ANCHOR
+```
+
+Missing canonical daily data fails closed. Forward fill is forbidden.
+
+### Evaluation buckets
+
+```text
+early_warning    -28 .. -15 calendar days
+target_lead      -14 ..  -7 calendar days
+near_event        -6 ..   0 calendar days
+immediate_after   +1 .. +28 calendar days
+medium_after     +29 .. +90 calendar days
+```
+
+The 7–14 day target is an evaluation bucket, not a requirement to force a model to emit a warning there.
+
+### Leakage boundary
+
+Historical outcome labels may use realized future outcome to define what happened. P5.2+ feature values evaluated at day `t` may use only information observable by `t`.
+
+Event windows/anchors may not be moved after feature performance is observed.
 
 ## Roadmap audit status
 
 Full review: `docs/ROADMAP_AUDIT_2026-08-07.md`.
 
-Current unresolved product/strategy/production drift: **none identified**.
-
-Historical deviations were handled as corrections rather than silently carried forward:
-
-- legacy execution/security backlog gaps were corrected before P3.2;
-- F27 measurement / EXPOSURE-SMOOTH authority drift was normalized;
-- P3.1 missing feature-only XRP input was corrected through an explicit schema version and revalidation;
-- `LEVERAGE-0039` architecture drift was detected before first economic run, stopped, and replaced with new experiment IDs rather than rescued;
-- `LEVERAGE-0040` and `LEVERAGE-0041` preserve immutable failed results and no post-result retuning;
-- repository branch/document authority hygiene was normalized;
-- P3.2/P3.3/P3.4 machine-readable registry omissions were normalized in PR #94 without changing implementation semantics.
-
-All historical deviations identified by the 2026-08-07 program-wide audit now have a recorded **CLOSED** disposition; there is no unresolved roadmap drift carried into Phase 5.
+All historical deviations identified by the 2026-08-07 program-wide audit have recorded **CLOSED** dispositions. Current unresolved product/strategy/production drift: **none identified**.
 
 Current product-state classification: **DRIFT_0**.
 
@@ -141,12 +160,13 @@ Current product-state classification: **DRIFT_0**.
 
 ## Exact next action
 
+After this P5.1 taxonomy PR is CI/governance verified and merged:
+
 ```text
-CREATE A FRESH P5.1 BRANCH FROM CURRENT MAIN
-START / FREEZE P5.1 EVENT TAXONOMY ONLY
-PRESERVE BRRK-0011 / FOUR-ASSET LONG UNIVERSE / HYPERLIQUID / 00:00 UTC
-DO NOT RETUNE LEVERAGE-0040 OR LEVERAGE-0041
-DO NOT PRODUCTION-AUTHORIZE LEVERAGE
-DO NOT START P5.2 BEFORE P5.1 EVENT DEFINITIONS ARE REVIEWABLE
+CREATE A FRESH P5.2 BRANCH FROM NEW MAIN
+EVALUATE FEATURE FAMILIES UNDER P5.1-EVENT-TAXONOMY-V1
+DO NOT MOVE EVENT WINDOWS OR ANCHORS BASED ON FEATURE PERFORMANCE
+PRESERVE BRRK-0011 RELATIVE RANKING
+DO NOT START P5.3 STATE-MODEL SELECTION BEFORE P5.2 FEATURE EVIDENCE IS REVIEWABLE
 DO NOT START P6/P7/P8 BEFORE P5 CLOSES ITS OWN GATES
 ```

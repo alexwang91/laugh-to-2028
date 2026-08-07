@@ -1,0 +1,199 @@
+{
+  "contract_id": "P5.1-EVENT-TAXONOMY-V1",
+  "status": "FROZEN_BEFORE_FEATURE_SELECTION",
+  "registered_at_utc": "2026-08-07T20:10:00Z",
+  "base_main": "b61a368383d08b83d04a2aec52777cf31196efac",
+  "roadmap_decision": "PRODUCT-CYCLE-EXIT-2026-08-05",
+  "scope": "P5.1 event taxonomy only",
+  "objective": "Create reproducible event and control windows for cycle-top / late-bull / exit research without using candidate feature or model performance to choose dates.",
+  "canonical_anchor_data": {
+    "source": "Binance spot BTCUSDT",
+    "frequency": "1d",
+    "timezone": "UTC",
+    "decision_boundary": "00:00 UTC",
+    "close_semantics": "P3.1 canonical completed daily close",
+    "missing_data_rule": "FAIL_CLOSED",
+    "forward_fill": "FORBIDDEN"
+  },
+  "research_integrity": {
+    "event_windows_frozen_before_p5_2_feature_selection": true,
+    "feature_or_model_performance_used_to_choose_windows": false,
+    "feature_values_after_each_evaluation_date_may_not_be_used": true,
+    "event_labels_may_use_realized_future_outcome_for_supervised_evaluation": true,
+    "reason": "Outcome labels define what happened historically; predictive features must remain causal as of each evaluation date.",
+    "no_brrk_retune": true,
+    "no_leverage_rescue": true,
+    "production_authorization": "NONE"
+  },
+  "anchor_rules": {
+    "BTC_CLOSE_MAX_IN_SEARCH_WINDOW": "Select the earliest UTC date having the maximum canonical BTCUSDT daily close inside the fixed search window.",
+    "BTC_CLOSE_MIN_IN_SEARCH_WINDOW": "Select the earliest UTC date having the minimum canonical BTCUSDT daily close inside the fixed search window.",
+    "MAX_10D_DRAWDOWN_END": "Within the fixed search window, compute close / trailing-10-calendar-day maximum close - 1 using only observations available through each date; select the earliest date with the most negative value.",
+    "PARENT_EVENT_ANCHOR": "Reuse the resolved anchor date of parent_event_id; this event describes a subsequent outcome phase rather than a second independently selected top."
+  },
+  "evaluation_buckets_relative_to_anchor_calendar_days": {
+    "early_warning": [-28, -15],
+    "target_lead": [-14, -7],
+    "near_event": [-6, 0],
+    "immediate_after": [1, 28],
+    "medium_after": [29, 90]
+  },
+  "lead_time_policy": "P5 should measure whether useful 7-14 day lead exists, but models are not required or retuned to force that lead if evidence does not support it.",
+  "terminality_policy": "Only events explicitly designated TERMINAL_TOP_BEAR_TRANSITION are terminal labels. 2025 new-high/deleveraging events are not silently relabeled as terminal-cycle tops.",
+  "required_event_classes": [
+    "LOCAL_MAJOR_TOP_NONTERMINAL",
+    "SECOND_WIND_TRANSITION",
+    "TERMINAL_TOP_BEAR_TRANSITION",
+    "TEMPORARY_NEW_HIGH_PHASE",
+    "SECOND_WIND_NEW_HIGH_PHASE",
+    "NEW_HIGH_DELEVERAGING_PHASE",
+    "POST_DELEVERAGING_DETERIORATION",
+    "HIGH_VOLATILITY_NON_TOP_CONTROL"
+  ],
+  "events": [
+    {
+      "event_id": "P5E-2021-SPRING-MAJOR-TOP",
+      "year": 2021,
+      "event_class": "LOCAL_MAJOR_TOP_NONTERMINAL",
+      "search_window_start": "2021-03-15",
+      "search_window_end": "2021-05-15",
+      "anchor_rule": "BTC_CLOSE_MAX_IN_SEARCH_WINDOW",
+      "outcome_window_end": "2021-07-31",
+      "roadmap_role": "spring first major top / May crash",
+      "terminal_label": false,
+      "required": true
+    },
+    {
+      "event_id": "P5E-2021-SUMMER-SECOND-WIND",
+      "year": 2021,
+      "event_class": "SECOND_WIND_TRANSITION",
+      "search_window_start": "2021-05-16",
+      "search_window_end": "2021-07-31",
+      "anchor_rule": "BTC_CLOSE_MIN_IN_SEARCH_WINDOW",
+      "outcome_window_end": "2021-10-31",
+      "roadmap_role": "summer recovery / second-wind transition",
+      "terminal_label": false,
+      "required": true
+    },
+    {
+      "event_id": "P5E-2021-NOV-TERMINAL-TOP",
+      "year": 2021,
+      "event_class": "TERMINAL_TOP_BEAR_TRANSITION",
+      "search_window_start": "2021-10-01",
+      "search_window_end": "2021-11-30",
+      "anchor_rule": "BTC_CLOSE_MAX_IN_SEARCH_WINDOW",
+      "outcome_window_end": "2022-03-31",
+      "roadmap_role": "November terminal peak / bear transition",
+      "terminal_label": true,
+      "required": true
+    },
+    {
+      "event_id": "P5E-2025-JUNE-NEW-HIGH",
+      "year": 2025,
+      "event_class": "TEMPORARY_NEW_HIGH_PHASE",
+      "search_window_start": "2025-05-01",
+      "search_window_end": "2025-06-30",
+      "anchor_rule": "BTC_CLOSE_MAX_IN_SEARCH_WINDOW",
+      "outcome_window_end": "2025-08-31",
+      "roadmap_role": "June new-high phase",
+      "terminal_label": false,
+      "required": true
+    },
+    {
+      "event_id": "P5E-2025-AUG-NEW-HIGH",
+      "year": 2025,
+      "event_class": "SECOND_WIND_NEW_HIGH_PHASE",
+      "search_window_start": "2025-07-01",
+      "search_window_end": "2025-08-31",
+      "anchor_rule": "BTC_CLOSE_MAX_IN_SEARCH_WINDOW",
+      "outcome_window_end": "2025-10-31",
+      "roadmap_role": "August new-high phase",
+      "terminal_label": false,
+      "required": true
+    },
+    {
+      "event_id": "P5E-2025-OCT-NEW-HIGH-DELEVERAGING",
+      "year": 2025,
+      "event_class": "NEW_HIGH_DELEVERAGING_PHASE",
+      "search_window_start": "2025-09-01",
+      "search_window_end": "2025-10-31",
+      "anchor_rule": "BTC_CLOSE_MAX_IN_SEARCH_WINDOW",
+      "outcome_window_end": "2025-12-31",
+      "roadmap_role": "October new-high and deleveraging phase",
+      "terminal_label": false,
+      "required": true
+    },
+    {
+      "event_id": "P5E-2025-LATE-DETERIORATION",
+      "year": 2025,
+      "event_class": "POST_DELEVERAGING_DETERIORATION",
+      "search_window_start": "2025-10-01",
+      "search_window_end": "2025-12-31",
+      "anchor_rule": "PARENT_EVENT_ANCHOR",
+      "parent_event_id": "P5E-2025-OCT-NEW-HIGH-DELEVERAGING",
+      "outcome_window_end": "2025-12-31",
+      "roadmap_role": "subsequent late-2025 deterioration",
+      "terminal_label": false,
+      "required": true
+    },
+    {
+      "event_id": "P5C-2021-JAN-FEB-HIGH-VOL",
+      "year": 2021,
+      "event_class": "HIGH_VOLATILITY_NON_TOP_CONTROL",
+      "search_window_start": "2021-01-01",
+      "search_window_end": "2021-02-28",
+      "anchor_rule": "MAX_10D_DRAWDOWN_END",
+      "outcome_window_end": "2021-05-15",
+      "roadmap_role": "non-top high-volatility control before the spring major top",
+      "terminal_label": false,
+      "required": false
+    },
+    {
+      "event_id": "P5C-2021-SEP-HIGH-VOL",
+      "year": 2021,
+      "event_class": "HIGH_VOLATILITY_NON_TOP_CONTROL",
+      "search_window_start": "2021-08-20",
+      "search_window_end": "2021-10-15",
+      "anchor_rule": "MAX_10D_DRAWDOWN_END",
+      "outcome_window_end": "2021-11-30",
+      "roadmap_role": "non-top high-volatility control during the second-wind advance",
+      "terminal_label": false,
+      "required": false
+    },
+    {
+      "event_id": "P5C-2024-MAR-MAY-MASKING",
+      "year": 2024,
+      "event_class": "HIGH_VOLATILITY_NON_TOP_CONTROL",
+      "search_window_start": "2024-03-01",
+      "search_window_end": "2024-05-15",
+      "anchor_rule": "MAX_10D_DRAWDOWN_END",
+      "outcome_window_end": "2024-08-31",
+      "roadmap_role": "non-top control reusing the previously registered 2024 April masking/stress episode window",
+      "terminal_label": false,
+      "required": false
+    },
+    {
+      "event_id": "P5C-2025-PRE-JUNE-HIGH-VOL",
+      "year": 2025,
+      "event_class": "HIGH_VOLATILITY_NON_TOP_CONTROL",
+      "search_window_start": "2025-02-01",
+      "search_window_end": "2025-05-15",
+      "anchor_rule": "MAX_10D_DRAWDOWN_END",
+      "outcome_window_end": "2025-08-31",
+      "roadmap_role": "non-top high-volatility control preceding the 2025 multi-new-high sequence",
+      "terminal_label": false,
+      "required": false
+    }
+  ],
+  "minimum_non_top_controls": 3,
+  "forbidden": [
+    "move an event search window after observing P5.2 feature performance",
+    "select a different anchor date because an indicator looks cleaner there",
+    "label every local high as terminal",
+    "use future observations in feature values at an evaluation date",
+    "retune BRRK-0011 relative ranking to improve an exit label",
+    "reuse LEVERAGE-0040 or LEVERAGE-0041 as a P5 rescue",
+    "authorize production trading, leverage, withdrawals or external transfers"
+  ],
+  "p5_1_completion_rule": "Taxonomy JSON, deterministic validator/resolver contract and documentation pass CI and merge before P5.2 feature-family evaluation starts."
+}
