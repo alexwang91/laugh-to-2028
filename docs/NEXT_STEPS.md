@@ -5,30 +5,23 @@
 ## Current dependency
 
 ```text
-P3.1 feature-input parity correction
+P3.1 schema-v2 post-merge validation
 ```
 
-P0.1/P0.2, P1.1-P1.8, P2.1-P2.4 and the original P3.1 contract are merged. PR #71 and #72 are merged. PR #73 was manually merged as `89b095d7a7d746b768afca8245b963ecf15ffabc`; do not retroactively label #73 CI VERIFIED.
+PR #74 has merged to main as `277eb777b4b28d32bb24c201bba1155b08686c71`, so the XRP feature-input implementation residual is no longer an unmerged code dependency. However neither #74 head `22a00c894b2ae54a7e1d45ebeefb996e8597182f` nor the resulting main SHA received a GitHub Actions workflow run during the Actions outage.
 
-P3.2 remains the unique next roadmap implementation, but it is temporarily blocked by a concrete P3.1 parity defect discovered while recovering the frozen BRRK-0011 implementation.
-
-## Why P3.2 is blocked
-
-Frozen BRRK-0011 target weights are only for:
+Therefore the correct evidence state is:
 
 ```text
-BTC ETH SOL BNB
+IMPLEMENTED = YES
+MERGED = YES
+TESTED = NOT YET VERIFIED
+CI VERIFIED = NO
 ```
 
-However its frozen regime feature model consumes an additional Binance spot series:
+P3.2 remains the unique next roadmap implementation, but it must not begin until a fresh validation PR produces real Phase 0 and governance evidence for the merged P3.1 v2 contract.
 
-```text
-XRPUSDT — feature-only, never a target/router asset
-```
-
-The original P3.1 payload contains only four price series. Removing XRP from the HMM feature panel would alter the frozen model; proceeding with only four canonical inputs would therefore fail the required research/live golden-parity gate.
-
-The active correction makes the distinction explicit:
+## Frozen P3.1 v2 role boundary
 
 ```text
 target_assets  = BTC, ETH, SOL, BNB
@@ -37,31 +30,23 @@ strategy-signal daily payload = BTC, ETH, SOL, BNB, XRP
 router-eligible assets         = BTC, ETH, SOL, BNB only
 ```
 
-## Active correction scope
+XRP remains feature-only. It cannot receive a target weight and cannot enter funding/basis routing.
 
-Branch:
+## Validation gate
 
-```text
-fix/p3-1-feature-input-parity
-```
+Use a narrow post-merge validation/handoff PR from current main. It must trigger the existing `Phase 0 baseline contract` workflow and require:
 
-Required closure:
+- full `execution/plan-b-bot` pytest suite;
+- research integration contract;
+- PR handoff governance;
+- no strategy logic, parameter, decision-registry or production-authorization change.
 
-- schema-v2 machine data contract;
-- XRPUSDT source mapping as feature-only;
-- five-series fail-closed canonical strategy payload;
-- four-asset router boundary preserved;
-- research/live adapter parity regression;
-- missing-XRP and router-rejection regression tests;
-- CURRENT_STATE / P3.1 docs / crosswalk normalization;
-- tests, self-review, PR governance, final-head CI, expected-head merge.
+Do not treat the absence of #74 workflow runs as a test pass or test failure; it is missing evidence caused by the GitHub Actions incident.
 
-No decision-registry change is required because this correction does not promote research or authorize a new asset.
-
-## P3.2 acceptance boundary after correction
+## P3.2 acceptance boundary after validation
 
 Input:
-- corrected canonical strategy-signal daily data;
+- corrected schema-v2 canonical strategy-signal daily data;
 - account equity;
 - current positions;
 - approved config.
@@ -104,7 +89,7 @@ Do not add:
 
 ## Required P3.2 parity evidence
 
-After the correction is on main, create a **new fresh P3.2 branch**. Do not continue `p3-2/target-calculation-api-v2`, which was created before this dependency correction and intentionally contains no P3.2 implementation.
+After the validation PR is merged, create a **new fresh P3.2 branch** from then-current main. Do not continue `p3-2/target-calculation-api-v2`, which predates the schema-v2 correction and contains no P3.2 implementation.
 
 P3.2 must include deterministic research/live golden parity across materially different historical decisions, including bull/full exposure, risk-off/low exposure, transitions, 2021 stress, 2022 bear, 2024 stress and recent 2025/2026 decisions.
 
@@ -131,15 +116,16 @@ production_authorized_components = []
 DRIFT_1
 ```
 
-The drift is an implementation/data-contract mismatch: XRP was part of the frozen feature model but absent from P3.1 canonical inputs. Product universe, venue, BRRK research authority, risk philosophy, human approval and security boundaries remain unchanged.
+The model/input semantics are now aligned on main. The remaining drift is evidence/governance: the merged correction has no recorded Actions validation.
 
 ## Exact next action
 
 ```text
-complete and verify fix/p3-1-feature-input-parity
--> correction PR / CI / expected-head merge
--> post-merge normalization
--> fresh P3.2 branch from corrected main
+post-merge validation/handoff PR
+-> Phase 0 pytest + research integration
+-> PR governance
+-> merge
+-> fresh P3.2 branch from new main
 -> canonical target-engine implementation
 -> multi-date research/live golden parity
 -> self-review / CI / expected-head merge

@@ -1,74 +1,70 @@
 # BRRK Current State
 
 Last updated: 2026-08-06
-Status: authoritative cross-chat handoff snapshot for candidate branch `fix/p3-1-feature-input-parity`
+Status: authoritative cross-chat handoff snapshot
 
-## Authoritative main baseline
+## Authoritative baseline
 
 - P0.1 / P0.2: PASS / MERGED
 - P1.1 through P1.8: PASS / MERGED; Phase 1 COMPLETE
 - P2.1 through P2.4: PASS / MERGED; Phase 2 COMPLETE
-- P3.1 original data contract: PASS / MERGED
+- P3.1 base data contract: PASS / MERGED
 - PR #71: PASS / MERGED
-- PR #72: PASS / MERGED as `6edaff4bb62bba8316722265dd216ba6e5e7d541`
-- PR #73: **MERGED MANUALLY** as `89b095d7a7d746b768afca8245b963ecf15ffabc`; required governance CI was not recorded green before the manual merge and must not be retroactively labeled CI VERIFIED
-- Current authoritative `main`: `89b095d7a7d746b768afca8245b963ecf15ffabc`
+- PR #72: PASS / MERGED
+- PR #73: MERGED as `89b095d7a7d746b768afca8245b963ecf15ffabc`; its required PR governance CI was not recorded green before merge and must not be retroactively labeled CI VERIFIED
+- PR #74 P3.1 feature-input parity correction: MERGED as current main `277eb777b4b28d32bb24c201bba1155b08686c71`
+- PR #74 head `22a00c894b2ae54a7e1d45ebeefb996e8597182f` had zero recorded workflow runs before merge; current merge SHA also has zero recorded workflow runs during the GitHub Actions incident
 - Historical stale-main PR #70: INVALID / CLOSED / DO NOT REVIVE
 
 ## Current roadmap position
 
 ```text
-P3.1 base          PASS / MERGED
-P3.1 parity fix    ACTIVE CANDIDATE — REQUIRED BEFORE P3.2
-P3.2               BLOCKED ON PARITY FIX
-P3.3+              BLOCKED
+P3.1 schema-v2 parity implementation   MERGED
+P3.1 post-merge validation             REQUIRED / ACTIVE NEXT GATE
+P3.2 Target calculation API            BLOCKED UNTIL VALIDATION GATE CLOSES
+P3.3+                                  BLOCKED
 ```
 
-A fresh P3.2 branch `p3-2/target-calculation-api-v2` was created from `89b095d7...`, but **no P3.2 code was committed** before the dependency mismatch below was discovered. Do not continue that branch after this correction merges; create another fresh P3.2 branch from then-current main.
+The earlier branch `p3-2/target-calculation-api-v2` was created before the XRP feature-input residual was corrected and contains no P3.2 implementation. Do not reuse it. After the validation gate closes, create a new P3.2 branch from then-current main.
 
-## Newly discovered P3.1 parity defect
+## P3.1 schema-v2 correction now on main
 
-During recovery of the exact frozen BRRK-0011 target chain, GitHub source proved that the frozen regime feature model consumes five Binance spot daily series:
+Frozen product target/tradable assets remain exactly:
 
 ```text
-BTC  target/tradable
-ETH  target/tradable
-SOL  target/tradable
-BNB  target/tradable
-XRP  feature-only
+BTC ETH SOL BNB
 ```
 
-The original P3.1 canonical contract exposed only BTC/ETH/SOL/BNB and described those four as the complete frozen strategy input. That is inconsistent with the actual BRRK-0011 HMM feature implementation:
-
-- `RegimeKellyConfig` includes XRP in the major/alt feature panels;
-- `features_no_dominance.py` uses those panels for breadth, relative-strength dispersion and BTC-correlation features;
-- `build_brrk0011_scale()` consumes those features before fitting the regime model.
-
-Therefore exact research/live BRRK-0011 golden parity is impossible from the P3.1 v1 payload.
-
-This is an implementation/data-contract parity correction, **not** a new research hypothesis and not an expansion of the product universe.
-
-## Candidate correction
-
-Branch:
+Frozen BRRK-0011 regime features additionally consume:
 
 ```text
-fix/p3-1-feature-input-parity
-base = 89b095d7a7d746b768afca8245b963ecf15ffabc
+XRPUSDT — feature-only
 ```
 
-Implemented candidate behavior:
+Schema v2 therefore distinguishes:
 
-- canonical target/tradable assets remain exactly BTC/ETH/SOL/BNB;
-- add `strategy_feature_assets = [XRP]`;
-- canonical strategy-signal daily payload requires BTC/ETH/SOL/BNB/XRP complete UTC daily history;
-- XRP source mapping is frozen as `XRPUSDT`;
-- common-history and missing-data fail-closed rules apply across all five signal series;
-- router funding/basis canonicalizers remain restricted to BTC/ETH/SOL/BNB and reject XRP;
-- contract schema advances from v1 to v2 because payload role/content and digest semantics change;
-- no BRRK parameter, weight formula, HMM parameter, risk budget or risk-scaling rule changes.
+```text
+target_assets  = BTC, ETH, SOL, BNB
+feature_assets = XRP
+strategy-signal daily payload = BTC, ETH, SOL, BNB, XRP
+router-eligible assets         = BTC, ETH, SOL, BNB only
+```
 
-## Frozen BRRK-0011 chain recovered
+The merged correction also preserves fail-closed daily-gap behavior across all five signal series and rejects XRP from funding/basis routing. No BRRK parameter, weight formula, regime parameter, risk budget or risk-scaling rule changed.
+
+## Evidence status for PR #74
+
+```text
+IMPLEMENTED:           YES
+TESTED:                NOT YET VERIFIED AFTER MERGE
+CI VERIFIED:           NO
+MERGED:                YES
+PRODUCTION AUTHORIZED: NO_CHANGE
+```
+
+The lack of CI evidence is an infrastructure/evidence gap, not a claim that tests failed. GitHub Actions was in a major outage and neither the PR head nor the resulting main SHA received a workflow run.
+
+## Frozen BRRK-0011 chain
 
 ```text
 build_brrk0011_scale
@@ -82,33 +78,28 @@ build_brrk0011_scale
 -> BRRK_0011_BASELINE = v1_raw.mul(final_scale, axis=0)
 ```
 
-Frozen target assets remain BTC/ETH/SOL/BNB. Frozen risk scaler remains 0–1. `EXPOSURE-SMOOTH-0038` remains NOT PROMOTED / BASELINE UNCHANGED.
+Frozen target assets remain BTC/ETH/SOL/BNB. Gross/risk scale remains in `[0, 1]`. `EXPOSURE-SMOOTH-0038` remains NOT PROMOTED / BASELINE UNCHANGED.
 
 ## P3.2 boundary retained
 
-After the parity correction is merged, P3.2 remains target calculation only. It must output at least:
+Once P3.1 v2 validation is green, P3.2 remains target calculation only and must expose at least:
 
 - BTC/ETH/SOL/BNB target/relative weights;
 - cash share;
 - base gross target <= 1;
 - risk state and corrected defensive scale;
-- decision timestamp;
+- economic decision timestamp;
 - feature snapshot;
 - model/data-contract/target-engine versions and data digest.
 
 P3.2 must not add P3.3 rebalance/turnover bands, P3.4 contributions, F23 funding-response redesign, P4 >1 leverage, P5 exit intelligence, shorts, XRP target exposure, or production authorization.
 
-## Evidence status for active correction
+## Production authorization
 
 ```text
-IMPLEMENTED:          IN PROGRESS / CORE CONTRACT + TEST UPDATES WRITTEN
-TESTED:               NOT YET CLAIMED
-CI VERIFIED:          NO
-MERGED:               NO
-PRODUCTION AUTHORIZED:NO_CHANGE
+NO_CHANGE
+production_authorized_components = []
 ```
-
-`production_authorized_components = []`
 
 ## Project drift audit
 
@@ -116,19 +107,17 @@ PRODUCTION AUTHORIZED:NO_CHANGE
 DRIFT_1
 ```
 
-Reason: the original P3.1 contract omitted a feature-only series actually consumed by the frozen BRRK-0011 regime model. The correction restores parity without changing product scope or research authority.
+Reason: the P3.1 feature-input parity implementation is now on main, but the merge occurred with no recorded test or CI run because GitHub Actions/webhook processing was disrupted. Product scope and research authority are aligned; evidence closure is still required before P3.2.
 
 ## Exact next action
 
 ```text
-finish P3.1 parity correction docs/tests
--> run local/CI tests
--> self-review diff
--> open correction PR with normal governance
--> final-head CI
--> expected-head merge
--> post-merge handoff normalization
--> create a NEW fresh P3.2 branch from then-current main
+post-merge P3.1-v2 validation PR
+-> Phase 0 full execution pytest + research integration contract
+-> PR handoff governance
+-> merge validation/handoff normalization
+-> verify new main
+-> create NEW fresh P3.2 branch
 -> implement frozen BRRK-0011 Target calculation API only
 -> deterministic multi-date research/live golden parity
 ```

@@ -1,9 +1,11 @@
 # P3.1 Canonical Data Contract
 
-Status: **P3.1 base PASS / MERGED; feature-input parity correction candidate.** This document defines data semantics only; it does not authorize P3.2 target generation or production trading.
+Status: **P3.1 schema v2 parity correction MERGED; post-merge CI validation pending.** This document defines data semantics only; it does not authorize P3.2 target generation or production trading.
 
 Machine-readable authority: `config/data_contract.json`.
 Implementation: `execution/plan-b-bot/beta_bot/data_contract.py`.
+
+PR #74 merged the schema-v2 feature-input correction to main as `277eb777b4b28d32bb24c201bba1155b08686c71`. Because GitHub Actions/webhook processing was in a major outage, neither the PR head nor the resulting main SHA received a recorded workflow run. Therefore the implementation is merged, but TESTED/CI VERIFIED must remain unclaimed until a post-merge validation PR passes Phase 0 and governance.
 
 ## 1. Separation of asset roles
 
@@ -20,11 +22,11 @@ SOL
 BNB
 ```
 
-Only these four assets may appear in P3.2 target weights or in the Hyperliquid router. This correction does **not** add XRP to the product universe.
+Only these four assets may appear in P3.2 target weights or in the Hyperliquid router. Schema v2 does **not** add XRP to the product universe.
 
 ### Strategy feature-only input
 
-Recovery of the exact frozen BRRK-0011 implementation during P3.2 preparation found that the frozen regime feature model also consumed:
+Recovery of the exact frozen BRRK-0011 implementation found that the frozen regime feature model also consumes:
 
 ```text
 XRPUSDT
@@ -42,7 +44,7 @@ BNBUSDT  target asset
 XRPUSDT  feature-only asset
 ```
 
-The original P3.1 v1 contract omitted XRP and incorrectly described the frozen model as requiring only the four target assets. That omission made exact BRRK-0011 research/live golden parity impossible. The corrected contract is schema v2 and makes the role distinction explicit rather than silently changing the frozen model.
+The original P3.1 v1 contract omitted XRP and incorrectly described the frozen model as requiring only the four target assets. Schema v2 fixes that input-parity defect without changing the frozen model.
 
 ### Router market inputs
 
@@ -88,8 +90,6 @@ For a decision to publish the canonical strategy-signal dataset:
 3. every UTC session from common start through the latest required day must exist for every required series;
 4. any internal or latest-session gap fails closed and no target input is published.
 
-This is intentionally stricter than silently reproducing a `dropna()` result after a data outage.
-
 ## 4. Asset / token mapping changes
 
 Target economic identity remains:
@@ -122,9 +122,7 @@ conversion     = api_rate * 10,000
 aggregation    = arithmetic mean of exact 24 completed hourly slots
 ```
 
-Input order does not matter. Duplicate slots, non-hour-aligned slots, malformed rates or any missing required hour fail closed as `cost input unavailable`; a future/boundary funding record is not used early.
-
-This is a routing-cost input contract, not a funding forecast model. Feature-only XRP is explicitly router-ineligible.
+Input order does not matter. Duplicate slots, non-hour-aligned slots, malformed rates or any missing required hour fail closed. Feature-only XRP is explicitly router-ineligible.
 
 ## 6. Basis contract
 
@@ -134,9 +132,7 @@ Canonical basis for target/tradable assets is:
 (perp_mark_price / verified_spot_price - 1) * 10,000
 ```
 
-where the spot reference is the verified spot instrument for the same economic asset. Both source observation timestamps are retained, neither may be after router `as_of`, and their observation skew is preserved for replay/audit.
-
-Feature-only XRP is rejected by the basis canonicalizer.
+Both source observation timestamps are retained, neither may be after router `as_of`, and their observation skew is preserved for replay/audit. Feature-only XRP is rejected by the basis canonicalizer.
 
 ## 7. Research/live determinism
 
@@ -152,14 +148,24 @@ research SHA-256 digest  == live SHA-256 digest
 Schema v2 serializes the role boundary explicitly:
 
 ```text
-target_assets  = BTC, ETH, SOL, BNB
-feature_assets = XRP
+target_assets   = BTC, ETH, SOL, BNB
+feature_assets  = XRP
 closes_by_asset = BTC, ETH, SOL, BNB, XRP
 ```
 
-This correction is required before P3.2 golden parity because the frozen BRRK-0011 HMM feature path cannot be reconstructed from only four price series.
+## 8. Evidence status
 
-## 8. Deliberately not implemented here
+```text
+IMPLEMENTED:           YES
+MERGED:                YES
+TESTED:                NOT YET VERIFIED AFTER MERGE
+CI VERIFIED:           NO
+PRODUCTION AUTHORIZED: NO_CHANGE
+```
+
+A fresh post-merge validation PR must trigger the full Phase 0 pytest/research-integration workflow and normal PR handoff governance before P3.2 begins.
+
+## 9. Deliberately not implemented here
 
 - no new BRRK weighting formula;
 - no target-calculation API;
