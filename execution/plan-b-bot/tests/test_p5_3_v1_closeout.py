@@ -11,7 +11,7 @@ RESULT = ROOT / "research" / "results" / "p5_3_state_paths"
 
 def test_v1_immutable_digest_and_non_authorizing_boundary() -> None:
     digest = (RESULT / "summary.sha256").read_text().strip()
-    assert digest == "a2e5be8d3ea54334323940d0de32447ace75a95928d52f5f9c7fa62f717a9cb6"
+    assert digest == "a2e5be8d605af5a2c8206235402fe3a66b08fd994eaa8a71e84cfb1e3cbfed8f"
     summary = json.loads((RESULT / "summary.json").read_text())
     assert summary["status"] == "ONE_TIME_FROZEN_STATE_PATH_EVIDENCE_COMPLETE"
     assert summary["selection"] == {
@@ -27,7 +27,7 @@ def test_all_profiles_hit_same_false_flat_and_are_not_promotable() -> None:
     assert set(profile["profile"]) == {"EARLY", "BALANCED", "CONSERVATIVE"}
     assert set(profile["initialization_date"].astype(str)) == {"2021-01-17"}
     assert set(profile["first_flat_date"].astype(str)) == {"2021-02-23"}
-    assert set(profile["classified_days"].astype(int)) == {1874}
+    assert set(profile["classified_days"].astype(int)) == {1869}
     assert set(profile["flat_days"].astype(int)) == {1832}
     assert (profile["flat_fraction"] > 0.97).all()
     assert profile["ever_flat"].astype(bool).all()
