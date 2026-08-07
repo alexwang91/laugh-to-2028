@@ -1,0 +1,75 @@
+name: P5.2 feature evidence RUN ONCE R2
+
+on:
+  push:
+    branches:
+      - "p5-2/feature-families"
+    paths:
+      - "research/cycle_exit/RUN_ONCE_P5_2_FEATURE_EVIDENCE_R2.marker"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: p5-2-feature-evidence-run-once
+  cancel-in-progress: false
+
+jobs:
+  run-once-r2:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: "p5-2/feature-families"
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: execution/plan-b-bot/requirements-dev.txt
+      - name: Install pinned runtime
+        run: pip install -r execution/plan-b-bot/requirements-dev.txt
+      - name: Guard R2 blinded correction and immutable research definitions
+        run: |
+          set -euo pipefail
+          test ! -e research/results/p5_2_feature_evidence/summary.json
+          test "$(sha256sum research/cycle_exit/RUN_ONCE_P5_2_FEATURE_EVIDENCE.marker | awk '{print $1}')" = "cac12d742a072d0bb592e5fd120302668c15658dedc29d2483a6d7465f4eae9b"
+          test "$(sha256sum research/cycle_exit/RUN_ONCE_P5_2_FEATURE_EVIDENCE_R2.marker | awk '{print $1}')" = "5e9e4372f5eb196c00ab32c6e818c29d6b6c8219f6562350f4cda977e08e1347"
+          test "$(git hash-object research/cycle_exit/p5_2_feature_contract.json)" = "bf4b7aeda54821a251dc0df46d2c6e47c3be00da"
+          test "$(git hash-object research/cycle_exit/p5_1_event_taxonomy.json)" = "73d010666fbfd957ec15214a00883a90a8adba5a"
+          test "$(git hash-object research/cycle_exit/run_p5_2_feature_evidence_r2.py)" = "c2b01c26f8d9148078ad15aad755314fc5328f52"
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          correction = json.loads(Path("research/cycle_exit/P5.2-POST-COMPUTE-CORRECTION-R2.json").read_text())
+          assert correction["prior_run"] == 31217880218
+          assert correction["result_committed"] is False
+          assert correction["summary_generated"] is False
+          assert correction["candidate_or_feature_metrics_printed"] is False
+          assert correction["metrics_used_to_choose_correction"] is False
+          assert correction["economic_change"] is False
+          assert correction["feature_definition_change"] is False
+          assert correction["p5_1_event_change"] is False
+          assert correction["bucket_or_metric_change"] is False
+          assert correction["coverage_threshold_change"] is False
+          assert correction["production_authorized"] is False
+          PY
+      - name: Execute deterministic P5.2 R2 feature evidence study
+        env:
+          OMP_NUM_THREADS: "1"
+          OPENBLAS_NUM_THREADS: "1"
+          MKL_NUM_THREADS: "1"
+          NUMEXPR_NUM_THREADS: "1"
+        run: python research/cycle_exit/run_p5_2_feature_evidence_r2.py
+      - name: Validate immutable P5.2 result
+        run: python research/cycle_exit/validate_p5_2_feature_result.py
+      - name: Commit immutable result
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add research/results/p5_2_feature_evidence
+          git diff --cached --quiet && { echo "No result files staged"; exit 1; }
+          git commit -m "Research: commit immutable P5.2 feature evidence R2 result"
+          git push origin HEAD:p5-2/feature-families
