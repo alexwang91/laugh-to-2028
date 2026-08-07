@@ -5,57 +5,35 @@
 ## Current dependency
 
 ```text
-P4.1 preserve corrected 0-1 scaler
-+
-P4.2 preregister first leverage study
+P4.3 generalized corrected-risk leverage runner
 ```
 
-Phase 3 is COMPLETE and post-P3.4 normalization PR #81 is merged. Fresh P4 base:
+P4.1 and P4.2 are merged by PR #82 as main `6d0e497583607e09991593588e62df7fb418087c`.
 
-`fee2ebd34e71f62fb8aaa9e11787aa7413f122cd`
+Final #82 evidence:
 
-Active branch:
+- Phase 0 #126 / run `31163656193`: SUCCESS, 224 execution tests + 5/5 integration
+- Research evidence #37 / run `31163656181`: SUCCESS
+- P3.2 parity/golden #24 / run `31163656179`: SUCCESS
+- final body-edit governance #166 / run `31163843751`: SUCCESS
 
-`p4-1/leverage-baseline-prereg-v1`
-
-## Current P4 status
-
-```text
-P4.1 baseline freeze             IMPLEMENTED CANDIDATE
-P4.2 LEVERAGE-0039 prereg        IMPLEMENTED CANDIDATE
-P4.3 leverage runner/objective   BLOCKED
-P4.4 stress execution            BLOCKED
-P4.5 promotion                   BLOCKED
-P4.6 deployment cap              BLOCKED
-```
-
-**No leverage search has been run. No >1 runtime target exists.**
-
-## P4.1 baseline
-
-Machine freeze:
+## Frozen P4.1 baseline
 
 `research/leverage_0039/P4_1_BASELINE_FREEZE.json`
 
-Freeze ID:
-
 `P4.1-BRRK0011-CORRECTED-0-1-V1`
 
-It preserves the current corrected BRRK-0011 defensive layer:
-
 ```text
-scale domain              0 .. 1
-scenario CVaR/CDaR budget 20%
-production gross cap      1.0
-operating risk budget     UNFROZEN
-catastrophic DD boundary  70% termination limit only
+corrected scale domain       0 .. 1
+scenario CVaR/CDaR budget    20%
+production gross cap         1.0
+operating risk budget        UNFROZEN
+catastrophic DD boundary     70% termination boundary only
 ```
 
-Do not overwrite historical BRRK artifacts or silently reconcile different metric conventions. The corrected BRRK result CAGR (65.104%) and F27 R2 raw calendar-span CAGR (65.16609785339962%) remain separately labeled evidence.
+Historical BRRK artifacts and separate metric-provenance conventions remain frozen.
 
-## P4.2 LEVERAGE-0039
-
-Machine preregistration:
+## Frozen P4.2 prereg
 
 `research/leverage_0039/LEVERAGE-0039.json`
 
@@ -63,99 +41,50 @@ Status:
 
 `PREREGISTERED_BEFORE_FIRST_RUN`
 
-Only structural change allowed in the first study:
-
-> extend the upper bound of the same corrected CVaR/CDaR scale selector.
-
-Candidate research caps:
-
 ```text
-1.00 / 1.10 / 1.20 / 1.30
+research caps               1.00 / 1.10 / 1.20 / 1.30
+operating MDD constraints   35% / 40% / 45% / 50%
+matched costs               5 / 10 / 20 / 50 bps
+scenario tail budget        20%
+catastrophe boundary        70%
 ```
 
-`1.00` is a mandatory exact baseline-parity gate. The 1.30 ceiling is taken only as the repository's historical research-only cap hint; it is not promoted or production-authorized. Any search above 1.30 requires a new experiment ID.
+Funding remains cost-only; Hyperliquid native evidence is mandatory; Binance is proxy/stress-only; no funding signal/threshold; F23 remains separate.
 
-Operating maximum-drawdown candidate budgets:
+## P4.3 required order
+
+Do not run `LEVERAGE-0039` immediately after normalization. First:
+
+1. create a fresh P4.3 branch from latest main;
+2. snapshot and hash the canonical Hyperliquid margin/leverage-tier inputs needed for liquidation-distance modeling;
+3. implement a generalized version of the **same corrected CVaR/CDaR selector**, changing only its maximum scale/cap;
+4. preserve BRRK relative targets, HMM states/features, Student-t model, 20% scenario tail budget and Phase-3 semantics;
+5. build a deterministic runner that can reproduce the frozen <=1 baseline;
+6. require cap=1 exact parity before any >1 candidate is evaluated;
+7. only then execute the preregistered candidate/stress suite exactly once.
+
+No prereg thresholds, cap grid, stress windows, funding treatment or promotion gates may be retuned after results are seen. Material change requires a new experiment ID.
+
+## Still blocked
 
 ```text
-35% / 40% / 45% / 50%
+LEVERAGE SEARCH RUN:         NO
+RESULT SELECTED:             NO
+OPERATING BUDGET FROZEN:     NO
+>1 RUNTIME IMPLEMENTED:      NO
+PRODUCTION AUTHORIZED:       NO_CHANGE
 ```
 
-They are constraints, not targets. All remain below the 70% catastrophe boundary. Scenario CVaR/CDaR budget remains frozen at 20%.
+Also blocked/separate:
 
-## Cost / funding gate
-
-Matched cost grid:
-
-```text
-5 / 10 / 20 / 50 bps per absolute weight change
-```
-
-Funding is exogenous cost only:
-
-- Hyperliquid native common-window panel mandatory;
-- Binance full-history panel proxy/stress only;
-- no funding threshold, alpha or position filter;
-- no zero-filling missing native funding;
-- strict verified-spot accounting may be diagnostic but is not deployable net PnL without historical spot fee/basis/slippage evidence;
-- F23 remains separate.
-
-## Stress gate
-
-Preregistered historical eras:
-
-- 2021 spring crash;
-- 2021 November/bear transition;
-- 2022 severe drawdown;
-- 2024-03-01 through 2024-05-15 April masking episode;
-- calendar 2025 multi-peak/deleveraging;
-- 2026 through frozen 2026-08-02 end.
-
-2021/early-2022 uses an explicitly labeled conservative pre-BRRK proxy wherever the frozen 600-day training gate makes full BRRK ineligible.
-
-Synthetic suite includes one-day uniform gaps -10/-20/-30/-40/-50%, cross-asset BTC-led/alt-crash gaps and 1.5x/2x/3x volatility amplification on worst 20-day blocks.
-
-A canonical Hyperliquid liquidation-distance model must be snapshotted and hash-pinned before the first leverage run. Missing liquidation evidence fails closed.
-
-## Promotion gate
-
-A >1 candidate cannot advance unless all machine-preregistered conditions pass, including:
-
-- cap=1 baseline parity;
-- higher matched-cost compounded wealth at 5 and 10 bps;
-- not dominated by <=1 baseline at 20 bps;
-- selected operating MDD constraint;
-- <70% catastrophic drawdown;
-- corrected scenario CVaR/CDaR <=20%;
-- all historical/synthetic stresses;
-- liquidation-distance gate;
-- start-date and stationary-block bootstrap robustness;
-- Hyperliquid native funding panel;
-- no P3/F23/0038/P5/short/XRP scope smuggling.
-
-Failure preserves <=1 baseline.
-
-## Deployment remains separate
-
-Even a research PASS does not authorize live leverage.
-
-Under `LEVERAGE-0039`, any future deployment cap must be the next lower preregistered cap grid point and never above 1.20, with a separate versioned decision and production authorization.
-
-`production_authorized_components = []` remains unchanged.
-
-## Explicit exclusions for this PR
-
-Do not add:
-
-- leverage runner or results;
-- search above 1.30;
-- runtime gross >1;
-- P3.1/P3.2/P3.3/P3.4 modifications;
+- search >1.30 under LEVERAGE-0039;
 - EXPOSURE-SMOOTH-0038 promotion;
 - F23 funding response;
 - shorts / XRP targets;
-- P5 exit logic;
+- P5 exit intelligence;
 - production authorization.
+
+`production_authorized_components = []` remains unchanged.
 
 ## Project drift audit
 
@@ -166,17 +95,10 @@ DRIFT_0
 ## Exact next action
 
 ```text
-self-review current P4.1/P4.2 diff
--> open PR
--> Phase 0 / applicable P3.2 parity / research evidence / governance
--> fix every real failure in same PR
--> final-head CI
--> write exact evidence into PR body
--> newest body-edit governance GREEN
--> expected-head squash merge
--> post-merge normalization
--> fresh P4.3 runner branch
--> snapshot/hash liquidation inputs
--> cap=1 exact parity first
--> execute LEVERAGE-0039 once only after all prereg inputs are frozen
+finish post-P4.1/P4.2 normalization
+-> fresh P4.3 branch
+-> freeze Hyperliquid liquidation inputs
+-> generalized selector/runner
+-> cap=1 parity
+-> execute LEVERAGE-0039 once only after parity passes
 ```
