@@ -1,0 +1,96 @@
+{
+  "schema_version": 1,
+  "freeze_id": "P4.1-BRRK0011-CORRECTED-0-1-V1",
+  "status": "FROZEN_BASELINE_NO_LEVERAGE_PROMOTION",
+  "frozen_at_utc": "2026-08-07T08:38:00Z",
+  "source_main_sha": "fee2ebd34e71f62fb8aaa9e11787aa7413f122cd",
+  "purpose": "Preserve the current corrected CVaR/CDaR 0-1 BRRK-0011 defensive baseline before any P4 leverage study. Historical BRRK artifacts must not be overwritten.",
+  "authority": {
+    "research_corrected_risk": {
+      "path": "research/risk_metric_fix/corrected_risk.py",
+      "blob_sha": "bdf7cd6cb32961765716e4cb07288739e869703e",
+      "role": "F13-corrected CVaR/CDaR path-tail risk and 0-1 scale selection"
+    },
+    "product_target_math": {
+      "path": "execution/plan-b-bot/beta_bot/target_math.py",
+      "blob_sha": "4a0b26943438045f2baacbe06d92650a486a8967",
+      "role": "product-owned reproduction of frozen BRRK-0011 target mathematics"
+    },
+    "regime_config": {
+      "path": "research/regime_kelly/config.py",
+      "blob_sha": "eecd092ac45c5fa86992a8de2f31d470405e6b5a",
+      "role": "historical research configuration, including production gross_cap=1.0 and unused research-only gross-cap hint=1.30"
+    },
+    "correction_result": {
+      "path": "research/results/BRRK_0011_CDAR_CORRECTION_2026-08-04.md",
+      "blob_sha": "40cd0e90a357a2c2e5be0b9de69feaf0f1e75eaf",
+      "role": "authoritative corrected BRRK-0011 result; historical result files are not overwritten"
+    },
+    "measurement_normalization": {
+      "path": "research/results/idle_cash_credit_0027r2.json",
+      "blob_sha": "46b509bf1b59a9d87a9092f9708eb41e5f8e50af",
+      "role": "separate F27 calendar-span measurement convention; not a replacement for the BRRK-0011 correction-result metric table"
+    }
+  },
+  "frozen_model": {
+    "target_assets": ["BTC", "ETH", "SOL", "BNB"],
+    "feature_only_assets": ["XRP"],
+    "regime_states": 4,
+    "forecast_horizon_days": 20,
+    "minimum_training_days": 600,
+    "refit_every_days": 30,
+    "scenario_count": 5000,
+    "random_seed": 20260804,
+    "student_t_df": 5.0,
+    "state_distribution_shrinkage_strength": 20.0,
+    "internal_v1_band": 0.05,
+    "internal_v1_cost_bps_per_abs_weight_change": 5.0
+  },
+  "frozen_risk_layer": {
+    "scale_domain": [0.0, 1.0],
+    "tail_alpha": 0.95,
+    "scenario_cvar_cdar_budget": 0.20,
+    "selector": "choose_scale_corrected",
+    "cdar_definition": "path starts at decision-time wealth=1 before peak/drawdown calculation",
+    "production_gross_cap": 1.0,
+    "operating_risk_budget": null,
+    "operating_risk_budget_status": "UNFROZEN_PENDING_P4_EVIDENCE",
+    "catastrophic_drawdown_limit": 0.70,
+    "catastrophic_limit_role": "TERMINATION_BOUNDARY_NOT_OPERATING_TARGET"
+  },
+  "corrected_brrk0011_result": {
+    "metric_convention": "BRRK_0011_CDAR_CORRECTION_2026-08-04",
+    "evaluation_start": "2022-12-10",
+    "evaluation_end": "2026-08-02",
+    "cagr": 0.65104,
+    "max_drawdown": -0.33715,
+    "sharpe": 1.3532,
+    "calmar": 1.9310,
+    "realized_path_cdar95": 0.31781,
+    "average_gross_exposure": 0.75430
+  },
+  "separate_f27_measurement_anchor": {
+    "metric_convention": "IDLE-CASH-CREDIT-F27-R2-MEASUREMENT-FIX_RAW_CALENDAR_SPAN",
+    "evaluation_start": "2022-12-10",
+    "evaluation_end": "2026-08-02",
+    "raw_cagr": 0.6516609785339962,
+    "raw_sharpe_rf0": 1.3531836730182638,
+    "raw_max_drawdown": -0.3371507034657847,
+    "rule": "Do not overwrite or silently reconcile this measurement convention with the 65.104% BRRK correction-result CAGR. Preserve provenance labels."
+  },
+  "historical_research_cap_hint": {
+    "value": 1.30,
+    "source": "research/regime_kelly/config.py::RegimeKellyConfig.research_gross_cap",
+    "status": "RESEARCH_ONLY_NOT_PROMOTED_NOT_PRODUCTION_AUTHORIZED",
+    "repository_code_search_consumer_found": false
+  },
+  "non_promotion_constraints": [
+    "EXPOSURE-SMOOTH-0038 remains MECHANISM_VALIDATED_NOT_PROMOTED",
+    "F23 funding-response redesign remains a separate registered boundary",
+    "no short targets",
+    "no XRP target exposure",
+    "no production authorization",
+    "no overwrite of historical BRRK result artifacts"
+  ],
+  "production_authorized": false
+}
