@@ -19,19 +19,24 @@ Post-correction normalization main:
 
 `8d95810cd30fbce61fa7ed0234ac7e308aeb3a17`
 
-Current candidate branch:
+Current draft PR:
 
-`p4-3/leverage-0040-runner-v1`
+`#86 — P4.3 two-layer runner wiring and cap=1 historical parity`
+
+Validated initial checkpoint head:
+
+`3aaacd8e2347e05238d8a8ad072876e959f73e77`
 
 ```text
 P4.1 corrected 0-1 defensive baseline       PASS / MERGED
 LEVERAGE-0039                               STOPPED_PRE_RUN / NO RESULT
 LEVERAGE-0040 preregistration               PASS / MERGED / NOT RUN
 P4 margin/liquidation metadata snapshot     PASS / MERGED
-P4.3 two-layer composition module           IMPLEMENTED CANDIDATE
-P4.3 cap=1 historical leverage parity       IMPLEMENTED / CI PENDING
+P4.3 two-layer composition module           IMPLEMENTED / TESTED / CI VERIFIED CANDIDATE
+P4.3 cap=1 historical leverage parity       PASS / TESTED / CI VERIFIED CANDIDATE
+P4.3 liquidation-distance implementation    NOT IMPLEMENTED
 P4.3 >1 multiplier selection rule           NOT IMPLEMENTED
-P4.4 preregistered stress execution         BLOCKED UNTIL CAP=1 PARITY
+P4.4 preregistered stress execution         BLOCKED
 P4.5 promotion/failure decision             BLOCKED
 P4.6 deployment cap / production gate       BLOCKED
 P5 exit intelligence                        BLOCKED
@@ -68,31 +73,66 @@ It deliberately does **not** choose a leverage multiplier. It only composes an a
 
 This prevents multiplier-selection economics from being smuggled into the cap=1 wiring gate.
 
-## Cap=1 historical parity gate
+## Cap=1 historical parity result
 
-Candidate gate:
+Dedicated workflow:
 
-`research/leverage_0040/p4_3_cap1_parity.py`
+`P4.3 LEVERAGE-0040 cap1 parity`
 
-CI workflow:
+Initial checkpoint run:
 
-`.github/workflows/p4-3-cap1-parity.yml`
+`31175967899` (#1): **SUCCESS**
 
-The gate is executable only with:
+The workflow executed only:
 
 ```text
 research_cap        = 1.0
 leverage_multiplier = 1.0
 ```
 
-It regenerates the six committed full-BRRK historical decisions through the canonical P3.1/P3.2 path, passes each frozen target through the new two-layer composition boundary, and requires:
+and explicitly reported:
 
-- literal cap=1 target-weight identity versus P3.2 output;
-- gross/cash/defensive identity;
-- unchanged target/refit sessions, risk state and data digest;
-- match to immutable `research/results/p3_2_target_parity/golden_v1.json`.
+```text
+status                P4_3_CAP1_EXACT_HISTORICAL_PARITY_PASS
+decision_count        6
+leverage_search_run   false
+production_authorized false
+```
 
-Until this workflow is green, every >1 candidate remains invalid and blocked.
+Historical decisions reproduced exactly:
+
+- 2022-12-15 — RISK_OFF, defensive scale `1.3453862979240228e-07`;
+- 2023-10-25 — MAJOR_ROTATION, `0.9999718626245347`;
+- 2024-08-06 — BTC_LEAD, `0.9999984868728992`;
+- 2025-04-10 — MAJOR_ROTATION, `0.9999999939549142`;
+- 2025-11-15 — ALT_EXPANSION, `0.9881751992198149`;
+- 2026-08-03 — RISK_OFF, `0.009600519865636481`.
+
+For each decision, the new P4 boundary preserved:
+
+- literal P3.2 target weights at multiplier 1;
+- gross and cash/financing share;
+- defensive scale;
+- target/refit session;
+- risk state;
+- canonical data digest;
+- committed historical golden vectors.
+
+This is a baseline wiring/parity result only. It is **not** a leverage-search result and conveys no information about whether 1.10/1.20/1.30 is economically desirable.
+
+## PR #86 initial checkpoint evidence
+
+Head:
+
+`3aaacd8e2347e05238d8a8ad072876e959f73e77`
+
+- Phase 0 baseline contract `31175967400` (#142): **SUCCESS**, **243 passed in 7.54s**, 5/5 research integration OK
+- Research evidence normalization `31175967978` (#48): **SUCCESS**
+- P3.2 target research-live parity `31175967755` (#35): **SUCCESS**, independent parity + committed golden
+- P4.3 cap=1 historical parity `31175967899` (#1): **SUCCESS**, six full-BRRK decisions, no >1 search
+- PR handoff governance `31175967977` (#197): **SUCCESS**
+
+The current handoff/checklist update must now receive final-head revalidation; previous runs are checkpoint evidence, not final-head merge evidence.
 
 ## LEVERAGE-0040 preregistered study
 
@@ -134,8 +174,8 @@ This is research liquidation-distance evidence only and authorizes no leverage.
 Still forbidden:
 
 - running/reusing `LEVERAGE-0039`;
-- evaluating any `LEVERAGE-0040` >1 candidate before cap=1 exact historical parity passes;
-- inventing a multiplier-selection rule from observed >1 results;
+- executing any `LEVERAGE-0040` >1 candidate before #86 merges and the remaining pre-run prerequisites are frozen;
+- inventing a multiplier-selection rule after observing >1 results;
 - production gross >1 / production leverage authorization;
 - search >1.30 under `LEVERAGE-0040`;
 - weakening/replacing the frozen defensive 20% scenario tail gate;
@@ -144,6 +184,13 @@ Still forbidden:
 - shorts / XRP target exposure;
 - P5 exit intelligence;
 - historical BRRK overwrite.
+
+Remaining pre-run prerequisites after cap=1 parity:
+
+1. merge/freeze the cap=1 wiring implementation;
+2. validate liquidation-distance implementation against the frozen Hyperliquid snapshot;
+3. freeze the >1 multiplier-selection algorithm before any >1 observation;
+4. only then execute the preregistered `LEVERAGE-0040` suite once.
 
 ## Production authorization
 
@@ -161,9 +208,13 @@ DRIFT_0
 ## Exact next action
 
 ```text
-open P4.3 runner/cap1 candidate PR
--> Phase 0 + P3.2 parity/golden + dedicated P4 cap1 parity + governance
--> fix any implementation/parity issue in same PR
--> only after cap=1 exact historical parity is merged may the >1 multiplier-selection algorithm be frozen
--> no LEVERAGE-0040 search before that gate
+revalidate final #86 branch head
+-> update final PR evidence / mark ready
+-> latest governance
+-> expected-head squash merge #86
+-> post-merge normalization
+-> fresh P4.3 prerequisite branch
+-> implement/validate liquidation-distance model against frozen Hyperliquid snapshot
+-> freeze >1 multiplier-selection algorithm before first >1 result
+-> only then execute LEVERAGE-0040 exactly once
 ```
