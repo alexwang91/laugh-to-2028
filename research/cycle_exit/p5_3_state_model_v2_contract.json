@@ -1,0 +1,109 @@
+{
+  "contract_id": "P5.3-STATE-MODEL-ARCHITECTURE-V2",
+  "status": "PREREGISTERED_BEFORE_ANY_V2_STATE_PATH_RUN",
+  "registered_at_utc": "2026-08-08T00:05:00Z",
+  "base_main": "5b0cac61a45c13d28680e641dd434db4d9a6a2db",
+  "hypothesis": "P5.3 V1 failed partly because the market-state variable itself was absorbing. Separating continuous MARKET_STATE from the human-gated RISK_PERMISSION_LOCK should preserve the immutable V1 raw signal evidence while making later market regimes observable.",
+  "dependencies": {
+    "p5_1_taxonomy_contract": "P5.1-EVENT-TAXONOMY-V1",
+    "p5_1_taxonomy_git_blob_sha": "73d010666fbfd957ec15214a00883a90a8adba5a",
+    "p5_2_result_summary_sha256": "3f6dc3c512d22ac8f71d43ed155f2602cd40d5caf3d617c0e130e170727e0627",
+    "p5_3_v1_contract_git_blob_sha": "400ec97f8a0e522c5776ce1f6a98fc6d7e069267",
+    "p5_3_v1_engine_git_blob_sha": "4fd760440ae88c25070fa0cf1ee2d499cc89ab3f",
+    "p5_3_v1_result_commit": "7703b3ffec906a9d2ea58b33ee7feea5cd2f0a89",
+    "p5_3_v1_summary_sha256": "a2e5be8d605af5a2c8206235402fe3a66b08fd994eaa8a71e84cfb1e3cbfed8f"
+  },
+  "scope": "Architecture isolation only. No feature, atom, threshold, profile, event, behavior multiplier, economic selection, production, or trading authorization change.",
+  "frozen_from_v1_without_change": [
+    "P5.1 event taxonomy and reporting buckets",
+    "immutable P5.2 feature panel",
+    "runtime feature set",
+    "causal percentile normalization formula/window/minimum",
+    "raw breadth fraction treatment",
+    "MATURE_TEXTURE atom",
+    "ROTATION atom",
+    "EXHAUSTION atom",
+    "STRONG_EXHAUSTION atom",
+    "DAMAGE atom",
+    "STRONG_DAMAGE atom",
+    "raw candidate state priority",
+    "EARLY profile thresholds and persistence",
+    "BALANCED profile thresholds and persistence",
+    "CONSERVATIVE profile thresholds and persistence",
+    "missing-data fail-closed semantics",
+    "daily 00:00 UTC boundary"
+  ],
+  "state_vocabulary": [
+    "NORMAL_BULL",
+    "BTC_LEADERSHIP_MATURING",
+    "LATE_BULL_ROTATION",
+    "EXHAUSTION_WATCH",
+    "DE_RISK_1",
+    "DE_RISK_2",
+    "FLAT"
+  ],
+  "architecture": {
+    "MARKET_STATE": {
+      "purpose": "Continuous research classification of current market evidence.",
+      "raw_candidate_source": "Exactly the V1 raw_candidate implementation and V1 evidence atoms.",
+      "pre_first_v1_flat_parity": "Before the first V1 final-state FLAT, V2 MARKET_STATE must exactly equal V1 final state for every profile/date.",
+      "hard_flat_entry": "A fully proven raw FLAT still enters MARKET_STATE=FLAT immediately with no persistence.",
+      "flat_absorbing": false,
+      "flat_recovery": "After MARKET_STATE=FLAT, a less-severe raw candidate uses the unchanged profile deescalation_clear_days. After that many consecutive complete initialized dates below FLAT, MARKET_STATE moves exactly one severity step lower, resets counters, and every further lower step requires a fresh clear period.",
+      "ordinary_escalation": "Identical to V1 severity-index persistence mechanics.",
+      "ordinary_deescalation": "Identical to V1 one-step clear-period mechanics, now also applicable when current MARKET_STATE is FLAT.",
+      "missing_data": "Hold MARKET_STATE and reset ordinary counters. Missing data cannot de-risk or unlock anything. A hard FLAT escalation remains allowed only with the same complete proof as V1."
+    },
+    "RISK_PERMISSION_LOCK": {
+      "purpose": "Operational permission control, distinct from market classification.",
+      "states": ["RISK_ADD_ALLOWED", "HUMAN_REAUTH_REQUIRED"],
+      "trigger": "An actual operational transition to zero directional exposure / FLAT sets HUMAN_REAUTH_REQUIRED.",
+      "automatic_unlock": false,
+      "unlock": "Explicit human approval outside P5.3 only.",
+      "historical_research_output": "For audit, V2 may report a COUNTERFACTUAL_PERMISSION_LOCK that becomes HUMAN_REAUTH_REQUIRED on the first historical MARKET_STATE=FLAT and never auto-unlocks. This is diagnostic only and does not imply that historical market-state classification must remain FLAT.",
+      "production_authorization": "NONE"
+    }
+  },
+  "required_v2_outputs": [
+    "daily raw candidate and evidence atoms for all three unchanged profiles",
+    "daily V2 MARKET_STATE for all three profiles",
+    "counterfactual permission lock for audit",
+    "100% raw-candidate parity report versus immutable V1 result wherever V1 raw candidate is defined",
+    "100% pre-first-FLAT final-state parity versus immutable V1",
+    "every MARKET_STATE FLAT episode start/end/duration",
+    "recovery date after each FLAT episode",
+    "P5.1 event/bucket occupancy",
+    "second-wind occupancy",
+    "terminal-event lead/near-event states",
+    "non-top-control FLAT occupancy",
+    "transition/churn counts",
+    "post-2021 observability coverage",
+    "explicit production_authorized=false"
+  ],
+  "architecture_acceptance_gates": {
+    "raw_candidate_parity_fraction": 1.0,
+    "pre_first_flat_final_state_parity_fraction": 1.0,
+    "v1_false_flat_must_remain_visible": true,
+    "first_false_flat_date_must_equal": "2021-02-23",
+    "post_false_flat_nonflat_market_state_must_exist": true,
+    "later_p5_1_events_must_be_classifiable": true,
+    "no_profile_selection_in_v2_architecture_run": true,
+    "no_behavior_multiplier_selection": true,
+    "no_production_authorization": true
+  },
+  "interpretation_rule": "Passing these gates means only that the architecture separation restores a non-degenerate market-state history while preserving V1 signals. It does not mean any profile is robust, economically superior, or production-ready. P5.4 may then preregister behavior mappings; P5.5 owns event-level robustness and economic selection.",
+  "forbidden": [
+    "change any V1 feature",
+    "change any V1 percentile threshold",
+    "change any V1 atom rule",
+    "change any V1 profile persistence or clear period",
+    "move or relabel P5.1 events",
+    "edit immutable P5.2 or P5.3 V1 results",
+    "hide or relabel the 2021-02-23 false FLAT",
+    "select a profile from V2 architecture evidence alone",
+    "select P5.4 gross-risk multipliers",
+    "automatically unlock RISK_PERMISSION_LOCK",
+    "authorize production or live trading"
+  ],
+  "production_authorized": false
+}
