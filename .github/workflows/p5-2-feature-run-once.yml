@@ -35,13 +35,14 @@ jobs:
           set -euo pipefail
           test ! -e research/results/p5_2_feature_evidence/summary.json
           test "$(sha256sum research/cycle_exit/RUN_ONCE_P5_2_FEATURE_EVIDENCE.marker | awk '{print $1}')" = "cac12d742a072d0bb592e5fd120302668c15658dedc29d2483a6d7465f4eae9b"
-          test "$(git hash-object research/cycle_exit/p5_2_feature_contract.json)" = "55b2d8a1f079e05b98413b37e5a9d797f9241410"
+          test "$(git hash-object research/cycle_exit/p5_2_feature_contract.json)" = "bf4b7aeda54821a251dc0df46d2c6e47c3be00da"
           test "$(git hash-object research/cycle_exit/p5_1_event_taxonomy.json)" = "73d010666fbfd957ec15214a00883a90a8adba5a"
           python - <<'PY'
           import json
           from pathlib import Path
           c = json.loads(Path("research/cycle_exit/p5_2_feature_contract.json").read_text())
           assert c["status"] == "FROZEN_BEFORE_FIRST_FEATURE_EVIDENCE_RUN"
+          assert c["canonical_price_data"]["fetch_end"] == "2026-02-28"
           assert c["research_integrity"]["p5_1_windows_and_anchor_rules_immutable"] is True
           assert c["research_integrity"]["feature_definitions_frozen_before_first_event_evidence_run"] is True
           assert c["research_integrity"]["production_authorization"] == "NONE"
