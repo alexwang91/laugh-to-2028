@@ -130,7 +130,6 @@ def test_early_2021_taxonomy_can_be_calibrated_without_future_data() -> None:
     c = json.loads(CONTRACT.read_text())
     panel = pd.read_csv(P52_FEATURE_PANEL, parse_dates=["date"]).set_index("date")
     continuous = {f for family in c["runtime_feature_inputs"].values() for f in family}
-    # canonical5 breadth is used as a raw fraction in the rotation rule, not percentile-normalized.
     continuous.remove("canonical5_outperformance_breadth_20d")
     earliest_required = pd.Timestamp("2021-01-31")
     min_obs = c["causal_normalization"]["minimum_nonmissing_feature_observations"]
@@ -144,7 +143,7 @@ def test_rotation_and_exhaustion_semantics_prevent_single_indicator_exit() -> No
     c = json.loads(CONTRACT.read_text())
     atoms = c["evidence_atoms"]
     assert atoms["MATURE_TEXTURE"]["purpose"].endswith("never sufficient for de-risk.")
-    assert atoms["ROTATION"]["purpose"].endswith("not sufficient for de-risk alone.")
+    assert "without treating it as bearish" in atoms["ROTATION"]["purpose"]
     assert "At least 2 independent subchannels" in atoms["EXHAUSTION"]["rule"]
     priority = {x["state"]: x["rule"] for x in c["raw_candidate_state_priority"]}
     assert priority["FLAT"] == "STRONG_DAMAGE AND STRONG_EXHAUSTION"
