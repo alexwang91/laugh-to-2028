@@ -17,18 +17,33 @@ Before `LEVERAGE-0040` may execute:
 - [x] Cap `1.00` exact historical BRRK parity merged by PR #86.
 - [x] Liquidation-distance implementation validated and merged against the frozen margin snapshot by PR #88.
 - [x] >1 multiplier-selection algorithm frozen and merged before observing any >1 result by PR #88: `1 + (cap-1) * defensive_scale`.
-- [ ] `LEVERAGE-0040` first and only preregistered search run executed.
+- [x] Post-#88 handoff normalization merged by PR #89; normalized main is `98396a5b510c5f0a717b954568921c1daef6edc8`.
+- [x] One-time study implementation semantics frozen on clean v2 branch before any >1 result: P3.3 drift/band, route/funding, liquidation collateral, capacity, stress, bootstrap, broad-region and deterministic selection rules.
+- [ ] Clean v2 pre-study draft PR passes final applicable contract/preflight, Phase 0, research, P3.2 parity/golden, P4 cap=1, P4 prerequisite and governance gates.
+- [ ] Exact `RUN_ONCE_LEVERAGE_0040.marker` created once only after the preceding CI gate is complete.
+- [ ] `LEVERAGE-0040` first and only preregistered search run executed and immutable result committed/validated.
 
-PR #88 final head `9ed8c627afd9800f8c4a8cf79246a07bc89e6108` evidence:
+Current branch:
 
-- dedicated prerequisite #4 / `31178219708`: SUCCESS, 14 passed;
-- Phase 0 #149 / `31178220870`: SUCCESS, 257 passed + 5/5 integration;
-- Research evidence #55 / `31178223443`: SUCCESS;
-- P3.2 parity/golden #42 / `31178219593`: SUCCESS;
-- P4 cap=1 parity #8 / `31178220456`: SUCCESS;
-- latest metadata/ready governance #209 / `31178603896`: SUCCESS;
-- expected-head squash merge `8d512479c5b2a0522409afbf0b63b817de6c6fe0`.
+`p4-4/leverage-0040-one-time-study-v2`
 
-No 1.10/1.20/1.30 historical result existed before either pre-run prerequisite was frozen and merged.
+Old `p4-4/leverage-0040-one-time-study-v1` is **INVALID / ABANDONED / DO NOT MERGE / DO NOT REVIVE** because a tool-layer write-routing error created transient empty-file commits before any PR or result existed. The v2 branch is derived from a clean intended tree; compare against main proves the transient file is absent.
 
-The only unchecked pre-run item is now the actual one-time `LEVERAGE-0040` study execution. That execution may begin only from a fresh branch after this normalization is merged. Any post-result change to the preregistered study or multiplier policy requires a new experiment ID.
+Current one-time study safety state:
+
+```text
+RUN_ONCE marker                         ABSENT
+research/results/leverage_0040          ABSENT
+1.10/1.20/1.30 candidate observation   NONE
+result-selected threshold               NONE
+operating budget selected              NO
+production authorization               NONE
+```
+
+The exact run marker must hash to:
+
+`f54cdf362f60cad19d6c429ac4e008047b45d2cb537a95c96e2bc6dac5ce733a`
+
+The contract CI's `--preflight-only` path may validate real historical inputs and the cap1 baseline, but must return before evaluating cap>1. If the preflight fails, it may be corrected in the same PR while no >1 result exists.
+
+After the exact marker is created, the dedicated run-once workflow must execute the frozen suite once, commit immutable result artifacts, and never retrigger from those result commits. Any material post-result change requires a new experiment ID.
