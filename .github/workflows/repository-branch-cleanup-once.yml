@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
-      - name: Enumerate safe deletion candidates (dry run)
+      - name: Delete only proven-safe merged or explicitly abandoned branches
         env:
           GITHUB_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
@@ -23,6 +23,7 @@ jobs:
           python - <<'PY'
           import json
           import os
+          import urllib.error
           import urllib.parse
           import urllib.request
 
@@ -88,11 +89,39 @@ jobs:
               if branch in branches and branch not in preserve:
                   candidates[branch] = {"reason": reason, "sha": branches[branch]}
 
-          print(f"TOTAL_BRANCHES={len(branches)}")
-          print(f"SAFE_DELETE_COUNT={len(candidates)}")
+          print(f"TOTAL_BRANCHES_BEFORE={len(branches)}")
+          print(f"DELETE_COUNT={len(candidates)}")
           print("PRESERVE=" + json.dumps(sorted(preserve), ensure_ascii=False))
-          print("SAFE_DELETE=")
+
+          deleted = []
           for branch in sorted(candidates):
-              print(f"  {branch} | {candidates[branch]['sha']} | {candidates[branch]['reason']}")
-          print("DRY_RUN_ONLY=true")
+              ref = urllib.parse.quote(branch, safe="/")
+              print(f"DELETE {branch} | {candidates[branch]['sha']} | {candidates[branch]['reason']}")
+              try:
+                  api(f"/git/refs/heads/{ref}", method="DELETE")
+              except urllib.error.HTTPError as exc:
+                  body = exc.read().decode("utf-8", errors="replace")
+                  raise RuntimeError(f"failed deleting {branch}: HTTP {exc.code}: {body}") from exc
+              deleted.append(branch)
+
+          remaining = {}
+          page = 1
+          while True:
+              rows = api(f"/branches?per_page=100&page={page}")
+              if not rows:
+                  break
+              for row in rows:
+                  remaining[row["name"]] = row["commit"]["sha"]
+              page += 1
+
+          if any(branch in remaining for branch in deleted):
+              raise RuntimeError("one or more deleted branches still exist")
+          if not preserve.issubset(remaining):
+              raise RuntimeError("a preserved branch is missing after cleanup")
+
+          print(f"DELETED_COUNT={len(deleted)}")
+          print(f"TOTAL_BRANCHES_AFTER={len(remaining)}")
+          print("REMAINING_BRANCHES=")
+          for branch in sorted(remaining):
+              print(f"  {branch} | {remaining[branch]}")
           PY
