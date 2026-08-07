@@ -8,27 +8,31 @@ Status: authoritative cross-chat handoff snapshot
 - P0 / P1 / P2: PASS / MERGED; Phases 0–2 complete
 - P3.1 through P3.4: PASS / TESTED / CI VERIFIED / MERGED; **Phase 3 COMPLETE**
 - P4.1 corrected 0–1 baseline freeze: PASS / TESTED / CI VERIFIED / MERGED by PR #82
-- P4.2 original `LEVERAGE-0039` preregistration: MERGED historically, now **STOPPED_PRE_RUN / NO_RESULT** after pre-run architecture review
-- P4.2 replacement `LEVERAGE-0040`: **PREREGISTERED BEFORE FIRST RUN / CANDIDATE IN PR #84**
+- P4.2 original `LEVERAGE-0039` preregistration: MERGED historically, now **STOPPED_PRE_RUN / NO_RESULT** in candidate PR #84 after pre-run architecture review
+- P4.2 replacement `LEVERAGE-0040`: **PREREGISTERED BEFORE FIRST RUN / CI-VALIDATED CANDIDATE IN PR #84 / NOT RUN**
 - historical stale-main PR #70: INVALID / CLOSED / DO NOT REVIVE
 
 ## Current main and candidate position
 
-Current authoritative main after post-P4.1/P4.2 normalization:
+Current authoritative main after PR #83:
 
 `86045e6aefef81053fa8a9b624cbc4d9cb7a8c80`
 
-Current draft candidate:
+Current correction PR:
 
 `PR #84 — p4-3/leverage-runner-v1`
 
+Validated correction checkpoint head:
+
+`1e62b14238c00224631814faf90c32a76708940f`
+
 ```text
 P4.1 preserve corrected 0-1 scaler             PASS / MERGED
-P4.2 LEVERAGE-0039 prereg                       STOPPED_PRE_RUN / NO RESULT
-P4.2 LEVERAGE-0040 replacement prereg           CANDIDATE / NOT RUN
-P4.3 official Hyperliquid margin snapshot       CAPTURED / HASHED / CANDIDATE
+LEVERAGE-0039                                   STOPPED_PRE_RUN / NO RESULT
+LEVERAGE-0040 preregistration                   IMPLEMENTED / TESTED / CI VERIFIED / NOT RUN
+P4.3 official Hyperliquid margin snapshot       CAPTURED / HASHED / TESTED / CI VERIFIED
 P4.3 two-layer leverage runner                  NOT IMPLEMENTED
-P4.3 cap=1 historical parity                    NOT RUN
+P4.3 cap=1 historical leverage parity           NOT RUN
 P4.4 stress execution                           BLOCKED
 P4.5 promotion decision                         BLOCKED
 P4.6 deployment cap                             BLOCKED
@@ -85,7 +89,7 @@ final_scale             = defensive_scale × leverage_multiplier
 research caps           = 1.00 / 1.10 / 1.20 / 1.30
 ```
 
-At cap 1.00 the multiplier is identically 1.0, so exact frozen BRRK parity is structurally mandatory before any >1 candidate is valid.
+At cap 1.00 the multiplier is identically 1.0, so exact frozen BRRK parity is mandatory before any >1 candidate is valid.
 
 Unchanged risk/search constraints:
 
@@ -97,13 +101,13 @@ catastrophic boundary       70%
 search above 1.30           forbidden without new experiment ID
 ```
 
-Mandatory benchmarks now explicitly include:
+Mandatory benchmarks:
 
 1. BTC buy-and-hold;
 2. BTC/ETH/SOL/BNB equal-weight buy-and-hold;
 3. frozen corrected BRRK-0011 <=1 baseline.
 
-Mandatory stress coverage now explicitly includes:
+Mandatory stress coverage now includes:
 
 - historical 2021/2022/2024/2025/2026 windows;
 - synthetic gap and volatility shocks;
@@ -129,7 +133,7 @@ Frozen raw-meta hash:
 
 `ef4b108e65806d05dab615f533dd113fd86210d2e55a82a005fcad89a7f9aff8`
 
-Relevant current captured tiers:
+Captured tiers:
 
 ```text
 BTC  table 56   40x -> 20x at 150M
@@ -140,6 +144,22 @@ BNB  table 51   10x -> 5x at 3M
 
 This is research liquidation-distance input evidence only and does not authorize leverage.
 
+## PR #84 validated correction checkpoint evidence
+
+Checkpoint head:
+
+`1e62b14238c00224631814faf90c32a76708940f`
+
+- Phase 0 baseline contract run `31174785302` (#139): **SUCCESS**, **235 passed in 7.21s**, 5/5 research integration OK
+- Research evidence normalization run `31174785296` (#45): **SUCCESS**
+- P3.2 target research-live parity run `31174785489` (#32): **SUCCESS**, independent parity + committed golden
+- PR handoff governance run `31174785305` (#191): **SUCCESS**
+- P4.3 Hyperliquid margin snapshot run `31174785702` (#14): **SUCCESS**
+
+The old P4 prereg contract tests were migrated rather than removed: P4.1 authority/blob pins remain frozen, `LEVERAGE-0039` is now asserted stopped/no-result, and active search/risk/stress/deployment invariants are asserted against `LEVERAGE-0040`.
+
+This checkpoint validates the correction candidate; it is not a leverage-study result and does not authorize >1 exposure.
+
 ## Production authorization
 
 ```text
@@ -149,16 +169,17 @@ production_authorized_components = []
 
 ## Project drift audit
 
-Architecture review discovered a temporary P4 design mismatch and missing benchmark/stress prereg coverage:
+Pre-run review discovered a bounded P4 architecture/coverage mismatch:
 
 ```text
 DISCOVERY: DRIFT_2
 ```
 
-The candidate correction in PR #84 is intended to restore:
+The correction candidate at `1e62b142...` has passed its applicable tests/governance and restores the intended Master Plan architecture:
 
 ```text
-POST-CORRECTION TARGET: DRIFT_0
+VALIDATED CANDIDATE STATE: DRIFT_0
+MAIN NORMALIZATION:        PENDING PR #84 MERGE
 ```
 
 No phase ordering, asset universe, production authorization, human-control boundary, wallet/security boundary, F23 boundary, P5 boundary or historical BRRK authority was violated.
@@ -166,9 +187,12 @@ No phase ordering, asset universe, production authorization, human-control bound
 ## Exact next action
 
 ```text
-validate PR #84 preregistration correction
--> merge only after contract/governance CI passes
--> fresh P4.3 runner branch from new main
+revalidate final PR #84 handoff head
+-> update final PR evidence
+-> newest governance pass
+-> merge #84
+-> post-merge normalization
+-> fresh P4.3 LEVERAGE-0040 runner branch
 -> implement separate post-defensive leverage multiplier
 -> cap=1 exact historical parity
 -> only then execute LEVERAGE-0040 exactly once
