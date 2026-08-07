@@ -1,6 +1,6 @@
 # BRRK Roadmap Audit — 2026-08-07
 
-Status: **current program-wide audit / Phase-4 closeout**
+Status: **current program-wide audit / Phase-4 closeout complete**
 
 This document reviews the repository against:
 
@@ -40,7 +40,7 @@ The repository did experience several historical implementation, evidence, docum
 
 Current product-state classification: `DRIFT_0`.
 
-The Phase-4 closeout changes that accompany this audit are `DRIFT_1` only in the sense that they repair stale documentation / machine-readable registry state after the completed study. They do not introduce a new economic or production deviation.
+The Phase-4 closeout changes were `DRIFT_1` only in the sense that they repaired stale documentation / machine-readable registry state after the completed study. They did not introduce a new economic or production deviation.
 
 ## 2. Roadmap completion map
 
@@ -105,7 +105,7 @@ P3.1–P3.4 are complete:
 - explicit rebalance / turnover control;
 - next-daily contribution handling.
 
-The current machine-readable decision registry historically recorded P3.1 but omitted explicit P3.2/P3.3/P3.4 rows. That is a **registry/documentation gap only**; the implementations and merge/CI evidence exist. This Phase-4 closeout normalizes those rows without changing runtime behavior.
+The machine-readable decision registry historically recorded P3.1 but omitted explicit P3.2/P3.3/P3.4 rows. That was a **registry/documentation gap only**; the implementations and merge/CI evidence already existed. PR #94 normalized those rows without changing runtime behavior.
 
 ### Phase 4 — leverage
 
@@ -230,19 +230,19 @@ Disposition: **PROCESS SEMANTICS CLARIFIED / CLOSED**.
 
 Historical issue: many remote branches and dated handoffs made recovery noisy; some docs described old phases as current.
 
-Correction: PRs #91/#92 normalized branch/document authority and established reading precedence. The current closeout further replaces stale 0041 pre-result README/CURRENT_STATE/NEXT_STEPS text.
+Correction: PRs #91/#92 normalized branch/document authority and established reading precedence. PR #94 replaced stale 0041 pre-result README/CURRENT_STATE/NEXT_STEPS text, and PR #95 removed the remaining post-merge handoff wording from the canonical next-action documents.
 
 Disposition: **CORRECTED / CLOSED**.
 
 ### H. Decision registry P3.2–P3.4 gap
 
-Issue: P3.2, P3.3 and P3.4 are merged/verified, but explicit rows were absent from `decision_registry.json`.
+Issue: P3.2, P3.3 and P3.4 were merged/verified, but explicit rows were absent from `decision_registry.json`.
 
 Impact: machine-readable history was incomplete; runtime/economic implementation was not affected.
 
-Correction: add the three implementation-verified rows in this closeout and update LEVERAGE-0041 from preregistered research target to completed `REJECTED_STOPPED / NO_PROMOTION`.
+Correction: PR #94 added all three `IMPLEMENTATION_VERIFIED` rows and updated LEVERAGE-0041 from a preregistered research target to completed `REJECTED_STOPPED / NO_PROMOTION`.
 
-Disposition: **CORRECTING IN CURRENT CLOSEOUT**.
+Disposition: **CORRECTED / CLOSED**.
 
 ## 6. Research lines that must remain stopped or shadow-only
 
@@ -263,7 +263,7 @@ Do not reinterpret these as hidden backlog for immediate promotion:
 
 ### Immediate: Phase 5
 
-Start from a fresh branch after this closeout merges.
+Start P5.1 from a fresh branch based on current `main`.
 
 1. P5.1 Event taxonomy.
 2. P5.2 Feature families.
