@@ -1,0 +1,41 @@
+name: P5.3 V2 architecture preregistration
+
+on:
+  pull_request:
+    paths:
+      - "research/cycle_exit/p5_3_state_model_v2_contract.json"
+      - "execution/plan-b-bot/tests/test_p5_3_state_model_v2_prereg.py"
+      - ".github/workflows/p5-3-v2-architecture-prereg.yml"
+      - "docs/**"
+      - "README.md"
+  push:
+    branches: [main]
+    paths:
+      - "research/cycle_exit/p5_3_state_model_v2_contract.json"
+      - "execution/plan-b-bot/tests/test_p5_3_state_model_v2_prereg.py"
+      - ".github/workflows/p5-3-v2-architecture-prereg.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  prereg-contract:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: execution/plan-b-bot/requirements-dev.txt
+      - name: Install pinned runtime
+        run: pip install -r execution/plan-b-bot/requirements-dev.txt
+      - name: Verify immutable V1 inputs and V2 prereg
+        run: |
+          set -euo pipefail
+          test "$(git hash-object research/cycle_exit/p5_3_state_model_contract.json)" = "400ec97f8a0e522c5776ce1f6a98fc6d7e069267"
+          test "$(git hash-object research/cycle_exit/p5_3_state_model.py)" = "4fd760440ae88c25070fa0cf1ee2d499cc89ab3f"
+          test "$(cat research/results/p5_3_state_paths/summary.sha256)" = "a2e5be8d605af5a2c8206235402fe3a66b08fd994eaa8a71e84cfb1e3cbfed8f"
+          test ! -e research/results/p5_3_v2_state_paths/summary.json
+          pytest -q execution/plan-b-bot/tests/test_p5_3_state_model_v2_prereg.py
