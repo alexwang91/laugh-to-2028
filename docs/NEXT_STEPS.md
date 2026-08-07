@@ -5,14 +5,18 @@
 ## Current dependency
 
 ```text
-P4.3 remaining pre-run prerequisites:
-1. liquidation-distance implementation/validation
-2. freeze >1 multiplier-selection algorithm before first >1 result
+Validate and merge the final LEVERAGE-0040 pre-run prerequisites:
+1. Hyperliquid cross-margin liquidation-distance model
+2. pre-result defensive-monotone multiplier policy freeze
 ```
 
-PR #86 merged the two-layer composition and mandatory cap=1 historical identity gate as:
+Normalized main after PR #87:
 
-`ad560ada135cf556be24fa3ce62eb5a7a74cfeb5`
+`6ba3f765fd52839e9841b299aab4a51c9a1cd523`
+
+Current fresh candidate:
+
+`p4-3/leverage-0040-pre-run-prereqs-v1`
 
 ## Frozen authority
 
@@ -27,62 +31,77 @@ production authorization   none
 
 `production_authorized_components = []` remains unchanged.
 
-## LEVERAGE-0040 architecture
+## Candidate prerequisite 1 — liquidation model
+
+Contract:
+
+`research/leverage_0040/P4_3_LIQUIDATION_MODEL_V1.json`
+
+Implementation:
+
+`research/leverage_0040/liquidation_model.py`
+
+Model version is standard Hyperliquid **cross margin only**. It uses the frozen pre-result margin snapshot and the official maintenance equations:
 
 ```text
-BRRK directional weights
-× frozen defensive_scale in [0,1]
-× separate leverage_multiplier in [1, candidate cap]
-= final target economic exposure
+MMR = 1 / (2 × tier max leverage)
+maintenance margin = stressed notional × MMR − tier deduction
+liquidation boundary = cross account equity <= total maintenance margin
 ```
 
-The frozen defensive selector may not be extended or reinterpreted above 1.0.
+It requires explicit cross-account equity and actual perp notionals. It does not assume ordinary spot is collateral and does not assume Portfolio Margin is enabled. Missing implementation accounting fails closed.
 
-## Cap=1 gate closed
+Tests lock:
 
-PR #86 final head `8f2f0bd0a77d1267e21a28f49b3abe359b8012cb`:
+- frozen snapshot/hash;
+- BTC/ETH/SOL/BNB first-tier MMR;
+- tier-boundary continuity;
+- single-position parity with the published Hyperliquid liquidation-price formula;
+- cross-asset maintenance/PnL aggregation;
+- deterministic stress-ray distance;
+- fail-closed malformed/unsupported inputs.
 
-- Phase 0 #144 / `31176241468`: SUCCESS, 243 passed + 5/5 integration
-- Research evidence #50 / `31176241499`: SUCCESS
-- P3.2 parity/golden #37 / `31176241450`: SUCCESS
-- P4.3 cap=1 parity #3 / `31176241424`: SUCCESS
-- latest governance #201 / `31176460514`: SUCCESS
-- merge `ad560ada135cf556be24fa3ce62eb5a7a74cfeb5`
+Status: **IMPLEMENTED CANDIDATE / CI PENDING**.
 
-The dedicated P4 gate executed only `research_cap=1.0` and `leverage_multiplier=1.0`, reproduced six committed full-BRRK historical decisions, and explicitly reported `leverage_search_run=false` and `production_authorized=false`.
+## Candidate prerequisite 2 — multiplier policy freeze
 
-This closes wiring parity only. It provides no >1 economic result.
+Pre-run addendum:
 
-## Remaining prerequisite 1 — liquidation distance
+`research/leverage_0040/LEVERAGE-0040-PRE-RUN-ADDENDUM-V1.json`
 
-Frozen Hyperliquid snapshot:
+Implementation:
 
-`research/leverage_0039/hyperliquid_margin_snapshot.json`
+`research/leverage_0040/multiplier_policy.py`
+
+Frozen before any >1 historical result:
 
 ```text
-captured_at_utc      2026-08-07T09:11:25Z
-relevant SHA-256     38060892f1976315084de4dc4ed1c9f3885d909ffccc47bce7ad589315d8b9dd
-raw meta SHA-256     ef4b108e65806d05dab615f533dd113fd86210d2e55a82a005fcad89a7f9aff8
+leverage_multiplier = 1 + (candidate_cap - 1) × frozen_defensive_scale
+final_scale = defensive_scale + (candidate_cap - 1) × defensive_scale²
 ```
 
-Next implementation must convert the frozen margin tables into deterministic liquidation-distance calculations for BTC/ETH/SOL/BNB and fail closed on unsupported/malformed tier semantics. It must be research-only and must not change production leverage.
+Allowed inputs only:
 
-## Remaining prerequisite 2 — freeze multiplier-selection algorithm
+```text
+frozen_defensive_scale
+candidate cap ∈ {1.00, 1.10, 1.20, 1.30}
+```
 
-Before observing any 1.10/1.20/1.30 result, define in machine-readable form how the separate leverage multiplier is selected under a candidate cap.
+This is threshold-free and deterministic. It preserves cap=1 identity, gives no economic exposure at defensive scale 0, fades extra leverage continuously as defensive risk reduction increases, and reaches the candidate cap only at defensive scale 1.
 
-The algorithm must:
+Forbidden as inputs: future/candidate PnL, funding signal, raw HMM tuning, P5 logic, EXPOSURE-SMOOTH-0038, short/XRP signals or historically selected thresholds.
 
-- act after the frozen defensive target;
-- preserve risk-off monotonicity;
-- use no new alpha/funding signal/P5 logic;
-- stay within the preregistered candidate cap;
-- remain deterministic and preregistered;
-- not be selected by inspecting which historical >1 result looks best.
+Status: **FROZEN CANDIDATE BEFORE FIRST RESULT / CI PENDING**.
 
-No >1 search may run merely because cap=1 parity passed.
+## Dedicated prerequisite CI
 
-## LEVERAGE-0040 frozen study gates
+`.github/workflows/p4-3-pre-run-prereqs.yml`
+
+This gate runs only liquidation-model and multiplier-policy contract tests. It does not execute any 1.10/1.20/1.30 historical candidate.
+
+Full Phase 0, P3.2 parity/golden, P4 cap=1 parity and governance must also remain green.
+
+## LEVERAGE-0040 gates remain unchanged
 
 ```text
 research caps                1.00 / 1.10 / 1.20 / 1.30
@@ -92,22 +111,7 @@ cost grid                    5 / 10 / 20 / 50 bps
 catastrophe boundary         70%
 ```
 
-Mandatory benchmarks:
-
-- BTC buy-and-hold;
-- BTC/ETH/SOL/BNB equal-weight buy-and-hold;
-- frozen corrected BRRK-0011 <=1;
-- P4 leverage candidates.
-
-Mandatory stresses:
-
-- preregistered historical windows;
-- synthetic gap/volatility shocks;
-- Hyperliquid native funding debit 2x/3x/5x stress;
-- degraded depth/slippage and partial-fill/capacity stress;
-- liquidation distance from frozen Hyperliquid metadata.
-
-Funding remains implementation cost/stress only. F23 is separate.
+Mandatory benchmarks remain BTC buy-and-hold, four-asset equal-weight buy-and-hold, frozen corrected BRRK and P4 candidates. Mandatory stresses remain historical windows, gaps/volatility, native funding debit spikes, degraded fills/depth/capacity and liquidation distance.
 
 ## Still blocked
 
@@ -115,20 +119,13 @@ Funding remains implementation cost/stress only. F23 is separate.
 LEVERAGE-0040 SEARCH RUN:       NO
 RESULT SELECTED:                NO
 OPERATING BUDGET FROZEN:        NO
-LIQUIDATION MODEL VALIDATED:    NO
->1 SELECTION ALGORITHM FROZEN:  NO
+LIQUIDATION MODEL VALIDATED:    CI PENDING
+>1 SELECTION ALGORITHM FROZEN:  CANDIDATE / CI PENDING
 >1 PRODUCTION RUNTIME:          NO
 PRODUCTION AUTHORIZED:          NO_CHANGE
 ```
 
-Also blocked/separate:
-
-- search >1.30 without a new experiment ID;
-- EXPOSURE-SMOOTH-0038 promotion;
-- F23 funding-response redesign;
-- shorts / XRP target exposure;
-- P5 exit intelligence;
-- production leverage authorization.
+No >1 historical candidate may be generated on this prerequisite branch.
 
 ## Project drift audit
 
@@ -139,10 +136,10 @@ DRIFT_0
 ## Exact next action
 
 ```text
-merge post-#86 normalization
--> fresh P4.3 prerequisite branch from normalized main
--> implement/validate liquidation-distance model
--> freeze >1 multiplier-selection algorithm before observing any >1 result
--> full CI/governance
--> only then execute LEVERAGE-0040 exactly once
+open prerequisite PR
+-> dedicated prerequisite gate + Phase 0 + P3.2 parity/golden + P4 cap=1 + governance
+-> same-PR fixes if required
+-> final-head merge + normalization
+-> fresh LEVERAGE-0040 search branch
+-> execute preregistered suite exactly once with no post-result retuning
 ```
