@@ -21,6 +21,11 @@ from .target_engine import TARGET_ENGINE_VERSION, TargetCalculationResult
 
 
 REBALANCE_CONTROL_VERSION = "P3.3-L1-BAND-V1"
+FROZEN_REBALANCE_BAND = 0.05
+FROZEN_SAFETY_OVERRIDES = {
+    "current_short_position": "REBALANCE_TO_P3_2_TARGET_REGARDLESS_OF_BAND",
+    "current_gross_above_one": "REBALANCE_TO_P3_2_TARGET_REGARDLESS_OF_BAND",
+}
 DEFAULT_POLICY_PATH = Path(__file__).resolve().parents[3] / "config" / "rebalance_policy.json"
 _EPS = 1e-12
 
@@ -59,13 +64,19 @@ class RebalancePolicy:
             )
         if self.target_gap_metric != "L1_ABSOLUTE_WEIGHT_GAP":
             raise RebalanceControlError("P3.3 requires L1 absolute weight-gap banding")
-        if not math.isfinite(self.rebalance_band) or not (0.0 < self.rebalance_band <= 1.0):
-            raise RebalanceControlError("rebalance_band must be finite in (0, 1]")
+        if not math.isfinite(self.rebalance_band) or not math.isclose(
+            self.rebalance_band,
+            FROZEN_REBALANCE_BAND,
+            rel_tol=0.0,
+            abs_tol=1e-15,
+        ):
+            raise RebalanceControlError(
+                f"{REBALANCE_CONTROL_VERSION} freezes rebalance_band at {FROZEN_REBALANCE_BAND}"
+            )
         if self.boundary_rule != "REBALANCE_WHEN_L1_GAP_GTE_BAND":
             raise RebalanceControlError("Unexpected P3.3 band boundary rule")
-        required_overrides = {"current_short_position", "current_gross_above_one"}
-        if set(self.safety_overrides) != required_overrides:
-            raise RebalanceControlError("P3.3 safety override set drift detected")
+        if self.safety_overrides != FROZEN_SAFETY_OVERRIDES:
+            raise RebalanceControlError("P3.3 safety override policy drift detected")
         if self.minimum_trade_notional_role != (
             "DOWNSTREAM_ORDER_FEASIBILITY_ONLY_NOT_P3_3_PORTFOLIO_GATE"
         ):
