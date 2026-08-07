@@ -13,13 +13,14 @@
 | Phase 2 — instrument / routing / cost | **COMPLETE / MERGED** |
 | Phase 3 — data → target → rebalance → contribution | **COMPLETE / MERGED** |
 | P4.1 defensive scaler `[0,1]` | **COMPLETE / MERGED** |
-| P4 architecture / cap=1 / margin prerequisites | **COMPLETE / MERGED** |
 | LEVERAGE-0040 | **COMPLETE / IMMUTABLE / NO_PROMOTION** |
 | LEVERAGE-0041 | **COMPLETE / IMMUTABLE / NO_PROMOTION** |
-| Phase 4 dynamic-leverage research line | **FAIL_STOP / NO ELIGIBLE >1 CANDIDATE** |
-| P4.6 production leverage | **NOT ENTERED / BLOCKED — no promoted candidate** |
-| P5.1 cycle-top event taxonomy | **COMPLETE / FROZEN BEFORE FEATURE SELECTION** |
-| P5.2 feature families | **NEXT** |
+| Phase 4 leverage research | **FAIL_STOP / NO ELIGIBLE >1 CANDIDATE** |
+| P4.6 production leverage | **NOT ENTERED / BLOCKED** |
+| P5.1 cycle-top event taxonomy | **COMPLETE / MERGED / FROZEN** |
+| P5.2 feature-family evidence | **COMPLETE / IMMUTABLE / DESCRIPTIVE CLOSEOUT** |
+| P5.3 state model | **NEXT** |
+| P5.4–P5.6 | **NOT STARTED** |
 | Phase 6 integrated shadow | **NOT STARTED** |
 | Phase 7 limited-capital live long | **NOT STARTED / EXPLICIT APPROVAL REQUIRED** |
 | Phase 8 bear-short research | **NOT STARTED** |
@@ -76,13 +77,9 @@ At 5 bps execution cost:
 | 1.25 | 64.89% | -40.19% | 1.2387 | **FAIL** |
 | 1.30 | 66.28% | -40.93% | 1.2360 | **FAIL** |
 
-Every cap above 1.0 failed before the broad-region promotion stage. The preregistered liquidation-distance requirement was strictly `>55%`; measured minimum uniform-down distances fell from about `42.52%` at 1.05 to `27.71%` at 1.30. No >1 cap is eligible for P4.6.
+Every cap above 1.0 failed before the broad-region promotion stage. No >1 cap is eligible for P4.6. Do not rerun, rescue or reinterpret `LEVERAGE-0040` / `LEVERAGE-0041` under the same experiment IDs.
 
-Do not rerun, rescue, retune, reinterpret, or reuse `LEVERAGE-0040` or `LEVERAGE-0041` under the same experiment IDs.
-
-## What has been completed
-
-The current canonical implementation chain is:
+## Completed implementation chain
 
 ```text
 Phase 0 governance/config
@@ -97,6 +94,7 @@ Phase 0 governance/config
 -> LEVERAGE-0040 COMPLETE / NO_PROMOTION
 -> LEVERAGE-0041 COMPLETE / NO_PROMOTION
 -> P5.1 EVENT TAXONOMY FROZEN
+-> P5.2 IMMUTABLE FEATURE EVIDENCE / DESCRIPTIVE CLOSEOUT
 ```
 
 Historical rejected or shadow research lines remain preserved as evidence; they are not silently promoted into BRRK or production.
@@ -105,32 +103,100 @@ A full task/deviation review is recorded in `docs/ROADMAP_AUDIT_2026-08-07.md`.
 
 ## Phase 5 cycle-top / exit program
 
+### P5.1 — frozen event taxonomy
+
 P5.1 is frozen in `research/cycle_exit/p5_1_event_taxonomy.json` and documented in `docs/P5_1_EVENT_TAXONOMY.md`.
 
-Its purpose is to define the historical situations the future cycle model must distinguish **before** feature/model evaluation:
+It distinguishes before feature/model fitting:
 
-- 2021 spring major top / May crash as a nonterminal major top;
+- 2021 spring major top / May crash as nonterminal;
 - 2021 summer second-wind transition;
 - 2021 November terminal top / bear transition;
 - 2025 June, August and October new-high/deleveraging phases;
-- subsequent late-2025 deterioration without silently declaring it a terminal cycle top;
-- multiple high-volatility non-top controls from 2021, 2024 and 2025.
+- subsequent late-2025 deterioration without hardcoding it as a terminal top;
+- multiple high-volatility non-top controls.
 
-Calendar search windows are frozen first. Event anchors are then mechanically resolved from canonical BTCUSDT UTC daily closes. P5.2 may not move these windows or anchor rules based on indicator performance.
+Calendar windows are frozen first and anchors are mechanically resolved from canonical BTCUSDT UTC daily closes. Later research may not move those windows/anchors to improve model results.
 
-The next task is **P5.2 Feature Families** under this unchanged taxonomy.
+### P5.2 — immutable feature evidence
 
-Order:
+Contract: `P5.2-FEATURE-FAMILIES-V1`.
 
-1. **P5.1 Event taxonomy — COMPLETE / FROZEN.**
-2. **P5.2 Feature families — NEXT** — trend maturity, momentum exhaustion, leadership migration, breadth, leverage/speculation.
-3. **P5.3 State model** — `NORMAL_BULL`, `BTC_LEADERSHIP_MATURING`, `LATE_BULL_ROTATION`, `EXHAUSTION_WATCH`, `DE_RISK_1`, `DE_RISK_2`, `FLAT`.
-4. **P5.4 Required behavior** — allow late-bull rotation while reducing total gross as cycle hazard rises; hard-risk combinations may force FLAT.
-5. **P5.5 Validation** — event-level / leave-one-event-out robustness, lead/lag, false-positive duration, missed upside, drawdown avoided, terminal wealth, second-wind behavior.
-6. **P5.6 Integration** — cycle layer controls total directional risk; it does not rewrite BRRK relative ranking.
+Immutable result commit:
+
+`61d585afb64afbe3ead6422e7e62cde6c59fad40`
+
+Immutable summary SHA256:
+
+`3f6dc3c512d22ac8f71d43ed155f2602cd40d5caf3d617c0e130e170727e0627`
+
+P5.2 evaluated **29 frozen causal features** across BTC trend maturity, momentum exhaustion, leadership migration and canonical breadth. All 29 passed the frozen coverage gate.
+
+Six desired data families remain explicit `DATA_SOURCE_PENDING` rather than being replaced after seeing results:
+
+- BTC dominance;
+- broad-market breadth;
+- comparable historical funding;
+- historical open interest;
+- basis/premium;
+- liquidation history.
+
+The result explicitly selected **no final feature set, no P5.3 thresholds and no production behavior**.
+
+Formal interpretation: `docs/P5_2_FEATURE_EVIDENCE_CLOSEOUT.md`.
+
+Derived non-authorizing diagnostics: `research/analysis/p5_2_closeout/`.
+
+### What P5.2 says structurally
+
+The evidence argues against a one-indicator “cycle top” score:
+
+- realized-volatility state is powerful context but also appears in second-wind and nonterminal events, so it is not a terminal trigger by itself;
+- ETH/BTC leadership is strong near terminal **and** second-wind/nonterminal structures, which requires a distinct `LATE_BULL_ROTATION` state rather than treating alt leadership as bearish;
+- 20d price-versus-RSI rank divergence is the strongest 2021 terminal target-lead hypothesis, but there is only one explicit terminal event, so it cannot be promoted as a cross-cycle terminal rule;
+- breadth acceleration describes transition shape but is not terminal-specific in the lead window;
+- raw daily/4h RSI levels are not sufficient as standalone exit rules;
+- distance from recent BTC highs contains useful second-wind versus top-like context;
+- discrete breadth/consolidation features require categorical treatment where control MAD is zero.
+
+### P5.3 — NEXT: multi-state cycle model
+
+Target state vocabulary:
+
+```text
+NORMAL_BULL
+BTC_LEADERSHIP_MATURING
+LATE_BULL_ROTATION
+EXHAUSTION_WATCH
+DE_RISK_1
+DE_RISK_2
+FLAT
+```
+
+P5.3 must preregister state semantics and allowed evidence before numerical threshold fitting. It must preserve BRRK relative ranking and use the cycle layer only to decide **how much total directional risk** to take.
+
+Key boundary:
+
+```text
+BRRK        = which assets / relative weights
+Cycle layer = how much total directional risk
+Router      = which instruments implement it
+Execution   = how to reach actual target safely
+```
+
+ETH/BTC/alt rotation is not automatically bearish. A top/de-risk transition must depend on multi-family deterioration/exhaustion evidence, not on RSI, volatility or relative leadership alone.
+
+### Remaining Phase 5 order
+
+1. **P5.1 Event taxonomy — COMPLETE / FROZEN**.
+2. **P5.2 Feature evidence — COMPLETE / IMMUTABLE / DESCRIPTIVE CLOSEOUT**.
+3. **P5.3 State model — NEXT** — preregister multi-state structure, then fit/evaluate without retuning P5.1/P5.2.
+4. **P5.4 Required behavior** — map accepted state semantics to total-risk behavior while preserving BRRK ranking.
+5. **P5.5 Validation** — event-level / leave-one-event-out robustness, lead/lag, false-positive duration, missed upside, drawdown avoided, terminal wealth and second-wind behavior.
+6. **P5.6 Integration** — cycle layer above BRRK as total-risk control only.
 7. **Phase 6** — integrated live-data shadow system with zero signing/trading authority.
 8. **Phase 7** — limited-capital live long only after explicit production approval and shadow/operational evidence.
-9. **Phase 8** — bear-short research only after long/exit readiness; first short remains human-gated.
+9. **Phase 8** — bear-short research later; first short remains human-gated.
 
 ## Source-of-truth order
 
@@ -143,4 +209,4 @@ Order:
 7. `config/decision_registry.json`
 8. dated audit/research/runbook documents as historical evidence
 
-Immutable study outputs live under `research/results/`. The presence of a result file means evidence exists; it does not imply promotion or production authorization.
+Immutable study outputs live under `research/results/`. The presence of a result means evidence exists; it does not imply promotion or production authorization.
