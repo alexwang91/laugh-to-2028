@@ -3,7 +3,7 @@
 Last updated: 2026-08-07
 Status: **authoritative current-state handoff**
 
-> GitHub `main` is the canonical live ref. The repository-hygiene work started from normalized main `98396a5b510c5f0a717b954568921c1daef6edc8` (PR #89). Do not guess a future merge SHA in advance.
+> GitHub `main` is the canonical live ref. Repository hygiene PR #91 merged as `d158e32095b4e235644a9b5c75f914449775a7dd`; this post-merge normalization only closes the handoff and does not advance research.
 
 ## Executive state
 
@@ -15,6 +15,7 @@ Phase 3                         COMPLETE / MERGED
 P4.1 defensive scaler          COMPLETE / MERGED / frozen [0,1]
 P4 architecture + cap1         COMPLETE / MERGED
 P4 margin/liquidation prereqs  COMPLETE / MERGED
+Repository hygiene             COMPLETE / MERGED (#91)
 LEVERAGE-0040 implementation   PRE-RESULT CANDIDATE / PAUSED
 LEVERAGE-0040 search           NOT RUN
 P4.5 select/fail decision      BLOCKED
@@ -27,17 +28,17 @@ production authorization       NONE
 
 ## Current owner instruction
 
-**Do not continue LEVERAGE-0040 now.**
+**STOP. Do not continue LEVERAGE-0040 until the owner explicitly asks to resume it.**
 
-PR #90 is intentionally:
+PR #90 remains intentionally:
 
 `P4.4 [PAUSED / DRAFT]: freeze and preflight LEVERAGE-0040 one-time study`
 
-Current research branch:
+Research branch:
 
 `p4-4/leverage-0040-one-time-study-v2`
 
-Paused branch head at the time of repository normalization:
+Paused branch head at the time repository hygiene completed:
 
 `d3f4c3f9407d253b36166940f650f6a9ed92957d`
 
@@ -52,7 +53,7 @@ operating drawdown budget              NONE
 production gross >1 authorization      NONE
 ```
 
-Green pre-result CI on #90 is **not** permission to continue. After repository hygiene changes `main`, #90 must be treated as stale until explicitly resumed and refreshed/revalidated.
+Pre-hygiene green CI on #90 is historical evidence, **not** permission to continue. `main` changed after #90's current head; a future resume must refresh/revalidate from live main first.
 
 ## Frozen architecture and product constraints
 
@@ -93,7 +94,7 @@ No candidate >1 has been observed under LEVERAGE-0040.
 
 Canonical product/config authority, decision registry, project-governance rules, CI baseline, and status taxonomy are merged.
 
-Required status distinction remains:
+Required distinction remains:
 
 `IMPLEMENTED → TESTED → CI VERIFIED → MERGED → PRODUCTION AUTHORIZED`
 
@@ -121,7 +122,7 @@ Merged:
 - corrected live-L2 measurement;
 - route decision logic and capacity evidence.
 
-Route/depth evidence remains point-in-time execution evidence, not a claim of historical PIT liquidity.
+Route/depth evidence remains point-in-time execution evidence, not historical PIT liquidity.
 
 ### P3 / research-to-live target pipeline
 
@@ -148,13 +149,38 @@ Merged before any >1 search result:
 - standard cross-margin liquidation-distance model;
 - defensive-monotone multiplier policy frozen pre-result.
 
+### Repository hygiene completed
+
+PR #91 normalized repository structure and entry documentation without advancing strategy research.
+
+Verified cleanup history:
+
+```text
+remote branches before       96
+pass 1 retired               81
+pass 2 retired                1
+pass 3 audited/retired       11
+active refs during PR #91     3
+```
+
+The hygiene work also:
+
+- replaced the stale root README;
+- reset `CURRENT_STATE.md` and `NEXT_STEPS.md`;
+- added `docs/README.md` as the documentation/evidence index;
+- corrected stale P3.1 decision-registry prose to reflect XRP feature-only parity;
+- removed all temporary cleanup/registry workflows before merge;
+- preserved historical audits and `research/results/` evidence.
+
+See `docs/REPOSITORY_HYGIENE_2026-08-07.md`.
+
 ## Important issues discovered and disposition
 
 ### GOV-HIST-0073 — manual merge evidence gap
 
 PR #73 was manually merged without a recorded final-head green governance CI run.
 
-Historical status must remain:
+Historical status remains:
 
 ```text
 MERGED = YES
@@ -175,11 +201,11 @@ feature-only assets XRP
 strategy signal set BTC / ETH / SOL / BNB / XRP
 ```
 
-No XRP target/routing authority was introduced.
+PR #91 also corrected the stale registry description. No XRP target/routing authority was introduced.
 
 ### P4.4 PREFLIGHT-RAW-TARGET-001
 
-Initial #90 `--preflight-only` incorrectly attempted to recover defensive scale using:
+Initial #90 `--preflight-only` incorrectly attempted:
 
 `gross(BRRK banded holdings) / gross(V1 banded holdings)`
 
@@ -191,26 +217,11 @@ Correction: rebuild raw V1 + frozen BRRK-0011 scale from frozen source authority
 
 Correction: frozen decision `2022-12-09` maps to first evaluated return session `2022-12-10`.
 
-Both P4.4 corrections occurred before any cap>1 candidate observation and changed no economic parameter.
+Both corrections occurred before any cap>1 observation and changed no economic parameter.
 
 ### Repository sprawl / stale entry docs
 
-Before hygiene:
-
-- 96 remote branches;
-- root README represented an older research stage;
-- `CURRENT_STATE` / `NEXT_STEPS` lagged actual merged state;
-- historical branches and documents competed with current authority.
-
-2026-08-07 hygiene work:
-
-- pass 1: 81 proven-safe merged/abandoned branches retired;
-- pass 2: 1 branch already fully contained in main retired;
-- pass 3: 11 unique historical branches audited by exact SHA and retired as merged/superseded/invalid/stale history;
-- remote branch set reduced from **96 to 3** during the cleanup: `main`, paused #90, and the temporary housekeeping branch;
-- one-time cleanup workflow removed before the hygiene PR is proposed for merge.
-
-See `docs/REPOSITORY_HYGIENE_2026-08-07.md`.
+Resolved by PR #91. Historical evidence was retained; obsolete remote refs were retired under auditable rules.
 
 ## Research decision summary
 
@@ -222,7 +233,7 @@ See `docs/REPOSITORY_HYGIENE_2026-08-07.md`.
 
 ### Shadow / diagnostic only
 
-- EXPOSURE-SMOOTH-0038 — mechanism validated, **SHADOW_ONLY / NOT PROMOTED**;
+- EXPOSURE-SMOOTH-0038 — **SHADOW_ONLY / NOT PROMOTED**;
 - PIT dispersion diagnostics — evidence only, not target authority.
 
 ### Rejected / stopped / superseded
@@ -233,7 +244,7 @@ See `docs/REPOSITORY_HYGIENE_2026-08-07.md`.
 - ASYM extra-exposure variants as promoted directional authority;
 - LEVERAGE-0039 — stopped pre-run, no result, never reuse.
 
-Historical evidence remains in `research/results/` and dated docs; branch deletion does not rewrite these decisions.
+Historical evidence remains in `research/results/` and dated docs.
 
 ## Documentation authority
 
@@ -255,23 +266,22 @@ A dated historical report is an evidence snapshot. It does not override this fil
 DRIFT_0
 ```
 
-Repository hygiene changes documentation/ref organization only. It does not alter frozen strategy math or production authorization.
+Repository hygiene and this post-merge normalization do not alter frozen strategy math or production authorization.
 
 ## Exact next action
 
 ```text
-finish repository-hygiene PR
-→ verify applicable CI/governance
-→ expected-head merge to main
-→ retire the temporary housekeeping branch
-→ KEEP PR #90 PAUSED / DRAFT
-→ DO NOT create RUN_ONCE marker
+STOP
+KEEP PR #90 PAUSED / DRAFT
+DO NOT create RUN_ONCE marker
+DO NOT merge #90
 ```
 
 Only after an explicit owner instruction to resume:
 
 ```text
-refresh #90 from then-current main
+re-fetch live main / #90 / marker / result
+→ refresh #90 from then-current main
 → repeat all applicable pre-result CI/parity/governance
 → verify marker/result still absent
 → only then reconsider crossing the one-time LEVERAGE-0040 execution boundary
