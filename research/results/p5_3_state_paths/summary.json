@@ -1,0 +1,45 @@
+{
+  "artifact_sha256": {
+    "daily_state_paths.csv": "3a4aeb72736b32defc93e38d8c50bc83734ae85a40871dfed2a4de51c779feaa",
+    "event_state_first_occurrence.csv": "6c93f59dc8c080b3bd0a63d3918cbf1ee507d9698b66aa48384ce554f6f137ff",
+    "event_state_occupancy.csv": "b2c73a9f543ddf973d405a1a97d074feed1675755ff87585f39ef7b4dc0e0b1e",
+    "normalization_counts.csv": "6b1ed2ea07fa42ba15681fdf06c90935a59393adc71b19cfbbe339cfe1bddf3f",
+    "normalized_percentiles.csv": "dd8a6bef0c55dd1f508bbc313995456f96617ccd10cef94a85ee9057facd1f26",
+    "profile_summary.csv": "637bd29d140cfec82dd81895f463f8d762497a33f033fa81486dadce99f52be6"
+  },
+  "daily_feature_rows": 1977,
+  "daily_state_path_rows": 5931,
+  "event_first_occurrence_rows": 173,
+  "event_occupancy_rows": 165,
+  "initialization_dates": {
+    "BALANCED": "2021-01-17",
+    "CONSERVATIVE": "2021-01-17",
+    "EARLY": "2021-01-17"
+  },
+  "p5_2_summary_sha256": "3f6dc3c512d22ac8f71d43ed155f2602cd40d5caf3d617c0e130e170727e0627",
+  "production_authorized": false,
+  "profiles": [
+    "EARLY",
+    "BALANCED",
+    "CONSERVATIVE"
+  ],
+  "resolved_event_count": 11,
+  "selection": {
+    "profile_selected": false,
+    "state_model_production_selected": false,
+    "status": "STATE_PATH_EVIDENCE_ONLY"
+  },
+  "state_model_contract": "P5.3-STATE-MODEL-STRUCTURE-V1",
+  "state_model_contract_git_blob_sha": "400ec97f8a0e522c5776ce1f6a98fc6d7e069267",
+  "state_vocabulary": [
+    "NORMAL_BULL",
+    "BTC_LEADERSHIP_MATURING",
+    "LATE_BULL_ROTATION",
+    "EXHAUSTION_WATCH",
+    "DE_RISK_1",
+    "DE_RISK_2",
+    "FLAT"
+  ],
+  "status": "ONE_TIME_FROZEN_STATE_PATH_EVIDENCE_COMPLETE",
+  "study_id": "P5.3-STATE-PATH-EVIDENCE-V1"
+}
