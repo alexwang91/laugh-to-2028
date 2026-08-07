@@ -11,175 +11,224 @@ Status: authoritative cross-chat handoff snapshot
 - P3.1 schema-v2 data contract: PASS / MERGED / validated by PR #75
 - P3.2 Target calculation API: PASS / TESTED / CI VERIFIED / MERGED by PR #76
 - P3.3 rebalance / turnover controls: PASS / TESTED / CI VERIFIED / MERGED by PR #78
+- PR #79 post-P3.3 normalization: PASS / MERGED as `1d9dbebf5087936d0454f631145b176c62da4ec8`
 - PR #73 remains historically MERGED without a recorded green required PR-governance run before merge; do not retroactively relabel it CI VERIFIED
 - PR #74 remains historically MERGED during the GitHub Actions incident without its own pre-merge workflow evidence; PR #75 subsequently validated the merged schema-v2 state
 - Historical stale-main PR #70: INVALID / CLOSED / DO NOT REVIVE
 
-## Current main and roadmap position
+## Current roadmap position
 
-P3.3 merge commit on main:
+Current main / P3.4 base:
 
-`a503e64da4641e434620aa6a04bf9f6448d00135`
+`1d9dbebf5087936d0454f631145b176c62da4ec8`
 
 ```text
 P3.1 schema-v2 data contract           PASS / MERGED
 P3.2 Target calculation API            PASS / MERGED
-P3.3 rebalance / turnover controls      PASS / MERGED
-P3.4 contributions                     UNIQUE NEXT ROADMAP IMPLEMENTATION
-P4 leverage / operating risk budget     BLOCKED UNTIL P3.4
-P5 exit intelligence                    BLOCKED
+P3.3 rebalance / turnover controls     PASS / MERGED
+P3.4 weekly contribution handling      IMPLEMENTED / TESTED / CI-VERIFIED CANDIDATE IN PR #80
+P4 leverage / operating risk budget    BLOCKED UNTIL P3.4 MERGES + NORMALIZES
+P5 exit intelligence                   BLOCKED
 ```
 
-P3.4 must start from the latest main only after this post-merge normalization PR closes.
+Active PR / branch:
 
-## Frozen upstream target and control chain
+- PR: `#80`
+- branch: `p3-4/contribution-handling-v1`
+- fresh base: `1d9dbebf5087936d0454f631145b176c62da4ec8`
+- latest fully validated implementation checkpoint before this handoff update: `ec641f555826ae3484fa1ef52cd2f90d05e43fa7`
+
+## Frozen upstream chain
+
+P3.4 consumes, and must not rewrite:
 
 ```text
-P3.1 canonical data
--> P3.2 BRRK-0011 target
--> P3.3 explicit target-to-position control
+P3.1 canonical daily data
+-> P3.2-BRRK0011-V1 target
+-> P3.3-L1-BAND-V1 target-to-position control
+-> P3.4 contribution timing/equity handling
 ```
 
-Asset role remains:
+Frozen boundaries remain:
 
 ```text
 target assets = BTC, ETH, SOL, BNB
 feature-only  = XRP
 P3.2 gross    <= 1
-short target  forbidden
+short targets forbidden
+P3.3 routine L1 band = 0.05
 ```
 
-P3.2 remains `P3.2-BRRK0011-V1` / BRRK-0011 with committed golden vectors at:
+P3.2 committed golden vectors remain unchanged at `research/results/p3_2_target_parity/golden_v1.json`.
 
-`research/results/p3_2_target_parity/golden_v1.json`
+## P3.4 roadmap authority
 
-P3.3 does not recompute or alter the P3.2 target.
+Exact roadmap requirement reread before coding:
 
-## P3.3 frozen policy now on main
+> Manual deposit is detected as equity change and included at the next daily decision.
 
-Machine policy:
+Acceptance:
 
-`config/rebalance_policy.json`
+- deposit does not trigger unscheduled intraday risk increase;
+- new cash allocation follows the same target engine.
 
-Version:
+P3.4 does not require a fixed weekday, does not require an exact `$100` contribution and does not create a contribution-specific allocation model.
 
-`P3.3-L1-BAND-V1`
+## P3.4 machine policy
 
-Metric and routine rule:
+Machine policy: `config/contribution_policy.json`
+
+Version: `P3.4-EQUITY-CHANGE-DAILY-V1`
+
+Frozen semantics:
 
 ```text
-L1 target gap = Σ |P3.2 target weight - current position weight|
-L1 gap < 0.05  -> suppress routine rebalance
-L1 gap >= 0.05 -> post-control desired state = full P3.2 target
+equity reference:
+  previous accepted daily-decision account equity
+
+detection:
+  observe signed account-equity change without source attribution
+
+positive change:
+  contribution candidate, not confirmed transfer attribution
+
+intraday:
+  record only
+  no target recalculation
+  no risk increase
+
+application:
+  next eligible 00:00 UTC daily decision
+  P3.2-BRRK0011-V1 -> P3.3-L1-BAND-V1
+
+weekly ~$100:
+  product assumption only
+  not a detection threshold
+  not a scheduling trigger
 ```
 
-The 0.05 value is the migrated Plan B execution-control continuity value. It is distinct from the separate P3.2 internal 5% V1 return-model calibration band.
+Account equity alone is not used to claim whether a positive change came from a deposit or PnL. Positive change is deliberately a contribution candidate rather than confirmed source attribution.
 
-Runtime validation freezes the V1 policy semantics:
+## P3.4 timing and allocation semantics
+
+Example intraday observation:
 
 ```text
-FROZEN_REBALANCE_BAND = 0.05
-current_short_position -> REBALANCE_TO_P3_2_TARGET_REGARDLESS_OF_BAND
-current_gross_above_one -> REBALANCE_TO_P3_2_TARGET_REGARDLESS_OF_BAND
+previous accepted decision: 2026-08-07 00:00 UTC
+positive equity change:     2026-08-07 13:45 UTC
+next eligible allocation:   2026-08-08 00:00 UTC
 ```
 
-Changing the band or safety mapping requires a new policy/version.
+The intraday observation can never invoke P3.2/P3.3 or authorize increased risk.
 
-Legacy `MIN_TRADE_USD=100` is not a P3.3 portfolio gate. Minimum notional remains downstream order feasibility only.
+If a change is observed exactly at a future 00:00 boundary before that boundary is accepted, it may enter that decision. If the observation timestamp equals an already-accepted baseline decision, P3.4 rolls it to the following day rather than replaying the same daily decision.
 
-## P3.3 control contract
+At the scheduled daily decision P3.4 uses **fresh full account equity**, not merely the observed contribution-candidate amount:
 
-Runtime:
+```text
+calculate_target(... fresh account equity ...)
+-> calculate_rebalance_control(... same fresh account equity ...)
+```
 
-`execution/plan-b-bot/beta_bot/rebalance_control.py`
+Thus new cash follows the same BRRK target engine and the same P3.3 control. Contribution amount is diagnostic only. P3.4 does not bypass P3.3 merely because cash was added.
 
-Contract:
+## P3.4 implementation candidate
 
-`docs/P3_3_REBALANCE_CONTROL.md`
+Implemented in PR #80:
 
-Input:
+- `config/contribution_policy.json`
+- `execution/plan-b-bot/beta_bot/contribution_handling.py`
+- `execution/plan-b-bot/tests/test_contribution_handling_p3_4.py`
+- `execution/plan-b-bot/tests/test_contribution_boundary_p3_4.py`
+- `docs/P3_4_CONTRIBUTION_HANDLING.md`
 
-- immutable P3.2 `TargetCalculationResult`;
-- point-in-time account equity;
-- signed current BTC/ETH/SOL/BNB notionals;
-- registered P3.3 policy.
+Observation output records previous accepted decision/equity, observed timestamp/equity, signed equity change, contribution-candidate amount, no-source-attribution classification, scheduled decision, explicit intraday prohibitions and deterministic digest.
 
-Output preserves both theoretical and actionable state:
+Daily-decision output records observation digest, contribution candidate, fresh full decision equity, P3.2 version/digest/result, P3.3 version/digest/plan, deterministic P3.4 digest and `production_authorized = false`.
 
-- upstream P3.2 target digest/version/model authority;
-- immutable model target weights/notionals;
-- current weights/notionals;
-- theoretical per-asset gap weights/notionals;
-- aggregate L1 gap / theoretical turnover;
-- current/target gross and net weights;
-- rebalance decision/reason and safety overrides;
-- post-control desired state;
-- proposed deltas / control turnover;
-- suppressed gap when inside band;
-- deterministic P3.3 canonical JSON / SHA-256 plan digest;
-- minimum-notional downstream role;
-- `production_authorized = false`.
+## P3.4 regression coverage
 
-Theoretical deviation remains measurable even when routine action is suppressed.
+Tests cover:
 
-## PR #78 final evidence
-
-Final head:
-
-`53885b993b662991cd28370d4542e48a31f648b5`
-
-Final-head evidence:
-
-- `Phase 0 baseline contract` run `31156709738` (#113): SUCCESS
-  - execution pytest: **204 passed in 7.15s**
-  - research integration contract: **5 tests / OK**
-- `Research evidence normalization` run `31156709594` (#24): SUCCESS
-- `P3.2 target research-live parity` run `31156709586` (#11): SUCCESS
-  - independent multi-date BRRK research-vs-product parity: SUCCESS
-  - committed historical golden enforcement: SUCCESS
-- final code/handoff governance run `31156709547` (#146): SUCCESS
-- final PR-body-edit governance run `31156872098` (#147): SUCCESS
-- expected-head squash merge: `a503e64da4641e434620aa6a04bf9f6448d00135`
-
-Regression coverage includes:
-
-- exact target no-op;
-- inside-band suppression with theoretical deviation preserved;
-- exact 5% boundary;
-- aggregate multi-asset L1 boundary;
-- `$60` recommended delta outside band not suppressed by legacy `$100` min-trade;
-- current short / gross>1 safety bypass;
-- unknown assets fail closed;
-- immutable upstream P3.2 target;
-- V1 policy band/safety lock;
-- deterministic control-plan digest;
+- frozen P3.4 daily-only policy and P3.2 -> P3.3 allocation path;
+- policy timing/allocation path cannot silently drift under V1;
+- intraday positive change schedules next UTC midnight and has no intraday risk permission;
+- +$37 and +$250 both detected, proving `$100/week` is not a threshold;
+- negative equity change is not a contribution candidate;
+- future exact 00:00 observation may enter that boundary;
+- an already-accepted baseline 00:00 cannot be replayed;
+- wrong/intraday application timestamp fails closed;
+- fresh full daily equity is passed through the same P3.2 target engine and P3.3 control;
+- observation and contribution-aware decision digests are deterministic;
+- canonical approved product ID is used consistently in the P3.4 chain fixture;
 - no production authorization.
 
-## P3.3 closure status
+## P3.4 validated implementation checkpoint
+
+Checkpoint head:
+
+`ec641f555826ae3484fa1ef52cd2f90d05e43fa7`
+
+Evidence:
+
+- `Phase 0 baseline contract` run `31159462257` (#119): **SUCCESS**
+  - execution pytest: **215 passed in 6.27s**
+  - research integration contract: **5 tests / OK**
+- `Research evidence normalization` run `31159462313` (#30): **SUCCESS**
+- `P3.2 target research-live parity` run `31159463430` (#17): **SUCCESS**
+  - independent multi-date BRRK target parity: SUCCESS
+  - committed historical golden enforcement: SUCCESS
+- latest `PR handoff governance` on this checkpoint: run `31159462403` (#155): **SUCCESS**
+
+History of same-PR corrections:
+
+1. Initial PR head `5c3c126434eb7490c9c66b9e85bd241407aed51a` had one Phase-0 test failure: a chain assertion hard-coded `BRRK-PLAN-B` while the canonical product ID is `brkk-laugh-to-2028`. Result: **214 passed / 1 failed**. Runtime implementation was unchanged.
+2. The assertion was corrected in the same PR; checkpoint `e8a03a18727d04e654ffc01a050adceb798af4f3` passed **215 tests + 5/5 integration** and all upstream gates.
+3. Final self-review found the synthetic `TargetCalculationResult` fixture still carried the old product-ID label even though it did not affect runtime behavior. The fixture was aligned to canonical `brkk-laugh-to-2028`; checkpoint `ec641f55...` then re-passed all four gates above.
+
+## Checkpoint self-review
+
+Versus fresh base `1d9dbebf5087936d0454f631145b176c62da4ec8`:
+
+- scope remains exactly 7 changed files;
+- only P3.4 policy/module/tests/contract/handoff changed;
+- no P3.2/P3.3 runtime or golden mutation;
+- no router/executor/product-config/decision-registry/authorization mutation;
+- no F23/P4/P5 behavior introduced.
+
+```text
+DRIFT_0
+```
+
+## Candidate status
 
 ```text
 IMPLEMENTED:           YES
 TESTED:                YES
-CI VERIFIED:           YES
-MERGED:                YES
+CI VERIFIED:           YES at checkpoint ec641f55...
+MERGED:                NO
 PRODUCTION AUTHORIZED: NO_CHANGE
 ```
 
-## P3.4 boundary
+This handoff update itself moves the PR head. That new final handoff head must re-run the normal PR workflows. No further branch-file mutation is planned after this update. Only after final-head CI is fully green may PR metadata be updated and expected-head merge occur.
 
-P3.4 is now the unique next implementation and owns **weekly contribution handling**.
+## Explicit P3.4 exclusions
 
-P3.4 must consume the merged P3.2 target and P3.3 control contract; it must not rewrite either layer.
+Do not add in P3.4:
 
-Before implementation, reread the exact P3.4 roadmap acceptance contract from `docs/IMPLEMENTATION_ROADMAP_2026-08-05.md`.
-
-P3.4 must not absorb:
-
+- transfer-source attribution;
+- automatic contribution scheduling or fixed weekday;
+- mandatory `$100` amount;
+- intraday target calculation or intraday risk increase;
+- contribution-specific alpha/target sleeve;
+- changes to P3.2 target semantics;
+- changes to P3.3 band/safety semantics;
 - F23 funding-response redesign;
-- P4 gross > 1 leverage / operating-risk-budget freeze;
+- P4 gross > 1 leverage or operating-risk-budget freeze;
 - P5 exit intelligence;
 - shorts;
 - XRP targets;
+- venue min-order/precision/routing/order submission;
 - production authorization.
 
 ## Production authorization
@@ -189,25 +238,18 @@ NO_CHANGE
 production_authorized_components = []
 ```
 
-## Project drift audit
-
-```text
-DRIFT_0
-```
-
-P3.1 data, P3.2 target and P3.3 target-to-position control semantics are aligned, validated and merged.
-
 ## Exact next action
 
 ```text
-post-merge normalization PR
--> docs-only self-review
--> applicable CI / P3.2 parity / governance
--> write final run evidence into PR metadata
--> newest governance GREEN
--> expected-head merge normalization
--> verify main
--> create fresh P3.4 branch
--> reread P3.4 roadmap acceptance contract
--> implement contribution handling only
+final-head Phase 0 + research evidence + P3.2 parity/golden + PR governance
+-> all GREEN
+-> final diff self-review
+-> update PR #80 body with exact final-head run IDs/results
+-> require newest body-edit governance GREEN
+-> re-fetch PR and verify head unchanged
+-> expected-head squash merge #80
+-> verify new main
+-> fresh docs-only post-merge normalization PR
+-> merge normalization
+-> reread exact P4 roadmap before any P4 implementation
 ```
