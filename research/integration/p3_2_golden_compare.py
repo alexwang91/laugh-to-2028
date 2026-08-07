@@ -12,15 +12,25 @@ import importlib.metadata
 import json
 import math
 from pathlib import Path
-
-from beta_bot.product_config import load_product_config
-from beta_bot.target_engine import MODEL_AUTHORITY, TARGET_ENGINE_VERSION, calculate_target
-from beta_bot.target_math import build_v1_raw
-from p3_1_data_contract_adapter import canonicalize_research_daily_history
-from p3_2_target_parity import TARGET_ASSETS, dataset_prices, fetch_source_batches
+import sys
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
+EXECUTION_ROOT = REPO_ROOT / "execution" / "plan-b-bot"
+if str(EXECUTION_ROOT) not in sys.path:
+    sys.path.insert(0, str(EXECUTION_ROOT))
+
+from beta_bot.product_config import load_product_config  # noqa: E402
+from beta_bot.target_engine import (  # noqa: E402
+    MODEL_AUTHORITY,
+    TARGET_ENGINE_VERSION,
+    calculate_target,
+)
+from beta_bot.target_math import build_v1_raw  # noqa: E402
+from p3_1_data_contract_adapter import canonicalize_research_daily_history  # noqa: E402
+from p3_2_target_parity import TARGET_ASSETS, dataset_prices, fetch_source_batches  # noqa: E402
+
+
 GOLDEN_PATH = REPO_ROOT / "research" / "results" / "p3_2_target_parity" / "golden_v1.json"
 ABS_TOL = 2e-10
 
