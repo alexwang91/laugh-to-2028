@@ -35,13 +35,9 @@ Current production gross cap remains `1.0`.
 
 `LEVERAGE-0040` and `LEVERAGE-0041` are complete immutable `NO_PROMOTION` studies. No research cap, operating drawdown budget or prospective P4.6 cap was selected. Do not rerun, rescue, retune, reinterpret or reuse either experiment ID.
 
-LEVERAGE-0041 result commit:
+LEVERAGE-0041 result commit: `8ea784830cfffbf892a258cb329d437725d41982`.
 
-`8ea784830cfffbf892a258cb329d437725d41982`
-
-LEVERAGE-0041 immutable summary SHA256:
-
-`e41a5895263e7aa9206df9fa99fcbb71e5f937abc4746a567fbeb462cca88d17`
+LEVERAGE-0041 immutable summary SHA256: `e41a5895263e7aa9206df9fa99fcbb71e5f937abc4746a567fbeb462cca88d17`.
 
 ## P5.1 immutable taxonomy truth
 
@@ -57,13 +53,9 @@ Required 2021/2025 events and four high-volatility non-top controls are frozen. 
 
 Contract: `P5.2-FEATURE-FAMILIES-V1`.
 
-Immutable result commit:
+Immutable result commit: `61d585afb64afbe3ead6422e7e62cde6c59fad40`.
 
-`61d585afb64afbe3ead6422e7e62cde6c59fad40`
-
-Immutable summary SHA256:
-
-`3f6dc3c512d22ac8f71d43ed155f2602cd40d5caf3d617c0e130e170727e0627`
+Immutable summary SHA256: `3f6dc3c512d22ac8f71d43ed155f2602cd40d5caf3d617c0e130e170727e0627`.
 
 ```text
 status                    ONE_TIME_FROZEN_FEATURE_EVIDENCE_COMPLETE
@@ -86,9 +78,7 @@ P5.2 does not authorize a final feature set or thresholds. It provides evidence 
 
 ## P5.3 frozen preregistration truth
 
-Contract:
-
-`P5.3-STATE-MODEL-STRUCTURE-V1`
+Contract: `P5.3-STATE-MODEL-STRUCTURE-V1`.
 
 Files:
 
@@ -99,9 +89,18 @@ execution/plan-b-bot/tests/test_p5_3_state_model_prereg.py
 .github/workflows/p5-3-state-model-prereg.yml
 ```
 
-Status:
+Status: `FROZEN_BEFORE_STATE_PATH_EVALUATION`.
 
-`FROZEN_BEFORE_STATE_PATH_EVALUATION`
+No P5.3 state path has been computed yet.
+
+### Prereg completeness correction R1
+
+Before any state-path evaluation, `P5.3-PREREG-COMPLETENESS-R1` corrected two specification gaps:
+
+- the exact empirical-percentile rank mapping was previously unstated;
+- a 252-feature-observation minimum would exclude required early-2021 taxonomy windows because the immutable P5.2 panel starts 2020-10-01 and several features have internal warm-up periods.
+
+R1 changes no P5.1 event, P5.2 result, feature definition, profile threshold or production boundary and uses no P5.3 state-path result.
 
 Target states:
 
@@ -114,6 +113,8 @@ DE_RISK_1
 DE_RISK_2
 FLAT
 ```
+
+Before sufficient causal feature history exists, the research path emits `DATA_INSUFFICIENT`; this is a pre-initialization diagnostic rather than a market-risk state.
 
 ### Frozen architecture
 
@@ -138,15 +139,22 @@ strong exhaustion + damage  -> hard-risk / FLAT candidate
 
 ### Causal normalization
 
-Continuous runtime inputs use trailing empirical percentiles:
+For each continuous runtime feature at each completed 00:00 UTC daily decision:
 
 ```text
-lookback       365 completed daily observations
-minimum        252 observations
-future data    forbidden
-current bar    allowed only after completion at 00:00 UTC decision boundary
-missing data   fail closed / no automatic de-escalation or re-risk
+maximum window        last 365 completed daily dates including t
+feature missing rows  dropped feature-by-feature
+minimum N             20 nonmissing feature observations
+percentile            (average_rank(current) - 1) / (N - 1)
+ties                  average rank
+future data           forbidden
+20 <= N < 365         use available causal history and report N
+N < 20                normalized input unavailable
 ```
+
+The P5.3 path remains `DATA_INSUFFICIENT` until every continuous runtime input used by any evidence atom meets the 20-observation minimum. Prereg CI must prove this condition is satisfied by `2021-01-31`, the start of the earliest frozen P5.1 control `early_warning` bucket.
+
+After initialization, missing evidence may not de-escalate or automatically re-add risk. Per-feature calibration depth and minimum depth by date are mandatory outputs.
 
 P5.2 robust-z values are research diagnostics only and are **not** runtime inputs.
 
@@ -167,11 +175,11 @@ All three profiles must be reported. They are preregistered sensitivity cases, n
 - hard strong-damage + strong-exhaustion may enter FLAT immediately;
 - FLAT is absorbing inside P5.3;
 - `FLAT -> risk-on` requires explicit human approval outside P5.3;
-- intraday P5.3 risk addition is forbidden.
+- no intraday P5.3 risk addition.
 
 ### Explicitly excluded pending data
 
-P5.3 does not use or proxy the six P5.2 pending inputs:
+P5.3 does not use or proxy:
 
 - BTC dominance;
 - broad-market breadth;
@@ -187,6 +195,7 @@ After prereg CI/governance is green and merged, implement the deterministic stat
 Required outputs include:
 
 - complete daily state paths;
+- per-feature calibration depths / initialization date;
 - event-window occupancy;
 - first-entry dates / lead-lag;
 - state transition and churn counts;
