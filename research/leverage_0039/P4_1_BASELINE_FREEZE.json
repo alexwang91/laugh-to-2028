@@ -23,7 +23,7 @@
     },
     "correction_result": {
       "path": "research/results/BRRK_0011_CDAR_CORRECTION_2026-08-04.md",
-      "blob_sha": "40cd823b1331a413b5fe300acdd6f164570c75a3",
+      "blob_sha": "40cd0e90a357a2c2e5be0b9de69feaf0f1e75eaf",
       "role": "authoritative corrected BRRK-0011 result; historical result files are not overwritten"
     },
     "measurement_normalization": {
