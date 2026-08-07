@@ -1,0 +1,121 @@
+{
+  "evidence_source": {
+    "initial_ci_run": 31154078306,
+    "initial_head": "a8d2e0212e30e718392329302e472d40fb01a8a3",
+    "raw_market_source": "BINANCE_SPOT_KLINES_V1",
+    "data_contract_id": "BRRK-DATA-CONTRACT-P3.1-R1-2026-08-06",
+    "target_engine_version": "P3.2-BRRK0011-V1",
+    "model_authority": "BRRK-0011",
+    "hmm_restarts": 3,
+    "hmm_iter": 250,
+    "random_seed": 20260804,
+    "dependency_lock": {
+      "numpy": "2.5.1",
+      "pandas": "3.0.3",
+      "scipy": "1.18.0",
+      "scikit-learn": "1.9.0",
+      "hmmlearn": "0.3.3"
+    }
+  },
+  "coverage": {
+    "full_brrk_decision_count": 6,
+    "early_v1_decision_count": 2,
+    "risk_states_observed": ["ALT_EXPANSION", "BTC_LEAD", "MAJOR_ROTATION", "RISK_OFF"],
+    "min_defensive_scale": 1.3453862979240228e-07,
+    "max_defensive_scale": 0.9999999939549142
+  },
+  "v1_only_early_history": [
+    {
+      "decision": "2021-05-20T00:00:00Z",
+      "session": "2021-05-19",
+      "gross": 0.3692474519179393,
+      "weights": {"BTC": 0.3692474519179393, "ETH": 0.0, "SOL": 0.0, "BNB": 0.0}
+    },
+    {
+      "decision": "2021-09-08T00:00:00Z",
+      "session": "2021-09-07",
+      "gross": 0.9999999999999999,
+      "weights": {"BTC": 0.3144367744224123, "ETH": 0.33556322557758755, "SOL": 0.35, "BNB": 0.0}
+    }
+  ],
+  "full_brrk_multi_date": [
+    {
+      "decision": "2022-12-15T00:00:00Z",
+      "target_session": "2022-12-14",
+      "regime_refit_session": "2022-12-09",
+      "risk_state": "RISK_OFF",
+      "riskoff_probability": 0.9999998654613702,
+      "meta_scale": 0.0,
+      "defensive_scale": 1.3453862979240228e-07,
+      "gross": 4.9685921647560444e-08,
+      "cash": 0.9999999503140784,
+      "weights": {"BTC": 4.9685921647560444e-08, "ETH": 0.0, "SOL": 0.0, "BNB": 0.0},
+      "data_digest": "e83975d7477c4204a1d69b5ebd0ddfaceccdb6da5c2490def6951d25fb1ccfa4"
+    },
+    {
+      "decision": "2023-10-25T00:00:00Z",
+      "target_session": "2023-10-24",
+      "regime_refit_session": "2023-10-05",
+      "risk_state": "MAJOR_ROTATION",
+      "riskoff_probability": 3.354125446222826e-05,
+      "meta_scale": 0.16111141588639658,
+      "defensive_scale": 0.9999718626245347,
+      "gross": 0.9999718626245347,
+      "cash": 2.8137375465253633e-05,
+      "weights": {"BTC": 0.4999859313122674, "ETH": 0.0, "SOL": 0.4999859313122674, "BNB": 0.0},
+      "data_digest": "d15bf12bbda454c73c9be520d62cd94e815c36c90d435772f2014200000ae1be"
+    },
+    {
+      "decision": "2024-08-06T00:00:00Z",
+      "target_session": "2024-08-05",
+      "regime_refit_session": "2024-07-31",
+      "risk_state": "BTC_LEAD",
+      "riskoff_probability": 1.822812419411543e-05,
+      "meta_scale": 0.9169894233345985,
+      "defensive_scale": 0.9999984868728992,
+      "gross": 0.2751097754058501,
+      "cash": 0.72489022459415,
+      "weights": {"BTC": 0.2751097754058501, "ETH": 0.0, "SOL": 0.0, "BNB": 0.0},
+      "data_digest": "df6dd20a029cf88efc45a788e31bf48d5c1bf5989011d0d8651733b8291ea2e5"
+    },
+    {
+      "decision": "2025-04-10T00:00:00Z",
+      "target_session": "2025-04-09",
+      "regime_refit_session": "2025-03-28",
+      "risk_state": "MAJOR_ROTATION",
+      "riskoff_probability": 2.4789796834528104e-08,
+      "meta_scale": 0.756146214902401,
+      "defensive_scale": 0.9999999939549142,
+      "gross": 0.436949609028391,
+      "cash": 0.563050390971609,
+      "weights": {"BTC": 0.436949609028391, "ETH": 0.0, "SOL": 0.0, "BNB": 0.0},
+      "data_digest": "b7fafca2617491d3160fc54dc01a43c80cfd1b8833b30affd83919f308f5a800"
+    },
+    {
+      "decision": "2025-11-15T00:00:00Z",
+      "target_session": "2025-11-14",
+      "regime_refit_session": "2025-10-24",
+      "risk_state": "ALT_EXPANSION",
+      "riskoff_probability": 0.028546700578529937,
+      "meta_scale": 0.5857734680175781,
+      "defensive_scale": 0.9881751992198149,
+      "gross": 0.28750345920762954,
+      "cash": 0.7124965407923705,
+      "weights": {"BTC": 0.28750345920762954, "ETH": 0.0, "SOL": 0.0, "BNB": 0.0},
+      "data_digest": "d04a8ad3b8f3d1f4d83af3479bd4254fec41cc0280db61855ea34eb1c5c8a065"
+    },
+    {
+      "decision": "2026-08-03T00:00:00Z",
+      "target_session": "2026-08-02",
+      "regime_refit_session": "2026-07-21",
+      "risk_state": "RISK_OFF",
+      "riskoff_probability": 0.9903994801343635,
+      "meta_scale": 0.0,
+      "defensive_scale": 0.009600519865636481,
+      "gross": 0.004503425129526345,
+      "cash": 0.9954965748704736,
+      "weights": {"BTC": 0.004503425129526345, "ETH": 0.0, "SOL": 0.0, "BNB": 0.0},
+      "data_digest": "afb693f9c85314b5495836f5ef13a23ed8ed172bb426fdede96feaad67715420"
+    }
+  ]
+}
