@@ -3,6 +3,15 @@
   "status": "FROZEN_BEFORE_STATE_PATH_EVALUATION",
   "registered_at_utc": "2026-08-07T22:35:00Z",
   "base_main": "4b5f41b449b2e9ac3d8ec9125644bc0a10e36963",
+  "prereg_correction": {
+    "id": "P5.3-PREREG-COMPLETENESS-R1",
+    "timing": "BEFORE_ANY_P5_3_STATE_PATH_EVALUATION",
+    "reason": "The initial preregistration did not define the exact empirical-percentile rank mapping and a 252-feature-observation minimum would exclude required early-2021 taxonomy windows because the immutable P5.2 panel begins 2020-10-01.",
+    "change": "Freeze an exact average-rank percentile formula, a 365 completed-date maximum window, a 20 nonmissing-feature-observation minimum, DATA_INSUFFICIENT pre-initialization semantics, and mandatory calibration-depth reporting.",
+    "observed_p5_3_state_paths_used": false,
+    "p5_1_or_p5_2_mutation": false,
+    "production_change": false
+  },
   "dependencies": {
     "p5_1_taxonomy_contract": "P5.1-EVENT-TAXONOMY-V1",
     "p5_1_taxonomy_git_blob_sha": "73d010666fbfd957ec15214a00883a90a8adba5a",
@@ -30,6 +39,7 @@
     "DE_RISK_2",
     "FLAT"
   ],
+  "preinitialization_state": "DATA_INSUFFICIENT",
   "state_semantics": {
     "NORMAL_BULL": "Constructive regime without sufficient maturity, rotation, exhaustion or damage evidence to enter a later-cycle state.",
     "BTC_LEADERSHIP_MATURING": "BTC remains structurally constructive but regime texture indicates late/mature conditions; rotation evidence is not yet sufficient and this state is not bearish by itself.",
@@ -79,11 +89,17 @@
   ],
   "causal_normalization": {
     "method": "TRAILING_EMPIRICAL_PERCENTILE",
-    "lookback_completed_daily_observations": 365,
-    "minimum_completed_observations": 252,
-    "include_current_observation": true,
+    "lookback_completed_daily_dates": 365,
+    "window_semantics": "At date t take the last up to 365 completed daily dates ending at t, then drop missing values for the feature being normalized.",
+    "minimum_nonmissing_feature_observations": 20,
+    "percentile_formula": "(average_rank_of_current_value_among_nonmissing_window_values - 1) / (N - 1)",
+    "percentile_range": "[0,1] with sample minimum=0 and sample maximum=1 when N>1",
+    "include_current_completed_observation": true,
     "future_observations_allowed": false,
     "tie_method": "average",
+    "early_history_rule": "When 20 <= N < 365, use the available causal nonmissing feature history and report N. When N < 20, that normalized feature is unavailable.",
+    "initialization_rule": "The P5.3 state path remains DATA_INSUFFICIENT until every continuous runtime feature used by any evidence atom has at least 20 nonmissing observations under the causal window. DATA_INSUFFICIENT rows are reported and excluded from ordinary state-occupancy denominators.",
+    "calibration_depth_must_be_reported": true,
     "missing_rule": "FAIL_CLOSED_NO_DEESCALATION"
   },
   "profiles": {
@@ -143,34 +159,13 @@
     }
   },
   "raw_candidate_state_priority": [
-    {
-      "state": "FLAT",
-      "rule": "STRONG_DAMAGE AND STRONG_EXHAUSTION"
-    },
-    {
-      "state": "DE_RISK_2",
-      "rule": "STRONG_DAMAGE AND EXHAUSTION, OR DAMAGE AND STRONG_EXHAUSTION"
-    },
-    {
-      "state": "DE_RISK_1",
-      "rule": "DAMAGE AND EXHAUSTION"
-    },
-    {
-      "state": "EXHAUSTION_WATCH",
-      "rule": "EXHAUSTION OR STRONG_EXHAUSTION"
-    },
-    {
-      "state": "LATE_BULL_ROTATION",
-      "rule": "ROTATION AND NOT DAMAGE"
-    },
-    {
-      "state": "BTC_LEADERSHIP_MATURING",
-      "rule": "MATURE_TEXTURE AND NOT DAMAGE"
-    },
-    {
-      "state": "NORMAL_BULL",
-      "rule": "otherwise"
-    }
+    {"state": "FLAT", "rule": "STRONG_DAMAGE AND STRONG_EXHAUSTION"},
+    {"state": "DE_RISK_2", "rule": "STRONG_DAMAGE AND EXHAUSTION, OR DAMAGE AND STRONG_EXHAUSTION"},
+    {"state": "DE_RISK_1", "rule": "DAMAGE AND EXHAUSTION"},
+    {"state": "EXHAUSTION_WATCH", "rule": "EXHAUSTION OR STRONG_EXHAUSTION"},
+    {"state": "LATE_BULL_ROTATION", "rule": "ROTATION AND NOT DAMAGE"},
+    {"state": "BTC_LEADERSHIP_MATURING", "rule": "MATURE_TEXTURE AND NOT DAMAGE"},
+    {"state": "NORMAL_BULL", "rule": "otherwise"}
   ],
   "transition_rules": {
     "daily_boundary": "00:00 UTC",
@@ -178,11 +173,13 @@
     "deescalation": "De-escalation requires profile.deescalation_clear_days with raw candidate below the current state and may move at most one state per completed daily decision.",
     "flat_absorbing": true,
     "flat_exit": "EXPLICIT_HUMAN_APPROVAL_REQUIRED_OUTSIDE_P5.3",
-    "missing_data": "Missing required normalized evidence cannot cause de-escalation or automatic re-risk. Hold current state unless available hard-risk evidence independently requires a more conservative state.",
+    "missing_data": "Before initialization emit DATA_INSUFFICIENT. After initialization, missing required normalized evidence cannot cause de-escalation or automatic re-risk; hold current state unless available hard-risk evidence independently requires a more conservative state.",
     "intraday": "No P5.3 intraday risk addition. Intraday emergency risk reduction remains governed by existing execution/risk controls."
   },
   "research_outputs_required": [
     "daily state path for EARLY/BALANCED/CONSERVATIVE profiles",
+    "per-feature normalization observation count and minimum calibration depth by date",
+    "DATA_INSUFFICIENT date range and initialization date",
     "event-window state occupancy and first-entry dates",
     "lead/lag relative to frozen P5.1 anchors",
     "state transitions and churn counts",
