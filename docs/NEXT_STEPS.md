@@ -1,168 +1,153 @@
-# Next Steps
+# BRRK Next Steps
 
-Status: **authoritative dependency order**
 Last updated: 2026-08-07
 
 ## Current instruction
 
-> **STOP. Do not continue LEVERAGE-0040 until the owner explicitly asks to resume it.**
+**P4.4 pre-result validation is resumed. Do not cross the LEVERAGE-0040 RUN_ONCE boundary automatically.**
 
-Repository hygiene is complete. There is currently no automatic implementation or research dependency to execute.
+The owner instruction authorizes the repository refresh and refreshed pre-result validation workflow only.
 
-## Current state
+## Immediate state
 
 ```text
-Phase 0                    COMPLETE
-Phase 1                    COMPLETE
-Phase 2                    COMPLETE
-Phase 3                    COMPLETE
-P4 prerequisites           COMPLETE through cap1 / margin / liquidation / multiplier freeze
-Repository hygiene         COMPLETE / MERGED (#91)
-PR #90                     PAUSED / DRAFT / PRE-RESULT
-LEVERAGE-0040              NOT RUN
-RUN_ONCE marker            ABSENT
-immutable result           ABSENT
-P4.5 select/fail           BLOCKED
-P4.6 production gate       BLOCKED
-P5                         BLOCKED
-production authorization   NONE
+main                                  3690f64a6179a759a60d9759c214d59cf604869e
+P4.4 refresh checkpoint               ee49ea6028b5c4426d03af81657663b7ede9d987
+PR #90                                OPEN / DRAFT
+LEVERAGE-0040 full study               NOT RUN
+RUN_ONCE marker                        ABSENT
+immutable leverage_0040 result         ABSENT
+1.10 / 1.20 / 1.30 results             NOT OBSERVED
+selected research cap                 NONE
+operating drawdown budget             NONE
+P4.5                                   BLOCKED
+P4.6 production authorization         BLOCKED
+P5                                     BLOCKED
+production_authorized_components      []
 ```
 
-`production_authorized_components = []`
+Always re-read the current branch head and `main` before further mutations; the branch head will move as governance-only corrections are committed.
 
-## Repository state after hygiene
+## Work allowed now
 
-PR #91 completed the repository cleanup and source-of-truth reset.
+Only work required to close the **pre-result final-head gate** is in scope:
 
-The hygiene audit reduced the remote branch inventory from 96 to the active maintenance/research set under explicit SHA/ancestry rules, retained historical evidence in merged docs/results, and established this documentation precedence:
+1. keep PR #90 on `p4-4/leverage-0040-one-time-study-v2` and DRAFT;
+2. preserve current-main authority while retaining the preregistered P4.4 candidate implementation;
+3. fix refresh/governance integration defects that do not change economics;
+4. rerun all applicable pre-result CI/parity/governance checks on the final head;
+5. verify corrected R1 real-data preflight exits before cap>1 evaluation and reports `cap>1 not evaluated`;
+6. perform a final-head diff and project-drift audit;
+7. re-confirm the marker/result are absent and production authorization remains empty.
 
-1. root `README.md`;
-2. `docs/CURRENT_STATE.md`;
-3. this file;
-4. `docs/MASTER_PLAN_2026-08-05.md`;
-5. `docs/IMPLEMENTATION_ROADMAP_2026-08-05.md`;
-6. `config/decision_registry.json`;
-7. `docs/README.md` for evidence navigation.
+The first refreshed governance run failed because `docs/CURRENT_STATE.md` was initially identical to `main`, so the forward-PR governance rule correctly detected that the current-state authority had not been updated in the PR diff. Correcting that documentation state is allowed and changes no economic semantics.
 
-The temporary normalization/housekeeping refs should be retired after their merges are verified. During the research pause the desired steady-state remote branch set is:
+## Required final-head gates
 
-```text
-main
-p4-4/leverage-0040-one-time-study-v2   # PR #90, PAUSED / DRAFT
-```
+At minimum, the refreshed candidate must obtain current evidence for:
 
-## While P4.4 is paused
+- Phase 0 baseline contract;
+- Research evidence normalization;
+- P3.2 target research/live parity;
+- committed historical golden validation;
+- P4 cap=1 exact parity;
+- P4 LEVERAGE-0040 pre-run prerequisites;
+- P4.4 contract / corrected R1 real-data `--preflight-only`;
+- PR handoff governance.
 
-Allowed maintenance:
+A historical green run on an older #90 head does not satisfy the final-head requirement.
 
-- documentation/evidence cleanup;
-- branch/ref hygiene;
-- security fixes;
-- fail-closed correctness fixes that do not observe or optimize cap>1 economics;
-- dependency/security maintenance that does not alter frozen research semantics.
+No CI run means no CI PASS. A merge must never be used to infer pre-merge CI verification.
 
-Forbidden without explicit owner resume:
+## Frozen pre-result semantics
 
-- create/change `RUN_ONCE_LEVERAGE_0040.marker`;
-- manually dispatch the full LEVERAGE-0040 study;
-- mark #90 ready for merge;
-- merge #90;
-- inspect or optimize 1.10/1.20/1.30 economic results;
-- tune caps, budgets, stresses, multiplier policy, BRRK math, or promotion gates;
-- authorize production gross >1.
+The following must not change while fixing refresh or CI issues:
 
-Pre-hygiene green CI on #90 remains evidence that the paused candidate was preflighted, but it is not current authorization because `main` has since changed.
+- BRRK-0011 directional model;
+- defensive scale range `[0,1]`;
+- candidate caps `1.00 / 1.10 / 1.20 / 1.30`;
+- multiplier `1 + (candidate_cap - 1) * defensive_scale`;
+- mandatory benchmark definitions;
+- stress definitions and thresholds;
+- selection gates;
+- seed / HMM / scenario definitions;
+- liquidation-model semantics;
+- 5% L1 rebalance semantics;
+- contribution handling;
+- XRP feature-only status;
+- production gross cap `1.0` before P4.6.
 
-## Resume procedure — only after explicit owner instruction
+Do not modify economic parameters merely to make CI pass.
 
-When the owner explicitly says to resume P4.4, start from live GitHub state rather than old SHAs.
+## One-time lifecycle boundary
 
-Required sequence:
+### While result is absent
 
-1. Re-fetch live `main`, PR #90 state/head, workflows, marker path, and immutable-result path.
-2. Confirm #90 remains the intended candidate and no unexpected result exists.
-3. Refresh/rebase the paused candidate from then-current `main` without changing frozen economic semantics.
-4. Re-run all applicable pre-result gates:
-   - Phase 0;
-   - research evidence normalization;
-   - P3.2 research/live parity + committed golden;
-   - P4 cap=1 parity;
-   - P4 pre-run prerequisite gate;
-   - P4.4 study contract / corrected R1 preflight-only;
-   - PR handoff governance.
-5. Require R1 preflight to exit before cap>1 candidate evaluation.
-6. Re-confirm:
-   - RUN_ONCE marker absent;
-   - immutable result absent;
-   - `production_authorized_components = []`.
-7. Only then reconsider crossing the one-time RUN_ONCE boundary.
+The only permitted economic-data path is:
 
-## If P4.4 is later resumed
+`run_leverage_0040_once_r1.py --preflight-only`
 
-### One-time LEVERAGE-0040 execution
+It must terminate before cap>1 candidate construction/evaluation.
 
-When and only when explicitly resumed and all new pre-result gates are green:
+### If an immutable result eventually exists
 
-```text
-create exact marker once
-→ dedicated workflow executes frozen suite once
-→ commit immutable result
-→ validate result digest/provenance
-→ never rerun the study under the same experiment ID
-```
+The workflow must validate the existing result/digest/provenance only. It must not rerun LEVERAGE-0040 under the same experiment ID.
 
-No post-result retuning is allowed under `LEVERAGE-0040`.
+Any material economic change after a valid result requires a new experiment ID.
 
-If infrastructure fails before a valid result is produced, classify that failure explicitly; do not silently rerun or modify economics.
+## Explicitly forbidden now
 
-### P4.5 select/fail
+Until refreshed final-head gates and self-review are complete:
 
-After a valid immutable result exists, apply the preregistered selection rules exactly.
+- do not create `RUN_ONCE_LEVERAGE_0040.marker`;
+- do not run the 1.10 / 1.20 / 1.30 candidate suite;
+- do not inspect or select cap>1 results;
+- do not mark PR #90 ready;
+- do not merge PR #90;
+- do not start P4.5;
+- do not authorize production leverage;
+- do not reopen LEVERAGE-0039;
+- do not promote EXPOSURE-SMOOTH-0038;
+- do not introduce XRP targets, shorts, F23 redesign, P5 exits, or other unrelated research;
+- do not retune BRRK or the P3.2 canonical target engine.
 
-Possible outcomes:
+## Final-head self-review before any boundary decision
 
-- `NO_PROMOTION`; or
-- a research promotion candidate within 1.10 / 1.20 / 1.30.
-
-Neither is production authorization.
-
-### P4.6 production gate
-
-Production leverage authorization is separate from research selection.
-
-It must not be inferred from:
-
-- successful backtests;
-- selected research cap;
-- green CI;
-- merged P4 code;
-- acceptable liquidation-distance estimates.
-
-Until an explicit production decision changes the registry:
+When all required gates are green, compare the candidate against then-current `main` and explicitly verify:
 
 ```text
+RUN_ONCE marker absent
+immutable result absent
+no unexpected result files
+no economic-parameter drift
+no production-authorization drift
 production_authorized_components = []
-production gross cap = 1.0
+PR #90 still DRAFT
 ```
 
-### P5
+Also verify that refresh/governance commits only changed repository integration/current-state documentation and did not alter frozen study semantics.
 
-Exit intelligence remains blocked until Phase 4 is formally resolved. Do not pull P5 features into P4 leverage selection.
+## Stop point for the current resume instruction
 
-## Persistent prohibitions
+The current instruction stops **before** RUN_ONCE.
 
-- do not reuse `LEVERAGE-0039`;
-- do not search above 1.30 under `LEVERAGE-0040`;
-- do not weaken the frozen defensive risk gate after observing results;
-- do not promote EXPOSURE-SMOOTH-0038 without its own decision path;
-- do not absorb F23 funding-response logic into P4;
-- do not introduce shorts or XRP target exposure through P4;
-- do not conflate MERGED with PRODUCTION AUTHORIZED.
+If all pre-result gates become green, report that the one-time boundary is ready for a separate decision. Do not create the marker merely because validation succeeded.
 
-## Exact next action
+## After a separately authorized one-time run
+
+Only after an explicit decision to cross that boundary, the sequence remains:
 
 ```text
-STOP
+create exact RUN_ONCE marker once
+-> dedicated workflow executes frozen LEVERAGE-0040
+-> commit immutable result
+-> validate digest / provenance
+-> never rerun same experiment ID
+-> apply preregistered P4.5 select / NO_PROMOTION rules
+-> no post-result retuning
+-> final-head governance
+-> merge if appropriate
+-> separate P4.6 production leverage authorization
 ```
 
-No P4.4 research action follows automatically from repository hygiene completion.
+Even a successful P4.5 research selection is not production authorization.
