@@ -8,37 +8,39 @@ on:
       - ".github/workflows/repository-branch-cleanup-once.yml"
 
 permissions:
-  contents: write
+  contents: read
+  pull-requests: read
 
 jobs:
-  branch-cleanup:
+  branch-audit:
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
-      - name: Delete remaining branches only when fully contained in main
+      - name: Audit unique historical branches before final cleanup
         env:
           GITHUB_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_OWNER: ${{ github.repository_owner }}
         run: |
           python - <<'PY'
           import json
           import os
-          import urllib.error
           import urllib.parse
           import urllib.request
 
           repo = os.environ["GITHUB_REPOSITORY"]
+          owner = os.environ["GITHUB_OWNER"]
           token = os.environ["GITHUB_TOKEN"]
           api_root = f"https://api.github.com/repos/{repo}"
           headers = {
               "Authorization": f"Bearer {token}",
               "Accept": "application/vnd.github+json",
               "X-GitHub-Api-Version": "2022-11-28",
-              "User-Agent": "repository-hygiene-once",
+              "User-Agent": "repository-hygiene-audit",
           }
 
-          def api(path, method="GET"):
-              req = urllib.request.Request(api_root + path, headers=headers, method=method)
+          def api(path):
+              req = urllib.request.Request(api_root + path, headers=headers)
               with urllib.request.urlopen(req) as response:
                   payload = response.read()
                   return json.loads(payload) if payload else None
@@ -59,54 +61,36 @@ jobs:
               "docs/repository-hygiene-2026-08-07",
           }
           main_sha = branches["main"]
-          delete = []
-          keep_unique = []
 
+          print(f"TOTAL_BRANCHES={len(branches)}")
           for branch, sha in sorted(branches.items()):
               if branch in preserve:
                   continue
-              base = urllib.parse.quote(sha, safe="")
-              head = urllib.parse.quote(main_sha, safe="")
+              base = urllib.parse.quote(main_sha, safe="")
+              head = urllib.parse.quote(sha, safe="")
               cmp = api(f"/compare/{base}...{head}")
-              # If the branch head is an ancestor of main, main is ahead of it and
-              # the branch contributes zero commits not already reachable from main.
-              fully_in_main = int(cmp.get("behind_by", 0)) == 0 and cmp.get("status") in {"ahead", "identical"}
-              if fully_in_main:
-                  delete.append((branch, sha, cmp.get("status"), int(cmp.get("ahead_by", 0))))
-              else:
-                  keep_unique.append((branch, sha, cmp.get("status"), int(cmp.get("ahead_by", 0)), int(cmp.get("behind_by", 0))))
-
-          print(f"TOTAL_BRANCHES_BEFORE={len(branches)}")
-          print(f"ANCESTOR_DELETE_COUNT={len(delete)}")
-          for branch, sha, status, ahead in delete:
-              print(f"DELETE {branch} | {sha} | fully contained in main | compare_status={status} main_ahead_by={ahead}")
-              ref = urllib.parse.quote(branch, safe="/")
-              try:
-                  api(f"/git/refs/heads/{ref}", method="DELETE")
-              except urllib.error.HTTPError as exc:
-                  body = exc.read().decode("utf-8", errors="replace")
-                  raise RuntimeError(f"failed deleting {branch}: HTTP {exc.code}: {body}") from exc
-
-          remaining = {}
-          page = 1
-          while True:
-              rows = api(f"/branches?per_page=100&page={page}")
-              if not rows:
-                  break
-              for row in rows:
-                  remaining[row["name"]] = row["commit"]["sha"]
-              page += 1
-
-          if not preserve.issubset(remaining):
-              raise RuntimeError("preserved branch missing")
-          if any(branch in remaining for branch, *_ in delete):
-              raise RuntimeError("an ancestor branch was not deleted")
-
-          print(f"TOTAL_BRANCHES_AFTER={len(remaining)}")
-          print("UNIQUE_OR_UNCERTAIN_BRANCHES_PRESERVED=")
-          for branch, sha, status, ahead, behind in keep_unique:
-              print(f"  {branch} | {sha} | status={status} main_ahead_by={ahead} branch_unique_by={behind}")
-          print("FINAL_REMAINING=")
-          for branch in sorted(remaining):
-              print(f"  {branch} | {remaining[branch]}")
+              prs = api(
+                  "/pulls?state=all&per_page=100&head="
+                  + urllib.parse.quote(f"{owner}:{branch}", safe="")
+              )
+              print("=== BRANCH ===")
+              print(f"name={branch}")
+              print(f"head_sha={sha}")
+              print(f"compare_status={cmp.get('status')} ahead_by={cmp.get('ahead_by')} behind_by={cmp.get('behind_by')}")
+              print("pull_requests=" + json.dumps([
+                  {
+                      "number": p["number"],
+                      "state": p["state"],
+                      "merged_at": p.get("merged_at"),
+                      "title": p["title"],
+                  }
+                  for p in prs
+              ], ensure_ascii=False))
+              print("unique_commits=")
+              for c in cmp.get("commits", []):
+                  first = (c.get("commit", {}).get("message") or "").splitlines()[0]
+                  print(f"  {c['sha']} | {first}")
+              print("changed_files=")
+              for f in cmp.get("files", []):
+                  print(f"  {f['status']} | {f['filename']} | +{f['additions']} -{f['deletions']}")
           PY
