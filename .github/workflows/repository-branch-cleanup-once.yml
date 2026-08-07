@@ -8,89 +8,102 @@ on:
       - ".github/workflows/repository-branch-cleanup-once.yml"
 
 permissions:
-  contents: read
-  pull-requests: read
+  contents: write
 
 jobs:
-  branch-audit:
+  branch-cleanup:
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
-      - name: Audit unique historical branches before final cleanup
+      - name: Delete exact audited historical branch heads
         env:
           GITHUB_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
-          GITHUB_OWNER: ${{ github.repository_owner }}
         run: |
           python - <<'PY'
           import json
           import os
+          import urllib.error
           import urllib.parse
           import urllib.request
 
           repo = os.environ["GITHUB_REPOSITORY"]
-          owner = os.environ["GITHUB_OWNER"]
           token = os.environ["GITHUB_TOKEN"]
           api_root = f"https://api.github.com/repos/{repo}"
           headers = {
               "Authorization": f"Bearer {token}",
               "Accept": "application/vnd.github+json",
               "X-GitHub-Api-Version": "2022-11-28",
-              "User-Agent": "repository-hygiene-audit",
+              "User-Agent": "repository-hygiene-final-cleanup",
           }
 
-          def api(path):
-              req = urllib.request.Request(api_root + path, headers=headers)
+          audited = {
+              "agent/asym-beta-0022-marginal-risk": "1c29903d731d972f23d52022c4f76fe5b525cf55",
+              "agent/funding-crossvenue-0002-overlap": "86323e48baed6e7470f3e668d801ed27154b8509",
+              "agent/pit-disp-0015-validation": "114a51802ba8a9f7f4b2e1051a316f661c7b6261",
+              "agent/tsmom-0029-first-mechanism": "fdb146610f2da5f1514d17679294c9d69706941a",
+              "claude/backlog-p1-p2": "89f3dd190c4cb45cf4b231c93a2e061f912a859f",
+              "claude/plan-audit-2026-08-06": "f8e49d1e7b80eb0e55b8d9a0837c85037be9d06e",
+              "p2-2/post-merge-handoff-v2": "98f44778a5e3b2a090c2e1ed3c160ba56d94116a",
+              "p2-2/validate-spot-identities": "147052b5ce4339cc6bedb2534d21ad5ca1043c0e",
+              "p2-3/post-merge-handoff": "81da7da9da0f7b1fb58fb4b2703c035db966ce01",
+              "p2-3/spot-perp-cost-model": "5ffda33bc8fb96e9d7ec50e9324709904f300bc2",
+              "research/tsmom-0027-pretest": "754674e7f2f51032bfdc9e73865951fd0feb6eb8",
+          }
+          preserve = {
+              "main",
+              "p4-4/leverage-0040-one-time-study-v2",
+              "docs/repository-hygiene-2026-08-07",
+          }
+
+          def api(path, method="GET"):
+              req = urllib.request.Request(api_root + path, headers=headers, method=method)
               with urllib.request.urlopen(req) as response:
                   payload = response.read()
                   return json.loads(payload) if payload else None
 
-          branches = {}
+          current = {}
           page = 1
           while True:
               rows = api(f"/branches?per_page=100&page={page}")
               if not rows:
                   break
               for row in rows:
-                  branches[row["name"]] = row["commit"]["sha"]
+                  current[row["name"]] = row["commit"]["sha"]
               page += 1
 
-          preserve = {
-              "main",
-              "p4-4/leverage-0040-one-time-study-v2",
-              "docs/repository-hygiene-2026-08-07",
-          }
-          main_sha = branches["main"]
+          if not preserve.issubset(current):
+              raise RuntimeError("preserved branch missing before final cleanup")
 
-          print(f"TOTAL_BRANCHES={len(branches)}")
-          for branch, sha in sorted(branches.items()):
-              if branch in preserve:
-                  continue
-              base = urllib.parse.quote(main_sha, safe="")
-              head = urllib.parse.quote(sha, safe="")
-              cmp = api(f"/compare/{base}...{head}")
-              prs = api(
-                  "/pulls?state=all&per_page=100&head="
-                  + urllib.parse.quote(f"{owner}:{branch}", safe="")
-              )
-              print("=== BRANCH ===")
-              print(f"name={branch}")
-              print(f"head_sha={sha}")
-              print(f"compare_status={cmp.get('status')} ahead_by={cmp.get('ahead_by')} behind_by={cmp.get('behind_by')}")
-              print("pull_requests=" + json.dumps([
-                  {
-                      "number": p["number"],
-                      "state": p["state"],
-                      "merged_at": p.get("merged_at"),
-                      "title": p["title"],
-                  }
-                  for p in prs
-              ], ensure_ascii=False))
-              print("unique_commits=")
-              for c in cmp.get("commits", []):
-                  first = (c.get("commit", {}).get("message") or "").splitlines()[0]
-                  print(f"  {c['sha']} | {first}")
-              print("changed_files=")
-              for f in cmp.get("files", []):
-                  print(f"  {f['status']} | {f['filename']} | +{f['additions']} -{f['deletions']}")
+          for branch, expected_sha in audited.items():
+              actual = current.get(branch)
+              if actual is None:
+                  raise RuntimeError(f"audited branch disappeared before cleanup: {branch}")
+              if actual != expected_sha:
+                  raise RuntimeError(f"audited branch moved; refuse deletion: {branch} expected={expected_sha} actual={actual}")
+
+          for branch, expected_sha in sorted(audited.items()):
+              print(f"DELETE {branch} | exact_audited_sha={expected_sha}")
+              ref = urllib.parse.quote(branch, safe="/")
+              try:
+                  api(f"/git/refs/heads/{ref}", method="DELETE")
+              except urllib.error.HTTPError as exc:
+                  body = exc.read().decode("utf-8", errors="replace")
+                  raise RuntimeError(f"failed deleting {branch}: HTTP {exc.code}: {body}") from exc
+
+          remaining = {}
+          page = 1
+          while True:
+              rows = api(f"/branches?per_page=100&page={page}")
+              if not rows:
+                  break
+              for row in rows:
+                  remaining[row["name"]] = row["commit"]["sha"]
+              page += 1
+
+          expected_remaining = preserve
+          if set(remaining) != expected_remaining:
+              raise RuntimeError(f"unexpected final branch set: {sorted(remaining)}")
+          print("FINAL_BRANCH_SET=" + json.dumps(sorted(remaining), ensure_ascii=False))
+          print("TOTAL_BRANCHES_AFTER=3")
           PY
