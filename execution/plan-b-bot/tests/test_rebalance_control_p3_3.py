@@ -1,8 +1,12 @@
 from __future__ import annotations
 
+from dataclasses import replace
+
 import pytest
 
 from beta_bot.rebalance_control import (
+    FROZEN_REBALANCE_BAND,
+    FROZEN_SAFETY_OVERRIDES,
     REBALANCE_CONTROL_VERSION,
     RebalanceControlError,
     calculate_rebalance_control,
@@ -58,12 +62,27 @@ def _notionals(weights: dict[str, float], equity: float = 10_000.0) -> dict[str,
 def test_registered_policy_migrates_legacy_execution_band_not_min_trade_gate():
     policy = load_rebalance_policy()
     assert policy.policy_id == REBALANCE_CONTROL_VERSION == "P3.3-L1-BAND-V1"
-    assert policy.rebalance_band == 0.05
+    assert policy.rebalance_band == FROZEN_REBALANCE_BAND == 0.05
     assert policy.target_gap_metric == "L1_ABSOLUTE_WEIGHT_GAP"
     assert policy.boundary_rule == "REBALANCE_WHEN_L1_GAP_GTE_BAND"
+    assert policy.safety_overrides == FROZEN_SAFETY_OVERRIDES
     assert policy.minimum_trade_notional_role == (
         "DOWNSTREAM_ORDER_FEASIBILITY_ONLY_NOT_P3_3_PORTFOLIO_GATE"
     )
+
+
+def test_v1_policy_id_cannot_silently_change_band_or_safety_semantics():
+    policy = load_rebalance_policy()
+    with pytest.raises(RebalanceControlError, match="freezes rebalance_band"):
+        replace(policy, rebalance_band=0.04).validate()
+    with pytest.raises(RebalanceControlError, match="safety override policy drift"):
+        replace(
+            policy,
+            safety_overrides={
+                "current_short_position": "IGNORE",
+                "current_gross_above_one": "REBALANCE_TO_P3_2_TARGET_REGARDLESS_OF_BAND",
+            },
+        ).validate()
 
 
 def test_exact_target_is_noop_but_deviation_fields_remain_explicit():
@@ -204,3 +223,27 @@ def test_upstream_target_is_carried_unchanged_and_control_is_not_authorization()
     assert plan.target_gross_weight == pytest.approx(target.base_gross_target)
     assert plan.production_authorized is False
     assert plan.control_version == REBALANCE_CONTROL_VERSION
+
+
+def test_control_plan_digest_is_deterministic_and_sensitive_to_control_state():
+    target = _target({"BTC": 0.40, "ETH": 0.20})
+    current = _notionals({"BTC": 0.30, "ETH": 0.20})
+    first = calculate_rebalance_control(
+        target=target,
+        account_equity_usd=10_000.0,
+        current_positions_notional_usd=current,
+    )
+    second = calculate_rebalance_control(
+        target=target,
+        account_equity_usd=10_000.0,
+        current_positions_notional_usd=dict(reversed(list(current.items()))),
+    )
+    changed = calculate_rebalance_control(
+        target=target,
+        account_equity_usd=10_000.0,
+        current_positions_notional_usd=_notionals({"BTC": 0.29, "ETH": 0.20}),
+    )
+    assert first.canonical_json() == second.canonical_json()
+    assert first.digest() == second.digest()
+    assert len(first.digest()) == 64
+    assert first.digest() != changed.digest()
