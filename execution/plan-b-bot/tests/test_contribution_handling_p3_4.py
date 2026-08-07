@@ -228,7 +228,7 @@ def test_next_daily_decision_uses_fresh_full_equity_through_same_p3_2_then_p3_3_
             "decision": "2026-08-08T00:00:00Z",
             "equity": 2_135.0,
             "positions": current_positions,
-            "product_id": "BRRK-PLAN-B",
+            "product_id": "brkk-laugh-to-2028",
         }
     ]
     assert decision.contribution_candidate_usd == pytest.approx(100.0)
