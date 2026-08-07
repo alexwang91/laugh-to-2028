@@ -1,391 +1,292 @@
 # laugh-to-2028
 
-一个加密货币系统化配置研究项目。目标是**活得久、每一步都查得清、能自动执行、少骗自己**。
+一个面向长期生存、可审计研究和自动执行的加密资产系统项目。
 
-这个仓库是研究代码，**不是**"未来收益会和回测一样"的承诺。
+这个仓库同时包含：
 
----
+- 方向性研究与历史证据；
+- 交易执行与订单安全；
+- 现货 / 永续路由与成本模型；
+- 数据契约、目标权重、再平衡和资金流处理；
+- 杠杆研究的预注册、风险约束和生产授权边界。
 
-## 先读这一段：怎么看下面的数字
-
-所有表格里出现的四个指标，用大白话解释一遍：
-
-| 指标 | 意思 | 怎么看 |
-|---|---|---|
-| **年化收益** | 平均每年赚百分之几（复利口径） | 越高越好，但单看它没意义，必须配着回撤一起看 |
-| **最大回撤** | 从历史最高点跌下来最惨的一次跌了多少 | 越接近 0 越好。-60% 意味着 100 万变 40 万，要涨 150% 才能回本 |
-| **夏普比率** | 每承担一份波动，换回多少收益 | **加杠杆不会改变它**。所以比较两个方案谁更聪明，看这个，不看年化收益 |
-| **卡玛比率** | 年化收益 ÷ 最大回撤 | 衡量"为了这点收益，最惨要忍多大的坑" |
-
-三条特别容易踩的坑，先说在前面：
-
-1. **年化收益高不等于方案更好。** 把一个方案加两倍杠杆，年化收益翻倍，夏普比率一点不变。所以只要看到"年化收益变高了"，第一件事是去看夏普比率有没有跟着变高。如果没有，那只是加了杠杆，不是变聪明了。
-
-2. **不同表格的时间窗口不一样，不能跨表比。** 本仓库的实验分布在两个窗口上，长度差了将近一倍（3.65 年 vs 5.25 年）。同一个方案换个起点，数字会天差地别 —— 具体差多少见下面"起点的影响"一节。**每张表都标注了窗口，比较前先看窗口。**
-
-3. **3.65 年的数据量，不足以分辨两个接近的方案。** 详见"这些数字有多可信"一节。
+**它不是收益承诺，也不是投资建议。回测、研究通过、代码合并和生产授权是四个不同层级。**
 
 ---
 
-## 现在的结论
+## 当前状态 — 2026-08-07
 
-**套利（carry）这条线已经停止。** 原因见下面"套利线为什么停"。
+| 模块 | 状态 |
+| --- | --- |
+| Phase 0 — canonical config / governance baseline | **COMPLETE / MERGED** |
+| Phase 1 — execution truth & safety | **COMPLETE / MERGED** |
+| Phase 2 — instrument / routing / execution-cost evidence | **COMPLETE / MERGED** |
+| Phase 3 — data → target → rebalance → contribution pipeline | **COMPLETE / MERGED** |
+| P4.1 — corrected defensive scaler `[0,1]` | **COMPLETE / MERGED** |
+| P4.2 / P4.3 — leverage architecture, cap=1 parity, margin/liquidation prerequisites | **COMPLETE / MERGED** |
+| Repository hygiene / documentation normalization | **COMPLETE / MERGED — PR #91** |
+| P4.4 — `LEVERAGE-0040` one-time study | **PAUSED / DRAFT / NOT RUN** |
+| P4.5 — select/fail leverage decision | **BLOCKED on P4.4 result** |
+| P4.6 — production leverage authorization | **BLOCKED / SEPARATE GATE** |
+| Phase 5 — exit intelligence | **NOT STARTED / BLOCKED** |
+| Production-authorized components | **none** |
 
-目前没有正在推进的实盘计划。下一步是独立于套利的路由和前瞻性执行证据收集。
+Active research PR:
 
-**方向性核心仍然是 BRRK-0011**，但要带着下面所有的限定条件看。
+- **#90 — `P4.4 [PAUSED / DRAFT]: freeze and preflight LEVERAGE-0040 one-time study`**
+- branch: `p4-4/leverage-0040-one-time-study-v2`
+- RUN_ONCE marker: **ABSENT**
+- immutable `LEVERAGE-0040` result: **ABSENT**
+- 1.10 / 1.20 / 1.30 candidate observation: **NONE**
 
----
-
-## 全部方案总表
-
-这是把仓库里**每一个跑出过结果的方案**列在一起。所有数字都来自已提交的结果文件，没有一个是估算的。
-
-### 表一：3.65 年窗口（2022-12-10 至 2026-08-02）
-
-这个窗口是 BRRK 走向前验证的第一个决策日决定的（模型要求至少 600 天训练数据）。
-
-**注意：这个起点是 2022 年 11 月 21 日比特币周期底部之后三周。** 整段窗口基本就是一轮牛市。
-
-#### 只算价格，不算资金费
-
-| 方案 | 1 万元变成 | 年化收益 | 最大回撤 | **夏普比率** | 卡玛比率 |
-|---|---:|---:|---:|---:|---:|
-| V1 基础版（固定四币轮动） | 57,116 | 61.25% | -37.63% | **1.295** | 1.628 |
-| V1 + 固定盘面离散度调节 | 57,663 | 61.68% | -35.11% | **1.417** | 1.757 |
-| V1 + 动态币池离散度调节 | 52,831 | 57.84% | -33.21% | **1.342** | 1.742 |
-| **BRRK-0011（当前核心）** | **62,247** | **65.10%** | **-33.72%** | **1.353** | 1.931 |
-| BRRK-0011 + 固定盘面离散度 | 63,084 | 65.71% | -30.60% | **1.488** | 2.147 |
-| BRRK-0011 + 动态币池离散度 | 56,543 | 60.81% | -30.40% | **1.393** | 2.000 |
-| ASYM-BETA-0022（月度额外仓位） | 83,262 | 78.89% | -40.86% | **1.346** | 1.931 |
-| ASYM-BETA-0024（日度封顶版） | 82,389 | 78.37% | -39.95% | **1.357** | 1.962 |
-
-**这张表最该注意的一行：ASYM-BETA-0024 年化收益 78.37%，比核心的 65.10% 高了 13 个百分点，但夏普比率只有 1.357 对 1.353 —— 基本没差。** 多出来的收益是加杠杆换来的（该方案总仓位最高到 1.42 倍），不是策略变聪明了。而最大回撤从 -33.72% 恶化到 -39.95%。
-
-> 小提示：如果你去翻 `asym_beta_0024` 的原始结果文件，会看到同一个 BRRK-0011 核心的年化写的是 **65.17%**，不是这里的 65.10%。两个数字对应完全相同的终值（$62,247.38），差异纯粹来自"年数"怎么算——一个用 1332 个观测天数除以 365.25，另一个用首尾日期跨度（1331 天）除以 365.25，相差整整一天的分母。不是策略跑出了两个结果。新实验统一用 [`research/common/metrics.py`](research/common/metrics.py)（按日历跨度算），旧报告原样保留，不做回填改写。
-
-#### 算上资金费之后（更接近真实可部署的口径）
-
-永续合约要付资金费。项目自己的纪律第 6 条就说"价格回测不是可部署收益"，所以**判断一个方案好不好，应该看这张表，不是上面那张**。
-
-| 方案 | 年化收益 | 最大回撤 | **夏普比率** | 卡玛比率 |
-|---|---:|---:|---:|---:|
-| 理论上限（假设完全不付资金费） | 65.37% | -33.72% | **1.355** | 1.939 |
-| **BRRK-0011 + 已验证的比特币现货路由** | **56.20%** | **-34.95%** | **1.229** | **1.608** |
-| BRRK-0011 全部走永续合约 | 44.08% | -37.04% | **1.046** | 1.190 |
-| ASYM-BETA-0022 + 现货路由 | 64.52% | -42.42% | **1.182** | 1.521 |
-| ASYM-BETA-0024 + 现货路由 | 64.82% | -41.44% | **1.199** | 1.564 |
-| ASYM-BETA-0024 全部走永续合约 | 52.03% | -43.32% | **1.049** | 1.201 |
-
-**这张表推翻了上一张表的印象。** 算上资金费之后：
-
-- 核心（BRRK-0011）夏普 **1.229**
-- ASYM-BETA-0024 夏普 **1.199** —— **更低**
-- 卡玛比率 1.608 对 1.564 —— 也更低
-- 最大回撤 -34.95% 对 -41.44% —— 深了 6.5 个百分点
-
-因为夏普比率不受杠杆影响，这意味着：**直接把 BRRK-0011 核心加杠杆，任何倍数，都比 ASYM-BETA-0024 更划算。** 那一层额外仓位机制，在真实资金费口径下没有创造价值，只是把一个更低的夏普换成了更高的年化收益。
-
-ASYM-BETA-0024 自己的月度归因也支持这个结论：2024 年 4 月，核心亏 19.87%，它亏 **25.67%**；2024 年 6 月核心亏 7.73%，它亏 **10.04%**。最难的两个月，它都亏得更多。
-
-**但要老实说一句：这个"更低"本身也没有统计显著性。** 用配对 bootstrap 检验 ASYM-BETA-0021/0022/0024 相对核心的资金费口径夏普差：
-
-| 方案 | 与核心日收益相关性 | 夏普差 | 95% 置信区间 |
-|---|---:|---:|---|
-| ASYM-BETA-0021 | 1.0000 | +0.000 | 恰好为零（该方案被判定"结构性失活"，额外仓位从未真正触发过） |
-| ASYM-BETA-0022 | 0.9913 | -0.048 | [-0.190, +0.088] —— **跨零** |
-| ASYM-BETA-0024 | 0.9918 | -0.031 | [-0.168, +0.100] —— **跨零** |
-
-跟 BRRK-0011 对 V1 那次一样的模式：点估计说"更差"，但置信区间够不到"显著更差"。**方向性的结论（额外仓位在资金费口径下不划算）依然是我们的判断依据，因为它同时有点估计和月度归因两条线支持；只是不该把 1.229 对 1.199 这种差距说成"确凿证据"。** 复算数据见 [`research/results/asym_beta_funding_aware_significance.json`](research/results/asym_beta_funding_aware_significance.json)。
-
-#### 如果不同币种能走现货（反事实推演，不是可执行方案）
-
-| 哪些币走现货 | 年化收益 | 最大回撤 | 夏普比率 | 卡玛比率 |
-|---|---:|---:|---:|---:|
-| 只有比特币（当前唯一已验证） | 56.20% | -34.95% | 1.229 | 1.608 |
-| 比特币 + 以太坊 | 57.74% | -34.69% | 1.250 | 1.664 |
-| 比特币 + Solana | 63.06% | -34.23% | 1.324 | 1.842 |
-| 比特币 + 以太坊 + Solana | 64.66% | -33.98% | 1.346 | 1.903 |
-| 全部走现货（理论天花板） | 65.37% | -33.72% | 1.355 | 1.939 |
-
-这几行**只回答一个问题**：如果将来有独立证据证明那些币的现货代表可用，历史上能少付多少资金费。**它不是路由批准，也不能当作可以这么做的依据。**
-
-### 表二：5.25 年窗口（2021-05-01 至 2026-08-02）
-
-动态选币这条线在更长的窗口上测试。这个窗口多包含了 2021-2022 的整轮熊市。
-
-| 方案 | 年化收益 | 最大回撤 | **夏普比率** | 卡玛比率 |
-|---|---:|---:|---:|---:|
-| **同一个 V1（固定四币轮动）** | **36.43%** | **-59.72%** | **0.889** | **0.610** |
-| 比特币动态仓位 | 11.07% | -54.31% | 0.461 | 0.204 |
-| 一直持有比特币 | 1.86% | -76.63% | 0.309 | 0.024 |
-| PIT-ALPHA-0016（每日选前 2 名） | 12.25% | -69.12% | 0.480 | 0.177 |
-| PIT-ALPHA-0016（只选第 1 名） | 8.31% | -66.02% | 0.407 | 0.126 |
-| PIT-ALPHA-0016（选前 3 名） | 0.71% | -76.39% | 0.268 | 0.009 |
-| PIT-ALPHA-0016（所有合格币等权） | -24.91% | -82.93% | -0.266 | -0.300 |
-| PIT-ALPHA-0018（改进持仓规则） | 16.62% | -66.86% | 0.555 | 0.249 |
-| TSMOM-ALPHA-0029（只算价格） | 7.41% | -85.61% | 0.434 | 0.087 |
-| TSMOM-ALPHA-0029（算上资金费） | **-4.12%** | **-88.30%** | 0.251 | -0.047 |
-
-**对比表一的第一行和这张表的第一行 —— 那是同一个 V1 策略，同一份代码。**
-
-| | 3.65 年窗口 | 5.25 年窗口 |
-|---|---:|---:|
-| 年化收益 | 61.25% | **36.43%** |
-| 最大回撤 | -37.63% | **-59.72%** |
-| 夏普比率 | 1.295 | **0.889** |
-| 卡玛比率 | 1.628 | **0.610** |
-
-**卡玛比率差了 2.7 倍，纯粹因为起点不同。**
-
-这两个 5.25 年的数字不是外部计算的 —— 它们一直就在本仓库自己的 PIT-ALPHA 报告里（`FIXED_V1_GROSS_1_0` 那一行）。
-
-### 表三：套利方案（5.87 年窗口，2020-09-15 至 2026-07-30）
-
-现货多头 + 永续空头，方向对冲，赚资金费。
-
-| 方案 | 年化收益 | 最大回撤 | 夏普比率 | 卡玛比率 |
-|---|---:|---:|---:|---:|
-| CARRY-PNL-0031（手续费 5 个基点） | 2.740% | -7.01% | **1.428** | 0.391 |
-| 同上，手续费 10 个基点 | 2.178% | -7.55% | 1.138 | — |
-| 同上，手续费 20 个基点 | 1.063% | -9.06% | 0.561 | — |
-| **同期只买 3 个月美国国债** | **3.165%** | ~0% | — | — |
-
-**夏普 1.428 这个数字具有误导性。** 它是拿收益跟"零"比出来的。但这个方案是方向对冲、全额占用资金的 —— 它本身就等价于一个"合成的现金"。所以正确的比较对象是现金，不是零。
-
-跟现金比：**年化落后 0.425 个百分点，对现金的夏普是 -0.223**（负的）。
-
-详见下面"套利线为什么停"。
+The pause is intentional. Repository hygiene was completed by PR #91; **that completion does not automatically resume research**.
 
 ---
 
-## 起点的影响：同一套代码，换个起点
+## Frozen product / strategy boundaries
 
-用完全相同的 V1 权重构造，只改评估起点：
+Unless a later approved decision explicitly changes them, these are the current constraints:
 
-| 起点 | 年数 | 1 万元变成 | 年化收益 | 最大回撤 | 夏普比率 | 卡玛比率 |
-|---|---:|---:|---:|---:|---:|---:|
-| 2021-05-01 | 5.25 | 51,160 | **36.44%** | **-59.72%** | 0.889 | **0.610** |
-| 2021-11-10 | 4.73 | 31,566 | 27.54% | -44.99% | 0.791 | 0.612 |
-| 2022-01-01 | 4.58 | 41,716 | 36.57% | -37.63% | 0.964 | 0.972 |
-| 2022-06-01 | 4.17 | 47,580 | 45.37% | -37.63% | 1.098 | 1.205 |
-| **2022-12-10** | **3.64** | **57,111** | **61.31%** | **-37.63%** | **1.295** | **1.629** |
-| 2023-06-18 | 3.12 | 44,232 | 60.96% | -37.63% | 1.290 | 1.620 |
-| 2024-01-01 | 2.58 | 17,401 | 23.90% | -37.63% | 0.720 | 0.635 |
+- directional target assets: **BTC / ETH / SOL / BNB**;
+- XRP: **feature-only** where required by the frozen BRRK regime model; never a target/routing asset;
+- primary venue: **Hyperliquid**;
+- strategy cadence: **daily**;
+- canonical daily boundary: **00:00 UTC**;
+- intraday automation: **risk reduction only**;
+- FLAT means **zero exposure**;
+- FLAT → LONG / SHORT requires human approval;
+- master-wallet key / withdrawal authority is forbidden;
+- production gross >1 remains forbidden;
+- `production_authorized_components = []`.
 
-加粗那一行就是表一用的窗口。
-
-**这个窗口不是人为挑出来的** —— 它由模型"至少 600 天训练数据"的要求决定，是一个合法的走向前验证起点。但后果必须说清楚：**所有主要风险指标描述的都是同一轮牛市**，起点在周期底部之后三周。
-
-复算脚本：[`research/review_2026_08_04/verify_start_date_sensitivity.py`](research/review_2026_08_04/verify_start_date_sensitivity.py)
+Canonical directional research target remains **BRRK-0011**.
 
 ---
 
-## V1 在 2021 年 5 月做错了什么，能不能修
+## What has been completed
 
-上面那张表里 2021-05-01 起的最大回撤 -59.72%，不是"运气不好"，是可以从代码逻辑上精确定位的两个设计缺陷：
+### Phase 0 — canonical truth and governance
 
-1. **仓位公式在"趋势=0"这一点是硬拐点，不是连续的。** 趋势刚转正时仓位公式给出 1.0，刚转负时另一条公式给出 0.65×波动系数（0.39 到 0.65 之间）——**同一天信号方向抖一下，仓位能跳变 0.35 到 0.61**。2021 年 5 月 19 日到 21 日，总仓位就是这样在 1.00 → 0.37 → 1.00 之间连续跳了两次。
-2. **趋势为正时，波动率完全不起作用。** 崩盘期间比特币年化波动从 0.75 涨到 1.20，仓位却纹丝不动，因为波动率的调节效果被下游"总仓位不超过 1.0"的重新归一化步骤抹掉了。
+Established machine-readable product/config authority, decision registry, handoff/governance rules, CI baseline, and a strict distinction between:
 
-**EXPOSURE-SMOOTH-0038** 用一条连续直线替换了这两条硬拼接的公式，所有系数都是原公式里已有的值，没有新增参数：
+`IMPLEMENTED → TESTED → CI VERIFIED → MERGED → PRODUCTION AUTHORIZED`
 
-```
-原始值 = (0.65 + 0.65 × 趋势) × 波动乘数
-仓位   = 裁剪到 [0.18, 1.30]
-```
+A merged component is **not** automatically production-authorized.
 
-预登记：[`research/exposure_smooth_0038/EXPOSURE-SMOOTH-0038.json`](research/exposure_smooth_0038/EXPOSURE-SMOOTH-0038.json)（先冻结方案，再运行回测）。
+### Phase 1 — execution correctness
 
-**全历史面板（2021-05-01 起）的结果：**
+Completed the execution-integrity chain, including:
 
-| | 旧版 | 新版 |
-|---|---:|---:|
-| 年化收益 | 36.38% | 34.13% |
-| 最大回撤 | -59.72% | **-43.20%** |
-| 夏普比率 | 0.888 | **0.966** |
-| 卡玛比率 | 0.609 | **0.790** |
+- deterministic order identity;
+- persistent order ledger;
+- partial-fill correctness;
+- reversal safety;
+- precision / exchange metadata handling;
+- post-submit reconciliation;
+- restart recovery;
+- kill / emergency paths.
 
-2021 年 5 月那次崩盘本身：最大回撤从 -59.72% 降到 **-30.11%**，接近腰斩。全历史夏普和卡玛都提升了，3.65 年那个头条窗口基本不受影响（夏普 1.294 → 1.283，差距在噪声范围内）。
+The execution layer is built to fail closed rather than silently infer exchange state.
 
-**但这不是免费的。** 2023 年那种单边牛市里，新公式会因为对波动更敏感而主动少拿仓位，少赚了 46 个百分点；2021-2022 熊市的夏普反而变差了（收益和回撤都改善，但因为波动被压得更低，负收益除以更小的分母，比值变得更负）。这是一个真实的权衡：**用单边行情里少赚一点，换崩盘时少亏很多**，不是哪个方向白拿的好处。
+### Phase 2 — instrument and routing evidence
 
-配对统计检验：夏普差 +0.073，95% 置信区间 [-0.158, +0.316]，新版更优的概率 72.4%——**方向对，但和这个仓库里几乎所有比较一样，5.25 年样本还不够"确证"**。
+Completed:
 
-**这个结果目前只是一个通过了预登记判据的候选，不是替换 V1 基线的决定。** 换掉这条公式意味着上面所有表格、BRRK-0011 的 regime 拟合都要重新跑一遍，那是一次更大的、需要单独授权的决策。完整数据和没有筛选过的全部子窗口结果：[`research/results/EXPOSURE_SMOOTH_0038_RESULT_2026-08-05.md`](research/results/EXPOSURE_SMOOTH_0038_RESULT_2026-08-05.md)。
+- canonical instrument registry;
+- validated spot identities;
+- BNB perp-only default under the verified evidence set;
+- reproducible spot-vs-perp cost model;
+- live L2 measurement correction;
+- route decision logic and point-in-time capacity evidence.
 
----
+Important: route/depth snapshots are execution evidence, **not historical point-in-time liquidity for every backtest date**.
 
-## 这些数字有多可信
+### Phase 3 — canonical strategy pipeline
 
-用统计方法检验 BRRK-0011 的 3.65 年结果：
+Completed and merged:
 
-| 检验项 | 结果 | 大白话 |
-|---|---:|---|
-| 观测天数 | 1332 天（3.65 年） | |
-| 年化夏普 | 1.353 | |
-| 偏度 / 峰度 | +0.567 / 7.07 | 尾部比正态分布厚得多，极端日子更常见 |
-| "真实夏普大于 0"的概率 | **99.57%** | **这个策略确实有效，这点站得住** |
-| "真实夏普大于 1.0"的概率 | 75.35% | 不够确定 |
-| **要在 95% 把握下说"夏普超过 1.0"，需要多少数据** | **20.97 年** | 现在只有 3.65 年 |
+1. **P3.1 data contract**
+   - target assets BTC/ETH/SOL/BNB;
+   - XRP restored as frozen feature-only input after parity review;
+   - common-history / missing-data checks fail closed.
+2. **P3.2 target calculation API**
+   - canonical live target engine separated from the old generic model module;
+   - independent research/live multi-date parity;
+   - committed historical golden vectors.
+3. **P3.3 rebalance / turnover controls**
+   - 5% L1 economic rebalance semantics.
+4. **P3.4 contribution handling**
+   - contributions handled without silently changing strategy authority.
 
-**结论：策略有效这件事是可靠的；但"夏普到底是 1.3 还是 0.9"这个精度，现有数据给不出来。**
+Phase 3 is the first complete research-to-live target pipeline.
 
-再看 BRRK-0011 和 V1 到底差多少：
+### Phase 4 prerequisites completed so far
 
-| 对比项 | 结果 |
-|---|---:|
-| 两者每日收益的相关性 | **0.9948** |
-| 夏普差 | +0.058 |
-| 夏普差的 95% 置信区间 | **[-0.046, +0.164]** — **包含 0** |
-| 卡玛差的 95% 置信区间 | **[-0.164, +0.599]** — **包含 0** |
+Completed before any >1 production authorization:
 
-**两个方案 99.5% 的日子是一模一样的，差异在统计上分辨不出来。**
-
-补充一个事实：BRRK-0011 那套很复杂的机器（隐马尔可夫模型 + 主成分分析 + 变分推断 + 五千条蒙特卡洛路径 + 尾部风险约束 + 凯利公式搜索），最终输出是一个 0 到 1 之间的仓位系数，而这个系数**有 81% 的交易日恰好等于 1.0**（也就是"什么都不做"）。全部贡献来自剩下约 19% 的日子。
-
-复算脚本：[`research/review_2026_08_04/verify_psr_dsr_mintrl.py`](research/review_2026_08_04/verify_psr_dsr_mintrl.py)
-
-**闲置资金算不算利息，会不会改变上面的结论？** V1 和 BRRK-0011 都是仓位 ≤ 1 的策略，没投进去的部分（闲置保证金）在所有已发布数字里都按 0% 算。用同一个 3.65 年窗口实测：闲置资金平均占比 V1 20.5%、BRRK-0011 24.5%；如果按每天的 3 个月美债利率把这部分闲置资金计息，两者的年化收益各能再提高 1.35 和 1.64 个百分点，夏普也是**上升**（不是下降）——因为闲置比例最高的时候恰好是策略主动降仓避险的时候，这些日子往往也是波动更大的日子，闲置资金在这些日子拿到一个平稳的正收益，是在分散风险，不是在拖累收益。两者的夏普差距从 +0.058 变成 +0.062，变化远小于上面那条"包含 0"的置信区间，结论不受影响。这也是本轮唯一一条"不改策略、纯粹是白捡"的收益来源：如果闲置保证金在实盘里真的一分钱利息都拿不到，那是在浪费 1.3~1.6 个百分点的年化。细节见 [`docs/REVIEW_FIX_BACKLOG.md`](docs/REVIEW_FIX_BACKLOG.md) F27，复算脚本：[`research/review_2026_08_04/verify_idle_cash_credit.py`](research/review_2026_08_04/verify_idle_cash_credit.py)
-
----
-
-## 套利线为什么停
-
-CARRY-PNL-0031 的合格门槛是"净收益 > 0"。对一个方向对冲、全额占资金的组合，这个门槛是错的 —— 它本身就是一个合成的现金工具，每一块钱投进去，就是一块钱不能去买国债。**正确的门槛是现金。**
-
-用同一时间窗口的 3 个月美国国债重新衡量：
-
-| | 年化收益 | 1 万元变成 |
-|---|---:|---:|
-| CARRY-PNL-0031 | 2.740% | 11,720 |
-| 同期国债 | **3.165%** | **12,007** |
-| 差额 | **-0.425 个百分点/年** | |
-| 原报告夏普 1.428 → **对现金的夏普** | **-0.223** | |
-
-而且全部收益来自一年：
-
-| 年份 | 套利收益 | 国债收益 | 差额 |
-|---|---:|---:|---:|
-| 2020（9月15日起） | +0.83% | 0.03% | +0.80 |
-| **2021** | **+16.80%** | 0.05% | **+16.76** |
-| 2022 | -6.52% | 2.04% | -8.55 |
-| 2023 | +1.27% | 5.19% | -3.92 |
-| 2024 | +4.57% | 5.11% | -0.54 |
-| 2025 | +0.69% | 4.15% | -3.46 |
-| 2026（至7月30日） | -0.17% | 2.12% | -2.29 |
-
-**2021 一年贡献了 +16.80%，而整个 5.87 年累计只有 +17.20%。** 剔除 2021，剩下 4.9 年一共只赚了 +0.34%。2021 年之后的 4.58 年，年化落后现金 4.17 个百分点。
-
-2021 年是散户杠杆做多的顶峰，永续合约资金费持续极端为正。那个环境没有再出现过。
-
-按纪律第 7 条（不无限救策略）：
-
-- **套利研究线停止**；
-- **CARRY-PM-0035 不再需要执行**；
-- **CARRY-PM-0037 保留为已修正的测量工具，但不投入任何实盘资金**；
-- 不允许通过剔除币种、加资金费方向过滤、加基差门槛、换时间窗口、改权重或加杠杆来抢救。
-
-复算脚本：[`research/review_2026_08_04/verify_carry_vs_cash.py`](research/review_2026_08_04/verify_carry_vs_cash.py)
-
-顺带一提，这也解释了 CARRY-STACK-0033（把套利塞进主策略闲置资金）为什么失败：**往闲置资金里塞一个跑不赢现金的东西，数学上必然拉低整体收益**，跟它归因的"换手率太高"关系不大。
-
----
-
-## 各条研究线的状态
-
-| 研究线 | 结论 | 状态 |
-|---|---|---|
-| **BRRK-0011** | 方向性核心 | **冻结沿用**，但见上面所有限定条件 |
-| V1 固定四币轮动 | 和 BRRK-0011 统计上分辨不出差异 | 作为对照基准保留 |
-| **EXPOSURE-SMOOTH-0038** | 修复 V1 仓位公式在趋势=0 处的硬跳变（最多跳 0.61）和"趋势为正时波动率不起作用"的死区。全历史面板最大回撤 -59.72%→**-43.20%**，夏普 0.888→**0.966**；但 2023 年单边牛市少赚 46 个百分点，2021-2022 熊市夏普反而变差 | **单一结构改动通过预登记判据，尚未替换基线**，见下方说明 |
-| 离散度调节（0014 / 0015） | 固定盘面和动态币池两个版本的信号相关性只有 **0.064** —— 两种实现几乎毫不相干，说明它测的是币池组成变化而不是风险 | **仅作诊断，不用于配置** |
-| PIT-ALPHA-0016 / 0018 | 排序和持仓机制本身有信息，但组合最大回撤 -66% 到 -69%，2025 年以后为负 | **停止** |
-| ASYM-BETA-0021 / 0022 / 0024 | 算上资金费后夏普和卡玛都低于核心 | **不推进实盘**，见上面表格 |
-| TSMOM-ALPHA-0029 | 算上资金费年化 **-4.12%**，最大回撤 **-88.30%** | **拒绝，不再抢救** |
-| 资金费数据 / 跨交易所对比 | 数据源已验证；币安只能当作方向和状态的代理，不能当作 Hyperliquid 的水平代理 | 通过，但有严格的用途限制 |
-| 全永续实现方式 | 年化从约 65% 掉到 44.08% | **拒绝作为默认实现** |
-| 比特币严格现货路由 | 年化恢复到 56.20% | 实现层候选，待前瞻验证 |
-| 套利线（0030 至 0035） | 跑不赢现金，全部收益来自 2021 一年 | **停止** |
-| Hyperliquid 执行器 | 测试网骨架 | **未加固**，见下 |
-
----
-
-## 已知的重要问题（尚未修复）
-
-这些来自一次只读代码审查，完整清单在 [`docs/REVIEW_FIX_BACKLOG.md`](docs/REVIEW_FIX_BACKLOG.md)（共 28 条）。
-
-**执行器还不能碰实盘资金。** 目前缺，且本轮没有动这部分代码——它是真实资金进出的代码，改之前需要单独确认，不跟研究类改动混在一次提交里：
-
-1. **下单去重机制** —— 如果订单已被交易所接受但网络响应超时，下一次定时任务会重复下单。这是当前风险最高的一处。
-2. **部分成交被当成完全成交** —— 代码不核对实际成交数量。
-3. **反向调仓不是原子操作** —— 先平后开，第二步失败时账户会被留在空仓，而且告警发不出去。
-4. **下单精度写死** —— 没有从交易所元数据读取。
-5. **接口鉴权可绕过** —— 未设密钥时，靠一个调用方可以任意伪造的请求头做验证，任何人都能读到账户净值和持仓。
-
-**研究层和执行层用的不是同一份价格。** 回测信号用币安现货日收盘价，机器人用 Hyperliquid 永续合约的日线。定时任务跑在世界时 01:10，而回测假设在 00:00 成交 —— 每天有 70 分钟未建模的延迟。
-
-**资金费过滤器覆盖不到实际亏钱的仓位区间。** 已实测 BTC 资金费拖累 -25.19%、SOL -13.40%（见"算上资金费之后"表），而过滤器只在仓位系数 > 1.0 时生效，策略大部分时间在 0.18~1.0 之间——测出来的拖累几乎全部落在过滤器管不到的地方。这是下一轮研究最值得做的一条，但需要先登记新实验，本轮未做。
-
-**成本模型没有冲击成本项。** 统一按 5 个基点线性计算，规模变大后会低估。
-
-**加权协方差公式少了一个纠偏项，但已实测影响小到可以不修。** 计算蒙特卡洛路径方差时少乘了一个 `n_eff/(n_eff-1)` 纠偏系数，实测有效样本量常年在 200~665 之间，缺的这一项只相当于把方差低估了 0.15%~0.94%（均值 0.39%）——比这份仓库里其他已经判定"不影响结论"的误差都小一个数量级，本轮决定不修。细节见 backlog F12。
-
----
-
-## 七条核心纪律
-
-1. 机制有效不等于组合可用；
-2. 固定赢家币池的结果不能直接外推；
-3. 先登记、后运行，失败的版本必须保留；
-4. 归因只能授权一种结构变化，不能授权参数搜索；
-5. 研究信号和交易执行必须分层；
-6. 价格回测不是可部署收益，资金费、基差、手续费、滑点和成交必须单独验证；
-7. 对同一段历史不无限抢救策略。
-
----
-
-## 下一步
-
-**每一轮改动要回答两个问题：过去的主线有没有被改动/证伪？新做的这件事对盈利能力有没有实际意义？** 没有意义的条目明确写"跳过"，不是不知道，是算过了不值得做。
-
-已完成、已关闭的条目（第 5 至 14 条 + F12 + F27，见 backlog）：证据基础设施补全、CAGR 口径统一、统计置信区间工具、workflow 权限收敛、加权协方差纠偏（实测影响 <1%，判定不修）、闲置资金计息（实测：不改变策略排名，但如果实盘真的没吃到这笔利息，等于白丢 1.3~1.6 个百分点年化）。
-
-剩下的，按这两个问题排过序：
-
-1. **资金费过滤器覆盖范围**（backlog F23，需先登记实验）—— 已测出 -25.19%/-13.40% 的实际拖累，过滤器却管不到发生拖累的仓位区间。这是当前对盈利能力意义最大的一条。
-2. **执行器加固**（第 15 至 23 条）—— 实盘前必须完成，直接决定会不会爆仓/错单，但这是真实资金进出的代码，需要单独一轮明确处理，不跟研究类改动混在一起。
-3. **方法论改动，主线未涉及的部分**（F24/F26/F28）—— 已确认这几条目前只影响未推广的研究支线（dispersion overlay 变体），不影响 BRRK-0011 baseline 本身，暂缓。
-4. F25（PIT-ALPHA 补回退市压力测试）—— 该研究线已停，等下次真正重新启用时再做。
-
-**部署层面的杠杆放在最后**：在执行器的对账、滑点控制和紧急停止机制拿到前瞻性证据之前，任何实盘仓位都不能超过当前已部署的 gross 目标。
-
-这条只约束**部署**，不约束**研究**——研究层面 gross 1.30~1.50 已经测过了。ASYM-BETA-0021/0022/0024 就是在这个区间跑的（实测最高 gross 1.4228），结论也已经出来：算上资金费之后，这层额外仓位跑不赢直接把 BRRK-0011 核心加杠杆到同样风险水平（详见上方"算上资金费之后"那张表）。所以不是"还没测"，是"测过了，不划算"。
-
----
-
-## 仓库结构
+- corrected P4.1 defensive scaler strictly bounded to `[0,1]`;
+- `LEVERAGE-0039` stopped **before run** and must not be reused;
+- new `LEVERAGE-0040` preregistration;
+- corrected two-layer leverage architecture;
+- cap=1 historical parity;
+- Hyperliquid margin snapshot / hash;
+- standard cross-margin liquidation-distance model;
+- frozen pre-result multiplier policy:
 
 ```text
-research/
-  core/                 冻结的策略基础
-  regime_kelly/         状态识别与风险模型
-  dispersion_overlay/   离散度调节实验
-  pit_universe/          考虑退市的币池与选币测试
-  tsmom/                 独立趋势跟踪研究
-  carry/                 套利与保证金实验
-  funding_router/        资金费与路由核算
-  common/                共享工具（无风险利率、超额收益指标）
-  review_2026_08_04/     审查复算脚本
-  results/               全部结果、报告与原始数据
-execution/
-  plan-b-bot/            Hyperliquid 测试网执行器骨架
-docs/
-  REVIEW_FIX_BACKLOG.md          待修复清单（28 条）
-  CODE_REVIEW_2026-08-04.md      代码审查报告
-  CODE_REVIEW_FOLLOWUP_2026-08-05.md
-  RISK_FREE_METRIC_CONVENTIONS.md 无风险利率与超额收益口径约定
-  NEXT_STEPS.md
-  RESEARCH_HISTORY.md
-.github/workflows/       可复现的实验与验证任务
+leverage_multiplier = 1 + (candidate_cap - 1) × defensive_scale
+candidate caps = 1.00 / 1.10 / 1.20 / 1.30
 ```
+
+No >1 candidate has yet been executed under `LEVERAGE-0040`.
+
+### Repository hygiene
+
+PR #91 completed a repository-wide cleanup without changing strategy economics:
+
+- remote branch inventory reduced from **96** to the active maintenance/research set, with every retired unique branch audited before deletion;
+- stale root README replaced with this current project map;
+- `CURRENT_STATE.md` and `NEXT_STEPS.md` reset to actual project state;
+- `docs/README.md` added as the documentation/evidence index;
+- P3.1 registry prose aligned with merged XRP feature-only parity correction;
+- temporary cleanup workflows removed before merge;
+- historical research results and dated audits retained as evidence.
+
+See `docs/REPOSITORY_HYGIENE_2026-08-07.md`.
+
+---
+
+## Research decisions that matter now
+
+### Accepted / canonical
+
+- **BRRK-0011** — frozen directional research target.
+- corrected defensive risk measurement / scaler — accepted for P4 base layer.
+- Phase 3 live target/rebalance pipeline — merged and parity-tested.
+
+### Shadow / diagnostic only
+
+- **EXPOSURE-SMOOTH-0038** — mechanism validated, but **NOT PROMOTED**; registry remains shadow-only.
+- PIT dispersion work — useful broad-risk evidence, not a replacement production target authority.
+
+### Rejected / stopped / superseded
+
+The repository has tested several alternatives that did not earn promotion, including:
+
+- PIT dynamic-alpha variants;
+- TSMOM line;
+- carry / funding-alpha stack as a standalone promotion path;
+- ASYM extra-exposure variants as a promoted directional mechanism;
+- `LEVERAGE-0039` — stopped pre-run and invalid for reuse.
+
+Historical result files remain under `research/results/`. Their existence does not mean the strategy was promoted.
+
+---
+
+## Problems found during implementation
+
+The project preserves corrections instead of hiding them.
+
+### 1. Documentation and branch sprawl
+
+Before the 2026-08-07 hygiene pass:
+
+- remote branches: **96**;
+- README and handoff docs described older project stages;
+- many merged/abandoned branches remained visible and competed with `main` as apparent authority.
+
+PR #91 normalized the repository and documented a branch-retirement policy. Historical evidence remains available even when obsolete remote refs are removed.
+
+### 2. PR #73 governance evidence gap
+
+PR #73 was manually merged. Its merge is real, but a final-head green governance run was not recorded before that merge.
+
+Therefore its status must remain:
+
+- MERGED: **YES**
+- CI VERIFIED: **NO / NOT RECORDED**
+
+Later work must not retroactively rewrite this history.
+
+### 3. P3.1 feature-input parity defect
+
+The first P3.1 contract exposed only four target assets, but frozen BRRK regime features also require XRPUSDT as a feature-only price input.
+
+PR #74 corrected this without adding XRP to targets or routing. PR #91 later corrected the stale descriptive row in `decision_registry.json` so machine-readable prose now matches that merged fact.
+
+### 4. P4.4 preflight wiring defects
+
+Before any cap>1 result was observed, fail-closed preflight found:
+
+- `PREFLIGHT-RAW-TARGET-001` — independently banded V1/BRRK holdings cannot be divided to recover raw defensive scale;
+- `PREFLIGHT-SESSION-TIMING-002` — first BRRK decision `2022-12-09` must map to first evaluation return session `2022-12-10`.
+
+The corrected R1 preflight rebuilds raw V1/BRRK authority from frozen source and explicitly exits before cap>1 evaluation.
+
+These were implementation corrections, **not result-driven parameter tuning**.
+
+---
+
+## What happens next
+
+**Current action: STOP. Research remains paused.**
+
+Repository hygiene is complete. There is deliberately no automatic next implementation/research action.
+
+Only after an explicit resume instruction:
+
+```text
+re-fetch live main / #90 / marker / result state
+→ refresh #90 from then-current main
+→ rerun all applicable pre-result CI / parity / governance
+→ re-confirm marker and immutable result are still absent
+→ only then reconsider the one-time RUN_ONCE boundary
+→ if executed, validate immutable LEVERAGE-0040 result
+→ P4.5 select/fail decision with no post-result retuning
+→ P4.6 separate production-authorization gate
+```
+
+P5 remains blocked until the leverage phase is resolved through its proper gates.
+
+---
+
+## Source-of-truth reading order
+
+Do **not** infer current state from an arbitrary dated report. Read in this order:
+
+1. [`README.md`](README.md) — short project map;
+2. [`docs/CURRENT_STATE.md`](docs/CURRENT_STATE.md) — authoritative current snapshot;
+3. [`docs/NEXT_STEPS.md`](docs/NEXT_STEPS.md) — unique dependency order / pause rule;
+4. [`docs/MASTER_PLAN_2026-08-05.md`](docs/MASTER_PLAN_2026-08-05.md) — frozen architecture/product intent;
+5. [`docs/IMPLEMENTATION_ROADMAP_2026-08-05.md`](docs/IMPLEMENTATION_ROADMAP_2026-08-05.md) — phase definitions and acceptance criteria;
+6. [`config/decision_registry.json`](config/decision_registry.json) — machine-readable decisions;
+7. [`docs/README.md`](docs/README.md) — documentation/evidence index.
+
+If a dated historical document conflicts with `CURRENT_STATE.md`, the dated document is an evidence snapshot, not current authority.
+
+---
+
+## Repository map
+
+```text
+config/                 canonical product / instrument / decision configuration
+execution/              live execution package and tests
+research/               research implementations and preregistrations
+research/results/       persisted research evidence and immutable outputs
+docs/                   governance, architecture, phase docs, audits, handoffs
+.github/workflows/       CI / evidence / governance workflows
+```
+
+Detailed historical metrics are intentionally kept in `research/results/` rather than duplicated into the root README.
+
+---
+
+## Production status
+
+Current production authorization:
+
+```text
+production_authorized_components = []
+```
+
+No research result, merged PR, successful backtest, or green CI run should be interpreted as permission to deploy capital unless the explicit production gate changes that registry state.

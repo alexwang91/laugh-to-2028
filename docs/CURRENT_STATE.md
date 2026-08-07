@@ -1,147 +1,264 @@
 # BRRK Current State
 
 Last updated: 2026-08-07
-Status: authoritative cross-chat handoff snapshot
+Status: **authoritative current-state handoff**
 
-## Authoritative baseline
+> GitHub `main` is the canonical live ref. Repository hygiene PR #91 merged as `d158e32095b4e235644a9b5c75f914449775a7dd`; this post-merge normalization only closes the handoff and does not advance research.
 
-- P0/P1/P2: PASS / MERGED; Phases 0–2 complete.
-- P3.1–P3.4: PASS / TESTED / CI VERIFIED / MERGED; **Phase 3 COMPLETE**.
-- P4.1 corrected defensive scaler: PASS / MERGED; frozen strictly to `[0,1]`.
-- `LEVERAGE-0039`: **STOPPED_PRE_RUN / NO_RESULT_EVER_PRODUCED / DO NOT REUSE**.
-- `LEVERAGE-0040`: **PREREGISTERED / MERGED / NOT RUN**.
-- Hyperliquid margin snapshot, cap=1 parity, liquidation model and pre-result multiplier policy: PASS / MERGED.
-- post-#88 normalization PR #89: PASS / MERGED.
+## Executive state
 
-Normalized main:
+```text
+Phase 0                         COMPLETE / MERGED
+Phase 1                         COMPLETE / MERGED
+Phase 2                         COMPLETE / MERGED
+Phase 3                         COMPLETE / MERGED
+P4.1 defensive scaler          COMPLETE / MERGED / frozen [0,1]
+P4 architecture + cap1         COMPLETE / MERGED
+P4 margin/liquidation prereqs  COMPLETE / MERGED
+Repository hygiene             COMPLETE / MERGED (#91)
+LEVERAGE-0040 implementation   PRE-RESULT CANDIDATE / PAUSED
+LEVERAGE-0040 search           NOT RUN
+P4.5 select/fail decision      BLOCKED
+P4.6 production leverage gate  BLOCKED / separate authorization
+P5 exit intelligence           BLOCKED / not started
+production authorization       NONE
+```
 
-`98396a5b510c5f0a717b954568921c1daef6edc8`
+`production_authorized_components = []`
 
-Current clean candidate:
+## Current owner instruction
+
+**STOP. Do not continue LEVERAGE-0040 until the owner explicitly asks to resume it.**
+
+PR #90 remains intentionally:
+
+`P4.4 [PAUSED / DRAFT]: freeze and preflight LEVERAGE-0040 one-time study`
+
+Research branch:
 
 `p4-4/leverage-0040-one-time-study-v2`
 
-PR #90 is the only active P4.4 candidate. Old v1 is **INVALID / ABANDONED / DO NOT MERGE / DO NOT REVIVE** and has no PR/result authority.
+Paused branch head at the time repository hygiene completed:
 
-## Current safety state
+`d3f4c3f9407d253b36166940f650f6a9ed92957d`
+
+Safety state:
 
 ```text
 RUN_ONCE marker                         ABSENT
 research/results/leverage_0040 summary ABSENT
-1.10/1.20/1.30 candidate observation   NONE
-result selected                        NO
-operating budget frozen                NO
-production >1 authorization            NO
-production_authorized_components       []
+1.10 / 1.20 / 1.30 result observation NONE
+selected research cap                  NONE
+operating drawdown budget              NONE
+production gross >1 authorization      NONE
 ```
 
-## Frozen architecture and study semantics
+Pre-hygiene green CI on #90 is historical evidence, **not** permission to continue. `main` changed after #90's current head; a future resume must refresh/revalidate from live main first.
+
+## Frozen architecture and product constraints
+
+### Directional strategy
+
+- canonical directional research target: **BRRK-0011**;
+- target/tradable assets: **BTC / ETH / SOL / BNB**;
+- XRP is **feature-only** where required by the frozen BRRK regime feature model;
+- XRP is not a target, position, or routing asset;
+- strategy cadence: daily;
+- daily boundary: 00:00 UTC.
+
+### Execution / safety
+
+- primary venue: Hyperliquid;
+- FLAT = zero exposure;
+- FLAT → LONG / SHORT requires human approval;
+- intraday automation may reduce risk, not autonomously add directional exposure;
+- master wallet key and withdrawal authority are forbidden;
+- merged / CI-verified does not imply production-authorized.
+
+### P4 leverage boundary
+
+P4.1 corrected defensive scale remains strictly `[0,1]`.
+
+Frozen pre-result multiplier:
 
 ```text
-BRRK directional weights
-× frozen defensive_scale in [0,1]
-× leverage_multiplier
-= final target economic exposure
-
-leverage_multiplier = 1 + (candidate_cap - 1) × frozen_defensive_scale
+leverage_multiplier = 1 + (candidate_cap - 1) × defensive_scale
 candidate caps = 1.00 / 1.10 / 1.20 / 1.30
 ```
 
-The one-time study implementation is frozen in:
+No candidate >1 has been observed under LEVERAGE-0040.
 
-- `research/leverage_0040/LEVERAGE-0040-STUDY-IMPLEMENTATION-V1.json`
-- `research/leverage_0040/study_core.py`
-- `research/leverage_0040/run_leverage_0040_once.py` — execution library
-- `research/leverage_0040/run_leverage_0040_once_r1.py` — authoritative corrected entrypoint
-- `research/leverage_0040/validate_leverage_0040_result.py`
+## What is complete
 
-It preserves the preregistered cap grid, P3.3 5% economic L1 control, 5/10/20/50 bps costs, matched cap1 + frozen legacy comparators, BTC spot-base/perp-overlay routing, Hyperliquid funding spikes, standard cross-margin liquidation, pinned P2 capacity evidence, historical/gap/vol/degraded-fill stresses, 35/40/45/50% operating-budget candidates, 10,000 paired stationary-block bootstraps at 7/21/63-day mean blocks, broad neighboring-cap requirement and deterministic selection order.
+### P0 / governance baseline
 
-## Pre-result corrections
+Canonical product/config authority, decision registry, project-governance rules, CI baseline, and status taxonomy are merged.
 
-Initial #90 `--preflight-only` correctly failed before any cap>1 construction because independently banded published V1/BRRK holdings cannot be divided to recover raw defensive scale. Same source review caught the one-day decision/session boundary.
+Required distinction remains:
 
-Corrections, both before any >1 observation and with no economic parameter change:
+`IMPLEMENTED → TESTED → CI VERIFIED → MERGED → PRODUCTION AUTHORIZED`
 
-```text
-PREFLIGHT-RAW-TARGET-001
-PREFLIGHT-SESSION-TIMING-002
-```
+### P1 / execution truth
 
-R1 now uses frozen raw authority:
+Merged execution safety includes:
 
-```text
-feature universe: BTC / ETH / SOL / BNB / XRP
-V1 raw target: build_benchmark_v1
-features: build_features_no_dominance
-BRRK scale: build_brrk0011_scale
-raw BRRK target = raw V1 target × defensive scale
-first decision: 2022-12-09
-first evaluation session: 2022-12-10
-```
+- deterministic order identity;
+- persistent ledger;
+- partial-fill correctness;
+- reversal safety;
+- precision metadata;
+- post-submit reconciliation;
+- restart recovery;
+- kill / emergency paths.
 
-XRP remains feature-only; tradable/target assets remain BTC/ETH/SOL/BNB. Published banded `daily_weights.csv` is legacy evidence only, never scale authority.
+### P2 / instrument and route evidence
 
-## Validated pre-result evidence
+Merged:
 
-Corrected checkpoint `0b396de4d2bf10f06fee1403836331459b7bd696` passed all applicable gates, including Phase 0 **281 passed + 5/5 integration** and R1 preflight explicitly reporting `cap>1 not evaluated`.
+- canonical instrument registry;
+- validated spot identity handling;
+- evidence-scoped BNB perp-only policy;
+- reproducible route-cost model;
+- corrected live-L2 measurement;
+- route decision logic and capacity evidence.
 
-Subsequent handoff head `0db6544af1793f48c30f9eb0b3cb98629bee58ba` also passed all seven applicable gates:
+Route/depth evidence remains point-in-time execution evidence, not historical PIT liquidity.
 
-- P4.4 study contract/preflight `31186802141` (#10): **SUCCESS**;
-- Phase 0 `31186802190` (#160): **SUCCESS**;
-- Research evidence `31186802012` (#66): **SUCCESS**;
-- P3.2 parity/golden `31186802121` (#53): **SUCCESS**;
-- P4 cap=1 parity `31186802544` (#19): **SUCCESS**;
-- P4 pre-run prerequisites `31186802021` (#15): **SUCCESS**;
-- governance `31186802044` (#222): **SUCCESS**.
+### P3 / research-to-live target pipeline
 
-## Final pre-result CI lifecycle hardening
+**Phase 3 COMPLETE.**
 
-Before creating the one-time marker, one additional non-economic lifecycle issue was frozen:
+- P3.1 canonical data contract;
+- PR #74 correction restoring XRP feature-only strategy input parity;
+- P3.2 canonical BRRK target engine;
+- independent multi-date research/live parity;
+- committed historical golden vectors;
+- P3.3 5% L1 rebalance / turnover semantics;
+- P3.4 contribution handling.
 
-- **pre-result state (`summary.json` absent):** the P4.4 contract workflow downloads the pinned P2 capacity artifact and runs R1 `--preflight-only`;
-- **post-result state (`summary.json` present):** the same workflow runs only `validate_leverage_0040_result.py` against committed immutable evidence and does **not** redownload the capacity artifact or rerun the historical study.
+### P4 prerequisites completed
 
-This prevents later result/handoff/decision-registry commits from accidentally requiring a second LEVERAGE-0040 execution. The workflow path filter now includes `research/results/leverage_0040/**` and `config/decision_registry.json`, and a regression test locks both lifecycle branches.
+Merged before any >1 search result:
 
-This lifecycle hardening changes no cap, signal, cost, stress, budget, multiplier, benchmark or selection rule. Because it creates a new branch head, it must receive one final pre-result CI pass before the marker is created.
+- corrected defensive scaler `[0,1]`;
+- `LEVERAGE-0039` stopped pre-run / no result / do not reuse;
+- `LEVERAGE-0040` preregistration;
+- corrected two-layer leverage architecture;
+- cap=1 historical parity;
+- Hyperliquid margin snapshot / hash;
+- standard cross-margin liquidation-distance model;
+- defensive-monotone multiplier policy frozen pre-result.
 
-## One-time execution safety
+### Repository hygiene completed
 
-Marker:
+PR #91 normalized repository structure and entry documentation without advancing strategy research.
 
-`research/leverage_0040/RUN_ONCE_LEVERAGE_0040.marker`
-
-Required SHA-256:
-
-`f54cdf362f60cad19d6c429ac4e008047b45d2cb537a95c96e2bc6dac5ce733a`
-
-The marker remains **ABSENT**. Only its exact creation on the validated v2 branch may trigger the one-time workflow. Result commits trigger validation only.
-
-## Explicit boundaries
-
-Still forbidden:
-
-- create the RUN_ONCE marker before the latest pre-result head is fully green and metadata/ready governance is green;
-- rerun the study after immutable results exist;
-- merge/revive abandoned v1;
-- reuse LEVERAGE-0039;
-- alter 0040 caps, multiplier policy, budgets, stress rules or study semantics after seeing cap>1 results;
-- search above 1.30 under 0040;
-- weaken frozen 20% defensive tail gate;
-- promote EXPOSURE-SMOOTH-0038;
-- absorb F23 funding-response logic;
-- shorts / XRP targets;
-- P5 exit intelligence;
-- production gross >1 or production leverage authorization.
-
-## Production authorization
+Verified cleanup history:
 
 ```text
-NO_CHANGE
-production_authorized_components = []
+remote branches before       96
+pass 1 retired               81
+pass 2 retired                1
+pass 3 audited/retired       11
+active refs during PR #91     3
 ```
+
+The hygiene work also:
+
+- replaced the stale root README;
+- reset `CURRENT_STATE.md` and `NEXT_STEPS.md`;
+- added `docs/README.md` as the documentation/evidence index;
+- corrected stale P3.1 decision-registry prose to reflect XRP feature-only parity;
+- removed all temporary cleanup/registry workflows before merge;
+- preserved historical audits and `research/results/` evidence.
+
+See `docs/REPOSITORY_HYGIENE_2026-08-07.md`.
+
+## Important issues discovered and disposition
+
+### GOV-HIST-0073 — manual merge evidence gap
+
+PR #73 was manually merged without a recorded final-head green governance CI run.
+
+Historical status remains:
+
+```text
+MERGED = YES
+CI VERIFIED = NO / NOT RECORDED
+```
+
+Do not retroactively convert it to CI VERIFIED.
+
+### DATA-PARITY-P3.1 — missing XRP feature-only input
+
+The first P3.1 contract exposed only four price series, while frozen BRRK regime features also consume XRPUSDT.
+
+PR #74 fixed the data contract to distinguish:
+
+```text
+target assets       BTC / ETH / SOL / BNB
+feature-only assets XRP
+strategy signal set BTC / ETH / SOL / BNB / XRP
+```
+
+PR #91 also corrected the stale registry description. No XRP target/routing authority was introduced.
+
+### P4.4 PREFLIGHT-RAW-TARGET-001
+
+Initial #90 `--preflight-only` incorrectly attempted:
+
+`gross(BRRK banded holdings) / gross(V1 banded holdings)`
+
+That is invalid because the two published holdings paths were independently subjected to a 5% band.
+
+Correction: rebuild raw V1 + frozen BRRK-0011 scale from frozen source authority; published banded holdings are legacy evidence only.
+
+### P4.4 PREFLIGHT-SESSION-TIMING-002
+
+Correction: frozen decision `2022-12-09` maps to first evaluated return session `2022-12-10`.
+
+Both corrections occurred before any cap>1 observation and changed no economic parameter.
+
+### Repository sprawl / stale entry docs
+
+Resolved by PR #91. Historical evidence was retained; obsolete remote refs were retired under auditable rules.
+
+## Research decision summary
+
+### Canonical / retained
+
+- BRRK-0011 directional core;
+- corrected defensive risk path;
+- Phase 3 canonical live target pipeline.
+
+### Shadow / diagnostic only
+
+- EXPOSURE-SMOOTH-0038 — **SHADOW_ONLY / NOT PROMOTED**;
+- PIT dispersion diagnostics — evidence only, not target authority.
+
+### Rejected / stopped / superseded
+
+- PIT dynamic-alpha promotion path;
+- TSMOM promotion path;
+- carry/funding-alpha stack as promoted standalone strategy;
+- ASYM extra-exposure variants as promoted directional authority;
+- LEVERAGE-0039 — stopped pre-run, no result, never reuse.
+
+Historical evidence remains in `research/results/` and dated docs.
+
+## Documentation authority
+
+Read current state in this order:
+
+1. root `README.md`;
+2. `docs/CURRENT_STATE.md` — this file;
+3. `docs/NEXT_STEPS.md`;
+4. `docs/MASTER_PLAN_2026-08-05.md`;
+5. `docs/IMPLEMENTATION_ROADMAP_2026-08-05.md`;
+6. `config/decision_registry.json`;
+7. `docs/README.md` for the evidence/document index.
+
+A dated historical report is an evidence snapshot. It does not override this file.
 
 ## Project drift audit
 
@@ -149,19 +266,23 @@ production_authorized_components = []
 DRIFT_0
 ```
 
-R1 and CI-lifecycle fixes are fail-closed pre-result implementation corrections, not strategy retuning.
+Repository hygiene and this post-merge normalization do not alter frozen strategy math or production authorization.
 
 ## Exact next action
 
 ```text
-revalidate the latest pre-result #90 head after CI-lifecycle hardening
--> update PR evidence / mark ready
--> newest metadata/ready governance
--> create exact RUN_ONCE marker once
--> one-time workflow executes frozen 0040 suite and commits immutable result
--> immutable-result validation
--> record P4.5 select/fail decision without retuning
--> final-head CI/governance
--> expected-head merge
--> post-merge normalization
+STOP
+KEEP PR #90 PAUSED / DRAFT
+DO NOT create RUN_ONCE marker
+DO NOT merge #90
+```
+
+Only after an explicit owner instruction to resume:
+
+```text
+re-fetch live main / #90 / marker / result
+→ refresh #90 from then-current main
+→ repeat all applicable pre-result CI/parity/governance
+→ verify marker/result still absent
+→ only then reconsider crossing the one-time LEVERAGE-0040 execution boundary
 ```
