@@ -10,8 +10,7 @@ Status: authoritative cross-chat handoff snapshot
 - P4.1 corrected defensive scaler: PASS / MERGED; frozen strictly to `[0,1]`.
 - `LEVERAGE-0039`: **STOPPED_PRE_RUN / NO_RESULT_EVER_PRODUCED / DO NOT REUSE**.
 - `LEVERAGE-0040`: **PREREGISTERED / MERGED / NOT RUN**.
-- Hyperliquid margin snapshot: CAPTURED / HASHED / MERGED.
-- P4.3 cap=1 parity, liquidation model and pre-result multiplier policy: PASS / MERGED.
+- Hyperliquid margin snapshot, cap=1 parity, liquidation model and pre-result multiplier policy: PASS / MERGED.
 - post-#88 normalization PR #89: PASS / MERGED.
 
 Normalized main:
@@ -22,11 +21,7 @@ Current clean candidate:
 
 `p4-4/leverage-0040-one-time-study-v2`
 
-PR:
-
-`#90 — P4.4 [DRAFT]: freeze and preflight LEVERAGE-0040 one-time study`
-
-Old `p4-4/leverage-0040-one-time-study-v1` remains **INVALID / ABANDONED / DO NOT MERGE / DO NOT REVIVE**. Its transient empty-file write never entered a PR, main or result artifact.
+PR #90 is the only active P4.4 candidate. Old v1 is **INVALID / ABANDONED / DO NOT MERGE / DO NOT REVIVE** and has no PR/result authority.
 
 ## Current safety state
 
@@ -40,7 +35,7 @@ production >1 authorization            NO
 production_authorized_components       []
 ```
 
-## Frozen architecture
+## Frozen architecture and study semantics
 
 ```text
 BRRK directional weights
@@ -52,93 +47,69 @@ leverage_multiplier = 1 + (candidate_cap - 1) × frozen_defensive_scale
 candidate caps = 1.00 / 1.10 / 1.20 / 1.30
 ```
 
-No PnL-selected threshold, funding signal, raw-HMM retune, P5 input, EXPOSURE-SMOOTH-0038 input, short/XRP target input, or production authorization may enter P4.
+The one-time study implementation is frozen in:
 
-## P4.4 pre-result study candidate
+- `research/leverage_0040/LEVERAGE-0040-STUDY-IMPLEMENTATION-V1.json`
+- `research/leverage_0040/study_core.py`
+- `research/leverage_0040/run_leverage_0040_once.py` — execution library
+- `research/leverage_0040/run_leverage_0040_once_r1.py` — authoritative corrected entrypoint
+- `research/leverage_0040/validate_leverage_0040_result.py`
 
-Primary machine contract:
+It preserves the preregistered cap grid, P3.3 5% economic L1 control, 5/10/20/50 bps costs, matched cap1 + frozen legacy comparators, BTC spot-base/perp-overlay routing, Hyperliquid funding spikes, standard cross-margin liquidation, pinned P2 capacity evidence, historical/gap/vol/degraded-fill stresses, 35/40/45/50% operating-budget candidates, 10,000 paired stationary-block bootstraps at 7/21/63-day mean blocks, broad neighboring-cap requirement and deterministic selection order.
 
-`research/leverage_0040/LEVERAGE-0040-STUDY-IMPLEMENTATION-V1.json`
+## Pre-result corrections
 
-Pure study mechanics:
+Initial #90 `--preflight-only` correctly failed before any cap>1 construction because independently banded published V1/BRRK holdings cannot be divided to recover raw defensive scale. Same source review caught the one-day decision/session boundary.
 
-`research/leverage_0040/study_core.py`
-
-Initial execution library:
-
-`research/leverage_0040/run_leverage_0040_once.py`
-
-Corrected authoritative entrypoint after preflight review:
-
-`research/leverage_0040/run_leverage_0040_once_r1.py`
-
-Immutable result validator:
-
-`research/leverage_0040/validate_leverage_0040_result.py`
-
-The frozen study semantics include P3.3 5% economic L1 control, 5/10/20/50 bps costs, matched cap1 + frozen legacy comparators, BTC spot-base/perp-overlay routing, native Hyperliquid funding spikes, all-perp stress, standard cross-margin liquidation, pinned P2 capacity evidence, historical/gap/vol/degraded-fill stresses, 35/40/45/50% operating-budget candidates, 10,000 paired stationary-block bootstraps at 7/21/63-day mean blocks, broad neighboring-cap requirement and deterministic selection order.
-
-## Preflight correction — before any cap>1 observation
-
-The first PR #90 contract run failed in `--preflight-only` **before any 1.10/1.20/1.30 candidate construction**.
-
-Root cause:
-
-- published `daily_weights.csv` contains independently 5%-banded V1 and BRRK holdings;
-- therefore `gross(BRRK banded) / gross(V1 banded)` is not the raw defensive scale and may exceed 1 when the two independent band states differ;
-- the initial implementation incorrectly treated those published banded holdings as a scale source.
-
-Same pre-result review also caught session timing: the first frozen BRRK return session `2022-12-10` must use the `2022-12-09` decision target.
-
-Corrections frozen in the same PR, with no economic parameter change and no cap>1 observation:
+Corrections, both before any >1 observation and with no economic parameter change:
 
 ```text
 PREFLIGHT-RAW-TARGET-001
 PREFLIGHT-SESSION-TIMING-002
 ```
 
-R1 now rebuilds the raw authority from frozen source:
+R1 now uses frozen raw authority:
 
 ```text
 feature universe: BTC / ETH / SOL / BNB / XRP
 V1 raw target: build_benchmark_v1
-frozen feature model: build_features_no_dominance
+features: build_features_no_dominance
 BRRK scale: build_brrk0011_scale
-corrected tail risk: research/risk_metric_fix/corrected_risk.py
-raw BRRK target = raw V1 target × rebuilt defensive scale
-published banded holdings are legacy evidence only, never scale authority
+raw BRRK target = raw V1 target × defensive scale
+first decision: 2022-12-09
+first evaluation session: 2022-12-10
 ```
 
-Target/tradable assets remain BTC/ETH/SOL/BNB; XRP remains feature-only.
+XRP remains feature-only; tradable/target assets remain BTC/ETH/SOL/BNB. Published banded `daily_weights.csv` is legacy evidence only, never scale authority.
 
-## Successful corrected checkpoint
+## Validated pre-result evidence
 
-Corrected checkpoint head:
+Corrected checkpoint `0b396de4d2bf10f06fee1403836331459b7bd696` passed all applicable gates, including Phase 0 **281 passed + 5/5 integration** and R1 preflight explicitly reporting `cap>1 not evaluated`.
 
-`0b396de4d2bf10f06fee1403836331459b7bd696`
+Subsequent handoff head `0db6544af1793f48c30f9eb0b3cb98629bee58ba` also passed all seven applicable gates:
 
-Applicable CI:
+- P4.4 study contract/preflight `31186802141` (#10): **SUCCESS**;
+- Phase 0 `31186802190` (#160): **SUCCESS**;
+- Research evidence `31186802012` (#66): **SUCCESS**;
+- P3.2 parity/golden `31186802121` (#53): **SUCCESS**;
+- P4 cap=1 parity `31186802544` (#19): **SUCCESS**;
+- P4 pre-run prerequisites `31186802021` (#15): **SUCCESS**;
+- governance `31186802044` (#222): **SUCCESS**.
 
-- P4.4 study contract/preflight `31186348512` (#7): **SUCCESS**
-  - pre-result mechanics/authority: **24 passed**
-  - runner/validator compile: SUCCESS
-  - pinned ROUTER-DATA-0004 artifact/hash: SUCCESS
-  - R1 real-data `--preflight-only`: **SUCCESS**
-  - explicit output: `cap>1 not evaluated`
-  - trade-price frame SHA-256: `a2b9a3909dc681b94cbed1d1dacef88c27de1f261f9531ed1bc2b39462a770d8`
-  - route capacity CSV SHA-256: `5493fa0740b62f853396f45cc64fe2cc212492decc20b9f9e9d801e44cd72aa6`
-- Phase 0 `31186348457` (#157): **SUCCESS, 281 passed + 5/5 integration**
-- Research evidence `31186348431` (#63): **SUCCESS**
-- P3.2 parity/golden `31186348474` (#50): **SUCCESS**
-- P4 cap=1 parity `31186350411` (#16): **SUCCESS**
-- P4 pre-run prerequisites `31186349388` (#12): **SUCCESS**
-- governance `31186348416` (#219): **SUCCESS**
+## Final pre-result CI lifecycle hardening
 
-This is a checkpoint only. The handoff commits create a new final pre-result head and must receive the same applicable gates before the one-time marker may be created.
+Before creating the one-time marker, one additional non-economic lifecycle issue was frozen:
+
+- **pre-result state (`summary.json` absent):** the P4.4 contract workflow downloads the pinned P2 capacity artifact and runs R1 `--preflight-only`;
+- **post-result state (`summary.json` present):** the same workflow runs only `validate_leverage_0040_result.py` against committed immutable evidence and does **not** redownload the capacity artifact or rerun the historical study.
+
+This prevents later result/handoff/decision-registry commits from accidentally requiring a second LEVERAGE-0040 execution. The workflow path filter now includes `research/results/leverage_0040/**` and `config/decision_registry.json`, and a regression test locks both lifecycle branches.
+
+This lifecycle hardening changes no cap, signal, cost, stress, budget, multiplier, benchmark or selection rule. Because it creates a new branch head, it must receive one final pre-result CI pass before the marker is created.
 
 ## One-time execution safety
 
-Marker path:
+Marker:
 
 `research/leverage_0040/RUN_ONCE_LEVERAGE_0040.marker`
 
@@ -146,16 +117,17 @@ Required SHA-256:
 
 `f54cdf362f60cad19d6c429ac4e008047b45d2cb537a95c96e2bc6dac5ce733a`
 
-The marker remains **ABSENT**. The dedicated run-once workflow is triggered only by that exact marker on the clean v2 branch. Result commits do not retrigger the study; they trigger only immutable-result validation.
+The marker remains **ABSENT**. Only its exact creation on the validated v2 branch may trigger the one-time workflow. Result commits trigger validation only.
 
 ## Explicit boundaries
 
 Still forbidden:
 
-- create the RUN_ONCE marker before final pre-result CI is green;
+- create the RUN_ONCE marker before the latest pre-result head is fully green and metadata/ready governance is green;
+- rerun the study after immutable results exist;
 - merge/revive abandoned v1;
 - reuse LEVERAGE-0039;
-- alter 0040 caps, multiplier policy, budgets, stress rules or study implementation after seeing cap>1 results;
+- alter 0040 caps, multiplier policy, budgets, stress rules or study semantics after seeing cap>1 results;
 - search above 1.30 under 0040;
 - weaken frozen 20% defensive tail gate;
 - promote EXPOSURE-SMOOTH-0038;
@@ -177,15 +149,16 @@ production_authorized_components = []
 DRIFT_0
 ```
 
-The R1 change is a pre-result implementation correction discovered by fail-closed preflight, not parameter retuning or strategy drift.
+R1 and CI-lifecycle fixes are fail-closed pre-result implementation corrections, not strategy retuning.
 
 ## Exact next action
 
 ```text
-final pre-result head revalidation for #90
--> update PR evidence / ready only after all applicable gates green
+revalidate the latest pre-result #90 head after CI-lifecycle hardening
+-> update PR evidence / mark ready
+-> newest metadata/ready governance
 -> create exact RUN_ONCE marker once
--> dedicated workflow executes frozen 0040 suite exactly once and commits immutable result
+-> one-time workflow executes frozen 0040 suite and commits immutable result
 -> immutable-result validation
 -> record P4.5 select/fail decision without retuning
 -> final-head CI/governance
