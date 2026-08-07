@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "study_id": "LEVERAGE-0040",
+  "correction_id": "POST-COMPUTE-SERIALIZATION-VALIDATOR-006",
+  "status": "POST_COMPUTE_BLINDED_RECOVERY_BEFORE_RESULT_COMMIT",
+  "trigger": {
+    "workflow_run_id": 31200299149,
+    "failed_head": "4cb336ef9d61c0230fd16b9dc29877a17ec2bb5a",
+    "failed_stage": "immutable result validator after full economic computation",
+    "validator_message": "production/retuning boundary violated"
+  },
+  "observability": {
+    "full_candidate_matrix_computed": true,
+    "candidate_metrics_emitted_to_stdout": false,
+    "candidate_metrics_committed": false,
+    "immutable_result_committed": false,
+    "observed_output": "summary hashes only"
+  },
+  "root_cause": {
+    "python_rule": "bool is a subclass of int",
+    "serializer_order": "integer branch preceded boolean branch",
+    "malformed_effect": "False/True serialized as JSON 0/1",
+    "validator_rule": "production and retuning boundaries require native JSON booleans using identity checks"
+  },
+  "correction": {
+    "behavior": "serialize bool and numpy.bool_ before integer types and validate the exact R1-R5 recovery provenance",
+    "economic_logic_change": false,
+    "candidate_caps_changed": false,
+    "cost_grid_changed": false,
+    "funding_semantics_changed": false,
+    "stress_scenarios_changed": false,
+    "bootstrap_seed_changed": false,
+    "selection_gates_changed": false,
+    "production_authorization_changed": false,
+    "result_driven_retuning": false
+  },
+  "recovery": {
+    "entrypoint": "research/leverage_0040/run_leverage_0040_once_r5.py",
+    "prior_markers_preserved": true,
+    "r5_recovery_marker": "research/leverage_0040/RUN_ONCE_LEVERAGE_0040_R5_POST_COMPUTE_RECOVERY.marker",
+    "r5_recovery_marker_sha256": "31e3f3d188e2bec6725d901a49a37448e56fbca53e8f4d973cc5850d17fba0c6",
+    "recompute_reason": "failed runner workspace was ephemeral and no result artifacts were committed",
+    "deterministic_recompute_required": true,
+    "material_post_result_retuning_allowed": false
+  }
+}
