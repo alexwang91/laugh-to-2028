@@ -11,32 +11,25 @@ Status: authoritative cross-chat handoff snapshot
 - `LEVERAGE-0039`: **STOPPED_PRE_RUN / NO_RESULT_EVER_PRODUCED / DO NOT REUSE**
 - `LEVERAGE-0040`: **PREREGISTERED BEFORE FIRST RUN / TESTED / CI VERIFIED / MERGED / NOT RUN**
 - Hyperliquid P4 margin snapshot: **CAPTURED / HASHED / TESTED / CI VERIFIED / MERGED**
+- P4.3 two-layer composition + cap=1 historical parity: **PASS / TESTED / CI VERIFIED / MERGED BY PR #86**
 - historical stale-main PR #70: INVALID / CLOSED / DO NOT REVIVE
 
 ## Current main and roadmap position
 
-Post-correction normalization main:
+PR #86 expected-head squash merge:
 
-`8d95810cd30fbce61fa7ed0234ac7e308aeb3a17`
-
-Current draft PR:
-
-`#86 — P4.3 two-layer runner wiring and cap=1 historical parity`
-
-Validated initial checkpoint head:
-
-`3aaacd8e2347e05238d8a8ad072876e959f73e77`
+`ad560ada135cf556be24fa3ce62eb5a7a74cfeb5`
 
 ```text
 P4.1 corrected 0-1 defensive baseline       PASS / MERGED
 LEVERAGE-0039                               STOPPED_PRE_RUN / NO RESULT
 LEVERAGE-0040 preregistration               PASS / MERGED / NOT RUN
 P4 margin/liquidation metadata snapshot     PASS / MERGED
-P4.3 two-layer composition module           IMPLEMENTED / TESTED / CI VERIFIED CANDIDATE
-P4.3 cap=1 historical leverage parity       PASS / TESTED / CI VERIFIED CANDIDATE
-P4.3 liquidation-distance implementation    NOT IMPLEMENTED
-P4.3 >1 multiplier selection rule           NOT IMPLEMENTED
-P4.4 preregistered stress execution         BLOCKED
+P4.3 two-layer composition                  PASS / MERGED
+P4.3 cap=1 historical parity                PASS / MERGED
+P4.3 liquidation-distance implementation    UNIQUE NEXT PREREQUISITE
+P4.3 >1 multiplier-selection algorithm      BLOCKED UNTIL PRE-RUN FREEZE
+P4.4 LEVERAGE-0040 search/stress execution  BLOCKED
 P4.5 promotion/failure decision             BLOCKED
 P4.6 deployment cap / production gate       BLOCKED
 P5 exit intelligence                        BLOCKED
@@ -57,40 +50,39 @@ BRRK directional weights
 
 The frozen defensive selector remains unchanged and strictly bounded to `[0,1]`.
 
-Research-only candidate composition module:
+Merged research-only composition:
 
 `research/leverage_0040/two_layer_runner.py`
 
-It deliberately does **not** choose a leverage multiplier. It only composes an already-frozen P3.2 target with an explicitly supplied research multiplier after validating:
+It does not choose the multiplier. It composes an already-frozen P3.2 target with an explicitly supplied research multiplier and enforces long-only/four-asset/base-gross/defensive-scale/cap boundaries. No product runtime imports this research module.
 
-- exact BTC/ETH/SOL/BNB target set;
-- long-only base target;
-- frozen base gross <=1;
-- frozen defensive scale remains in `[0,1]`;
-- multiplier remains in `[1,research_cap]`;
-- `LEVERAGE-0040` cap remains <=1.30;
-- no production authorization.
-
-This prevents multiplier-selection economics from being smuggled into the cap=1 wiring gate.
-
-## Cap=1 historical parity result
+## Cap=1 historical parity — merged
 
 Dedicated workflow:
 
 `P4.3 LEVERAGE-0040 cap1 parity`
 
-Initial checkpoint run:
+PR #86 final head:
 
-`31175967899` (#1): **SUCCESS**
+`8f2f0bd0a77d1267e21a28f49b3abe359b8012cb`
 
-The workflow executed only:
+Final evidence:
+
+- Phase 0 baseline contract `31176241468` (#144): **SUCCESS**, **243 passed in 7.60s**, 5/5 research integration OK
+- Research evidence normalization `31176241499` (#50): **SUCCESS**
+- P3.2 target research-live parity `31176241450` (#37): **SUCCESS**, independent parity + committed golden
+- P4.3 cap=1 parity `31176241424` (#3): **SUCCESS**
+- latest metadata/ready governance `31176460514` (#201): **SUCCESS**
+- expected-head squash merge: `ad560ada135cf556be24fa3ce62eb5a7a74cfeb5`
+
+The P4 cap=1 gate executed only:
 
 ```text
 research_cap        = 1.0
 leverage_multiplier = 1.0
 ```
 
-and explicitly reported:
+and reported:
 
 ```text
 status                P4_3_CAP1_EXACT_HISTORICAL_PARITY_PASS
@@ -99,44 +91,11 @@ leverage_search_run   false
 production_authorized false
 ```
 
-Historical decisions reproduced exactly:
+It reproduced six committed full-BRRK historical decisions spanning RISK_OFF, BTC_LEAD, MAJOR_ROTATION and ALT_EXPANSION and preserved target weights, gross/cash, defensive scale, sessions, risk state, canonical data digest and committed golden vectors.
 
-- 2022-12-15 — RISK_OFF, defensive scale `1.3453862979240228e-07`;
-- 2023-10-25 — MAJOR_ROTATION, `0.9999718626245347`;
-- 2024-08-06 — BTC_LEAD, `0.9999984868728992`;
-- 2025-04-10 — MAJOR_ROTATION, `0.9999999939549142`;
-- 2025-11-15 — ALT_EXPANSION, `0.9881751992198149`;
-- 2026-08-03 — RISK_OFF, `0.009600519865636481`.
+This proves the new P4 wiring is an identity at cap=1. It is **not** evidence that any >1 multiplier is economically valid.
 
-For each decision, the new P4 boundary preserved:
-
-- literal P3.2 target weights at multiplier 1;
-- gross and cash/financing share;
-- defensive scale;
-- target/refit session;
-- risk state;
-- canonical data digest;
-- committed historical golden vectors.
-
-This is a baseline wiring/parity result only. It is **not** a leverage-search result and conveys no information about whether 1.10/1.20/1.30 is economically desirable.
-
-## PR #86 initial checkpoint evidence
-
-Head:
-
-`3aaacd8e2347e05238d8a8ad072876e959f73e77`
-
-- Phase 0 baseline contract `31175967400` (#142): **SUCCESS**, **243 passed in 7.54s**, 5/5 research integration OK
-- Research evidence normalization `31175967978` (#48): **SUCCESS**
-- P3.2 target research-live parity `31175967755` (#35): **SUCCESS**, independent parity + committed golden
-- P4.3 cap=1 historical parity `31175967899` (#1): **SUCCESS**, six full-BRRK decisions, no >1 search
-- PR handoff governance `31175967977` (#197): **SUCCESS**
-
-The current handoff/checklist update must now receive final-head revalidation; previous runs are checkpoint evidence, not final-head merge evidence.
-
-## LEVERAGE-0040 preregistered study
-
-Frozen pre-run constraints remain:
+## LEVERAGE-0040 frozen preregistration
 
 ```text
 research caps                1.00 / 1.10 / 1.20 / 1.30
@@ -157,7 +116,7 @@ Mandatory stresses include historical windows, synthetic gap/volatility shocks, 
 
 Funding remains exogenous implementation cost/stress only. F23 remains separate.
 
-## Frozen Hyperliquid liquidation-input snapshot
+## Frozen Hyperliquid liquidation inputs
 
 `research/leverage_0039/hyperliquid_margin_snapshot.json`
 
@@ -167,30 +126,41 @@ relevant SHA-256     38060892f1976315084de4dc4ed1c9f3885d909ffccc47bce7ad589315d
 raw meta SHA-256     ef4b108e65806d05dab615f533dd113fd86210d2e55a82a005fcad89a7f9aff8
 ```
 
-This is research liquidation-distance evidence only and authorizes no leverage.
+Captured tiers:
+
+```text
+BTC  table 56   40x -> 20x at 150M
+ETH  table 55   25x -> 15x at 100M
+SOL  table 54   20x -> 10x at 70M
+BNB  table 51   10x -> 5x at 3M
+```
+
+The next prerequisite is to turn this frozen metadata into a tested liquidation-distance model. Missing or ambiguous margin semantics must fail closed.
+
+## Remaining pre-run prerequisites
+
+Before the first `LEVERAGE-0040` >1 search:
+
+1. implement and validate liquidation-distance calculation against the frozen Hyperliquid snapshot;
+2. freeze the >1 multiplier-selection algorithm in machine-readable form **before any >1 result is observed**;
+3. rerun governance/tests showing these are pre-result inputs;
+4. only then execute the preregistered 0040 candidate/stress suite once with no post-result retuning.
 
 ## Explicit boundaries
 
 Still forbidden:
 
 - running/reusing `LEVERAGE-0039`;
-- executing any `LEVERAGE-0040` >1 candidate before #86 merges and the remaining pre-run prerequisites are frozen;
-- inventing a multiplier-selection rule after observing >1 results;
+- running any >1 `LEVERAGE-0040` candidate before the remaining prerequisites are merged;
+- choosing or changing the multiplier algorithm after observing >1 results;
 - production gross >1 / production leverage authorization;
 - search >1.30 under `LEVERAGE-0040`;
-- weakening/replacing the frozen defensive 20% scenario tail gate;
+- weakening the frozen defensive 20% scenario tail gate;
 - EXPOSURE-SMOOTH-0038 promotion;
 - F23 funding-response logic;
 - shorts / XRP target exposure;
 - P5 exit intelligence;
 - historical BRRK overwrite.
-
-Remaining pre-run prerequisites after cap=1 parity:
-
-1. merge/freeze the cap=1 wiring implementation;
-2. validate liquidation-distance implementation against the frozen Hyperliquid snapshot;
-3. freeze the >1 multiplier-selection algorithm before any >1 observation;
-4. only then execute the preregistered `LEVERAGE-0040` suite once.
 
 ## Production authorization
 
@@ -208,13 +178,11 @@ DRIFT_0
 ## Exact next action
 
 ```text
-revalidate final #86 branch head
--> update final PR evidence / mark ready
--> latest governance
--> expected-head squash merge #86
--> post-merge normalization
+merge this docs-only post-#86 normalization
+-> verify new main
 -> fresh P4.3 prerequisite branch
--> implement/validate liquidation-distance model against frozen Hyperliquid snapshot
--> freeze >1 multiplier-selection algorithm before first >1 result
+-> implement/validate liquidation-distance model from frozen Hyperliquid snapshot
+-> freeze >1 multiplier-selection algorithm before first >1 observation
+-> CI/governance
 -> only then execute LEVERAGE-0040 exactly once
 ```
