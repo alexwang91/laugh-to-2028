@@ -1,4 +1,4 @@
-# CI retrigger marker 2: no semantic change; emits another fresh pull_request synchronize event.
+# CI retrigger marker after GitHub Actions incident resolution; no semantic change.
 
 from beta_bot.data_contract import (
     CANONICAL_ASSETS,
