@@ -19,6 +19,7 @@ selected operating DD budget           NONE
 P4.6 production leverage               NOT ENTERED / BLOCKED BY NO CANDIDATE
 production gross cap                   1.0
 production_authorized_components       []
+Phase-4 closeout PR #94                MERGED
 next forward phase                     PHASE 5
 ```
 
@@ -141,9 +142,8 @@ Do not prioritize ahead of long/exit production readiness. Begin with BTC/ETH/SO
 ## Exact next step
 
 ```text
-MERGE THE CURRENT PHASE-4 CLOSEOUT ONLY AFTER FRESH FINAL-HEAD CI/GOVERNANCE
-VERIFY THE NEW MAIN SHA
-CREATE A FRESH P5.1 BRANCH FROM THAT MAIN
+CREATE A FRESH P5.1 BRANCH FROM CURRENT MAIN
 IMPLEMENT / FREEZE EVENT TAXONOMY ONLY
+REVIEW EVENT LABELS / CONTROLS BEFORE FEATURE-MODEL SELECTION
 DO NOT START P5.2 MODEL SELECTION BEFORE P5.1 EVENT DEFINITIONS ARE REVIEWABLE
 ```

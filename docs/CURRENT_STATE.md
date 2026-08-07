@@ -29,6 +29,8 @@ production authorization       NONE
 
 Current production gross cap remains `1.0`.
 
+Phase-4 closeout PR #94 is merged into `main`.
+
 ## LEVERAGE-0040 immutable truth
 
 - result commit: `bd256e77a9800556e97769858fbb3ba5054c4389`;
@@ -114,9 +116,9 @@ Historical deviations were handled as corrections rather than silently carried f
 - `LEVERAGE-0039` architecture drift was detected before first economic run, stopped, and replaced with new experiment IDs rather than rescued;
 - `LEVERAGE-0040` and `LEVERAGE-0041` preserve immutable failed results and no post-result retuning;
 - repository branch/document authority hygiene was normalized;
-- P3.2/P3.3/P3.4 machine-readable registry omissions are being normalized in the current closeout without changing implementation semantics.
+- P3.2/P3.3/P3.4 machine-readable registry omissions were normalized in PR #94 without changing implementation semantics.
 
-Current product-state classification: **DRIFT_0**. The closeout PR itself is a documentation/registry normalization change and may be labeled `DRIFT_1` operationally without implying product/strategy drift.
+Current product-state classification: **DRIFT_0**.
 
 ## Frozen product boundaries
 
@@ -137,13 +139,12 @@ Current product-state classification: **DRIFT_0**. The closeout PR itself is a d
 
 ## Exact next action
 
-After the Phase-4 closeout branch is fully CI/governance verified and merged into `main`:
-
 ```text
-CREATE A FRESH PHASE-5 BRANCH FROM NEW MAIN
-START P5.1 EVENT TAXONOMY ONLY
+CREATE A FRESH P5.1 BRANCH FROM CURRENT MAIN
+START / FREEZE P5.1 EVENT TAXONOMY ONLY
 PRESERVE BRRK-0011 / FOUR-ASSET LONG UNIVERSE / HYPERLIQUID / 00:00 UTC
 DO NOT RETUNE LEVERAGE-0040 OR LEVERAGE-0041
 DO NOT PRODUCTION-AUTHORIZE LEVERAGE
+DO NOT START P5.2 BEFORE P5.1 EVENT DEFINITIONS ARE REVIEWABLE
 DO NOT START P6/P7/P8 BEFORE P5 CLOSES ITS OWN GATES
 ```
