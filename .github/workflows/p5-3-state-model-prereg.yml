@@ -1,0 +1,52 @@
+name: P5.3 state-model preregistration
+
+on:
+  pull_request:
+    paths:
+      - "research/cycle_exit/p5_3_state_model_contract.json"
+      - "docs/P5_3_STATE_MODEL_PREREG.md"
+      - "execution/plan-b-bot/tests/test_p5_3_state_model_prereg.py"
+      - ".github/workflows/p5-3-state-model-prereg.yml"
+      - "docs/CURRENT_STATE.md"
+      - "docs/NEXT_STEPS.md"
+      - "README.md"
+  push:
+    branches: [main]
+    paths:
+      - "research/cycle_exit/p5_3_state_model_contract.json"
+      - "docs/P5_3_STATE_MODEL_PREREG.md"
+      - "execution/plan-b-bot/tests/test_p5_3_state_model_prereg.py"
+      - ".github/workflows/p5-3-state-model-prereg.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  prereg-contract:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: execution/plan-b-bot/requirements-dev.txt
+      - name: Install pinned runtime
+        run: pip install -r execution/plan-b-bot/requirements-dev.txt
+      - name: Validate frozen P5.3 preregistration
+        run: pytest -q execution/plan-b-bot/tests/test_p5_3_state_model_prereg.py
+      - name: Prove P5.2 immutable result remains unchanged and non-authorizing
+        run: |
+          set -euo pipefail
+          python research/cycle_exit/validate_p5_2_feature_result.py
+          test "$(cat research/results/p5_2_feature_evidence/summary.sha256)" = "3f6dc3c512d22ac8f71d43ed155f2602cd40d5caf3d617c0e130e170727e0627"
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          c = json.loads(Path('research/cycle_exit/p5_3_state_model_contract.json').read_text())
+          assert c['status'] == 'FROZEN_BEFORE_STATE_PATH_EVALUATION'
+          assert c['research_integrity']['production_authorization'] == 'NONE'
+          assert c['selection_rule']['p5_3_final_production_state_model_selected'] is False
+          assert c['transition_rules']['flat_absorbing'] is True
+          PY
