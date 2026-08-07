@@ -1,0 +1,6 @@
+P5.3-STATE-PATH-RUN-ONCE-V1
+state_model_contract=P5.3-STATE-MODEL-STRUCTURE-V1
+evidence_contract=P5.3-STATE-PATH-EVIDENCE-V1
+base_main=8533f8ce0519dfeade6ac33124d90a45a416122c
+standing_research_authorization=true
+no_post_result_retuning=true
