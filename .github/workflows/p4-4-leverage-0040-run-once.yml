@@ -3,7 +3,7 @@ name: P4.4 LEVERAGE-0040 RUN ONCE
 on:
   push:
     branches:
-      - "p4-4/leverage-0040-one-time-study-v1"
+      - "p4-4/leverage-0040-one-time-study-v2"
     paths:
       - "research/leverage_0040/RUN_ONCE_LEVERAGE_0040.marker"
 
@@ -21,7 +21,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: "p4-4/leverage-0040-one-time-study-v1"
+          ref: "p4-4/leverage-0040-one-time-study-v2"
           fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
@@ -62,4 +62,4 @@ jobs:
           git add research/results/leverage_0040/
           git diff --cached --quiet && { echo "No result files created"; exit 1; }
           git commit -m "Research: commit immutable LEVERAGE-0040 one-time result"
-          git push origin HEAD:p4-4/leverage-0040-one-time-study-v1
+          git push origin HEAD:p4-4/leverage-0040-one-time-study-v2
