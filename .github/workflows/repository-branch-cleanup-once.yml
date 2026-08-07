@@ -1,0 +1,98 @@
+name: Repository branch cleanup once
+
+on:
+  push:
+    branches:
+      - "docs/repository-hygiene-2026-08-07"
+    paths:
+      - ".github/workflows/repository-branch-cleanup-once.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  branch-cleanup:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Enumerate safe deletion candidates (dry run)
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          import urllib.parse
+          import urllib.request
+
+          repo = os.environ["GITHUB_REPOSITORY"]
+          token = os.environ["GITHUB_TOKEN"]
+          api_root = f"https://api.github.com/repos/{repo}"
+          headers = {
+              "Authorization": f"Bearer {token}",
+              "Accept": "application/vnd.github+json",
+              "X-GitHub-Api-Version": "2022-11-28",
+              "User-Agent": "repository-hygiene-once",
+          }
+
+          def api(path, method="GET"):
+              req = urllib.request.Request(api_root + path, headers=headers, method=method)
+              with urllib.request.urlopen(req) as response:
+                  payload = response.read()
+                  return json.loads(payload) if payload else None
+
+          branches = {}
+          page = 1
+          while True:
+              rows = api(f"/branches?per_page=100&page={page}")
+              if not rows:
+                  break
+              for row in rows:
+                  branches[row["name"]] = row["commit"]["sha"]
+              page += 1
+
+          preserve = {
+              "main",
+              "p4-4/leverage-0040-one-time-study-v2",
+              "docs/repository-hygiene-2026-08-07",
+          }
+
+          candidates = {}
+          page = 1
+          while True:
+              prs = api(f"/pulls?state=closed&per_page=100&page={page}")
+              if not prs:
+                  break
+              for pr in prs:
+                  if not pr.get("merged_at"):
+                      continue
+                  head = pr.get("head") or {}
+                  head_repo = head.get("repo") or {}
+                  branch = head.get("ref")
+                  merged_head_sha = head.get("sha")
+                  if head_repo.get("full_name") != repo or not branch or branch in preserve:
+                      continue
+                  current_sha = branches.get(branch)
+                  if current_sha and current_sha == merged_head_sha:
+                      candidates[branch] = {
+                          "reason": f"merged PR #{pr['number']}",
+                          "sha": current_sha,
+                      }
+              page += 1
+
+          for branch, reason in {
+              "p4-4/leverage-0040-one-time-study-v1": "explicit INVALID/ABANDONED branch",
+              "p3-2/target-calculation-api-v2": "explicit stale no-implementation branch",
+          }.items():
+              if branch in branches and branch not in preserve:
+                  candidates[branch] = {"reason": reason, "sha": branches[branch]}
+
+          print(f"TOTAL_BRANCHES={len(branches)}")
+          print(f"SAFE_DELETE_COUNT={len(candidates)}")
+          print("PRESERVE=" + json.dumps(sorted(preserve), ensure_ascii=False))
+          print("SAFE_DELETE=")
+          for branch in sorted(candidates):
+              print(f"  {branch} | {candidates[branch]['sha']} | {candidates[branch]['reason']}")
+          print("DRY_RUN_ONLY=true")
+          PY
