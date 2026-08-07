@@ -3,8 +3,6 @@
 Last updated: 2026-08-07
 Status: **authoritative current-state handoff**
 
-> GitHub `main` is the canonical merged ref. PR #90 is merged. LEVERAGE-0040 is complete and immutable with `NO_PROMOTION`. LEVERAGE-0041 is the new preregistered research target; preregistration does not authorize a run or production leverage.
-
 ## Executive state
 
 ```text
@@ -15,11 +13,15 @@ Phase 3                         COMPLETE / MERGED
 P4.1 defensive scaler          COMPLETE / MERGED / frozen [0,1]
 P4 architecture + cap1         COMPLETE / MERGED
 P4 margin/liquidation prereqs  COMPLETE / MERGED
+LEVERAGE-0039                  STOPPED PRE-RUN / NO RESULT
 LEVERAGE-0040                  COMPLETE / IMMUTABLE / NO_PROMOTION
-P4.5 select/fail decision      COMPLETE / FAIL_STOP
-LEVERAGE-0041                  PREREGISTERED / NOT RUN
-P4.6 production leverage gate  BLOCKED
-P5 exit intelligence           NOT STARTED
+LEVERAGE-0041                  COMPLETE / IMMUTABLE / NO_PROMOTION
+Phase 4 leverage research      FAIL_STOP / no eligible >1 candidate
+P4.6 production leverage gate  NOT ENTERED / BLOCKED by no candidate
+P5 cycle-top / exit research   NEXT
+Phase 6 integrated shadow      NOT STARTED
+Phase 7 limited live long      NOT STARTED / explicit approval required
+Phase 8 bear-short research    NOT STARTED
 production authorization       NONE
 ```
 
@@ -27,174 +29,121 @@ production authorization       NONE
 
 Current production gross cap remains `1.0`.
 
-## Canonical merged base
+## LEVERAGE-0040 immutable truth
 
-`14dd9f2fb828d860b8552816814982dc4bd89b10`
+- result commit: `bd256e77a9800556e97769858fbb3ba5054c4389`;
+- summary SHA256: `3bb4dc46c61a5e9c7e049862575a89b2771830410ce4bc2bb25c83e469f52fc0`;
+- result status: `ONE_TIME_PREREGISTERED_STUDY_COMPLETE`;
+- selection: `NO_PROMOTION`;
+- selected research cap: none;
+- selected operating DD budget: none;
+- production authorization: none.
 
-This is the merge commit for PR #90.
+Do not rerun, rescue, retune, reinterpret, or reuse `LEVERAGE-0040`.
 
-## LEVERAGE-0040 historical truth
+## LEVERAGE-0041 immutable truth
 
-Immutable result commit:
+Implementation/prereg base main:
 
-`bd256e77a9800556e97769858fbb3ba5054c4389`
+`baaa5776892411990734ef2121cf54a5dbbab047`
+
+One-time result commit:
+
+`8ea784830cfffbf892a258cb329d437725d41982`
 
 Immutable summary SHA256:
 
-`3bb4dc46c61a5e9c7e049862575a89b2771830410ce4bc2bb25c83e469f52fc0`
+`e41a5895263e7aa9206df9fa99fcbb71e5f937abc4746a567fbeb462cca88d17`
 
-Final immutable selection:
+Final selection:
 
 ```text
 status                                  ONE_TIME_PREREGISTERED_STUDY_COMPLETE
 selection.status                        NO_PROMOTION
 selected_research_cap                   NONE
 selected_operating_max_drawdown_budget  NONE
+prospective_live_cap_if_authorized      NONE
 production_authorized                   false
 ```
 
-At 5 bps execution cost:
+Frozen search grid:
+
+`1.00 / 1.05 / 1.10 / 1.15 / 1.20 / 1.25 / 1.30`
+
+5 bps result summary:
 
 ```text
-cap 1.00  CAGR 65.31%  MDD -33.53%  Sharpe 1.3561  comparator
-cap 1.10  CAGR 71.92%  MDD -36.67%  Sharpe 1.3548  FAIL
-cap 1.20  CAGR 78.51%  MDD -39.63%  Sharpe 1.3550  FAIL
-cap 1.30  CAGR 85.68%  MDD -42.58%  Sharpe 1.3618  FAIL
+cap 1.00  CAGR 61.28%  MDD -33.83%  Sharpe 1.3005  comparator
+cap 1.05  CAGR 62.56%  MDD -35.30%  Sharpe 1.2935  FAIL
+cap 1.10  CAGR 62.84%  MDD -36.59%  Sharpe 1.2746  FAIL
+cap 1.15  CAGR 62.96%  MDD -37.90%  Sharpe 1.2544  FAIL
+cap 1.20  CAGR 64.90%  MDD -39.16%  Sharpe 1.2574  FAIL
+cap 1.25  CAGR 64.89%  MDD -40.19%  Sharpe 1.2387  FAIL
+cap 1.30  CAGR 66.28%  MDD -40.93%  Sharpe 1.2360  FAIL
 ```
 
-Do not rerun, rescue, reinterpret or reuse LEVERAGE-0040.
+All caps above 1.0 failed `pass_pre_broad_region`; therefore no contiguous all-pass neighborhood exists and no cap reaches the frozen selection stage.
 
-## LEVERAGE-0041 preregistered hypothesis
-
-Experiment ID:
-
-`LEVERAGE-0041`
-
-Question: can a new implementation architecture realize a safely sustainable leverage sweet spot around the economically attractive 1.20 region without weakening the frozen BRRK signal/defensive layer or hard survival/tail-risk constraints?
-
-Frozen requested-cap grid:
+The liquidation-distance gate remained binding under the corrected spot/perp/collateral accounting. Frozen acceptance was strictly `>55%`; measured minimum uniform adverse-move distance was:
 
 ```text
-1.00 / 1.05 / 1.10 / 1.15 / 1.20 / 1.25 / 1.30
+cap 1.00  45.98%  FAIL
+cap 1.05  42.52%  FAIL
+cap 1.10  38.54%  FAIL
+cap 1.15  35.19%  FAIL
+cap 1.20  32.33%  FAIL
+cap 1.25  29.86%  FAIL
+cap 1.30  27.71%  FAIL
 ```
 
-`1.20` is a focal design point only, not a selected cap.
+`starting_liquidatable_state_seen=false` in the corrected 0041 implementation; unlike the old 0040 architecture, this is not the former zero-distance accounting pathology. It is a genuine failure of the preregistered >55% reserve/liquidation safety threshold under the tested architecture.
 
-### Architecture
+Do not rerun, rescue, retune, reinterpret, or reuse `LEVERAGE-0041` under the same experiment ID.
 
-`SPOT_FIRST_BASE_PLUS_PERP_OVERLAY_V1`
+## Roadmap audit status
 
-- explicit cash collateral reserve = 25% NAV;
-- spot financing budget <=75% NAV;
-- BTC / ETH / SOL base longs use verified P2.4 spot-first routing when feasible;
-- BNB remains `PERP_ONLY_DEFAULT`;
-- residual base exposure and all incremental leverage are perp;
-- no hidden external collateral;
-- funding logic may only reduce incremental overlay.
+Full review: `docs/ROADMAP_AUDIT_2026-08-07.md`.
 
-Frozen funding reducer:
+Current unresolved product/strategy/production drift: **none identified**.
 
-```text
-168h trailing debit <=5 bps/day    overlay scale 1
-5-10 bps/day                       linear 1 -> 0
->=10 bps/day                       overlay scale 0
-missing required data              overlay scale 0
-```
+Historical deviations were handled as corrections rather than silently carried forward:
 
-### Hard constraints
+- legacy execution/security backlog gaps were corrected before P3.2;
+- F27 measurement / EXPOSURE-SMOOTH authority drift was normalized;
+- P3.1 missing feature-only XRP input was corrected through an explicit schema version and revalidation;
+- `LEVERAGE-0039` architecture drift was detected before first economic run, stopped, and replaced with new experiment IDs rather than rescued;
+- `LEVERAGE-0040` and `LEVERAGE-0041` preserve immutable failed results and no post-result retuning;
+- repository branch/document authority hygiene was normalized;
+- P3.2/P3.3/P3.4 machine-readable registry omissions are being normalized in the current closeout without changing implementation semantics.
 
-Unchanged:
+Current product-state classification: **DRIFT_0**. The closeout PR itself is a documentation/registry normalization change and may be labeled `DRIFT_1` operationally without implying product/strategy drift.
 
-- defensive scenario CVaR/CDaR budget = 20%;
-- operating DD candidates = 35/40/45/50%;
-- catastrophic boundary = 70%;
-- synthetic uniform gap stress through -50%;
-- funding spikes 2x/3x/5x;
-- degraded-fill/capacity, start-date and bootstrap robustness gates.
+## Frozen product boundaries
 
-Stricter implementation condition:
-
-- actual routed perp notionals against the explicit reserve must preserve modeled adverse-move distance to liquidation **>55%** for every promotable state.
-
-### Broad-region rule
-
-A selected sweet spot must be an interior cap with an immediate lower and higher cap that also pass every hard gate, within a contiguous all-pass region of at least three caps.
-
-Among qualifying caps, maximize matched after-cost CAGR. If annualized CAGR differs by <=1.0 percentage point inside the same passing region, prefer the lower cap.
-
-## Frozen product / strategy boundaries
-
-- canonical directional research target: BRRK-0011;
+- directional core: BRRK-0011;
 - target/tradable assets: BTC / ETH / SOL / BNB;
-- XRP is feature-only;
+- XRP feature-only;
 - primary venue: Hyperliquid;
-- cadence: daily, 00:00 UTC boundary;
+- daily decision boundary: 00:00 UTC;
 - FLAT = zero directional exposure;
 - FLAT -> LONG / SHORT requires human approval;
-- intraday automation may reduce risk but may not autonomously add directional exposure;
-- bot uses trading Agent/API credentials only;
-- master wallet private key, automated withdrawals and automated external transfers remain outside scope;
-- P4.1 defensive scale remains `[0,1]`.
-
-## Authority boundaries
-
-`LEVERAGE-0041 = PREREGISTERED` does not mean:
-
-- implemented;
-- tested;
-- CI verified;
-- RUN_ONCE authorized;
-- research promoted;
-- production authorized.
-
-The one-time run requires a separate explicit owner `RUN_ONCE` instruction after implementation and all pre-run gates are green.
-
-If a future LEVERAGE-0041 result selects an eligible research cap, P4.6 remains a separate production decision. The prospective cap presented to P4.6 is the next lower preregistered grid point and may not exceed 1.20 under LEVERAGE-0041.
-
-## Historical truth that must remain unchanged
-
-### LEVERAGE-0039
-
-```text
-STOPPED PRE-RUN
-NO RESULT
-DO NOT REUSE EXPERIMENT ID
-```
-
-### LEVERAGE-0040
-
-```text
-COMPLETE
-IMMUTABLE RESULT
-NO_PROMOTION
-DO NOT RETUNE OR REUSE EXPERIMENT ID
-```
-
-### EXPOSURE-SMOOTH-0038
-
-`SHADOW_ONLY / NOT PROMOTED`
-
-## Documentation authority
-
-Read current state in this order:
-
-1. root `README.md`;
-2. `docs/CURRENT_STATE.md`;
-3. `docs/NEXT_STEPS.md`;
-4. `docs/MASTER_PLAN_2026-08-05.md`;
-5. `docs/IMPLEMENTATION_ROADMAP_2026-08-05.md`;
-6. `config/decision_registry.json`;
-7. `docs/README.md`.
+- MONITOR_ONLY -> ACTIVE requires human approval;
+- first short of a new bear phase requires human approval;
+- intraday automation may reduce but not autonomously add directional exposure;
+- trading Agent/API credentials only;
+- master key, withdrawals and external transfers remain outside scope;
+- P4.1 defensive scaler stays `[0,1]`;
+- production gross remains `1.0`.
 
 ## Exact next action
 
+After the Phase-4 closeout branch is fully CI/governance verified and merged into `main`:
+
 ```text
-MERGE LEVERAGE-0041 PREREGISTRATION ONLY AFTER FRESH CI/GOVERNANCE
-THEN IMPLEMENT STUDY CONTRACT + ROUTE/COLLATERAL/FUNDING/LIQUIDATION LOGIC
-PROVE CAP=1 REQUESTED-TARGET PARITY
-FREEZE RESULT SCHEMA / INPUT HASHES / VALIDATOR
-RUN ALL PRE-RUN GATES
-STOP AT EXPLICIT OWNER RUN_ONCE BOUNDARY
-KEEP PRODUCTION GROSS CAP = 1.0
-KEEP P4.6 BLOCKED
+CREATE A FRESH PHASE-5 BRANCH FROM NEW MAIN
+START P5.1 EVENT TAXONOMY ONLY
+PRESERVE BRRK-0011 / FOUR-ASSET LONG UNIVERSE / HYPERLIQUID / 00:00 UTC
+DO NOT RETUNE LEVERAGE-0040 OR LEVERAGE-0041
+DO NOT PRODUCTION-AUTHORIZE LEVERAGE
+DO NOT START P6/P7/P8 BEFORE P5 CLOSES ITS OWN GATES
 ```

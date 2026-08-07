@@ -4,114 +4,128 @@
 
 **回测结果、研究结论、代码合并与生产授权是不同层级。这个仓库不构成收益承诺或投资建议。**
 
----
-
 ## 当前状态 — 2026-08-07
 
 | 模块 | 状态 |
 | --- | --- |
-| Phase 0 — canonical config / governance | **COMPLETE / MERGED** |
+| Phase 0 — governance / canonical config | **COMPLETE / MERGED** |
 | Phase 1 — execution truth & safety | **COMPLETE / MERGED** |
-| Phase 2 — instrument / routing / cost evidence | **COMPLETE / MERGED** |
+| Phase 2 — instrument / routing / cost | **COMPLETE / MERGED** |
 | Phase 3 — data → target → rebalance → contribution | **COMPLETE / MERGED** |
-| P4.1 — defensive scaler `[0,1]` | **COMPLETE / MERGED** |
-| P4.2 / P4.3 — leverage architecture / cap=1 parity / margin prerequisites | **COMPLETE / MERGED** |
-| P4.4 — `LEVERAGE-0040` one-time study | **COMPLETE / IMMUTABLE RESULT** |
-| P4.5 — leverage selection | **FAIL_STOP / NO_PROMOTION / MERGED** |
-| `LEVERAGE-0041` — leverage architecture / sweet spot | **PREREGISTERED / NOT RUN** |
-| P4.6 — production leverage authorization | **BLOCKED** |
-| Phase 5 — exit intelligence | **NOT STARTED** |
+| P4.1 defensive scaler `[0,1]` | **COMPLETE / MERGED** |
+| P4 architecture / cap=1 / margin prerequisites | **COMPLETE / MERGED** |
+| LEVERAGE-0040 | **COMPLETE / IMMUTABLE / NO_PROMOTION** |
+| LEVERAGE-0041 | **COMPLETE / IMMUTABLE / NO_PROMOTION** |
+| Phase 4 dynamic-leverage research line | **FAIL_STOP / NO ELIGIBLE >1 CANDIDATE** |
+| P4.6 production leverage | **NOT ENTERED / BLOCKED — no promoted candidate** |
+| Phase 5 cycle-top / exit intelligence | **NEXT** |
+| Phase 6 integrated shadow | **NOT STARTED** |
+| Phase 7 limited-capital live long | **NOT STARTED / EXPLICIT APPROVAL REQUIRED** |
+| Phase 8 bear-short research | **NOT STARTED** |
 | Production-authorized components | **none** |
 
 `production_authorized_components = []`
 
-Canonical merged base after PR #90:
-
-`14dd9f2fb828d860b8552816814982dc4bd89b10`
-
 Current production gross cap remains **1.0**.
 
-### LEVERAGE-0040 immutable evidence
+## Canonical strategy / product boundaries
 
-- immutable result commit: `bd256e77a9800556e97769858fbb3ba5054c4389`
-- immutable summary SHA256: `3bb4dc46c61a5e9c7e049862575a89b2771830410ce4bc2bb25c83e469f52fc0`
-- selection: `NO_PROMOTION`
-- selected research cap: `null`
-- selected operating drawdown budget: `null`
-- production leverage authorization: **none**
+- directional core: **BRRK-0011**;
+- long target/tradable assets: **BTC / ETH / SOL / BNB**;
+- XRP is **feature-only**;
+- primary venue: **Hyperliquid**;
+- canonical daily decision boundary: **00:00 UTC**;
+- FLAT means zero directional exposure;
+- `FLAT -> LONG`, `FLAT -> SHORT`, `MONITOR_ONLY -> ACTIVE`, and the first short of a new bear phase require explicit human approval;
+- intraday automation may reduce risk but may not autonomously add directional exposure;
+- bot credentials are trading Agent/API credentials only;
+- master-wallet private key, automated withdrawals, and automated external transfers remain outside scope;
+- P4.1 defensive scale remains frozen in `[0,1]`;
+- production gross remains **1.0** unless a future research candidate passes a separately authorized production gate.
+
+## Phase 4 leverage closeout
+
+### LEVERAGE-0040
+
+- immutable result commit: `bd256e77a9800556e97769858fbb3ba5054c4389`;
+- summary SHA256: `3bb4dc46c61a5e9c7e049862575a89b2771830410ce4bc2bb25c83e469f52fc0`;
+- selection: `NO_PROMOTION`;
+- selected research cap: none;
+- selected operating DD budget: none.
+
+### LEVERAGE-0041
+
+- immutable result commit: `8ea784830cfffbf892a258cb329d437725d41982`;
+- summary SHA256: `e41a5895263e7aa9206df9fa99fcbb71e5f937abc4746a567fbeb462cca88d17`;
+- selection: `NO_PROMOTION`;
+- selected research cap: none;
+- selected operating DD budget: none;
+- prospective P4.6 cap: none;
+- production authorization: false.
 
 At 5 bps execution cost:
 
-| Gross cap | CAGR | Max drawdown | Sharpe | Frozen final gate |
+| Gross cap | CAGR | Max drawdown | Sharpe | Final research pass |
 | --- | ---: | ---: | ---: | --- |
-| 1.00 | 65.31% | -33.53% | 1.3561 | comparator |
-| 1.10 | 71.92% | -36.67% | 1.3548 | **FAIL** |
-| 1.20 | 78.51% | -39.63% | 1.3550 | **FAIL** |
-| 1.30 | 85.68% | -42.58% | 1.3618 | **FAIL** |
+| 1.00 | 61.28% | -33.83% | 1.3005 | comparator |
+| 1.05 | 62.56% | -35.30% | 1.2935 | **FAIL** |
+| 1.10 | 62.84% | -36.59% | 1.2746 | **FAIL** |
+| 1.15 | 62.96% | -37.90% | 1.2544 | **FAIL** |
+| 1.20 | 64.90% | -39.16% | 1.2574 | **FAIL** |
+| 1.25 | 64.89% | -40.19% | 1.2387 | **FAIL** |
+| 1.30 | 66.28% | -40.93% | 1.2360 | **FAIL** |
 
-`LEVERAGE-0040` is closed. Do not retune, rescue, rerun or reuse its experiment ID.
+Every cap above 1.0 failed before the broad-region promotion stage. The preregistered liquidation-distance requirement was strictly `>55%`; measured minimum uniform-down distances fell from about `42.52%` at 1.05 to `27.71%` at 1.30. No >1 cap is eligible for P4.6.
 
----
+Do not rerun, rescue, retune, reinterpret, or reuse `LEVERAGE-0040` or `LEVERAGE-0041` under the same experiment IDs.
 
-## LEVERAGE-0041 — new preregistered sweet-spot study
+## What has been completed
 
-The next experiment tests whether a different implementation architecture can safely realize the attractive leverage economics without relaxing the predecessor hard gates.
-
-Frozen requested-cap grid:
+The current canonical implementation chain is:
 
 ```text
-1.00 / 1.05 / 1.10 / 1.15 / 1.20 / 1.25 / 1.30
+Phase 0 governance/config
+-> Phase 1 execution truth P1.1-P1.8
+-> Phase 2 instrument/routing/cost P2.1-P2.4
+-> Phase 3 P3.1 data contract
+-> P3.2 canonical BRRK target API
+-> P3.3 rebalance/turnover control
+-> P3.4 contribution handling
+-> P4 defensive baseline + leverage architecture/prerequisites
+-> LEVERAGE-0039 STOPPED PRE-RUN
+-> LEVERAGE-0040 COMPLETE / NO_PROMOTION
+-> LEVERAGE-0041 COMPLETE / NO_PROMOTION
 ```
 
-`1.20` is a focal design point only. It is not preselected.
+Historical rejected or shadow research lines remain preserved as evidence; they are not silently promoted into BRRK or production.
 
-Architecture:
+A full task/deviation review is recorded in `docs/ROADMAP_AUDIT_2026-08-07.md`.
 
-`SPOT_FIRST_BASE_PLUS_PERP_OVERLAY_V1`
+## Next roadmap work
 
-Core rules:
+The next forward program is **Phase 5 — cycle-top / late-bull / exit model**, which is a new research program rather than a retune of BRRK or either leverage study.
 
-- 25% NAV explicit modeled cash collateral reserve;
-- <=75% NAV spot financing;
-- BTC / ETH / SOL base longs spot-first when verified P2.4 evidence permits;
-- BNB remains perp-only;
-- residual base exposure and all incremental leverage above cap=1 use perp;
-- trailing 168h funding logic may only reduce the incremental overlay;
-- liquidation distance must remain **>55%** for every promotable state;
-- sweet spot must sit inside a contiguous all-pass region of at least three caps and have passing immediate lower/higher neighbors;
-- objective is highest matched after-cost CAGR among all hard-gate PASS candidates, with lower cap preferred when CAGR is within 1.0 percentage point.
+Order:
 
-Preregistration is not RUN_ONCE authorization and is not production authorization.
+1. **P5.1 Event taxonomy** — label terminal-top, second-wind, and non-top high-volatility controls.
+2. **P5.2 Feature families** — trend maturity, momentum exhaustion, leadership migration, breadth, leverage/speculation.
+3. **P5.3 State model** — `NORMAL_BULL`, `BTC_LEADERSHIP_MATURING`, `LATE_BULL_ROTATION`, `EXHAUSTION_WATCH`, `DE_RISK_1`, `DE_RISK_2`, `FLAT`.
+4. **P5.4 Required behavior** — allow late-bull rotation while reducing total gross as cycle hazard rises; hard-risk combinations may force FLAT.
+5. **P5.5 Validation** — event-level / leave-one-event-out robustness, lead/lag, false-positive duration, missed upside, drawdown avoided, terminal wealth, second-wind behavior.
+6. **P5.6 Integration** — cycle layer controls total directional risk; it does not rewrite BRRK relative ranking.
+7. **Phase 6** — integrated live-data shadow system with zero signing/trading authority.
+8. **Phase 7** — limited-capital live long only after explicit production approval and shadow/operational evidence.
+9. **Phase 8** — bear-short research only after long/exit readiness; first short remains human-gated.
 
----
+## Source-of-truth order
 
-## Frozen product / strategy boundaries
+1. `README.md`
+2. `docs/CURRENT_STATE.md`
+3. `docs/NEXT_STEPS.md`
+4. `docs/ROADMAP_AUDIT_2026-08-07.md`
+5. `docs/MASTER_PLAN_2026-08-05.md`
+6. `docs/IMPLEMENTATION_ROADMAP_2026-08-05.md`
+7. `config/decision_registry.json`
+8. dated audit/research/runbook documents as historical evidence
 
-Unless a later approved decision explicitly changes them:
-
-- canonical directional research target: **BRRK-0011**;
-- target/tradable assets: **BTC / ETH / SOL / BNB**;
-- XRP: **feature-only** where required by the frozen regime model;
-- primary venue: **Hyperliquid**;
-- cadence: **daily**, canonical boundary **00:00 UTC**;
-- FLAT = zero directional exposure;
-- FLAT → LONG / SHORT requires human approval;
-- intraday automation may reduce risk but may not autonomously add directional exposure;
-- bot uses trading Agent/API credentials only; master-wallet key and automated withdrawals/transfers remain outside scope;
-- P4.1 defensive scaler remains `[0,1]`;
-- production gross cap remains **1.0**;
-- `production_authorized_components = []`.
-
----
-
-## Source-of-truth reading order
-
-1. [`README.md`](README.md)
-2. [`docs/CURRENT_STATE.md`](docs/CURRENT_STATE.md)
-3. [`docs/NEXT_STEPS.md`](docs/NEXT_STEPS.md)
-4. [`docs/MASTER_PLAN_2026-08-05.md`](docs/MASTER_PLAN_2026-08-05.md)
-5. [`docs/IMPLEMENTATION_ROADMAP_2026-08-05.md`](docs/IMPLEMENTATION_ROADMAP_2026-08-05.md)
-6. [`config/decision_registry.json`](config/decision_registry.json)
-7. [`docs/README.md`](docs/README.md)
-
-LEVERAGE-0040 immutable evidence remains under `research/results/leverage_0040/`. LEVERAGE-0041 preregistration is under `research/leverage_0041/LEVERAGE-0041.json` and `docs/LEVERAGE_0041_PREREGISTRATION_2026-08-07.md`.
+Immutable study outputs live under `research/results/`. The presence of a result file means evidence exists; it does not imply promotion or production authorization.

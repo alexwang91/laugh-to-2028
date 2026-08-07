@@ -1,0 +1,139 @@
+{
+  "architecture": {
+    "base_component_rule": "for each asset, base_component=min(actual accepted economic weight, current frozen cap=1 base target)",
+    "bnb_route": "PERP_ONLY_DEFAULT",
+    "cash_collateral_reserve_fraction_of_nav": 0.25,
+    "cross_margin_equity_for_liquidation_model": "0.25 * reference_equity; spot is neither perp notional nor additional cross-margin collateral",
+    "external_collateral": "FORBIDDEN",
+    "incremental_overlay_rule": "actual accepted economic weight above the base component is perp-only",
+    "name": "SPOT_FIRST_BASE_PLUS_PERP_OVERLAY_V1",
+    "reference_equity_usd": 2000.0,
+    "route_reconstruction_rule": "spot + base_perp + incremental_perp must exactly reconstruct accepted economic weight per asset",
+    "spot_allocation_rule": "BTC/ETH/SOL base components are allocated to spot proportionally up to aggregate 0.75 NAV; any residual base component is perp",
+    "spot_eligible_assets": ["BTC", "ETH", "SOL"],
+    "spot_financing_max_fraction_of_nav": 0.75
+  },
+  "base_main": "baaa5776892411990734ef2121cf54a5dbbab047",
+  "broad_region_and_selection": {
+    "boundary_1_30_selectable": false,
+    "near_tie": "within the same contiguous passing component, any caps within 1.0 percentage point CAGR of the best are tied and the lower cap is selected",
+    "pre_gate_map_includes_cap1_comparator_as_true": true,
+    "primary": "highest 5bps architecture CAGR among qualifying caps",
+    "production_authorized": false,
+    "prospective_p4_6_cap": "next lower preregistered grid point than selected research cap, capped at 1.20",
+    "qualifying_cap": "an interior >1 cap whose immediate lower, self, and immediate higher caps all pass every pre-broad hard gate",
+    "secondary_order_if_needed": ["higher Calmar", "higher Sharpe", "lower MaxDD", "lower cap"]
+  },
+  "candidate_gate": {
+    "after_cost_10bps": "terminal wealth strictly greater than both LEVERAGE-0041 cap1 and legacy BRRK",
+    "after_cost_5bps": "terminal wealth strictly greater than both LEVERAGE-0041 cap1 and legacy BRRK",
+    "not_dominated_20bps": "not Pareto dominated on terminal wealth and max drawdown by either comparator",
+    "required_hard_gates": ["operating budget found", "full-history catastrophe", "historical proxy catastrophe", "synthetic gap including liquidation", "volatility stress", "native funding", "degraded execution/capacity", "liquidation distance >55%", "start-date robustness", "stationary bootstrap"]
+  },
+  "contract_id": "LEVERAGE-0041-STUDY-IMPLEMENTATION-V1",
+  "execution_cost_and_capacity": {
+    "capacity_artifact": "pinned ROUTER-DATA-0004 vwap_slippage.csv artifact id 8906907321",
+    "capacity_failure": "hard gate failure",
+    "cost_bps_grid": [5.0, 10.0, 20.0, 50.0],
+    "degraded_scenarios": [
+      {"cost_multiplier": 1.5, "depth_fraction": 0.5, "fill_fraction": 1.0, "name": "DEPTH_50_SLIP_1_5"},
+      {"cost_multiplier": 2.0, "depth_fraction": 0.25, "fill_fraction": 1.0, "name": "DEPTH_25_SLIP_2_0"},
+      {"cost_multiplier": 1.0, "depth_fraction": 1.0, "fill_fraction": 0.5, "name": "PARTIAL_FILL_50"}
+    ],
+    "rebalance_band_l1": 0.05,
+    "reference_trade_notional": "absolute route-weight change * 2000 USD reference equity",
+    "required_routes": ["BTC:spot", "BTC:perp", "ETH:spot", "ETH:perp", "SOL:spot", "SOL:perp", "BNB:perp"]
+  },
+  "frozen_at_utc": "2026-08-07T18:45:00Z",
+  "funding_economics": {
+    "base_perp_pre_native_caveat": "pre-native full-history architecture metrics do not invent missing Hyperliquid base-perp funding; the separate native common-window funding gate is mandatory for promotion",
+    "binance_proxy": "report-only stress proxy, never a Hyperliquid level estimate",
+    "complete_day_rule": "exactly three 8h blocks are required for a session to be complete",
+    "full_path_rule": "charge native funding only on sessions with complete native evidence; before native evidence exists do not synthesize a Hyperliquid level from Binance; missing history therefore keeps incremental overlay at zero until a complete seven-session native lookback exists",
+    "funding_gate": "for every 1x/2x/3x/5x native scenario, candidate common-window terminal wealth must be >= LEVERAGE-0041 cap1 comparator, max drawdown must remain above -70%, and every native session must have complete evidence",
+    "native_common_window": ["2023-06-18", "2026-07-31"],
+    "native_source": "research/results/funding_crossvenue_0002/paired_8h_blocks.csv Hyperliquid additive blocks",
+    "spike_multipliers": [1.0, 2.0, 3.0, 5.0],
+    "spike_rule": "magnify long funding debits only; favorable credits are not enlarged"
+  },
+  "funding_reducer": {
+    "alpha_or_direction_use": false,
+    "causality": "today's overlay scale uses prior completed sessions only; current-session funding cannot alter the same-session target",
+    "full_overlay_max_debit_bps_day": 5.0,
+    "linear_rule": "scale=1 at <=5; scale=(10-debit)/5 for 5<debit<10; scale=0 at >=10",
+    "lookback_interpretation": "seven completed prior daily sessions = 168 hours",
+    "lookback_sessions": 7,
+    "may_increase_exposure": false,
+    "metric": "sum(non-negative realized native funding debit returns over seven prior sessions) / average routed perp gross over those sessions / 7 * 10000 bps/day",
+    "missing_or_incomplete_window": "overlay_scale=0",
+    "no_perp_in_complete_window": "debit_bps_day=0 and overlay_scale=1",
+    "rebalance_semantics": "the reducer changes the requested target but does not bypass the frozen P3.3 L1 rebalance band",
+    "target_rule": "effective_target = frozen cap1 base + overlay_scale * (requested_target - frozen cap1 base)",
+    "zero_overlay_min_debit_bps_day": 10.0
+  },
+  "immutable_prior_result": {
+    "role": "motivation/comparator only; no retuning or reinterpretation",
+    "study_id": "LEVERAGE-0040",
+    "summary_sha256": "3bb4dc46c61a5e9c7e049862575a89b2771830410ce4bc2bb25c83e469f52fc0"
+  },
+  "liquidation": {
+    "cross_margin_equity_usd": 500.0,
+    "minimum_uniform_adverse_move_required": 0.55,
+    "missing_model": "FAIL_CLOSED",
+    "notional_rule": "actual routed total perp weight per asset * 2000 USD reference equity",
+    "snapshot": "research/leverage_0039/hyperliquid_margin_snapshot.json",
+    "spot_treatment": "excluded from perp notional and excluded from the explicit 25% cross-margin collateral",
+    "starting_liquidatable_state": "distance=0 and FAIL, not an exception escape",
+    "synthetic_gap_rule": "evaluate actual routed perp notionals against the same fixed explicit cross-margin reserve with no same-day transfer/rebalance"
+  },
+  "logging": {
+    "candidate_metrics_to_stdout": false,
+    "stdout_allowed": ["preflight status and input hashes", "completion status", "summary sha256"]
+  },
+  "one_time_boundary": {
+    "marker_path": "research/leverage_0041/RUN_ONCE_LEVERAGE_0041.marker",
+    "marker_sha256": "55f06b1549593e847b42ae71c2e82d4c4a23931bdbfc671a6af9d05859e16ca5",
+    "post_result_retuning_allowed": false,
+    "recovery_rule": "only a separately audited non-economic implementation correction may recover a failed run; no economic parameter, threshold, cap, funding rule, route architecture, seed, stress, gate or selection rule may change after first candidate computation",
+    "result_dir_must_be_absent_before_run": true
+  },
+  "owner_authorization_scope": "preregistration merge, implementation, pre-run validation, and the single LEVERAGE-0041 RUN_ONCE are authorized; P4.6 production authorization remains separate",
+  "owner_run_once_authorized": true,
+  "preregistration_path": "research/leverage_0041/LEVERAGE-0041.json",
+  "production_authorized": false,
+  "result_artifacts": ["research/results/leverage_0041/summary.json", "research/results/leverage_0041/summary.sha256", "research/results/leverage_0041/candidate_table.csv", "research/results/leverage_0041/route_split_daily.csv", "research/results/leverage_0041/liquidation_table.csv", "research/results/leverage_0041/router_vwap_slippage.csv"],
+  "result_observed_before_freeze": false,
+  "risk_and_robustness": {
+    "bootstrap_base_seed": 20260807,
+    "bootstrap_gate": "terminal outperformance probability >=0.80 and annualized return-difference p05 >= -1pp versus both LEVERAGE-0041 cap1 and legacy BRRK for each block size",
+    "bootstrap_mean_block_days": [7, 21, 63],
+    "bootstrap_resamples": 10000,
+    "catastrophic_drawdown_limit": 0.7,
+    "defensive_scenario_cvar_cdar_budget": 0.2,
+    "operating_drawdown_budgets": [0.35, 0.4, 0.45, 0.5],
+    "start_date_gate": "candidate CAGR may not underperform either comparator by more than 2pp at any preregistered start",
+    "start_dates": ["2022-12-10", "2023-03-01", "2023-06-01", "2024-01-01"],
+    "synthetic_gap_uniform": [-0.1, -0.2, -0.3, -0.4, -0.5],
+    "volatility_multipliers": [1.5, 2.0, 3.0]
+  },
+  "session_timing": {
+    "decision_for_session": "previous UTC day",
+    "evaluation_end_session": "2026-08-02",
+    "evaluation_start_session": "2022-12-10",
+    "simulator_input_rule": "include evaluation_start - 1 day as the first decision observation so the first emitted return is exactly the evaluation start session"
+  },
+  "status": "FROZEN_BEFORE_FIRST_ECONOMIC_RUN",
+  "study_id": "LEVERAGE-0041",
+  "target_authority": {
+    "cap_1_rule": "requested target at cap 1.00 must equal the rebuilt frozen raw BRRK-0011 target byte/numerically exactly within 1e-12",
+    "caps": [1.0, 1.05, 1.1, 1.15, 1.2, 1.25, 1.3],
+    "feature_assets": ["BTC", "ETH", "SOL", "BNB", "XRP"],
+    "interpretation": "the frozen BRRK target already contains the defensive scale; multiplying by cap preserves the defensive state and relative asset weights while cap=1 remains exact",
+    "no_strategy_refit": true,
+    "published_banded_holdings_used_to_rebuild_defensive_scale": false,
+    "requested_target_formula": "requested_target(asset,t,cap) = frozen_raw_BRRK0011_target(asset,t) * cap",
+    "source": "the same corrected raw-target authority used by LEVERAGE-0040 R1-R5",
+    "target_assets": ["BTC", "ETH", "SOL", "BNB"],
+    "xrp_role": "feature-only"
+  }
+}

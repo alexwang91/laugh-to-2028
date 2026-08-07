@@ -4,136 +4,146 @@ Last updated: 2026-08-07
 
 ## Current instruction
 
-**PR #90 is merged. LEVERAGE-0040 is closed permanently with immutable `NO_PROMOTION`. The active follow-on research target is the new preregistered experiment `LEVERAGE-0041`; do not rerun or retune LEVERAGE-0040.**
+**Phase 4 leverage research is closed for the current program after LEVERAGE-0040 and LEVERAGE-0041 both returned immutable `NO_PROMOTION`. Keep production gross at 1.0. The next forward roadmap program is Phase 5 cycle-top / late-bull / exit research.**
 
 ## Immediate state
 
 ```text
-main                                  14dd9f2fb828d860b8552816814982dc4bd89b10
-PR #90                                MERGED
-LEVERAGE-0040                         COMPLETE / IMMUTABLE / NO_PROMOTION
-LEVERAGE-0041                         PREREGISTERED / NOT RUN
-selected research cap                 NONE
-selected operating DD budget          NONE
-P4.6 production authorization         BLOCKED
-production gross cap                  1.0
-production_authorized_components      []
+LEVERAGE-0039                          STOPPED PRE-RUN / NO RESULT
+LEVERAGE-0040                          COMPLETE / IMMUTABLE / NO_PROMOTION
+LEVERAGE-0041                          COMPLETE / IMMUTABLE / NO_PROMOTION
+LEVERAGE-0041 result commit            8ea784830cfffbf892a258cb329d437725d41982
+LEVERAGE-0041 summary SHA256           e41a5895263e7aa9206df9fa99fcbb71e5f937abc4746a567fbeb462cca88d17
+selected research cap                  NONE
+selected operating DD budget           NONE
+P4.6 production leverage               NOT ENTERED / BLOCKED BY NO CANDIDATE
+production gross cap                   1.0
+production_authorized_components       []
+next forward phase                     PHASE 5
 ```
 
-## LEVERAGE-0041 objective
+## Why Phase 4 stops here
 
-Find the leverage sweet spot that maximizes expected long-run compounded wealth while keeping survival, tail risk, funding, liquidation and implementation risk inside explicit frozen limits.
+LEVERAGE-0041 tested the independent follow-on architecture rather than retuning LEVERAGE-0040. All requested caps above 1.0 failed before the broad-region stage. No research cap was selected and no prospective P4.6 cap exists.
 
-`1.20` is a focal design point because LEVERAGE-0040 showed attractive economics there, but it is **not** a selected cap and receives no favorable selection treatment.
+The frozen liquidation-distance threshold was `>55%`. Under the corrected explicit-reserve / actual-routed-perp accounting, measured minimum distances were below that threshold for every grid point, including 42.52% at cap 1.05 and 32.33% at cap 1.20. Therefore there is no basis to cross into production leverage authorization.
 
-Frozen requested-cap grid:
+Any future leverage revisit must use a new registered hypothesis/experiment ID. It is not the immediate roadmap dependency.
+
+## Next program — Phase 5 cycle-top / late-bull / exit model
+
+Phase 5 is a **new research program**, not a BRRK retune and not a leverage rescue.
+
+### P5.1 Event taxonomy — NEXT
+
+Create labeled event windows while avoiding the mistake of treating every local top as a terminal top.
+
+Minimum required cases from the roadmap:
+
+- 2021 spring first major top / May crash;
+- 2021 summer recovery / second-wind transition;
+- 2021 November terminal peak / bear transition;
+- 2025 June new-high phase;
+- 2025 August new-high phase;
+- 2025 October new-high / deleveraging phase;
+- subsequent late-2025 deterioration;
+- non-top high-volatility controls.
+
+P5.1 should freeze event definitions before evaluating candidate feature/model performance against them.
+
+### P5.2 Feature families
+
+Evaluate under one consistent validation framework:
+
+- BTC trend maturity: 20d/40d trends, slopes, KAMA state/slope, distance from high, consolidation duration;
+- momentum exhaustion: daily and 4h RSI families, divergence, persistence/failure from extremes;
+- leadership migration: BTC dominance, ETH/BTC, SOL/BTC, BNB/BTC, cross-sectional relative-strength dispersion;
+- breadth: BTC outperformance breadth, high-beta participation, acceleration/contraction, headline-vs-internal deterioration;
+- leverage/speculation: funding, OI, basis, premium, volatility, liquidation proxies where data quality is sufficient.
+
+Do not visually preselect daily vs 4h RSI or hand-pick a single favored top indicator before validation.
+
+### P5.3 State model
+
+Target state vocabulary:
 
 ```text
-1.00 / 1.05 / 1.10 / 1.15 / 1.20 / 1.25 / 1.30
+NORMAL_BULL
+BTC_LEADERSHIP_MATURING
+LATE_BULL_ROTATION
+EXHAUSTION_WATCH
+DE_RISK_1
+DE_RISK_2
+FLAT
 ```
 
-## New architecture under test
+### P5.4 Required behavior
 
-`SPOT_FIRST_BASE_PLUS_PERP_OVERLAY_V1`
+- BTC consolidation + falling dominance is not automatically bearish;
+- late-bull rotation may increase relative alt weight;
+- total gross risk should fall as cycle hazard increases;
+- hard-risk combinations may force direct FLAT;
+- seek useful 7–14 day lead information where supported, but do not force a lead-time target unsupported by evidence.
 
-- reserve 25% of NAV as explicit modeled cash collateral;
-- no more than 75% NAV is spot financed;
-- BTC / ETH / SOL base longs are spot-first under verified P2.4 identity/capacity/cost evidence;
-- BNB remains `PERP_ONLY_DEFAULT`;
-- residual base exposure and all incremental exposure above cap=1 are perp;
-- funding logic may only reduce the incremental overlay, never increase gross exposure;
-- no hidden or external collateral may be assumed.
+### P5.5 Validation
 
-Funding reducer is frozen before first result:
+Use leave-one-event-out or comparable event-level validation where feasible.
+
+Required reporting:
+
+- lead/lag distribution;
+- false-positive duration;
+- missed upside before exit;
+- drawdown avoided;
+- terminal wealth impact;
+- second-wind behavior.
+
+Any rule that requires 2021-specific or 2025-specific hand tuning fails robustness.
+
+### P5.6 Integration
+
+The cycle layer controls **total directional risk state**, not BRRK relative ranking.
 
 ```text
-trailing 168h funding debit <= 5 bps/day      overlay scale 1.0
-5 < debit < 10 bps/day                        linear 1.0 -> 0.0
-debit >= 10 bps/day                           overlay scale 0.0
-missing required funding data                 overlay scale 0.0
+BRRK        = which assets
+Cycle layer = how much total directional risk
+Router      = with which instruments
+Execution   = how to reach actual target safely
 ```
 
-## Hard gates remain hard
+## Downstream after Phase 5
 
-Do not relax the predecessor safety boundaries to obtain a pass:
+### Phase 6 — integrated shadow system
 
-- defensive scale remains `[0,1]`;
-- scenario CVaR/CDaR budget remains 20%;
-- operating DD budgets remain 35/40/45/50%;
-- catastrophic drawdown boundary remains 70%;
-- one-day uniform gap stress still reaches -50%;
-- funding spike stress remains 2x/3x/5x debit;
-- degraded fill/capacity stress remains mandatory;
-- start-date and stationary-block robustness remain mandatory;
-- missing required evidence fails closed.
+Use live market/account state with **zero trading authority**. Log target weights, cycle state, gross target, router choice and hypothetical fills. Require drift/reconciliation/data-quality acceptance before any production progression.
 
-LEVERAGE-0041 strengthens the liquidation-distance requirement: actual routed perp notionals against the explicit collateral reserve must preserve **>55% modeled adverse-move distance to liquidation** for every promotable state.
+### Phase 7 — limited-capital live long
 
-## Sweet-spot selection rule
+Only after Phase 6 acceptance and explicit user production approval. Preserve Agent/API-only credentials, no automated withdrawals/transfers, hard exposure caps, kill switch, startup reconciliation and human transition gates.
 
-A cap may only be selected if it is an interior member of a contiguous all-pass region of at least three caps and both immediate neighbors also pass every hard gate.
+### Phase 8 — bear-short research
 
-Among caps in a qualifying region, maximize matched after-cost CAGR. If candidates in the same passing region are within 1.0 percentage point of annualized CAGR, choose the lower cap.
+Do not prioritize ahead of long/exit production readiness. Begin with BTC/ETH/SOL/BNB; any Top-20 extension requires contemporaneous liquidity/perp/funding/market-structure evidence. First short remains explicitly human-gated.
 
-A boundary cap cannot be selected as the sweet spot.
+## Frozen boundaries while Phase 5 proceeds
 
-## Work allowed now
+- BRRK-0011 remains the canonical directional core;
+- BTC/ETH/SOL/BNB remain the long target universe;
+- XRP remains feature-only;
+- Hyperliquid remains the primary venue;
+- P4.1 defensive scale remains `[0,1]`;
+- production gross remains `1.0`;
+- LEVERAGE-0040 and LEVERAGE-0041 are immutable failed studies;
+- EXPOSURE-SMOOTH-0038 remains `SHADOW_ONLY / NOT PROMOTED`;
+- no automated withdrawal or external transfer capability;
+- no ACTIVE hot patching.
 
-### 1. Merge the LEVERAGE-0041 preregistration only after CI/governance is green
-
-The preregistration must freeze:
-
-- experiment ID;
-- exact cap grid;
-- spot/perp/collateral architecture;
-- funding reducer;
-- stress/liquidation rules;
-- robustness seed and selection rule;
-- explicit non-production boundary.
-
-### 2. After preregistration merge, implement the study without observing candidate economics
-
-Required pre-run work includes:
-
-- implementation contract for route split and collateral accounting;
-- exact cap=1 requested-target parity against frozen BRRK-0011;
-- funding reducer unit/golden tests;
-- liquidation model mapped to actual routed perp notionals plus 25% reserve;
-- result schema and immutable-output validator;
-- required input evidence and hashes;
-- applicable Phase 0 / normalization / P3.2 parity / governance checks.
-
-### 3. Stop at the RUN_ONCE boundary
-
-Preregistration and implementation do **not** authorize execution.
-
-A separate explicit owner `RUN_ONCE` instruction is required after all pre-run gates are green.
-
-## Research integrity boundary
-
-Forbidden:
-
-- rerun, rescue or retune LEVERAGE-0040;
-- alter LEVERAGE-0040 immutable result files;
-- change LEVERAGE-0041 cap grid, reserve, funding thresholds, hard gates, seed or selection rule after seeing any LEVERAGE-0041 result;
-- use funding as alpha or allow funding logic to increase exposure;
-- introduce XRP target exposure, new directional alpha, EXPOSURE-SMOOTH-0038 substitution or P5 exit logic;
-- treat research CI/merge as production authorization.
-
-## P4.6 boundary
-
-P4.6 remains blocked until a separately preregistered leverage study actually selects an eligible research candidate.
-
-If LEVERAGE-0041 does select a candidate, the cap presented to P4.6 is the **next lower preregistered grid point** and may never exceed 1.20 under LEVERAGE-0041. P4.6 still requires a separate explicit production decision and live/shadow evidence.
-
-## Downstream roadmap
+## Exact next step
 
 ```text
-PR #90 merged / LEVERAGE-0040 closed
--> LEVERAGE-0041 preregistration
--> LEVERAGE-0041 implementation + pre-run gates
--> explicit RUN_ONCE decision
--> immutable result + select/fail decision
--> P4.6 only if an eligible candidate exists
--> Phase 5 cycle-top / exit intelligence after leverage dependency is resolved
+MERGE THE CURRENT PHASE-4 CLOSEOUT ONLY AFTER FRESH FINAL-HEAD CI/GOVERNANCE
+VERIFY THE NEW MAIN SHA
+CREATE A FRESH P5.1 BRANCH FROM THAT MAIN
+IMPLEMENT / FREEZE EVENT TAXONOMY ONLY
+DO NOT START P5.2 MODEL SELECTION BEFORE P5.1 EVENT DEFINITIONS ARE REVIEWABLE
 ```

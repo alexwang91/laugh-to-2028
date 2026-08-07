@@ -1,0 +1,57 @@
+name: LEVERAGE-0041 lifecycle prerequisites
+
+on:
+  pull_request:
+    paths:
+      - "research/leverage_0041/**"
+      - "research/results/leverage_0041/**"
+      - ".github/workflows/p4-5-leverage-0041-*.yml"
+      - "execution/plan-b-bot/tests/test_leverage_0041_*.py"
+      - "config/decision_registry.json"
+      - "docs/ROADMAP_AUDIT_2026-08-07.md"
+
+permissions:
+  contents: read
+
+jobs:
+  lifecycle:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: execution/plan-b-bot/requirements-dev.txt
+      - name: Install pinned runtime
+        run: pip install -r execution/plan-b-bot/requirements-dev.txt
+      - name: Validate immutable result or run blinded preflight
+        env:
+          GH_TOKEN: ${{ github.token }}
+          OMP_NUM_THREADS: "1"
+          OPENBLAS_NUM_THREADS: "1"
+          MKL_NUM_THREADS: "1"
+          NUMEXPR_NUM_THREADS: "1"
+        run: |
+          set -euo pipefail
+          if [[ -e research/results/leverage_0041/summary.json ]]; then
+            echo "Post-result lifecycle detected. Validate committed immutable result."
+            python research/leverage_0041/validate_leverage_0041_result.py
+          else
+            echo "Pre-result lifecycle detected. Download pinned route evidence and run blinded preflight only."
+            mkdir -p /tmp/router-data-0004
+            curl --fail --location \
+              -H "Authorization: Bearer $GH_TOKEN" \
+              -H "Accept: application/vnd.github+json" \
+              -H "X-GitHub-Api-Version: 2022-11-28" \
+              "https://api.github.com/repos/${{ github.repository }}/actions/artifacts/8906907321/zip" \
+              -o /tmp/router-data-0004.zip
+            test "$(sha256sum /tmp/router-data-0004.zip | awk '{print $1}')" = "99c0d463cc94294a6701056c34488d36c03ecff810ae7c6f5db5844e30d790d8"
+            unzip -q /tmp/router-data-0004.zip -d /tmp/router-data-0004
+            test "$(find /tmp/router-data-0004 -name vwap_slippage.csv | wc -l)" -eq 1
+            python research/leverage_0041/run_leverage_0041_once.py \
+              --router-artifact-dir /tmp/router-data-0004 \
+              --preflight-only
+            test ! -e research/results/leverage_0041/summary.json
+          fi
