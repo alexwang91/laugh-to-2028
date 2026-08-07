@@ -4,7 +4,7 @@ Last updated: 2026-08-07
 
 ## Current instruction
 
-**P5.3 state-model structure is preregistered before state-path evaluation. Validate/merge the final R1+R2 contract, then implement EARLY/BALANCED/CONSERVATIVE exactly as frozen against immutable P5.2 evidence. Do not alter P5.1/P5.2, add post-result features, or choose P5.4 gross multipliers.**
+**P5.3 R1+R2 structure is merged. The deterministic state engine and frozen state-path evidence contract are implemented but historical state paths have not been run. Run final pre-run CI using synthetic/unit evidence only; if green, execute `P5.3-STATE-PATH-EVIDENCE-V1` once under standing research authorization.**
 
 ## Immediate state
 
@@ -16,15 +16,16 @@ production gross cap                   1.0
 production_authorized_components       []
 P5.1 event taxonomy                    COMPLETE / MERGED / FROZEN
 P5.2 feature evidence                  COMPLETE / IMMUTABLE / DESCRIPTIVE CLOSEOUT
-P5.2 summary SHA256                    3f6dc3c512d22ac8f71d43ed155f2602cd40d5caf3d617c0e130e170727e0627
-P5.3 structure contract                P5.3-STATE-MODEL-STRUCTURE-V1
-P5.3 prereg corrections                R1 + R2 / BOTH BEFORE ANY STATE PATH
-P5.3 structure                         PREREGISTERED / FROZEN BEFORE STATE-PATH EVALUATION
-P5.3 state paths                       NOT RUN
+P5.3 structure                         COMPLETE / MERGED / R1+R2 FROZEN
+P5.3 implementation                    IMPLEMENTED / FROZEN / PRE-RUN
+P5.3 evidence contract                 P5.3-STATE-PATH-EVIDENCE-V1
+P5.3 historical state paths            NOT RUN
 P5.4-P5.6                              NOT STARTED
 ```
 
-## Frozen state vocabulary / severity order
+## Frozen P5.3 runtime contract
+
+State severity order:
 
 ```text
 NORMAL_BULL
@@ -36,36 +37,34 @@ DE_RISK_2
 FLAT
 ```
 
-Before initialization, `DATA_INSUFFICIENT` is a diagnostic rather than a market state. `MONITOR_ONLY` remains a downstream human/runtime control state.
+Evidence channels:
 
-## Frozen runtime evidence
+```text
+REGIME_TEXTURE
+LEADERSHIP_ROTATION
+EXHAUSTION_TRANSITION
+TREND_DAMAGE
+```
 
-### REGIME_TEXTURE
-- BTC RV20;
-- BTC RV20/RV60;
-- distance from trailing high;
-- KAMA gap.
+Causal normalization:
 
-### LEADERSHIP_ROTATION
-- ETH/BTC 20d;
-- ETH/BTC 40d;
-- breadth acceleration;
-- canonical-five breadth raw fraction.
+```text
+window          last up to 365 completed daily dates ending at t
+minimum N       20 nonmissing observations per continuous feature
+percentile      (average_rank(current) - 1) / (N - 1)
+future data     forbidden
+pre-init        DATA_INSUFFICIENT
+```
 
-### EXHAUSTION_TRANSITION
-- price-vs-RSI rank divergence;
-- RSI14 failure from recent max;
-- completed-4h RSI14 / RSI28;
-- breadth acceleration / contraction.
+Profiles:
 
-### TREND_DAMAGE
-- KAMA gap;
-- distance from trailing high;
-- BTC 20d / 40d return.
+```text
+EARLY        moderate 65/35  strong 80/20  escalation 2d  clear 5d
+BALANCED     moderate 70/30  strong 85/15  escalation 3d  clear 5d
+CONSERVATIVE moderate 75/25  strong 90/10  escalation 3d  clear 7d
+```
 
-R2 removed `bnb_btc_log_return_40d` and `btc_daily_rsi14` from runtime inputs because no frozen evidence atom referenced them. No evidence threshold was changed.
-
-Core semantics remain:
+Core boundary:
 
 ```text
 volatility alone            != top
@@ -77,97 +76,66 @@ exhaustion + damage         -> de-risk candidate
 strong exhaustion + damage  -> hard-risk / FLAT candidate
 ```
 
-## Frozen causal normalization
+Hysteresis is exactly frozen by R2: continuously supported escalation, one-step de-escalation after each fresh clear period, missing-data hold, immediate fully-proven hard FLAT and absorbing FLAT.
+
+## Frozen evidence-output contract
+
+`P5.3-STATE-PATH-EVIDENCE-V1` binds to:
 
 ```text
-window          last up to 365 completed daily dates ending at t
-missing         drop missing feature-by-feature
-minimum N       20 nonmissing feature observations
-percentile      (average_rank(current) - 1) / (N - 1)
-ties            average rank
-future data     forbidden
-20 <= N < 365   use causal available history and report N
-N < 20          feature unavailable
+state-model blob      400ec97f8a0e522c5776ce1f6a98fc6d7e069267
+P5.2 summary SHA256   3f6dc3c512d22ac8f71d43ed155f2602cd40d5caf3d617c0e130e170727e0627
+profiles              EARLY / BALANCED / CONSERVATIVE
 ```
 
-Path remains `DATA_INSUFFICIENT` until every continuous runtime input is calibrated. CI must prove that is possible by `2021-01-31`. After initialization, missing data cannot cause de-escalation or automatic re-risk.
+Event reporting uses exactly the five frozen P5.1 buckets. No custom post-result lead/lag window may be introduced.
 
-P5.2 robust-z is research diagnostics only, not a runtime feature.
+Required artifacts:
 
-## Frozen profiles
+- causal normalized percentiles;
+- normalization observation counts;
+- daily profile state paths with raw candidate + evidence atoms;
+- profile initialization/transition summary;
+- event-bucket state occupancy;
+- first occurrence of each state within each frozen bucket + signed anchor offset;
+- immutable summary/digest.
 
-| Profile | Moderate high/low | Strong high/low | Escalation | Clear |
-| --- | --- | --- | ---: | ---: |
-| EARLY | 0.65 / 0.35 | 0.80 / 0.20 | 2d | 5d |
-| BALANCED | 0.70 / 0.30 | 0.85 / 0.15 | 3d | 5d |
-| CONSERVATIVE | 0.75 / 0.25 | 0.90 / 0.10 | 3d | 7d |
+The run may not select a profile, production state model or P5.4 gross mapping.
 
-## Frozen raw-candidate priority
+## Pre-run gate — NEXT
+
+Fresh CI must prove without running historical state paths:
+
+- P5.3 prereg tests remain green;
+- synthetic state-engine tests pass;
+- future data cannot affect prior percentile values;
+- rotation alone cannot de-risk;
+- exhaustion requires multiple subchannels;
+- escalation uses minimum continuously supported severity;
+- de-escalation moves only one step per fresh clear period;
+- missing data cannot re-risk;
+- FLAT is immediate on hard proof and absorbing;
+- runner/validator compile;
+- P5.1/P5.2 immutable dependencies match;
+- P5.3 result is absent.
+
+## After pre-run green
+
+Standing research authorization already covers:
 
 ```text
-STRONG_DAMAGE + STRONG_EXHAUSTION      -> FLAT
-strong damage/exhaustion combinations -> DE_RISK_2
-DAMAGE + EXHAUSTION                    -> DE_RISK_1
-EXHAUSTION                             -> EXHAUSTION_WATCH
-ROTATION and not DAMAGE                -> LATE_BULL_ROTATION
-MATURE_TEXTURE and not DAMAGE          -> BTC_LEADERSHIP_MATURING
-otherwise                              -> NORMAL_BULL
+COMMIT FROZEN RUN_ONCE MARKER
+EXECUTE ALL THREE PROFILES ON IMMUTABLE P5.2 PANEL
+VALIDATE / COMMIT IMMUTABLE P5.3 RESULT
 ```
 
-## Exact R2 hysteresis mechanics
+No additional owner prompt is required for this research run.
 
-- first fully calibrated date: raw FLAT initializes FLAT; otherwise initialize NORMAL_BULL;
-- ordinary escalation counts only consecutive `raw > current` days;
-- after persistence, jump only to the **minimum raw severity continuously supported throughout that window**;
-- fully evaluated raw FLAT enters immediately;
-- ordinary de-escalation counts only consecutive `raw < current` days;
-- after clear period, move exactly one severity step lower;
-- each further de-escalation step needs a fresh clear period;
-- `raw == current` resets both counters;
-- ordinary missing-data day holds state and resets counters;
-- missing-data hard FLAT is allowed only if every input needed to prove both strong atoms is present and both are true;
-- FLAT is absorbing; re-risk requires explicit human approval outside P5.3.
+If a non-research-definition implementation defect occurs before immutable result commit, use an audited recovery record without changing features, profiles, state rules or event metrics.
 
-## P5.3 implementation outputs — NEXT
+## After P5.3 result
 
-Implement all three profiles and report:
-
-- complete daily state path;
-- raw candidate + atom booleans;
-- per-feature normalization counts / minimum calibration depth;
-- initialization date / `DATA_INSUFFICIENT` range;
-- event-window occupancy;
-- first entries and lead/lag versus P5.1 anchors;
-- transition/churn counts;
-- second-wind false-terminal / FLAT behavior;
-- non-top-control conservative-state occupancy;
-- missing-data diagnostics;
-- profile sensitivity.
-
-P5.3 does not need to force 7–14 day warning; it reports whether useful lead emerges naturally.
-
-## Selection boundary
-
-P5.3 may identify a research profile worth carrying to P5.4/P5.5, but may not:
-
-- select a production state model;
-- select solely on 2021 November;
-- add/delete/reparameterize features after state paths;
-- choose P5.4 gross multipliers;
-- authorize production.
-
-P5.5 owns robustness selection after P5.4 behavior/economic mapping exists.
-
-## Frozen pending data
-
-Do not proxy until separately validated:
-
-- BTC dominance;
-- broad-market breadth;
-- historical funding;
-- historical OI;
-- historical basis/premium;
-- liquidation proxy.
+Close P5.3 by reporting state behavior across terminal, second-wind, nonterminal and control events. Do **not** select a production state model. P5.4 may then define research gross-risk behavior; P5.5 owns robustness/economic selection.
 
 ## Frozen product boundaries
 
@@ -183,12 +151,11 @@ Do not proxy until separately validated:
 ## Exact next step
 
 ```text
-RUN FRESH P5.3 PREREG CI / GOVERNANCE
-IF GREEN, MERGE #99 WITH EXACT HEAD
-VERIFY NEW MAIN
-CREATE FRESH P5.3 IMPLEMENTATION BRANCH
-IMPLEMENT R1+R2 CONTRACT EXACTLY
-RUN CONTROLLED DETERMINISTIC STATE-PATH EVIDENCE
-DO NOT RETUNE AFTER OBSERVING STATE PATHS
-DO NOT START P5.4 GROSS MAPPING UNTIL P5.3 EVIDENCE IS REVIEWABLE
+CREATE DRAFT P5.3 IMPLEMENTATION PR
+RUN FRESH PRE-RUN CI / GOVERNANCE
+IF GREEN, COMMIT RUN_ONCE MARKER WITHOUT ASKING AGAIN
+RUN P5.3 STATE-PATH EVIDENCE ONCE
+VALIDATE / COMMIT IMMUTABLE RESULT
+UPDATE README / CURRENT_STATE / NEXT_STEPS
+MERGE P5.3 CLOSEOUT BEFORE P5.4
 ```
