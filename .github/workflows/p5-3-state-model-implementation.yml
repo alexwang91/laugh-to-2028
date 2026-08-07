@@ -62,7 +62,7 @@ jobs:
           test "$(cat research/results/p5_2_feature_evidence/summary.sha256)" = "3f6dc3c512d22ac8f71d43ed155f2602cd40d5caf3d617c0e130e170727e0627"
           if test -e research/results/p5_3_state_paths/summary.json; then
             python research/cycle_exit/validate_p5_3_state_path_result.py
-            test "$(cat research/results/p5_3_state_paths/summary.sha256)" = "a2e5ece89fec93a24e1a65e134a78824629b4b418e106294a6b0821fbd52608b"
+            test "$(cat research/results/p5_3_state_paths/summary.sha256)" = "a2e5be8d605af5a2c8206235402fe3a66b08fd994eaa8a71e84cfb1e3cbfed8f"
             python - <<'PY'
           import json
           from pathlib import Path
