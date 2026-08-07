@@ -1,127 +1,199 @@
 # Next Steps
 
-> Read canonical sources in repository-defined order. GitHub actual state wins over stale prose.
+Status: **authoritative dependency order**
+Last updated: 2026-08-07
 
-## Current dependency
+## Owner pause
 
-```text
-P4.4 — execute the preregistered LEVERAGE-0040 search/stress suite exactly once
-```
+The current instruction is explicit:
 
-PR #88 merged the final pre-run prerequisites as:
+> **Do not continue LEVERAGE-0040 now. Finish repository cleanup and normalization first.**
 
-`8d512479c5b2a0522409afbf0b63b817de6c6fe0`
+Therefore the active dependency is repository hygiene, not research execution.
 
-## All pre-run gates are now closed
-
-```text
-P4.1 defensive scaler             frozen 0 .. 1
-LEVERAGE-0039                    STOPPED_PRE_RUN / NO RESULT / DO NOT REUSE
-LEVERAGE-0040                    PREREGISTERED / MERGED / NOT RUN
-two-layer cap=1 wiring           PASS / MERGED
-liquidation-distance model       PASS / MERGED
->1 multiplier policy             FROZEN PRE-RESULT / MERGED
-production gross cap             1.0 unchanged
-production authorization         none
-```
-
-`production_authorized_components = []` remains unchanged.
-
-## Frozen multiplier policy
+## Current state
 
 ```text
-leverage_multiplier = 1 + (candidate_cap - 1) × frozen_defensive_scale
-final_scale = defensive_scale + (candidate_cap - 1) × defensive_scale²
-candidate caps = 1.00 / 1.10 / 1.20 / 1.30
+Phase 0                    COMPLETE
+Phase 1                    COMPLETE
+Phase 2                    COMPLETE
+Phase 3                    COMPLETE
+P4 prerequisites           COMPLETE through cap1 / margin / liquidation / multiplier freeze
+PR #90                     PAUSED / DRAFT / PRE-RESULT
+LEVERAGE-0040              NOT RUN
+RUN_ONCE marker            ABSENT
+immutable result           ABSENT
+P4.5 select/fail           BLOCKED
+P4.6 production gate       BLOCKED
+P5                         BLOCKED
+production authorization   NONE
 ```
 
-Do not alter this formula, its allowed inputs, or the cap grid after observing results under `LEVERAGE-0040`.
+`production_authorized_components = []`
 
-## Frozen liquidation model
+## Dependency 1 — finish repository hygiene
 
-`research/leverage_0040/P4_3_LIQUIDATION_MODEL_V1.json`
+Complete the isolated housekeeping change based on normalized main after PR #89.
 
-`research/leverage_0040/liquidation_model.py`
+Required scope:
 
-Uses the frozen Hyperliquid cross-margin snapshot and requires explicit cross-account equity + actual perp notionals. Spot collateral and Portfolio Margin are not assumed. Missing accounting fails closed.
+- reduce obsolete remote branch refs without deleting unreviewed unique work;
+- replace stale root README with a current project map;
+- rewrite `CURRENT_STATE.md` and this file to actual project state;
+- add a documentation index;
+- preserve historical research results/audits as evidence rather than current authority;
+- record branch cleanup rules and retired branch SHAs;
+- keep #90 visibly PAUSED / DRAFT;
+- do not modify P4 economic parameters or run the study.
 
-## Frozen LEVERAGE-0040 study
+Repository branch audit result on 2026-08-07:
 
 ```text
-research caps                1.00 / 1.10 / 1.20 / 1.30
-operating MDD candidates     35% / 40% / 45% / 50%
-frozen defensive tail gate  20% CVaR/CDaR
-cost grid                    5 / 10 / 20 / 50 bps
-catastrophe boundary         70%
+remote branches before     96
+pass 1 retired             81
+pass 2 retired              1
+pass 3 audited/retired     11
+remaining during hygiene    3
 ```
 
-Mandatory benchmarks:
+The remaining set during the housekeeping PR is:
 
-- BTC buy-and-hold;
-- BTC/ETH/SOL/BNB equal-weight buy-and-hold;
-- frozen corrected BRRK <=1;
-- each P4 candidate.
+- `main`;
+- `p4-4/leverage-0040-one-time-study-v2` — paused #90;
+- `docs/repository-hygiene-2026-08-07` — temporary housekeeping branch.
 
-Mandatory evidence/stress:
+The housekeeping branch itself should be retired after its merge is verified.
 
-- full machine-readable candidate matrix;
-- matched 5/10/20/50 bps economics;
-- Hyperliquid native funding common-window panel and preregistered debit-spike stress;
-- Binance full-history proxy only as a stress proxy, never Hyperliquid level estimate;
-- 2021 spring, 2021 Nov/bear transition, 2022, 2024, 2025, recent 2026 windows;
-- synthetic gap and volatility shocks;
-- degraded fill/depth/capacity scenarios;
-- liquidation-distance table;
-- start-date robustness;
-- stationary-block bootstrap;
-- final select/fail decision without post-result retuning.
+## Dependency 2 — keep P4.4 paused after hygiene merge
 
-## PR #88 evidence
+After repository hygiene is merged:
 
-Final head `9ed8c627afd9800f8c4a8cf79246a07bc89e6108`:
+- do **not** automatically rebase, mark ready, create marker, or run #90;
+- keep #90 draft and paused;
+- treat its pre-hygiene green CI as historical evidence only because main has changed;
+- no LEVERAGE-0040 result should appear merely because repository maintenance completed.
 
-- prerequisite #4 / `31178219708`: SUCCESS, 14 passed
-- Phase 0 #149 / `31178220870`: SUCCESS, 257 passed + 5/5 integration
-- Research #55 / `31178223443`: SUCCESS
-- P3.2 parity #42 / `31178219593`: SUCCESS
-- P4 cap=1 #8 / `31178220456`: SUCCESS
-- latest governance #209 / `31178603896`: SUCCESS
-- merge `8d512479c5b2a0522409afbf0b63b817de6c6fe0`
+Allowed work while paused:
 
-## Still blocked
+- documentation cleanup;
+- branch/ref cleanup;
+- security fixes;
+- fail-closed correctness fixes that do not observe or optimize cap>1 results;
+- archival/evidence normalization.
+
+Forbidden while paused:
+
+- create/change `RUN_ONCE_LEVERAGE_0040.marker`;
+- manually dispatch the full LEVERAGE-0040 study;
+- mark #90 ready for merge;
+- merge #90;
+- inspect or optimize 1.10/1.20/1.30 economic results;
+- tune caps, budgets, stresses, multiplier policy, BRRK math, or promotion gates;
+- authorize production gross >1.
+
+## Dependency 3 — resume only on explicit owner instruction
+
+When the owner explicitly says to resume P4.4, start from live GitHub state, not this historical SHA list.
+
+Required resume sequence:
+
+1. Re-fetch live `main`, PR #90 state, #90 head, workflows, marker path, and result path.
+2. Confirm PR #90 is still the intended candidate and no unexpected result exists.
+3. Refresh/rebase the paused candidate from then-current `main` without altering frozen economic semantics.
+4. Re-run all applicable pre-result gates on the new final head:
+   - Phase 0;
+   - research evidence normalization;
+   - P3.2 research/live parity + committed golden;
+   - P4 cap=1 parity;
+   - P4 pre-run prerequisite gate;
+   - P4.4 study contract / R1 preflight-only;
+   - PR handoff governance.
+5. Require the corrected R1 preflight to exit before cap>1 candidate evaluation.
+6. Re-confirm:
+   - RUN_ONCE marker absent;
+   - immutable result absent;
+   - `production_authorized_components = []`.
+7. Only then cross the exact one-time RUN_ONCE boundary.
+
+## Dependency 4 — one-time LEVERAGE-0040 execution
+
+When and only when resumed and pre-result gates are green:
 
 ```text
-LEVERAGE-0040 SEARCH RUN:       NO
-RESULT SELECTED:                NO
-OPERATING BUDGET FROZEN:        NO
-PRODUCTION >1 RUNTIME:          NO
-PRODUCTION AUTHORIZED:          NO_CHANGE
+create exact marker once
+→ dedicated workflow executes frozen suite once
+→ commit immutable result
+→ validate result digest/provenance
+→ never rerun the study under the same experiment ID
 ```
 
-Also blocked/separate:
+No post-result retuning is allowed under `LEVERAGE-0040`.
 
-- any rescue/retune after results under 0040;
-- search >1.30 without new experiment ID;
-- EXPOSURE-SMOOTH-0038 promotion;
-- F23 funding-response redesign;
-- shorts / XRP target exposure;
-- P5 exit intelligence;
-- production leverage authorization.
+If execution infrastructure fails before producing a valid result, classify the failure explicitly; do not silently rerun or modify economic semantics.
 
-## Project drift audit
+## Dependency 5 — P4.5 select/fail decision
+
+After a valid immutable result exists, apply the preregistered selection rules exactly.
+
+Possible outcomes:
+
+- `NO_PROMOTION`; or
+- a research promotion candidate within the frozen 1.10 / 1.20 / 1.30 set.
+
+Neither outcome is production authorization.
+
+Record the decision in:
+
+- `config/decision_registry.json`;
+- `docs/CURRENT_STATE.md`;
+- this file;
+- immutable result/evidence docs as required.
+
+## Dependency 6 — P4.6 production gate
+
+Production leverage authorization is a separate gate after P4.5.
+
+It must not be inferred from:
+
+- a successful backtest;
+- a selected research cap;
+- green CI;
+- merged P4 code;
+- acceptable liquidation-distance estimates.
+
+Until an explicit production decision changes the registry:
 
 ```text
-DRIFT_0
+production_authorized_components = []
+production gross cap = 1.0
 ```
+
+## Dependency 7 — P5
+
+Exit intelligence remains blocked until Phase 4 is formally resolved.
+
+Do not pull P5 features into P4 leverage selection.
+
+## Persistent prohibitions
+
+- do not reuse `LEVERAGE-0039`;
+- do not search above 1.30 under `LEVERAGE-0040`;
+- do not weaken the frozen defensive risk gate after observing results;
+- do not promote EXPOSURE-SMOOTH-0038 without its own decision path;
+- do not absorb F23 funding-response logic into P4;
+- do not introduce shorts or XRP target exposure through P4;
+- do not conflate MERGED with PRODUCTION AUTHORIZED.
 
 ## Exact next action
 
 ```text
-merge docs-only post-#88 normalization
--> fresh LEVERAGE-0040 search branch from normalized main
--> implement result runner strictly from frozen prereg + multiplier + liquidation contracts
--> execute complete suite exactly once
--> commit immutable result artifacts
--> P4.5 select/fail decision
--> P4.6 remains separate production gate
+repository hygiene only
+→ open/finish housekeeping PR
+→ applicable final-head CI + governance
+→ expected-head merge
+→ verify new main
+→ retire housekeeping branch
+→ STOP
 ```
+
+**No P4.4 research action follows automatically.**
