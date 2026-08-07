@@ -1,0 +1,58 @@
+{
+  "contract_id": "P5.3-V2-MARKET-STATE-PATH-EVIDENCE-V1",
+  "status": "FROZEN_BEFORE_FIRST_V2_STATE_PATH_RUN",
+  "registered_at_utc": "2026-08-08T00:12:00Z",
+  "base_main": "7d3616093ab0fe4ab6bdd10e646faab7cd215df6",
+  "architecture_contract_id": "P5.3-MARKET-STATE-PERMISSION-SEPARATION-V2",
+  "architecture_contract_git_blob_sha": "9cf1c2217ee24d836408061faf9e971ad0fe8668",
+  "v2_engine_git_blob_sha": "606c4ef936c2eb05007d46311aa2e4c6269f26fa",
+  "immutable_v1_summary_sha256": "a2e5be8d605af5a2c8206235402fe3a66b08fd994eaa8a71e84cfb1e3cbfed8f",
+  "immutable_p5_2_summary_sha256": "3f6dc3c512d22ac8f71d43ed155f2602cd40d5caf3d617c0e130e170727e0627",
+  "profiles": ["EARLY", "BALANCED", "CONSERVATIVE"],
+  "pre_run_hard_gates": [
+    "V2 architecture contract hash exact",
+    "V2 engine hash exact",
+    "V1 immutable summary digest exact",
+    "P5.2 immutable summary digest exact",
+    "normalized feature matrix exact parity versus V1 within frozen serialization tolerance",
+    "normalization counts exact parity versus V1",
+    "raw candidate exact parity versus V1",
+    "all V1 evidence atom booleans exact parity versus V1",
+    "2021-02-23 raw FLAT reproduced for all profiles",
+    "no prior V2 result exists"
+  ],
+  "required_outputs": [
+    "daily_market_state_paths.csv",
+    "normalized_percentiles.csv",
+    "normalization_counts.csv",
+    "profile_summary.csv",
+    "flat_episodes.csv",
+    "event_state_occupancy.csv",
+    "event_state_first_occurrence.csv",
+    "v1_v2_parity_summary.json",
+    "summary.json",
+    "summary.sha256"
+  ],
+  "required_summary_fields": [
+    "status",
+    "architecture_pass",
+    "raw_candidate_parity_fraction",
+    "atom_parity_fraction",
+    "normalization_parity",
+    "pre_first_flat_state_parity_fraction",
+    "false_flat_reproduced",
+    "post_false_flat_nonflat_exists",
+    "later_events_observable",
+    "profile_selected",
+    "production_authorized"
+  ],
+  "architecture_pass_rule": "PASS only if every preregistered parity requirement is exact, 2021-02-23 false raw FLAT remains visible, every profile later leaves MARKET_STATE=FLAT at least once, later frozen P5.1 event windows have classified MARKET_STATE rows, and no MARKET_STATE recovery is interpreted as operational re-risk permission.",
+  "selection": {
+    "profile_selected": false,
+    "p5_4_mapping_selected": false,
+    "production_authorized": false
+  },
+  "run_authority": "AUTHORIZED_ONCE_AFTER_PRE_RUN_CI_GREEN_BY_OWNER_CONTINUOUS_EXECUTION_INSTRUCTION_2026_08_08",
+  "rerun_policy": "NO_RERUN_AFTER_SUCCESS. If implementation failure occurs before a valid result is committed, fix only implementation defects that do not alter the frozen architecture/signal semantics and rerun with a new workflow attempt on the same evidence contract.",
+  "production_authorized": false
+}
