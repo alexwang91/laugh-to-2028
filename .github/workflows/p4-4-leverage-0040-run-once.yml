@@ -7,6 +7,7 @@ on:
     paths:
       - "research/leverage_0040/RUN_ONCE_LEVERAGE_0040.marker"
       - "research/leverage_0040/RUN_ONCE_LEVERAGE_0040_R2_RECOVERY.marker"
+      - "research/leverage_0040/RUN_ONCE_LEVERAGE_0040_R3_RECOVERY.marker"
 
 permissions:
   contents: write
@@ -36,8 +37,9 @@ jobs:
           set -euo pipefail
           test ! -e research/results/leverage_0040/summary.json
           test "$(sha256sum research/leverage_0040/RUN_ONCE_LEVERAGE_0040.marker | awk '{print $1}')" = "f54cdf362f60cad19d6c429ac4e008047b45d2cb537a95c96e2bc6dac5ce733a"
-          if [[ -f research/leverage_0040/RUN_ONCE_LEVERAGE_0040_R2_RECOVERY.marker ]]; then
-            test "$(sha256sum research/leverage_0040/RUN_ONCE_LEVERAGE_0040_R2_RECOVERY.marker | awk '{print $1}')" = "f1ba15227a62d672b872171f0c64046ab51ee5c1a07327d23164d6a3264b2d82"
+          test "$(sha256sum research/leverage_0040/RUN_ONCE_LEVERAGE_0040_R2_RECOVERY.marker | awk '{print $1}')" = "f1ba15227a62d672b872171f0c64046ab51ee5c1a07327d23164d6a3264b2d82"
+          if [[ -f research/leverage_0040/RUN_ONCE_LEVERAGE_0040_R3_RECOVERY.marker ]]; then
+            test "$(sha256sum research/leverage_0040/RUN_ONCE_LEVERAGE_0040_R3_RECOVERY.marker | awk '{print $1}')" = "c8463f27286bd5debec729648f1fc07872a0de44e2917ca81fc755e97d18ebcb"
           fi
       - name: Download pinned ROUTER-DATA-0004 artifact
         env:
@@ -49,13 +51,13 @@ jobs:
           test "$(sha256sum /tmp/router-data-0004.zip | awk '{print $1}')" = "99c0d463cc94294a6701056c34488d36c03ecff810ae7c6f5db5844e30d790d8"
           unzip -q /tmp/router-data-0004.zip -d /tmp/router-data-0004
           test "$(find /tmp/router-data-0004 -name vwap_slippage.csv | wc -l)" -eq 1
-      - name: Execute preregistered study exactly once through R2 authority
+      - name: Execute preregistered study exactly once through R3 authority
         env:
           OMP_NUM_THREADS: "1"
           OPENBLAS_NUM_THREADS: "1"
           MKL_NUM_THREADS: "1"
           NUMEXPR_NUM_THREADS: "1"
-        run: python research/leverage_0040/run_leverage_0040_once_r2.py --router-artifact-dir /tmp/router-data-0004
+        run: python research/leverage_0040/run_leverage_0040_once_r3.py --router-artifact-dir /tmp/router-data-0004
       - name: Validate immutable result before commit
         run: python research/leverage_0040/validate_leverage_0040_result.py
       - name: Commit immutable study result

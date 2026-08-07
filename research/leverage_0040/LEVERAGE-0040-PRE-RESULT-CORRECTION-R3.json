@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "study_id": "LEVERAGE-0040",
+  "correction_id": "PREFLIGHT-LIQUIDATION-START-004",
+  "status": "FAIL_CLOSED_RECOVERY_BEFORE_IMMUTABLE_RESULT",
+  "trigger": {
+    "workflow_run_id": 31198649428,
+    "failed_head": "c3ec4a747b68349ceb0c1d17fdd5b8593e0e9af5",
+    "exception": "liquidation_model.LiquidationModelError: Starting cross-margin state is already liquidatable",
+    "failed_stage": "minimum liquidation distance"
+  },
+  "evidence": {
+    "immutable_result_written": false,
+    "result_validator_ran": false,
+    "result_commit_ran": false,
+    "cap_gt_1_metrics_emitted_to_stdout": false,
+    "candidate_metrics_committed": false
+  },
+  "correction": {
+    "behavior": "evaluate the starting cross-margin state first; if it is already liquidatable, record minimum_uniform_down_move=0.0 and fail the liquidation-distance gate instead of raising",
+    "economic_parameter_change": false,
+    "candidate_caps_changed": false,
+    "stress_scenarios_changed": false,
+    "selection_gates_changed": false,
+    "liquidation_model_changed": false,
+    "production_authorization_changed": false,
+    "catastrophe_boundary_changed": false,
+    "liquidation_distance_threshold_changed": false
+  },
+  "recovery": {
+    "entrypoint": "research/leverage_0040/run_leverage_0040_once_r3.py",
+    "original_run_once_marker_preserved": true,
+    "r2_recovery_marker_preserved": true,
+    "r3_recovery_marker": "research/leverage_0040/RUN_ONCE_LEVERAGE_0040_R3_RECOVERY.marker",
+    "r3_recovery_marker_sha256": "c8463f27286bd5debec729648f1fc07872a0de44e2917ca81fc755e97d18ebcb",
+    "material_post_result_retuning_allowed": false
+  }
+}
