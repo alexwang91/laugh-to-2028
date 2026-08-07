@@ -6,18 +6,25 @@ on:
       - "research/cycle_exit/p5_2_feature_contract.json"
       - "research/cycle_exit/p5_2_features.py"
       - "research/cycle_exit/run_p5_2_feature_evidence.py"
+      - "research/cycle_exit/run_p5_2_feature_evidence_r2.py"
+      - "research/cycle_exit/P5.2-POST-COMPUTE-CORRECTION-R2.json"
       - "research/cycle_exit/validate_p5_2_feature_result.py"
       - "execution/plan-b-bot/tests/test_p5_2_feature_contract.py"
+      - "execution/plan-b-bot/tests/test_p5_2_r2_serialization.py"
       - ".github/workflows/p5-2-feature-contract.yml"
       - ".github/workflows/p5-2-feature-run-once.yml"
+      - ".github/workflows/p5-2-feature-run-once-r2.yml"
   push:
     branches: [main]
     paths:
       - "research/cycle_exit/p5_2_feature_contract.json"
       - "research/cycle_exit/p5_2_features.py"
       - "research/cycle_exit/run_p5_2_feature_evidence.py"
+      - "research/cycle_exit/run_p5_2_feature_evidence_r2.py"
+      - "research/cycle_exit/P5.2-POST-COMPUTE-CORRECTION-R2.json"
       - "research/cycle_exit/validate_p5_2_feature_result.py"
       - "execution/plan-b-bot/tests/test_p5_2_feature_contract.py"
+      - "execution/plan-b-bot/tests/test_p5_2_r2_serialization.py"
       - ".github/workflows/p5-2-feature-contract.yml"
 
 permissions:
@@ -36,8 +43,11 @@ jobs:
           cache-dependency-path: execution/plan-b-bot/requirements-dev.txt
       - name: Install pinned runtime
         run: pip install -r execution/plan-b-bot/requirements-dev.txt
-      - name: Run frozen P5.2 contract tests
-        run: pytest -q execution/plan-b-bot/tests/test_p5_2_feature_contract.py
+      - name: Run frozen P5.2 contract and R2 serialization tests
+        run: |
+          pytest -q \
+            execution/plan-b-bot/tests/test_p5_2_feature_contract.py \
+            execution/plan-b-bot/tests/test_p5_2_r2_serialization.py
       - name: Run blinded data-access preflight only
         env:
           OMP_NUM_THREADS: "1"
