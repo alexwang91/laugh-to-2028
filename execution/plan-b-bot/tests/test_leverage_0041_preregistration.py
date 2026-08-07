@@ -78,11 +78,20 @@ def test_preregistration_does_not_authorize_run_or_production():
     assert "separate explicit production decision" in data["prospective_deployment_cap_rule"]["authorization"]
 
 
-def test_decision_registry_registers_0041_without_production_authorization():
+def test_decision_registry_records_completed_0041_and_phase3_without_production_authorization():
     registry = _load(DECISIONS)
     assert registry["production_authorized_components"] == []
     decisions = {row["id"]: row for row in registry["decisions"]}
+
+    assert decisions["TARGET-API-P3.2"]["status"] == "IMPLEMENTATION_VERIFIED"
+    assert decisions["REBALANCE-CONTROL-P3.3"]["status"] == "IMPLEMENTATION_VERIFIED"
+    assert decisions["CONTRIBUTION-HANDLING-P3.4"]["status"] == "IMPLEMENTATION_VERIFIED"
+
     assert decisions["LEVERAGE-0040"]["status"] == "REJECTED_STOPPED"
-    assert decisions["LEVERAGE-0041"]["status"] == "ACCEPTED_RESEARCH_TARGET"
-    assert "preregistered" in decisions["LEVERAGE-0041"]["decision"].lower()
-    assert "not run-authorized" in decisions["LEVERAGE-0041"]["decision"].lower()
+    assert decisions["P4-LEVERAGE-SWEET-SPOT-2026-08-07"]["status"] == "SUPERSEDED"
+    assert decisions["LEVERAGE-0041"]["status"] == "REJECTED_STOPPED"
+    decision = decisions["LEVERAGE-0041"]["decision"].lower()
+    assert "no_promotion" in decision
+    assert "no research cap" in decision
+    assert "production_authorized=false" in decision
+    assert "8ea784830cfffbf892a258cb329d437725d41982" in decision
