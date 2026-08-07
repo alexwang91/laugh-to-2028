@@ -24,8 +24,10 @@ class ProductContractIntegrationTest(unittest.TestCase):
 
     def test_research_and_live_share_one_p3_1_data_contract(self):
         contract = json.loads(DATA_CONTRACT.read_text(encoding="utf-8"))
-        self.assertEqual(contract["contract_id"], "BRRK-DATA-CONTRACT-P3.1-2026-08-06")
+        self.assertEqual(contract["schema_version"], 2)
+        self.assertEqual(contract["contract_id"], "BRRK-DATA-CONTRACT-P3.1-R1-2026-08-06")
         self.assertEqual(contract["canonical_assets"], ["BTC", "ETH", "SOL", "BNB"])
+        self.assertEqual(contract["strategy_feature_assets"], ["XRP"])
         self.assertEqual(contract["decision_boundary"]["timezone"], "UTC")
         self.assertEqual(contract["decision_boundary"]["time"], "00:00:00")
 
@@ -42,6 +44,7 @@ class ProductContractIntegrationTest(unittest.TestCase):
                 "ETH": "ETHUSDT",
                 "SOL": "SOLUSDT",
                 "BNB": "BNBUSDT",
+                "XRP": "XRPUSDT",
             },
         )
 
