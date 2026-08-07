@@ -6,7 +6,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
 BASELINE_PATH = ROOT / "research" / "leverage_0039" / "P4_1_BASELINE_FREEZE.json"
-PREREG_PATH = ROOT / "research" / "leverage_0039" / "LEVERAGE-0039.json"
+STOPPED_0039_PATH = ROOT / "research" / "leverage_0039" / "LEVERAGE-0039.json"
+PREREG_0040_PATH = ROOT / "research" / "leverage_0040" / "LEVERAGE-0040.json"
 
 
 def _load(path: Path) -> dict:
@@ -76,40 +77,62 @@ def test_baseline_preserves_metric_provenance_instead_of_reconciling_cagr_labels
     assert "Do not overwrite" in f27["rule"]
 
 
-def test_leverage_0039_is_preregistered_before_any_search_result():
-    prereg = _load(PREREG_PATH)
-    assert prereg["experiment_id"] == "LEVERAGE-0039"
+def test_leverage_0039_is_stopped_before_any_search_result_and_not_reusable():
+    stopped = _load(STOPPED_0039_PATH)
+    assert stopped["experiment_id"] == "LEVERAGE-0039"
+    assert stopped["status"] == "STOPPED_PRE_RUN"
+    assert stopped["result_status"] == "NO_RESULT_EVER_PRODUCED"
+    assert stopped["search_run"] is False
+    assert stopped["candidate_matrix_generated"] is False
+    assert stopped["selection_made"] is False
+    assert stopped["superseded_by"] == "LEVERAGE-0040"
+    assert stopped["frozen_baseline_reference"] == (
+        "research/leverage_0039/P4_1_BASELINE_FREEZE.json"
+    )
+    assert stopped["production_authorized"] is False
+    assert any("reuse LEVERAGE-0039" in item for item in stopped["forbidden"])
+
+
+def test_leverage_0040_is_preregistered_before_any_search_result():
+    prereg = _load(PREREG_0040_PATH)
+    assert prereg["experiment_id"] == "LEVERAGE-0040"
     assert prereg["status"] == "PREREGISTERED_BEFORE_FIRST_RUN"
-    assert prereg["baseline_freeze_id"] == "P4.1-BRRK0011-CORRECTED-0-1-V1"
+    assert prereg["supersedes_pre_run_experiment"] == "LEVERAGE-0039"
+    assert prereg["baseline"]["freeze_id"] == "P4.1-BRRK0011-CORRECTED-0-1-V1"
     assert "results" not in prereg
     assert "selected_candidate" not in prereg
     assert prereg["production_authorized"] is False
 
 
-def test_leverage_0039_search_domain_cannot_silently_expand():
-    prereg = _load(PREREG_PATH)
-    structural = prereg["only_structural_change"]
-    assert structural["baseline_upper_bound"] == 1.0
-    assert structural["candidate_upper_bounds"] == [1.0, 1.10, 1.20, 1.30]
-    assert max(structural["candidate_upper_bounds"]) == 1.30
-    assert prereg["why_search_stops_at_1_30"]["value"] == 1.30
-    assert prereg["fixed_model"]["scenario_cvar_cdar_budget"] == 0.20
-    assert prereg["fixed_model"]["no_short_targets"] is True
+def test_leverage_0040_search_domain_cannot_silently_expand_or_modify_defensive_layer():
+    prereg = _load(PREREG_0040_PATH)
+    assert prereg["candidate_research_caps"] == [1.0, 1.10, 1.20, 1.30]
+    assert max(prereg["candidate_research_caps"]) == 1.30
+    architecture = prereg["architecture"]
+    assert architecture["frozen_defensive_scale_domain"] == [0.0, 1.0]
+    assert architecture["leverage_multiplier_domain_by_cap"]["1.30"] == [1.0, 1.3]
+    assert architecture["final_scale_rule"] == (
+        "final_scale = frozen_defensive_scale * leverage_multiplier"
+    )
+    assert prereg["tail_risk"]["scenario_cvar_cdar_budget"] == 0.20
+    forbidden = "\n".join(prereg["forbidden"])
+    assert "extend or reinterpret the frozen defensive selector above 1.0" in forbidden
+    assert "search above gross 1.30" in forbidden
 
 
-def test_operating_and_catastrophic_risk_budgets_are_separate():
-    prereg = _load(PREREG_PATH)
+def test_operating_and_catastrophic_risk_budgets_are_separate_under_0040():
+    prereg = _load(PREREG_0040_PATH)
     budgets = prereg["operating_drawdown_candidate_budgets"]
     catastrophe = prereg["catastrophic_drawdown_limit"]
+    baseline_mdd = abs(_load(BASELINE_PATH)["corrected_brrk0011_result"]["max_drawdown"])
     assert budgets == [0.35, 0.40, 0.45, 0.50]
-    assert min(budgets) > abs(prereg["baseline"]["historical_result_max_drawdown"])
+    assert min(budgets) > baseline_mdd
     assert max(budgets) < catastrophe
     assert catastrophe == 0.70
-    assert "never an operating candidate" in prereg["operating_budget_rule"]
 
 
-def test_cost_funding_stress_and_liquidation_gates_are_frozen():
-    prereg = _load(PREREG_PATH)
+def test_cost_funding_stress_and_liquidation_gates_are_frozen_under_0040():
+    prereg = _load(PREREG_0040_PATH)
     assert prereg["transaction_cost_treatment"]["cost_bps_per_abs_weight_change_grid"] == [
         5.0,
         10.0,
@@ -119,23 +142,21 @@ def test_cost_funding_stress_and_liquidation_gates_are_frozen():
     funding = prereg["funding_treatment"]
     assert funding["signal_use"] == "FORBIDDEN"
     assert funding["threshold_optimization"] == "FORBIDDEN"
-    assert [panel["name"] for panel in funding["mandatory_panels"]] == [
-        "HYPERLIQUID_NATIVE_ALL_PERP_COMMON_WINDOW",
-        "BINANCE_FULL_HISTORY_PROXY",
-    ]
+    assert funding["funding_spike_stress"]["multipliers"] == [2.0, 3.0, 5.0]
     assert prereg["liquidation_distance"]["required"] is True
     assert prereg["liquidation_distance"]["missing_model_rule"] == "FAIL_CLOSED_NO_PROMOTION"
-    assert prereg["synthetic_stress_suite"]["uniform_one_day_gap_returns"] == [
+    assert prereg["synthetic_market_stress"]["uniform_one_day_gap_returns"] == [
         -0.10,
         -0.20,
         -0.30,
         -0.40,
         -0.50,
     ]
+    assert prereg["degraded_fill_stress"]["required"] is True
 
 
-def test_all_roadmap_stress_eras_are_explicitly_registered():
-    prereg = _load(PREREG_PATH)
+def test_all_roadmap_stress_eras_are_explicitly_registered_under_0040():
+    prereg = _load(PREREG_0040_PATH)
     names = [row["name"] for row in prereg["historical_stress_windows"]]
     assert names == [
         "2021_SPRING_CRASH",
@@ -145,13 +166,22 @@ def test_all_roadmap_stress_eras_are_explicitly_registered():
         "2025_MULTI_PEAK_DELEVERAGING",
         "RECENT_2026_TO_FROZEN_END",
     ]
-    early = prereg["historical_stress_windows"][0]
-    assert early["mode"] == "PRE_BRRK_CONSERVATIVE_PROXY"
-    assert "do not label this full-BRRK OOS performance" in early["rule"]
+    assert prereg["historical_stress_windows"][0]["mode"] == "PRE_BRRK_CONSERVATIVE_PROXY"
 
 
-def test_p4_prereg_forbids_scope_smuggling_and_production_authorization():
-    prereg = _load(PREREG_PATH)
+def test_master_plan_benchmarks_are_explicitly_required_under_0040():
+    prereg = _load(PREREG_0040_PATH)
+    benchmark_ids = [row["id"] for row in prereg["mandatory_benchmarks"]]
+    assert benchmark_ids == [
+        "BTC_BUY_AND_HOLD",
+        "BRRK_EQUAL_WEIGHT_BUY_AND_HOLD",
+        "P4_1_FROZEN_BRRK_0_1",
+    ]
+    assert "all three mandatory benchmarks" in prereg["benchmark_rule"]
+
+
+def test_p4_0040_forbids_scope_smuggling_and_production_authorization():
+    prereg = _load(PREREG_0040_PATH)
     forbidden = "\n".join(prereg["forbidden"])
     assert "F23" in forbidden
     assert "EXPOSURE-SMOOTH-0038" in forbidden
@@ -160,4 +190,4 @@ def test_p4_prereg_forbids_scope_smuggling_and_production_authorization():
     assert "P5" in forbidden
     assert "production" in forbidden.lower()
     assert prereg["deployment_cap_rule"]["research_only"] is True
-    assert "fresh evidence" in prereg["deployment_cap_rule"]["raising_rule"]
+    assert "Separate production authorization" in prereg["deployment_cap_rule"]["authorization"]
