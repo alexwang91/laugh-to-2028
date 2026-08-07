@@ -58,7 +58,7 @@ P5.2 remains descriptive only: 29 available features passed coverage, six reques
 State-model contract: `P5.3-STATE-MODEL-STRUCTURE-V1`  
 Evidence contract: `P5.3-STATE-PATH-EVIDENCE-V1`  
 Immutable result commit: `7703b3ffec906a9d2ea58b33ee7feea5cd2f0a89`  
-Immutable summary SHA256: `a2e5ece89fec93a24e1a65e134a78824629b4b418e106294a6b0821fbd52608b`
+Immutable summary SHA256: `a2e5be8d605af5a2c8206235402fe3a66b08fd994eaa8a71e84cfb1e3cbfed8f`
 
 RUN_ONCE completed successfully: frozen guards passed, all three profiles ran, immutable validation passed and result files were committed.
 
@@ -73,13 +73,13 @@ production_authorized            false
 
 ### V1 failure
 
-All three profiles initialized on `2021-01-11` and first entered `FLAT` on `2021-02-23`.
+All three profiles initialized on `2021-01-17` and first entered `FLAT` on `2021-02-23`.
 
 ```text
 profile       classified days   FLAT days   FLAT fraction
-EARLY         1874              1837        98.0256%
-BALANCED      1874              1837        98.0256%
-CONSERVATIVE  1874              1837        98.0256%
+EARLY         1869              1832        98.0203%
+BALANCED      1869              1832        98.0203%
+CONSERVATIVE  1869              1832        98.0203%
 ```
 
 The first FLAT is a false hard-risk event inside the frozen `P5C-2021-JAN-FEB-HIGH-VOL` non-top control. In its `near_event` bucket (`2021-02-22 .. 2021-02-28`), every profile is FLAT for 6 of 7 classified days (`85.7143%`).
