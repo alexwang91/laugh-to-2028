@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import json
-import math
 from pathlib import Path
 import sys
 
@@ -143,14 +142,14 @@ def test_liquidation_model_fails_closed_on_unsupported_or_ambiguous_inputs():
         maintenance_margin_usd("XRP", 100.0)
 
 
-def test_uniform_distance_is_monotone_with_more_perp_notional_at_same_equity():
+def test_uniform_distance_is_monotone_with_more_levered_perp_notional_at_same_equity():
     low = uniform_long_down_liquidation_distance(
         current_cross_account_equity_usd=2_000.0,
-        current_long_perp_notionals_usd={"BTC": 1_000.0},
+        current_long_perp_notionals_usd={"BTC": 4_000.0},
     )
     high = uniform_long_down_liquidation_distance(
         current_cross_account_equity_usd=2_000.0,
-        current_long_perp_notionals_usd={"BTC": 2_000.0},
+        current_long_perp_notionals_usd={"BTC": 8_000.0},
     )
     assert low.uniform_down_move_fraction is not None
     assert high.uniform_down_move_fraction is not None
