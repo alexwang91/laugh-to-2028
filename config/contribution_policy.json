@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "policy_id": "P3.4-EQUITY-CHANGE-DAILY-V1",
+  "equity_reference": "PREVIOUS_ACCEPTED_DAILY_DECISION_ACCOUNT_EQUITY",
+  "detection_rule": "OBSERVE_SIGNED_ACCOUNT_EQUITY_CHANGE_WITHOUT_SOURCE_ATTRIBUTION",
+  "positive_change_classification": "CONTRIBUTION_CANDIDATE_NOT_CONFIRMED_TRANSFER",
+  "negative_change_classification": "NEGATIVE_EQUITY_CHANGE_NOT_CONTRIBUTION",
+  "daily_decision_timezone": "UTC",
+  "daily_decision_time": "00:00:00",
+  "intraday_action": "RECORD_ONLY_NO_TARGET_RECALCULATION_NO_RISK_INCREASE",
+  "daily_allocation_path": [
+    "P3.2-BRRK0011-V1",
+    "P3.3-L1-BAND-V1"
+  ],
+  "weekly_contribution_amount_role": "PRODUCT_ASSUMPTION_ONLY_NOT_DETECTION_THRESHOLD_NOT_SCHEDULE_TRIGGER",
+  "authorization": "CONTRIBUTION_HANDLING_ONLY_NO_PRODUCTION_AUTHORIZATION"
+}
