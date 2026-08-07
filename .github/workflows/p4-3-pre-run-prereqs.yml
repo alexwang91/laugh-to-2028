@@ -1,0 +1,37 @@
+name: P4.3 LEVERAGE-0040 pre-run prerequisites
+
+on:
+  pull_request:
+    paths:
+      - "research/leverage_0039/hyperliquid_margin_snapshot.json"
+      - "research/leverage_0040/P4_3_LIQUIDATION_MODEL_V1.json"
+      - "research/leverage_0040/liquidation_model.py"
+      - "research/leverage_0040/LEVERAGE-0040-PRE-RUN-ADDENDUM-V1.json"
+      - "research/leverage_0040/multiplier_policy.py"
+      - "execution/plan-b-bot/tests/test_p4_3_liquidation_model.py"
+      - "execution/plan-b-bot/tests/test_p4_3_multiplier_policy.py"
+      - "docs/CURRENT_STATE.md"
+      - "docs/NEXT_STEPS.md"
+      - "docs/P4_0040_PRE_RUN_CHECKLIST.md"
+      - ".github/workflows/p4-3-pre-run-prereqs.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  pre-run-contract:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install test dependency
+        run: python -m pip install pytest==8.4.1
+      - name: Validate frozen liquidation and multiplier prerequisites only
+        run: |
+          python -m pytest -q \
+            execution/plan-b-bot/tests/test_p4_3_liquidation_model.py \
+            execution/plan-b-bot/tests/test_p4_3_multiplier_policy.py
