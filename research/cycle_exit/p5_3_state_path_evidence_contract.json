@@ -1,0 +1,49 @@
+{
+  "contract_id": "P5.3-STATE-PATH-EVIDENCE-V1",
+  "status": "FROZEN_BEFORE_FIRST_STATE_PATH_RUN",
+  "registered_at_utc": "2026-08-07T23:10:00Z",
+  "base_main": "8533f8ce0519dfeade6ac33124d90a45a416122c",
+  "state_model_contract": "P5.3-STATE-MODEL-STRUCTURE-V1",
+  "state_model_contract_git_blob_sha": "400ec97f8a0e522c5776ce1f6a98fc6d7e069267",
+  "p5_2_summary_sha256": "3f6dc3c512d22ac8f71d43ed155f2602cd40d5caf3d617c0e130e170727e0627",
+  "source_feature_panel": "research/results/p5_2_feature_evidence/feature_panel.csv",
+  "source_resolved_events": "research/results/p5_2_feature_evidence/resolved_events.csv",
+  "source_taxonomy": "research/cycle_exit/p5_1_event_taxonomy.json",
+  "profiles": ["EARLY", "BALANCED", "CONSERVATIVE"],
+  "research_integrity": {
+    "state_model_rules_frozen_before_run": true,
+    "p5_1_taxonomy_immutable": true,
+    "p5_2_evidence_immutable": true,
+    "no_profile_selection_in_run": true,
+    "no_p5_4_gross_mapping": true,
+    "production_authorization": "NONE"
+  },
+  "event_metrics": {
+    "bucket_authority": "Use exactly the five P5.1 evaluation buckets; do not add a post-result lead/lag search window.",
+    "occupancy": "For each event x profile x P5.1 bucket report total calendar rows, DATA_INSUFFICIENT rows, classified rows, count/fraction of each P5.3 state, DE_RISK_1_OR_WORSE fraction, DE_RISK_2_OR_WORSE fraction and FLAT fraction. DATA_INSUFFICIENT rows are excluded from classified-state fraction denominators.",
+    "first_occurrence": "For each event x profile x P5.1 bucket x P5.3 state that occurs, report first occurrence date and signed offset_days = first_date - anchor_date. No date outside the named P5.1 bucket is searched.",
+    "transition_count": "Count changes between consecutive classified daily states after initialization. DATA_INSUFFICIENT is not a market-state transition.",
+    "second_wind_and_control_diagnostics": "Use the same occupancy table and frozen event_class labels. Do not introduce custom windows after seeing results."
+  },
+  "required_artifacts": [
+    "normalized_percentiles.csv",
+    "normalization_counts.csv",
+    "daily_state_paths.csv",
+    "profile_summary.csv",
+    "event_state_occupancy.csv",
+    "event_state_first_occurrence.csv",
+    "summary.json",
+    "summary.sha256"
+  ],
+  "selection": {
+    "profile_selected": false,
+    "state_model_production_selected": false,
+    "status": "STATE_PATH_EVIDENCE_ONLY"
+  },
+  "run_once": {
+    "authorized_under_standing_research_authorization": true,
+    "marker": "research/cycle_exit/RUN_ONCE_P5_3_STATE_PATHS.marker",
+    "result_directory": "research/results/p5_3_state_paths",
+    "rule": "After implementation/unit/preflight CI is green, execute the frozen three-profile state-path evidence once. Non-research-definition implementation defects may be corrected with an audited recovery record; state rules/profiles/event metrics may not be retuned after state-path evidence is observed."
+  }
+}
