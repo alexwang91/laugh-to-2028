@@ -1,0 +1,48 @@
+name: P4.3 LEVERAGE-0040 cap1 parity
+
+on:
+  pull_request:
+    paths:
+      - "research/leverage_0040/two_layer_runner.py"
+      - "research/leverage_0040/p4_3_cap1_parity.py"
+      - "research/leverage_0040/LEVERAGE-0040.json"
+      - "research/results/p3_2_target_parity/**"
+      - "research/integration/p3_1_data_contract_adapter.py"
+      - "research/integration/p3_2_target_parity.py"
+      - "research/integration/p3_2_golden_compare.py"
+      - "execution/plan-b-bot/beta_bot/target_engine.py"
+      - "execution/plan-b-bot/beta_bot/target_math.py"
+      - "execution/plan-b-bot/requirements.txt"
+      - "execution/plan-b-bot/requirements-dev.txt"
+      - "execution/plan-b-bot/tests/test_p4_3_two_layer_runner.py"
+      - "docs/CURRENT_STATE.md"
+      - "docs/NEXT_STEPS.md"
+      - ".github/workflows/p4-3-cap1-parity.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  PYTHONHASHSEED: "0"
+  OMP_NUM_THREADS: "1"
+  OPENBLAS_NUM_THREADS: "1"
+  MKL_NUM_THREADS: "1"
+  NUMEXPR_NUM_THREADS: "1"
+
+jobs:
+  cap1-parity:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: execution/plan-b-bot/requirements.txt
+      - name: Install pinned P3.2 runtime
+        working-directory: execution/plan-b-bot
+        run: pip install -r requirements-dev.txt
+      - name: Prove P4 two-layer cap=1 exact historical parity
+        run: python research/leverage_0040/p4_3_cap1_parity.py
