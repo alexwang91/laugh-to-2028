@@ -1,0 +1,173 @@
+{
+  "contract_id": "P5.3-MARKET-STATE-PERMISSION-SEPARATION-V2",
+  "status": "FROZEN_BEFORE_V2_STATE_PATH_EVALUATION",
+  "registered_at_utc": "2026-08-07T23:42:00Z",
+  "base_main": "5b0cac61a45c13d28680e641dd434db4d9a6a2db",
+  "study_type": "ARCHITECTURE_ISOLATION_ONLY",
+  "scope": "Separate continuous market-state classification from operational re-risk permission after the immutable P5.3 V1 architecture failure. No signal retuning, P5.4 gross mapping, production selection or production authorization.",
+  "immutable_dependencies": {
+    "p5_1_taxonomy_contract": "P5.1-EVENT-TAXONOMY-V1",
+    "p5_1_taxonomy_git_blob_sha": "73d010666fbfd957ec15214a00883a90a8adba5a",
+    "p5_2_feature_contract": "P5.2-FEATURE-FAMILIES-V1",
+    "p5_2_summary_sha256": "3f6dc3c512d22ac8f71d43ed155f2602cd40d5caf3d617c0e130e170727e0627",
+    "v1_state_model_contract": "P5.3-STATE-MODEL-STRUCTURE-V1",
+    "v1_state_model_contract_git_blob_sha": "400ec97f8a0e522c5776ce1f6a98fc6d7e069267",
+    "v1_state_path_evidence_contract": "P5.3-STATE-PATH-EVIDENCE-V1",
+    "v1_state_path_evidence_contract_git_blob_sha": "2c3f5a200c1c1a1ddad2d93ddd9f455e5a610efd",
+    "v1_result_commit": "7703b3ffec906a9d2ea58b33ee7feea5cd2f0a89",
+    "v1_result_summary_sha256": "a2e5be8d605af5a2c8206235402fe3a66b08fd994eaa8a71e84cfb1e3cbfed8f",
+    "v1_disposition": "COMPLETE_IMMUTABLE_NO_PROMOTION_ARCHITECTURE_FAIL"
+  },
+  "v1_failure_must_remain_visible": {
+    "false_flat_date": "2021-02-23",
+    "event_id": "P5C-2021-JAN-FEB-HIGH-VOL",
+    "event_class": "HIGH_VOLATILITY_NON_TOP_CONTROL",
+    "near_event_flat_fraction_v1": 0.8571428571428571,
+    "rule": "V2 may not change any signal definition, threshold, profile, event label, anchor or bucket to remove or relabel this false raw FLAT."
+  },
+  "architecture_layers": {
+    "MARKET_STATE": {
+      "purpose": "Continuously classify current market evidence across the full historical path, including after a severe FLAT market classification.",
+      "state_vocabulary": [
+        "NORMAL_BULL",
+        "BTC_LEADERSHIP_MATURING",
+        "LATE_BULL_ROTATION",
+        "EXHAUSTION_WATCH",
+        "DE_RISK_1",
+        "DE_RISK_2",
+        "FLAT"
+      ],
+      "severity_order": [
+        "NORMAL_BULL",
+        "BTC_LEADERSHIP_MATURING",
+        "LATE_BULL_ROTATION",
+        "EXHAUSTION_WATCH",
+        "DE_RISK_1",
+        "DE_RISK_2",
+        "FLAT"
+      ],
+      "flat_absorbing": false,
+      "authority": "RESEARCH_CLASSIFICATION_ONLY"
+    },
+    "RISK_PERMISSION_LOCK": {
+      "purpose": "Operational control over whether directional risk may actually be re-added after an implemented zero-exposure action.",
+      "states": ["UNLOCKED", "LOCKED_PENDING_HUMAN_APPROVAL"],
+      "market_state_has_unlock_authority": false,
+      "automatic_unlock_forbidden": true,
+      "unlock_authority": "EXPLICIT_HUMAN_APPROVAL_ONLY",
+      "research_simulation_rule": "P5.3 V2 does not simulate a historical permission-lock path because P5.4 has not yet defined which market states map to actual zero directional exposure. The permission semantics are frozen now so MARKET_STATE recovery can never be misread as live re-entry authorization."
+    }
+  },
+  "signal_layer_inheritance": {
+    "inherit_exactly_from_v1": true,
+    "runtime_feature_inputs_unchanged": true,
+    "evidence_atoms_unchanged": true,
+    "raw_candidate_priority_unchanged": true,
+    "causal_percentile_normalization_unchanged": true,
+    "profiles_and_thresholds_unchanged": true,
+    "persistence_and_clear_period_values_unchanged": true,
+    "missing_data_semantics_unchanged_except_flat_is_no_longer_absorbing_market_state": true,
+    "raw_candidate_and_atom_parity_required_vs_v1": true
+  },
+  "profiles": {
+    "EARLY": {
+      "moderate_high_percentile": 0.65,
+      "strong_high_percentile": 0.80,
+      "moderate_low_percentile": 0.35,
+      "strong_low_percentile": 0.20,
+      "escalation_persistence_days": 2,
+      "deescalation_clear_days": 5
+    },
+    "BALANCED": {
+      "moderate_high_percentile": 0.70,
+      "strong_high_percentile": 0.85,
+      "moderate_low_percentile": 0.30,
+      "strong_low_percentile": 0.15,
+      "escalation_persistence_days": 3,
+      "deescalation_clear_days": 5
+    },
+    "CONSERVATIVE": {
+      "moderate_high_percentile": 0.75,
+      "strong_high_percentile": 0.90,
+      "moderate_low_percentile": 0.25,
+      "strong_low_percentile": 0.10,
+      "escalation_persistence_days": 3,
+      "deescalation_clear_days": 7
+    }
+  },
+  "market_state_transition_delta_from_v1": {
+    "unchanged_rules": [
+      "same 00:00 UTC daily boundary",
+      "same initialization semantics",
+      "same zero-based severity order",
+      "same ordinary escalation streak semantics",
+      "same continuously-supported minimum-severity escalation target",
+      "same immediate fully-evaluated raw FLAT escalation",
+      "same ordinary de-escalation clear-period values",
+      "same one-severity-step de-escalation after each fresh clear period",
+      "same equality counter reset",
+      "same post-initialization missing-data hold and counter reset",
+      "same complete-proof requirement for hard FLAT under partial missingness"
+    ],
+    "single_architecture_change": "Remove the V1 current_state != FLAT exclusion from ordinary MARKET_STATE de-escalation. FLAT remains the highest market severity but is not absorbing in MARKET_STATE.",
+    "flat_recovery_rule": "When MARKET_STATE is FLAT and fully evaluated raw_index remains below FLAT for profile.deescalation_clear_days consecutive initialized dates, move exactly one severity step to DE_RISK_2 and reset both counters. Each subsequent lower market-state step requires a fresh profile.deescalation_clear_days streak. If raw candidate returns to FLAT before the clear period completes, reset the de-escalation counter and remain FLAT.",
+    "permission_independence_rule": "A MARKET_STATE transition away from FLAT has zero authority to change RISK_PERMISSION_LOCK."
+  },
+  "pre_run_parity_requirements": {
+    "v1_raw_candidate_state_exact_parity": true,
+    "v1_evidence_atom_booleans_exact_parity": true,
+    "v1_normalized_feature_values_exact_parity": true,
+    "market_state_exact_parity_with_v1_through_first_flat_inclusive": true,
+    "false_flat_2021_02_23_must_reproduce": true
+  },
+  "required_v2_evidence": [
+    "complete daily MARKET_STATE path for EARLY/BALANCED/CONSERVATIVE",
+    "exact raw-candidate/evidence-atom/normalization parity report versus immutable V1",
+    "all MARKET_STATE FLAT episodes with start date, end date, duration and first lower-state recovery date",
+    "state occupancy for every P5.1 event x profile x frozen evaluation bucket",
+    "first occurrence and signed anchor offset within each frozen P5.1 bucket",
+    "second-wind state occupancy",
+    "non-top-control FLAT occupancy",
+    "terminal-event lead/near-event states",
+    "transition and churn counts",
+    "direct V1 versus V2 state-path comparison showing changes attributable only to removal of MARKET_STATE absorption",
+    "explicit assertion that RISK_PERMISSION_LOCK remains human-gated and is not inferred from MARKET_STATE recovery"
+  ],
+  "architecture_evaluation": {
+    "architecture_pass_requires": [
+      "all pre-run parity requirements pass",
+      "the 2021-02-23 false raw FLAT remains present",
+      "MARKET_STATE is not structurally trapped forever by an earlier FLAT observation",
+      "later frozen P5.1 event windows remain observable/classifiable",
+      "no market-state recovery is treated as operational re-risk authorization"
+    ],
+    "architecture_pass_does_not_mean": [
+      "signal quality is accepted",
+      "a profile is selected",
+      "P5.4 behavior is selected",
+      "production is authorized"
+    ],
+    "p5_4_status_until_v2_closeout": "BLOCKED"
+  },
+  "selection": {
+    "profile_selected": false,
+    "production_state_model_selected": false,
+    "p5_4_mapping_selected": false,
+    "production_authorized": false,
+    "status": "PREREGISTRATION_ONLY"
+  },
+  "forbidden": [
+    "modify or rerun immutable P5.3 V1 result",
+    "change P5.1 events, anchors or buckets",
+    "change P5.2 immutable evidence",
+    "add or remove V1 runtime signal features",
+    "change V1 evidence atoms or raw candidate priority",
+    "change V1 percentile thresholds or normalization",
+    "change EARLY/BALANCED/CONSERVATIVE profile values",
+    "change persistence or clear-period values",
+    "hide, relabel or tune away the 2021-02-23 false raw FLAT",
+    "allow MARKET_STATE recovery to unlock operational risk",
+    "select P5.4 gross-risk multipliers",
+    "authorize production"
+  ]
+}
