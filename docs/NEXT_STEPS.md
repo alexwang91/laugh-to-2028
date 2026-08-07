@@ -3,13 +3,11 @@
 Status: **authoritative dependency order**
 Last updated: 2026-08-07
 
-## Owner pause
+## Current instruction
 
-The current instruction is explicit:
+> **STOP. Do not continue LEVERAGE-0040 until the owner explicitly asks to resume it.**
 
-> **Do not continue LEVERAGE-0040 now. Finish repository cleanup and normalization first.**
-
-Therefore the active dependency is repository hygiene, not research execution.
+Repository hygiene is complete. There is currently no automatic implementation or research dependency to execute.
 
 ## Current state
 
@@ -19,6 +17,7 @@ Phase 1                    COMPLETE
 Phase 2                    COMPLETE
 Phase 3                    COMPLETE
 P4 prerequisites           COMPLETE through cap1 / margin / liquidation / multiplier freeze
+Repository hygiene         COMPLETE / MERGED (#91)
 PR #90                     PAUSED / DRAFT / PRE-RESULT
 LEVERAGE-0040              NOT RUN
 RUN_ONCE marker            ABSENT
@@ -31,57 +30,38 @@ production authorization   NONE
 
 `production_authorized_components = []`
 
-## Dependency 1 — finish repository hygiene
+## Repository state after hygiene
 
-Complete the isolated housekeeping change based on normalized main after PR #89.
+PR #91 completed the repository cleanup and source-of-truth reset.
 
-Required scope:
+The hygiene audit reduced the remote branch inventory from 96 to the active maintenance/research set under explicit SHA/ancestry rules, retained historical evidence in merged docs/results, and established this documentation precedence:
 
-- reduce obsolete remote branch refs without deleting unreviewed unique work;
-- replace stale root README with a current project map;
-- rewrite `CURRENT_STATE.md` and this file to actual project state;
-- add a documentation index;
-- preserve historical research results/audits as evidence rather than current authority;
-- record branch cleanup rules and retired branch SHAs;
-- keep #90 visibly PAUSED / DRAFT;
-- do not modify P4 economic parameters or run the study.
+1. root `README.md`;
+2. `docs/CURRENT_STATE.md`;
+3. this file;
+4. `docs/MASTER_PLAN_2026-08-05.md`;
+5. `docs/IMPLEMENTATION_ROADMAP_2026-08-05.md`;
+6. `config/decision_registry.json`;
+7. `docs/README.md` for evidence navigation.
 
-Repository branch audit result on 2026-08-07:
+The temporary normalization/housekeeping refs should be retired after their merges are verified. During the research pause the desired steady-state remote branch set is:
 
 ```text
-remote branches before     96
-pass 1 retired             81
-pass 2 retired              1
-pass 3 audited/retired     11
-remaining during hygiene    3
+main
+p4-4/leverage-0040-one-time-study-v2   # PR #90, PAUSED / DRAFT
 ```
 
-The remaining set during the housekeeping PR is:
+## While P4.4 is paused
 
-- `main`;
-- `p4-4/leverage-0040-one-time-study-v2` — paused #90;
-- `docs/repository-hygiene-2026-08-07` — temporary housekeeping branch.
+Allowed maintenance:
 
-The housekeeping branch itself should be retired after its merge is verified.
-
-## Dependency 2 — keep P4.4 paused after hygiene merge
-
-After repository hygiene is merged:
-
-- do **not** automatically rebase, mark ready, create marker, or run #90;
-- keep #90 draft and paused;
-- treat its pre-hygiene green CI as historical evidence only because main has changed;
-- no LEVERAGE-0040 result should appear merely because repository maintenance completed.
-
-Allowed work while paused:
-
-- documentation cleanup;
-- branch/ref cleanup;
+- documentation/evidence cleanup;
+- branch/ref hygiene;
 - security fixes;
-- fail-closed correctness fixes that do not observe or optimize cap>1 results;
-- archival/evidence normalization.
+- fail-closed correctness fixes that do not observe or optimize cap>1 economics;
+- dependency/security maintenance that does not alter frozen research semantics.
 
-Forbidden while paused:
+Forbidden without explicit owner resume:
 
 - create/change `RUN_ONCE_LEVERAGE_0040.marker`;
 - manually dispatch the full LEVERAGE-0040 study;
@@ -91,33 +71,37 @@ Forbidden while paused:
 - tune caps, budgets, stresses, multiplier policy, BRRK math, or promotion gates;
 - authorize production gross >1.
 
-## Dependency 3 — resume only on explicit owner instruction
+Pre-hygiene green CI on #90 remains evidence that the paused candidate was preflighted, but it is not current authorization because `main` has since changed.
 
-When the owner explicitly says to resume P4.4, start from live GitHub state, not this historical SHA list.
+## Resume procedure — only after explicit owner instruction
 
-Required resume sequence:
+When the owner explicitly says to resume P4.4, start from live GitHub state rather than old SHAs.
 
-1. Re-fetch live `main`, PR #90 state, #90 head, workflows, marker path, and result path.
-2. Confirm PR #90 is still the intended candidate and no unexpected result exists.
-3. Refresh/rebase the paused candidate from then-current `main` without altering frozen economic semantics.
-4. Re-run all applicable pre-result gates on the new final head:
+Required sequence:
+
+1. Re-fetch live `main`, PR #90 state/head, workflows, marker path, and immutable-result path.
+2. Confirm #90 remains the intended candidate and no unexpected result exists.
+3. Refresh/rebase the paused candidate from then-current `main` without changing frozen economic semantics.
+4. Re-run all applicable pre-result gates:
    - Phase 0;
    - research evidence normalization;
    - P3.2 research/live parity + committed golden;
    - P4 cap=1 parity;
    - P4 pre-run prerequisite gate;
-   - P4.4 study contract / R1 preflight-only;
+   - P4.4 study contract / corrected R1 preflight-only;
    - PR handoff governance.
-5. Require the corrected R1 preflight to exit before cap>1 candidate evaluation.
+5. Require R1 preflight to exit before cap>1 candidate evaluation.
 6. Re-confirm:
    - RUN_ONCE marker absent;
    - immutable result absent;
    - `production_authorized_components = []`.
-7. Only then cross the exact one-time RUN_ONCE boundary.
+7. Only then reconsider crossing the one-time RUN_ONCE boundary.
 
-## Dependency 4 — one-time LEVERAGE-0040 execution
+## If P4.4 is later resumed
 
-When and only when resumed and pre-result gates are green:
+### One-time LEVERAGE-0040 execution
+
+When and only when explicitly resumed and all new pre-result gates are green:
 
 ```text
 create exact marker once
@@ -129,34 +113,27 @@ create exact marker once
 
 No post-result retuning is allowed under `LEVERAGE-0040`.
 
-If execution infrastructure fails before producing a valid result, classify the failure explicitly; do not silently rerun or modify economic semantics.
+If infrastructure fails before a valid result is produced, classify that failure explicitly; do not silently rerun or modify economics.
 
-## Dependency 5 — P4.5 select/fail decision
+### P4.5 select/fail
 
 After a valid immutable result exists, apply the preregistered selection rules exactly.
 
 Possible outcomes:
 
 - `NO_PROMOTION`; or
-- a research promotion candidate within the frozen 1.10 / 1.20 / 1.30 set.
+- a research promotion candidate within 1.10 / 1.20 / 1.30.
 
-Neither outcome is production authorization.
+Neither is production authorization.
 
-Record the decision in:
+### P4.6 production gate
 
-- `config/decision_registry.json`;
-- `docs/CURRENT_STATE.md`;
-- this file;
-- immutable result/evidence docs as required.
-
-## Dependency 6 — P4.6 production gate
-
-Production leverage authorization is a separate gate after P4.5.
+Production leverage authorization is separate from research selection.
 
 It must not be inferred from:
 
-- a successful backtest;
-- a selected research cap;
+- successful backtests;
+- selected research cap;
 - green CI;
 - merged P4 code;
 - acceptable liquidation-distance estimates.
@@ -168,11 +145,9 @@ production_authorized_components = []
 production gross cap = 1.0
 ```
 
-## Dependency 7 — P5
+### P5
 
-Exit intelligence remains blocked until Phase 4 is formally resolved.
-
-Do not pull P5 features into P4 leverage selection.
+Exit intelligence remains blocked until Phase 4 is formally resolved. Do not pull P5 features into P4 leverage selection.
 
 ## Persistent prohibitions
 
@@ -187,13 +162,7 @@ Do not pull P5 features into P4 leverage selection.
 ## Exact next action
 
 ```text
-repository hygiene only
-→ open/finish housekeeping PR
-→ applicable final-head CI + governance
-→ expected-head merge
-→ verify new main
-→ retire housekeeping branch
-→ STOP
+STOP
 ```
 
-**No P4.4 research action follows automatically.**
+No P4.4 research action follows automatically from repository hygiene completion.
