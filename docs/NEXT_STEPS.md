@@ -18,7 +18,7 @@ P5.1 event taxonomy                    COMPLETE / MERGED / FROZEN
 P5.2 feature evidence                  COMPLETE / IMMUTABLE / DESCRIPTIVE CLOSEOUT
 P5.3 V1 state model                    COMPLETE / IMMUTABLE / NO_PROMOTION / ARCHITECTURE_FAIL
 P5.3 V1 result commit                  7703b3ffec906a9d2ea58b33ee7feea5cd2f0a89
-P5.3 V1 summary SHA256                 a2e5ece89fec93a24e1a65e134a78824629b4b418e106294a6b0821fbd52608b
+P5.3 V1 summary SHA256                 a2e5be8d605af5a2c8206235402fe3a66b08fd994eaa8a71e84cfb1e3cbfed8f
 P5.3 V2 architecture                   NEXT
 P5.4 behavior mapping                  BLOCKED / no eligible P5.3 classifier
 ```
@@ -28,11 +28,11 @@ P5.4 behavior mapping                  BLOCKED / no eligible P5.3 classifier
 All three profiles:
 
 ```text
-initialization       2021-01-11
+initialization       2021-01-17
 first FLAT           2021-02-23
-classified days      1874
-FLAT days            1837
-FLAT fraction        98.0256%
+classified days      1869
+FLAT days            1832
+FLAT fraction        98.0203%
 ```
 
 The first FLAT occurs in the frozen `P5C-2021-JAN-FEB-HIGH-VOL` event, explicitly a `HIGH_VOLATILITY_NON_TOP_CONTROL`.
