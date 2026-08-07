@@ -5,88 +5,106 @@
 ## Current dependency
 
 ```text
-P4.4 — execute the preregistered LEVERAGE-0040 search/stress suite exactly once
+Validate the clean v2 LEVERAGE-0040 one-time-study implementation before any cap>1 result may exist.
 ```
 
-PR #88 merged the final pre-run prerequisites as:
+Normalized main after PR #89:
 
-`8d512479c5b2a0522409afbf0b63b817de6c6fe0`
+`98396a5b510c5f0a717b954568921c1daef6edc8`
 
-## All pre-run gates are now closed
+Current candidate:
+
+`p4-4/leverage-0040-one-time-study-v2`
+
+Old `p4-4/leverage-0040-one-time-study-v1` is **INVALID / ABANDONED / DO NOT MERGE / DO NOT REVIVE** after a tool-layer transient empty-file write. No PR or result was produced from it. The v2 branch was created from a clean intended tree and excludes the transient file.
+
+## Frozen authority
 
 ```text
-P4.1 defensive scaler             frozen 0 .. 1
-LEVERAGE-0039                    STOPPED_PRE_RUN / NO RESULT / DO NOT REUSE
-LEVERAGE-0040                    PREREGISTERED / MERGED / NOT RUN
-two-layer cap=1 wiring           PASS / MERGED
-liquidation-distance model       PASS / MERGED
->1 multiplier policy             FROZEN PRE-RESULT / MERGED
-production gross cap             1.0 unchanged
-production authorization         none
+P4.1 defensive scaler       frozen 0 .. 1
+LEVERAGE-0039              STOPPED_PRE_RUN / NO RESULT / DO NOT REUSE
+LEVERAGE-0040              PREREGISTERED / MERGED / NOT RUN
+cap=1 wiring/parity        PASS / MERGED
+liquidation model          PASS / MERGED
+>1 multiplier policy       FROZEN PRE-RESULT / MERGED
+production gross cap       1.0 unchanged
+production authorization   none
 ```
 
 `production_authorized_components = []` remains unchanged.
 
-## Frozen multiplier policy
+## Current pre-study candidate
+
+Files:
+
+- `research/leverage_0040/LEVERAGE-0040-STUDY-IMPLEMENTATION-V1.json`
+- `research/leverage_0040/study_core.py`
+- `research/leverage_0040/run_leverage_0040_once.py`
+- `research/leverage_0040/validate_leverage_0040_result.py`
+- `execution/plan-b-bot/tests/test_p4_4_study_core.py`
+- `.github/workflows/p4-4-leverage-0040-contract.yml`
+- `.github/workflows/p4-4-leverage-0040-run-once.yml`
+- `.github/workflows/p4-4-leverage-0040-result-validation.yml`
+
+Status:
 
 ```text
-leverage_multiplier = 1 + (candidate_cap - 1) × frozen_defensive_scale
-final_scale = defensive_scale + (candidate_cap - 1) × defensive_scale²
-candidate caps = 1.00 / 1.10 / 1.20 / 1.30
+implementation contract/core    IMPLEMENTED CANDIDATE / CI PENDING
+one-time runner                 IMPLEMENTED CANDIDATE / CI PENDING
+immutable result validator      IMPLEMENTED CANDIDATE / CI PENDING
+contract + preflight workflow   IMPLEMENTED CANDIDATE / CI PENDING
+RUN_ONCE marker                 ABSENT
+LEVERAGE-0040 search            NOT RUN
+result directory                ABSENT
 ```
 
-Do not alter this formula, its allowed inputs, or the cap grid after observing results under `LEVERAGE-0040`.
+## Frozen study semantics
 
-## Frozen liquidation model
-
-`research/leverage_0040/P4_3_LIQUIDATION_MODEL_V1.json`
-
-`research/leverage_0040/liquidation_model.py`
-
-Uses the frozen Hyperliquid cross-margin snapshot and requires explicit cross-account equity + actual perp notionals. Spot collateral and Portfolio Margin are not assumed. Missing accounting fails closed.
-
-## Frozen LEVERAGE-0040 study
+The study implementation is now frozen before any >1 observation. It preserves:
 
 ```text
-research caps                1.00 / 1.10 / 1.20 / 1.30
-operating MDD candidates     35% / 40% / 45% / 50%
-frozen defensive tail gate  20% CVaR/CDaR
-cost grid                    5 / 10 / 20 / 50 bps
-catastrophe boundary         70%
+candidate caps             1.00 / 1.10 / 1.20 / 1.30
+multiplier                 1 + (cap-1) × defensive_scale
+P3.3 economic L1 band      0.05
+cost grid                  5 / 10 / 20 / 50 bps
+operating MDD candidates   35% / 40% / 45% / 50%
+catastrophe boundary       70%
+bootstrap resamples        10,000 at 7 / 21 / 63 mean block days
+reference portfolio        $2,000 for route/capacity/liquidation stress
 ```
 
-Mandatory benchmarks:
+Mandatory comparators remain BTC B&H, four-asset equal-weight B&H, frozen legacy BRRK and matched P3.3 cap1.
 
-- BTC buy-and-hold;
-- BTC/ETH/SOL/BNB equal-weight buy-and-hold;
-- frozen corrected BRRK <=1;
-- each P4 candidate.
+Primary route economics use verified BTC spot base up to matched cap1 BTC exposure, BTC extra as perp overlay, and ETH/SOL/BNB as perp. All-perp remains a separate stress panel. Native Hyperliquid funding spikes amplify only adverse long debit; Binance remains report-only proxy evidence.
 
-Mandatory evidence/stress:
+The P2 route/depth artifact is pinned by workflow run/artifact/digest and used only as point-in-time capacity evidence, never historical PIT liquidity.
 
-- full machine-readable candidate matrix;
-- matched 5/10/20/50 bps economics;
-- Hyperliquid native funding common-window panel and preregistered debit-spike stress;
-- Binance full-history proxy only as a stress proxy, never Hyperliquid level estimate;
-- 2021 spring, 2021 Nov/bear transition, 2022, 2024, 2025, recent 2026 windows;
-- synthetic gap and volatility shocks;
-- degraded fill/depth/capacity scenarios;
-- liquidation-distance table;
-- start-date robustness;
-- stationary-block bootstrap;
-- final select/fail decision without post-result retuning.
+## Preflight before first result
 
-## PR #88 evidence
+The contract workflow must run:
 
-Final head `9ed8c627afd9800f8c4a8cf79246a07bc89e6108`:
+1. synthetic/pure contract tests;
+2. runner/validator compile checks;
+3. pinned route artifact download + digest validation;
+4. `run_leverage_0040_once.py --preflight-only`.
 
-- prerequisite #4 / `31178219708`: SUCCESS, 14 passed
-- Phase 0 #149 / `31178220870`: SUCCESS, 257 passed + 5/5 integration
-- Research #55 / `31178223443`: SUCCESS
-- P3.2 parity #42 / `31178219593`: SUCCESS
-- P4 cap=1 #8 / `31178220456`: SUCCESS
-- latest governance #209 / `31178603896`: SUCCESS
-- merge `8d512479c5b2a0522409afbf0b63b817de6c6fe0`
+`--preflight-only` may fetch the frozen historical market input and verify baseline/data/cap1/capacity integrity, but it must return before constructing any 1.10/1.20/1.30 candidate.
+
+No RUN_ONCE marker may be created until the draft PR's final pre-result head has all applicable gates green.
+
+## One-time execution
+
+Marker:
+
+`research/leverage_0040/RUN_ONCE_LEVERAGE_0040.marker`
+
+Expected SHA-256:
+
+`f54cdf362f60cad19d6c429ac4e008047b45d2cb537a95c96e2bc6dac5ce733a`
+
+The marker is currently absent. Once it is created exactly once on the validated v2 branch, the dedicated workflow may execute the complete preregistered suite exactly once and commit immutable results. Result commits trigger only the result validator, not the run-once workflow.
+
+No post-result retuning is permitted under `LEVERAGE-0040`.
 
 ## Still blocked
 
@@ -94,14 +112,15 @@ Final head `9ed8c627afd9800f8c4a8cf79246a07bc89e6108`:
 LEVERAGE-0040 SEARCH RUN:       NO
 RESULT SELECTED:                NO
 OPERATING BUDGET FROZEN:        NO
+RUN_ONCE MARKER:                ABSENT
 PRODUCTION >1 RUNTIME:          NO
 PRODUCTION AUTHORIZED:          NO_CHANGE
 ```
 
 Also blocked/separate:
 
-- any rescue/retune after results under 0040;
-- search >1.30 without new experiment ID;
+- any result-driven modification of study semantics under 0040;
+- search >1.30 without a new experiment ID;
 - EXPOSURE-SMOOTH-0038 promotion;
 - F23 funding-response redesign;
 - shorts / XRP target exposure;
@@ -117,11 +136,15 @@ DRIFT_0
 ## Exact next action
 
 ```text
-merge docs-only post-#88 normalization
--> fresh LEVERAGE-0040 search branch from normalized main
--> implement result runner strictly from frozen prereg + multiplier + liquidation contracts
--> execute complete suite exactly once
--> commit immutable result artifacts
--> P4.5 select/fail decision
+self-review v2 diff
+-> open draft pre-study PR
+-> contract synthetic tests + real preflight-only
+-> Phase 0 + research + P3.2 parity/golden + P4 cap=1 + P4 prerequisite + governance
+-> fix same PR if needed, still without RUN_ONCE marker
+-> final pre-result head all green
+-> create exact marker once
+-> one-time immutable LEVERAGE-0040 result
+-> validate result
+-> P4.5 select/fail decision with no retuning
 -> P4.6 remains separate production gate
 ```
