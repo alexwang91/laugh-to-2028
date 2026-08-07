@@ -32,17 +32,26 @@ def test_p5_3_contract_dependencies_are_immutable_and_exact() -> None:
     assert p52["selection"]["state_thresholds_selected"] is False
     assert p52["production_authorized"] is False
 
-    correction = c["prereg_correction"]
-    assert correction["id"] == "P5.3-PREREG-COMPLETENESS-R1"
-    assert correction["timing"] == "BEFORE_ANY_P5_3_STATE_PATH_EVALUATION"
-    assert correction["observed_p5_3_state_paths_used"] is False
-    assert correction["p5_1_or_p5_2_mutation"] is False
-    assert correction["production_change"] is False
+    r1 = c["prereg_correction"]
+    assert r1["id"] == "P5.3-PREREG-COMPLETENESS-R1"
+    assert r1["timing"] == "BEFORE_ANY_P5_3_STATE_PATH_EVALUATION"
+    assert r1["observed_p5_3_state_paths_used"] is False
+    assert r1["p5_1_or_p5_2_mutation"] is False
+    assert r1["production_change"] is False
+
+    r2 = c["transition_prereg_correction"]
+    assert r2["id"] == "P5.3-PREREG-COMPLETENESS-R2"
+    assert r2["timing"] == "BEFORE_ANY_P5_3_STATE_PATH_EVALUATION"
+    assert r2["observed_p5_3_state_paths_used"] is False
+    assert r2["p5_1_or_p5_2_mutation"] is False
+    assert r2["profile_threshold_change"] is False
+    assert r2["evidence_atom_threshold_change"] is False
+    assert r2["production_change"] is False
 
 
 def test_state_vocabulary_and_product_boundaries_are_exact() -> None:
     c = json.loads(CONTRACT.read_text())
-    assert c["states"] == [
+    expected = [
         "NORMAL_BULL",
         "BTC_LEADERSHIP_MATURING",
         "LATE_BULL_ROTATION",
@@ -51,6 +60,8 @@ def test_state_vocabulary_and_product_boundaries_are_exact() -> None:
         "DE_RISK_2",
         "FLAT",
     ]
+    assert c["states"] == expected
+    assert c["severity_order"] == expected
     assert c["preinitialization_state"] == "DATA_INSUFFICIENT"
     integrity = c["research_integrity"]
     assert integrity["no_single_indicator_top_switch"] is True
@@ -95,13 +106,16 @@ def test_profiles_are_frozen_ordered_sensitivity_not_post_result_free_parameters
     assert p["EARLY"]["strong_high_percentile"] < p["BALANCED"]["strong_high_percentile"] < p["CONSERVATIVE"]["strong_high_percentile"]
 
 
-def test_runtime_inputs_are_subset_of_immutable_p5_2_available_features() -> None:
+def test_runtime_inputs_are_subset_of_immutable_p5_2_available_features_and_no_dead_inputs() -> None:
     c = json.loads(CONTRACT.read_text())
     header = P52_FEATURE_PANEL.read_text().splitlines()[0].split(",")
     available = set(header[1:])
     used = {f for family in c["runtime_feature_inputs"].values() for f in family}
     assert used <= available
     assert not (set(c["excluded_pending_inputs"]) & used)
+    assert "bnb_btc_log_return_40d" not in used
+    assert "btc_daily_rsi14" not in used
+    assert c["raw_fraction_inputs"]["canonical5_outperformance_breadth_20d"].startswith("Use the raw [0,1] breadth fraction")
 
 
 def test_causal_normalization_formula_and_missing_data_are_exact() -> None:
@@ -145,11 +159,28 @@ def test_rotation_and_exhaustion_semantics_prevent_single_indicator_exit() -> No
     assert atoms["MATURE_TEXTURE"]["purpose"].endswith("never sufficient for de-risk.")
     assert "without treating it as bearish" in atoms["ROTATION"]["purpose"]
     assert "At least 2 independent subchannels" in atoms["EXHAUSTION"]["rule"]
+    assert "STRONG_ROTATION" not in atoms
     priority = {x["state"]: x["rule"] for x in c["raw_candidate_state_priority"]}
     assert priority["FLAT"] == "STRONG_DAMAGE AND STRONG_EXHAUSTION"
     assert priority["DE_RISK_1"] == "DAMAGE AND EXHAUSTION"
     assert priority["LATE_BULL_ROTATION"] == "ROTATION AND NOT DAMAGE"
     assert priority["BTC_LEADERSHIP_MATURING"] == "MATURE_TEXTURE AND NOT DAMAGE"
+
+
+def test_exact_transition_hysteresis_mechanics_are_frozen() -> None:
+    c = json.loads(CONTRACT.read_text())
+    t = c["transition_rules"]
+    assert "zero-based indices" in t["state_index"]
+    assert "initialize FLAT immediately" in t["initialization"]
+    assert "initialize NORMAL_BULL" in t["initialization"]
+    assert "minimum-severity raw candidate" in t["ordinary_escalation_target"]
+    assert "Multi-state jumps are permitted only" in t["ordinary_escalation_target"]
+    assert "move exactly one severity_order step lower" in t["ordinary_deescalation_target"]
+    assert "fresh clear period" in t["ordinary_deescalation_target"]
+    assert "reset both escalation and deescalation counters" in t["equal_candidate"]
+    assert t["flat_absorbing"] is True
+    assert "every normalized/raw input needed to prove both STRONG_DAMAGE and STRONG_EXHAUSTION is present" in t["missing_data"]
+    assert "otherwise missing data cannot change state" in t["missing_data"]
 
 
 def test_p5_3_does_not_claim_p5_4_or_production_authority() -> None:
