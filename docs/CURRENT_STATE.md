@@ -24,15 +24,18 @@ Current main / P3.3 base:
 ```text
 P3.1 schema-v2 data contract           PASS / MERGED
 P3.2 Target calculation API            PASS / MERGED
-P3.3 rebalance / turnover controls      ACTIVE CANDIDATE
-P3.4 contributions                     BLOCKED UNTIL P3.3
+P3.3 rebalance / turnover controls      IMPLEMENTED / TESTED / CI-VERIFIED CANDIDATE IN PR #78
+P3.4 contributions                     BLOCKED UNTIL P3.3 MERGES
 P4 leverage / operating risk budget     BLOCKED
 P5 exit intelligence                    BLOCKED
 ```
 
-Active fresh branch:
+Current P3.3 candidate:
 
-`p3-3/rebalance-turnover-controls-v1`
+- PR: `#78`
+- branch: `p3-3/rebalance-turnover-controls-v1`
+- fresh base: `4522e96ab8ff2381fb0e02f74c516a9663bf48de`
+- latest fully validated implementation checkpoint before this handoff update: `24f6b7151c0e61d4042edecbf2856f03855066dc`
 
 ## Frozen upstream P3.2 authority
 
@@ -64,7 +67,7 @@ Acceptance:
 
 P3.3 is explicitly post-target control. P3.4 weekly contribution handling is separate.
 
-## P3.3 policy provenance
+## P3.3 policy provenance and frozen V1 semantics
 
 Legacy BTC execution service already carried:
 
@@ -86,6 +89,16 @@ Machine-readable policy:
 Policy/version:
 
 `P3.3-L1-BAND-V1`
+
+The runtime now hard-validates the V1 policy semantics rather than accepting an arbitrary numeric value under the same version:
+
+```text
+FROZEN_REBALANCE_BAND = 0.05
+current_short_position -> REBALANCE_TO_P3_2_TARGET_REGARDLESS_OF_BAND
+current_gross_above_one -> REBALANCE_TO_P3_2_TARGET_REGARDLESS_OF_BAND
+```
+
+Changing the band or safety mapping requires a new policy/version; it cannot silently retain `P3.3-L1-BAND-V1`.
 
 ## P3.3 control semantics
 
@@ -113,7 +126,7 @@ These overrides restore the P3.2 target; they do not authorize shorting or lever
 
 ## P3.3 implementation candidate
 
-Implemented on the active branch:
+Implemented on PR #78:
 
 - `config/rebalance_policy.json`
 - `execution/plan-b-bot/beta_bot/rebalance_control.py`
@@ -140,13 +153,13 @@ It emits auditable fields including:
 - post-control desired state;
 - proposed deltas and control turnover;
 - suppressed gap when inside band;
-- deterministic P3.3 control-plan digest;
+- deterministic P3.3 control-plan SHA-256 digest;
 - explicit minimum-notional downstream role;
 - `production_authorized = false`.
 
-## Candidate tests
+## P3.3 regression evidence
 
-P3.3 regression tests cover:
+P3.3 tests cover:
 
 - exact target -> no-op;
 - inside-band churn suppression while preserving theoretical gaps;
@@ -157,17 +170,40 @@ P3.3 regression tests cover:
 - current gross > 1 bypasses band;
 - unknown current asset fails closed;
 - upstream P3.2 target remains unchanged;
+- policy V1 cannot silently change the 0.05 band or safety semantics;
+- control-plan canonical JSON / SHA-256 digest is deterministic and changes when control state changes;
 - no production authorization.
 
-## Current P3.3 status
+## P3.3 validation checkpoint
+
+Validated checkpoint head:
+
+`24f6b7151c0e61d4042edecbf2856f03855066dc`
+
+Evidence:
+
+- `Phase 0 baseline contract` run `31156538244` (#112): SUCCESS
+  - execution pytest: **204 passed in 7.70s**
+  - research integration contract: **5 tests / OK**
+- `Research evidence normalization` run `31156538228` (#23): SUCCESS
+- `P3.2 target research-live parity` run `31156538261` (#10): SUCCESS
+  - independent multi-date BRRK research-vs-product parity: SUCCESS
+  - committed historical golden enforcement: SUCCESS
+- `PR handoff governance` run `31156538222` (#145): SUCCESS
+
+An earlier initial PR head `b7e66b68e0471b6c801304547a260aee1117c53d` also passed all four gates, with Phase 0 recording 202 tests. The candidate was then deliberately hardened so the V1 policy cannot change its band/safety semantics without a version change and so the P3.3 plan digest is regression-tested. The 204-test checkpoint above is authoritative for the hardened implementation.
+
+## Candidate status
 
 ```text
-IMPLEMENTED:           YES — candidate branch
-TESTED:                PENDING PR CI
-CI VERIFIED:           NO
+IMPLEMENTED:           YES
+TESTED:                YES
+CI VERIFIED:           YES at checkpoint 24f6b715...
 MERGED:                NO
 PRODUCTION AUTHORIZED: NO_CHANGE
 ```
+
+This CURRENT_STATE update itself moves the PR head. Because the PR still includes the P3.3 runtime/test changes and handoff files, the normal PR workflows must revalidate the new final head. No further code mutation is planned. If final-head CI is green, only PR metadata should change before expected-head merge.
 
 ## Explicit P3.3 exclusions
 
@@ -198,22 +234,20 @@ production_authorized_components = []
 DRIFT_0
 ```
 
-P3.3 is downstream of the frozen P3.2 target and introduces only the roadmap-defined rebalance/turnover control boundary.
+P3.3 is downstream of the frozen P3.2 target and introduces only the roadmap-defined rebalance/turnover control boundary. The policy version now freezes its own 0.05/safety semantics.
 
 ## Exact next action
 
 ```text
-self-review P3.3 diff
--> open P3.3 PR
--> Phase 0 full pytest + research integration
--> P3.2 parity/golden preservation if triggered/applicable
--> PR handoff governance
--> fix every real failure in same PR
--> final-head CI
--> write final evidence into PR body
--> newest body-edit governance GREEN
--> expected-head squash merge
--> verify main
--> post-merge normalization
+final-head Phase 0 + research evidence + P3.2 parity/golden + PR governance
+-> all GREEN
+-> final diff self-review
+-> update PR #78 body with exact final-head run IDs/results
+-> require newest body-edit governance GREEN
+-> re-fetch PR and verify head unchanged
+-> expected-head squash merge #78
+-> verify new main
+-> fresh docs-only post-merge normalization PR
+-> merge normalization
 -> fresh P3.4 branch
 ```
