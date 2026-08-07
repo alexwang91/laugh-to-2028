@@ -4,13 +4,16 @@ on:
   pull_request:
     paths:
       - "research/leverage_0040/LEVERAGE-0040-STUDY-IMPLEMENTATION-V1.json"
+      - "research/leverage_0040/LEVERAGE-0040-PRE-RESULT-CORRECTION-R2.json"
       - "research/leverage_0040/study_core.py"
       - "research/leverage_0040/run_leverage_0040_once.py"
       - "research/leverage_0040/run_leverage_0040_once_r1.py"
+      - "research/leverage_0040/run_leverage_0040_once_r2.py"
       - "research/leverage_0040/validate_leverage_0040_result.py"
       - "research/results/leverage_0040/**"
       - "execution/plan-b-bot/tests/test_p4_4_study_core.py"
       - "execution/plan-b-bot/tests/test_p4_4_preflight_authority.py"
+      - "execution/plan-b-bot/tests/test_p4_4_run_once_r2.py"
       - ".github/workflows/p4-4-leverage-0040-contract.yml"
       - ".github/workflows/p4-4-leverage-0040-run-once.yml"
       - ".github/workflows/p4-4-leverage-0040-result-validation.yml"
@@ -41,11 +44,13 @@ jobs:
         run: |
           python -m pytest -q \
             execution/plan-b-bot/tests/test_p4_4_study_core.py \
-            execution/plan-b-bot/tests/test_p4_4_preflight_authority.py
+            execution/plan-b-bot/tests/test_p4_4_preflight_authority.py \
+            execution/plan-b-bot/tests/test_p4_4_run_once_r2.py
       - name: Compile inert one-time runner entrypoints and result validator
         run: |
           python -m py_compile research/leverage_0040/run_leverage_0040_once.py
           python -m py_compile research/leverage_0040/run_leverage_0040_once_r1.py
+          python -m py_compile research/leverage_0040/run_leverage_0040_once_r2.py
           python -m py_compile research/leverage_0040/validate_leverage_0040_result.py
       - name: Validate pre-result inputs or immutable post-result evidence
         env:

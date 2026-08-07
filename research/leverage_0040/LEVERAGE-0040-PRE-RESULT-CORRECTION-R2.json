@@ -1,0 +1,43 @@
+{
+  "correction": {
+    "behavior": "if routed perp notionals exist and cross-margin equity is non-positive, classify the state as liquidatable and continue fail-closed without calling the liquidation model",
+    "candidate_caps_changed": false,
+    "economic_parameter_change": false,
+    "liquidation_model_changed": false,
+    "problem": "gap stress called the liquidation model when routed perp notionals existed but cross-margin equity was non-positive",
+    "production_authorization_changed": false,
+    "selection_gates_changed": false,
+    "stress_scenarios_changed": false,
+    "consistency_reference": "_minimum_liquidation_distance already treats non-positive cross equity with perp notionals as immediate failure"
+  },
+  "correction_id": "PREFLIGHT-GAP-CROSS-EQUITY-003",
+  "evidence": {
+    "cap_gt_1_constructed_before_failure": false,
+    "caps_iteration_order": [
+      1.0,
+      1.1,
+      1.2,
+      1.3
+    ],
+    "failure_occurred_inside_first_cap_iteration": true,
+    "immutable_result_written": false,
+    "result_commit_ran": false,
+    "result_validator_ran": false
+  },
+  "recovery": {
+    "entrypoint": "research/leverage_0040/run_leverage_0040_once_r2.py",
+    "material_post_result_retuning_allowed": false,
+    "original_run_once_marker_preserved": true,
+    "recovery_marker": "research/leverage_0040/RUN_ONCE_LEVERAGE_0040_R2_RECOVERY.marker",
+    "recovery_marker_sha256": "f1ba15227a62d672b872171f0c64046ab51ee5c1a07327d23164d6a3264b2d82"
+  },
+  "schema_version": 1,
+  "status": "FROZEN_BEFORE_CAP_GT_1_RESULT",
+  "study_id": "LEVERAGE-0040",
+  "trigger": {
+    "exception": "liquidation_model.LiquidationModelError: current_cross_account_equity_usd must be positive",
+    "failed_head": "78e8530cbef614e42e274828068f45a1f3e7542a",
+    "failed_stage": "cap=1.00 comparator synthetic gap stress",
+    "workflow_run_id": 31197608453
+  }
+}
