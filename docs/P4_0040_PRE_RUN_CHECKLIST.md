@@ -1,6 +1,6 @@
 # LEVERAGE-0040 pre-run checklist
 
-No item in this file is a leverage-search result or production authorization.
+No checked item is a leverage-search result or production authorization.
 
 Before `LEVERAGE-0040` may execute:
 
@@ -15,21 +15,20 @@ Before `LEVERAGE-0040` may execute:
 - [x] Architecture-correction PR #84 merged with CI evidence.
 - [x] Separate leverage-multiplier composition merged without modifying the frozen defensive selector.
 - [x] Cap `1.00` exact historical BRRK parity merged by PR #86.
-- [ ] Liquidation-distance implementation validated and merged against the frozen margin snapshot. **Implementation + contract are TESTED / CI VERIFIED at #88 checkpoint; merge pending.**
-- [ ] >1 multiplier-selection algorithm frozen and merged before observing any >1 result. **`1 + (cap-1) * defensive_scale` addendum is TESTED / CI VERIFIED at #88 checkpoint; merge pending.**
+- [x] Liquidation-distance implementation validated and merged against the frozen margin snapshot by PR #88.
+- [x] >1 multiplier-selection algorithm frozen and merged before observing any >1 result by PR #88: `1 + (cap-1) * defensive_scale`.
 - [ ] `LEVERAGE-0040` first and only preregistered search run executed.
 
-#88 checkpoint evidence on `b6b309a5eb9ba4a876b67f631576b608eaa4c8e2`:
+PR #88 final head `9ed8c627afd9800f8c4a8cf79246a07bc89e6108` evidence:
 
-- dedicated prerequisite run #1 / `31177869882`: SUCCESS, 14/14 tests;
-- Phase 0 #146 / `31177869757`: SUCCESS, 257 tests + 5/5 integration;
-- P3.2 parity/golden #39 / `31177869824`: SUCCESS;
-- P4 cap=1 parity #5 / `31177869840`: SUCCESS;
-- research evidence #52 / `31177869856`: SUCCESS;
-- governance #204 / `31177869853`: SUCCESS.
+- dedicated prerequisite #4 / `31178219708`: SUCCESS, 14 passed;
+- Phase 0 #149 / `31178220870`: SUCCESS, 257 passed + 5/5 integration;
+- Research evidence #55 / `31178223443`: SUCCESS;
+- P3.2 parity/golden #42 / `31178219593`: SUCCESS;
+- P4 cap=1 parity #8 / `31178220456`: SUCCESS;
+- latest metadata/ready governance #209 / `31178603896`: SUCCESS;
+- expected-head squash merge `8d512479c5b2a0522409afbf0b63b817de6c6fe0`.
 
-The current prerequisite branch contains no 1.10/1.20/1.30 historical candidate output. The multiplier policy was frozen before any >1 result observation.
+No 1.10/1.20/1.30 historical result existed before either pre-run prerequisite was frozen and merged.
 
-Cap=1 parity is a wiring/baseline gate only. It produced no >1 candidate, no leverage selection and no production authorization.
-
-If any unchecked prerequisite is bypassed, the resulting leverage result is invalid for promotion.
+The only unchecked pre-run item is now the actual one-time `LEVERAGE-0040` study execution. That execution may begin only from a fresh branch after this normalization is merged. Any post-result change to the preregistered study or multiplier policy requires a new experiment ID.
