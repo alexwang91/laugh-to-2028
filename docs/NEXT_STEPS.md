@@ -4,7 +4,7 @@ Last updated: 2026-08-07
 
 ## Current instruction
 
-**P5.3 R1+R2 structure is merged. The deterministic state engine and frozen state-path evidence contract are implemented but historical state paths have not been run. Run final pre-run CI using synthetic/unit evidence only; if green, execute `P5.3-STATE-PATH-EVIDENCE-V1` once under standing research authorization.**
+**P5.3 V1 state-path evidence is complete and immutable, but V1 is `NO_PROMOTION / ARCHITECTURE_FAIL`: every frozen profile entered FLAT in a non-top control on 2021-02-23 and the absorbing market-state rule then collapsed the rest of the historical path. Close/merge V1 evidence, then preregister a new P5.3 V2 architecture that separates continuous market-state classification from the existing human-gated re-risk permission boundary. Do not retune V1 signals.**
 
 ## Immediate state
 
@@ -16,126 +16,128 @@ production gross cap                   1.0
 production_authorized_components       []
 P5.1 event taxonomy                    COMPLETE / MERGED / FROZEN
 P5.2 feature evidence                  COMPLETE / IMMUTABLE / DESCRIPTIVE CLOSEOUT
-P5.3 structure                         COMPLETE / MERGED / R1+R2 FROZEN
-P5.3 implementation                    IMPLEMENTED / FROZEN / PRE-RUN
-P5.3 evidence contract                 P5.3-STATE-PATH-EVIDENCE-V1
-P5.3 historical state paths            NOT RUN
-P5.4-P5.6                              NOT STARTED
+P5.3 V1 state model                    COMPLETE / IMMUTABLE / NO_PROMOTION / ARCHITECTURE_FAIL
+P5.3 V1 result commit                  7703b3ffec906a9d2ea58b33ee7feea5cd2f0a89
+P5.3 V1 summary SHA256                 a2e5ece89fec93a24e1a65e134a78824629b4b418e106294a6b0821fbd52608b
+P5.3 V2 architecture                   NEXT
+P5.4 behavior mapping                  BLOCKED / no eligible P5.3 classifier
 ```
 
-## Frozen P5.3 runtime contract
+## P5.3 V1 result
 
-State severity order:
+All three profiles:
 
 ```text
-NORMAL_BULL
-BTC_LEADERSHIP_MATURING
-LATE_BULL_ROTATION
-EXHAUSTION_WATCH
-DE_RISK_1
-DE_RISK_2
-FLAT
+initialization       2021-01-11
+first FLAT           2021-02-23
+classified days      1874
+FLAT days            1837
+FLAT fraction        98.0256%
 ```
 
-Evidence channels:
+The first FLAT occurs in the frozen `P5C-2021-JAN-FEB-HIGH-VOL` event, explicitly a `HIGH_VOLATILITY_NON_TOP_CONTROL`.
+
+Near that control anchor (`-6..0d`), all three profiles are FLAT on 6/7 classified days (`85.7143%`).
+
+The trigger is a fully observed frozen hard-risk signal, not a data defect:
 
 ```text
-REGIME_TEXTURE
-LEADERSHIP_ROTATION
-EXHAUSTION_TRANSITION
-TREND_DAMAGE
+minimum calibration depth  57
+exhaustion                  true
+strong_exhaustion           true
+damage                      true
+strong_damage               true
+raw candidate               FLAT
 ```
 
-Causal normalization:
+No profile can be selected from V1.
+
+## Architecture diagnosis
+
+The raw market candidate does **not** remain permanently bearish after the false FLAT:
 
 ```text
-window          last up to 365 completed daily dates ending at t
-minimum N       20 nonmissing observations per continuous feature
-percentile      (average_rank(current) - 1) / (N - 1)
-future data     forbidden
-pre-init        DATA_INSUFFICIENT
+2021-02-27  DE_RISK_2
+2021-02-28  NORMAL_BULL
+2021-03-01  NORMAL_BULL
+2021-03-09  BTC_LEADERSHIP_MATURING
 ```
 
-Profiles:
+V1 remains FLAT only because the market-state variable itself is absorbing.
+
+This combines two distinct concerns:
 
 ```text
-EARLY        moderate 65/35  strong 80/20  escalation 2d  clear 5d
-BALANCED     moderate 70/30  strong 85/15  escalation 3d  clear 5d
-CONSERVATIVE moderate 75/25  strong 90/10  escalation 3d  clear 7d
+market classification
+  what current market evidence says
+
+operational permission
+  whether a system may re-add risk after an actual zero-exposure action
 ```
 
-Core boundary:
+The second concern remains human-gated by product policy. It should not erase later market-state evidence in historical research.
+
+Formal result interpretation: `docs/P5_3_STATE_PATH_CLOSEOUT.md`.
+
+## V1 frozen disposition
+
+Do not:
+
+- rerun `P5.3-STATE-PATH-EVIDENCE-V1`;
+- alter V1 features / atoms / thresholds / profiles;
+- move P5.1 events or buckets;
+- edit the immutable result;
+- pick a V1 profile after the fact;
+- proceed to P5.4 using V1.
+
+## P5.3 V2 — NEXT
+
+Create a new architecture contract. The first V2 study is an **architecture-isolation** study, not a signal retune.
+
+### Keep unchanged from V1
+
+- P5.1 event taxonomy;
+- immutable P5.2 feature panel;
+- causal percentile formula/window/minimum;
+- V1 runtime feature set;
+- V1 evidence atoms;
+- EARLY/BALANCED/CONSERVATIVE percentile thresholds;
+- escalation/clear-period values;
+- frozen P5.1 event reporting buckets.
+
+### Change only the architecture layer
+
+Separate:
 
 ```text
-volatility alone            != top
-ETH/BTC leadership alone    != bearish
-raw RSI alone               != top
-rotation without damage     -> LATE_BULL_ROTATION candidate
-exhaustion without damage   -> EXHAUSTION_WATCH candidate
-exhaustion + damage         -> de-risk candidate
-strong exhaustion + damage  -> hard-risk / FLAT candidate
+MARKET_STATE
+  daily market classification; a FLAT market observation is severe but the classifier may later describe recovery under frozen clear/de-escalation rules
+
+RISK_PERMISSION_LOCK
+  separate control status; if an actual live system has reduced to zero exposure, re-risk remains explicit-human-approved
 ```
 
-Hysteresis is exactly frozen by R2: continuously supported escalation, one-step de-escalation after each fresh clear period, missing-data hold, immediate fully-proven hard FLAT and absorbing FLAT.
+Historical research should continue calculating `MARKET_STATE` after a FLAT classification so later events remain observable. This does **not** grant an automated live re-entry permission.
 
-## Frozen evidence-output contract
+### Required V2 evidence
 
-`P5.3-STATE-PATH-EVIDENCE-V1` binds to:
+At minimum report:
 
-```text
-state-model blob      400ec97f8a0e522c5776ce1f6a98fc6d7e069267
-P5.2 summary SHA256   3f6dc3c512d22ac8f71d43ed155f2602cd40d5caf3d617c0e130e170727e0627
-profiles              EARLY / BALANCED / CONSERVATIVE
-```
+- market-state path for all three unchanged profiles;
+- every raw/final market-state FLAT episode and duration;
+- recovery date after each FLAT episode;
+- control-event FLAT occupancy;
+- second-wind state occupancy;
+- terminal-event lead/near-event states;
+- transitions/churn;
+- comparison versus V1 showing exactly what changed because of layer separation;
+- explicit operational permission-lock semantics kept outside the market-state classifier.
 
-Event reporting uses exactly the five frozen P5.1 buckets. No custom post-result lead/lag window may be introduced.
+The 2021-02-23 non-top false FLAT must remain visible. V2 cannot declare it a non-event or change thresholds to remove it.
 
-Required artifacts:
+## P5.4 remains blocked
 
-- causal normalized percentiles;
-- normalization observation counts;
-- daily profile state paths with raw candidate + evidence atoms;
-- profile initialization/transition summary;
-- event-bucket state occupancy;
-- first occurrence of each state within each frozen bucket + signed anchor offset;
-- immutable summary/digest.
-
-The run may not select a profile, production state model or P5.4 gross mapping.
-
-## Pre-run gate — NEXT
-
-Fresh CI must prove without running historical state paths:
-
-- P5.3 prereg tests remain green;
-- synthetic state-engine tests pass;
-- future data cannot affect prior percentile values;
-- rotation alone cannot de-risk;
-- exhaustion requires multiple subchannels;
-- escalation uses minimum continuously supported severity;
-- de-escalation moves only one step per fresh clear period;
-- missing data cannot re-risk;
-- FLAT is immediate on hard proof and absorbing;
-- runner/validator compile;
-- P5.1/P5.2 immutable dependencies match;
-- P5.3 result is absent.
-
-## After pre-run green
-
-Standing research authorization already covers:
-
-```text
-COMMIT FROZEN RUN_ONCE MARKER
-EXECUTE ALL THREE PROFILES ON IMMUTABLE P5.2 PANEL
-VALIDATE / COMMIT IMMUTABLE P5.3 RESULT
-```
-
-No additional owner prompt is required for this research run.
-
-If a non-research-definition implementation defect occurs before immutable result commit, use an audited recovery record without changing features, profiles, state rules or event metrics.
-
-## After P5.3 result
-
-Close P5.3 by reporting state behavior across terminal, second-wind, nonterminal and control events. Do **not** select a production state model. P5.4 may then define research gross-risk behavior; P5.5 owns robustness/economic selection.
+Do not map state to gross-risk multipliers until a usable P5.3 classifier exists. P5.4 behavior/economic mapping on V1 would merely monetize an already-rejected state architecture.
 
 ## Frozen product boundaries
 
@@ -145,17 +147,18 @@ Close P5.3 by reporting state behavior across terminal, second-wind, nonterminal
 - Hyperliquid primary venue;
 - P4.1 defensive scaler `[0,1]` unchanged;
 - production gross `1.0`;
+- actual re-risk after zero exposure remains human-gated;
 - no withdrawal/external-transfer automation;
 - no production authorization.
 
 ## Exact next step
 
 ```text
-CREATE DRAFT P5.3 IMPLEMENTATION PR
-RUN FRESH PRE-RUN CI / GOVERNANCE
-IF GREEN, COMMIT RUN_ONCE MARKER WITHOUT ASKING AGAIN
-RUN P5.3 STATE-PATH EVIDENCE ONCE
-VALIDATE / COMMIT IMMUTABLE RESULT
-UPDATE README / CURRENT_STATE / NEXT_STEPS
-MERGE P5.3 CLOSEOUT BEFORE P5.4
+RUN FRESH POST-RESULT V1 CI / GOVERNANCE
+IF GREEN, EXACT-HEAD MERGE P5.3 V1 CLOSEOUT
+VERIFY NEW MAIN
+CREATE FRESH P5.3 V2 ARCHITECTURE BRANCH
+PREREGISTER MARKET_STATE / RISK_PERMISSION_LOCK SEPARATION
+KEEP V1 SIGNAL RULES UNCHANGED
+DO NOT START P5.4 UNTIL V2 STATE EVIDENCE IS REVIEWABLE
 ```
