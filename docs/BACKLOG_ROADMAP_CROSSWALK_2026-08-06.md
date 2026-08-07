@@ -27,11 +27,11 @@ A roadmap task touching a legacy defect must not be called complete solely becau
 | F19 unreachable leverage target reported as no-op | execution-plan semantics, discovered before P3.2 | RESOLVED | PR #71 records requested vs reachable target, explicit leverage-clamp state/reasons, and makes clamp reduction take precedence when the current position exceeds the reachable cap. |
 | F20 `/api/cron` authorization | security hardening before any live phase | RESOLVED | PR #71 requires configured bearer `CRON_SECRET` in shadow/trade, uses constant-time comparison, removes User-Agent authorization, and redacts external exception text. |
 | F21 unbacktested `ALLOW_STRONG_BETA` / 1.50 branch | P4 leverage-governance boundary | RESOLVED | PR #71 removed the env-toggleable 1.50 branch and `HARD_BETA_CAP` / `ALLOW_STRONG_BETA`; >1 research remains P4-only. |
-| F22 research/execution price + timing parity | P3.1 data contract + P3.2 target parity; P3.3 separately owns rebalance/turnover | RESOLVED | PR #74 implemented schema-v2 five-series signal / four-asset target role separation; PR #75 restored post-outage validation evidence; PR #76 independently reproduced the frozen BRRK-0011 target across multiple dates and added immutable committed golden vectors. P3.3 still owns target-to-position rebalance/turnover semantics and must not modify the target model. |
-| F23 funding filter scope | future registered research only; must not be slipped into P3.2/P3.3 | DEFERRED_REGISTERED_BOUNDARY | current legacy filter thresholds are not canonical BRRK research. Any whole-range funding response requires a new registered experiment; do not retune existing thresholds or absorb it into P3.3. |
+| F22 research/execution price + timing + target/control parity | P3.1 data contract + P3.2 target parity + P3.3 target-to-position control | RESOLVED | PR #74 implemented schema-v2 five-series signal / four-asset target roles; PR #75 restored validation evidence; PR #76 independently reproduced BRRK-0011 and committed immutable target goldens; PR #78 added explicit four-asset L1 rebalance/turnover control with complete theoretical-gap measurement and preserved upstream P3.2 parity/goldens. |
+| F23 funding filter scope | future registered research only; must not be slipped into P3.2/P3.3/P3.4 | DEFERRED_REGISTERED_BOUNDARY | current legacy filter thresholds are not canonical BRRK research. Any whole-range funding response requires a new registered experiment; do not retune existing thresholds or absorb it into P3.4. |
 | F28 impact cost / capacity | P2.3 cost model | RESOLVED_FOR_CURRENT_SCOPE | canonical Hyperliquid L2 depth/VWAP, capacity fail-closed behavior and beyond-spread accounting were completed in P2.3 + correction. Revalidate capacity if deployment size materially changes. |
 
-## P3.1 / P3.2 parity closure
+## P3.1 / P3.2 / P3.3 execution-parity closure
 
 The product/tradable long universe remains:
 
@@ -45,7 +45,7 @@ The exact frozen BRRK-0011 regime feature implementation additionally consumes:
 XRPUSDT — feature-only
 ```
 
-The merged schema-v2 role split is:
+The merged role split remains:
 
 ```text
 target_assets  = BTC, ETH, SOL, BNB
@@ -56,7 +56,7 @@ router-eligible assets         = BTC, ETH, SOL, BNB only
 
 Closure evidence:
 
-1. PR #74 merged the schema-v2 contract and fail-closed five-series strategy history while keeping XRP out of targets and router inputs.
+1. PR #74 merged the schema-v2 contract and fail-closed five-series strategy history while keeping XRP out of targets/router inputs.
 2. PR #75 validated the merged schema-v2 state after the GitHub Actions outage:
    - Phase 0 run `31152649985` (#101): SUCCESS;
    - Research evidence run `31152649957` (#13): SUCCESS;
@@ -68,12 +68,27 @@ Closure evidence:
    - P3.2 independent parity + committed-golden run `31154665888` (#6): SUCCESS;
    - final body-edit governance run `31154835417` (#140): SUCCESS;
    - expected-head squash merge `70e279bcb1e7f78cfed1d62376a7aa2fef17ac45`.
+4. PR #78 implemented and merged P3.3 target-to-position control:
+   - final head `53885b993b662991cd28370d4542e48a31f648b5`;
+   - Phase 0 run `31156709738` (#113): SUCCESS, 204 tests + 5/5 research integration;
+   - Research evidence run `31156709594` (#24): SUCCESS;
+   - P3.2 parity/golden preservation run `31156709586` (#11): SUCCESS;
+   - final body-edit governance run `31156872098` (#147): SUCCESS;
+   - expected-head squash merge `a503e64da4641e434620aa6a04bf9f6448d00135`.
 
-P3.2 parity coverage includes two early V1-only decisions and six full BRRK decisions spanning 2022-12 through 2026-08, all four semantic regimes, near-flat through near-full defensive scales, exact canonical data digests and committed target vectors.
+P3.2 parity covers two early V1-only decisions and six full BRRK decisions spanning 2022-12 through 2026-08, all four semantic regimes, near-flat through near-full defensive scales, exact canonical data digests and committed target vectors.
 
-Disposition for F22: `RESOLVED` for the research/live data + target parity scope required before P3.3.
+P3.3 adds the explicit downstream control boundary:
 
-Important remaining boundary: P3.3 must separately implement and validate target-to-position rebalance/turnover semantics. That is forward product work, not a residual defect in P3.1/P3.2 target parity.
+```text
+L1 target gap = Σ |target_weight - current_weight|
+L1 < 0.05  -> suppress routine churn but preserve theoretical deviation
+L1 >= 0.05 -> desired state = full P3.2 target
+```
+
+The P3.3 V1 policy hard-freezes its 0.05 continuity value and safety override semantics. Legacy `$100` minimum trade notional remains downstream order feasibility only, not a portfolio rebalance gate.
+
+Disposition for F22: `RESOLVED` across the required P3.1 data, P3.2 target, and P3.3 target-to-position control boundaries.
 
 ## Research / evidence backlog relationship
 
@@ -112,10 +127,10 @@ Current dependency ordering is:
 ```text
 P3.1 schema-v2 data contract      PASS / MERGED
 -> P3.2 Target calculation API    PASS / MERGED
--> P3.3 rebalance / turnover      UNIQUE NEXT
--> P3.4 contributions
+-> P3.3 rebalance / turnover      PASS / MERGED
+-> P3.4 contributions             UNIQUE NEXT
 -> P4
 -> P5
 ```
 
-P3.3 must consume the merged P3.2 target contract and remain post-target control only. It must not absorb F23 funding-response research, >1 leverage, cycle-exit logic, P3.4 contribution handling, XRP target exposure, or production authorization.
+P3.4 must consume the merged P3.2 target and P3.3 control contracts. It must not absorb F23 funding-response research, >1 leverage, cycle-exit logic, XRP target exposure, or production authorization.
