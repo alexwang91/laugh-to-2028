@@ -1,0 +1,4 @@
+profile,initialization_date,data_insufficient_days,classified_days,post_initialization_incomplete_input_days,transition_count,ever_flat,first_flat_date,final_state,normal_bull_days,normal_bull_fraction,btc_leadership_maturing_days,btc_leadership_maturing_fraction,late_bull_rotation_days,late_bull_rotation_fraction,exhaustion_watch_days,exhaustion_watch_fraction,de_risk_1_days,de_risk_1_fraction,de_risk_2_days,de_risk_2_fraction,flat_days,flat_fraction
+EARLY,2021-01-17,108,1869,0,4,True,2021-02-23,FLAT,17,0.00909577314072,11,0.00588550026752,5,0.00267522739433,4,0.00214018191546,0,0,0,0,1832,0.980203317282
+BALANCED,2021-01-17,108,1869,0,3,True,2021-02-23,FLAT,27,0.0144462279294,9,0.00481540930979,0,0,1,0.000535045478866,0,0,0,0,1832,0.980203317282
+CONSERVATIVE,2021-01-17,108,1869,0,2,True,2021-02-23,FLAT,32,0.0171214553237,5,0.00267522739433,0,0,0,0,0,0,0,0,1832,0.980203317282
