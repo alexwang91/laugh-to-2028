@@ -19,7 +19,7 @@
 | P4.6 production leverage | **NOT ENTERED / BLOCKED** |
 | P5.1 cycle-top event taxonomy | **COMPLETE / MERGED / FROZEN** |
 | P5.2 feature-family evidence | **COMPLETE / IMMUTABLE / DESCRIPTIVE CLOSEOUT** |
-| P5.3 state model | **NEXT** |
+| P5.3 state-model structure | **PREREGISTERED / FROZEN / NOT YET EVALUATED** |
 | P5.4–P5.6 | **NOT STARTED** |
 | Phase 6 integrated shadow | **NOT STARTED** |
 | Phase 7 limited-capital live long | **NOT STARTED / EXPLICIT APPROVAL REQUIRED** |
@@ -77,9 +77,9 @@ At 5 bps execution cost:
 | 1.25 | 64.89% | -40.19% | 1.2387 | **FAIL** |
 | 1.30 | 66.28% | -40.93% | 1.2360 | **FAIL** |
 
-Every cap above 1.0 failed before the broad-region promotion stage. No >1 cap is eligible for P4.6. Do not rerun, rescue or reinterpret `LEVERAGE-0040` / `LEVERAGE-0041` under the same experiment IDs.
+Every cap above 1.0 failed before broad-region promotion. No >1 cap is eligible for P4.6. Do not rerun, rescue or reinterpret `LEVERAGE-0040` / `LEVERAGE-0041` under the same experiment IDs.
 
-## Completed implementation chain
+## Completed implementation / research chain
 
 ```text
 Phase 0 governance/config
@@ -95,6 +95,7 @@ Phase 0 governance/config
 -> LEVERAGE-0041 COMPLETE / NO_PROMOTION
 -> P5.1 EVENT TAXONOMY FROZEN
 -> P5.2 IMMUTABLE FEATURE EVIDENCE / DESCRIPTIVE CLOSEOUT
+-> P5.3 STATE-MODEL STRUCTURE PREREGISTERED BEFORE EVALUATION
 ```
 
 Historical rejected or shadow research lines remain preserved as evidence; they are not silently promoted into BRRK or production.
@@ -107,7 +108,7 @@ A full task/deviation review is recorded in `docs/ROADMAP_AUDIT_2026-08-07.md`.
 
 P5.1 is frozen in `research/cycle_exit/p5_1_event_taxonomy.json` and documented in `docs/P5_1_EVENT_TAXONOMY.md`.
 
-It distinguishes before feature/model fitting:
+It distinguishes before model fitting:
 
 - 2021 spring major top / May crash as nonterminal;
 - 2021 summer second-wind transition;
@@ -155,11 +156,15 @@ The evidence argues against a one-indicator “cycle top” score:
 - ETH/BTC leadership is strong near terminal **and** second-wind/nonterminal structures, which requires a distinct `LATE_BULL_ROTATION` state rather than treating alt leadership as bearish;
 - 20d price-versus-RSI rank divergence is the strongest 2021 terminal target-lead hypothesis, but there is only one explicit terminal event, so it cannot be promoted as a cross-cycle terminal rule;
 - breadth acceleration describes transition shape but is not terminal-specific in the lead window;
-- raw daily/4h RSI levels are not sufficient as standalone exit rules;
+- raw daily/4h RSI levels are not sufficient standalone exits;
 - distance from recent BTC highs contains useful second-wind versus top-like context;
 - discrete breadth/consolidation features require categorical treatment where control MAD is zero.
 
-### P5.3 — NEXT: multi-state cycle model
+### P5.3 — frozen multi-state preregistration
+
+Contract: `P5.3-STATE-MODEL-STRUCTURE-V1`.
+
+Documentation: `docs/P5_3_STATE_MODEL_PREREG.md`.
 
 Target state vocabulary:
 
@@ -173,9 +178,56 @@ DE_RISK_2
 FLAT
 ```
 
-P5.3 must preregister state semantics and allowed evidence before numerical threshold fitting. It must preserve BRRK relative ranking and use the cycle layer only to decide **how much total directional risk** to take.
+The model uses complementary evidence channels instead of one scalar top score:
 
-Key boundary:
+```text
+REGIME_TEXTURE
+LEADERSHIP_ROTATION
+EXHAUSTION_TRANSITION
+TREND_DAMAGE
+```
+
+Continuous inputs are normalized causally using trailing 365-observation empirical percentiles with a 252-observation minimum. Future data is forbidden; missing data cannot automatically de-escalate/re-add risk.
+
+Three sensitivity profiles were frozen **before state-path evaluation**:
+
+| Profile | Moderate | Strong | Escalation | Clear period |
+| --- | --- | --- | ---: | ---: |
+| EARLY | 65/35 | 80/20 | 2d | 5d |
+| BALANCED | 70/30 | 85/15 | 3d | 5d |
+| CONSERVATIVE | 75/25 | 90/10 | 3d | 7d |
+
+Architecture boundary:
+
+```text
+volatility alone            != top
+ETH/BTC leadership alone    != bearish
+raw RSI alone               != top
+rotation without damage     -> LATE_BULL_ROTATION candidate
+exhaustion without damage   -> EXHAUSTION_WATCH candidate
+exhaustion + damage         -> de-risk candidate
+strong exhaustion + damage  -> hard-risk / FLAT candidate
+```
+
+Ordinary escalation requires persistence; de-escalation requires a clear period and may move at most one state/day. Hard strong-damage + strong-exhaustion may move directly to FLAT. FLAT is absorbing in P5.3; re-entry requires explicit human approval outside the state classifier.
+
+P5.3 explicitly excludes the six pending P5.2 data sources and does not fabricate proxies for them.
+
+The next research action after preregistration CI/merge is deterministic implementation of all three frozen profiles against the immutable P5.2 feature panel. **Do not retune profiles/features after state paths are observed.**
+
+### Phase 5 order
+
+1. **P5.1 Event taxonomy — COMPLETE / FROZEN**.
+2. **P5.2 Feature evidence — COMPLETE / IMMUTABLE / DESCRIPTIVE CLOSEOUT**.
+3. **P5.3 State model — STRUCTURE PREREGISTERED / EVIDENCE NOT YET RUN**.
+4. **P5.4 Required behavior** — map accepted state semantics to total-risk behavior while preserving BRRK ranking.
+5. **P5.5 Validation** — event-level / leave-one-event-out robustness, lead/lag, false positives, missed upside, drawdown avoided, terminal wealth, second-wind behavior and state churn.
+6. **P5.6 Integration** — cycle layer above BRRK as total-risk control only.
+7. **Phase 6** — integrated live-data shadow system with zero signing/trading authority.
+8. **Phase 7** — limited-capital live long only after explicit production approval and shadow/operational evidence.
+9. **Phase 8** — bear-short research later; first short remains human-gated.
+
+## Layer separation
 
 ```text
 BRRK        = which assets / relative weights
@@ -184,19 +236,7 @@ Router      = which instruments implement it
 Execution   = how to reach actual target safely
 ```
 
-ETH/BTC/alt rotation is not automatically bearish. A top/de-risk transition must depend on multi-family deterioration/exhaustion evidence, not on RSI, volatility or relative leadership alone.
-
-### Remaining Phase 5 order
-
-1. **P5.1 Event taxonomy — COMPLETE / FROZEN**.
-2. **P5.2 Feature evidence — COMPLETE / IMMUTABLE / DESCRIPTIVE CLOSEOUT**.
-3. **P5.3 State model — NEXT** — preregister multi-state structure, then fit/evaluate without retuning P5.1/P5.2.
-4. **P5.4 Required behavior** — map accepted state semantics to total-risk behavior while preserving BRRK ranking.
-5. **P5.5 Validation** — event-level / leave-one-event-out robustness, lead/lag, false-positive duration, missed upside, drawdown avoided, terminal wealth and second-wind behavior.
-6. **P5.6 Integration** — cycle layer above BRRK as total-risk control only.
-7. **Phase 6** — integrated live-data shadow system with zero signing/trading authority.
-8. **Phase 7** — limited-capital live long only after explicit production approval and shadow/operational evidence.
-9. **Phase 8** — bear-short research later; first short remains human-gated.
+P5.3 may classify risk state. It does not rewrite BRRK ranking, choose P5.4 gross multipliers, or authorize production.
 
 ## Source-of-truth order
 
