@@ -98,15 +98,15 @@ Immutable result commit:
 
 Immutable summary SHA256:
 
-`a2e5ece89fec93a24e1a65e134a78824629b4b418e106294a6b0821fbd52608b`
+`a2e5be8d605af5a2c8206235402fe3a66b08fd994eaa8a71e84cfb1e3cbfed8f`
 
 The one-time run and immutable validator both completed successfully. The result itself is a **research failure**:
 
 | Profile | Init date | First FLAT | Classified days | FLAT days | FLAT fraction |
 | --- | --- | --- | ---: | ---: | ---: |
-| EARLY | 2021-01-11 | 2021-02-23 | 1874 | 1837 | 98.0256% |
-| BALANCED | 2021-01-11 | 2021-02-23 | 1874 | 1837 | 98.0256% |
-| CONSERVATIVE | 2021-01-11 | 2021-02-23 | 1874 | 1837 | 98.0256% |
+| EARLY | 2021-01-17 | 2021-02-23 | 1869 | 1832 | 98.0203% |
+| BALANCED | 2021-01-17 | 2021-02-23 | 1869 | 1832 | 98.0203% |
+| CONSERVATIVE | 2021-01-17 | 2021-02-23 | 1869 | 1832 | 98.0203% |
 
 All three profiles first enter FLAT inside the frozen `P5C-2021-JAN-FEB-HIGH-VOL` event, which is explicitly a **non-top control**. In that control's `near_event` bucket, all profiles are FLAT for 6/7 classified days (`85.7143%`).
 
@@ -193,10 +193,10 @@ Only after a usable market-state history exists should P5.4 define research mapp
 
 ```text
 BRRK                 = which assets / relative weights
-Cycle MARKET_STATE    = current market-risk classification
-Risk permission       = whether re-risk is operationally allowed
-Router                = which instruments implement targets
-Execution             = safe realization
+Cycle MARKET_STATE   = current market-risk classification
+Risk permission      = whether re-risk is operationally allowed
+Router               = which instruments implement targets
+Execution            = safe realization
 ```
 
 No Phase 5 research result currently authorizes production.
