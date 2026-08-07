@@ -1,6 +1,11 @@
 from __future__ import annotations
 
+import sys
 from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[3]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 
 import numpy as np
 import pandas as pd
@@ -12,7 +17,6 @@ from research.cycle_exit.p5_3_v2_market_state import (
     market_state_transition_step,
 )
 
-ROOT = Path(__file__).resolve().parents[3]
 V1_RESULT = ROOT / "research" / "results" / "p5_3_state_paths"
 
 
