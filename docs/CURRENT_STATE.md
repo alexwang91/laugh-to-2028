@@ -74,35 +74,40 @@ Formal interpretation: `docs/P5_2_FEATURE_EVIDENCE_CLOSEOUT.md`.
 
 Derived non-authorizing diagnostics: `research/analysis/p5_2_closeout/`.
 
-P5.2 does not authorize a final feature set or thresholds. It provides evidence used to preregister P5.3.
-
 ## P5.3 frozen preregistration truth
 
 Contract: `P5.3-STATE-MODEL-STRUCTURE-V1`.
-
-Files:
-
-```text
-research/cycle_exit/p5_3_state_model_contract.json
-docs/P5_3_STATE_MODEL_PREREG.md
-execution/plan-b-bot/tests/test_p5_3_state_model_prereg.py
-.github/workflows/p5-3-state-model-prereg.yml
-```
 
 Status: `FROZEN_BEFORE_STATE_PATH_EVALUATION`.
 
 No P5.3 state path has been computed yet.
 
-### Prereg completeness correction R1
+### Prereg completeness corrections
 
-Before any state-path evaluation, `P5.3-PREREG-COMPLETENESS-R1` corrected two specification gaps:
+Both corrections were made before any state-path evidence existed.
 
-- the exact empirical-percentile rank mapping was previously unstated;
-- a 252-feature-observation minimum would exclude required early-2021 taxonomy windows because the immutable P5.2 panel starts 2020-10-01 and several features have internal warm-up periods.
+`P5.3-PREREG-COMPLETENESS-R1` froze the exact causal percentile mapping and early-history calibration:
 
-R1 changes no P5.1 event, P5.2 result, feature definition, profile threshold or production boundary and uses no P5.3 state-path result.
+```text
+window          last up to 365 completed daily dates ending at t
+missing         drop feature-by-feature
+minimum N       20 nonmissing observations
+percentile      (average_rank(current) - 1) / (N - 1)
+future data     forbidden
+20 <= N < 365   use available causal history and report N
+N < 20          unavailable
+```
 
-Target states:
+Before all continuous state inputs are calibrated, emit `DATA_INSUFFICIENT`. CI must prove all required continuous inputs are calibrated by `2021-01-31`.
+
+`P5.3-PREREG-COMPLETENESS-R2` froze exact initialization/escalation/de-escalation counter mechanics and removed two dead runtime inputs that were not referenced by any evidence atom:
+
+- `bnb_btc_log_return_40d`;
+- `btc_daily_rsi14`.
+
+R2 changes no profile threshold, evidence-atom threshold, P5.1/P5.2 artifact or production boundary.
+
+### State vocabulary / severity order
 
 ```text
 NORMAL_BULL
@@ -114,18 +119,35 @@ DE_RISK_2
 FLAT
 ```
 
-Before sufficient causal feature history exists, the research path emits `DATA_INSUFFICIENT`; this is a pre-initialization diagnostic rather than a market-risk state.
+The list above is also the exact least-to-most-conservative `severity_order`.
 
-### Frozen architecture
+### Frozen runtime evidence channels
 
-P5.3 uses four complementary evidence channels:
+`REGIME_TEXTURE`
+- BTC RV20;
+- BTC RV20/RV60;
+- distance from trailing 90d high;
+- KAMA gap.
 
-- `REGIME_TEXTURE` — volatility/high-level maturity context;
-- `LEADERSHIP_ROTATION` — ETH/BTC-led rotation and breadth evidence;
-- `EXHAUSTION_TRANSITION` — divergence, momentum failure and breadth transition;
-- `TREND_DAMAGE` — KAMA/high-distance/20d/40d BTC damage.
+`LEADERSHIP_ROTATION`
+- ETH/BTC 20d;
+- ETH/BTC 40d;
+- breadth acceleration;
+- canonical-five outperformance breadth as a raw `[0,1]` fraction.
 
-The design explicitly enforces:
+`EXHAUSTION_TRANSITION`
+- price-vs-RSI rank divergence;
+- RSI14 failure from recent maximum;
+- completed-4h RSI14 / RSI28;
+- breadth acceleration / contraction.
+
+`TREND_DAMAGE`
+- KAMA gap;
+- distance from trailing high;
+- BTC 20d return;
+- BTC 40d return.
+
+The architecture explicitly enforces:
 
 ```text
 volatility alone            != top
@@ -137,26 +159,7 @@ exhaustion + damage         -> de-risk candidate
 strong exhaustion + damage  -> hard-risk / FLAT candidate
 ```
 
-### Causal normalization
-
-For each continuous runtime feature at each completed 00:00 UTC daily decision:
-
-```text
-maximum window        last 365 completed daily dates including t
-feature missing rows  dropped feature-by-feature
-minimum N             20 nonmissing feature observations
-percentile            (average_rank(current) - 1) / (N - 1)
-ties                  average rank
-future data           forbidden
-20 <= N < 365         use available causal history and report N
-N < 20                normalized input unavailable
-```
-
-The P5.3 path remains `DATA_INSUFFICIENT` until every continuous runtime input used by any evidence atom meets the 20-observation minimum. Prereg CI must prove this condition is satisfied by `2021-01-31`, the start of the earliest frozen P5.1 control `early_warning` bucket.
-
-After initialization, missing evidence may not de-escalate or automatically re-add risk. Per-feature calibration depth and minimum depth by date are mandatory outputs.
-
-P5.2 robust-z values are research diagnostics only and are **not** runtime inputs.
+P5.2 robust-z values are research diagnostics only and are not runtime inputs.
 
 ### Frozen sensitivity profiles
 
@@ -166,16 +169,23 @@ BALANCED     moderate 70/30  strong 85/15  escalation 3d  clear 5d
 CONSERVATIVE moderate 75/25  strong 90/10  escalation 3d  clear 7d
 ```
 
-All three profiles must be reported. They are preregistered sensitivity cases, not post-result tuning knobs.
+All three profiles must be reported. They are sensitivity cases, not post-result tuning knobs.
 
-### Transition boundary
+### Exact transition mechanics
 
-- ordinary escalation requires profile-specific persistence;
-- de-escalation requires a clear period and moves at most one state/day;
-- hard strong-damage + strong-exhaustion may enter FLAT immediately;
-- FLAT is absorbing inside P5.3;
-- `FLAT -> risk-on` requires explicit human approval outside P5.3;
-- no intraday P5.3 risk addition.
+- use zero-based indices in `severity_order`;
+- first fully calibrated date: raw `FLAT` initializes directly to `FLAT`; otherwise initialize `NORMAL_BULL`;
+- ordinary escalation counts only consecutive dates with `raw_index > current_index`;
+- after the persistence requirement, transition to the **minimum-severity raw candidate over that persistence window**, so any multi-state jump is continuously supported by every date in the window;
+- fully evaluated raw `FLAT` enters immediately without ordinary persistence;
+- ordinary de-escalation counts only consecutive dates with `raw_index < current_index`;
+- after the clear period, move exactly one severity step lower;
+- every further de-escalation step requires a new clear period;
+- equality resets both ordinary counters and holds state;
+- after initialization, ordinary missing-data days hold current state and reset counters;
+- missing data may enter hard FLAT only when every input needed to prove both `STRONG_DAMAGE` and `STRONG_EXHAUSTION` is present and both atoms are true;
+- FLAT is absorbing inside P5.3; re-entry requires explicit human approval outside the classifier;
+- no P5.3 intraday risk addition.
 
 ### Explicitly excluded pending data
 
@@ -192,10 +202,11 @@ P5.3 does not use or proxy:
 
 After prereg CI/governance is green and merged, implement the deterministic state engine against the immutable P5.2 feature panel and report all three frozen profiles.
 
-Required outputs include:
+Required outputs:
 
 - complete daily state paths;
-- per-feature calibration depths / initialization date;
+- raw candidate and evidence-atom booleans by date/profile;
+- per-feature calibration depth / initialization date;
 - event-window occupancy;
 - first-entry dates / lead-lag;
 - state transition and churn counts;
@@ -204,7 +215,7 @@ Required outputs include:
 - missing-data behavior;
 - profile sensitivity.
 
-P5.3 may identify a research candidate for downstream P5.4/P5.5, but may not select production behavior or a production state model. P5.5 owns robustness selection after behavior/economic mapping exists.
+P5.3 may identify a research candidate for downstream P5.4/P5.5, but may not select production behavior or a production state model. P5.5 owns robustness selection after P5.4 behavior/economic mapping exists.
 
 ## Roadmap audit status
 
