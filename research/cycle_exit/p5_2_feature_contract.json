@@ -24,7 +24,7 @@
     "intraday_interval": "4h",
     "intraday_alignment": "At a UTC 00:00 daily evaluation boundary, only 4h bars fully completed at or before that boundary may be used; the bar opening at the boundary is excluded.",
     "fetch_start": "2020-10-01",
-    "fetch_end": "2025-12-31",
+    "fetch_end": "2026-02-28",
     "missing_required_price_data": "FAIL_CLOSED",
     "forward_fill": "FORBIDDEN"
   },
