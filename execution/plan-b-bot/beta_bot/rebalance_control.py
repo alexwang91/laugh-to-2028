@@ -10,6 +10,7 @@ remain downstream execution concerns.
 """
 
 from dataclasses import asdict, dataclass
+import hashlib
 import json
 import math
 from pathlib import Path
@@ -163,6 +164,12 @@ class RebalanceControlPlan:
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
+
+    def canonical_json(self) -> str:
+        return json.dumps(self.to_dict(), sort_keys=True, separators=(",", ":"), ensure_ascii=True)
+
+    def digest(self) -> str:
+        return hashlib.sha256(self.canonical_json().encode("utf-8")).hexdigest()
 
 
 def calculate_rebalance_control(
