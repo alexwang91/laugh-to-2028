@@ -10,15 +10,17 @@ Before `LEVERAGE-0040` may execute:
 - [x] Hyperliquid native funding-spike and degraded-fill/depth/capacity stresses preregistered.
 - [x] Hyperliquid margin metadata captured and hashed before first result.
 - [x] Architecture correction PR #84 merged.
-- [x] cap=1 exact historical parity merged by PR #86.
+- [x] cap=1 exact historical BRRK parity merged by PR #86.
 - [x] liquidation-distance model and >1 multiplier policy merged by PR #88 before any >1 result.
 - [x] post-#88 normalization merged by PR #89; normalized main `98396a5b510c5f0a717b954568921c1daef6edc8`.
 - [x] one-time study semantics frozen on clean v2 branch before any >1 observation.
-- [x] initial #90 fail-closed preflight detected invalid banded-holdings defensive-scale recovery before cap>1 construction.
-- [x] `PREFLIGHT-RAW-TARGET-001`: R1 rebuilt raw V1/BRRK scale from frozen five-asset feature authority; published banded holdings demoted to legacy evidence only.
-- [x] `PREFLIGHT-SESSION-TIMING-002`: first decision `2022-12-09` now correctly maps to first evaluation session `2022-12-10`.
-- [x] corrected checkpoint head `0b396de4d2bf10f06fee1403836331459b7bd696` passed contract/preflight, Phase 0, research, P3.2 parity/golden, P4 cap=1, P4 prerequisite and governance; R1 preflight explicitly reported `cap>1 not evaluated`.
-- [ ] latest handoff head repeats all applicable pre-result gates successfully.
+- [x] initial #90 fail-closed preflight caught invalid banded-holdings defensive-scale recovery before cap>1 construction.
+- [x] `PREFLIGHT-RAW-TARGET-001`: raw V1/BRRK scale rebuilt from frozen five-asset feature authority; banded holdings are legacy evidence only.
+- [x] `PREFLIGHT-SESSION-TIMING-002`: first decision `2022-12-09` maps to first evaluation session `2022-12-10`.
+- [x] corrected R1 checkpoint passed contract/preflight, Phase 0, research, P3.2 parity/golden, P4 cap=1, P4 prerequisite and governance; preflight explicitly reported `cap>1 not evaluated`.
+- [x] subsequent handoff head `0db6544af1793f48c30f9eb0b3cb98629bee58ba` also passed all seven applicable gates.
+- [x] contract CI lifecycle frozen before first result: result absent => R1 preflight only; immutable result present => validator only, never a second study execution.
+- [ ] latest lifecycle-hardened pre-result head passes all applicable gates and latest metadata/ready governance.
 - [ ] exact `RUN_ONCE_LEVERAGE_0040.marker` created once only after the preceding final pre-result gate is complete.
 - [ ] `LEVERAGE-0040` first and only preregistered search run executed and immutable result committed/validated.
 
@@ -47,16 +49,13 @@ Required SHA-256:
 
 `f54cdf362f60cad19d6c429ac4e008047b45d2cb537a95c96e2bc6dac5ce733a`
 
-Corrected checkpoint evidence:
+Lifecycle invariant:
 
-- study contract/preflight #7 `31186348512`: SUCCESS, 24 tests, compile PASS, pinned capacity artifact PASS, R1 real-data preflight PASS;
-- Phase 0 #157 `31186348457`: SUCCESS, 281 passed + 5/5 integration;
-- Research #63 `31186348431`: SUCCESS;
-- P3.2 parity/golden #50 `31186348474`: SUCCESS;
-- P4 cap=1 #16 `31186350411`: SUCCESS;
-- P4 prerequisite #12 `31186349388`: SUCCESS;
-- governance #219 `31186348416`: SUCCESS.
+```text
+summary absent  -> contract CI may run real R1 --preflight-only and must exit before cap>1 construction
+summary present -> contract CI must validate immutable committed result only; it must not redownload the study artifact or rerun historical research
+```
 
-These are checkpoint runs only because the handoff updates create a newer pre-result head. The exact marker remains forbidden until that latest head is green.
+This invariant is regression-tested before first result and prevents post-result handoff/decision-registry updates from accidentally causing a second LEVERAGE-0040 execution.
 
-After marker creation, the dedicated run-once workflow must execute the already-frozen suite once, commit immutable result artifacts, and never retrigger from those result commits. Any material post-result change requires a new experiment ID.
+After the exact marker is created, the dedicated run-once workflow must execute the already-frozen suite once, commit immutable result artifacts, and never retrigger from those result commits. Any material post-result change requires a new experiment ID.
