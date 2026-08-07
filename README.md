@@ -24,6 +24,7 @@
 | Phase 3 — data → target → rebalance → contribution pipeline | **COMPLETE / MERGED** |
 | P4.1 — corrected defensive scaler `[0,1]` | **COMPLETE / MERGED** |
 | P4.2 / P4.3 — leverage architecture, cap=1 parity, margin/liquidation prerequisites | **COMPLETE / MERGED** |
+| Repository hygiene / documentation normalization | **COMPLETE / MERGED — PR #91** |
 | P4.4 — `LEVERAGE-0040` one-time study | **PAUSED / DRAFT / NOT RUN** |
 | P4.5 — select/fail leverage decision | **BLOCKED on P4.4 result** |
 | P4.6 — production leverage authorization | **BLOCKED / SEPARATE GATE** |
@@ -38,7 +39,7 @@ Active research PR:
 - immutable `LEVERAGE-0040` result: **ABSENT**
 - 1.10 / 1.20 / 1.30 candidate observation: **NONE**
 
-The pause is intentional. Repository normalization is being completed before any leverage search continues.
+The pause is intentional. Repository hygiene was completed by PR #91; **that completion does not automatically resume research**.
 
 ---
 
@@ -139,6 +140,20 @@ candidate caps = 1.00 / 1.10 / 1.20 / 1.30
 
 No >1 candidate has yet been executed under `LEVERAGE-0040`.
 
+### Repository hygiene
+
+PR #91 completed a repository-wide cleanup without changing strategy economics:
+
+- remote branch inventory reduced from **96** to the active maintenance/research set, with every retired unique branch audited before deletion;
+- stale root README replaced with this current project map;
+- `CURRENT_STATE.md` and `NEXT_STEPS.md` reset to actual project state;
+- `docs/README.md` added as the documentation/evidence index;
+- P3.1 registry prose aligned with merged XRP feature-only parity correction;
+- temporary cleanup workflows removed before merge;
+- historical research results and dated audits retained as evidence.
+
+See `docs/REPOSITORY_HYGIENE_2026-08-07.md`.
+
 ---
 
 ## Research decisions that matter now
@@ -170,17 +185,17 @@ Historical result files remain under `research/results/`. Their existence does n
 
 ## Problems found during implementation
 
-The project has deliberately preserved corrections instead of hiding them.
+The project preserves corrections instead of hiding them.
 
 ### 1. Documentation and branch sprawl
 
-Before the 2026-08-07 repository hygiene pass:
+Before the 2026-08-07 hygiene pass:
 
 - remote branches: **96**;
 - README and handoff docs described older project stages;
 - many merged/abandoned branches remained visible and competed with `main` as apparent authority.
 
-The hygiene pass reduced remote branches to the canonical active set and introduces a documentation authority hierarchy. See `docs/REPOSITORY_HYGIENE_2026-08-07.md`.
+PR #91 normalized the repository and documented a branch-retirement policy. Historical evidence remains available even when obsolete remote refs are removed.
 
 ### 2. PR #73 governance evidence gap
 
@@ -197,7 +212,7 @@ Later work must not retroactively rewrite this history.
 
 The first P3.1 contract exposed only four target assets, but frozen BRRK regime features also require XRPUSDT as a feature-only price input.
 
-PR #74 corrected this without adding XRP to targets or routing.
+PR #74 corrected this without adding XRP to targets or routing. PR #91 later corrected the stale descriptive row in `decision_registry.json` so machine-readable prose now matches that merged fact.
 
 ### 4. P4.4 preflight wiring defects
 
@@ -214,25 +229,19 @@ These were implementation corrections, **not result-driven parameter tuning**.
 
 ## What happens next
 
-Research is currently paused by owner instruction.
+**Current action: STOP. Research remains paused.**
 
-The repository-maintenance sequence is:
-
-```text
-finish repository hygiene
-→ merge the hygiene PR
-→ keep PR #90 DRAFT / PAUSED
-→ do not create RUN_ONCE marker automatically
-```
+Repository hygiene is complete. There is deliberately no automatic next implementation/research action.
 
 Only after an explicit resume instruction:
 
 ```text
-refresh #90 from then-current main
+re-fetch live main / #90 / marker / result state
+→ refresh #90 from then-current main
 → rerun all applicable pre-result CI / parity / governance
 → re-confirm marker and immutable result are still absent
-→ cross the RUN_ONCE boundary exactly once
-→ validate immutable LEVERAGE-0040 result
+→ only then reconsider the one-time RUN_ONCE boundary
+→ if executed, validate immutable LEVERAGE-0040 result
 → P4.5 select/fail decision with no post-result retuning
 → P4.6 separate production-authorization gate
 ```
