@@ -19,13 +19,17 @@ Normalized main after PR #87:
 
 `6ba3f765fd52839e9841b299aab4a51c9a1cd523`
 
-Current fresh prerequisite branch:
+Current draft PR:
 
-`p4-3/leverage-0040-pre-run-prereqs-v1`
+`#88 — freeze liquidation model and multiplier policy before first >1 run`
+
+Validated initial checkpoint head:
+
+`b6b309a5eb9ba4a876b67f631576b608eaa4c8e2`
 
 ```text
-P4.3 liquidation-distance model             IMPLEMENTED CANDIDATE / CI PENDING
-P4.3 >1 multiplier policy freeze            IMPLEMENTED CANDIDATE / CI PENDING
+P4.3 liquidation-distance model             IMPLEMENTED / TESTED / CI VERIFIED CANDIDATE
+P4.3 >1 multiplier policy freeze            IMPLEMENTED / TESTED / CI VERIFIED CANDIDATE
 LEVERAGE-0040 >1 search                     NOT RUN
 P4.4 stress execution                       BLOCKED
 P4.5 selection/failure decision             BLOCKED
@@ -77,7 +81,7 @@ SOL                  table 54: 20x -> 10x @70M
 BNB                  table 51: 10x -> 5x @3M
 ```
 
-## Candidate liquidation model — pre-result
+## Liquidation model — validated candidate, pre-result
 
 Machine contract:
 
@@ -87,7 +91,7 @@ Implementation:
 
 `research/leverage_0040/liquidation_model.py`
 
-Scope is deliberately **standard Hyperliquid cross margin only** for this study version. Portfolio Margin and isolated margin are not assumed.
+Scope is deliberately **standard Hyperliquid cross margin only**. Portfolio Margin and isolated margin are not assumed.
 
 Frozen equations follow Hyperliquid official semantics:
 
@@ -101,24 +105,24 @@ Tier deduction is recursively calculated to keep maintenance margin continuous a
 
 Required explicit inputs:
 
-- current cross-account equity in USDC terms;
+- current cross-account equity;
 - actual cross-margin perp notionals from the implementation plan;
 - frozen margin snapshot.
 
 It does **not** assume ordinary spot balances are cross collateral or that Portfolio Margin is enabled. Missing route/collateral accounting fails closed.
 
-Validation contract includes:
+Validation coverage now passed:
 
 - frozen tier/MMR checks for BTC/ETH/SOL/BNB;
-- maintenance continuity at every tier boundary;
-- single-position first-tier distance matching Hyperliquid's published liquidation-price formula;
+- maintenance continuity at every frozen tier boundary;
+- single-position first-tier liquidation distance matches Hyperliquid's published liquidation-price formula;
 - cross-asset maintenance/PnL aggregation;
 - deterministic stress-ray bisection;
 - malformed/unsupported inputs fail closed.
 
-No liquidation result for a >1 historical candidate has been generated yet.
+No liquidation result for a >1 historical candidate has been generated.
 
-## Candidate multiplier policy freeze — pre-result
+## Multiplier policy — validated pre-result freeze candidate
 
 Addendum:
 
@@ -139,32 +143,41 @@ leverage_multiplier = 1 + (candidate_cap - 1) × frozen_defensive_scale
 final_scale = defensive_scale + (candidate_cap - 1) × defensive_scale²
 ```
 
-Allowed inputs are **only**:
+Allowed inputs only:
 
 ```text
 frozen_defensive_scale
 candidate_research_cap ∈ {1.00, 1.10, 1.20, 1.30}
 ```
 
-Properties frozen before first >1 observation:
+Properties verified before first >1 observation:
 
-- cap=1 is exact identity;
+- cap=1 exact identity;
 - defensive scale 0 keeps final scale 0;
-- extra leverage fades continuously as defensive risk reduction increases;
+- multiplier and final scale are monotone in frozen defensive scale;
 - no thresholds or second alpha model;
-- candidate cap is reached only at defensive scale 1;
-- final gross cannot exceed candidate cap because P3.2 base gross <=1;
-- no funding signal, raw HMM-state tuning, P5 logic, 0038, short/XRP target or historical-result-selected threshold.
+- cap reached only at defensive scale 1;
+- final gross cannot exceed candidate cap because base P3.2 gross <=1;
+- no future/candidate PnL, funding signal, raw HMM tuning, P5, 0038, short/XRP or historical-result-selected thresholds.
 
-No 1.10/1.20/1.30 historical result existed before this policy freeze.
+No 1.10/1.20/1.30 historical result existed before this policy freeze or during #88 checkpoint validation.
 
-## Dedicated candidate CI
+## PR #88 initial checkpoint evidence
 
-`.github/workflows/p4-3-pre-run-prereqs.yml`
+Checkpoint head:
 
-It runs only the liquidation-model and multiplier-policy contract tests. It does not run the LEVERAGE-0040 historical >1 search.
+`b6b309a5eb9ba4a876b67f631576b608eaa4c8e2`
 
-Full Phase 0, P3.2 parity/golden, P4 cap=1 parity and governance must also remain green before merge.
+- dedicated P4.3 pre-run prerequisite run `31177869882` (#1): **SUCCESS**, **14 passed in 0.08s**
+- Phase 0 baseline contract `31177869757` (#146): **SUCCESS**, **257 passed in 7.49s**, 5/5 research integration OK
+- Research evidence normalization `31177869856` (#52): **SUCCESS**
+- P3.2 target research-live parity `31177869824` (#39): **SUCCESS**, independent parity + committed golden
+- P4.3 cap=1 parity `31177869840` (#5): **SUCCESS**
+- PR handoff governance `31177869853` (#204): **SUCCESS**
+
+This validates the prerequisite candidate only. It is not a LEVERAGE-0040 economic result and does not authorize >1 production exposure.
+
+The current handoff update must receive final-head revalidation; the checkpoint runs above are not final-head merge evidence.
 
 ## LEVERAGE-0040 study constraints unchanged
 
@@ -183,7 +196,7 @@ Mandatory benchmarks remain BTC buy-and-hold, four-asset equal-weight buy-and-ho
 Still forbidden:
 
 - run/reuse `LEVERAGE-0039`;
-- run any 1.10/1.20/1.30 historical candidate on this prerequisite branch;
+- run any 1.10/1.20/1.30 historical candidate before #88 is merged/normalized;
 - change multiplier formula after observing >1 results;
 - assume spot collateral or Portfolio Margin without a separately frozen implementation model;
 - production gross >1 / leverage authorization;
@@ -210,11 +223,11 @@ DRIFT_0
 ## Exact next action
 
 ```text
-open prerequisite PR
--> dedicated prerequisite CI + Phase 0 + P3.2 parity + P4 cap=1 + governance
--> fix same PR if needed
--> final-head validation
--> merge + post-merge normalization
--> only then create fresh LEVERAGE-0040 search branch
--> execute preregistered 0040 suite exactly once
+revalidate final #88 handoff head
+-> write final PR evidence / mark ready
+-> newest governance
+-> expected-head squash merge #88
+-> post-merge normalization
+-> fresh LEVERAGE-0040 search branch
+-> execute preregistered suite exactly once with no post-result retuning
 ```
