@@ -6,8 +6,10 @@ on:
       - "research/leverage_0040/LEVERAGE-0040-STUDY-IMPLEMENTATION-V1.json"
       - "research/leverage_0040/study_core.py"
       - "research/leverage_0040/run_leverage_0040_once.py"
+      - "research/leverage_0040/run_leverage_0040_once_r1.py"
       - "research/leverage_0040/validate_leverage_0040_result.py"
       - "execution/plan-b-bot/tests/test_p4_4_study_core.py"
+      - "execution/plan-b-bot/tests/test_p4_4_preflight_authority.py"
       - ".github/workflows/p4-4-leverage-0040-contract.yml"
       - ".github/workflows/p4-4-leverage-0040-run-once.yml"
       - ".github/workflows/p4-4-leverage-0040-result-validation.yml"
@@ -23,7 +25,7 @@ permissions:
 jobs:
   study-contract:
     runs-on: ubuntu-24.04
-    timeout-minutes: 30
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -33,11 +35,15 @@ jobs:
           cache-dependency-path: execution/plan-b-bot/requirements-dev.txt
       - name: Install pinned test runtime
         run: pip install -r execution/plan-b-bot/requirements-dev.txt
-      - name: Validate pre-result study mechanics
-        run: python -m pytest -q execution/plan-b-bot/tests/test_p4_4_study_core.py
-      - name: Compile inert one-time runner and result validator
+      - name: Validate pre-result study mechanics and authority
+        run: |
+          python -m pytest -q \
+            execution/plan-b-bot/tests/test_p4_4_study_core.py \
+            execution/plan-b-bot/tests/test_p4_4_preflight_authority.py
+      - name: Compile inert one-time runner entrypoints and result validator
         run: |
           python -m py_compile research/leverage_0040/run_leverage_0040_once.py
+          python -m py_compile research/leverage_0040/run_leverage_0040_once_r1.py
           python -m py_compile research/leverage_0040/validate_leverage_0040_result.py
       - name: Download pinned ROUTER-DATA-0004 artifact for baseline preflight
         env:
@@ -49,10 +55,10 @@ jobs:
           curl --fail --location -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" "https://api.github.com/repos/${{ github.repository }}/actions/artifacts/8906907321/zip" -o /tmp/router-data-0004.zip
           test "$(sha256sum /tmp/router-data-0004.zip | awk '{print $1}')" = "99c0d463cc94294a6701056c34488d36c03ecff810ae7c6f5db5844e30d790d8"
           unzip -q /tmp/router-data-0004.zip -d /tmp/router-data-0004
-      - name: Run real-data preflight only (no cap>1 evaluation)
+      - name: Run real-data R1 preflight only (no cap>1 evaluation)
         env:
           OMP_NUM_THREADS: "1"
           OPENBLAS_NUM_THREADS: "1"
           MKL_NUM_THREADS: "1"
           NUMEXPR_NUM_THREADS: "1"
-        run: python research/leverage_0040/run_leverage_0040_once.py --router-artifact-dir /tmp/router-data-0004 --preflight-only
+        run: python research/leverage_0040/run_leverage_0040_once_r1.py --router-artifact-dir /tmp/router-data-0004 --preflight-only
