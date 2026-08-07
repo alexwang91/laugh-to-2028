@@ -5,90 +5,157 @@
 ## Current dependency
 
 ```text
-P4 dynamic leverage / operating risk budget
+P4.1 preserve corrected 0-1 scaler
++
+P4.2 preregister first leverage study
 ```
 
-Phase 3 is complete:
+Phase 3 is COMPLETE and post-P3.4 normalization PR #81 is merged. Fresh P4 base:
+
+`fee2ebd34e71f62fb8aaa9e11787aa7413f122cd`
+
+Active branch:
+
+`p4-1/leverage-baseline-prereg-v1`
+
+## Current P4 status
 
 ```text
-P3.1 data contract                 PASS / MERGED
-P3.2 target calculation API       PASS / MERGED
-P3.3 rebalance / turnover control PASS / MERGED
-P3.4 contribution handling        PASS / MERGED
+P4.1 baseline freeze             IMPLEMENTED CANDIDATE
+P4.2 LEVERAGE-0039 prereg        IMPLEMENTED CANDIDATE
+P4.3 leverage runner/objective   BLOCKED
+P4.4 stress execution            BLOCKED
+P4.5 promotion                   BLOCKED
+P4.6 deployment cap              BLOCKED
 ```
 
-P3.4 PR #80 merged by expected-head squash as:
+**No leverage search has been run. No >1 runtime target exists.**
 
-`949fb9f1d079df7c2462a4b13b0eb778e91bb3ae`
+## P4.1 baseline
 
-Final #80 evidence:
+Machine freeze:
 
-- Phase 0 #121 / run `31159909523`: SUCCESS, **215 passed in 7.58s** and 5/5 research integration OK
-- Research evidence #32 / run `31159909467`: SUCCESS
-- P3.2 parity/golden #19 / run `31159909468`: SUCCESS, independent parity + committed golden enforcement
-- final body-edit governance #159 / run `31160307257`: SUCCESS
+`research/leverage_0039/P4_1_BASELINE_FREEZE.json`
 
-## Frozen upstream Phase 3 interfaces
+Freeze ID:
 
-P4 must not rewrite the completed Phase 3 chain merely to study leverage:
+`P4.1-BRRK0011-CORRECTED-0-1-V1`
+
+It preserves the current corrected BRRK-0011 defensive layer:
 
 ```text
-P3.1 canonical daily data
--> P3.2-BRRK0011-V1
--> P3.3-L1-BAND-V1
--> P3.4-EQUITY-CHANGE-DAILY-V1
+scale domain              0 .. 1
+scenario CVaR/CDaR budget 20%
+production gross cap      1.0
+operating risk budget     UNFROZEN
+catastrophic DD boundary  70% termination limit only
 ```
 
-Frozen role boundary:
+Do not overwrite historical BRRK artifacts or silently reconcile different metric conventions. The corrected BRRK result CAGR (65.104%) and F27 R2 raw calendar-span CAGR (65.16609785339962%) remain separately labeled evidence.
+
+## P4.2 LEVERAGE-0039
+
+Machine preregistration:
+
+`research/leverage_0039/LEVERAGE-0039.json`
+
+Status:
+
+`PREREGISTERED_BEFORE_FIRST_RUN`
+
+Only structural change allowed in the first study:
+
+> extend the upper bound of the same corrected CVaR/CDaR scale selector.
+
+Candidate research caps:
 
 ```text
-target assets = BTC, ETH, SOL, BNB
-feature-only  = XRP
-current approved base gross <= 1
-short targets forbidden
-production_authorized_components = []
+1.00 / 1.10 / 1.20 / 1.30
 ```
 
-P3.2 target goldens, P3.3 0.05 L1 control semantics, and P3.4 next-daily contribution timing remain authoritative unless a later explicitly registered decision changes their own scope.
+`1.00` is a mandatory exact baseline-parity gate. The 1.30 ceiling is taken only as the repository's historical research-only cap hint; it is not promoted or production-authorized. Any search above 1.30 requires a new experiment ID.
 
-## P4 entry rule
-
-Before any P4 implementation or experiment, reread the exact Phase 4 section of:
-
-`docs/IMPLEMENTATION_ROADMAP_2026-08-05.md`
-
-Do not infer the P4 objective, search domain, operating drawdown budget, hard gross cap, funding/cost treatment or stress acceptance thresholds from memory.
-
-The roadmap already makes several high-level boundaries explicit:
-
-- preserve the current 0–1 corrected CVaR/CDaR scaler as the defensive baseline;
-- do not overwrite historical BRRK results;
-- preregister the leverage study before running it;
-- candidate search may include gross >1, but deployment remains separately capped;
-- optimize long-run compounded wealth subject to operating drawdown, catastrophe, tail-risk, liquidation-distance, cost and robustness constraints;
-- P4 must include the roadmap-defined historical and synthetic stress suite.
-
-These are entry constraints only. The exact P4 subsections must be reread before a fresh P4 branch is created.
-
-## Explicit boundaries that remain separate
-
-Do not silently absorb into P4 without explicit registered ownership:
-
-- F23 funding-response redesign;
-- P5 exit intelligence;
-- short targets;
-- XRP target exposure;
-- production authorization;
-- withdrawals/master-wallet-key handling.
-
-The historical `EXPOSURE-SMOOTH-0038` experiment remains mechanism-validated but NOT PROMOTED and must not become a P4 baseline by implication.
-
-## Production authorization
+Operating maximum-drawdown candidate budgets:
 
 ```text
-NO_CHANGE
-production_authorized_components = []
+35% / 40% / 45% / 50%
 ```
+
+They are constraints, not targets. All remain below the 70% catastrophe boundary. Scenario CVaR/CDaR budget remains frozen at 20%.
+
+## Cost / funding gate
+
+Matched cost grid:
+
+```text
+5 / 10 / 20 / 50 bps per absolute weight change
+```
+
+Funding is exogenous cost only:
+
+- Hyperliquid native common-window panel mandatory;
+- Binance full-history panel proxy/stress only;
+- no funding threshold, alpha or position filter;
+- no zero-filling missing native funding;
+- strict verified-spot accounting may be diagnostic but is not deployable net PnL without historical spot fee/basis/slippage evidence;
+- F23 remains separate.
+
+## Stress gate
+
+Preregistered historical eras:
+
+- 2021 spring crash;
+- 2021 November/bear transition;
+- 2022 severe drawdown;
+- 2024-03-01 through 2024-05-15 April masking episode;
+- calendar 2025 multi-peak/deleveraging;
+- 2026 through frozen 2026-08-02 end.
+
+2021/early-2022 uses an explicitly labeled conservative pre-BRRK proxy wherever the frozen 600-day training gate makes full BRRK ineligible.
+
+Synthetic suite includes one-day uniform gaps -10/-20/-30/-40/-50%, cross-asset BTC-led/alt-crash gaps and 1.5x/2x/3x volatility amplification on worst 20-day blocks.
+
+A canonical Hyperliquid liquidation-distance model must be snapshotted and hash-pinned before the first leverage run. Missing liquidation evidence fails closed.
+
+## Promotion gate
+
+A >1 candidate cannot advance unless all machine-preregistered conditions pass, including:
+
+- cap=1 baseline parity;
+- higher matched-cost compounded wealth at 5 and 10 bps;
+- not dominated by <=1 baseline at 20 bps;
+- selected operating MDD constraint;
+- <70% catastrophic drawdown;
+- corrected scenario CVaR/CDaR <=20%;
+- all historical/synthetic stresses;
+- liquidation-distance gate;
+- start-date and stationary-block bootstrap robustness;
+- Hyperliquid native funding panel;
+- no P3/F23/0038/P5/short/XRP scope smuggling.
+
+Failure preserves <=1 baseline.
+
+## Deployment remains separate
+
+Even a research PASS does not authorize live leverage.
+
+Under `LEVERAGE-0039`, any future deployment cap must be the next lower preregistered cap grid point and never above 1.20, with a separate versioned decision and production authorization.
+
+`production_authorized_components = []` remains unchanged.
+
+## Explicit exclusions for this PR
+
+Do not add:
+
+- leverage runner or results;
+- search above 1.30;
+- runtime gross >1;
+- P3.1/P3.2/P3.3/P3.4 modifications;
+- EXPOSURE-SMOOTH-0038 promotion;
+- F23 funding response;
+- shorts / XRP targets;
+- P5 exit logic;
+- production authorization.
 
 ## Project drift audit
 
@@ -99,11 +166,17 @@ DRIFT_0
 ## Exact next action
 
 ```text
-finish post-P3.4 docs normalization
--> applicable CI / parity / governance
--> expected-head merge normalization
--> verify latest main
--> reread exact P4 roadmap section in full
--> create fresh P4 branch from that main
--> preregister / implement only the first P4 dependency authorized by the roadmap
+self-review current P4.1/P4.2 diff
+-> open PR
+-> Phase 0 / applicable P3.2 parity / research evidence / governance
+-> fix every real failure in same PR
+-> final-head CI
+-> write exact evidence into PR body
+-> newest body-edit governance GREEN
+-> expected-head squash merge
+-> post-merge normalization
+-> fresh P4.3 runner branch
+-> snapshot/hash liquidation inputs
+-> cap=1 exact parity first
+-> execute LEVERAGE-0039 once only after all prereg inputs are frozen
 ```
