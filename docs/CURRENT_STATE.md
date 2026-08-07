@@ -18,8 +18,9 @@ Phase 4 leverage research      FAIL_STOP / no eligible >1 candidate
 P4.6 production leverage gate  NOT ENTERED / BLOCKED by no candidate
 P5.1 event taxonomy            COMPLETE / MERGED / FROZEN
 P5.2 feature families          COMPLETE / IMMUTABLE EVIDENCE / DESCRIPTIVE CLOSEOUT
-P5.3 state-model structure     PREREGISTERED / FROZEN BEFORE STATE-PATH EVALUATION
-P5.3 implementation/evidence   NOT RUN
+P5.3 state-model structure     COMPLETE / MERGED / R1+R2 FROZEN
+P5.3 implementation            IMPLEMENTED / FROZEN / PRE-RUN CI REQUIRED
+P5.3 state-path evidence       NOT RUN
 P5.4-P5.6                      NOT STARTED
 Phase 6 integrated shadow      NOT STARTED
 Phase 7 limited live long      NOT STARTED / explicit approval required
@@ -31,83 +32,48 @@ production authorization       NONE
 
 Current production gross cap remains `1.0`.
 
-## Phase 4 immutable truth
+## Immutable research dependencies
 
-`LEVERAGE-0040` and `LEVERAGE-0041` are complete immutable `NO_PROMOTION` studies. No research cap, operating drawdown budget or prospective P4.6 cap was selected. Do not rerun, rescue, retune, reinterpret or reuse either experiment ID.
+### Phase 4
 
-LEVERAGE-0041 result commit: `8ea784830cfffbf892a258cb329d437725d41982`.
+`LEVERAGE-0040` and `LEVERAGE-0041` are complete immutable `NO_PROMOTION` studies. No >1 cap is eligible for P4.6. Production gross stays 1.0.
 
-LEVERAGE-0041 immutable summary SHA256: `e41a5895263e7aa9206df9fa99fcbb71e5f937abc4746a567fbeb462cca88d17`.
+### P5.1
 
-## P5.1 immutable taxonomy truth
+Contract: `P5.1-EVENT-TAXONOMY-V1`  
+Taxonomy blob SHA: `73d010666fbfd957ec15214a00883a90a8adba5a`
 
-P5.1 merged in PR #97 on main `86497cdd663a89ca4d54c898b7acbac1cc07d836`.
+Required 2021/2025 events and four high-volatility non-top controls are frozen. Only 2021 November is explicitly terminal. P5.3 may not move events, anchors or buckets.
 
-Contract: `P5.1-EVENT-TAXONOMY-V1`.
+### P5.2
 
-Taxonomy blob SHA: `73d010666fbfd957ec15214a00883a90a8adba5a`.
-
-Required 2021/2025 events and four high-volatility non-top controls are frozen. Only 2021 November is explicitly terminal in V1. Search windows, anchor rules and evaluation buckets may not be moved by P5.3.
-
-## P5.2 immutable feature-evidence truth
-
-Contract: `P5.2-FEATURE-FAMILIES-V1`.
-
-Immutable result commit: `61d585afb64afbe3ead6422e7e62cde6c59fad40`.
-
-Immutable summary SHA256: `3f6dc3c512d22ac8f71d43ed155f2602cd40d5caf3d617c0e130e170727e0627`.
+Contract: `P5.2-FEATURE-FAMILIES-V1`  
+Immutable result commit: `61d585afb64afbe3ead6422e7e62cde6c59fad40`  
+Immutable summary SHA256: `3f6dc3c512d22ac8f71d43ed155f2602cd40d5caf3d617c0e130e170727e0627`
 
 ```text
-status                    ONE_TIME_FROZEN_FEATURE_EVIDENCE_COMPLETE
 available features        29
 coverage                   ALL PASS
-resolved events            11
-non-top controls           4
 pending data sources       6
 feature_set_selected       false
 state_thresholds_selected  false
-selection.status           DESCRIPTIVE_EVIDENCE_ONLY
 production_authorized      false
 ```
 
-Formal interpretation: `docs/P5_2_FEATURE_EVIDENCE_CLOSEOUT.md`.
+P5.2 robust-z values remain descriptive research diagnostics only and are not P5.3 runtime inputs.
 
-Derived non-authorizing diagnostics: `research/analysis/p5_2_closeout/`.
+## P5.3 frozen structure
 
-## P5.3 frozen preregistration truth
+State-model contract: `P5.3-STATE-MODEL-STRUCTURE-V1`.
 
-Contract: `P5.3-STATE-MODEL-STRUCTURE-V1`.
+Merged prereg main: `8533f8ce0519dfeade6ac33124d90a45a416122c`.
 
-Status: `FROZEN_BEFORE_STATE_PATH_EVALUATION`.
+Both completeness corrections occurred before any state path:
 
-No P5.3 state path has been computed yet.
+- `P5.3-PREREG-COMPLETENESS-R1` — exact percentile mapping / causal early-history calibration;
+- `P5.3-PREREG-COMPLETENESS-R2` — exact hysteresis mechanics / removal of dead runtime inputs.
 
-### Prereg completeness corrections
-
-Both corrections were made before any state-path evidence existed.
-
-`P5.3-PREREG-COMPLETENESS-R1` froze the exact causal percentile mapping and early-history calibration:
-
-```text
-window          last up to 365 completed daily dates ending at t
-missing         drop feature-by-feature
-minimum N       20 nonmissing observations
-percentile      (average_rank(current) - 1) / (N - 1)
-future data     forbidden
-20 <= N < 365   use available causal history and report N
-N < 20          unavailable
-```
-
-Before all continuous state inputs are calibrated, emit `DATA_INSUFFICIENT`. CI must prove all required continuous inputs are calibrated by `2021-01-31`.
-
-`P5.3-PREREG-COMPLETENESS-R2` froze exact initialization/escalation/de-escalation counter mechanics and removed two dead runtime inputs that were not referenced by any evidence atom:
-
-- `bnb_btc_log_return_40d`;
-- `btc_daily_rsi14`.
-
-R2 changes no profile threshold, evidence-atom threshold, P5.1/P5.2 artifact or production boundary.
-
-### State vocabulary / severity order
+State vocabulary / severity order:
 
 ```text
 NORMAL_BULL
@@ -119,35 +85,16 @@ DE_RISK_2
 FLAT
 ```
 
-The list above is also the exact least-to-most-conservative `severity_order`.
+Runtime evidence channels:
 
-### Frozen runtime evidence channels
+```text
+REGIME_TEXTURE
+LEADERSHIP_ROTATION
+EXHAUSTION_TRANSITION
+TREND_DAMAGE
+```
 
-`REGIME_TEXTURE`
-- BTC RV20;
-- BTC RV20/RV60;
-- distance from trailing 90d high;
-- KAMA gap.
-
-`LEADERSHIP_ROTATION`
-- ETH/BTC 20d;
-- ETH/BTC 40d;
-- breadth acceleration;
-- canonical-five outperformance breadth as a raw `[0,1]` fraction.
-
-`EXHAUSTION_TRANSITION`
-- price-vs-RSI rank divergence;
-- RSI14 failure from recent maximum;
-- completed-4h RSI14 / RSI28;
-- breadth acceleration / contraction.
-
-`TREND_DAMAGE`
-- KAMA gap;
-- distance from trailing high;
-- BTC 20d return;
-- BTC 40d return.
-
-The architecture explicitly enforces:
+Core semantic boundary:
 
 ```text
 volatility alone            != top
@@ -159,67 +106,69 @@ exhaustion + damage         -> de-risk candidate
 strong exhaustion + damage  -> hard-risk / FLAT candidate
 ```
 
-P5.2 robust-z values are research diagnostics only and are not runtime inputs.
-
-### Frozen sensitivity profiles
+Causal normalization:
 
 ```text
-EARLY        moderate 65/35  strong 80/20  escalation 2d  clear 5d
-BALANCED     moderate 70/30  strong 85/15  escalation 3d  clear 5d
-CONSERVATIVE moderate 75/25  strong 90/10  escalation 3d  clear 7d
+window          last up to 365 completed daily dates ending at t
+minimum N       20 nonmissing observations per continuous feature
+percentile      (average_rank(current) - 1) / (N - 1)
+future data     forbidden
+pre-init        DATA_INSUFFICIENT
 ```
 
-All three profiles must be reported. They are sensitivity cases, not post-result tuning knobs.
+Frozen profiles:
 
-### Exact transition mechanics
+```text
+EARLY        65/35 moderate, 80/20 strong, escalation 2d, clear 5d
+BALANCED     70/30 moderate, 85/15 strong, escalation 3d, clear 5d
+CONSERVATIVE 75/25 moderate, 90/10 strong, escalation 3d, clear 7d
+```
 
-- use zero-based indices in `severity_order`;
-- first fully calibrated date: raw `FLAT` initializes directly to `FLAT`; otherwise initialize `NORMAL_BULL`;
-- ordinary escalation counts only consecutive dates with `raw_index > current_index`;
-- after the persistence requirement, transition to the **minimum-severity raw candidate over that persistence window**, so any multi-state jump is continuously supported by every date in the window;
-- fully evaluated raw `FLAT` enters immediately without ordinary persistence;
-- ordinary de-escalation counts only consecutive dates with `raw_index < current_index`;
-- after the clear period, move exactly one severity step lower;
-- every further de-escalation step requires a new clear period;
-- equality resets both ordinary counters and holds state;
-- after initialization, ordinary missing-data days hold current state and reset counters;
-- missing data may enter hard FLAT only when every input needed to prove both `STRONG_DAMAGE` and `STRONG_EXHAUSTION` is present and both atoms are true;
-- FLAT is absorbing inside P5.3; re-entry requires explicit human approval outside the classifier;
-- no P5.3 intraday risk addition.
+FLAT is absorbing inside P5.3; re-risk from FLAT requires explicit human approval outside the classifier.
 
-### Explicitly excluded pending data
+## P5.3 implementation / evidence contract
 
-P5.3 does not use or proxy:
+Implementation files now exist on the P5.3 implementation branch:
 
-- BTC dominance;
-- broad-market breadth;
-- historical funding;
-- historical OI;
-- historical basis/premium;
-- liquidation proxy.
+```text
+research/cycle_exit/p5_3_state_model.py
+research/cycle_exit/run_p5_3_state_paths.py
+research/cycle_exit/validate_p5_3_state_path_result.py
+execution/plan-b-bot/tests/test_p5_3_state_model.py
+```
 
-## P5.3 next evidence boundary
+Frozen evidence-output contract:
 
-After prereg CI/governance is green and merged, implement the deterministic state engine against the immutable P5.2 feature panel and report all three frozen profiles.
+`P5.3-STATE-PATH-EVIDENCE-V1`
 
-Required outputs:
+It binds to state-model blob:
 
-- complete daily state paths;
-- raw candidate and evidence-atom booleans by date/profile;
-- per-feature calibration depth / initialization date;
-- event-window occupancy;
-- first-entry dates / lead-lag;
-- state transition and churn counts;
-- second-wind false-terminal / FLAT behavior;
-- non-top-control conservative-state occupancy;
-- missing-data behavior;
-- profile sensitivity.
+`400ec97f8a0e522c5776ce1f6a98fc6d7e069267`
 
-P5.3 may identify a research candidate for downstream P5.4/P5.5, but may not select production behavior or a production state model. P5.5 owns robustness selection after P5.4 behavior/economic mapping exists.
+and P5.2 summary SHA256:
 
-## Roadmap audit status
+`3f6dc3c512d22ac8f71d43ed155f2602cd40d5caf3d617c0e130e170727e0627`
 
-All historical deviations identified by the 2026-08-07 program-wide audit have recorded CLOSED dispositions. Current canonical product/strategy/production drift: **DRIFT_0**.
+No historical P5.3 state path has been generated yet.
+
+The evidence contract freezes event reporting to the existing five P5.1 buckets. It forbids adding a post-result custom lead/lag window. Required outputs include:
+
+- normalized percentiles / normalization counts;
+- daily state path, raw candidate and atom booleans for all three profiles;
+- initialization/calibration diagnostics;
+- event-bucket state occupancy;
+- first state occurrence within each frozen bucket and anchor offset;
+- profile transition/churn summary;
+- second-wind/control conservative-state behavior through the same frozen occupancy table.
+
+The result must remain:
+
+```text
+profile_selected                 false
+state_model_production_selected  false
+status                           STATE_PATH_EVIDENCE_ONLY
+production authorization         NONE
+```
 
 ## Frozen product boundaries
 
@@ -229,21 +178,20 @@ All historical deviations identified by the 2026-08-07 program-wide audit have r
 - primary venue: Hyperliquid;
 - daily decision boundary: 00:00 UTC;
 - FLAT = zero directional exposure;
-- FLAT -> LONG / SHORT and MONITOR_ONLY -> ACTIVE require explicit human approval;
-- first short of a new bear phase requires explicit human approval;
-- intraday automation may reduce but not autonomously add directional exposure;
-- master key, automated withdrawals and external transfers remain outside scope;
-- P4.1 defensive scale stays `[0,1]`;
+- human approval remains required for risk-on transitions from FLAT/control states;
+- no automated withdrawals/external transfers;
+- P4.1 defensive scale `[0,1]` unchanged;
 - production gross remains `1.0`.
 
 ## Exact next action
 
 ```text
-RUN FRESH P5.3 PREREG CONTRACT CI + GOVERNANCE
-IF GREEN, MERGE PREREGISTRATION
-CREATE FRESH P5.3 IMPLEMENTATION BRANCH FROM NEW MAIN
-IMPLEMENT EARLY / BALANCED / CONSERVATIVE EXACTLY AS FROZEN
-DO NOT CHANGE FEATURES / PROFILES / STATE RULES AFTER STATE PATHS ARE OBSERVED
+RUN FRESH P5.3 IMPLEMENTATION / SYNTHETIC UNIT / GOVERNANCE CI
+DO NOT COMPUTE HISTORICAL STATE PATHS DURING PREFLIGHT
+IF ALL PRE-RUN GATES ARE GREEN, COMMIT THE FROZEN RUN_ONCE MARKER
+EXECUTE P5.3-STATE-PATH-EVIDENCE-V1 ONCE
+VALIDATE AND COMMIT IMMUTABLE RESULT
+DO NOT RETUNE STATE RULES / PROFILES / EVENT METRICS AFTER RESULT
 DO NOT SELECT P5.4 GROSS MULTIPLIERS
 DO NOT PRODUCTION-AUTHORIZE ANYTHING
 ```
