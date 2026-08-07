@@ -8,6 +8,7 @@ on:
       - "research/leverage_0040/run_leverage_0040_once.py"
       - "research/leverage_0040/run_leverage_0040_once_r1.py"
       - "research/leverage_0040/validate_leverage_0040_result.py"
+      - "research/results/leverage_0040/**"
       - "execution/plan-b-bot/tests/test_p4_4_study_core.py"
       - "execution/plan-b-bot/tests/test_p4_4_preflight_authority.py"
       - ".github/workflows/p4-4-leverage-0040-contract.yml"
@@ -16,6 +17,7 @@ on:
       - "docs/CURRENT_STATE.md"
       - "docs/NEXT_STEPS.md"
       - "docs/P4_0040_PRE_RUN_CHECKLIST.md"
+      - "config/decision_registry.json"
   workflow_dispatch:
 
 permissions:
@@ -35,7 +37,7 @@ jobs:
           cache-dependency-path: execution/plan-b-bot/requirements-dev.txt
       - name: Install pinned test runtime
         run: pip install -r execution/plan-b-bot/requirements-dev.txt
-      - name: Validate pre-result study mechanics and authority
+      - name: Validate frozen study mechanics and authority
         run: |
           python -m pytest -q \
             execution/plan-b-bot/tests/test_p4_4_study_core.py \
@@ -45,20 +47,32 @@ jobs:
           python -m py_compile research/leverage_0040/run_leverage_0040_once.py
           python -m py_compile research/leverage_0040/run_leverage_0040_once_r1.py
           python -m py_compile research/leverage_0040/validate_leverage_0040_result.py
-      - name: Download pinned ROUTER-DATA-0004 artifact for baseline preflight
+      - name: Validate pre-result inputs or immutable post-result evidence
         env:
           GH_TOKEN: ${{ github.token }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          mkdir -p /tmp/router-data-0004
-          curl --fail --location -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" "https://api.github.com/repos/${{ github.repository }}/actions/artifacts/8906907321/zip" -o /tmp/router-data-0004.zip
-          test "$(sha256sum /tmp/router-data-0004.zip | awk '{print $1}')" = "99c0d463cc94294a6701056c34488d36c03ecff810ae7c6f5db5844e30d790d8"
-          unzip -q /tmp/router-data-0004.zip -d /tmp/router-data-0004
-      - name: Run real-data R1 preflight only (no cap>1 evaluation)
-        env:
           OMP_NUM_THREADS: "1"
           OPENBLAS_NUM_THREADS: "1"
           MKL_NUM_THREADS: "1"
           NUMEXPR_NUM_THREADS: "1"
-        run: python research/leverage_0040/run_leverage_0040_once_r1.py --router-artifact-dir /tmp/router-data-0004 --preflight-only
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -f research/results/leverage_0040/summary.json ]]; then
+            echo "Immutable LEVERAGE-0040 result exists; validating committed evidence without rerunning the study."
+            python research/leverage_0040/validate_leverage_0040_result.py
+            exit 0
+          fi
+
+          echo "No immutable result exists; running pre-result baseline/data/cap1 preflight only."
+          mkdir -p /tmp/router-data-0004
+          curl --fail --location \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/${{ github.repository }}/actions/artifacts/8906907321/zip" \
+            -o /tmp/router-data-0004.zip
+          test "$(sha256sum /tmp/router-data-0004.zip | awk '{print $1}')" = "99c0d463cc94294a6701056c34488d36c03ecff810ae7c6f5db5844e30d790d8"
+          unzip -q /tmp/router-data-0004.zip -d /tmp/router-data-0004
+          python research/leverage_0040/run_leverage_0040_once_r1.py \
+            --router-artifact-dir /tmp/router-data-0004 \
+            --preflight-only
