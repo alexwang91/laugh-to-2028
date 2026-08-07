@@ -60,7 +60,7 @@ def _target(*, equity: float, current_positions: dict[str, float]) -> TargetCalc
         data_contract_schema=2,
         data_contract_id="BRRK-DATA-CONTRACT-P3.1-R1-2026-08-06",
         data_digest="fixture-data-digest",
-        approved_product_id="BRRK-PLAN-B",
+        approved_product_id="brkk-laugh-to-2028",
         approved_config_model_version="BRRK-0011",
     )
 
