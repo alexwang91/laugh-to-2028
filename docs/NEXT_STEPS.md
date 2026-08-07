@@ -5,24 +5,33 @@
 ## Current dependency
 
 ```text
-P3.2 Target calculation API
+P3.3 rebalance / turnover controls
 ```
 
-PR #75 restored real P3.1 schema-v2 validation evidence and merged as:
+P3.2 Target calculation API is PASS / TESTED / CI VERIFIED / MERGED by PR #76.
 
-`c25b64fd42043bbaa61e264a8591bfdc813f5e40`
+P3.2 merge commit:
 
-Final #75 evidence:
+`70e279bcb1e7f78cfed1d62376a7aa2fef17ac45`
 
-- Phase 0 #101 / run `31152649985`: SUCCESS, 187 execution tests passed and research integration SUCCESS
-- Research evidence normalization #13 / run `31152649957`: SUCCESS
-- final PR governance #133 / run `31152716966`: SUCCESS
+Final P3.2 evidence:
 
-P3.2 is now active on fresh branch:
+- Phase 0 #108 / run `31154665875`: SUCCESS
+- Research evidence #19 / run `31154665880`: SUCCESS
+- P3.2 target research-live parity #6 / run `31154665888`: SUCCESS
+  - independent research-vs-product parity SUCCESS
+  - committed historical golden enforcement SUCCESS
+- final body-edit PR governance #140 / run `31154835417`: SUCCESS
 
-`p3-2/target-calculation-api-v3`
+Committed P3.2 golden evidence:
 
-## Frozen input role boundary
+`research/results/p3_2_target_parity/golden_v1.json`
+
+## Frozen input from P3.2
+
+P3.3 must consume the existing target contract rather than recompute or alter it.
+
+Frozen target role boundary:
 
 ```text
 target_assets  = BTC, ETH, SOL, BNB
@@ -31,94 +40,93 @@ strategy-signal daily payload = BTC, ETH, SOL, BNB, XRP
 router-eligible assets         = BTC, ETH, SOL, BNB only
 ```
 
-XRP remains feature-only and cannot receive target exposure.
-
-## P3.2 contract
-
-Input:
-
-- schema-v2 canonical strategy-signal daily data
-- account equity
-- current positions
-- approved ProductConfig
-
-Output:
+P3.2 output available to P3.3 includes:
 
 - BTC/ETH/SOL/BNB target weights
 - risky-sleeve relative weights
 - cash share
 - base gross target <= 1
 - semantic risk state and posterior
-- corrected defensive scale / risk-off probability / meta scale
+- risk-off probability / meta scale / defensive scale
 - regime refit session
 - feature snapshot
-- model, target-engine and data-contract versions
+- model / target-engine / data-contract versions
 - canonical data digest
 
-Timing:
+Timing remains:
 
-- decision at D 00:00 UTC consumes completed data exactly through D-1
-- current V1 row at D-1 becomes decision-D target
-- defensive scale is the most recent frozen 30-calendar-day BRRK refit active on D-1
+- decision D 00:00 UTC consumes completed daily data through exactly D-1
+- P3.2 emits the model target for that decision
 
-Frozen chain:
+## P3.3 scope
 
-```text
-four-asset V1
--> gross normalization <= 1
--> price-only five-series regime features (XRP feature-only)
--> RobustScaler + PCA4 + sticky VariationalGaussianHMM
--> filtered posterior
--> state-conditioned internally-banded V1 return distribution
--> 5000 x 20d Student-t paths
--> corrected CVaR/CDaR scale
--> final_scale = 1 - P(RISK_OFF) * (1 - meta_scale)
--> target = V1 raw target * final_scale
-```
+P3.3 owns **target-to-position rebalance and turnover controls only**.
 
-The internal 5% V1 band is only a frozen BRRK return-model calibration input. P3.2 does not use current positions to band or throttle the emitted target.
+The implementation should take:
 
-## Current implementation
+- canonical P3.2 target
+- actual current positions / equity
+- approved execution/product configuration
 
-Already present on the P3.2 branch:
+and determine whether/how much of the target gap is actionable under the frozen P3.3 control policy.
 
-- `execution/plan-b-bot/beta_bot/target_math.py`
-- `execution/plan-b-bot/beta_bot/target_engine.py`
-- pinned scientific runtime dependencies
-- `execution/plan-b-bot/tests/test_target_engine_p3_2.py`
-- `research/integration/p3_2_target_parity.py`
-- `.github/workflows/p3-2-target-parity.yml`
-- updated `docs/CURRENT_STATE.md`
+Required outputs should be explicit and auditable, including at least:
 
-## Required acceptance evidence
+- model target received from P3.2
+- current position weights/notionals
+- target gap by asset
+- rebalance decision / reason
+- post-control desired position or executable delta
+- turnover/control version
+- decision timestamp and upstream target digest/version
 
-Open one P3.2 PR and require all of the following on its final head:
+The exact P3.3 acceptance contract must be checked against the Implementation Roadmap before implementation begins.
 
-1. `Phase 0 baseline contract` SUCCESS
-   - full execution pytest
-   - existing research integration contract
-2. `P3.2 target research-live parity` SUCCESS
-   - 2021 V1-only historical parity before a legal BRRK regime refit exists
-   - multiple full BRRK historical decisions from late 2022 through 2026
-   - compare per-asset target, gross, cash, refit date, semantic posterior/state, meta scale, defensive scale and feature snapshot
-3. `PR handoff governance` SUCCESS
-4. self-review confirms no P3.3/P3.4/P4/P5 scope leakage
-5. `production_authorized_components = []`
+## Critical separation from P3.2
 
-If parity dates do not demonstrate materially different state/exposure regimes, use the first CI report to replace/add **predeclared historical dates** that broaden coverage. Do not retune model parameters or thresholds on the same historical window.
+The 5% band inside P3.2's frozen BRRK return-model calibration is **not** the P3.3 execution band. It exists only to reproduce the historical state-conditioned V1 return distribution used by BRRK-0011 risk scaling.
+
+P3.3 must not alter:
+
+- BRRK/V1 target weights
+- HMM/PCA/state model
+- defensive scale
+- P3.1 data canonicalization
+- P3.2 golden vectors
+
+If a target-vs-held band or turnover policy is implemented, it must live after P3.2 target calculation and be separately versioned/tested.
 
 ## Explicit exclusions
 
-Do not add:
+Do not add in P3.3:
 
-- P3.3 target-vs-held rebalance / turnover bands
-- P3.4 contribution handling
+- P3.4 weekly contribution handling
 - F23 funding-response redesign
-- P4 leverage above 1 or operating-risk-budget freeze
-- P5 exit intelligence
+- P4 leverage above 1 / operating-risk-budget freeze
+- P5 cycle-exit intelligence
 - short targets
-- XRP targets
+- XRP target exposure
 - production authorization
+
+## Required workflow
+
+```text
+finish this post-merge normalization PR
+-> required CI / parity / governance
+-> expected-head merge normalization
+-> verify new main
+-> create fresh P3.3 branch from latest main
+-> reread P3.3 roadmap acceptance contract
+-> implement P3.3 only
+-> unit tests + upstream P3.2 contract-preservation tests
+-> CURRENT_STATE handoff
+-> PR / CI / self-review
+-> final-head evidence
+-> newest governance GREEN
+-> expected-head merge
+-> post-merge normalization
+-> P3.4
+```
 
 ## Production authorization
 
@@ -136,16 +144,7 @@ DRIFT_0
 ## Exact next action
 
 ```text
-self-review current P3.2 diff
--> open P3.2 PR
--> run Phase 0 + P3.2 parity + PR governance
--> fix every real failure in same PR
--> inspect historical parity coverage
--> final-head CI
--> update PR body with exact evidence
--> newest governance GREEN
--> expected-head squash merge
--> verify main
--> post-merge normalization
--> fresh P3.3 branch
+close post-merge normalization
+-> fresh P3.3 branch from latest main
+-> implement target-to-position rebalance / turnover controls only
 ```
