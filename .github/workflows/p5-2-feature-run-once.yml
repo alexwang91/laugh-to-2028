@@ -1,0 +1,67 @@
+name: P5.2 feature evidence RUN ONCE
+
+on:
+  push:
+    branches:
+      - "p5-2/feature-families"
+    paths:
+      - "research/cycle_exit/RUN_ONCE_P5_2_FEATURE_EVIDENCE.marker"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: p5-2-feature-evidence-run-once
+  cancel-in-progress: false
+
+jobs:
+  run-once:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: "p5-2/feature-families"
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: execution/plan-b-bot/requirements-dev.txt
+      - name: Install pinned runtime
+        run: pip install -r execution/plan-b-bot/requirements-dev.txt
+      - name: Guard one-time authority and frozen contracts
+        run: |
+          set -euo pipefail
+          test ! -e research/results/p5_2_feature_evidence/summary.json
+          test "$(sha256sum research/cycle_exit/RUN_ONCE_P5_2_FEATURE_EVIDENCE.marker | awk '{print $1}')" = "cac12d742a072d0bb592e5fd120302668c15658dedc29d2483a6d7465f4eae9b"
+          test "$(git hash-object research/cycle_exit/p5_2_feature_contract.json)" = "55b2d8a1f079e05b98413b37e5a9d797f9241410"
+          test "$(git hash-object research/cycle_exit/p5_1_event_taxonomy.json)" = "73d010666fbfd957ec15214a00883a90a8adba5a"
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          c = json.loads(Path("research/cycle_exit/p5_2_feature_contract.json").read_text())
+          assert c["status"] == "FROZEN_BEFORE_FIRST_FEATURE_EVIDENCE_RUN"
+          assert c["research_integrity"]["p5_1_windows_and_anchor_rules_immutable"] is True
+          assert c["research_integrity"]["feature_definitions_frozen_before_first_event_evidence_run"] is True
+          assert c["research_integrity"]["production_authorization"] == "NONE"
+          assert c["run_once"]["authorized_under_standing_research_authorization"] is True
+          PY
+      - name: Execute deterministic P5.2 feature evidence study
+        env:
+          OMP_NUM_THREADS: "1"
+          OPENBLAS_NUM_THREADS: "1"
+          MKL_NUM_THREADS: "1"
+          NUMEXPR_NUM_THREADS: "1"
+        run: python research/cycle_exit/run_p5_2_feature_evidence.py
+      - name: Validate immutable P5.2 result
+        run: python research/cycle_exit/validate_p5_2_feature_result.py
+      - name: Commit immutable result
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add research/results/p5_2_feature_evidence
+          git diff --cached --quiet && { echo "No result files staged"; exit 1; }
+          git commit -m "Research: commit immutable P5.2 feature evidence result"
+          git push origin HEAD:p5-2/feature-families
