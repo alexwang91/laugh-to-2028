@@ -27,8 +27,10 @@ BNBUSDT
 XRPUSDT
 Binance spot
 UTC 1d completed bars
-2020-10-01 through 2025-12-31
+2020-10-01 through 2026-02-28
 ```
+
+The fixed end date deliberately extends beyond 2025 year-end so every frozen P5.1 `medium_after = +29..+90 days` bucket for the late-2025 events is fully observable. This date was corrected before the first feature-evidence run; no event, feature, or metric result had been observed.
 
 4h momentum:
 
