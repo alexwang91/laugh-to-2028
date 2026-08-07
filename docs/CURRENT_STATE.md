@@ -3,7 +3,7 @@
 Last updated: 2026-08-07
 Status: **authoritative current-state handoff**
 
-> GitHub `main` remains the canonical merged ref. PR #90 contains the completed LEVERAGE-0040 immutable research evidence and the P4.5 no-promotion decision. Research completion does not imply production authorization.
+> GitHub `main` is the canonical merged ref. PR #90 is merged. LEVERAGE-0040 is complete and immutable with `NO_PROMOTION`. LEVERAGE-0041 is the new preregistered research target; preregistration does not authorize a run or production leverage.
 
 ## Executive state
 
@@ -15,25 +15,25 @@ Phase 3                         COMPLETE / MERGED
 P4.1 defensive scaler          COMPLETE / MERGED / frozen [0,1]
 P4 architecture + cap1         COMPLETE / MERGED
 P4 margin/liquidation prereqs  COMPLETE / MERGED
-LEVERAGE-0040                  COMPLETE / IMMUTABLE RESULT
-P4.5 select/fail decision      FAIL_STOP / NO_PROMOTION
-P4.6 production leverage gate  BLOCKED / no eligible candidate
+LEVERAGE-0040                  COMPLETE / IMMUTABLE / NO_PROMOTION
+P4.5 select/fail decision      COMPLETE / FAIL_STOP
+LEVERAGE-0041                  PREREGISTERED / NOT RUN
+P4.6 production leverage gate  BLOCKED
 P5 exit intelligence           NOT STARTED
 production authorization       NONE
 ```
 
 `production_authorized_components = []`
 
-## LEVERAGE-0040 final evidence
+Current production gross cap remains `1.0`.
 
-Research PR / branch:
+## Canonical merged base
 
-- PR #90;
-- `p4-4/leverage-0040-one-time-study-v2`.
+`14dd9f2fb828d860b8552816814982dc4bd89b10`
 
-Canonical main base:
+This is the merge commit for PR #90.
 
-`3690f64a6179a759a60d9759c214d59cf604869e`
+## LEVERAGE-0040 historical truth
 
 Immutable result commit:
 
@@ -51,102 +51,105 @@ selection.status                        NO_PROMOTION
 selected_research_cap                   NONE
 selected_operating_max_drawdown_budget  NONE
 production_authorized                   false
-production_authorized_components        []
 ```
 
 At 5 bps execution cost:
 
 ```text
 cap 1.00  CAGR 65.31%  MDD -33.53%  Sharpe 1.3561  comparator
-cap 1.10  CAGR 71.92%  MDD -36.67%  Sharpe 1.3548  final FAIL
-cap 1.20  CAGR 78.51%  MDD -39.63%  Sharpe 1.3550  final FAIL
-cap 1.30  CAGR 85.68%  MDD -42.58%  Sharpe 1.3618  final FAIL
+cap 1.10  CAGR 71.92%  MDD -36.67%  Sharpe 1.3548  FAIL
+cap 1.20  CAGR 78.51%  MDD -39.63%  Sharpe 1.3550  FAIL
+cap 1.30  CAGR 85.68%  MDD -42.58%  Sharpe 1.3618  FAIL
 ```
 
-P4.5 therefore records `FAIL_STOP / NO LEVERAGE PROMOTION` for LEVERAGE-0040.
+Do not rerun, rescue, reinterpret or reuse LEVERAGE-0040.
 
-## Why higher historical CAGR did not promote
+## LEVERAGE-0041 preregistered hypothesis
 
-The P4.5 rule was frozen before result observation: do not choose leverage from the best in-sample CAGR alone. A candidate must survive the full hard-gate suite and show a robust parameter region.
+Experiment ID:
 
-For cap 1.10 and 1.20, the decisive failures were:
+`LEVERAGE-0041`
 
-- native Hyperliquid funding stress;
-- liquidation-distance gate;
-- synthetic-gap gate.
+Question: can a new implementation architecture realize a safely sustainable leverage sweet spot around the economically attractive 1.20 region without weakening the frozen BRRK signal/defensive layer or hard survival/tail-risk constraints?
 
-Cap 1.30 also failed the historical proxy catastrophe gate.
+Frozen requested-cap grid:
 
-This result must not be rewritten as “1.20 is bad.” The correct interpretation is narrower: **the specific LEVERAGE-0040 leverage implementation architecture did not satisfy all preregistered safety/robustness gates.**
+```text
+1.00 / 1.05 / 1.10 / 1.15 / 1.20 / 1.25 / 1.30
+```
 
-## Research integrity boundary
+`1.20` is a focal design point only, not a selected cap.
 
-LEVERAGE-0040 is now closed.
+### Architecture
 
-Forbidden under the same experiment ID:
+`SPOT_FIRST_BASE_PLUS_PERP_OVERLAY_V1`
 
-- changing caps or thresholds and rerunning;
-- deleting failed gates because 1.20 looks attractive;
-- changing funding, liquidation, stress, seed, benchmark or selection semantics to rescue a candidate;
-- treating 1.20 as selected merely because its CAGR/Calmar were attractive;
-- treating the research result as production authorization.
+- explicit cash collateral reserve = 25% NAV;
+- spot financing budget <=75% NAV;
+- BTC / ETH / SOL base longs use verified P2.4 spot-first routing when feasible;
+- BNB remains `PERP_ONLY_DEFAULT`;
+- residual base exposure and all incremental leverage are perp;
+- no hidden external collateral;
+- funding logic may only reduce incremental overlay.
 
-All R1→R5 execution/recovery evidence and immutable result files remain part of the audit trail.
+Frozen funding reducer:
 
-## Follow-on leverage research direction
+```text
+168h trailing debit <=5 bps/day    overlay scale 1
+5-10 bps/day                       linear 1 -> 0
+>=10 bps/day                       overlay scale 0
+missing required data              overlay scale 0
+```
 
-The owner has accepted the next **planning direction**: search for the leverage “sweet spot” that maximizes long-run compounded wealth while preserving acceptable survival / tail-risk / implementation properties.
+### Hard constraints
 
-Important planning interpretation:
+Unchanged:
 
-- **1.20 is a focal design point**, because LEVERAGE-0040 showed materially higher CAGR with broadly stable Sharpe/Calmar;
-- 1.20 is **not** a selected research cap;
-- 1.20 is **not** production-authorized;
-- exact candidate grid, margin architecture and gates for the next study are not frozen yet;
-- the follow-on study must use a **new experiment ID** and must be preregistered before execution.
+- defensive scenario CVaR/CDaR budget = 20%;
+- operating DD candidates = 35/40/45/50%;
+- catastrophic boundary = 70%;
+- synthetic uniform gap stress through -50%;
+- funding spikes 2x/3x/5x;
+- degraded-fill/capacity, start-date and bootstrap robustness gates.
 
-The follow-on hypothesis should specifically separate economic gross exposure from implementation mechanics, including:
+Stricter implementation condition:
 
-- base spot versus incremental perp exposure;
-- cross-margin collateral reserve and liquidation buffer;
-- funding-aware dynamic risk reduction;
-- synthetic-gap survivability;
-- explicit margin-account mapping consistent with real Hyperliquid mechanics;
-- neighboring-cap robustness around the eventual sweet spot.
+- actual routed perp notionals against the explicit reserve must preserve modeled adverse-move distance to liquidation **>55%** for every promotable state.
 
-The objective remains the Master Plan objective: maximize expected long-run compounded wealth **subject to** operating drawdown, catastrophic, liquidation, cost and implementation-robustness constraints.
+### Broad-region rule
 
-## Frozen architecture and product constraints
+A selected sweet spot must be an interior cap with an immediate lower and higher cap that also pass every hard gate, within a contiguous all-pass region of at least three caps.
 
-### Directional strategy
+Among qualifying caps, maximize matched after-cost CAGR. If annualized CAGR differs by <=1.0 percentage point inside the same passing region, prefer the lower cap.
 
-- canonical directional research target: **BRRK-0011**;
-- target/tradable assets: **BTC / ETH / SOL / BNB**;
-- XRP is **feature-only** where required by the frozen BRRK regime feature model;
+## Frozen product / strategy boundaries
+
+- canonical directional research target: BRRK-0011;
+- target/tradable assets: BTC / ETH / SOL / BNB;
+- XRP is feature-only;
 - primary venue: Hyperliquid;
-- cadence: daily;
-- canonical decision boundary: 00:00 UTC.
-
-### Execution / safety
-
+- cadence: daily, 00:00 UTC boundary;
 - FLAT = zero directional exposure;
 - FLAT -> LONG / SHORT requires human approval;
 - intraday automation may reduce risk but may not autonomously add directional exposure;
-- bot credentials are trading Agent/API credentials only;
-- master wallet private key, automated withdrawals and automated external transfers remain outside the approved boundary;
-- MERGED / CI VERIFIED does not imply PRODUCTION AUTHORIZED.
+- bot uses trading Agent/API credentials only;
+- master wallet private key, automated withdrawals and automated external transfers remain outside scope;
+- P4.1 defensive scale remains `[0,1]`.
 
-### Leverage boundary
+## Authority boundaries
 
-P4.1 defensive scale remains strictly `[0,1]`.
+`LEVERAGE-0041 = PREREGISTERED` does not mean:
 
-Current production gross cap remains:
+- implemented;
+- tested;
+- CI verified;
+- RUN_ONCE authorized;
+- research promoted;
+- production authorized.
 
-`1.0`
+The one-time run requires a separate explicit owner `RUN_ONCE` instruction after implementation and all pre-run gates are green.
 
-No operating drawdown budget was selected by LEVERAGE-0040.
-
-`70% drawdown` remains catastrophic tolerance, not an operating target.
+If a future LEVERAGE-0041 result selects an eligible research cap, P4.6 remains a separate production decision. The prospective cap presented to P4.6 is the next lower preregistered grid point and may not exceed 1.20 under LEVERAGE-0041.
 
 ## Historical truth that must remain unchanged
 
@@ -186,12 +189,12 @@ Read current state in this order:
 ## Exact next action
 
 ```text
-P4.5 FORMAL DECISION = COMPLETE / FAIL_STOP / NO_PROMOTION
-RUN FINAL-HEAD POST-RESULT CI + GOVERNANCE ON PR #90
+MERGE LEVERAGE-0041 PREREGISTRATION ONLY AFTER FRESH CI/GOVERNANCE
+THEN IMPLEMENT STUDY CONTRACT + ROUTE/COLLATERAL/FUNDING/LIQUIDATION LOGIC
+PROVE CAP=1 REQUESTED-TARGET PARITY
+FREEZE RESULT SCHEMA / INPUT HASHES / VALIDATOR
+RUN ALL PRE-RUN GATES
+STOP AT EXPLICIT OWNER RUN_ONCE BOUNDARY
 KEEP PRODUCTION GROSS CAP = 1.0
 KEEP P4.6 BLOCKED
-DO NOT RETUNE LEVERAGE-0040
-AFTER RESEARCH EVIDENCE IS MERGED, PREREGISTER A NEW LEVERAGE-ARCHITECTURE / SWEET-SPOT EXPERIMENT
 ```
-
-PR #90 should not be interpreted or merged as a production-leverage authorization. Any merge only preserves the research implementation, audit trail, immutable result and P4.5 decision.
