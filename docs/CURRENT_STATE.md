@@ -25,15 +25,18 @@ Current main / P3.4 base:
 ```text
 P3.1 schema-v2 data contract           PASS / MERGED
 P3.2 Target calculation API            PASS / MERGED
-P3.3 rebalance / turnover controls      PASS / MERGED
-P3.4 weekly contribution handling       ACTIVE CANDIDATE
-P4 leverage / operating risk budget     BLOCKED UNTIL P3.4
-P5 exit intelligence                    BLOCKED
+P3.3 rebalance / turnover controls     PASS / MERGED
+P3.4 weekly contribution handling      IMPLEMENTED / TESTED / CI-VERIFIED CANDIDATE IN PR #80
+P4 leverage / operating risk budget    BLOCKED UNTIL P3.4 MERGES + NORMALIZES
+P5 exit intelligence                   BLOCKED
 ```
 
-Active fresh branch:
+Active PR / branch:
 
-`p3-4/contribution-handling-v1`
+- PR: `#80`
+- branch: `p3-4/contribution-handling-v1`
+- fresh base: `1d9dbebf5087936d0454f631145b176c62da4ec8`
+- latest fully validated implementation checkpoint before this handoff update: `e8a03a18727d04e654ffc01a050adceb798af4f3`
 
 ## Frozen upstream chain
 
@@ -108,7 +111,7 @@ weekly ~$100:
   not a scheduling trigger
 ```
 
-Account equity alone is not used to claim whether a positive change came from a deposit or PnL. This avoids inventing source attribution outside the roadmap while still satisfying “detected as equity change.”
+Account equity alone is not used to claim whether a positive change came from a deposit or PnL. Positive change is deliberately a contribution candidate rather than a confirmed transfer-source attribution.
 
 ## P3.4 timing boundary
 
@@ -139,7 +142,7 @@ P3.4 does not bypass P3.3 merely because cash was added. Venue minimum-size/prec
 
 ## P3.4 implementation candidate
 
-Implemented on the active branch:
+Implemented in PR #80:
 
 - `config/contribution_policy.json`
 - `execution/plan-b-bot/beta_bot/contribution_handling.py`
@@ -168,7 +171,7 @@ Daily-decision audit fields include:
 - deterministic P3.4 decision digest;
 - no production authorization.
 
-## Candidate regression coverage
+## P3.4 regression coverage
 
 Tests cover:
 
@@ -184,15 +187,50 @@ Tests cover:
 - observation and contribution-aware decision digests are deterministic;
 - no production authorization.
 
-## Current P3.4 status
+## P3.4 validated checkpoint
+
+Checkpoint head:
+
+`e8a03a18727d04e654ffc01a050adceb798af4f3`
+
+Evidence:
+
+- `Phase 0 baseline contract` run `31158894159` (#116): **SUCCESS**
+  - execution pytest: **215 passed in 6.14s**
+  - research integration contract: **5 tests / OK**
+- `Research evidence normalization` run `31158894139` (#27): **SUCCESS**
+- `P3.2 target research-live parity` run `31158895607` (#14): **SUCCESS**
+  - independent multi-date BRRK target parity: SUCCESS
+  - committed historical golden enforcement: SUCCESS
+- `PR handoff governance` run `31158893906` (#151): **SUCCESS**
+
+The initial PR head `5c3c126434eb7490c9c66b9e85bd241407aed51a` had one real Phase-0 test failure: a P3.4 chain test hard-coded `BRRK-PLAN-B` while the canonical approved product ID is `brkk-laugh-to-2028`. The implementation was not changed; the incorrect test expectation was corrected in the same PR. The initial run had **214 passed / 1 failed**. The corrected checkpoint above passed all 215 execution tests and all upstream gates.
+
+## Checkpoint self-review
+
+Versus fresh base `1d9dbebf5087936d0454f631145b176c62da4ec8`:
+
+- ahead 10 / behind 0;
+- exactly 7 changed files;
+- scope limited to P3.4 policy/module/tests/contract/handoff;
+- no P3.2/P3.3 runtime or golden mutation;
+- no router/executor/product-config/decision-registry/authorization mutation.
 
 ```text
-IMPLEMENTED:           YES — candidate branch
-TESTED:                PENDING PR CI
-CI VERIFIED:           NO
+DRIFT_0
+```
+
+## Candidate status
+
+```text
+IMPLEMENTED:           YES
+TESTED:                YES
+CI VERIFIED:           YES at checkpoint e8a03a18...
 MERGED:                NO
 PRODUCTION AUTHORIZED: NO_CHANGE
 ```
+
+This CURRENT_STATE update itself moves the PR head. The new final code/handoff head must therefore re-run the normal PR workflows. No further code mutation is planned. Only after final-head CI is fully green may PR metadata be updated and expected-head merge occur.
 
 ## Explicit P3.4 exclusions
 
@@ -220,28 +258,18 @@ NO_CHANGE
 production_authorized_components = []
 ```
 
-## Project drift audit
-
-```text
-DRIFT_0
-```
-
-P3.4 adds only the roadmap-defined contribution timing/equity boundary downstream of already-frozen P3.2/P3.3 behavior.
-
 ## Exact next action
 
 ```text
-self-review P3.4 diff
--> open P3.4 PR
--> Phase 0 full pytest + research integration
--> P3.2 parity/golden preservation if triggered/applicable
--> PR handoff governance
--> fix every real failure in same PR
--> final-head CI
--> write exact final evidence into PR body
--> newest body-edit governance GREEN
--> expected-head squash merge
--> verify main
--> post-merge normalization
--> P4 only after P3.4 closure
+final-head Phase 0 + research evidence + P3.2 parity/golden + PR governance
+-> all GREEN
+-> final diff self-review
+-> update PR #80 body with exact final-head run IDs/results
+-> require newest body-edit governance GREEN
+-> re-fetch PR and verify head unchanged
+-> expected-head squash merge #80
+-> verify new main
+-> fresh docs-only post-merge normalization PR
+-> merge normalization
+-> P4 only after P3.4 closure and exact P4 roadmap reread
 ```
