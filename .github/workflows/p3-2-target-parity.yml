@@ -10,10 +10,14 @@ on:
       - "execution/plan-b-bot/requirements-dev.txt"
       - "execution/plan-b-bot/pyproject.toml"
       - "research/integration/p3_2_target_parity.py"
+      - "research/integration/p3_2_golden_compare.py"
+      - "research/results/p3_2_target_parity/**"
       - "research/regime_kelly/**"
       - "research/hybrid_meta/**"
       - "research/risk_metric_fix/**"
       - "research/core/crypto_rotation_backtest.py"
+      - "docs/CURRENT_STATE.md"
+      - "docs/NEXT_STEPS.md"
       - ".github/workflows/p3-2-target-parity.yml"
   workflow_dispatch:
 
@@ -43,3 +47,5 @@ jobs:
         run: pip install -r requirements-dev.txt
       - name: Run independent multi-date BRRK target parity
         run: python research/integration/p3_2_target_parity.py
+      - name: Enforce committed historical golden vectors
+        run: python research/integration/p3_2_golden_compare.py
