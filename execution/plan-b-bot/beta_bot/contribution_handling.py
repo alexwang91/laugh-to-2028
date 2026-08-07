@@ -278,6 +278,12 @@ def observe_equity_change(
         classification = active_policy.negative_change_classification
 
     scheduled = _next_daily_decision_at_or_after(observation_ts)
+    # The baseline is already an accepted daily decision. Never schedule a second
+    # decision at that same boundary, even if a new equity observation has the
+    # identical 00:00 timestamp.
+    if scheduled <= baseline_ts:
+        scheduled = baseline_ts + pd.Timedelta(days=1)
+
     return EquityChangeObservation(
         baseline_decision_timestamp=_canonical_timestamp(baseline_ts),
         observed_at=_canonical_timestamp(observation_ts),
