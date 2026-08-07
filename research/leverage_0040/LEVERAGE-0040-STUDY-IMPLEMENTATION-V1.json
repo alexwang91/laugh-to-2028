@@ -1,0 +1,233 @@
+{
+  "schema_version": 1,
+  "study_id": "LEVERAGE-0040",
+  "contract_id": "LEVERAGE-0040-STUDY-IMPLEMENTATION-V1",
+  "status": "FROZEN_BEFORE_FIRST_ECONOMIC_RUN",
+  "frozen_on_main_sha": "98396a5b510c5f0a717b954568921c1daef6edc8",
+  "study_branch": "p4-4/leverage-0040-one-time-study-v2",
+  "production_authorized": false,
+  "result_observed_before_freeze": false,
+  "pre_result_corrections": [
+    {
+      "id": "PREFLIGHT-RAW-TARGET-001",
+      "trigger": "contract workflow #1 failed in --preflight-only before any cap>1 construction",
+      "correction": "do not infer defensive scale from independently banded published V1/BRRK holdings; rebuild frozen raw V1 target and BRRK-0011 scale from the canonical research authority",
+      "economic_parameter_change": false,
+      "cap_gt_1_observed_before_correction": false
+    },
+    {
+      "id": "PREFLIGHT-SESSION-TIMING-002",
+      "trigger": "same pre-result source review",
+      "correction": "evaluation return session t uses the accepted target from decision day t-1; the full-BRRK evaluation session 2022-12-10 therefore starts from decision date 2022-12-09",
+      "economic_parameter_change": false,
+      "cap_gt_1_observed_before_correction": false
+    }
+  ],
+  "authoritative_inputs": {
+    "preregistration": "research/leverage_0040/LEVERAGE-0040.json",
+    "pre_run_addendum": "research/leverage_0040/LEVERAGE-0040-PRE-RUN-ADDENDUM-V1.json",
+    "raw_target_authority": {
+      "build_brrk0011_scale": {
+        "path": "research/dispersion_overlay/run_dispersion_overlay.py",
+        "blob_sha": "cdcedd24a343a625e7b34c317633f68533de9ef3"
+      },
+      "build_benchmark_v1_and_portfolio_timing": {
+        "path": "research/hybrid_meta/walkforward_v1_meta.py",
+        "blob_sha": "13746a52e561f049ff2f5de4cd58c359a78fa143"
+      },
+      "feature_authority": {
+        "path": "research/regime_kelly/features_no_dominance.py",
+        "blob_sha": "e36612f7f7c6bea8744b5753bc20611f6580f13a"
+      },
+      "corrected_tail_risk": {
+        "path": "research/risk_metric_fix/corrected_risk.py",
+        "blob_sha": "bdf7cd6cb32961765716e4cb07288739e869703e"
+      },
+      "feature_assets": ["BTC", "ETH", "SOL", "BNB", "XRP"],
+      "target_assets": ["BTC", "ETH", "SOL", "BNB"]
+    },
+    "published_daily_weights": {
+      "path": "research/results/pit_disp_0015/daily_weights.csv",
+      "blob_sha": "2f6c8d3a8c25d3cafeaa0128f1c425dac248370b",
+      "role": "legacy banded-holdings evidence only; never a defensive-scale source"
+    },
+    "published_daily_equity": {
+      "path": "research/results/pit_disp_0015/daily_equity.csv",
+      "blob_sha": "82c87f8cb0ff01c728ffd3b717fff17cf5a364f2"
+    },
+    "funding_blocks": {
+      "path": "research/results/funding_crossvenue_0002/paired_8h_blocks.csv",
+      "blob_sha": "9f8612d803a3b5dbfdf189a47ca2ae2283c905d3"
+    },
+    "margin_snapshot": {
+      "path": "research/leverage_0039/hyperliquid_margin_snapshot.json",
+      "relevant_sha256": "38060892f1976315084de4dc4ed1c9f3885d909ffccc47bce7ad589315d8b9dd"
+    }
+  },
+  "historical_input": {
+    "price_source": "Binance spot 1d closes via frozen research/core/crypto_rotation_backtest.py fetch_daily",
+    "feature_assets": ["BTC", "ETH", "SOL", "BNB", "XRP"],
+    "target_assets": ["BTC", "ETH", "SOL", "BNB"],
+    "full_brrk_evaluation_sessions": ["2022-12-10", "2026-08-02"],
+    "first_full_brrk_decision_date": "2022-12-09",
+    "decision_timing": "target dated t is held over the next UTC daily return session t+1",
+    "pre_brrk_stress_proxy": "frozen V1 raw target with defensive_scale=1.0; proxy only, never promotion-performance evidence",
+    "input_digest_required_in_result": true
+  },
+  "defensive_scale_recovery": {
+    "authority": "rebuild from frozen BRRK-0011 research source, not published banded-holdings ratios",
+    "formula": "build_brrk0011_scale(feature_prices, frozen_features, frozen_V1_model_returns, RegimeKellyConfig(hmm_restarts=3,hmm_iter=250))",
+    "raw_brrk_target": "frozen V1 raw target multiplied by rebuilt defensive scale",
+    "bounds": [0.0, 1.0],
+    "published_banded_ratio_forbidden": true,
+    "cap1_preflight": "legacy apply_band(raw BRRK,0.05) + prior-day holding timing must reproduce frozen BRRK-0011 baseline metrics before any cap>1 construction"
+  },
+  "candidate_construction": {
+    "caps": [1.0, 1.1, 1.2, 1.3],
+    "multiplier_formula": "1 + (cap - 1) * frozen_defensive_scale",
+    "final_target_formula": "frozen raw BRRK target * multiplier",
+    "no_second_alpha": true
+  },
+  "p3_3_rebalance_adapter": {
+    "policy_id": "P4.4-P3.3-ECONOMIC-DRIFT-ADAPTER-V1",
+    "l1_band": 0.05,
+    "evaluation_session_first": "2022-12-10",
+    "first_decision_date": "2022-12-09",
+    "current_weights_definition": "current economic asset notionals divided by current account equity immediately before the daily decision",
+    "decision_rule": "rebalance iff sum(abs(target-current_weights)) >= 0.05",
+    "inside_band": "preserve current economic weights",
+    "partial_fill_scenario": "when enabled, execute exactly 50% of desired weight delta at a triggered rebalance; remainder stays prior exposure until next legal daily decision",
+    "short_current_weight": "fail closed",
+    "candidate_gross_above_preregistered_cap": "fail closed",
+    "min_trade_usd_is_portfolio_gate": false,
+    "post_session_weight_drift": "accepted_weight_i*(1+asset_return_i)/(1+portfolio_price_return-transaction_cost_return+funding_return)"
+  },
+  "transaction_cost": {
+    "formula": "executed_L1_turnover * bps / 10000",
+    "grid_bps": [5, 10, 20, 50],
+    "legacy_baseline_continuity": "frozen legacy BRRK applies 5% target-vs-last-accepted-target band to raw BRRK then shift(1) into the evaluation session",
+    "matched_comparator": "candidate must also be compared with a cap=1 path using the same P3.3 economic-drift adapter",
+    "promotion_comparator_rule": "candidate must satisfy mandatory economic gates versus both frozen legacy BRRK and matched P3.3 cap1 where comparable"
+  },
+  "routing_and_funding": {
+    "primary": {
+      "BTC_base": "verified spot up to matched cap1 held BTC economic weight",
+      "BTC_extra": "perp overlay above matched cap1 held BTC economic weight",
+      "ETH": "perp",
+      "SOL": "perp",
+      "BNB": "perp"
+    },
+    "all_perp": "stress panel only; not sole primary implementation economics",
+    "native_hyperliquid_common_window": ["2023-06-18", "2026-07-31"],
+    "long_funding_return_per_block": "-perp_weight * additive_funding_rate",
+    "daily_funding_factor": "product over same-UTC-day blocks of (1 - sum(perp_weight_i * rate_i_block))",
+    "spike_multipliers": [1, 2, 3, 5],
+    "spike_rule": "multiply adverse positive Hyperliquid funding rates only; favorable credits are unchanged",
+    "binance_proxy": "report sign/regime/full-history stress only; never substitute for Hyperliquid level"
+  },
+  "liquidation_accounting": {
+    "reference_total_equity_usd": 2000.0,
+    "margin_mode": "Hyperliquid standard cross margin",
+    "ordinary_spot_is_cross_collateral": false,
+    "portfolio_margin_assumed": false,
+    "primary_cross_equity_at_stress_entry": "reference_equity * (1 - BTC_spot_weight)",
+    "primary_perp_notionals": "reference_equity * routed_perp_weights",
+    "spot_pnl_affects_cross_equity": false,
+    "perp_pnl_affects_cross_equity": true,
+    "all_perp_cross_equity": "reference_equity",
+    "uniform_adverse_distance_gate": 0.5,
+    "mandatory_gap_liquidation_check": ["ALT_CRASH", "BTC_LED_CRASH", "UNIFORM_-10", "UNIFORM_-20", "UNIFORM_-30", "UNIFORM_-40", "UNIFORM_-50"],
+    "fail_closed_on_missing_route_or_collateral_accounting": true
+  },
+  "degraded_execution": {
+    "reference_portfolio_usd": 2000.0,
+    "capacity_evidence": "P2 audited point-in-time route/depth evidence only; never represented as historical PIT liquidity",
+    "scenarios": {
+      "DEPTH_50_SLIP_1_5": {"depth_capacity_multiplier": 0.5, "transaction_cost_multiplier": 1.5, "taker_fraction": 1.0},
+      "DEPTH_25_SLIP_2_0": {"depth_capacity_multiplier": 0.25, "transaction_cost_multiplier": 2.0, "taker_fraction": 1.0},
+      "PARTIAL_FILL_50": {"fill_fraction": 0.5, "transaction_cost_on_executed_turnover_only": true}
+    },
+    "capacity_failure": "scenario failure",
+    "missing_capacity_evidence": "fail closed"
+  },
+  "synthetic_stress": {
+    "no_same_day_favorable_rebalance": true,
+    "gap_return": "sum(pre_gap_held_weight_i * asset_gap_i)",
+    "operating_budget_applies_to_synthetic_gaps": false,
+    "catastrophe_boundary_applies": true,
+    "vol_block_selection": "worst realized 20-day blocks selected from matched cap1 5bps full-BRRK path, never candidate-specific",
+    "vol_return_transform": "exp(vol_multiplier * log1p(asset_return)) - 1",
+    "signals_refit_under_stress": false,
+    "vol_block_length_days": 20,
+    "vol_block_count": 3,
+    "vol_block_overlap_rule": "select three lowest compounded-return 20d matched-cap1 windows greedily, rejecting overlaps; earlier start breaks ties"
+  },
+  "operating_budget": {
+    "candidates": [0.35, 0.4, 0.45, 0.5],
+    "selection": "smallest candidate budget covering main 5bps historical maxDD and mandatory FULL_BRRK historical stress-window maxDD",
+    "pre_brrk_proxy_sets_operating_budget": false,
+    "synthetic_stress_sets_operating_budget": false,
+    "no_budget_fit": "candidate fails"
+  },
+  "bootstrap": {
+    "method": "paired stationary block bootstrap",
+    "resamples": 10000,
+    "mean_block_days": [7, 21, 63],
+    "base_seed": 4040,
+    "seed_per_block": "4040 + mean_block_days",
+    "restart_probability": "1 / mean_block_days",
+    "cyclic_continuation": true,
+    "comparison_return_stream": "5bps after-cost price-only daily returns",
+    "comparators": ["matched_p3_3_cap1", "frozen_legacy_brrk"],
+    "min_terminal_outperformance_probability": 0.8,
+    "min_5pct_annualized_return_difference": -0.01
+  },
+  "start_date_robustness": {
+    "start_dates": ["2022-12-10", "2023-03-01", "2023-06-01", "2024-01-01"],
+    "minimum_cagr_difference_vs_each_comparator": -0.02
+  },
+  "broad_region": {
+    "rule": "a >1 candidate can be promotion-eligible only if it passes all mandatory gates and at least one adjacent >1 preregistered cap also passes",
+    "adjacency": {"1.10": [1.2], "1.20": [1.1, 1.3], "1.30": [1.2]},
+    "isolated_pass": "no promotion",
+    "cap_1_00_role": "comparator only"
+  },
+  "one_time_execution": {
+    "run_marker": "research/leverage_0040/RUN_ONCE_LEVERAGE_0040.marker",
+    "result_dir": "research/results/leverage_0040",
+    "summary_file": "research/results/leverage_0040/summary.json",
+    "marker_must_be_absent_during_contract_ci": true,
+    "result_must_be_absent_before_marker": true,
+    "workflow_must_not_retrigger_on_result_commit": true,
+    "post_result_parameter_retuning": false,
+    "material_change_requires_new_experiment_id": true,
+    "marker_sha256": "f54cdf362f60cad19d6c429ac4e008047b45d2cb537a95c96e2bc6dac5ce733a",
+    "marker_format": ["LEVERAGE-0040-RUN-ONCE-V1", "study_id=LEVERAGE-0040", "implementation_contract=LEVERAGE-0040-STUDY-IMPLEMENTATION-V1", "base_main=98396a5b510c5f0a717b954568921c1daef6edc8", "acknowledge_no_post_result_retuning=true"]
+  },
+  "benchmark_cost_semantics": {
+    "btc_buy_and_hold": "charge initial acquisition turnover at the same bps scenario; no later rebalancing cost",
+    "four_asset_equal_weight_buy_and_hold": "charge initial 100% acquisition turnover at the same bps scenario; no later rebalancing cost",
+    "cash": "zero return unless a separately preregistered benchmark says otherwise"
+  },
+  "funding_and_execution_pass_rules": {
+    "primary_native_funding_spikes": "candidate must not breach 70% catastrophe or liquidate and must finish at or above the matched P3.3 cap1 path under the same native-funding spike mechanics; frozen legacy common-window economics are reported separately but do not control this execution-semantics-matched gate",
+    "all_perp": "report-only stress for relative economics; mandatory pass is no 70% catastrophe and no modeled liquidation",
+    "binance_proxy": "report-only sign/regime stress; no Hyperliquid-level selection threshold",
+    "degraded_fill": "candidate must not breach 70% catastrophe, must not hit modeled capacity failure, and must finish at or above matched cap1 under the same degraded mechanics"
+  },
+  "capacity_snapshot": {
+    "workflow_run_id": 30945504271,
+    "artifact_id": 8906907321,
+    "artifact_name": "router-data-0004-results",
+    "artifact_sha256": "99c0d463cc94294a6701056c34488d36c03ecff810ae7c6f5db5844e30d790d8",
+    "artifact_expiry_utc": "2026-09-03T19:56:16Z",
+    "required_file": "vwap_slippage.csv",
+    "use": "point-in-time capacity evidence only; never historical PIT liquidity",
+    "workflow_behavior": "one-time runner downloads the pinned artifact with repository GITHUB_TOKEN before evaluation and copies the exact capacity input + digest into immutable result evidence"
+  },
+  "selection_implementation": {
+    "20bps_not_dominated": "candidate fails if either matched cap1 or frozen legacy comparator has both >= terminal multiple and >= max_drawdown (shallower) with at least one strict",
+    "objective_order": ["5bps_end_multiple", "5bps_calmar", "5bps_sharpe", "shallower_5bps_max_drawdown", "lower_5bps_turnover", "lower_cap"],
+    "broad_region_applied_after_all_caps_observed": true
+  }
+}

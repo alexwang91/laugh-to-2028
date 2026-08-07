@@ -1,0 +1,5 @@
+LEVERAGE-0040-RUN-ONCE-V1
+study_id=LEVERAGE-0040
+implementation_contract=LEVERAGE-0040-STUDY-IMPLEMENTATION-V1
+base_main=98396a5b510c5f0a717b954568921c1daef6edc8
+acknowledge_no_post_result_retuning=true

@@ -85,10 +85,21 @@ def test_liquidation_snapshot_is_reused_without_re_capture_requirement():
     assert data["liquidation_distance"]["missing_model_rule"] == "FAIL_CLOSED_NO_PROMOTION"
 
 
-def test_decision_registry_preserves_stop_and_new_prereg_without_authorization():
+def test_decision_registry_preserves_closed_0040_and_new_research_direction_without_authorization():
     registry = _load(DECISIONS)
     assert registry["production_authorized_components"] == []
     decisions = {row["id"]: row for row in registry["decisions"]}
+
     assert decisions["LEVERAGE-0039"]["status"] == "REJECTED_STOPPED"
-    assert decisions["LEVERAGE-0040"]["status"] == "ACCEPTED_RESEARCH_TARGET"
-    assert "No search" in decisions["LEVERAGE-0040"]["decision"]
+
+    closed = decisions["LEVERAGE-0040"]
+    assert closed["status"] == "REJECTED_STOPPED"
+    assert "NO_PROMOTION" in closed["decision"]
+    assert "no production leverage was authorized" in closed["decision"]
+
+    follow_on = decisions["P4-LEVERAGE-SWEET-SPOT-2026-08-07"]
+    assert follow_on["status"] == "ACCEPTED_RESEARCH_TARGET"
+    assert "1.20" in follow_on["decision"]
+    assert "focal design point" in follow_on["decision"]
+    assert "not as a selected or production-authorized cap" in follow_on["decision"]
+    assert "new experiment ID" in follow_on["decision"]

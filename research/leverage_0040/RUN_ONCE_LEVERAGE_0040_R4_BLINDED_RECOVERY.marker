@@ -1,0 +1,10 @@
+LEVERAGE-0040-R4-BLINDED-RECOVERY-V1
+study_id=LEVERAGE-0040
+failed_run_id=31199392883
+failed_head=afcc1beb35f9d924cba6dd0330bdf8d290d8285c
+failure_stage=cap_gt_1_funding_window_session_alignment
+acknowledge_cap_gt_1_partial_computation=true
+acknowledge_no_candidate_metrics_emitted=true
+acknowledge_no_candidate_metrics_committed=true
+acknowledge_correction_enforces_preregistered_window=true
+acknowledge_no_post_result_retuning=true
