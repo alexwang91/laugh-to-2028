@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
-      - name: Delete only proven-safe merged or explicitly abandoned branches
+      - name: Delete remaining branches only when fully contained in main
         env:
           GITHUB_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
@@ -58,51 +58,34 @@ jobs:
               "p4-4/leverage-0040-one-time-study-v2",
               "docs/repository-hygiene-2026-08-07",
           }
+          main_sha = branches["main"]
+          delete = []
+          keep_unique = []
 
-          candidates = {}
-          page = 1
-          while True:
-              prs = api(f"/pulls?state=closed&per_page=100&page={page}")
-              if not prs:
-                  break
-              for pr in prs:
-                  if not pr.get("merged_at"):
-                      continue
-                  head = pr.get("head") or {}
-                  head_repo = head.get("repo") or {}
-                  branch = head.get("ref")
-                  merged_head_sha = head.get("sha")
-                  if head_repo.get("full_name") != repo or not branch or branch in preserve:
-                      continue
-                  current_sha = branches.get(branch)
-                  if current_sha and current_sha == merged_head_sha:
-                      candidates[branch] = {
-                          "reason": f"merged PR #{pr['number']}",
-                          "sha": current_sha,
-                      }
-              page += 1
-
-          for branch, reason in {
-              "p4-4/leverage-0040-one-time-study-v1": "explicit INVALID/ABANDONED branch",
-              "p3-2/target-calculation-api-v2": "explicit stale no-implementation branch",
-          }.items():
-              if branch in branches and branch not in preserve:
-                  candidates[branch] = {"reason": reason, "sha": branches[branch]}
+          for branch, sha in sorted(branches.items()):
+              if branch in preserve:
+                  continue
+              base = urllib.parse.quote(sha, safe="")
+              head = urllib.parse.quote(main_sha, safe="")
+              cmp = api(f"/compare/{base}...{head}")
+              # If the branch head is an ancestor of main, main is ahead of it and
+              # the branch contributes zero commits not already reachable from main.
+              fully_in_main = int(cmp.get("behind_by", 0)) == 0 and cmp.get("status") in {"ahead", "identical"}
+              if fully_in_main:
+                  delete.append((branch, sha, cmp.get("status"), int(cmp.get("ahead_by", 0))))
+              else:
+                  keep_unique.append((branch, sha, cmp.get("status"), int(cmp.get("ahead_by", 0)), int(cmp.get("behind_by", 0))))
 
           print(f"TOTAL_BRANCHES_BEFORE={len(branches)}")
-          print(f"DELETE_COUNT={len(candidates)}")
-          print("PRESERVE=" + json.dumps(sorted(preserve), ensure_ascii=False))
-
-          deleted = []
-          for branch in sorted(candidates):
+          print(f"ANCESTOR_DELETE_COUNT={len(delete)}")
+          for branch, sha, status, ahead in delete:
+              print(f"DELETE {branch} | {sha} | fully contained in main | compare_status={status} main_ahead_by={ahead}")
               ref = urllib.parse.quote(branch, safe="/")
-              print(f"DELETE {branch} | {candidates[branch]['sha']} | {candidates[branch]['reason']}")
               try:
                   api(f"/git/refs/heads/{ref}", method="DELETE")
               except urllib.error.HTTPError as exc:
                   body = exc.read().decode("utf-8", errors="replace")
                   raise RuntimeError(f"failed deleting {branch}: HTTP {exc.code}: {body}") from exc
-              deleted.append(branch)
 
           remaining = {}
           page = 1
@@ -114,14 +97,16 @@ jobs:
                   remaining[row["name"]] = row["commit"]["sha"]
               page += 1
 
-          if any(branch in remaining for branch in deleted):
-              raise RuntimeError("one or more deleted branches still exist")
           if not preserve.issubset(remaining):
-              raise RuntimeError("a preserved branch is missing after cleanup")
+              raise RuntimeError("preserved branch missing")
+          if any(branch in remaining for branch, *_ in delete):
+              raise RuntimeError("an ancestor branch was not deleted")
 
-          print(f"DELETED_COUNT={len(deleted)}")
           print(f"TOTAL_BRANCHES_AFTER={len(remaining)}")
-          print("REMAINING_BRANCHES=")
+          print("UNIQUE_OR_UNCERTAIN_BRANCHES_PRESERVED=")
+          for branch, sha, status, ahead, behind in keep_unique:
+              print(f"  {branch} | {sha} | status={status} main_ahead_by={ahead} branch_unique_by={behind}")
+          print("FINAL_REMAINING=")
           for branch in sorted(remaining):
               print(f"  {branch} | {remaining[branch]}")
           PY
