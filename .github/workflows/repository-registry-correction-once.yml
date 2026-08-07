@@ -1,0 +1,45 @@
+name: Repository registry correction once
+
+on:
+  push:
+    branches:
+      - "docs/repository-hygiene-2026-08-07"
+    paths:
+      - ".github/workflows/repository-registry-correction-once.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  patch-registry:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: "docs/repository-hygiene-2026-08-07"
+          fetch-depth: 0
+      - name: Correct stale P3.1 registry prose only
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path("config/decision_registry.json")
+          text = path.read_text(encoding="utf-8")
+          old = '''    {"id":"DATA-CONTRACT-P3.1","status":"IMPLEMENTATION_VERIFIED","scope":"daily_data_contract","decision":"Canonical P3.1 data contract preserves the frozen BRRK strategy signal source as Binance spot BTCUSDT/ETHUSDT/SOLUSDT/BNBUSDT UTC 1d closes with an exact 00:00 UTC decision boundary, excludes incomplete candles, forbids forward-fill/cross-venue substitution, requires contiguous four-asset common history, and versions source mappings explicitly. Research and live adapters share one canonicalizer and emit byte-identical canonical JSON/digests for the same raw observations. Hyperliquid router funding is normalized from exact completed hourly fundingHistory slots to bps/hour, while basis preserves verified spot/perp price inputs and observation timestamps/skew. This verifies P3.1 data semantics only; it does not implement P3.2 target generation or authorize production trading.","source":"PR #68"},'''
+          new = '''    {"id":"DATA-CONTRACT-P3.1","status":"IMPLEMENTATION_VERIFIED","scope":"daily_data_contract","decision":"Canonical P3.1 data contract distinguishes target assets BTC/ETH/SOL/BNB from feature-only XRP required by the frozen BRRK regime feature model. Strategy-signal closes are Binance spot BTCUSDT/ETHUSDT/SOLUSDT/BNBUSDT/XRPUSDT UTC 1d closes with an exact 00:00 UTC decision boundary; incomplete candles, forward-fill and cross-venue substitution are forbidden, and contiguous five-series strategy-signal common history is required. Research and live adapters share one canonicalizer and emit byte-identical canonical JSON/digests for the same raw observations. Hyperliquid router funding is normalized from exact completed hourly fundingHistory slots to bps/hour, while basis preserves verified spot/perp price inputs and observation timestamps/skew. XRP remains feature-only and is not a target or routing asset. This verifies P3.1 data semantics only; it does not implement P3.2 target generation or authorize production trading.","source":"PR #68 + parity correction PR #74"},'''
+          count = text.count(old)
+          if count != 1:
+              raise SystemExit(f"refuse patch: expected exactly one stale P3.1 registry row, found {count}")
+          path.write_text(text.replace(old, new), encoding="utf-8")
+          PY
+          python -m json.tool config/decision_registry.json >/dev/null
+      - name: Commit registry truth correction
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add config/decision_registry.json
+          git diff --cached --quiet && { echo "Registry did not change"; exit 1; }
+          git commit -m "Docs: align P3.1 registry prose with parity correction"
+          git push origin HEAD:docs/repository-hygiene-2026-08-07
