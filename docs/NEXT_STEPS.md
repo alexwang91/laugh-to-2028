@@ -18,6 +18,7 @@ P5.1 event taxonomy                    COMPLETE / MERGED / FROZEN
 P5.2 feature evidence                  COMPLETE / IMMUTABLE / DESCRIPTIVE CLOSEOUT
 P5.2 summary SHA256                    3f6dc3c512d22ac8f71d43ed155f2602cd40d5caf3d617c0e130e170727e0627
 P5.3 structure contract                P5.3-STATE-MODEL-STRUCTURE-V1
+P5.3 prereg correction                 P5.3-PREREG-COMPLETENESS-R1 / BEFORE ANY STATE PATH
 P5.3 structure                         PREREGISTERED / FROZEN BEFORE STATE-PATH EVALUATION
 P5.3 state paths                       NOT RUN
 P5.4-P5.6                              NOT STARTED
@@ -35,7 +36,7 @@ DE_RISK_2
 FLAT
 ```
 
-`MONITOR_ONLY` remains a runtime/human-control state after FLAT, not a P5.3 market-state label.
+Before initialization, `DATA_INSUFFICIENT` is emitted as a research diagnostic, not a market state. `MONITOR_ONLY` remains a runtime/human-control state after FLAT.
 
 ## Frozen evidence architecture
 
@@ -78,16 +79,25 @@ Purpose: confirm structural deterioration before ordinary de-risk escalation.
 
 ## Frozen causal normalization
 
-All continuous runtime inputs use trailing empirical percentile ranks:
+For every continuous runtime feature at date `t`:
 
 ```text
-lookback       365 completed daily observations
-minimum        252 observations
-include t      yes, after completed daily observation
-future data    forbidden
-ties           average rank
-missing        fail closed / no de-escalation or automatic re-risk
+window          last up to 365 completed daily dates ending at t
+missing         drop missing rows for that feature
+minimum N       20 nonmissing feature observations
+percentile      (average_rank(current) - 1) / (N - 1)
+range           [0,1]
+ties            average rank
+future data     forbidden
+20 <= N < 365   use causal available history and report N
+N < 20          feature unavailable
 ```
+
+The initial `252`-observation text was corrected **before any P5.3 state path was run** because it would exclude required early-2021 taxonomy windows. The exact percentile formula was also frozen at the same pre-evaluation correction.
+
+The path remains `DATA_INSUFFICIENT` until every continuous runtime input used by the state atoms has at least 20 observations. CI must prove initialization is possible by `2021-01-31`, the earliest frozen control `early_warning` date. Calibration depth is a required output.
+
+After initialization, missing evidence cannot de-escalate or automatically re-add risk.
 
 P5.2 robust-z is a research diagnostic only. It is not a P5.3 runtime feature.
 
@@ -124,6 +134,9 @@ Ordinary escalation requires persistence. De-escalation requires a clear period 
 Implement deterministic EARLY/BALANCED/CONSERVATIVE state paths from the immutable P5.2 feature panel and report:
 
 - complete daily state path;
+- per-feature normalization observation counts;
+- minimum calibration depth by date;
+- `DATA_INSUFFICIENT` range and initialization date;
 - event-window state occupancy;
 - first entry dates per state;
 - lead/lag versus frozen P5.1 anchors;
