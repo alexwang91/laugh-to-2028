@@ -52,7 +52,7 @@ Result: **15 → 14 branches**.
 
 The remaining 11 historical branches had commits not reachable from current `main`, so they were not auto-deleted. Run `31190339024` audited their unique commits, PR relationship, and changed-file scope.
 
-They are classified below. Their exact audited head SHA is recorded before deletion.
+They are classified below. Their exact audited head SHA was recorded before deletion.
 
 | Branch | Audited head | Classification / reason to retire |
 | --- | --- | --- |
@@ -68,7 +68,50 @@ They are classified below. Their exact audited head SHA is recorded before delet
 | `p2-3/spot-perp-cost-model` | `5ffda33bc8fb96e9d7ec50e9324709904f300bc2` | PR #62 merged; PR #64 later corrected live-L2 measurement and main contains the canonical P2.3/P2.4 path. |
 | `research/tsmom-0027-pretest` | `754674e7f2f51032bfdc9e73865951fd0feb6eb8` | PR #20 closed / not merged; superseded by later TSMOM work and the final REJECTED_STOPPED decision. |
 
-These refs are safe to retire as **historical/superseded branches**, not as new research conclusions. Deleting a remote branch does not change the decision registry, merged code, PR history, or canonical result files.
+## Branch cleanup — pass 3 exact-SHA retirement
+
+Run `31190668455`: **SUCCESS**.
+
+The deletion step used an explicit branch→SHA allowlist built from the preceding audit. Before deleting any ref, it re-read the live branch set and required every branch to remain on the exact audited SHA. If any branch had moved, the run would have failed rather than deleting it.
+
+All 11 audited historical refs were retired.
+
+The workflow then required the remote branch set to be **exactly**:
+
+```text
+main
+p4-4/leverage-0040-one-time-study-v2
+docs/repository-hygiene-2026-08-07
+```
+
+Because the run succeeded, the verified branch count during hygiene is:
+
+**96 → 3 remote branches**.
+
+The temporary one-time branch-cleanup workflow was then removed from the housekeeping branch before the housekeeping PR is proposed. It is therefore not intended to enter `main`.
+
+After the housekeeping PR itself is merged and verified, `docs/repository-hygiene-2026-08-07` should also be retired. The expected steady-state branch set during the owner-requested research pause is then:
+
+```text
+main
+p4-4/leverage-0040-one-time-study-v2   # paused PR #90
+```
+
+These ref deletions retire historical/superseded branch names only. They do not delete merged commits, PR history, decision-registry records, or canonical evidence already persisted under `docs/` / `research/results/`.
+
+## Documentation cleanup
+
+The branch cleanup exposed a second problem: repository entry documents were materially stale.
+
+The hygiene change therefore also:
+
+- replaces the root README's old long-form research-status report with a current project map;
+- rewrites `docs/CURRENT_STATE.md` as the single current snapshot;
+- rewrites `docs/NEXT_STEPS.md` as the dependency order and explicit pause/resume rule;
+- adds `docs/README.md` as the documentation/evidence index;
+- keeps dated audit/research/runbook documents as evidence snapshots instead of deleting them.
+
+Historical performance tables and experiment outputs remain under `research/results/`; they are not duplicated into the root README merely to make the front page look comprehensive.
 
 ## Documentation authority after cleanup
 
@@ -93,6 +136,17 @@ Dated audit/research documents remain evidence snapshots. They must not override
 - Abandoned branches should be deleted after their disposition and head SHA are recorded.
 - Historical evidence belongs in merged `docs/` / `research/results/`, not in permanent remote feature branches.
 - Never reuse an abandoned experiment ID or stale implementation branch.
+- Branch deletion is a repository-hygiene action, not a mechanism for erasing failed or inconvenient research history.
+
+## Current paused research boundary
+
+PR #90 is explicitly labeled:
+
+`P4.4 [PAUSED / DRAFT]: freeze and preflight LEVERAGE-0040 one-time study`
+
+Repository maintenance must not automatically resume it.
+
+After hygiene merges, #90 must remain paused until an explicit owner instruction. Any later resume must start by refreshing the candidate from then-current `main` and rerunning all applicable pre-result parity/CI/governance gates.
 
 ## What this cleanup does not change
 
@@ -103,3 +157,9 @@ Dated audit/research documents remain evidence snapshots. They must not override
 - no operating drawdown budget is selected.
 - no production gross >1 authorization is created.
 - `production_authorized_components = []` remains unchanged.
+
+## Project drift audit
+
+`DRIFT_0`
+
+This cleanup changes repository organization, current-status documentation and stale descriptive truth only. It does not alter frozen strategy formulas, research selection gates or production authorization.
