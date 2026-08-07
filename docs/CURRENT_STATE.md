@@ -10,178 +10,180 @@ Status: authoritative cross-chat handoff snapshot
 - P2.1 through P2.4: PASS / MERGED; Phase 2 COMPLETE
 - P3.1 schema-v2 data contract: PASS / MERGED / validated by PR #75
 - P3.2 Target calculation API: PASS / TESTED / CI VERIFIED / MERGED by PR #76
-- PR #73 remains historically MERGED without a recorded green required PR-governance run before that merge; do not retroactively relabel it CI VERIFIED
+- PR #77 post-P3.2 normalization: PASS / MERGED as `4522e96ab8ff2381fb0e02f74c516a9663bf48de`
+- PR #73 remains historically MERGED without a recorded green required PR-governance run before merge; do not retroactively relabel it CI VERIFIED
 - PR #74 remains historically MERGED during the GitHub Actions incident without its own pre-merge workflow evidence; PR #75 subsequently validated the merged schema-v2 state
 - Historical stale-main PR #70: INVALID / CLOSED / DO NOT REVIVE
 
-## Current main and roadmap position
+## Current roadmap position
 
-P3.2 merge commit on main:
+Current main / P3.3 base:
 
-`70e279bcb1e7f78cfed1d62376a7aa2fef17ac45`
+`4522e96ab8ff2381fb0e02f74c516a9663bf48de`
 
 ```text
 P3.1 schema-v2 data contract           PASS / MERGED
 P3.2 Target calculation API            PASS / MERGED
-P3.3 rebalance / turnover controls      UNIQUE NEXT ROADMAP IMPLEMENTATION
+P3.3 rebalance / turnover controls      ACTIVE CANDIDATE
 P3.4 contributions                     BLOCKED UNTIL P3.3
 P4 leverage / operating risk budget     BLOCKED
 P5 exit intelligence                    BLOCKED
 ```
 
-No pre-existing P3.3 branch is authoritative. P3.3 must start from the latest main only after this post-merge normalization PR itself closes.
+Active fresh branch:
 
-## Frozen asset-role boundary
+`p3-3/rebalance-turnover-controls-v1`
+
+## Frozen upstream P3.2 authority
+
+P3.3 consumes the existing P3.2 target without recomputing or altering it.
 
 ```text
 target_assets  = BTC, ETH, SOL, BNB
 feature_assets = XRP
-strategy-signal daily payload = BTC, ETH, SOL, BNB, XRP
-router-eligible assets         = BTC, ETH, SOL, BNB only
+P3.2 gross      <= 1
+short targets  forbidden
 ```
 
-XRP remains feature-only. It cannot receive target exposure and cannot enter funding/basis routing.
+P3.2 target engine remains `P3.2-BRRK0011-V1` / model authority `BRRK-0011`.
 
-## Frozen P3.2 target authority now on main
-
-Product-owned runtime files:
-
-- `execution/plan-b-bot/beta_bot/target_math.py`
-- `execution/plan-b-bot/beta_bot/target_engine.py`
-
-Frozen chain:
-
-```text
-four-asset V1 rotation
--> normalize raw V1 gross to <= 1
--> BTC/ETH/SOL/BNB + feature-only XRP price-state features
--> RobustScaler(20,80)
--> whitened PCA4
--> sticky 4-state VariationalGaussianHMM
--> filtered posterior
--> state-conditioned internally-banded V1 return distribution
--> 5000 x 20d Student-t(df=5) paths
--> corrected CVaR95 + CDaR95 allocator, risk budget 0.20
--> meta_scale
--> final_scale = 1 - P(RISK_OFF) * (1 - meta_scale)
--> target = current V1 raw weights * final_scale
-```
-
-Frozen effective model caller values:
-
-```text
-hmm_restarts = 3
-hmm_iter     = 250
-random_seed  = 20260804
-```
-
-Pinned numerical runtime:
-
-```text
-numpy         2.5.1
-pandas        3.0.3
-scipy         1.18.0
-scikit-learn  1.9.0
-hmmlearn      0.3.3
-```
-
-`EXPOSURE-SMOOTH-0038` remains MECHANISM VALIDATED / NOT PROMOTED / BASELINE UNCHANGED.
-
-## P3.2 API boundary
-
-Input:
-
-- P3.1 canonical schema-v2 daily dataset
-- account equity
-- current positions
-- approved ProductConfig
-
-Timing:
-
-- decision at D 00:00 UTC consumes completed observations exactly through D-1
-- V1 row at D-1 becomes the decision-D target
-- defensive scale is the latest valid frozen 30-calendar-day BRRK refit active on D-1
-
-Output includes:
-
-- BTC/ETH/SOL/BNB target weights and risky-sleeve relative weights
-- cash share
-- base gross target <= 1
-- semantic risk state and posterior
-- risk-off probability / meta scale / corrected defensive scale
-- regime refit session
-- feature snapshot
-- model / target-engine / data-contract versions
-- canonical data digest
-
-Current positions are context/audit input only in P3.2. They do not band, throttle or change the target.
-
-The internal 5% V1 band and 5 bps turnover cost exist only to reproduce the frozen historical V1 return distribution used by BRRK-0011 risk calibration. They are not P3.3 execution controls.
-
-## PR #76 final evidence
-
-Final PR head:
-
-`351df262d9dfda6e7900f6acc74bdb0a67c5ae1c`
-
-Final-head evidence:
-
-- `Phase 0 baseline contract` run `31154665875` (#108): SUCCESS
-- `Research evidence normalization` run `31154665880` (#19): SUCCESS
-- `P3.2 target research-live parity` run `31154665888` (#6): SUCCESS
-  - independent research-reference vs product historical parity: SUCCESS
-  - committed historical golden enforcement: SUCCESS
-- PR governance on final code/handoff head run `31154665874` (#139): SUCCESS
-- final PR-body-edit governance run `31154835417` (#140): SUCCESS
-- expected-head squash merge: `70e279bcb1e7f78cfed1d62376a7aa2fef17ac45`
-
-Checkpoint Phase 0 run `31154475023` (#107) recorded 192 execution tests passed in 5.63s and 5/5 research integration tests OK.
-
-## P3.2 historical parity / immutable golden evidence
-
-Committed evidence:
+Committed P3.2 golden evidence remains:
 
 `research/results/p3_2_target_parity/golden_v1.json`
 
-Coverage:
+No P3.2 model, HMM/PCA, defensive-scale, data-contract or golden-vector file is modified by the P3.3 candidate.
+
+## P3.3 roadmap acceptance
+
+Canonical roadmap section: **P3.3 Rebalance band / turnover controls**.
+
+Acceptance:
+
+- no unnecessary churn from tiny target changes;
+- all deviations from theoretical target measurable.
+
+P3.3 is explicitly post-target control. P3.4 weekly contribution handling is separate.
+
+## P3.3 policy provenance
+
+Legacy BTC execution service already carried:
 
 ```text
-early V1-only decisions: 2
-full BRRK decisions:     6
-semantic states:         RISK_OFF / BTC_LEAD / MAJOR_ROTATION / ALT_EXPANSION
-min defensive scale:     1.3453862979240228e-07
-max defensive scale:     0.9999999939549142
+REBALANCE_BAND=0.05
+MIN_TRADE_USD=100
 ```
 
-The full BRRK dates span 2022-12 through 2026-08. The two 2021 V1 dates cover the period before the frozen 600-valid-row regime training threshold permits a legal BRRK refit.
+The 0.05 band was introduced with the migrated Plan B portfolio allocator on 2026-08-04 and is also documented by the legacy BTC-only README as an execution control.
 
-The product-only golden comparator checks the committed data digests and target vectors independently of a newly calculated research reference. This prevents coordinated research + product edits from silently moving the frozen baseline while still passing pairwise parity.
+P3.3 migrates the **0.05 execution-control continuity value** into an explicit four-asset control policy. It does not derive that number from the separate P3.2 internal 5% V1 return-model calibration band.
 
-## P3.2 closure status
+`MIN_TRADE_USD=100` is not promoted into the P3.3 portfolio gate. Minimum notional remains downstream order feasibility only.
+
+Machine-readable policy:
+
+`config/rebalance_policy.json`
+
+Policy/version:
+
+`P3.3-L1-BAND-V1`
+
+## P3.3 control semantics
+
+Metric:
 
 ```text
-IMPLEMENTED:           YES
-TESTED:                YES
-CI VERIFIED:           YES
-MERGED:                YES
+L1 target gap = Σ |P3.2 target weight - current position weight|
+```
+
+Routine rule:
+
+```text
+L1 gap < 0.05  -> suppress routine rebalance
+L1 gap >= 0.05 -> move post-control desired state to full P3.2 target
+```
+
+Theoretical per-asset and aggregate deviations remain recorded in both cases.
+
+Safety overrides bypass the churn band if current state itself violates frozen pre-P4 boundaries:
+
+- any current BTC/ETH/SOL/BNB position is short;
+- current absolute gross exceeds 1.
+
+These overrides restore the P3.2 target; they do not authorize shorting or leverage.
+
+## P3.3 implementation candidate
+
+Implemented on the active branch:
+
+- `config/rebalance_policy.json`
+- `execution/plan-b-bot/beta_bot/rebalance_control.py`
+- `execution/plan-b-bot/tests/test_rebalance_control_p3_3.py`
+- `docs/P3_3_REBALANCE_CONTROL.md`
+- `.env.example` comments clarifying legacy-vs-canonical control roles
+
+`calculate_rebalance_control(...)` consumes:
+
+- immutable P3.2 `TargetCalculationResult`;
+- point-in-time account equity;
+- signed current BTC/ETH/SOL/BNB notionals;
+- registered P3.3 policy.
+
+It emits auditable fields including:
+
+- upstream P3.2 target digest/version/model authority;
+- immutable model target weights/notionals;
+- current weights/notionals;
+- theoretical gap weights/notionals;
+- aggregate L1 gap and theoretical turnover;
+- current/target gross and net weights;
+- rebalance decision/reason and safety overrides;
+- post-control desired state;
+- proposed deltas and control turnover;
+- suppressed gap when inside band;
+- deterministic P3.3 control-plan digest;
+- explicit minimum-notional downstream role;
+- `production_authorized = false`.
+
+## Candidate tests
+
+P3.3 regression tests cover:
+
+- exact target -> no-op;
+- inside-band churn suppression while preserving theoretical gaps;
+- exact 5% boundary -> rebalance;
+- aggregate multi-asset L1 reaches 5% even though every individual asset gap is below 5%;
+- a $60 delta outside the L1 band remains a P3.3 rebalance recommendation despite legacy `$100` min-trade;
+- current short exposure bypasses band;
+- current gross > 1 bypasses band;
+- unknown current asset fails closed;
+- upstream P3.2 target remains unchanged;
+- no production authorization.
+
+## Current P3.3 status
+
+```text
+IMPLEMENTED:           YES — candidate branch
+TESTED:                PENDING PR CI
+CI VERIFIED:           NO
+MERGED:                NO
 PRODUCTION AUTHORIZED: NO_CHANGE
 ```
 
-## P3.3 boundary
+## Explicit P3.3 exclusions
 
-P3.3 is now the unique next implementation and owns target-to-position rebalance / turnover control only.
+Do not add in P3.3:
 
-P3.3 must consume the P3.2 target contract; it must not rewrite the frozen BRRK target model.
-
-P3.3 must not absorb:
-
-- P3.4 contribution handling
-- F23 funding-response redesign
-- P4 gross > 1 leverage or operating-risk-budget freeze
-- P5 exit intelligence
-- shorts
-- XRP targets
-- production authorization
+- P3.4 contribution scheduling/handling;
+- F23 funding-response redesign;
+- P4 gross > 1 leverage or operating-risk-budget freeze;
+- P5 exit intelligence;
+- short targets;
+- XRP targets;
+- venue quantity precision;
+- minimum-order enforcement;
+- routing / slippage / capacity changes;
+- order slicing/submission;
+- production authorization.
 
 ## Production authorization
 
@@ -196,18 +198,22 @@ production_authorized_components = []
 DRIFT_0
 ```
 
-P3.1 data semantics and P3.2 target semantics are aligned, validated and merged. No known authority drift remains.
+P3.3 is downstream of the frozen P3.2 target and introduces only the roadmap-defined rebalance/turnover control boundary.
 
 ## Exact next action
 
 ```text
-post-merge normalization PR
--> docs-only self-review
--> required CI / parity / governance on normalization head
--> write final run evidence into PR metadata
--> newest governance GREEN
--> expected-head merge normalization
+self-review P3.3 diff
+-> open P3.3 PR
+-> Phase 0 full pytest + research integration
+-> P3.2 parity/golden preservation if triggered/applicable
+-> PR handoff governance
+-> fix every real failure in same PR
+-> final-head CI
+-> write final evidence into PR body
+-> newest body-edit governance GREEN
+-> expected-head squash merge
 -> verify main
--> create fresh P3.3 branch from that main
--> implement rebalance / turnover controls only
+-> post-merge normalization
+-> fresh P3.4 branch
 ```
