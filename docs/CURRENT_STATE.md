@@ -118,6 +118,8 @@ Historical deviations were handled as corrections rather than silently carried f
 - repository branch/document authority hygiene was normalized;
 - P3.2/P3.3/P3.4 machine-readable registry omissions were normalized in PR #94 without changing implementation semantics.
 
+All historical deviations identified by the 2026-08-07 program-wide audit now have a recorded **CLOSED** disposition; there is no unresolved roadmap drift carried into Phase 5.
+
 Current product-state classification: **DRIFT_0**.
 
 ## Frozen product boundaries
