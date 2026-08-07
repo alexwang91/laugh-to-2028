@@ -9,6 +9,7 @@ CONTRACT = ROOT / "research" / "cycle_exit" / "p5_3_state_model_contract.json"
 TAXONOMY = ROOT / "research" / "cycle_exit" / "p5_1_event_taxonomy.json"
 P52_SUMMARY = ROOT / "research" / "results" / "p5_2_feature_evidence" / "summary.json"
 P52_DIGEST = ROOT / "research" / "results" / "p5_2_feature_evidence" / "summary.sha256"
+P52_FEATURE_PANEL = ROOT / "research" / "results" / "p5_2_feature_evidence" / "feature_panel.csv"
 
 
 def _git_blob_sha(path: Path) -> str:
@@ -31,6 +32,13 @@ def test_p5_3_contract_dependencies_are_immutable_and_exact() -> None:
     assert p52["selection"]["state_thresholds_selected"] is False
     assert p52["production_authorized"] is False
 
+    correction = c["prereg_correction"]
+    assert correction["id"] == "P5.3-PREREG-COMPLETENESS-R1"
+    assert correction["timing"] == "BEFORE_ANY_P5_3_STATE_PATH_EVALUATION"
+    assert correction["observed_p5_3_state_paths_used"] is False
+    assert correction["p5_1_or_p5_2_mutation"] is False
+    assert correction["production_change"] is False
+
 
 def test_state_vocabulary_and_product_boundaries_are_exact() -> None:
     c = json.loads(CONTRACT.read_text())
@@ -43,6 +51,7 @@ def test_state_vocabulary_and_product_boundaries_are_exact() -> None:
         "DE_RISK_2",
         "FLAT",
     ]
+    assert c["preinitialization_state"] == "DATA_INSUFFICIENT"
     integrity = c["research_integrity"]
     assert integrity["no_single_indicator_top_switch"] is True
     assert integrity["late_bull_rotation_not_automatically_bearish"] is True
@@ -88,27 +97,47 @@ def test_profiles_are_frozen_ordered_sensitivity_not_post_result_free_parameters
 
 def test_runtime_inputs_are_subset_of_immutable_p5_2_available_features() -> None:
     c = json.loads(CONTRACT.read_text())
-    feature_panel = ROOT / "research" / "results" / "p5_2_feature_evidence" / "feature_panel.csv"
-    header = feature_panel.read_text().splitlines()[0].split(",")
+    header = P52_FEATURE_PANEL.read_text().splitlines()[0].split(",")
     available = set(header[1:])
     used = {f for family in c["runtime_feature_inputs"].values() for f in family}
     assert used <= available
     assert not (set(c["excluded_pending_inputs"]) & used)
 
 
-def test_causal_normalization_and_missing_data_fail_closed() -> None:
+def test_causal_normalization_formula_and_missing_data_are_exact() -> None:
     c = json.loads(CONTRACT.read_text())
     n = c["causal_normalization"]
-    assert n == {
-        "method": "TRAILING_EMPIRICAL_PERCENTILE",
-        "lookback_completed_daily_observations": 365,
-        "minimum_completed_observations": 252,
-        "include_current_observation": True,
-        "future_observations_allowed": False,
-        "tie_method": "average",
-        "missing_rule": "FAIL_CLOSED_NO_DEESCALATION",
-    }
-    assert "Missing required normalized evidence cannot cause de-escalation" in c["transition_rules"]["missing_data"]
+    assert n["method"] == "TRAILING_EMPIRICAL_PERCENTILE"
+    assert n["lookback_completed_daily_dates"] == 365
+    assert n["minimum_nonmissing_feature_observations"] == 20
+    assert n["percentile_formula"] == "(average_rank_of_current_value_among_nonmissing_window_values - 1) / (N - 1)"
+    assert n["percentile_range"] == "[0,1] with sample minimum=0 and sample maximum=1 when N>1"
+    assert n["include_current_completed_observation"] is True
+    assert n["future_observations_allowed"] is False
+    assert n["tie_method"] == "average"
+    assert n["calibration_depth_must_be_reported"] is True
+    assert "last up to 365 completed daily dates" in n["window_semantics"]
+    assert "20 <= N < 365" in n["early_history_rule"]
+    assert "DATA_INSUFFICIENT" in n["initialization_rule"]
+    assert n["missing_rule"] == "FAIL_CLOSED_NO_DEESCALATION"
+    assert "Before initialization emit DATA_INSUFFICIENT" in c["transition_rules"]["missing_data"]
+
+
+def test_early_2021_taxonomy_can_be_calibrated_without_future_data() -> None:
+    """The frozen 20-observation rule must make all continuous runtime inputs calibratable by the earliest control lead window."""
+    import pandas as pd
+
+    c = json.loads(CONTRACT.read_text())
+    panel = pd.read_csv(P52_FEATURE_PANEL, parse_dates=["date"]).set_index("date")
+    continuous = {f for family in c["runtime_feature_inputs"].values() for f in family}
+    # canonical5 breadth is used as a raw fraction in the rotation rule, not percentile-normalized.
+    continuous.remove("canonical5_outperformance_breadth_20d")
+    earliest_required = pd.Timestamp("2021-01-31")  # P5C-2021-JAN-FEB anchor 2021-02-28 minus 28d
+    min_obs = c["causal_normalization"]["minimum_nonmissing_feature_observations"]
+    lookback = c["causal_normalization"]["lookback_completed_daily_dates"]
+    window = panel.loc[:earliest_required].tail(lookback)
+    counts = window[list(sorted(continuous))].notna().sum()
+    assert int(counts.min()) >= min_obs, counts.to_dict()
 
 
 def test_rotation_and_exhaustion_semantics_prevent_single_indicator_exit() -> None:
