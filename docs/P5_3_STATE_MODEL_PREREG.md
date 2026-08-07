@@ -21,6 +21,15 @@ P5.3 consumes, but may not rewrite:
 
 Only one P5.1 event is explicitly terminal. Any terminal-specific behavior is therefore hypothesis-generating until later validation; P5.3 may not hand-tune a rule to 2021 November and call it cross-cycle evidence.
 
+## Prereg completeness correction R1
+
+Before **any** P5.3 state path was evaluated, two specification gaps were identified and frozen under `P5.3-PREREG-COMPLETENESS-R1`:
+
+1. the initial text did not define the exact average-rank-to-percentile mapping;
+2. requiring 252 nonmissing feature observations would exclude required early-2021 P5.1 windows because the immutable P5.2 panel begins on 2020-10-01 and some features require their own lookback warm-up.
+
+The correction changes no P5.1 event, no P5.2 feature/result, no profile threshold and no production boundary. It freezes the exact percentile formula and an early-history calibration rule before state evidence exists.
+
 ## State vocabulary
 
 ```text
@@ -32,6 +41,8 @@ DE_RISK_1
 DE_RISK_2
 FLAT
 ```
+
+Before enough causal feature history exists, the research path emits `DATA_INSUFFICIENT`. This is a pre-initialization diagnostic, not a market-risk state.
 
 `MONITOR_ONLY` remains a downstream control/runtime state after FLAT rather than a P5.3 market-state classification.
 
@@ -89,17 +100,35 @@ At least two damage inputs must agree before ordinary de-risk states are eligibl
 
 ## Causal normalization
 
-Continuous inputs use a trailing empirical percentile over the latest 365 completed daily observations with at least 252 observations required.
+Continuous inputs use a trailing empirical percentile over the latest **up to 365 completed daily dates** ending at the current completed observation.
 
-At date `t`:
+For each feature independently at date `t`:
 
-- only observations available by `t` are used;
-- the current completed observation may be included;
+1. take the last up to 365 completed daily dates ending at `t`;
+2. drop missing values for that feature only;
+3. require at least **20 nonmissing feature observations**;
+4. rank the current value among those `N` values using average rank for ties;
+5. compute
+
+```text
+percentile = (average_rank - 1) / (N - 1)
+```
+
+so the observed sample minimum maps to 0 and maximum to 1.
+
+Additional rules:
+
+- current `t` may be used only after the completed 00:00 UTC daily observation exists;
 - future observations are forbidden;
-- average rank handles ties;
-- missing required evidence cannot de-escalate or automatically re-add risk.
+- when `20 <= N < 365`, use the available causal history and report `N`;
+- when `N < 20`, that normalized input is unavailable;
+- the state path remains `DATA_INSUFFICIENT` until **all continuous runtime inputs used by any evidence atom** meet the 20-observation rule;
+- after initialization, missing required evidence may hold or increase conservatism but may not de-escalate/re-risk;
+- per-feature normalization depth and minimum calibration depth by date are mandatory research outputs.
 
 The P5.2 robust-z-versus-controls statistic is a research diagnostic only and is **not** a runtime feature.
+
+The prereg CI additionally proves that the immutable P5.2 panel provides at least 20 causal observations for all continuous runtime inputs by `2021-01-31`, the start of the earliest frozen P5.1 control `early_warning` bucket.
 
 ## Frozen sensitivity profiles
 
@@ -159,7 +188,8 @@ Rotation is deliberately evaluated below exhaustion/de-risk priority but above g
 - de-escalation moves at most one state per completed daily decision;
 - FLAT is absorbing inside P5.3;
 - `FLAT -> risk-on` requires external explicit human approval;
-- missing evidence may not de-escalate/re-risk;
+- before initialization emit `DATA_INSUFFICIENT`;
+- after initialization missing evidence may not de-escalate/re-risk;
 - no intraday P5.3 risk addition.
 
 ## Required P5.3 research outputs
@@ -167,6 +197,8 @@ Rotation is deliberately evaluated below exhaustion/de-risk priority but above g
 For EARLY, BALANCED and CONSERVATIVE report:
 
 - complete daily state path;
+- per-feature normalization observation count and minimum calibration depth by date;
+- `DATA_INSUFFICIENT` date range and initialization date;
 - event-window state occupancy;
 - first entry into each later-cycle state;
 - lead/lag versus frozen P5.1 anchors;
