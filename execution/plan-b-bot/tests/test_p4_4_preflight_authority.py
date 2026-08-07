@@ -7,6 +7,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[3]
 CONTRACT = ROOT / "research" / "leverage_0040" / "LEVERAGE-0040-STUDY-IMPLEMENTATION-V1.json"
 R1 = ROOT / "research" / "leverage_0040" / "run_leverage_0040_once_r1.py"
+CONTRACT_WORKFLOW = ROOT / ".github" / "workflows" / "p4-4-leverage-0040-contract.yml"
 
 
 def _contract():
@@ -55,3 +56,13 @@ def test_r1_entrypoint_exists_and_old_ratio_loader_is_not_authority():
     assert "build_features_no_dominance" in text
     assert "published_banded_weights_used_for_scale\": False" in text
     assert "evaluation_start - pd.Timedelta(days=1)" in text
+
+
+def test_contract_ci_switches_from_preflight_to_immutable_validation_after_result():
+    text = CONTRACT_WORKFLOW.read_text(encoding="utf-8")
+    assert "if [[ -f research/results/leverage_0040/summary.json ]]" in text
+    assert "python research/leverage_0040/validate_leverage_0040_result.py" in text
+    assert "python research/leverage_0040/run_leverage_0040_once_r1.py" in text
+    assert "--preflight-only" in text
+    assert '"research/results/leverage_0040/**"' in text
+    assert '"config/decision_registry.json"' in text
