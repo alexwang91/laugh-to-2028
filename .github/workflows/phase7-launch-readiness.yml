@@ -1,0 +1,47 @@
+name: Phase 7 limited-live readiness gate
+
+on:
+  pull_request:
+    paths:
+      - 'execution/plan-b-bot/beta_bot/launch_gate.py'
+      - 'execution/plan-b-bot/tests/test_phase7_launch_gate.py'
+      - 'config/phase7_launch_readiness.json'
+      - 'docs/PHASE7_LIMITED_LIVE_READINESS_2026-08-08.md'
+      - 'docs/CURRENT_STATE.md'
+      - '.github/workflows/phase7-launch-readiness.yml'
+  push:
+    branches: ['phase-7/**']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  readiness-gate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: execution/plan-b-bot/requirements-dev.txt
+      - run: pip install -r execution/plan-b-bot/requirements-dev.txt
+      - name: Compile and test P7 gate
+        working-directory: execution/plan-b-bot
+        run: |
+          python -m py_compile beta_bot/launch_gate.py tests/test_phase7_launch_gate.py
+          pytest -q tests/test_phase7_launch_gate.py
+      - name: Assert current launch is blocked
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          c=json.loads(Path('config/phase7_launch_readiness.json').read_text())
+          assert c['production_gross_cap'] == 1.0
+          assert c['current_program_state'] == 'MONITOR_ONLY'
+          assert c['production_authorized'] is False
+          assert 'PHASE6_LIVE_ELAPSED_EVIDENCE_NOT_PASSED' in c['launch_blockers']
+          assert 'EXPLICIT_OWNER_APPROVAL_NOT_PRESENT' in c['launch_blockers']
+          PY

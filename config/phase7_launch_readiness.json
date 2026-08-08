@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "phase_id": "PHASE-7",
+  "contract_id": "P7-LIMITED-LIVE-READINESS-V1-2026-08-08",
+  "status": "IMPLEMENTATION_READINESS_ONLY_LAUNCH_BLOCKED",
+  "initial_capital_usd": 2000,
+  "weekly_contribution_usd": 100,
+  "production_gross_cap": 1.0,
+  "current_program_state": "MONITOR_ONLY",
+  "production_authorized": false,
+  "launch_blockers": [
+    "PHASE6_LIVE_ELAPSED_EVIDENCE_NOT_PASSED",
+    "EXPLICIT_OWNER_APPROVAL_NOT_PRESENT"
+  ],
+  "required_launch_evidence": [
+    "phase6_implementation_replay_passed",
+    "phase6_live_elapsed_evidence_passed",
+    "production_release_frozen",
+    "trading_agent_credential_only",
+    "master_wallet_private_key_absent",
+    "withdrawal_transfer_automation_absent",
+    "hard_exposure_cap_equals_1_0",
+    "kill_switch_tested",
+    "startup_reconciliation_passed",
+    "monitoring_active",
+    "explicit_owner_approval"
+  ],
+  "human_approval_boundaries": [
+    "MONITOR_ONLY_TO_ACTIVE",
+    "FLAT_TO_LONG",
+    "FLAT_TO_SHORT",
+    "FIRST_SHORT_EXPOSURE_OF_NEW_BEAR_PHASE"
+  ],
+  "normal_autonomy_only_after_active_approval": [
+    "rebalance_weights",
+    "change_normal_leverage_inside_approved_limits",
+    "route_spot_perp",
+    "reduce_risk",
+    "emergency_flat"
+  ],
+  "scale_up_evidence": [
+    "expected_vs_realized_slippage",
+    "realized_funding",
+    "order_fill_reconciliation_history",
+    "uptime_and_data_quality",
+    "drawdown_behavior",
+    "target_fidelity",
+    "operational_incidents"
+  ],
+  "notes": [
+    "This contract implements readiness gates only and does not activate live trading.",
+    "No owner approval record is created by this work.",
+    "No secret, key, signer or order submission path belongs in the readiness gate."
+  ]
+}
