@@ -1,0 +1,276 @@
+{
+  "schema_version": 1,
+  "run_interface_id": "STABLECOIN-LIQUIDITY-0001-RUN-INTERFACE-V1",
+  "research_id": "STABLECOIN-LIQUIDITY-0001",
+  "status": "FROZEN_NOT_EXECUTED",
+  "production_authorized": false,
+  "purpose": "Freeze the complete deterministic Stage-1 information-test interface before any real Stablecoin feature computation, Ridge fit, OOS prediction or result release.",
+  "dataset_binding": {
+    "stablecoin_validation_dataset_ref": "STABLECOIN-LIQUIDITY-0001-DEFILLAMA-HIST-V1",
+    "stablecoin_raw_exposure_ref": "STABLECOIN-LIQUIDITY-0001-RAW-DATA-20260808T141719Z",
+    "stablecoin_raw_sha256": "7cffe6fb3a21e891082c06c60e91491edfbc78e9c01e2d549805815a646d9ffd",
+    "stablecoin_historical_start": "2017-11-29T00:00:00Z",
+    "stablecoin_historical_end": "2026-08-08T00:00:00Z",
+    "stablecoin_contamination_state": "RESEARCHER_EXPOSED_HISTORY",
+    "stablecoin_data_budget": "VALIDATION"
+  },
+  "canonical_brrk_binding": {
+    "model_authority": "BRRK-0011",
+    "target_engine_version": "P3.2-BRRK0011-V1",
+    "target_engine_path": "execution/plan-b-bot/beta_bot/target_engine.py",
+    "target_math_path": "execution/plan-b-bot/beta_bot/target_math.py",
+    "data_contract_id": "BRRK-DATA-CONTRACT-P3.1-R1-2026-08-06",
+    "data_contract_schema": 2,
+    "research_parity_reference": "research/integration/p3_2_target_parity.py",
+    "golden_reference": "research/results/p3_2_target_parity/golden_v1.json",
+    "account_equity_usd_for_pure_target_api": 10000.0,
+    "current_positions_for_pure_target_api": {},
+    "account_and_position_fields_excluded_from_model_features": true
+  },
+  "market_data_interface": {
+    "source_id": "BINANCE_SPOT_KLINES_V1",
+    "symbols": ["BTCUSDT", "ETHUSDT", "SOLUSDT", "BNBUSDT", "XRPUSDT"],
+    "interval": "1d",
+    "timezone": "0",
+    "raw_start_utc": "2020-08-01T00:00:00Z",
+    "evaluation_information_cutoff_utc": "2026-08-08T00:00:00Z",
+    "latest_allowed_completed_session": "2026-08-07T00:00:00Z",
+    "endpoint_order": [
+      "https://data-api.binance.vision/api/v3/klines",
+      "https://api.binance.com/api/v3/klines"
+    ],
+    "canonicalizer": "research/integration/p3_1_data_contract_adapter.py::canonicalize_research_daily_history",
+    "decision_timestamp_rule": "Every candidate decision is exactly 00:00:00 UTC and consumes canonical price data only through completed D-1 UTC session.",
+    "source_revision_policy": "The one-shot Stage-1 execution must persist exact fetched Binance payload pages and provenance before parsing/evaluation; no performance-driven refetch or source substitution is permitted after any result-bearing computation begins."
+  },
+  "baseline_state": {
+    "state_id": "BRRK_P3_2_PRICE_REGIME_STATE_V1",
+    "source": "TargetCalculationResult from canonical P3.2 target engine at each decision timestamp",
+    "continuous_feature_order": [
+      "target_weight_BTC",
+      "target_weight_ETH",
+      "target_weight_SOL",
+      "target_weight_BNB",
+      "cash_share",
+      "base_gross_target",
+      "risk_probability_RISK_OFF",
+      "risk_probability_BTC_LEAD",
+      "risk_probability_MAJOR_ROTATION",
+      "risk_probability_ALT_EXPANSION",
+      "meta_scale",
+      "defensive_scale",
+      "regime_feature_btc_trend",
+      "regime_feature_log_btc_rv30",
+      "regime_feature_btc_drawdown_252",
+      "regime_feature_major_breadth",
+      "regime_feature_alt_breadth",
+      "regime_feature_rel_strength_mean",
+      "regime_feature_rel_strength_dispersion",
+      "regime_feature_avg_corr30_btc",
+      "v1_raw_gross_before_defense",
+      "v1_raw_weight_BTC",
+      "v1_raw_weight_ETH",
+      "v1_raw_weight_SOL",
+      "v1_raw_weight_BNB",
+      "v1_btc_beta",
+      "v1_btc_trend",
+      "v1_btc_vol",
+      "v1_score_ETH",
+      "v1_score_SOL",
+      "v1_score_BNB",
+      "v1_asset_trend_BTC",
+      "v1_asset_trend_ETH",
+      "v1_asset_trend_SOL",
+      "v1_asset_trend_BNB"
+    ],
+    "feature_count": 35,
+    "excluded_fields": [
+      "risk_state_string",
+      "decision_timestamp_string",
+      "target_session_string",
+      "regime_refit_session_string",
+      "data_digest",
+      "account_equity_usd",
+      "current_positions_notional_usd",
+      "approved_product_id",
+      "approved_config_model_version",
+      "model_authority_string",
+      "target_engine_version_string",
+      "production_authorized",
+      "hmm_converged",
+      "pca_explained_variance"
+    ],
+    "missing_or_nonfinite_policy": "ROW_INELIGIBLE_FAIL_CLOSED_NO_IMPUTATION"
+  },
+  "stablecoin_feature_alignment": {
+    "feature_family": "STABLECOIN_LIQUIDITY_STATE_V1",
+    "decision_to_metric_timestamp_rule": "metric_timestamp = decision_timestamp - 2 calendar days exactly",
+    "required_exact_metric_offsets_days": [0, -20, -40],
+    "growth_20d": "ln(S_t) - ln(S_t_minus_20_calendar_days)",
+    "acceleration_20d": "[ln(S_t)-ln(S_t_minus_20d)] - [ln(S_t_minus_20d)-ln(S_t_minus_40d)]",
+    "feature_order": ["stablecoin_growth_20d", "stablecoin_growth_acceleration_20d"],
+    "feature_count": 2,
+    "missing_or_nonpositive_policy": "ROW_INELIGIBLE_NO_INTERPOLATION_NO_FORWARD_FILL",
+    "availability_check": "The metric timestamp mapped to the decision must satisfy metric_timestamp + 2 calendar days <= decision_timestamp; exact primary mapping makes equality hold.",
+    "lag_1d_or_3d_allowed": false
+  },
+  "label_interface": {
+    "label_id": "FUTURE_20D_CANONICAL_BRRK_P3_2_NET_RETURN_V1",
+    "horizon_calendar_days": 20,
+    "target_path": "Daily canonical P3.2 target weights generated at each 00:00 UTC decision from completed D-1 price history.",
+    "daily_holding_rule": "Target decided at D 00:00 UTC is held over the D UTC close-to-close asset return.",
+    "target_assets": ["BTC", "ETH", "SOL", "BNB"],
+    "daily_asset_return": "close_D / close_D_minus_1 - 1",
+    "daily_turnover": "L1 sum over target assets of target_weight_D minus target_weight_D_minus_1",
+    "turnover_cost_bps": 5.0,
+    "turnover_cost_semantics": "Frozen BRRK research net-return convention only; not a new production routing/cost assumption.",
+    "daily_net_return": "sum_asset(target_weight_D * daily_asset_return_D) - daily_turnover_D * 5/10000",
+    "forward_label": "product_{k=0..19}(1 + daily_net_return_{D+k}) - 1",
+    "label_realized_at": "decision_timestamp + 20 calendar days",
+    "minimum_required_prior_target": "D-1 target must exist to calculate D turnover; otherwise label row is ineligible.",
+    "nonfinite_or_daily_return_le_minus_one_policy": "HARD_FAIL_INVALID_RUN_INTERFACE_INPUT"
+  },
+  "paired_row_eligibility": {
+    "same_rows_for_baseline_and_augmented": true,
+    "candidate_decision_start": "FIRST_00UTC_DATE_CANONICAL_P3_2_STATE_IS_VALID",
+    "candidate_decision_end": "2026-07-19T00:00:00Z",
+    "end_reason": "A 20-day label starting after 2026-07-19 is not fully realized by the frozen 2026-08-08 information cutoff.",
+    "required_for_each_row": [
+      "valid canonical P3.2 baseline state",
+      "valid exact-LAG2D Stablecoin feature pair",
+      "valid future 20-day canonical BRRK net-return label",
+      "label fully realized by 2026-08-08T00:00:00Z"
+    ],
+    "performance_based_row_selection_forbidden": true
+  },
+  "walk_forward": {
+    "prediction_frequency": "EVERY_ELIGIBLE_DAILY_00UTC_DECISION",
+    "minimum_training_rows": 365,
+    "training_set_at_prediction_T": "All earlier paired eligible rows whose label_realized_at <= T.",
+    "label_purge_rule": "A training row with decision t is usable at T only if t + 20 calendar days <= T.",
+    "embargo_beyond_label_purge_days": 0,
+    "expanding_window": true,
+    "rolling_window": false,
+    "oos_date_rule": "Predict every paired eligible row once minimum_training_rows fully-realized training rows exist; never revisit or refit a past prediction after later information arrives.",
+    "minimum_valid_oos_predictions_for_pass": 730
+  },
+  "normalization": {
+    "implementation": "sklearn.preprocessing.StandardScaler",
+    "scikit_learn_version": "1.9.0",
+    "fit_scope": "TRAINING_ROWS_ONLY_SEPARATELY_AT_EACH_OOS_PREDICTION",
+    "with_mean": true,
+    "with_std": true,
+    "variance_convention": "StandardScaler population variance ddof=0",
+    "zero_variance_policy": "StandardScaler scale factor 1",
+    "target_y_normalized": false,
+    "full_sample_normalization_forbidden": true
+  },
+  "models": {
+    "baseline": {
+      "features": "BRRK_P3_2_PRICE_REGIME_STATE_V1 only",
+      "estimator": "sklearn.linear_model.Ridge",
+      "alpha": 1.0,
+      "fit_intercept": true,
+      "solver": "svd",
+      "positive": false,
+      "parameter_grid": "NONE"
+    },
+    "augmented": {
+      "features": "BRRK_P3_2_PRICE_REGIME_STATE_V1 plus exactly STABLECOIN_LIQUIDITY_STATE_V1",
+      "estimator": "sklearn.linear_model.Ridge",
+      "alpha": 1.0,
+      "fit_intercept": true,
+      "solver": "svd",
+      "positive": false,
+      "parameter_grid": "NONE"
+    },
+    "only_allowed_difference": "The augmented design matrix appends exactly the two frozen Stablecoin columns to the 35-column baseline matrix. Target rows, labels, training dates, normalization rules, estimator class and alpha are otherwise identical."
+  },
+  "primary_metric": {
+    "per_oos_loss_differential": "d_t = (y_t - pred_baseline_t)^2 - (y_t - pred_augmented_t)^2",
+    "reported_mean": "mean(d_t)",
+    "hac": {
+      "kernel": "BARTLETT_NEWEY_WEST",
+      "max_lag": 19,
+      "gamma_k": "(1/n) * sum_{t=k..n-1}[(d_t-dbar)*(d_{t-k}-dbar)]",
+      "long_run_variance": "gamma_0 + 2*sum_{k=1..19}[(1-k/20)*gamma_k]",
+      "standard_error_mean": "sqrt(long_run_variance/n)",
+      "test_statistic": "dbar / standard_error_mean",
+      "one_sided_p_value": "1 - standard_normal_cdf(test_statistic)",
+      "null": "mean_loss_differential <= 0",
+      "alternative": "mean_loss_differential > 0",
+      "alpha": 0.05,
+      "degenerate_nonpositive_long_run_variance": "INCONCLUSIVE_IF_MEAN_POSITIVE; FAIL_NO_INCREMENTAL_INFORMATION_IF_MEAN_NONPOSITIVE"
+    }
+  },
+  "classification": {
+    "invalid_run": "Any PIT, provenance, data-contract, unregistered-variant, canonical-parity or run-interface violation invalidates the run and is not a research result.",
+    "FAIL_NO_INCREMENTAL_INFORMATION": "mean_loss_differential <= 0",
+    "INCONCLUSIVE": "mean_loss_differential > 0 and [valid_oos_predictions < 730 or one-sided HAC p >= 0.05 or HAC variance is degenerate]",
+    "PASS_INCREMENTAL_INFORMATION": "mean_loss_differential > 0 and valid_oos_predictions >= 730 and one-sided HAC p < 0.05 and no blocking violation"
+  },
+  "secondary_metrics": {
+    "mae_loss_differential": "mean(|y-pred_baseline| - |y-pred_augmented|)",
+    "return_sign_accuracy_difference": "mean(sign(pred_augmented)==sign(y)) - mean(sign(pred_baseline)==sign(y))",
+    "may_replace_primary": false
+  },
+  "result_release": {
+    "first_release_only": [
+      "research_id",
+      "run_interface_id",
+      "classification",
+      "valid_oos_prediction_count",
+      "mean_primary_loss_differential",
+      "hac_max_lag",
+      "hac_test_statistic",
+      "hac_one_sided_p_value",
+      "primary_result_digest"
+    ],
+    "first_release_excludes": [
+      "equity_curve",
+      "predictions_table",
+      "coefficient_path",
+      "feature_importance",
+      "alternative_lags",
+      "alternative_alphas",
+      "alternative_horizons",
+      "alternative_feature_representations",
+      "secondary_metrics_until_primary_result_is_immutably_recorded"
+    ],
+    "pass_meaning": "ELIGIBLE_ONLY_FOR_SEPARATELY_PREREGISTERED_STAGE2_ROBUSTNESS",
+    "automatic_edge_admission": false,
+    "automatic_portfolio_integration": false,
+    "automatic_production_authorization": false
+  },
+  "execution_lock": {
+    "stage1_execution_id": "STABLECOIN-LIQUIDITY-0001-STAGE1-RUN-V1",
+    "required_explicit_token": "[STABLECOIN_STAGE1_EXECUTE_V1]",
+    "run_once_marker": "research/stablecoin_liquidity_0001/RUN_ONCE_STAGE1.marker",
+    "marker_write_semantics": "CREATE_ONLY_BEFORE_RESULT_BEARING_EXECUTION",
+    "marker_persistence_rule": "Once claimed, the marker is retained across success, failure or invalidation and may never be deleted to rerun the same research ID.",
+    "automatic_retry_after_any_result_bearing_output": false,
+    "second_variant_under_same_research_id_forbidden": true
+  },
+  "dependency_lock": {
+    "python": "3.12",
+    "numpy": "2.5.1",
+    "pandas": "3.0.3",
+    "scipy": "1.18.0",
+    "scikit_learn": "1.9.0",
+    "hmmlearn": "0.3.3"
+  },
+  "explicit_non_actions": [
+    "NO_REAL_STABLECOIN_FEATURE_COMPUTATION_IN_THIS_PR",
+    "NO_REAL_BRRK_STATE_PATH_COMPUTATION_IN_THIS_PR",
+    "NO_REAL_LABEL_PATH_COMPUTATION_IN_THIS_PR",
+    "NO_RIDGE_FIT_ON_REAL_DATA",
+    "NO_OOS_PREDICTIONS",
+    "NO_PRIMARY_METRIC_RELEASE",
+    "NO_STAGE1_CLASSIFICATION",
+    "NO_EDGE_REGISTRY_ADMISSION",
+    "NO_PORTFOLIO_INTEGRATION",
+    "NO_BRRK_CHANGE",
+    "NO_PHASE6_7_8_AUTHORITY_CHANGE",
+    "NO_PRODUCTION_AUTHORIZATION"
+  ]
+}

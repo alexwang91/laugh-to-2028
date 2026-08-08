@@ -22,7 +22,12 @@
       "secondary_metrics": [],
       "feature_families": [],
       "horizon": null,
-      "universe": ["BTC", "ETH", "SOL", "BNB"],
+      "universe": [
+        "BTC",
+        "ETH",
+        "SOL",
+        "BNB"
+      ],
       "development_dataset_refs": [],
       "validation_dataset_refs": [],
       "sealed_dataset_refs": [],
@@ -50,8 +55,12 @@
       "result_status": "ACCEPTED_RESEARCH_TARGET",
       "failure_reason": null,
       "promotion_state": "CANONICAL_DIRECTIONAL_RESEARCH_TARGET",
-      "evidence_refs": ["config/decision_registry.json"],
-      "decision_refs": ["BRRK-0011"],
+      "evidence_refs": [
+        "config/decision_registry.json"
+      ],
+      "decision_refs": [
+        "BRRK-0011"
+      ],
       "production_relevance": "Legacy research evidence only; no automatic production authority.",
       "production_authorized": false,
       "provenance_status": "INFERRED_FROM_REPOSITORY",
@@ -107,8 +116,12 @@
       "result_status": "REJECTED_STOPPED",
       "failure_reason": null,
       "promotion_state": "NO_PROMOTION",
-      "evidence_refs": ["config/decision_registry.json"],
-      "decision_refs": ["PIT-ALPHA-0016-0018"],
+      "evidence_refs": [
+        "config/decision_registry.json"
+      ],
+      "decision_refs": [
+        "PIT-ALPHA-0016-0018"
+      ],
       "production_relevance": "Legacy research evidence only; no automatic production authority.",
       "production_authorized": false,
       "provenance_status": "INFERRED_FROM_REPOSITORY",
@@ -161,8 +174,12 @@
       "result_status": "SHADOW_ONLY",
       "failure_reason": null,
       "promotion_state": "SHADOW_ONLY",
-      "evidence_refs": ["config/decision_registry.json"],
-      "decision_refs": ["ASYM-BETA-0024"],
+      "evidence_refs": [
+        "config/decision_registry.json"
+      ],
+      "decision_refs": [
+        "ASYM-BETA-0024"
+      ],
       "production_relevance": "Legacy research evidence only; no automatic production authority.",
       "production_authorized": false,
       "provenance_status": "INFERRED_FROM_REPOSITORY",
@@ -215,8 +232,12 @@
       "result_status": "REJECTED_STOPPED",
       "failure_reason": null,
       "promotion_state": "NO_PROMOTION",
-      "evidence_refs": ["config/decision_registry.json"],
-      "decision_refs": ["TSMOM-ALPHA-0029"],
+      "evidence_refs": [
+        "config/decision_registry.json"
+      ],
+      "decision_refs": [
+        "TSMOM-ALPHA-0029"
+      ],
       "production_relevance": "Legacy research evidence only; no automatic production authority.",
       "production_authorized": false,
       "provenance_status": "INFERRED_FROM_REPOSITORY",
@@ -269,8 +290,12 @@
       "result_status": "REJECTED_STOPPED",
       "failure_reason": null,
       "promotion_state": "NO_PROMOTION",
-      "evidence_refs": ["config/decision_registry.json"],
-      "decision_refs": ["FUNDING-PNL-0003"],
+      "evidence_refs": [
+        "config/decision_registry.json"
+      ],
+      "decision_refs": [
+        "FUNDING-PNL-0003"
+      ],
       "production_relevance": "Legacy research evidence only; no automatic production authority.",
       "production_authorized": false,
       "provenance_status": "INFERRED_FROM_REPOSITORY",
@@ -323,8 +348,12 @@
       "result_status": "REJECTED_STOPPED",
       "failure_reason": null,
       "promotion_state": "NO_PROMOTION",
-      "evidence_refs": ["config/decision_registry.json"],
-      "decision_refs": ["CARRY-PNL-0031-CARRY-RF-0036"],
+      "evidence_refs": [
+        "config/decision_registry.json"
+      ],
+      "decision_refs": [
+        "CARRY-PNL-0031-CARRY-RF-0036"
+      ],
       "production_relevance": "Legacy research evidence only; no automatic production authority.",
       "production_authorized": false,
       "provenance_status": "INFERRED_FROM_REPOSITORY",
@@ -382,7 +411,9 @@
         "docs/EXPOSURE_SMOOTH_0038_DECISION_2026-08-06.md",
         "config/decision_registry.json"
       ],
-      "decision_refs": ["EXPOSURE-SMOOTH-0038"],
+      "decision_refs": [
+        "EXPOSURE-SMOOTH-0038"
+      ],
       "production_relevance": "Legacy research evidence only; no automatic production authority.",
       "production_authorized": false,
       "provenance_status": "INFERRED_FROM_REPOSITORY",
@@ -438,13 +469,19 @@
       "result_status": "STOPPED_PRE_RUN_NO_RESULT",
       "failure_reason": "Pre-run architecture review found the design conflicted with the separate post-defensive leverage layer and could invert RISK_OFF semantics.",
       "promotion_state": "REJECTED_STOPPED",
-      "evidence_refs": ["research/leverage_0039/LEVERAGE-0039.json"],
-      "decision_refs": ["LEVERAGE-0039"],
+      "evidence_refs": [
+        "research/leverage_0039/LEVERAGE-0039.json"
+      ],
+      "decision_refs": [
+        "LEVERAGE-0039"
+      ],
       "production_relevance": "Legacy research evidence only; no automatic production authority.",
       "production_authorized": false,
       "provenance_status": "INFERRED_FROM_REPOSITORY",
       "governed_path_prefixes": [],
-      "notes": ["No candidate matrix or economic result was produced."]
+      "notes": [
+        "No candidate matrix or economic result was produced."
+      ]
     },
     {
       "research_id": "LEVERAGE-0040",
@@ -464,7 +501,12 @@
       "secondary_metrics": [],
       "feature_families": [],
       "horizon": null,
-      "universe": ["BTC", "ETH", "SOL", "BNB"],
+      "universe": [
+        "BTC",
+        "ETH",
+        "SOL",
+        "BNB"
+      ],
       "development_dataset_refs": [],
       "validation_dataset_refs": [],
       "sealed_dataset_refs": [],
@@ -504,7 +546,9 @@
         "docs/LEVERAGE_0040_P4_5_DECISION_2026-08-07.md",
         "config/decision_registry.json"
       ],
-      "decision_refs": ["LEVERAGE-0040"],
+      "decision_refs": [
+        "LEVERAGE-0040"
+      ],
       "production_relevance": "Legacy research evidence only; no automatic production authority.",
       "production_authorized": false,
       "provenance_status": "INFERRED_FROM_REPOSITORY",
@@ -529,7 +573,12 @@
       "secondary_metrics": [],
       "feature_families": [],
       "horizon": null,
-      "universe": ["BTC", "ETH", "SOL", "BNB"],
+      "universe": [
+        "BTC",
+        "ETH",
+        "SOL",
+        "BNB"
+      ],
       "development_dataset_refs": [],
       "validation_dataset_refs": [],
       "sealed_dataset_refs": [],
@@ -575,12 +624,16 @@
         "research/results/leverage_0041/summary.json",
         "config/decision_registry.json"
       ],
-      "decision_refs": ["LEVERAGE-0041"],
+      "decision_refs": [
+        "LEVERAGE-0041"
+      ],
       "production_relevance": "Legacy research evidence only; no automatic production authority.",
       "production_authorized": false,
       "provenance_status": "INFERRED_FROM_REPOSITORY",
       "governed_path_prefixes": [],
-      "notes": ["The contract explicitly states LEVERAGE-0040 result motivated the new implementation hypothesis/focal region."]
+      "notes": [
+        "The contract explicitly states LEVERAGE-0040 result motivated the new implementation hypothesis/focal region."
+      ]
     },
     {
       "research_id": "P5.1-EVENT-TAXONOMY-V1",
@@ -628,7 +681,9 @@
       "result_status": "COMPLETE_FROZEN",
       "failure_reason": null,
       "promotion_state": "RESEARCH_ONLY",
-      "evidence_refs": ["research/cycle_exit/p5_1_event_taxonomy.json"],
+      "evidence_refs": [
+        "research/cycle_exit/p5_1_event_taxonomy.json"
+      ],
       "decision_refs": [],
       "production_relevance": "Legacy research evidence only; no automatic production authority.",
       "production_authorized": false,
@@ -833,7 +888,9 @@
       "production_authorized": false,
       "provenance_status": "INFERRED_FROM_REPOSITORY",
       "governed_path_prefixes": [],
-      "notes": ["The V2 contract explicitly preserves the V1 false-FLAT failure and forbids signal/threshold retuning to remove it."]
+      "notes": [
+        "The V2 contract explicitly preserves the V1 false-FLAT failure and forbids signal/threshold retuning to remove it."
+      ]
     },
     {
       "research_id": "P5.4-FIXED-STATE-GROSS-BEHAVIOR-V1",
@@ -853,7 +910,12 @@
       "secondary_metrics": [],
       "feature_families": [],
       "horizon": null,
-      "universe": ["BTC", "ETH", "SOL", "BNB"],
+      "universe": [
+        "BTC",
+        "ETH",
+        "SOL",
+        "BNB"
+      ],
       "development_dataset_refs": [],
       "validation_dataset_refs": [],
       "sealed_dataset_refs": [],
@@ -894,7 +956,9 @@
       "result_status": "COMPLETE_FROZEN_CANDIDATE_MAPS",
       "failure_reason": null,
       "promotion_state": "RESEARCH_ONLY",
-      "evidence_refs": ["research/cycle_exit/p5_4_behavior_mapping_contract.json"],
+      "evidence_refs": [
+        "research/cycle_exit/p5_4_behavior_mapping_contract.json"
+      ],
       "decision_refs": [],
       "production_relevance": "Legacy research evidence only; no automatic production authority.",
       "production_authorized": false,
@@ -920,7 +984,12 @@
       "secondary_metrics": [],
       "feature_families": [],
       "horizon": null,
-      "universe": ["BTC", "ETH", "SOL", "BNB"],
+      "universe": [
+        "BTC",
+        "ETH",
+        "SOL",
+        "BNB"
+      ],
       "development_dataset_refs": [],
       "validation_dataset_refs": [],
       "sealed_dataset_refs": [],
@@ -1025,13 +1094,17 @@
       "result_status": "PREREGISTERED_TRIGGER_ABSENT_NOT_RUN",
       "failure_reason": null,
       "promotion_state": "NONE_TRIGGER_ABSENT",
-      "evidence_refs": ["research/bear_short_0001/BEAR-SHORT-0001.json"],
+      "evidence_refs": [
+        "research/bear_short_0001/BEAR-SHORT-0001.json"
+      ],
       "decision_refs": [],
       "production_relevance": "Legacy research evidence only; no automatic production authority.",
       "production_authorized": false,
       "provenance_status": "INFERRED_FROM_REPOSITORY",
       "governed_path_prefixes": [],
-      "notes": ["No repository-valid confirmed bear trigger exists; no trigger-dependent economics were run."]
+      "notes": [
+        "No repository-valid confirmed bear trigger exists; no trigger-dependent economics were run."
+      ]
     },
     {
       "research_id": "STABLECOIN-LIQUIDITY-0001",
@@ -1052,11 +1125,20 @@
         "walk_forward_oos_absolute_error_loss_differential_baseline_minus_augmented",
         "walk_forward_oos_return_sign_accuracy_difference_augmented_minus_baseline"
       ],
-      "feature_families": ["STABLECOIN_LIQUIDITY_STATE_V1"],
+      "feature_families": [
+        "STABLECOIN_LIQUIDITY_STATE_V1"
+      ],
       "horizon": "20d",
-      "universe": ["BTC", "ETH", "SOL", "BNB"],
+      "universe": [
+        "BTC",
+        "ETH",
+        "SOL",
+        "BNB"
+      ],
       "development_dataset_refs": [],
-      "validation_dataset_refs": [],
+      "validation_dataset_refs": [
+        "STABLECOIN-LIQUIDITY-0001-DEFILLAMA-HIST-V1"
+      ],
       "sealed_dataset_refs": [],
       "declared_variant_budget": 1,
       "actual_variants_evaluated": 0,
@@ -1109,7 +1191,9 @@
           "STABLECOIN_LIQUIDITY_STATE_V1=aggregate_USD_pegged_supply_20d_log_growth+20d_growth_acceleration"
         ],
         "special_cases_introduced": [],
-        "validation_exposure_event_refs": [],
+        "validation_exposure_event_refs": [
+          "STABLECOIN-LIQUIDITY-0001-RAW-DATA-20260808T141719Z"
+        ],
         "related_family_trials": 1
       },
       "lineage_edges": [
@@ -1127,13 +1211,14 @@
       "production_relevance": "Research-only Stage-1 external-information test. A PASS is eligible only for the next separately preregistered research stage and cannot change BRRK, phase authority or production authorization.",
       "production_authorized": false,
       "provenance_status": "FACT",
-      "governed_path_prefixes": ["research/stablecoin_liquidity_0001/"],
+      "governed_path_prefixes": [
+        "research/stablecoin_liquidity_0001/"
+      ],
       "notes": [
-        "No formal research path exists yet; this registry commit must precede path creation to preserve prospective provenance.",
-        "Dataset refs intentionally remain empty until exact source, fields, coverage window, transformations and PIT publication semantics can be frozen truthfully before full historical retrieval.",
-        "DefiLlama is a source candidate from the pre-run source audit, not yet a bound dataset source in this registry record.",
-        "Historical third-party data without verifiable publication timestamps must be labeled reconstructed/researcher-exposed history, never pristine PIT or temporally unseen evidence.",
-        "Forward snapshots collected only after a frozen data contract may later qualify as TEMPORALLY_UNSEEN if their raw vintages are immutable and retrieval/hash provenance is preserved.",
+        "Formal research path, frozen Data Contract, first-capture provenance and Stage-1 Run Interface now exist prospectively under the registered governed prefix.",
+        "Validation dataset STABLECOIN-LIQUIDITY-0001-DEFILLAMA-HIST-V1 is reconstructed RESEARCHER_EXPOSED_HISTORY and was exposed as RAW_DATA before Stage-1; it is not sealed or temporally unseen.",
+        "The exact Stage-1 baseline/augmented design, PIT alignment, label, walk-forward purge, normalization, Ridge alpha=1.0, HAC lag=19, release policy and one-shot execution lock are frozen in research/stablecoin_liquidity_0001/RUN_INTERFACE.json before any real Stage-1 model evaluation.",
+        "No Stage-1 feature computation, model fit, OOS prediction or research result has occurred at this binding state.",
         "ONCHAIN-HOLDER-COST-0001 remains backlog and is not registered, run or evaluated by this change."
       ]
     }
@@ -1144,48 +1229,168 @@
       "category": "historical_parameter_trials_unknown",
       "status": "OPEN",
       "description": "Complete historical parameter-candidate and local trial counts cannot be reconstructed from committed repository evidence.",
-      "affected_research_ids": ["BRRK-0011", "PIT-ALPHA-0016-0018", "ASYM-BETA-0024", "TSMOM-ALPHA-0029", "FUNDING-PNL-0003", "CARRY-PNL-0031-CARRY-RF-0036", "EXPOSURE-SMOOTH-0038-CONTINUOUS-BETA", "LEVERAGE-0039", "LEVERAGE-0040", "LEVERAGE-0041", "P5.1-EVENT-TAXONOMY-V1", "P5.2-FEATURE-FAMILIES-V1", "P5.3-STATE-MODEL-STRUCTURE-V1", "P5.3-MARKET-STATE-PERMISSION-SEPARATION-V2", "P5.4-FIXED-STATE-GROSS-BEHAVIOR-V1", "P5.5-JOINT-PROFILE-MAP-VALIDATION-V1", "BEAR-SHORT-0001"],
-      "evidence_refs": ["docs/PROGRAM_GOVERNANCE_PG0_REPOSITORY_AUDIT_2026-08-08.md"]
+      "affected_research_ids": [
+        "BRRK-0011",
+        "PIT-ALPHA-0016-0018",
+        "ASYM-BETA-0024",
+        "TSMOM-ALPHA-0029",
+        "FUNDING-PNL-0003",
+        "CARRY-PNL-0031-CARRY-RF-0036",
+        "EXPOSURE-SMOOTH-0038-CONTINUOUS-BETA",
+        "LEVERAGE-0039",
+        "LEVERAGE-0040",
+        "LEVERAGE-0041",
+        "P5.1-EVENT-TAXONOMY-V1",
+        "P5.2-FEATURE-FAMILIES-V1",
+        "P5.3-STATE-MODEL-STRUCTURE-V1",
+        "P5.3-MARKET-STATE-PERMISSION-SEPARATION-V2",
+        "P5.4-FIXED-STATE-GROSS-BEHAVIOR-V1",
+        "P5.5-JOINT-PROFILE-MAP-VALIDATION-V1",
+        "BEAR-SHORT-0001"
+      ],
+      "evidence_refs": [
+        "docs/PROGRAM_GOVERNANCE_PG0_REPOSITORY_AUDIT_2026-08-08.md"
+      ]
     },
     {
       "debt_id": "DEBT-HISTORICAL-VALIDATION-EXPOSURE-UNKNOWN",
       "category": "historical_validation_exposure_unknown",
       "status": "OPEN",
       "description": "Historical result views/peek counts and the information released in each view were not consistently recorded as exposure events.",
-      "affected_research_ids": ["BRRK-0011", "PIT-ALPHA-0016-0018", "ASYM-BETA-0024", "TSMOM-ALPHA-0029", "FUNDING-PNL-0003", "CARRY-PNL-0031-CARRY-RF-0036", "EXPOSURE-SMOOTH-0038-CONTINUOUS-BETA", "LEVERAGE-0039", "LEVERAGE-0040", "LEVERAGE-0041", "P5.1-EVENT-TAXONOMY-V1", "P5.2-FEATURE-FAMILIES-V1", "P5.3-STATE-MODEL-STRUCTURE-V1", "P5.3-MARKET-STATE-PERMISSION-SEPARATION-V2", "P5.4-FIXED-STATE-GROSS-BEHAVIOR-V1", "P5.5-JOINT-PROFILE-MAP-VALIDATION-V1", "BEAR-SHORT-0001"],
-      "evidence_refs": ["docs/PROGRAM_GOVERNANCE_PG0_REPOSITORY_AUDIT_2026-08-08.md"]
+      "affected_research_ids": [
+        "BRRK-0011",
+        "PIT-ALPHA-0016-0018",
+        "ASYM-BETA-0024",
+        "TSMOM-ALPHA-0029",
+        "FUNDING-PNL-0003",
+        "CARRY-PNL-0031-CARRY-RF-0036",
+        "EXPOSURE-SMOOTH-0038-CONTINUOUS-BETA",
+        "LEVERAGE-0039",
+        "LEVERAGE-0040",
+        "LEVERAGE-0041",
+        "P5.1-EVENT-TAXONOMY-V1",
+        "P5.2-FEATURE-FAMILIES-V1",
+        "P5.3-STATE-MODEL-STRUCTURE-V1",
+        "P5.3-MARKET-STATE-PERMISSION-SEPARATION-V2",
+        "P5.4-FIXED-STATE-GROSS-BEHAVIOR-V1",
+        "P5.5-JOINT-PROFILE-MAP-VALIDATION-V1",
+        "BEAR-SHORT-0001"
+      ],
+      "evidence_refs": [
+        "docs/PROGRAM_GOVERNANCE_PG0_REPOSITORY_AUDIT_2026-08-08.md"
+      ]
     },
     {
       "debt_id": "DEBT-DATASET-EXPOSURE-INCOMPLETE",
       "category": "dataset_exposure_incomplete",
       "status": "OPEN",
       "description": "Legacy contracts identify many windows and sources, but stable slice identities plus release/consumption events were not historically recorded consistently enough to backfill without fabrication.",
-      "affected_research_ids": ["BRRK-0011", "PIT-ALPHA-0016-0018", "ASYM-BETA-0024", "TSMOM-ALPHA-0029", "FUNDING-PNL-0003", "CARRY-PNL-0031-CARRY-RF-0036", "EXPOSURE-SMOOTH-0038-CONTINUOUS-BETA", "LEVERAGE-0039", "LEVERAGE-0040", "LEVERAGE-0041", "P5.1-EVENT-TAXONOMY-V1", "P5.2-FEATURE-FAMILIES-V1", "P5.3-STATE-MODEL-STRUCTURE-V1", "P5.3-MARKET-STATE-PERMISSION-SEPARATION-V2", "P5.4-FIXED-STATE-GROSS-BEHAVIOR-V1", "P5.5-JOINT-PROFILE-MAP-VALIDATION-V1", "BEAR-SHORT-0001"],
-      "evidence_refs": ["docs/PROGRAM_GOVERNANCE_PG0_REPOSITORY_AUDIT_2026-08-08.md"]
+      "affected_research_ids": [
+        "BRRK-0011",
+        "PIT-ALPHA-0016-0018",
+        "ASYM-BETA-0024",
+        "TSMOM-ALPHA-0029",
+        "FUNDING-PNL-0003",
+        "CARRY-PNL-0031-CARRY-RF-0036",
+        "EXPOSURE-SMOOTH-0038-CONTINUOUS-BETA",
+        "LEVERAGE-0039",
+        "LEVERAGE-0040",
+        "LEVERAGE-0041",
+        "P5.1-EVENT-TAXONOMY-V1",
+        "P5.2-FEATURE-FAMILIES-V1",
+        "P5.3-STATE-MODEL-STRUCTURE-V1",
+        "P5.3-MARKET-STATE-PERMISSION-SEPARATION-V2",
+        "P5.4-FIXED-STATE-GROSS-BEHAVIOR-V1",
+        "P5.5-JOINT-PROFILE-MAP-VALIDATION-V1",
+        "BEAR-SHORT-0001"
+      ],
+      "evidence_refs": [
+        "docs/PROGRAM_GOVERNANCE_PG0_REPOSITORY_AUDIT_2026-08-08.md"
+      ]
     },
     {
       "debt_id": "DEBT-EXPERIMENT-LINEAGE-INCOMPLETE",
       "category": "experiment_lineage_incomplete",
       "status": "OPEN",
       "description": "Only lineage relationships explicitly supported by committed contracts are mapped; psychological or informal idea ancestry is unrecoverable.",
-      "affected_research_ids": ["BRRK-0011", "PIT-ALPHA-0016-0018", "ASYM-BETA-0024", "TSMOM-ALPHA-0029", "FUNDING-PNL-0003", "CARRY-PNL-0031-CARRY-RF-0036", "EXPOSURE-SMOOTH-0038-CONTINUOUS-BETA", "LEVERAGE-0039", "LEVERAGE-0040", "LEVERAGE-0041", "P5.1-EVENT-TAXONOMY-V1", "P5.2-FEATURE-FAMILIES-V1", "P5.3-STATE-MODEL-STRUCTURE-V1", "P5.3-MARKET-STATE-PERMISSION-SEPARATION-V2", "P5.4-FIXED-STATE-GROSS-BEHAVIOR-V1", "P5.5-JOINT-PROFILE-MAP-VALIDATION-V1", "BEAR-SHORT-0001"],
-      "evidence_refs": ["docs/PROGRAM_GOVERNANCE_PG0_REPOSITORY_AUDIT_2026-08-08.md"]
+      "affected_research_ids": [
+        "BRRK-0011",
+        "PIT-ALPHA-0016-0018",
+        "ASYM-BETA-0024",
+        "TSMOM-ALPHA-0029",
+        "FUNDING-PNL-0003",
+        "CARRY-PNL-0031-CARRY-RF-0036",
+        "EXPOSURE-SMOOTH-0038-CONTINUOUS-BETA",
+        "LEVERAGE-0039",
+        "LEVERAGE-0040",
+        "LEVERAGE-0041",
+        "P5.1-EVENT-TAXONOMY-V1",
+        "P5.2-FEATURE-FAMILIES-V1",
+        "P5.3-STATE-MODEL-STRUCTURE-V1",
+        "P5.3-MARKET-STATE-PERMISSION-SEPARATION-V2",
+        "P5.4-FIXED-STATE-GROSS-BEHAVIOR-V1",
+        "P5.5-JOINT-PROFILE-MAP-VALIDATION-V1",
+        "BEAR-SHORT-0001"
+      ],
+      "evidence_refs": [
+        "docs/PROGRAM_GOVERNANCE_PG0_REPOSITORY_AUDIT_2026-08-08.md"
+      ]
     },
     {
       "debt_id": "DEBT-RESEARCHER-DECISIONS-UNKNOWN",
       "category": "researcher_decisions_unknown",
       "status": "OPEN",
       "description": "Informal researcher decisions, discarded ideas, local plots and uncommitted branches of reasoning are not fully recoverable.",
-      "affected_research_ids": ["BRRK-0011", "PIT-ALPHA-0016-0018", "ASYM-BETA-0024", "TSMOM-ALPHA-0029", "FUNDING-PNL-0003", "CARRY-PNL-0031-CARRY-RF-0036", "EXPOSURE-SMOOTH-0038-CONTINUOUS-BETA", "LEVERAGE-0039", "LEVERAGE-0040", "LEVERAGE-0041", "P5.1-EVENT-TAXONOMY-V1", "P5.2-FEATURE-FAMILIES-V1", "P5.3-STATE-MODEL-STRUCTURE-V1", "P5.3-MARKET-STATE-PERMISSION-SEPARATION-V2", "P5.4-FIXED-STATE-GROSS-BEHAVIOR-V1", "P5.5-JOINT-PROFILE-MAP-VALIDATION-V1", "BEAR-SHORT-0001"],
-      "evidence_refs": ["docs/PROGRAM_GOVERNANCE_PG0_REPOSITORY_AUDIT_2026-08-08.md"]
+      "affected_research_ids": [
+        "BRRK-0011",
+        "PIT-ALPHA-0016-0018",
+        "ASYM-BETA-0024",
+        "TSMOM-ALPHA-0029",
+        "FUNDING-PNL-0003",
+        "CARRY-PNL-0031-CARRY-RF-0036",
+        "EXPOSURE-SMOOTH-0038-CONTINUOUS-BETA",
+        "LEVERAGE-0039",
+        "LEVERAGE-0040",
+        "LEVERAGE-0041",
+        "P5.1-EVENT-TAXONOMY-V1",
+        "P5.2-FEATURE-FAMILIES-V1",
+        "P5.3-STATE-MODEL-STRUCTURE-V1",
+        "P5.3-MARKET-STATE-PERMISSION-SEPARATION-V2",
+        "P5.4-FIXED-STATE-GROSS-BEHAVIOR-V1",
+        "P5.5-JOINT-PROFILE-MAP-VALIDATION-V1",
+        "BEAR-SHORT-0001"
+      ],
+      "evidence_refs": [
+        "docs/PROGRAM_GOVERNANCE_PG0_REPOSITORY_AUDIT_2026-08-08.md"
+      ]
     },
     {
       "debt_id": "DEBT-HISTORICAL-CANDIDATE-UNIVERSE-UNKNOWN",
       "category": "historical_candidate_universe_unknown",
       "status": "OPEN",
       "description": "The complete universe of historically considered but uncommitted candidates/representations cannot be proven from the repository.",
-      "affected_research_ids": ["BRRK-0011", "PIT-ALPHA-0016-0018", "ASYM-BETA-0024", "TSMOM-ALPHA-0029", "FUNDING-PNL-0003", "CARRY-PNL-0031-CARRY-RF-0036", "EXPOSURE-SMOOTH-0038-CONTINUOUS-BETA", "LEVERAGE-0039", "LEVERAGE-0040", "LEVERAGE-0041", "P5.1-EVENT-TAXONOMY-V1", "P5.2-FEATURE-FAMILIES-V1", "P5.3-STATE-MODEL-STRUCTURE-V1", "P5.3-MARKET-STATE-PERMISSION-SEPARATION-V2", "P5.4-FIXED-STATE-GROSS-BEHAVIOR-V1", "P5.5-JOINT-PROFILE-MAP-VALIDATION-V1", "BEAR-SHORT-0001"],
-      "evidence_refs": ["docs/PROGRAM_GOVERNANCE_PG0_REPOSITORY_AUDIT_2026-08-08.md"]
+      "affected_research_ids": [
+        "BRRK-0011",
+        "PIT-ALPHA-0016-0018",
+        "ASYM-BETA-0024",
+        "TSMOM-ALPHA-0029",
+        "FUNDING-PNL-0003",
+        "CARRY-PNL-0031-CARRY-RF-0036",
+        "EXPOSURE-SMOOTH-0038-CONTINUOUS-BETA",
+        "LEVERAGE-0039",
+        "LEVERAGE-0040",
+        "LEVERAGE-0041",
+        "P5.1-EVENT-TAXONOMY-V1",
+        "P5.2-FEATURE-FAMILIES-V1",
+        "P5.3-STATE-MODEL-STRUCTURE-V1",
+        "P5.3-MARKET-STATE-PERMISSION-SEPARATION-V2",
+        "P5.4-FIXED-STATE-GROSS-BEHAVIOR-V1",
+        "P5.5-JOINT-PROFILE-MAP-VALIDATION-V1",
+        "BEAR-SHORT-0001"
+      ],
+      "evidence_refs": [
+        "docs/PROGRAM_GOVERNANCE_PG0_REPOSITORY_AUDIT_2026-08-08.md"
+      ]
     }
   ]
 }

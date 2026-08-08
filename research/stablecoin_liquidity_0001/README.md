@@ -10,54 +10,80 @@ This directory is the prospectively owned formal path registered by `STABLECOIN-
 ```text
 DefiLlama source
     ↓ exact HTTP bytes
-first-capture gate: capture stage
-    ↓ persist + verify, then stop
-raw vintage + manifest (immutable, SHA256)
-    ↓ archive both to durable external versioned storage
-durability receipt (create-only)
-    ↓ verify receipt identity before any parse
-fail-closed parser
+first-capture gate
+    ↓ persist + verify before parse
+immutable raw vintage + manifest + durability receipt
     ↓
-PIT-normalized atomic observations
-    ↓ exact frozen transform
+registered validation slice / RAW_DATA exposure
+    ↓ frozen exact LAG_2D transform
 STABLECOIN_LIQUIDITY_STATE_V1
-    ↓ later, separately frozen run interface
-Stage-1 incremental-information test
+    ↓ frozen Run Interface
+paired baseline vs augmented walk-forward Ridge information test
+    ↓ later, separately armed one-shot execution only
+Stage-1 primary result
 ```
 
-The source/data/PIT contract and the first-capture gate are implemented, but the first real historical capture has **not** been executed. No result-bearing research layer is active.
+The first historical capture is complete and its provenance/exposure is registered. The Stage-1 **Run Interface is now frozen but not executed**. No real Stablecoin feature series, real Stage-1 BRRK state path, Ridge fit, OOS prediction or research result has been produced by this interface work.
 
 ## Files
 
-- `DATA_CONTRACT.json` — frozen source identity, coverage rule, field/unit binding, PIT semantics, feature definition and explicit non-actions.
-- `CAPTURE_GATE.json` — frozen one-shot first-history capture sequence, durability-receipt requirement, metadata-only output and registry/manifest ownership boundary.
-- `SOURCE_AUDIT.md` — source provenance and known PIT limitations.
-- `source_defillama.py` — one-shot raw HTTP adapter; no parsing, retry search or result logic.
-- `raw_vintage.py` — SHA256 + create-only local/CI reference storage and verification.
-- `data_contract.py` — fail-closed schema parser and frozen coverage/PIT helpers.
-- `capture_once.py` — only allowed first-history orchestration, split into `capture_and_persist_first_history()` and `finalize_after_durable_copy()` so raw bytes cannot be parsed before durable archival is attested by a create-only receipt.
-- `test_data_contract.py` / `test_capture_gate.py` — synthetic offline regressions only; no live API call.
+- `DATA_CONTRACT.json` — frozen source identity, coverage rule, field/unit binding, PIT semantics and Stablecoin feature definition.
+- `CAPTURE_GATE.json` — frozen first-history capture sequence and durable-receipt boundary.
+- `CAPTURE_EXECUTION.json` — closed record of the single successful metadata-only first capture.
+- `FIRST_CAPTURE_EVIDENCE.json` — immutable capture provenance and frozen historical coverage metadata.
+- `RUN_INTERFACE.json` — exact Stage-1 dataset binding, canonical BRRK baseline state, label, paired-row rules, walk-forward purge, normalization, Ridge estimator, HAC test, classification/release rules and one-shot execution lock.
+- `SOURCE_AUDIT.md` — source provenance and known historical PIT limitations.
+- `source_defillama.py` / `raw_vintage.py` / `data_contract.py` / `capture_once.py` — frozen source/capture/data primitives.
+- `run_interface.py` — deterministic Stage-1 interface primitives only; no real-data model execution.
+- `test_data_contract.py`, `test_capture_gate.py`, `test_run_interface.py` — synthetic offline regressions. They do not call the live Stablecoin source or run Stage-1.
 
-## Storage boundary
+## Captured validation slice
 
-`raw_vintage/` is gitignored. The capture stage uses an absolute staging root outside the repository, persists exact raw bytes + manifest create-only, verifies both, and then stops before parsing. The staging filesystem itself is not treated as durable authority.
+The single first capture is bound as:
 
-Before parsing, the raw file and manifest must be copied to a durable external create-only/versioned store. A create-only durability receipt binds the local raw/manifest hashes to the external backend and durable object references. `finalize_after_durable_copy()` verifies that receipt and the local snapshot again before parsing.
+```text
+dataset_slice_id      STABLECOIN-LIQUIDITY-0001-DEFILLAMA-HIST-V1
+exposure_id           STABLECOIN-LIQUIDITY-0001-RAW-DATA-20260808T141719Z
+data_budget           VALIDATION
+contamination_state   RESEARCHER_EXPOSED_HISTORY
+consumed              true
+historical_start      2017-11-29T00:00:00Z
+historical_end        2026-08-08T00:00:00Z
+raw_sha256            7cffe6fb3a21e891082c06c60e91491edfbc78e9c01e2d549805815a646d9ffd
+```
 
-If any first-capture artifact already exists under the selected staging root, the gate refuses another source fetch until manual reconciliation. A schema-invalid response is still preserved as raw + manifest evidence and is not silently replaced by a second fetch.
+Historical source rows do not expose verifiable original publication/first-seen timestamps. They therefore remain reconstructed `RESEARCHER_EXPOSED_HISTORY`; the frozen primary historical availability rule is exactly `available_at = metric_timestamp + 2 calendar days`. This dataset is not sealed and is not `TEMPORALLY_UNSEEN`.
 
-## Registry / manifest boundary
+## Frozen Stage-1 comparison
 
-`config/dataset_exposure_registry.json` owns the stable dataset-slice identity (`dataset_version`, source, fields, start/end, transformation, PIT semantics, budget/contamination state). It does **not** have a `raw_hash` property under governance-v1 schema.
+The baseline is not a substitute model. It is the continuous canonical P3.2 BRRK price/regime state exposed by `P3.2-BRRK0011-V1`, frozen as a 35-column vector. The augmented model appends exactly two columns:
 
-Exact raw SHA256, byte length, retrieval timestamp, response headers, raw object location and parser version remain manifest/provenance properties. Durable backend/object references and manifest hash remain durability-receipt provenance. A later Dataset Registry entry may reference this immutable provenance through allowed evidence references; it must not add an unregistered `raw_hash` field.
+```text
+stablecoin_growth_20d
+stablecoin_growth_acceleration_20d
+```
 
-## No-result boundary
+At decision timestamp `D 00:00 UTC`, Stablecoin uses the exact metric date `D-2d` and exact `D-22d` / `D-42d` levels. No interpolation, forward fill, LAG_1D or LAG_3D substitution is allowed.
 
-Until a later, separately controlled step explicitly performs the first historical capture:
+The label is the future 20-calendar-day compounded net return of the canonical daily P3.2 BRRK target path under the frozen 5 bps BRRK research turnover-cost convention. Baseline and augmented models use exactly the same paired rows and labels.
 
-- `config/dataset_exposure_registry.json` remains without a Stablecoin slice;
-- no real Stablecoin feature series exists in-repo;
-- no Stage-1 model or prediction is produced;
-- no research result or Edge Registry entry exists;
-- no BRRK or production authority changes.
+Walk-forward rules are frozen as expanding training only, minimum 365 fully realized training labels, 20-day label purge, `StandardScaler` fit on training rows only, and `Ridge(alpha=1.0, solver="svd")` with no parameter grid. PASS still requires at least 730 valid OOS predictions and the preregistered one-sided Newey-West/HAC lag-19 test at alpha 0.05.
+
+## One-shot / release boundary
+
+Stage-1 has **not** run. A later execution must first claim the create-only `RUN_ONCE_STAGE1.marker` before any result-bearing calculation and may never delete that claim to retry the same research ID.
+
+The first result release is restricted to the frozen primary classification/metric fields. It cannot initially expose predictions, coefficient paths, feature importance, alternative lags/alphas/horizons or secondary metrics. FAIL or INCONCLUSIVE stops this research ID. PASS only permits creation of a separately preregistered Stage-2 robustness research ID.
+
+## No-result / authority boundary
+
+Current state remains:
+
+- `result_status = PREREGISTERED_NOT_RUN`;
+- `actual_variants_evaluated = 0`;
+- no real Stage-1 feature computation;
+- no real Ridge fit or OOS predictions;
+- no primary research result;
+- no Edge Registry admission;
+- no portfolio integration;
+- no BRRK, leverage, short, Phase 6/7/8 or production-authority change.
