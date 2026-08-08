@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "edge_registry.schema.json",
+  "title": "Edge Registry v1",
+  "type": "object",
+  "required": ["schema_version", "registry_id", "research_governance_version", "entries"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "registry_id": {"const": "EDGE-REGISTRY-V1"},
+    "research_governance_version": {"const": 1},
+    "entries": {"type": "array", "items": {"$ref": "#/$defs/edge"}}
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "edge": {
+      "type": "object",
+      "required": ["edge_id", "domain", "target", "feature_family", "horizon", "evidence_refs", "temporal_novelty", "incremental_to", "incremental_evidence_status", "status", "allowed_use", "production_authorized"],
+      "properties": {
+        "edge_id": {"type": "string", "minLength": 1},
+        "domain": {"type": "string", "minLength": 1},
+        "target": {"type": "string", "minLength": 1},
+        "feature_family": {"type": "string", "minLength": 1},
+        "horizon": {"type": "string", "minLength": 1},
+        "evidence_refs": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+        "temporal_novelty": {"enum": ["HISTORICAL_EXPOSED", "HISTORICAL_SEALED", "TEMPORALLY_UNSEEN", "UNKNOWN"]},
+        "incremental_to": {"type": "array", "items": {"type": "string"}},
+        "incremental_evidence_status": {"enum": ["PASS", "FAIL", "UNKNOWN"]},
+        "status": {"enum": ["ADMITTED", "REJECTED", "SHADOW_ONLY", "RETIRED"]},
+        "allowed_use": {"type": "array", "items": {"type": "string"}},
+        "production_authorized": {"const": false}
+      },
+      "additionalProperties": false
+    }
+  }
+}
