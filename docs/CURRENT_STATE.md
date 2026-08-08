@@ -19,7 +19,7 @@ Phase 7 readiness gate            IMPLEMENTED / MERGED #110 / LAUNCH BLOCKED
 Phase 7 program state             MONITOR_ONLY
 Phase 8 bear-short research       PREREGISTERED_TRIGGER_ABSENT_NOT_RUN / MERGED #111
 Phase 0-8 drift audit             COMPLETE / PASS_FINAL_HEAD_VERIFIED / DRIFT_2 REMEDIATED
-Program epistemic governance v1   PG0-PG1 COMPLETE / PG2 NEXT
+Program epistemic governance v1   PG0-PG2 COMPLETE / PG3 NEXT
 production authorization          NONE
 first real short authorization    NONE
 ```
@@ -103,25 +103,27 @@ Same-direction reductions and emergency flatten remain available. The audit stat
 
 ## Program-Level Epistemic Governance v1
 
-PG0 repository governance audit is complete:
-
-`docs/PROGRAM_GOVERNANCE_PG0_REPOSITORY_AUDIT_2026-08-08.md`
-
-PG1 canonical semantics are frozen in:
+PG0 repository audit and PG1 semantic freeze are complete. Canonical governance semantics remain in:
 
 - `config/research_governance_v1.json`;
 - `docs/PROGRAM_GOVERNANCE_V1_SPEC_2026-08-08.md`.
 
-The prospective governance boundary is the verified pre-governance implementation main:
+The prospective boundary remains:
 
 ```text
 legacy_boundary_commit = 896cbd123b7a0c38943815dd802f0f9dcd12e1c2
 research_governance_version = 1
 ```
 
-Legacy research remains `RETROSPECTIVE_LEGACY`; new formal result-bearing research after the boundary must use `PROGRAM_GOVERNED_V1`. Decision/authorization, research, dataset exposure, edge and phase authority remain separate planes. Typed lineage, data-budget, exposure-release, contamination, research-domain/objective, evidence-dimension and future fail-closed vocabularies are frozen before registry implementation.
+PG2 machine registries now exist:
 
-PG1 does not create research/exposure/edge records and does not retroactively claim that old experiments satisfied v1.
+- `config/research_registry.json`;
+- `config/dataset_exposure_registry.json`;
+- `config/edge_registry.json`.
+
+Their schemas are frozen under `research/governance/schemas/`. All three registries are intentionally empty at PG2. No historical trial/exposure fact has been invented and the Edge Registry contains no retroactive BRRK admission.
+
+Detailed legacy mapping remains deferred to PG4. PG3 must first add deterministic validation, typed-lineage/data-exposure checks and the program audit command.
 
 Historical research branches remain retained until PG4 retrospective provenance mapping is complete.
 
@@ -140,10 +142,10 @@ Historical research branches remain retained until PG4 retrospective provenance 
 ## Exact next action
 
 ```text
-PG2: ADD MINIMAL RESEARCH / DATASET-EXPOSURE / EDGE REGISTRIES AND SCHEMAS
-DO NOT MAP LEGACY FACTS BEYOND EXPLICIT PLACEHOLDERS UNTIL PG4
-KEEP EDGE REGISTRY EMPTY UNTIL AN EDGE PASSES ADMISSION EVIDENCE
-DO NOT OVERLOAD DECISION_REGISTRY WITH TRIAL OR EXPOSURE FACTS
+PG3: IMPLEMENT DETERMINISTIC PROGRAM VALIDATOR AND AUDIT COMMAND
+VALIDATE DUPLICATE IDS / LINEAGE REFS / DAG CYCLES / DATASET REFS / SEALED CONSUMPTION / VARIANT BUDGET / PRODUCTION BOUNDARIES
+DERIVE COUNTS FROM MACHINE REGISTRIES; DO NOT HAND-COPY AUDIT REPORTS
+DO NOT MAP LEGACY FACTS UNTIL THE VALIDATOR EXISTS
 DO NOT START SUPERTrend / FUNDING-OI / RELATIVE-STRENGTH / NEW-ALLOCATION RESEARCH
 DO NOT CHANGE BRRK / BNB / PARAMETERS / COSTS / PRODUCTION AUTHORITY
 AFTER GOVERNANCE V1 MERGES, RESUME REAL PHASE-6 ZERO-AUTHORITY ELAPSED OBSERVATION
