@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "gate_id": "PHASE6-LIVE-OBSERVATION-PREACTIVATION-V1",
+  "status": "PREACTIVATION_BLOCKED_FAIL_CLOSED",
+  "purpose": "GOVERN_PHASE6_FUTURE_ONLY_ELAPSED_EVIDENCE_ACTIVATION_WITHOUT_CHANGING_STRATEGY_OR_PRODUCTION_AUTHORITY",
+  "canonical_phase6_contract": "config/phase6_shadow_contract.json",
+  "canonical_decision_time_utc": "00:00:00",
+  "production_authorized": false,
+  "signature_authorized": false,
+  "order_submission_authorized": false,
+  "elapsed_evidence_credit_authorized": false,
+  "collector_armed": false,
+  "schedule_configured": false,
+  "armed_commit": null,
+  "required_before_arm": {
+    "observation_account_identity_frozen": false,
+    "current_position_and_equity_valuation_contract_frozen": false,
+    "durable_create_only_evidence_backend_frozen": false,
+    "schedule_and_duplicate_credit_rule_frozen": true
+  },
+  "future_only_credit_rule": {
+    "first_eligible_decision": "FIRST_00_00_UTC_DECISION_STRICTLY_AFTER_ARM_COMMIT_TIMESTAMP",
+    "historical_backfill_authorized": false,
+    "historical_replay_credit_authorized": false,
+    "ci_replay_credit_authorized": false,
+    "workflow_rerun_creates_new_decision_credit": false,
+    "duplicate_decision_timestamp_creates_new_credit": false,
+    "manual_dispatch_counts_as_scheduled_decision": false,
+    "manual_emergency_drill_may_count_as_emergency_drill_only": true
+  },
+  "evidence_requirements": {
+    "minimum_elapsed_calendar_days": 14,
+    "minimum_scheduled_decisions": 10,
+    "minimum_emergency_drills": 1,
+    "critical_reconciliation_errors": 0,
+    "unexplained_target_drift": 0,
+    "schedule_failures": 0,
+    "required_receipt_identity": [
+      "github_run_id",
+      "github_run_attempt",
+      "workflow_sha",
+      "decision_timestamp",
+      "observed_at",
+      "shadow_record_digest",
+      "input_provenance_digest",
+      "evidence_object_digest"
+    ]
+  },
+  "forbidden": [
+    "private_key_input",
+    "signer_import",
+    "order_submission",
+    "withdrawal_or_transfer",
+    "production_state_activation",
+    "fabricated_account_state",
+    "fabricated_position_or_equity_valuation",
+    "ephemeral_only_evidence_claimed_as_durable",
+    "backfilled_elapsed_time",
+    "backfilled_scheduled_decision",
+    "rerun_counted_as_new_decision"
+  ],
+  "notes": [
+    "This gate exists because Phase 6 implementation/replay passed but no scheduled future-only collector with durable evidence persistence was present on main.",
+    "The preactivation gate does not itself start the 14-day elapsed clock or create any credited scheduled decision.",
+    "The canonical target/rebalance/router/shadow implementation blobs remain unchanged under Governance v1 no-drift.",
+    "Arming requires a later prospective change after the observation account identity, valuation semantics and durable evidence backend are frozen and verifiable."
+  ]
+}
