@@ -2,6 +2,7 @@
   "handoff_id": "DUAL-LAYER-FUSION-ARCH-SANITY-V1-HANDOFF",
   "base_main": "112a2373e0f9d75d85e04c1d58b0a96e45713eac",
   "scope": "ARCHITECTURE_SANITY_ONLY",
+  "status": "DIAGNOSTIC_COMPLETE_NO_PROMOTION",
   "core_execution_files_changed": 0,
   "canonical_brrk_changed": false,
   "p3_2_changed": false,
@@ -10,6 +11,12 @@
   "phase6_authority_changed": false,
   "production_authorized": false,
   "diagnostic_parameters_frozen_before_economics": true,
+  "diagnostic_executed_once": true,
+  "diagnostic_result_path": "research/governance/dual_layer_fusion_sanity_result.json",
+  "baseline_cagr": 0.6530567772272526,
+  "fused_cagr": 0.5721918459387902,
+  "cagr_delta": -0.0808649312884624,
   "promotion_eligible": false,
-  "next": "Run governance/no-drift CI, then execute exactly the frozen non-promotable economic diagnostic using already-exposed Stablecoin development history. Do not retune after results."
+  "retuning_allowed": false,
+  "next": "Run final-head governance/no-drift/handoff CI, merge only if green, then return to the unresolved Phase-6 public observation-account identity dependency. Any future dual-layer edge study requires a new prospective research ID and independent/unexposed evidence."
 }
