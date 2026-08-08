@@ -14,7 +14,6 @@ import math
 from pathlib import Path
 import sys
 
-import numpy as np
 import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -186,9 +185,9 @@ def main() -> None:
     result = {
         "contract_id": CONTRACT_ID,
         "classification": "NON_PROMOTABLE_ARCHITECTURE_DIAGNOSTIC",
-        "parameters_observed_before_run": false,
+        "parameters_observed_before_run": False,
         "variant_budget": 1,
-        "retuned_after_result": false,
+        "retuned_after_result": False,
         "evaluation": {
             "session_start": str(EVALUATION_SESSION_START.date()),
             "session_end": str(EVALUATION_SESSION_END.date()),
@@ -205,10 +204,10 @@ def main() -> None:
         "baseline": baseline,
         "fused": fused,
         "delta": {key: float(fused[key] - baseline[key]) for key in baseline},
-        "promotion_eligible": false,
-        "production_authorized": false,
-        "signature_authorized": false,
-        "order_submission_authorized": false,
+        "promotion_eligible": False,
+        "production_authorized": False,
+        "signature_authorized": False,
+        "order_submission_authorized": False,
         "interpretation_boundary": (
             "This result only verifies mechanical portfolio-economic impact of the frozen two-layer "
             "composition using already-exposed Stablecoin history. It cannot validate an external edge, "
