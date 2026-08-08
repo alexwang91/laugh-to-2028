@@ -1,0 +1,133 @@
+{
+  "contract_id": "P5.4-FIXED-STATE-GROSS-BEHAVIOR-V1",
+  "status": "PREREGISTERED_BEFORE_ANY_P5_5_ECONOMIC_EVALUATION",
+  "registered_at_utc": "2026-08-08T00:14:00Z",
+  "base_main": "9c630c9b4b22146ffabd8fd3f62b08477f3da0f7",
+  "upstream": {
+    "p5_3_v2_architecture_contract": "P5.3-MARKET-STATE-PERMISSION-SEPARATION-V2",
+    "p5_3_v2_result_commit": "e732b7ebe570236bf43084caecb6ea15f7edecb8",
+    "p5_3_v2_summary_sha256": "05d5d68a59c8b13f1122d98ed75d03934defdc9d73c7dd92e038c92fd97d2e52",
+    "p5_2_summary_sha256": "3f6dc3c512d22ac8f71d43ed155f2602cd40d5caf3d617c0e130e170727e0627"
+  },
+  "purpose": "Freeze a small, interpretable candidate family mapping P5.3 V2 MARKET_STATE to total BRRK gross-risk multipliers before any P5.5 return/cost/robustness comparison.",
+  "composition": {
+    "input_target": "the frozen P4.1/BRRK-0011 requested target vector for the date",
+    "formula": "cycle_adjusted_target(asset,t) = frozen_brrk_target(asset,t) * p5_4_cycle_gross_multiplier(market_state,t)",
+    "relative_ranking_change": false,
+    "new_asset_targets": false,
+    "gross_above_one_allowed": false,
+    "data_insufficient_multiplier": 0.0
+  },
+  "state_order": [
+    "NORMAL_BULL",
+    "BTC_LEADERSHIP_MATURING",
+    "LATE_BULL_ROTATION",
+    "EXHAUSTION_WATCH",
+    "DE_RISK_1",
+    "DE_RISK_2",
+    "FLAT"
+  ],
+  "non_promotable_comparator": {
+    "id": "BRRK_NO_CYCLE_CONTROL",
+    "multipliers": {
+      "NORMAL_BULL": 1.0,
+      "BTC_LEADERSHIP_MATURING": 1.0,
+      "LATE_BULL_ROTATION": 1.0,
+      "EXHAUSTION_WATCH": 1.0,
+      "DE_RISK_1": 1.0,
+      "DE_RISK_2": 1.0,
+      "FLAT": 1.0
+    },
+    "purpose": "frozen BRRK comparator only; never a P5.4 overlay promotion candidate"
+  },
+  "candidate_maps": [
+    {
+      "id": "HARD_ONLY",
+      "multipliers": {
+        "NORMAL_BULL": 1.0,
+        "BTC_LEADERSHIP_MATURING": 1.0,
+        "LATE_BULL_ROTATION": 1.0,
+        "EXHAUSTION_WATCH": 1.0,
+        "DE_RISK_1": 1.0,
+        "DE_RISK_2": 1.0,
+        "FLAT": 0.0
+      },
+      "role": "isolates the economic effect of hard-FLAT only"
+    },
+    {
+      "id": "GENTLE",
+      "multipliers": {
+        "NORMAL_BULL": 1.0,
+        "BTC_LEADERSHIP_MATURING": 1.0,
+        "LATE_BULL_ROTATION": 0.95,
+        "EXHAUSTION_WATCH": 0.85,
+        "DE_RISK_1": 0.70,
+        "DE_RISK_2": 0.40,
+        "FLAT": 0.0
+      },
+      "role": "return-retentive gradual de-risk"
+    },
+    {
+      "id": "BALANCED",
+      "multipliers": {
+        "NORMAL_BULL": 1.0,
+        "BTC_LEADERSHIP_MATURING": 0.98,
+        "LATE_BULL_ROTATION": 0.90,
+        "EXHAUSTION_WATCH": 0.75,
+        "DE_RISK_1": 0.55,
+        "DE_RISK_2": 0.25,
+        "FLAT": 0.0
+      },
+      "role": "middle behavior candidate"
+    },
+    {
+      "id": "DEFENSIVE",
+      "multipliers": {
+        "NORMAL_BULL": 1.0,
+        "BTC_LEADERSHIP_MATURING": 0.95,
+        "LATE_BULL_ROTATION": 0.80,
+        "EXHAUSTION_WATCH": 0.60,
+        "DE_RISK_1": 0.40,
+        "DE_RISK_2": 0.15,
+        "FLAT": 0.0
+      },
+      "role": "drawdown-protective gradual de-risk"
+    }
+  ],
+  "structural_rules": {
+    "normal_bull_equals_one": true,
+    "candidate_multipliers_in_closed_unit_interval": true,
+    "candidate_monotone_non_increasing_with_severity": true,
+    "late_bull_rotation_not_zero": true,
+    "flat_zero_for_all_overlay_candidates": true,
+    "no_new_short_exposure": true,
+    "no_leverage_above_one": true,
+    "no_relative_asset_ranking_change": true
+  },
+  "research_only_reentry_semantics": "P5.5 may compute counterfactual signal-following economics in which the target multiplier follows subsequent MARKET_STATE after FLAT so missed-upside and recovery can be measured. This counterfactual does not unlock RISK_PERMISSION_LOCK and is not a production re-entry rule.",
+  "p5_5_candidate_cartesian_product": {
+    "profiles": ["EARLY", "BALANCED", "CONSERVATIVE"],
+    "behavior_maps": ["HARD_ONLY", "GENTLE", "BALANCED", "DEFENSIVE"],
+    "total_promotable_combinations_before_validation": 12,
+    "comparator": "BRRK_NO_CYCLE_CONTROL"
+  },
+  "selection": {
+    "profile_selected": false,
+    "behavior_map_selected": false,
+    "combination_selected": false,
+    "production_authorized": false
+  },
+  "forbidden": [
+    "change candidate numerical multipliers after P5.5 economic results are observed",
+    "add candidate maps after seeing P5.5 results",
+    "select a P5.4 winner inside P5.4",
+    "alter BRRK relative asset ranking",
+    "target XRP",
+    "add short exposure",
+    "permit gross above 1.0",
+    "treat LATE_BULL_ROTATION as automatically bearish or zero exposure",
+    "interpret research-only counterfactual re-entry as operational permission",
+    "authorize production/live trading"
+  ],
+  "production_authorized": false
+}
