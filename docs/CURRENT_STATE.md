@@ -21,7 +21,8 @@ Phase 8 bear-short research       PREREGISTERED_TRIGGER_ABSENT_NOT_RUN / MERGED 
 Phase 0-8 drift audit             COMPLETE / PASS_FINAL_HEAD_VERIFIED / DRIFT_2 REMEDIATED
 Program epistemic governance v1   PG0-PG6 COMPLETE / CI-ENFORCED / NO-DRIFT CLOSEOUT
 Future research gate repair       MERGED #121 / GOVERNANCE ONLY / DRIFT_0
-Future prereg validator repair    PR #122 / GOVERNANCE ONLY / DRIFT_0
+Future prereg validator repair    MERGED #122 / GOVERNANCE ONLY / DRIFT_0
+Stablecoin liquidity research     STABLECOIN-LIQUIDITY-0001 / PREREGISTERED_NOT_RUN / NO DATASET BOUND / NO RESULT
 production authorization          NONE
 first real short authorization    NONE
 ```
@@ -135,9 +136,39 @@ PR #121 repairs the cross-gate conflict between future-research registration and
 
 PR #122 repairs a second preregistration-only validator contradiction. Required future fields must be present, while pre-result accounting arrays such as secondary metrics, dataset refs, lineage and evidence refs may truthfully remain empty. `PREREGISTERED_NOT_RUN` explicitly blocks result evidence, evaluated variants and promotion. This prevents fake placeholder provenance while keeping result-bearing states fail-closed. The repair changes governance validation only and does not itself preregister or run research.
 
+## STABLECOIN-LIQUIDITY-0001
+
+`STABLECOIN-LIQUIDITY-0001` is prospectively registered under `PROGRAM_GOVERNED_V1` as a Stage-1 external-information mechanism test. It asks whether a frozen stablecoin-liquidity information family adds predictive information about future 20-day canonical BRRK outcomes beyond the frozen P3.2 BRRK price/regime state.
+
+Current state is strictly:
+
+```text
+result_status              PREREGISTERED_NOT_RUN
+promotion_state            NONE
+production_authorized      false
+declared_variant_budget    1
+actual_variants_evaluated  0
+governed_path_prefix       research/stablecoin_liquidity_0001/
+formal research path       NOT CREATED YET
+dataset refs               []
+dataset source             NOT BOUND YET
+dataset exposure registry  EMPTY
+research evidence          NONE
+edge admission             NONE
+portfolio integration      NONE
+```
+
+The preregistration freezes a 20-day Stage-1 incremental-information question, a single fixed Ridge estimator (`alpha=1.0`), training-only expanding normalization, 20-day label purging, and a primary reconstructed-history availability proxy of `metric_date + 2 days` when historical publication timestamps are unverifiable. LAG_1D/LAG_3D are not rescue alternatives for this research ID; they are reserved for a separately preregistered robustness stage if Stage 1 passes.
+
+The primary feature representation is frozen as aggregate USD-pegged stablecoin supply 20-day log growth plus 20-day growth acceleration. DefiLlama remains only a source candidate from the pre-run source audit. No source, exact fields, coverage window, raw payload identity or PIT publication semantics have yet been bound into `config/dataset_exposure_registry.json`; placeholder dataset slices are prohibited.
+
+Historical third-party data without verifiable publication timestamps must remain `RESEARCHER_EXPOSED_HISTORY` / reconstructed history. Only genuinely new raw snapshots collected after a frozen data contract, with immutable retrieval/hash provenance, may later qualify as `TEMPORALLY_UNSEEN`.
+
+A Stage-1 PASS cannot modify BRRK, write an admitted edge, create a multiplier, authorize leverage/shorts, change Phase 7 or confer production authority. It can only make a separately preregistered robustness-stage research ID eligible to start. `ONCHAIN-HOLDER-COST-0001` remains backlog and is not registered or run.
+
 The deterministic audit may report `WARNING` for real legacy governance debt; that is intentional and must not be converted into a false clean `PASS` by inventing history.
 
-Final report: `docs/PROGRAM_LEVEL_EPISTEMIC_GOVERNANCE_V1_FINAL_REPORT_2026-08-08.md`.
+Final governance report: `docs/PROGRAM_LEVEL_EPISTEMIC_GOVERNANCE_V1_FINAL_REPORT_2026-08-08.md`.
 
 ## Frozen product boundaries
 
@@ -158,12 +189,14 @@ Final report: `docs/PROGRAM_LEVEL_EPISTEMIC_GOVERNANCE_V1_FINAL_REPORT_2026-08-0
 
 ```text
 RESUME REAL PHASE-6 ZERO-AUTHORITY ELAPSED OBSERVATION UNDER GOVERNANCE V1 PROVENANCE
-ACCUMULATE GENUINELY FUTURE EVIDENCE ONLY; DO NOT REBUILD OR BACKFILL ELAPSED TIME
+ACCUMULATE GENUINELY FUTURE PHASE-6 EVIDENCE ONLY; DO NOT REBUILD OR BACKFILL ELAPSED TIME
 KEEP signature_authorized = false AND order_submission_authorized = false
 REQUIRE AT LEAST 14 ELAPSED CALENDAR DAYS AND 10 SCHEDULED DECISIONS PLUS FROZEN QUALITY CRITERIA
-AFTER PR #122 IS MERGED, PREREGISTER STABLECOIN-LIQUIDITY-0001 UNDER PROGRAM_GOVERNED_V1 BEFORE CREATING ITS FORMAL RESEARCH PATH
-KEEP DATASET REFS EMPTY UNTIL EXACT SOURCE COVERAGE / FIELDS / PIT PUBLICATION SEMANTICS CAN BE FROZEN TRUTHFULLY; DO NOT INVENT PLACEHOLDER SLICES
-DO NOT DOWNLOAD FULL STABLECOIN/HOLDER-COST HISTORY, RUN A BACKTEST, FIT A MODEL OR GENERATE A RESEARCH RESULT BEFORE THE RELEVANT PREREGISTRATION/DATA CONTRACT IS FROZEN
+MERGE THE STABLECOIN-LIQUIDITY-0001 REGISTRY-ONLY PR BEFORE CREATING research/stablecoin_liquidity_0001/
+NEXT STABLECOIN PR MUST FREEZE EXACT SOURCE / ENDPOINT / FIELDS / UNIT / COVERAGE / TRANSFORMATION / RAW-VINTAGE IDENTITY / PIT PUBLICATION SEMANTICS / FORWARD-SNAPSHOT IMMUTABILITY BEFORE FULL HISTORICAL RETRIEVAL
+KEEP config/dataset_exposure_registry.json EMPTY UNTIL THOSE SLICE IDENTITIES CAN BE FROZEN TRUTHFULLY; DO NOT INVENT PLACEHOLDER SLICES
+DO NOT DOWNLOAD FULL STABLECOIN OR HOLDER-COST HISTORY IN THE PREREGISTRATION PR
+DO NOT RUN A BACKTEST, FIT A MODEL, GENERATE A SIGNAL, CALCULATE RESEARCH PERFORMANCE OR RELEASE A RESEARCH RESULT BEFORE THE DATA CONTRACT AND RUN INTERFACE ARE FROZEN
 KEEP ONCHAIN-HOLDER-COST-0001 AS BACKLOG UNTIL THE STABLECOIN INFORMATION TEST REACHES ITS FROZEN STOPPING POINT
 DO NOT START SUPERTrend / FUNDING-OI / RELATIVE-STRENGTH / NEW-ALLOCATION RESEARCH AS PART OF PHASE-6 OBSERVATION
 DO NOT CHANGE BRRK / BNB / PARAMETERS / COSTS / HISTORICAL EVIDENCE / PRODUCTION AUTHORITY
