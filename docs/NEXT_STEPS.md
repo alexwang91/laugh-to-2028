@@ -18,7 +18,7 @@ remaining dependency                   OBSERVATION ACCOUNT IDENTITY
 Phase 7                                MONITOR_ONLY / LAUNCH BLOCKED
 Phase 8                                TRIGGER ABSENT / NOT RUN
 production gross cap                   1.0
-production_authorized_components       []
+production_authorized_components = []
 ```
 
 ## PR #134 closeout
