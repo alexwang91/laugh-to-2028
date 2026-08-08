@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "execution_id": "STABLECOIN-LIQUIDITY-0001-FIRST-CAPTURE-EXECUTION-V1",
+  "research_id": "STABLECOIN-LIQUIDITY-0001",
+  "capture_gate_id": "STABLECOIN-LIQUIDITY-0001-FIRST-CAPTURE-GATE-V1",
+  "status": "ARMED_NOT_EXECUTED",
+  "production_authorized": false,
+  "trigger": {
+    "event": "push",
+    "branch": "main",
+    "required_head_commit_token": "[STABLECOIN_FIRST_CAPTURE_EXECUTE_V1]",
+    "pull_request_execution_forbidden": true
+  },
+  "capture": {
+    "source_id": "DEFILLAMA-STABLECOIN-ALL-CHARTS-V1",
+    "network_retry_policy": "NO_AUTOMATIC_RETRY",
+    "staging_backend": "GITHUB_HOSTED_RUNNER_TEMP_OUTSIDE_REPOSITORY",
+    "parse_before_durable_archive": false
+  },
+  "durable_archive": {
+    "backend": "GITHUB_ACTIONS_ARTIFACT_V4",
+    "raw_artifact_name_template": "stablecoin-first-capture-raw-${GITHUB_SHA}",
+    "metadata_artifact_name_template": "stablecoin-first-capture-metadata-${GITHUB_SHA}",
+    "overwrite": false,
+    "raw_and_manifest_uploaded_before_parse": true,
+    "artifact_id_and_url_bound_into_receipt": true,
+    "retention_days": 90,
+    "post_run_mirror_target": "CHATGPT_LIBRARY_IF_AVAILABLE"
+  },
+  "rerun_guard": {
+    "same_run_existing_raw_artifact_blocks_fetch": true,
+    "automatic_rerun": false,
+    "failed_capture_requires_manual_reconciliation": true
+  },
+  "allowed_release": "CAPTURE_PROVENANCE_AND_COVERAGE_METADATA_ONLY",
+  "forbidden_release": [
+    "SOURCE_VALUE_SERIES",
+    "FEATURE_VALUE_SERIES",
+    "LABEL_SERIES",
+    "MODEL_COEFFICIENTS",
+    "OOS_PREDICTIONS",
+    "SIGNALS",
+    "PERFORMANCE_METRICS",
+    "EQUITY_CURVE"
+  ],
+  "explicit_non_actions": [
+    "NO_CAPTURE_DURING_PULL_REQUEST_CI",
+    "NO_DATASET_REGISTRY_MUTATION_BY_EXECUTION_JOB",
+    "NO_FEATURE_COMPUTATION",
+    "NO_MODEL_FIT",
+    "NO_STAGE1_RUN",
+    "NO_EDGE_ADMISSION",
+    "NO_BRRK_CHANGE",
+    "NO_PHASE6_7_8_AUTHORITY_CHANGE",
+    "NO_PRODUCTION_AUTHORIZATION"
+  ]
+}

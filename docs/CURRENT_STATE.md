@@ -22,7 +22,7 @@ Phase 0-8 drift audit             COMPLETE / PASS_FINAL_HEAD_VERIFIED / DRIFT_2 
 Program epistemic governance v1   PG0-PG6 COMPLETE / CI-ENFORCED / NO-DRIFT CLOSEOUT
 Future research gate repair       MERGED #121 / GOVERNANCE ONLY / DRIFT_0
 Future prereg validator repair    MERGED #122 / GOVERNANCE ONLY / DRIFT_0
-Stablecoin liquidity research     STABLECOIN-LIQUIDITY-0001 / DATA CONTRACT + TWO-STAGE CAPTURE GATE FROZEN / NO FULL HISTORY / NO RESULT
+Stablecoin liquidity research     STABLECOIN-LIQUIDITY-0001 / ONE-SHOT CAPTURE EXECUTION ARMED / NO FULL HISTORY / NO RESULT
 production authorization          NONE
 first real short authorization    NONE
 ```
@@ -124,7 +124,7 @@ The implementation extends rather than replaces existing experiment, decision an
 - `research/governance/future_policy.py` — shared future-path ownership and prospective-provenance policy;
 - `research/governance/enforce_future.py` — exact-PR-diff prospective research registration enforcement;
 - `research/governance/no_drift.py` — boundary-to-HEAD strategy/evidence/authority no-drift regression;
-- `.github/workflows/research-governance.yml` — CI enforcement, including the current governed Stablecoin data-contract and capture-gate regression suite.
+- `.github/workflows/research-governance.yml` — CI enforcement plus the push-only one-shot Stablecoin capture executor; pull-request CI can never execute the live capture job.
 
 PG4 conservatively maps 17 `RETROSPECTIVE_LEGACY` research records. Six governance-debt classes remain explicit because historical trial counts, information releases, dataset consumption, lineage, informal researcher decisions and complete candidate universes cannot be reconstructed truthfully. `UNKNOWN` remains `UNKNOWN`.
 
@@ -138,7 +138,7 @@ PR #122 repairs a second preregistration-only validator contradiction. Required 
 
 PR #123 prospectively registered `STABLECOIN-LIQUIDITY-0001` before its governed formal path existed. That registration remains the frozen Stage-1 hypothesis/metric/variant boundary; the data-contract work below does not alter its research result criteria.
 
-PR #124 froze the Stablecoin source/data/PIT contract and created the prospectively owned formal path without retrieving full history or releasing a result. PR #125 froze the one-shot first-capture gate without executing it. The current pre-execution hardening splits that gate into capture/persist and finalize phases so a durable external archive receipt must exist before any raw payload parsing.
+PR #124 froze the Stablecoin source/data/PIT contract and created the prospectively owned formal path without retrieving full history or releasing a result. PR #125 froze the one-shot first-capture gate without executing it. PR #126 split the gate into capture/persist and finalize phases so a durable external archive receipt must exist before any raw payload parsing. The current execution PR arms a push-only GitHub Actions executor; it remains non-executing on pull requests and only runs after a main push whose head commit contains the frozen execution token.
 
 ## STABLECOIN-LIQUIDITY-0001
 
@@ -156,6 +156,7 @@ governed_path_prefix          research/stablecoin_liquidity_0001/
 formal research path          CREATED UNDER PROSPECTIVE OWNER
 data contract                 STABLECOIN-LIQUIDITY-0001-DATA-CONTRACT-V1 / FROZEN
 capture gate                  STABLECOIN-LIQUIDITY-0001-FIRST-CAPTURE-GATE-V1 / FROZEN_NOT_EXECUTED / TWO-STAGE DURABLE RECEIPT REQUIRED
+capture execution             STABLECOIN-LIQUIDITY-0001-FIRST-CAPTURE-EXECUTION-V1 / ARMED_NOT_EXECUTED / MAIN-PUSH TOKEN ONLY
 primary source                DEFILLAMA-STABLECOIN-ALL-CHARTS-V1
 source endpoint               https://stablecoins.llama.fi/stablecoincharts/all
 historical full capture       NOT RUN
@@ -184,7 +185,9 @@ Concrete historical `start/end` and dataset version are intentionally not fabric
 
 Raw-vintage semantics are frozen as exact-response-byte SHA256 plus create-only local staging and durable external versioned archival. Raw source payloads are gitignored. Schema drift, duplicate timestamps, non-200 captures, raw-hash mismatch and silent overwrite are hard failures.
 
-The first-capture gate now requires the strict order `FETCH ONCE -> PERSIST RAW -> PERSIST MANIFEST -> VERIFY -> ARCHIVE RAW+MANIFEST TO DURABLE EXTERNAL STORE -> CREATE DURABILITY RECEIPT -> VERIFY RECEIPT -> PARSE PERSISTED BYTES -> SELECT FROZEN COVERAGE -> EMIT METADATA ONLY`. The capture stage deliberately stops before parsing. If any first-capture artifact already exists, another fetch is blocked until manual reconciliation. CI uses synthetic injected captures only and cannot call the live endpoint.
+The first-capture gate requires the strict order `FETCH ONCE -> PERSIST RAW -> PERSIST MANIFEST -> VERIFY -> ARCHIVE RAW+MANIFEST TO DURABLE EXTERNAL STORE -> CREATE DURABILITY RECEIPT -> VERIFY RECEIPT -> PARSE PERSISTED BYTES -> SELECT FROZEN COVERAGE -> EMIT METADATA ONLY`. The capture stage deliberately stops before parsing. If any first-capture artifact already exists, another fetch is blocked until manual reconciliation.
+
+The armed executor uses `GITHUB_ACTIONS_ARTIFACT_V4` as the first durable external archive. It is conditioned on a `push` to `main` whose head commit contains `[STABLECOIN_FIRST_CAPTURE_EXECUTE_V1]`; pull-request events cannot execute it. Exact raw + manifest + staging metadata are uploaded with `overwrite=false` before any parsing. The returned artifact ID/URL is bound into the create-only durability receipt. A same-run rerun that finds the raw artifact hard-fails before source fetch. The executor releases only provenance/coverage metadata and cannot mutate the Dataset Registry, compute features, fit Ridge, run Stage 1, change BRRK or confer production authority.
 
 Governance-v1 Dataset Registry schema does not contain a `raw_hash` dataset-slice property and rejects unregistered properties. Dataset slice identity therefore records source/field/resolution/start/end/transformation/PIT/budget/contamination semantics; exact raw SHA256, byte length, retrieval time, response headers, raw object identity and parser version remain immutable manifest/provenance properties. Durable backend/object references and manifest SHA256 remain durability-receipt provenance.
 
@@ -218,11 +221,12 @@ RESUME REAL PHASE-6 ZERO-AUTHORITY ELAPSED OBSERVATION UNDER GOVERNANCE V1 PROVE
 ACCUMULATE GENUINELY FUTURE PHASE-6 EVIDENCE ONLY; DO NOT REBUILD OR BACKFILL ELAPSED TIME
 KEEP signature_authorized = false AND order_submission_authorized = false
 REQUIRE AT LEAST 14 ELAPSED CALENDAR DAYS AND 10 SCHEDULED DECISIONS PLUS FROZEN QUALITY CRITERIA
-MERGE THE STABLECOIN TWO-STAGE DURABLE-HANDOFF PR BEFORE ANY LIVE STABLECOIN FETCH
-AFTER MERGE, EXECUTE EXACTLY ONE FROZEN-SOURCE FETCH INTO OUT-OF-REPO CREATE-ONLY STAGING AND VERIFY RAW + MANIFEST WITHOUT PARSING
-ARCHIVE THE EXACT RAW FILE + MANIFEST TO DURABLE EXTERNAL CREATE-ONLY/VERSIONED STORAGE AND CREATE A HASH-BOUND DURABILITY RECEIPT
+MERGE THE STABLECOIN ONE-SHOT EXECUTION PR WITH THE EXACT [STABLECOIN_FIRST_CAPTURE_EXECUTE_V1] HEAD-COMMIT TOKEN ONLY AFTER ALL PR CI IS GREEN
+ON THAT SINGLE MAIN PUSH, EXECUTE EXACTLY ONE FROZEN-SOURCE FETCH INTO OUT-OF-REPO CREATE-ONLY RUNNER STAGING AND VERIFY RAW + MANIFEST WITHOUT PARSING
+UPLOAD EXACT RAW + MANIFEST TO GITHUB_ACTIONS_ARTIFACT_V4 WITH overwrite=false BEFORE ANY PARSE; BIND RETURNED ARTIFACT ID/URL INTO A CREATE-ONLY DURABILITY RECEIPT
 ONLY AFTER THE RECEIPT IS VERIFIED, PARSE THE PERSISTED BYTES AND EMIT METADATA-ONLY COVERAGE/PROVENANCE
-IF ANY CAPTURE/ARCHIVE/PARSE/SCHEMA FAILURE OCCURS, PRESERVE THE ARTIFACTS AND DO NOT AUTOMATICALLY FETCH AGAIN; REQUIRE MANUAL RECONCILIATION
+DO NOT AUTOMATICALLY RERUN A FAILED CAPTURE; IF A RAW ARTIFACT EXISTS FOR THE RUN, REFUSE ANY SECOND FETCH AND REQUIRE MANUAL RECONCILIATION
+AFTER SUCCESS, MIRROR THE RAW/PROVENANCE ARTIFACT INTO CHATGPT LIBRARY WHEN AVAILABLE WITHOUT ALTERING ITS HASH IDENTITY
 MATERIALIZE THE TRUTHFUL HISTORICAL DATASET SLICE IDENTITY ONLY AFTER THE CAPTURE ESTABLISHES OBSERVED START/END; KEEP RAW SHA256 IN IMMUTABLE MANIFEST/PROVENANCE, NOT AS AN UNREGISTERED DATASET-SLICE PROPERTY
 CLASSIFY HISTORICAL DATA AS RESEARCHER_EXPOSED_HISTORY; DO NOT CLAIM TEMPORALLY_UNSEEN FROM RECONSTRUCTED HISTORY
 DO NOT SELECT OR TRIM THE HISTORICAL WINDOW BASED ON VALUES OR RESEARCH PERFORMANCE
