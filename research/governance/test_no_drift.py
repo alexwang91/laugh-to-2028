@@ -10,6 +10,8 @@ class NoDriftAllowlistTests(unittest.TestCase):
         self.assertTrue(path_is_allowed("config/research_governance_v1.json"))
         self.assertTrue(path_is_allowed("research/governance/no_drift.py"))
         self.assertTrue(path_is_allowed("docs/PROGRAM_LEVEL_EPISTEMIC_GOVERNANCE_V1_FINAL_REPORT_2026-08-08.md"))
+        self.assertTrue(path_is_allowed(".github/workflows/research-governance.yml"))
+        self.assertTrue(path_is_allowed("./.github/workflows/research-governance.yml"))
 
     def test_strategy_and_historical_research_paths_are_blocked(self):
         self.assertFalse(path_is_allowed("config/product.json"))
