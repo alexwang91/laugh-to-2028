@@ -15,12 +15,14 @@
 | P5.5 joint validation | **COMPLETE / IMMUTABLE / NO_PROMOTION / FAIL_STOP** |
 | P5.6 cycle integration | **BLOCKED / NO ELIGIBLE P5.5 CANDIDATE** |
 | Phase 6 implementation/replay | **PASS / SHADOW ONLY / MERGED #109** |
-| Phase 6 real elapsed evidence | **MEASUREMENT_INCONCLUSIVE_TIME_DEPENDENT** |
+| Phase 6 real elapsed evidence | **MEASUREMENT_INCONCLUSIVE_TIME_DEPENDENT / CLOCK NOT ARMED** |
+| Phase 6 live-observation preactivation gate | **PREACTIVATION_BLOCKED_FAIL_CLOSED / GOVERNANCE V1** |
 | Phase 7 readiness gate | **IMPLEMENTED / MERGED #110 / LAUNCH BLOCKED** |
 | Phase 7 program mode | **MONITOR_ONLY** |
 | Phase 8 bear-short research | **BEAR-SHORT-0001 PREREGISTERED / TRIGGER ABSENT / NOT RUN / MERGED #111** |
 | Phase 0–8 drift audit | **COMPLETE / PASS_FINAL_HEAD_VERIFIED / DRIFT_2 REMEDIATED** |
 | Program-Level Epistemic Governance v1 | **PG0–PG6 COMPLETE / CI-ENFORCED / NO-DRIFT CLOSEOUT** |
+| Stablecoin liquidity research | **STABLECOIN-LIQUIDITY-0001 / STAGE-1 FAIL_NO_INCREMENTAL_INFORMATION / TERMINAL STOP** |
 | Production-authorized components | **none** |
 
 ```text
@@ -62,6 +64,8 @@ ccbdc067f9f7f1277e6eecaa2f74f31f84e3a1882ccef418e097b2ea66bf6e71
 
 No P5.5 profile/map combination passed the frozen validation stack, so P5.6 remains blocked and Phase 6 carries no cycle overlay.
 
+`STABLECOIN-LIQUIDITY-0001` completed its single prospectively governed Stage-1 variant and terminated at `FAIL_NO_INCREMENTAL_INFORMATION / NO_PROMOTION`. It may not be rerun or rescued under the same research ID, creates no Edge Registry entry and changes no BRRK/Phase/production authority.
+
 ## Phase 6 / 7 / 8 authority
 
 Phase 6 machine contract: `config/phase6_shadow_contract.json`.
@@ -75,7 +79,9 @@ minimum elapsed days  = 14
 minimum decisions     = 10
 ```
 
-Elapsed-time evidence cannot be replayed or backfilled.
+Elapsed-time evidence cannot be replayed or backfilled. A repository audit found that the pre-existing `phase6-integrated-shadow.yml` is implementation/replay safety CI only: it has no scheduled future collector and no durable elapsed-evidence persistence. Therefore no automatic elapsed clock may be inferred from the Phase 6 PASS.
+
+Governance v1 now contains `research/governance/phase6_live_observation_gate.json` plus `phase6_live_observation_gate.py`. The gate is deliberately **not armed**. It prevents schedule/elapsed credit until the observation account identity, current-position/equity valuation semantics and durable create-only evidence backend are prospectively frozen. The first eligible decision after a future arm is the first canonical 00:00 UTC decision strictly after the arm commit timestamp; replay, rerun, duplicate timestamps and manual dispatch cannot create scheduled-decision credit.
 
 Phase 7 machine contract: `config/phase7_launch_readiness.json`.
 
@@ -116,7 +122,7 @@ Authority is separated across:
 - `config/edge_registry.json` — admitted incremental-information edges only;
 - existing Phase 6/7/8 contracts — phase/live authority.
 
-The Edge Registry is intentionally empty. BRRK and historical features were not retroactively declared governance-v1 validated independent edges.
+The Dataset Exposure Registry is not globally empty: it now contains the prospectively recorded reconstructed-history Stablecoin validation slice/exposure. Legacy retrospective exposure remains intentionally unbackfilled where historical facts are unrecoverable. The Edge Registry remains empty because no feature has passed Governance-v1 incremental-information admission.
 
 PG4 mapped 17 legacy records conservatively and records unrecoverable historical parameter trials, validation exposure, dataset exposure, lineage, researcher decisions and candidate universes as explicit Research Governance Debt. `UNKNOWN` remains UNKNOWN.
 
@@ -127,6 +133,7 @@ Commands:
 ```bash
 python -m research.governance.validate
 python -m research.governance.enforce_future --base <PR_BASE_SHA>
+python -m research.governance.phase6_live_observation_gate
 python -m research.governance.audit
 python -m research.governance.no_drift
 ```
@@ -144,9 +151,17 @@ The framework **reduces research-process overfit**. It does not eliminate market
 
 ## Exact next dependency
 
-Resume the existing Phase 6 **zero-authority elapsed observation** path under Governance v1 provenance. New observations should enter the governance ledger as genuinely `TEMPORALLY_UNSEEN` / `ZERO_AUTHORITY_SHADOW` evidence from inception.
+Freeze the remaining Phase 6 live-observation operational semantics **before** arming any schedule or elapsed-evidence credit:
 
-Do not backfill elapsed time. Do not start a new alpha/indicator/leverage/short/allocation program merely because governance v1 is complete. Any future research idea must enter the new prospective funnel and still cannot authorize production automatically.
+1. identify one explicit read-only observation account;
+2. freeze how combined current positions and account equity are valued across the permitted observation surfaces, without changing P3.2/P3.3 economics;
+3. freeze a durable create-only evidence backend and receipt identity;
+4. then prospectively arm the collector in a separate change;
+5. only the first 00:00 UTC decision strictly after that arm commit may begin scheduled-decision credit.
+
+Until then the Phase 6 live elapsed state remains `MEASUREMENT_INCONCLUSIVE_TIME_DEPENDENT`, with clock not armed. Do not backfill elapsed time and do not call replay/test artifacts live evidence.
+
+After the Phase-6 collection path is truly armed, resume the original infrastructure plan: formal research lifecycle/state-machine enforcement, then Research Queue / trial-overlap accounting, before starting another result-bearing research family.
 
 Phase 7 remains launch-blocked until its complete checklist and explicit owner approval exist. Phase 8 remains trigger-absent until the frozen confirmed-bear artifact exists.
 
