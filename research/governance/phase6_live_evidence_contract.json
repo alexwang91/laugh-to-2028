@@ -1,0 +1,86 @@
+{
+  "schema_version": 1,
+  "contract_id": "PHASE6-LIVE-EVIDENCE-BACKEND-V1",
+  "status": "FROZEN_BACKEND_NOT_COLLECTING",
+  "purpose": "DURABLE_CREATE_ONLY_PROVENANCE_FOR_FUTURE_PHASE6_ZERO_AUTHORITY_OBSERVATIONS",
+  "production_authorized": false,
+  "backend": {
+    "provider": "GITHUB_ACTIONS_ARTIFACT_V4",
+    "retention_days": 90,
+    "overwrite": false,
+    "if_no_files_found": "error",
+    "artifact_name_identity": "PHASE6_DECISION_TIMESTAMP_GITHUB_RUN_ID_GITHUB_RUN_ATTEMPT",
+    "required_upload_outputs": [
+      "artifact-id",
+      "artifact-url",
+      "artifact-digest"
+    ]
+  },
+  "evidence_bundle": {
+    "upload_before_credit": true,
+    "required_categories": [
+      "RAW_CANONICAL_DAILY_MARKET_INPUTS",
+      "RAW_READ_ONLY_ACCOUNT_INPUTS",
+      "RAW_READ_ONLY_ROUTE_INPUTS",
+      "INPUT_PROVENANCE_MANIFEST",
+      "SHADOW_RECORD"
+    ],
+    "raw_bytes_preserved_before_parse": true,
+    "input_manifest_sha256_required": true,
+    "shadow_record_sha256_required": true,
+    "secret_material_forbidden": true,
+    "authorization_headers_forbidden": true
+  },
+  "receipt": {
+    "create_after_evidence_artifact": true,
+    "upload_as_separate_artifact_before_credit": true,
+    "overwrite": false,
+    "retention_days": 90,
+    "required_fields": [
+      "github_run_id",
+      "github_run_attempt",
+      "workflow_sha",
+      "decision_timestamp",
+      "observed_at",
+      "shadow_record_digest",
+      "input_provenance_digest",
+      "evidence_object_digest",
+      "evidence_artifact_id",
+      "evidence_artifact_url",
+      "backend_id",
+      "retention_days"
+    ],
+    "backend_id": "GITHUB_ACTIONS_ARTIFACT_V4"
+  },
+  "credit_rules": {
+    "ephemeral_runner_files_create_credit": false,
+    "step_summary_creates_credit": false,
+    "logs_create_credit": false,
+    "evidence_artifact_without_receipt_creates_credit": false,
+    "expired_artifact_before_acceptance_review_creates_credit": false,
+    "artifact_upload_failure_creates_credit": false,
+    "receipt_upload_failure_creates_credit": false,
+    "credit_only_after_evidence_and_receipt_uploads_succeed": true,
+    "acceptance_review_must_complete_before_required_artifact_expiry": true
+  },
+  "provenance_precedent": {
+    "research_id": "STABLECOIN-LIQUIDITY-0001",
+    "workflow_run_id": 31264048473,
+    "mechanism": "ACTIONS_ARTIFACT_V4_OVERWRITE_FALSE_RETENTION_90_HASH_BOUND_RECEIPT",
+    "precedent_only_not_shared_evidence": true
+  },
+  "explicit_non_actions": [
+    "NO_ACCOUNT_IDENTITY_SELECTION",
+    "NO_POSITION_OR_EQUITY_VALUATION_CHANGE",
+    "NO_SCHEDULE_ARM",
+    "NO_ELAPSED_EVIDENCE_CREDIT",
+    "NO_SIGNING",
+    "NO_ORDER_SUBMISSION",
+    "NO_PRODUCTION_AUTHORIZATION"
+  ],
+  "notes": [
+    "This freezes the storage/provenance mechanism only; it does not assert that any Phase-6 live evidence has been collected.",
+    "Ninety-day Actions-artifact retention materially exceeds the frozen 14-day observation minimum; if a required artifact expires before the acceptance review, the associated decision is not creditable.",
+    "Longer-term archival after Phase-6 acceptance may be added prospectively, but cannot be used to reconstruct an observation whose required artifact expired before acceptance."
+  ]
+}
