@@ -16,6 +16,7 @@ P5.6 cycle integration            BLOCKED / NO ELIGIBLE P5.5 CANDIDATE
 Phase 6 implementation/replay     PASS_SHADOW_ONLY_IMPLEMENTATION_REPLAY / MERGED #109
 Phase 6 live elapsed evidence     MEASUREMENT_INCONCLUSIVE_TIME_DEPENDENT / CLOCK NOT ARMED
 Phase 6 observation preactivation PREACTIVATION_BLOCKED_FAIL_CLOSED / GOVERNANCE V1
+Phase 6 evidence backend          FROZEN / ACTIONS_ARTIFACT_V4 / RETENTION 90D / NO CREDIT
 Phase 7 readiness gate            IMPLEMENTED / MERGED #110 / LAUNCH BLOCKED
 Phase 7 program state             MONITOR_ONLY
 Phase 8 bear-short research       PREREGISTERED_TRIGGER_ABSENT_NOT_RUN / MERGED #111
@@ -25,6 +26,7 @@ Future research gate repair       MERGED #121 / GOVERNANCE ONLY / DRIFT_0
 Future prereg validator repair    MERGED #122 / GOVERNANCE ONLY / DRIFT_0
 Stablecoin liquidity research     STABLECOIN-LIQUIDITY-0001 / STAGE-1 COMPLETE / FAIL_NO_INCREMENTAL_INFORMATION / TERMINAL STOP
 Stablecoin terminal closeout      MERGED #131 / main 0d6cef33f556a745850470e237c5ba021cddaa80
+Phase 6 preactivation gate        MERGED #132 / main c7b51625ca4ea990f8325b1abafc67c00daa0d74
 production authorization          NONE
 first real short authorization    NONE
 ```
@@ -70,21 +72,32 @@ The machine preactivation gate is:
 - `research/governance/phase6_live_observation_gate.json`
 - `research/governance/phase6_live_observation_gate.py`
 
+The durable evidence contract is:
+
+- `research/governance/phase6_live_evidence_contract.json`
+- `research/governance/phase6_live_evidence.py`
+
 Current gate state is:
 
 ```text
-status                              PREACTIVATION_BLOCKED_FAIL_CLOSED
-collector_armed                     false
-schedule_configured                 false
-elapsed_evidence_credit_authorized  false
-production_authorized               false
-signature_authorized                false
-order_submission_authorized         false
+status                                      PREACTIVATION_BLOCKED_FAIL_CLOSED
+collector_armed                             false
+schedule_configured                         false
+elapsed_evidence_credit_authorized          false
+observation_account_identity_frozen         false
+current_position_equity_valuation_frozen    false
+durable_create_only_evidence_backend_frozen true
+schedule_and_duplicate_credit_rule_frozen   true
+production_authorized                       false
+signature_authorized                        false
+order_submission_authorized                 false
 ```
 
-Before a future collector may be armed, three still-unresolved operational semantics must be frozen prospectively: one explicit read-only observation account identity; current-position/account-equity valuation semantics for the permitted observation surfaces; and a durable create-only evidence backend/receipt identity. The schedule/duplicate rule is already frozen: manual dispatch cannot count as a scheduled decision, reruns/duplicate decision timestamps create no new credit, and a manual emergency drill may count only toward the drill requirement.
+The evidence backend is prospectively frozen to `GITHUB_ACTIONS_ARTIFACT_V4` with `retention-days=90`, `overwrite=false`, hard failure on empty uploads, and required immutable `artifact-id` / `artifact-url` / `artifact-digest` outputs. Each future credited decision must first durably upload its evidence bundle, then create and separately upload a hash-bound receipt. Runner files, logs, step summaries, missing receipts, upload failures or artifacts that expire before acceptance review create zero credit. This storage contract is based on the already-successful Stablecoin Stage-1 artifact/receipt mechanism, but Stablecoin artifacts are precedent only and are not Phase-6 evidence.
 
-The first eligible scheduled decision after a future arm is the first canonical `00:00 UTC` decision strictly after the arm commit timestamp. The preactivation gate itself starts no clock and creates no elapsed evidence.
+Two pre-arm dependencies remain unresolved: one explicit read-only observation account identity and current-position/account-equity valuation semantics for the permitted observation surfaces. The schedule/duplicate rule and durable evidence backend are now frozen. No account state or valuation may be fabricated to close the remaining blockers.
+
+The first eligible scheduled decision after a future arm is the first canonical `00:00 UTC` decision strictly after the arm commit timestamp. The preactivation/evidence contracts themselves start no clock and create no elapsed evidence.
 
 ## Phase 7
 
@@ -150,6 +163,7 @@ The implementation extends rather than replaces existing experiment, decision an
 - `research/governance/enforce_future.py` — exact-PR-diff prospective research registration enforcement;
 - `research/governance/no_drift.py` — boundary-to-HEAD strategy/evidence/authority no-drift regression;
 - `research/governance/phase6_live_observation_gate.py` — fail-closed Phase-6 future-elapsed preactivation control;
+- `research/governance/phase6_live_evidence.py` — frozen durable Phase-6 evidence-backend validation;
 - `.github/workflows/research-governance.yml` — CI enforcement, including Stablecoin regressions and the Phase-6 live-observation preactivation gate. Both temporary Stablecoin live executors (first capture and Stage-1 result execution) were removed immediately after their one-shot use.
 
 PG4 conservatively maps 17 `RETROSPECTIVE_LEGACY` research records. Six governance-debt classes remain explicit because historical trial counts, information releases, dataset consumption, lineage, informal researcher decisions and complete candidate universes cannot be reconstructed truthfully. `UNKNOWN` remains `UNKNOWN`.
@@ -158,7 +172,7 @@ The Edge Registry remains empty because no feature has yet passed governance-v1 
 
 Future formal result-bearing research must be prospectively covered by exactly one `PROGRAM_GOVERNED_V1` record with the frozen required fields, declared path ownership, variant budget, stopping rules, lineage/data references and `production_authorized=false`. Changed legacy formal research paths are treated as new post-boundary research activity and cannot bypass prospective registration or existing immutable-evidence correction rules.
 
-PR #121 repaired the cross-gate conflict between future-research registration and the final no-drift regression without broadening the legacy allowlist. PR #122 repaired preregistration-only validator semantics so empty pre-result dataset/evidence arrays do not require fabricated placeholders. PR #123 prospectively registered `STABLECOIN-LIQUIDITY-0001`. PR #124 froze its source/data/PIT contract. PR #125 froze the one-shot first-capture gate. PR #126 split capture/persist from finalize so durable archival must precede parsing. PR #127 armed and executed the single governed capture on merge commit `824f58151bcef2203c320e4b94b8070dcac77dae` through GitHub Actions run `31261566204`; both governance and capture jobs completed successfully. PR #128 registered the captured validation slice/exposure and removed the capture executor. PR #129 froze `STABLECOIN-LIQUIDITY-0001-RUN-INTERFACE-V1`. PR #130 irreversibly claimed and executed Stage-1 exactly once on merge `dd50ec35085eee2a2883dc1b29e3dd21ec52b043`, workflow run `31264048473`, producing the immutable primary FAIL result. PR #131 merged terminal closeout at `0d6cef33f556a745850470e237c5ba021cddaa80`, removed the completed Stage-1 live executor and made the FAIL_STOP authoritative on `main`.
+PR #121 repaired the cross-gate conflict between future-research registration and the final no-drift regression without broadening the legacy allowlist. PR #122 repaired preregistration-only validator semantics so empty pre-result dataset/evidence arrays do not require fabricated placeholders. PR #123 prospectively registered `STABLECOIN-LIQUIDITY-0001`. PR #124 froze its source/data/PIT contract. PR #125 froze the one-shot first-capture gate. PR #126 split capture/persist from finalize so durable archival must precede parsing. PR #127 armed and executed the single governed capture on merge commit `824f58151bcef2203c320e4b94b8070dcac77dae` through GitHub Actions run `31261566204`; both governance and capture jobs completed successfully. PR #128 registered the captured validation slice/exposure and removed the capture executor. PR #129 froze `STABLECOIN-LIQUIDITY-0001-RUN-INTERFACE-V1`. PR #130 irreversibly claimed and executed Stage-1 exactly once on merge `dd50ec35085eee2a2883dc1b29e3dd21ec52b043`, workflow run `31264048473`, producing the immutable primary FAIL result. PR #131 merged terminal closeout at `0d6cef33f556a745850470e237c5ba021cddaa80`, removed the completed Stage-1 live executor and made the FAIL_STOP authoritative on `main`. PR #132 merged the Phase-6 future-only live-observation preactivation gate at `c7b51625ca4ea990f8325b1abafc67c00daa0d74` without arming the clock or changing canonical execution/authority.
 
 ## STABLECOIN-LIQUIDITY-0001
 
@@ -268,11 +282,12 @@ The FAIL result creates no edge and no authority:
 ```text
 KEEP PHASE-6 LIVE ELAPSED STATUS AT MEASUREMENT_INCONCLUSIVE_TIME_DEPENDENT; THE CLOCK IS NOT ARMED
 KEEP THE PHASE-6 PREACTIVATION GATE FAIL-CLOSED UNTIL ALL REQUIRED OPERATIONAL SEMANTICS ARE FROZEN
+KEEP PHASE6-LIVE-EVIDENCE-BACKEND-V1 FROZEN AT ACTIONS_ARTIFACT_V4 / RETENTION 90D / OVERWRITE FALSE; THIS CONTRACT ALONE CREATES ZERO CREDIT
 FREEZE ONE EXPLICIT READ-ONLY OBSERVATION ACCOUNT IDENTITY; DO NOT FABRICATE ACCOUNT STATE
 FREEZE CURRENT-POSITION / ACCOUNT-EQUITY VALUATION SEMANTICS WITHOUT CHANGING P3.2/P3.3 ECONOMICS
-FREEZE A DURABLE CREATE-ONLY EVIDENCE BACKEND + RECEIPT IDENTITY BEFORE ANY ELAPSED CREDIT
 THEN ARM THE FUTURE-ONLY COLLECTOR IN A SEPARATE PROSPECTIVE CHANGE
 COUNT ONLY THE FIRST 00:00 UTC DECISION STRICTLY AFTER THE ARM COMMIT AND LATER GENUINE SCHEDULED DECISIONS
+REQUIRE EVIDENCE BUNDLE + HASH-BOUND RECEIPT DURABLY UPLOADED BEFORE ANY DECISION CREDIT
 DO NOT BACKFILL, REPLAY-CREDIT, RERUN-CREDIT OR DUPLICATE-CREDIT THE 14-DAY / 10-DECISION REQUIREMENT
 KEEP signature_authorized = false AND order_submission_authorized = false AND production_authorized = false
 KEEP STABLECOIN-LIQUIDITY-0001 AT FAIL_NO_INCREMENTAL_INFORMATION / NO_PROMOTION / TERMINAL STOP
