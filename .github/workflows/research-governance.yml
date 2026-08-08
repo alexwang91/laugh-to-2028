@@ -91,7 +91,7 @@ jobs:
           echo "STABLECOIN_RAW=$RAW" >> "$GITHUB_ENV"
       - name: Execute frozen attribution audit
         run: |
-          python research/governance/run_brrk_signal_attribution_audit.py \
+          PYTHONPATH=. python research/governance/run_brrk_signal_attribution_audit.py \
             --stablecoin-raw "$STABLECOIN_RAW" \
             --output /tmp/brrk_signal_attribution_result.json
       - name: Upload attribution result
