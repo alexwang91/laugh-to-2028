@@ -23,6 +23,7 @@
 | Phase 7 program mode | **MONITOR_ONLY** |
 | Phase 8 bear-short research | **BEAR-SHORT-0001 PREREGISTERED / TRIGGER ABSENT / NOT RUN / MERGED #111** |
 | Phase 0–8 drift audit | **COMPLETE / PASS_FINAL_HEAD_VERIFIED / DRIFT_2 REMEDIATED** |
+| Program-Level Epistemic Governance v1 | **PREPARED / IMPLEMENTATION NOT STARTED** |
 | Production-authorized components | **none** |
 
 ```text
@@ -93,6 +94,8 @@ The real observation requirement is not backfilled by replay. Until at least 14 
 MEASUREMENT_INCONCLUSIVE_TIME_DEPENDENT
 ```
 
+The Phase 6 contract is unchanged. New observation-infrastructure work is intentionally sequenced **after** Program-Level Epistemic Governance v1 so future elapsed observations can enter the new provenance/evidence model from inception.
+
 ## Phase 7 — launch readiness only
 
 Readiness gate merged in PR #110. Machine contract: `config/phase7_launch_readiness.json`.
@@ -152,9 +155,23 @@ emergency flatten                        = preserved
 
 The audit closeout is `PASS_FINAL_HEAD_VERIFIED`. Audit success does **not** mean Phase 6 elapsed evidence passed, Phase 7 launch was approved, a bear transition was confirmed, or any real short was authorized.
 
+## Program-Level Epistemic Governance v1 — prepared next program
+
+Pre-implementation handoff:
+
+`docs/PROGRAM_LEVEL_EPISTEMIC_GOVERNANCE_V1_HANDOFF_2026-08-08.md`
+
+This is a research-governance upgrade, **not** new strategy research. It will extend the existing preregistration / immutable-evidence / FAIL_STOP / production-authority system to program-level accounting for research families, typed lineage, historical-data exposure, validation information release, researcher degrees of freedom and retrospective governance debt.
+
+The new framework must be prospective. Existing immutable experiments remain unchanged and will be mapped conservatively as legacy/retrospective records; unknown historical trial or peek counts remain `UNKNOWN` rather than being invented.
+
+Historical research branches are intentionally retained as possible provenance for that retrospective audit.
+
 ## Exact next dependency
 
-The next repository dependency is **real Phase 6 zero-authority elapsed-shadow evidence**, not another strategy implementation phase. Continue the frozen observation mechanism; do not manufacture elapsed time.
+The next repository program is **Program-Level Epistemic Governance v1**. Do not start Supertrend, funding/OI, relative-strength, new allocation, leverage or short research before this governance layer is implemented and audited.
+
+After governance v1 is merged, resume the frozen Phase 6 zero-authority elapsed-shadow evidence path under the new provenance/evidence model. Do not manufacture or backfill elapsed time.
 
 Phase 7 remains launch-blocked until its complete checklist and explicit owner approval exist. Phase 8 remains trigger-absent until the frozen confirmed-bear artifact exists.
 
@@ -163,9 +180,10 @@ Phase 7 remains launch-blocked until its complete checklist and explicit owner a
 1. `README.md`
 2. `docs/CURRENT_STATE.md`
 3. `docs/NEXT_STEPS.md`
-4. `config/phase0_8_drift_audit.json`
-5. `docs/ROADMAP_AUDIT_2026-08-07.md`
-6. `docs/MASTER_PLAN_2026-08-05.md`
-7. `docs/IMPLEMENTATION_ROADMAP_2026-08-05.md`
-8. `config/decision_registry.json`
-9. immutable `research/results/` and dated research documents as evidence
+4. `docs/PROGRAM_LEVEL_EPISTEMIC_GOVERNANCE_V1_HANDOFF_2026-08-08.md`
+5. `config/phase0_8_drift_audit.json`
+6. `docs/ROADMAP_AUDIT_2026-08-07.md`
+7. `docs/MASTER_PLAN_2026-08-05.md`
+8. `docs/IMPLEMENTATION_ROADMAP_2026-08-05.md`
+9. `config/decision_registry.json`
+10. immutable `research/results/` and dated research documents as evidence
