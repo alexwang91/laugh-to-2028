@@ -15,8 +15,8 @@ P5.2 feature evidence          COMPLETE / IMMUTABLE / DESCRIPTIVE CLOSEOUT
 P5.3 V1                       COMPLETE / IMMUTABLE / ARCHITECTURE_FAIL
 P5.3 V2                       COMPLETE / IMMUTABLE EVIDENCE / ARCHITECTURE_PASS
 P5.3 selected profile          NONE
-P5.4 behavior mapping          PREREGISTERED / FIXED CANDIDATES / NO SELECTION
-P5.5 validation                NEXT AFTER P5.4 IMPLEMENTATION
+P5.4 behavior mapping          PREREGISTERED / IMPLEMENTED PURE SCALAR LAYER / NO SELECTION
+P5.5 validation                NEXT / CONTRACT MUST FREEZE BEFORE ECONOMIC RUN
 P5.6 integration               NOT STARTED
 Phase 6 shadow                 NOT STARTED
 Phase 7 limited-live readiness NOT STARTED / actual launch requires explicit approval
@@ -32,11 +32,9 @@ production authorization       NONE
 - `2021-02-23` false raw FLAT remains immutable evidence;
 - MARKET_STATE has no permission-unlock authority.
 
-## P5.4 preregistration
+## P5.4 frozen candidate family
 
 Contract: `P5.4-FIXED-STATE-GROSS-BEHAVIOR-V1`
-
-P5.4 freezes four overlay candidates before any P5.5 economics:
 
 | state | HARD_ONLY | GENTLE | BALANCED | DEFENSIVE |
 | --- | ---: | ---: | ---: | ---: |
@@ -48,24 +46,34 @@ P5.4 freezes four overlay candidates before any P5.5 economics:
 | DE_RISK_2 | 1.00 | 0.40 | 0.25 | 0.15 |
 | FLAT | 0.00 | 0.00 | 0.00 | 0.00 |
 
-`BRRK_NO_CYCLE_CONTROL` is a non-promotable comparator with multiplier `1.0` in every state.
+`BRRK_NO_CYCLE_CONTROL` remains a non-promotable all-1.0 comparator.
 
-Hard P5.4 rules:
+## P5.4 implementation
 
-- all overlay multipliers are in `[0,1]`;
-- monotone non-increasing with state severity;
-- late-bull rotation is not automatically bearish/zero;
-- mapping scales total frozen BRRK target only;
-- relative BTC/ETH/SOL/BNB ranking is unchanged;
-- XRP remains feature-only;
-- no shorts and no >1 leverage;
-- P5.4 selects no winner;
-- P5.5 evaluates 3 frozen P5.3 profiles × 4 behavior maps = 12 candidate combinations;
-- counterfactual research re-entry after FLAT does not unlock operational RISK_PERMISSION_LOCK.
+`research/cycle_exit/p5_4_behavior_mapping.py` is a pure mechanics layer only:
+
+```text
+adjusted_target = frozen_brrk_target * frozen_state_multiplier
+```
+
+It enforces:
+
+- exact BTC/ETH/SOL/BNB target schema;
+- long-only input;
+- upstream gross <= 1.0;
+- multiplier in `[0,1]`;
+- adjusted gross never exceeds upstream gross;
+- scalar-only transformation, preserving relative ranking/proportions whenever multiplier >0;
+- FLAT and DATA_INSUFFICIENT -> zero target;
+- no prices, returns, costs, selection, permission unlock or production side effects.
+
+P5.4 still selects no winner. P5.5 evaluates the frozen 3 profiles × 4 maps = 12 combinations.
 
 ## P5.5 boundary
 
-P5.5 owns economic/robustness selection. It must include held-out event analysis, cost sensitivity, missed-upside, drawdown avoided, terminal wealth/CAGR, turnover, second-wind behavior, terminal 2021 behavior and non-top-control false positives. If no combination is robust, P5.5 must fail-stop.
+P5.5 must freeze its validation/economic contract before calculating candidate economics. It must reuse the repository's established target/path/cost metric semantics rather than introduce a favorable cycle-specific backtester.
+
+Required dimensions remain: held-out events, lead/lag, false-positive duration, missed upside, drawdown avoided, terminal wealth/CAGR, turnover/cost sensitivity, second-wind preservation, 2021 terminal transition and non-top controls. If no combination is robust, fail-stop.
 
 ## Frozen product boundaries
 
@@ -79,10 +87,10 @@ P5.5 owns economic/robustness selection. It must include held-out event analysis
 ## Exact next action
 
 ```text
-CI-VERIFY / MERGE P5.4 PREREGISTRATION
-IMPLEMENT PURE STATE->GROSS MAPPING MECHANICS
-VERIFY NO RELATIVE-RANKING CHANGE AND NO >1 GROSS
-FREEZE P5.5 VALIDATION CONTRACT BEFORE ECONOMIC EVALUATION
-DO NOT SELECT A P5.4 WINNER
+CI-VERIFY / MERGE PURE P5.4 MAPPING IMPLEMENTATION
+VERIFY NEW MAIN
+FREEZE P5.5 VALIDATION CONTRACT BEFORE ANY ECONOMIC EVALUATION
+IMPLEMENT P5.5 USING ESTABLISHED BRRK TARGET/PATH/COST METRICS
+RUN ONCE / IMMUTABLE RESULT / SELECT ONLY IF ALL HARD GATES PASS
 DO NOT PRODUCTION-AUTHORIZE ANYTHING
 ```
