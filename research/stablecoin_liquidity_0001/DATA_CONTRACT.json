@@ -1,0 +1,151 @@
+{
+  "schema_version": 1,
+  "contract_id": "STABLECOIN-LIQUIDITY-0001-DATA-CONTRACT-V1",
+  "research_id": "STABLECOIN-LIQUIDITY-0001",
+  "research_governance_version": 1,
+  "status": "FROZEN_BEFORE_RESULT_BEARING_RETRIEVAL",
+  "production_authorized": false,
+  "source": {
+    "source_id": "DEFILLAMA-STABLECOIN-ALL-CHARTS-V1",
+    "provider": "DefiLlama",
+    "method": "GET",
+    "url": "https://stablecoins.llama.fi/stablecoincharts/all",
+    "authentication": "NONE",
+    "request_headers": {
+      "Accept": "application/json"
+    },
+    "official_sdk_reference": {
+      "repository": "DefiLlama/api-sdk",
+      "commit": "f0d43119c746dda0c1ad8460c37ac9e00e8e5161",
+      "package_name": "@defillama/api",
+      "package_version_in_repository": "0.1.4",
+      "method": "stablecoins.getAllCharts",
+      "module_path": "src/modules/stablecoins.ts",
+      "client_path": "src/client.ts",
+      "type_path": "src/types/stablecoins.ts"
+    },
+    "documented_semantics": "Historical market-cap data for all stablecoins combined; each chart row contains a Unix timestamp string and total circulating supply fields, including totalCirculatingUSD.",
+    "historical_publication_timestamp_exposed": false
+  },
+  "raw_payload_contract": {
+    "root_type": "array",
+    "row_required_paths": [
+      "date",
+      "totalCirculatingUSD",
+      "totalCirculatingUSD.peggedUSD"
+    ],
+    "metric_timestamp_path": "date",
+    "metric_timestamp_type": "unix_seconds_encoded_as_string",
+    "primary_value_path": "totalCirculatingUSD.peggedUSD",
+    "primary_value_type": "finite_non_negative_number",
+    "primary_value_unit": "USD-equivalent total circulating value of USD-pegged stablecoins as exposed by DefiLlama",
+    "schema_drift_policy": "HARD_FAIL_NO_PARTIAL_USE",
+    "unknown_extra_fields_policy": "PRESERVE_IN_RAW_PAYLOAD_IGNORE_IN_V1_NORMALIZATION"
+  },
+  "coverage_contract": {
+    "historical_cutoff_utc": "2026-08-08T00:00:00Z",
+    "historical_row_selection": "Use every schema-valid source row with metric_timestamp <= historical_cutoff_utc. Do not choose start/end dates by observed research performance.",
+    "historical_start_rule": "Earliest schema-valid source metric_timestamp returned by the frozen endpoint.",
+    "historical_end_rule": "Latest schema-valid source metric_timestamp not later than historical_cutoff_utc.",
+    "missing_date_policy": "NO_INTERPOLATION_NO_FORWARD_FILL_FOR_PRIMARY_FEATURE",
+    "duplicate_metric_timestamp_policy": "HARD_FAIL_WITHIN_ONE_RAW_SNAPSHOT",
+    "dataset_registry_materialization_rule": "Do not create a historical dataset slice until the first immutable full-history raw snapshot establishes truthful concrete start/end values and raw hash. The selection rule itself is frozen by this contract before retrieval."
+  },
+  "pit_publication_semantics": {
+    "historical_classification": "RECONSTRUCTED_HISTORY_RESEARCHER_EXPOSED_HISTORY",
+    "historical_published_at": null,
+    "historical_available_at_rule": "metric_timestamp + 2 calendar days exactly",
+    "historical_available_at_seconds": 172800,
+    "forward_classification_rule": "A raw snapshot captured after this data-contract merge may qualify observations as TEMPORALLY_UNSEEN only from their immutable first-seen retrieval time forward; later source revisions may not be backdated.",
+    "forward_published_at": "UNAVAILABLE_UNLESS_SOURCE_LATER_EXPOSES_VERIFIABLE_VALUE_UNDER_A_NEW_FROZEN_CONTRACT",
+    "forward_available_at_rule": "first_seen_retrieved_at",
+    "decision_inclusion_rule": "At canonical decision timestamp T, an observation or revision is eligible only when available_at <= T.",
+    "revision_rule": "Never overwrite a prior vintage. For an as-of decision T, use only revisions first retrieved at or before T; a later revision cannot alter an earlier decision view.",
+    "robustness_boundary": "LAG_1D and LAG_3D are not alternatives under STABLECOIN-LIQUIDITY-0001. They require a separately preregistered robustness-stage research ID."
+  },
+  "atomic_observation_contract": {
+    "required_fields": [
+      "dataset_id",
+      "source",
+      "source_version",
+      "asset",
+      "field",
+      "unit",
+      "metric_timestamp",
+      "value",
+      "published_at",
+      "available_at",
+      "retrieved_at",
+      "raw_payload_hash",
+      "transformation",
+      "parser_version",
+      "revision_id",
+      "pit_publication_semantics"
+    ],
+    "dataset_id": "DEFILLAMA-STABLECOIN-ALL-CHARTS",
+    "asset": "AGGREGATE_USD_PEGGED_STABLECOINS",
+    "field": "totalCirculatingUSD.peggedUSD",
+    "parser_version": "STABLECOIN-DATA-PARSER-V1"
+  },
+  "raw_vintage_contract": {
+    "hash_algorithm": "SHA256_OVER_EXACT_HTTP_RESPONSE_BYTES_BEFORE_JSON_PARSING",
+    "write_semantics": "CREATE_ONLY_NO_OVERWRITE",
+    "logical_path": "raw_vintage/defillama_stablecoin_all_charts/YYYY/MM/DD/<retrieved_at>__<sha256>.json",
+    "manifest_suffix": ".manifest.json",
+    "manifest_required_fields": [
+      "schema_version",
+      "research_id",
+      "dataset_id",
+      "source_id",
+      "source_url",
+      "request_method",
+      "retrieved_at",
+      "http_status",
+      "response_headers",
+      "raw_sha256",
+      "raw_size_bytes",
+      "raw_relative_path",
+      "source_sdk_commit",
+      "parser_version"
+    ],
+    "captured_response_headers": [
+      "content-type",
+      "date",
+      "etag",
+      "last-modified"
+    ],
+    "repository_storage_rule": "Large or recurring raw source payloads MUST NOT be committed to Git.",
+    "durable_storage_rule": "Real forward-vintage collection requires durable external create-only/versioned storage. The repository filesystem implementation is a deterministic local/CI reference backend, not production durability authority."
+  },
+  "feature_transform_contract": {
+    "status": "FROZEN_DEFINITION_NOT_EXECUTED_IN_THIS_PR",
+    "input_field": "totalCirculatingUSD.peggedUSD",
+    "growth_20d": "ln(S_t) - ln(S_t_minus_20_calendar_days)",
+    "acceleration_20d": "growth_20d_t - growth_20d_t_minus_20_calendar_days",
+    "date_matching": "EXACT_UTC_METRIC_DATE_MATCH_ONLY",
+    "non_positive_value_policy": "FEATURE_UNAVAILABLE_NO_IMPUTATION",
+    "missing_lag_policy": "FEATURE_UNAVAILABLE_NO_IMPUTATION",
+    "normalization": "EXPANDING_TRAINING_ONLY_AT_MODEL_STAGE",
+    "full_sample_normalization_forbidden": true
+  },
+  "exposure_and_registry_boundary": {
+    "dataset_exposure_registry_may_remain_empty_in_this_pr": true,
+    "reason": "Concrete historical slice start/end and raw identity do not exist until first immutable full-history capture; inventing them before retrieval would fabricate provenance.",
+    "first_full_history_capture_release_type": "RAW_DATA",
+    "edge_registry_change_allowed": false,
+    "result_release_allowed": false
+  },
+  "explicit_non_actions": [
+    "NO_FULL_HISTORY_RETRIEVAL_IN_THIS_PR",
+    "NO_REAL_DATA_FEATURE_COMPUTATION_IN_THIS_PR",
+    "NO_MODEL_FIT",
+    "NO_BACKTEST",
+    "NO_SIGNAL_GENERATION",
+    "NO_CAGR_SHARPE_CALMAR_EQUITY_CURVE",
+    "NO_EDGE_REGISTRY_ADMISSION",
+    "NO_PORTFOLIO_INTEGRATION",
+    "NO_BRRK_CHANGE",
+    "NO_PHASE6_7_8_AUTHORITY_CHANGE",
+    "NO_PRODUCTION_AUTHORIZATION"
+  ]
+}
