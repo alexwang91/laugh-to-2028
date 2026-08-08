@@ -90,12 +90,13 @@ class Phase6LiveObservationGateTests(unittest.TestCase):
 
     def test_backfill_or_replay_credit_is_rejected(self) -> None:
         for field in (
-            "historical_backfill_authorized", "historical_replay_credit_authorized",
-            "ci_replay_credit_authorized", "workflow_rerun_creates_new_decision_credit",
-            "duplicate_decision_timestamp_creates_new_decision_credit", "manual_dispatch_counts_as_scheduled_decision",
+            "historical_backfill_authorized",
+            "historical_replay_credit_authorized",
+            "ci_replay_credit_authorized",
+            "workflow_rerun_creates_new_decision_credit",
+            "duplicate_decision_timestamp_creates_new_credit",
+            "manual_dispatch_counts_as_scheduled_decision",
         ):
-            if field not in self.gate["future_only_credit_rule"]:
-                continue
             gate = copy.deepcopy(self.gate)
             gate["future_only_credit_rule"][field] = True
             with self.subTest(field=field):
@@ -141,10 +142,11 @@ class Phase6LiveObservationGateTests(unittest.TestCase):
         self.assertFalse(snapshot["elapsed_evidence_credit_authorized"])
 
     def test_identity_contract_rejects_agent_or_nonstandard_account(self) -> None:
-        contract = self.bound_identity_contract()
-        contract["binding_evidence"]["user_role_response"] = {"role": "agent", "data": {"user": MASTER}}
         gate = copy.deepcopy(self.gate)
         gate["required_before_arm"]["observation_account_identity_frozen"] = True
+
+        contract = self.bound_identity_contract()
+        contract["binding_evidence"]["user_role_response"] = {"role": "agent", "data": {"user": MASTER}}
         with self.assertRaises(Phase6ObservationGateError):
             self.validate(gate=gate, account_identity_contract=contract)
 
