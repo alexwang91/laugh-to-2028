@@ -1,7 +1,7 @@
 # Phase 0–8 Full Drift Audit — 2026-08-08
 
-Status: **PASS_FINAL_HEAD_VERIFIED / PENDING EXACT-HEAD MERGE**  
-Drift classification: **DRIFT_2**  
+Status: **COMPLETE / PASS_FINAL_HEAD_VERIFIED**  
+Drift classification: **DRIFT_2 / REMEDIATED**  
 Economic retuning: **NONE**  
 Production authorization: **NONE**
 
@@ -55,13 +55,13 @@ Remediation:
 
 ### AUDIT-P08-003 — authoritative handoff drift
 
-Top-level README and roadmap handoff files lagged already-merged Phase 6/7/8 work. Because README is source-of-truth #1, stale text was an operational hazard even though contracts/code were newer.
+Top-level README and roadmap handoff files lagged already-completed Phase 6/7/8 work. Because README is source-of-truth #1, stale text was an operational hazard even though contracts/code were newer.
 
 Remediation:
 
-- README records merged Phase 6/7/8 state;
-- `docs/CURRENT_STATE.md` points to the audit closeout as the completed repository task;
-- `docs/NEXT_STEPS.md` points to real Phase 6 elapsed evidence as the next dependency.
+- README records completed Phase 6/7/8 implementation/research state;
+- `docs/CURRENT_STATE.md` records audit closeout as complete;
+- `docs/NEXT_STEPS.md` points directly to real Phase 6 elapsed evidence as the next dependency.
 
 ## Machine-enforced invariants
 
@@ -116,11 +116,11 @@ All applicable workflows on that head passed, including:
 - PR handoff governance;
 - dedicated Phase 0–8 drift audit and legacy authority behavior tests.
 
-The closeout status commit must receive the same final-head CI confirmation before exact-head merge. No semantic change is permitted between that confirmation and merge.
+The merge-stable closeout head must pass the same final-head CI before exact-head merge. No semantic change is permitted between that confirmation and merge.
 
 ## Remaining external/time/human boundaries
 
-After this audit merges, the next dependency is **not another implementation phase**. It is real Phase 6 observation time under the frozen contract.
+The next dependency is **not another implementation phase**. It is real Phase 6 observation time under the frozen contract.
 
 No repository merge may convert these conditions into a pass by assertion:
 
@@ -131,4 +131,4 @@ No repository merge may convert these conditions into a pass by assertion:
 
 ## Closeout rule
 
-Exact-head merge is permitted only if the closeout head passes the dedicated audit gate plus all applicable repository CI/governance. That merge does not grant production authority.
+Exact-head merge is permitted only if the merge-stable closeout head passes the dedicated audit gate plus all applicable repository CI/governance. That merge does not grant production authority.
