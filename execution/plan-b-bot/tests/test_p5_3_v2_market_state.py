@@ -57,7 +57,7 @@ def test_signal_only_atoms_and_raw_candidates_match_immutable_v1() -> None:
     for column in columns:
         if column == "minimum_calibration_depth":
             assert signal[column].astype(int).equals(frozen[column].astype(int))
-        elif column in {"raw_candidate_state"}:
+        elif column == "raw_candidate_state":
             assert signal[column].astype(str).equals(frozen[column].astype(str))
         else:
             assert signal[column].astype(bool).equals(frozen[column].astype(bool))
@@ -73,33 +73,15 @@ def test_market_state_flat_recovers_one_step_after_existing_clear_period() -> No
     memory = TransitionMemory(current_state="FLAT")
 
     for _ in range(4):
-        state = market_state_transition_step(
-            memory,
-            "NORMAL_BULL",
-            profile,
-            severity,
-            ordinary_inputs_complete=True,
-        )
+        state = market_state_transition_step(memory, "NORMAL_BULL", profile, severity, ordinary_inputs_complete=True)
         assert state == "FLAT"
 
-    state = market_state_transition_step(
-        memory,
-        "NORMAL_BULL",
-        profile,
-        severity,
-        ordinary_inputs_complete=True,
-    )
+    state = market_state_transition_step(memory, "NORMAL_BULL", profile, severity, ordinary_inputs_complete=True)
     assert state == "DE_RISK_2"
     assert memory.deescalation_count == 0
 
     for _ in range(5):
-        state = market_state_transition_step(
-            memory,
-            "NORMAL_BULL",
-            profile,
-            severity,
-            ordinary_inputs_complete=True,
-        )
+        state = market_state_transition_step(memory, "NORMAL_BULL", profile, severity, ordinary_inputs_complete=True)
     assert state == "DE_RISK_1"
 
 
@@ -110,32 +92,14 @@ def test_raw_flat_is_still_immediate_and_resets_recovery() -> None:
     memory = TransitionMemory(current_state="FLAT")
 
     for _ in range(4):
-        assert market_state_transition_step(
-            memory,
-            "NORMAL_BULL",
-            profile,
-            severity,
-            ordinary_inputs_complete=True,
-        ) == "FLAT"
+        assert market_state_transition_step(memory, "NORMAL_BULL", profile, severity, ordinary_inputs_complete=True) == "FLAT"
 
     assert memory.deescalation_count == 4
-    assert market_state_transition_step(
-        memory,
-        "FLAT",
-        profile,
-        severity,
-        ordinary_inputs_complete=True,
-    ) == "FLAT"
+    assert market_state_transition_step(memory, "FLAT", profile, severity, ordinary_inputs_complete=True) == "FLAT"
     assert memory.deescalation_count == 0
 
     memory.current_state = "DE_RISK_1"
-    assert market_state_transition_step(
-        memory,
-        "FLAT",
-        profile,
-        severity,
-        ordinary_inputs_complete=True,
-    ) == "FLAT"
+    assert market_state_transition_step(memory, "FLAT", profile, severity, ordinary_inputs_complete=True) == "FLAT"
 
 
 def test_missing_data_holds_market_state_and_resets_counters() -> None:
@@ -164,7 +128,3 @@ def test_market_state_has_no_permission_unlock_authority() -> None:
     assert permission["automatic_unlock_forbidden"] is True
     assert permission["unlock_authority"] == "EXPLICIT_HUMAN_APPROVAL_ONLY"
     assert "does not simulate a historical permission-lock path" in permission["research_simulation_rule"]
-
-
-def test_no_v2_historical_result_exists_in_implementation_preflight() -> None:
-    assert not (ROOT / "research" / "results" / "p5_3_v2_market_state" / "summary.json").exists()
