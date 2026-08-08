@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "execution_id": "STABLECOIN-LIQUIDITY-0001-STAGE1-RUN-V1",
+  "research_id": "STABLECOIN-LIQUIDITY-0001",
+  "run_interface_id": "STABLECOIN-LIQUIDITY-0001-RUN-INTERFACE-V1",
+  "status": "ARMED_NOT_EXECUTED",
+  "production_authorized": false,
+  "run_once_marker": "research/stablecoin_liquidity_0001/RUN_ONCE_STAGE1.marker",
+  "trigger": {
+    "event": "push",
+    "branch": "main",
+    "required_head_commit_token": "[STABLECOIN_STAGE1_EXECUTE_V1]",
+    "pull_request_result_execution_forbidden": true
+  },
+  "stablecoin_input": {
+    "dataset_slice_id": "STABLECOIN-LIQUIDITY-0001-DEFILLAMA-HIST-V1",
+    "raw_sha256": "7cffe6fb3a21e891082c06c60e91491edfbc78e9c01e2d549805815a646d9ffd",
+    "first_capture_workflow_run_id": 31261566204,
+    "first_capture_artifact_name": "stablecoin-first-capture-raw-824f58151bcef2203c320e4b94b8070dcac77dae"
+  },
+  "market_input": {
+    "source_id": "BINANCE_SPOT_KLINES_V1",
+    "raw_start_utc": "2020-08-01T00:00:00Z",
+    "last_completed_session": "2026-08-07T00:00:00Z",
+    "capture_before_evaluation": true,
+    "archive_backend": "GITHUB_ACTIONS_ARTIFACT_V4",
+    "overwrite": false,
+    "network_retry_after_result_bearing_output": false
+  },
+  "pre_result_gates": [
+    "VERIFY_RUN_ONCE_MARKER_PRESENT_AND_MATCHING",
+    "VERIFY_FROZEN_RUN_INTERFACE_ID_AND_STATUS",
+    "DOWNLOAD_AND_VERIFY_FROZEN_STABLECOIN_RAW_SHA256",
+    "CAPTURE_BINANCE_PAGES_CREATE_ONLY",
+    "UPLOAD_BINANCE_PAGES_AND_MANIFEST_BEFORE_STAGE1_EVALUATION",
+    "VERIFY_BINANCE_DURABILITY_RECEIPT",
+    "RECONFIRM_BATCH_PATH_AGAINST_CANONICAL_P3_2_CALCULATE_TARGET_ON_FROZEN_PARITY_DATES"
+  ],
+  "result_execution": {
+    "variant_count": 1,
+    "baseline": "BRRK_P3_2_PRICE_REGIME_STATE_V1",
+    "augmented_difference": "APPEND_EXACTLY_STABLECOIN_LIQUIDITY_STATE_V1_TWO_COLUMNS",
+    "ridge_alpha": 1.0,
+    "hac_max_lag": 19,
+    "minimum_pass_oos": 730,
+    "result_release": "PRIMARY_FIELDS_ONLY"
+  },
+  "durable_outputs": {
+    "price_capture_artifact_prefix": "stablecoin-stage1-binance-input-",
+    "primary_result_artifact_prefix": "stablecoin-stage1-primary-result-",
+    "primary_result_must_be_uploaded_before_job_summary": true,
+    "predictions_or_coefficients_artifact_forbidden_in_first_release": true
+  },
+  "failure_policy": {
+    "marker_is_never_deleted": true,
+    "automatic_retry_forbidden": true,
+    "same_research_id_rerun_forbidden": true,
+    "pre_result_gate_failure_state": "INVALIDATED_STOPPED_NO_RERUN_UNDER_THIS_RESEARCH_ID",
+    "result_bearing_failure_state": "INVALIDATED_STOPPED_NO_RERUN_UNDER_THIS_RESEARCH_ID"
+  },
+  "explicit_non_actions": [
+    "NO_STAGE1_RESULT_IN_PULL_REQUEST_CI",
+    "NO_PARAMETER_TUNING",
+    "NO_LAG_RESCUE",
+    "NO_HORIZON_RESCUE",
+    "NO_FEATURE_REPRESENTATION_RESCUE",
+    "NO_EDGE_REGISTRY_ADMISSION_BY_EXECUTOR",
+    "NO_PORTFOLIO_INTEGRATION_BY_EXECUTOR",
+    "NO_BRRK_CHANGE",
+    "NO_PHASE6_7_8_AUTHORITY_CHANGE",
+    "NO_PRODUCTION_AUTHORIZATION"
+  ]
+}

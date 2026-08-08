@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "research_id": "STABLECOIN-LIQUIDITY-0001",
+  "run_interface_id": "STABLECOIN-LIQUIDITY-0001-RUN-INTERFACE-V1",
+  "stage1_execution_id": "STABLECOIN-LIQUIDITY-0001-STAGE1-RUN-V1",
+  "required_execution_token": "[STABLECOIN_STAGE1_EXECUTE_V1]",
+  "state": "CLAIMED_BEFORE_RESULT_BEARING_EXECUTION",
+  "claim_semantics": "CREATE_ONLY_AND_NEVER_DELETE_TO_RERUN_THIS_RESEARCH_ID",
+  "production_authorized": false
+}
