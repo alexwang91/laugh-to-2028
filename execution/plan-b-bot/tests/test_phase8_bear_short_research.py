@@ -3,6 +3,8 @@ from __future__ import annotations
 import ast
 from pathlib import Path
 
+import pytest
+
 from beta_bot.bear_short_research import (
     ShortCandidateEvidence,
     ShortEconomics,
@@ -37,8 +39,8 @@ def test_comparison_is_descriptive_and_never_launch_authority() -> None:
     result=compare_candidate_to_benchmarks(c, short_btc_after_cost_return=0.14, short_brrk_after_cost_return=0.16)
     assert result['beats_both_benchmarks'] is True
     assert result['research_only'] is True
-    assert result['edge_vs_short_btc']==0.08
-    assert result['edge_vs_short_brrk']==0.06
+    assert result['edge_vs_short_btc'] == pytest.approx(0.08)
+    assert result['edge_vs_short_brrk'] == pytest.approx(0.06)
 
 
 def test_research_module_has_no_execution_path() -> None:
