@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "contract_id": "DUAL-LAYER-FUSION-ARCH-SANITY-V1",
+  "status": "FROZEN_BEFORE_DIAGNOSTIC_ECONOMICS",
+  "purpose": "Non-promotable architecture sanity check only: verify that a separately computed external structural state can mechanically constrain canonical BRRK gross exposure without modifying BRRK ranking, target mathematics, P3.3 policy, execution, or production authority.",
+  "classification": "NON_PROMOTABLE_ARCHITECTURE_DIAGNOSTIC",
+  "canonical_internal_engine": {
+    "model_authority": "BRRK-0011",
+    "target_engine_version": "P3.2-BRRK0011-V1",
+    "target_assets": ["BTC", "ETH", "SOL", "BNB"],
+    "feature_only_assets": ["XRP"],
+    "gross_cap": 1.0,
+    "long_only": true,
+    "immutable_for_this_diagnostic": true
+  },
+  "external_development_input": {
+    "dataset_slice_id": "STABLECOIN-LIQUIDITY-0001-DEFILLAMA-HIST-V1",
+    "contamination_state": "RESEARCHER_EXPOSED_HISTORY",
+    "role": "DEVELOPMENT_SANITY_INPUT_ONLY_NOT_VALIDATION",
+    "source_research_result": "STABLECOIN-LIQUIDITY-0001_FAIL_NO_INCREMENTAL_INFORMATION_TERMINAL_STOP",
+    "explicit_non_claim": "Reusing this exposed dataset cannot establish a promotable external edge or robustness claim."
+  },
+  "external_state_v1": {
+    "features": ["stablecoin_growth_20d", "stablecoin_growth_acceleration_20d"],
+    "point_in_time_dates": ["D-2", "D-22", "D-42"],
+    "state_rule": {
+      "SUPPORTIVE": "growth_20d > 0 AND growth_acceleration_20d > 0",
+      "RESTRICTIVE": "growth_20d < 0 AND growth_acceleration_20d < 0",
+      "NEUTRAL": "otherwise"
+    }
+  },
+  "fusion_v1": {
+    "type": "GROSS_CAP_ONLY",
+    "formula": "fused_target = canonical_brrk_target * min(1, external_gross_cap / canonical_brrk_gross) when canonical_brrk_gross > external_gross_cap; otherwise fused_target = canonical_brrk_target",
+    "state_gross_caps": {
+      "SUPPORTIVE": 1.0,
+      "NEUTRAL": 0.8,
+      "RESTRICTIVE": 0.6
+    },
+    "variant_budget": 1,
+    "relative_asset_weights_must_remain_identical": true,
+    "external_layer_may_increase_internal_gross": false,
+    "new_assets_allowed": false,
+    "shorts_allowed": false,
+    "gross_above_one_allowed": false,
+    "brkk_parameter_retuning_allowed": false,
+    "p3_3_parameter_retuning_allowed": false
+  },
+  "diagnostic_comparison": {
+    "baseline": "canonical BRRK internal-only economic path",
+    "candidate": "same canonical BRRK path after external gross-cap overlay",
+    "same_dates_required": true,
+    "same_asset_returns_required": true,
+    "same_transaction_cost_bps_required": true,
+    "transaction_cost_bps": 5.0,
+    "metrics": ["CAGR", "MAX_DRAWDOWN", "SHARPE", "CALMAR", "TURNOVER", "AVERAGE_GROSS"],
+    "selection_or_promotion_rule": "NONE"
+  },
+  "forbidden": [
+    "modify execution/plan-b-bot/beta_bot/target_math.py",
+    "modify canonical P3.2 target mathematics",
+    "modify canonical P3.3 rebalance band or safety semantics",
+    "retune state thresholds or gross caps after observing diagnostic economics",
+    "interpret a positive CAGR or risk result as validation or Edge Registry admission",
+    "rescue or rerun STABLECOIN-LIQUIDITY-0001",
+    "create production, signature, order-submission, leverage, short, Phase-7 or Phase-8 authority"
+  ],
+  "production_authorized": false,
+  "signature_authorized": false,
+  "order_submission_authorized": false
+}
