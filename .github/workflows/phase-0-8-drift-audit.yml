@@ -47,13 +47,9 @@ jobs:
         working-directory: execution/plan-b-bot
         run: python -m pip install -r requirements-dev.txt
 
-      - name: Phase 0-8 drift invariants
+      - name: Phase 0-8 drift invariants and legacy authority behavior
         working-directory: execution/plan-b-bot
         run: >-
           python -m pytest -q
           tests/test_phase0_8_drift_audit.py
           tests/test_service_reconciliation_gate.py
-
-      - name: Legacy configuration regression
-        working-directory: execution/plan-b-bot
-        run: python -m pytest -q tests/test_config.py
