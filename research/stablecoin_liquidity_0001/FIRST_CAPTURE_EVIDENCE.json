@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "evidence_id": "STABLECOIN-LIQUIDITY-0001-FIRST-CAPTURE-EVIDENCE-V1",
+  "research_id": "STABLECOIN-LIQUIDITY-0001",
+  "evidence_type": "DATASET_PROVENANCE_AND_EXPOSURE_ONLY",
+  "research_result_status": "NO_RESEARCH_RESULT_CAPTURE_METADATA_ONLY",
+  "production_authorized": false,
+  "execution": {
+    "merge_commit": "824f58151bcef2203c320e4b94b8070dcac77dae",
+    "workflow_run_id": 31261566204,
+    "execution_id": "STABLECOIN-LIQUIDITY-0001-FIRST-CAPTURE-EXECUTION-V1",
+    "capture_gate_id": "STABLECOIN-LIQUIDITY-0001-FIRST-CAPTURE-GATE-V1",
+    "retrieved_at": "2026-08-08T14:17:19.736297Z",
+    "durability_archived_at": "2026-08-08T14:17:21.020372Z"
+  },
+  "source": {
+    "source_id": "DEFILLAMA-STABLECOIN-ALL-CHARTS-V1",
+    "dataset_id": "DEFILLAMA-STABLECOIN-ALL-CHARTS",
+    "parser_version": "STABLECOIN-DATA-PARSER-V1"
+  },
+  "raw_identity": {
+    "sha256": "7cffe6fb3a21e891082c06c60e91491edfbc78e9c01e2d549805815a646d9ffd",
+    "size_bytes": 1223275,
+    "row_count": 3175,
+    "manifest_sha256": "ca6f68bab0f19957444dd2eb38bc4f171910851cf258d303725f1d31dff56d8d"
+  },
+  "frozen_historical_coverage": {
+    "start": "2017-11-29T00:00:00Z",
+    "end": "2026-08-08T00:00:00Z",
+    "cutoff": "2026-08-08T00:00:00Z",
+    "row_count": 3175,
+    "classification": "RECONSTRUCTED_HISTORY_RESEARCHER_EXPOSED_HISTORY"
+  },
+  "durable_primary_archive": {
+    "backend": "GITHUB_ACTIONS_ARTIFACT_V4",
+    "raw_artifact_id": 9022927539,
+    "raw_artifact_digest": "sha256:a025eb019b3d14c8c36d1c1f7808d809e6de6cf542f207034d046aa8ef6cce91",
+    "raw_artifact_expires_at": "2026-11-06T14:17:09Z",
+    "metadata_artifact_id": 9022927785,
+    "metadata_artifact_digest": "sha256:bb807e1d95ef8263fae4fc349dc33208c5ce6597f1d4705f514c3edaa0730e17",
+    "metadata_artifact_expires_at": "2026-11-06T14:17:09Z"
+  },
+  "secondary_mirror": {
+    "backend": "CHATGPT_LIBRARY",
+    "status": "COMPLETED_OUT_OF_REPOSITORY",
+    "hash_identity_preserved": true,
+    "canonical_provenance_remains": "GITHUB_ACTIONS_ARTIFACT_V4_PLUS_RAW_AND_MANIFEST_SHA256"
+  },
+  "dataset_handoff": {
+    "dataset_slice_id": "STABLECOIN-LIQUIDITY-0001-DEFILLAMA-HIST-V1",
+    "exposure_id": "STABLECOIN-LIQUIDITY-0001-RAW-DATA-20260808T141719Z",
+    "data_budget": "VALIDATION",
+    "contamination_state": "RESEARCHER_EXPOSED_HISTORY",
+    "release_type": "RAW_DATA"
+  },
+  "explicit_non_claims": [
+    "NO_FEATURE_SERIES_RELEASED",
+    "NO_LABEL_SERIES_RELEASED",
+    "NO_MODEL_FIT",
+    "NO_OOS_PREDICTION",
+    "NO_STAGE1_RESULT",
+    "NO_EDGE_ADMISSION",
+    "NO_PORTFOLIO_INTEGRATION",
+    "NO_BRRK_CHANGE",
+    "NO_PRODUCTION_AUTHORIZATION"
+  ]
+}

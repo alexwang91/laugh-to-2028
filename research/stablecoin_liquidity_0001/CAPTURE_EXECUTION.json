@@ -3,36 +3,53 @@
   "execution_id": "STABLECOIN-LIQUIDITY-0001-FIRST-CAPTURE-EXECUTION-V1",
   "research_id": "STABLECOIN-LIQUIDITY-0001",
   "capture_gate_id": "STABLECOIN-LIQUIDITY-0001-FIRST-CAPTURE-GATE-V1",
-  "status": "ARMED_NOT_EXECUTED",
+  "status": "EXECUTED_ONCE_METADATA_ONLY",
   "production_authorized": false,
   "trigger": {
     "event": "push",
     "branch": "main",
     "required_head_commit_token": "[STABLECOIN_FIRST_CAPTURE_EXECUTE_V1]",
-    "pull_request_execution_forbidden": true
+    "executed_head_sha": "824f58151bcef2203c320e4b94b8070dcac77dae",
+    "pull_request_execution_forbidden": true,
+    "future_execution_forbidden": true
   },
   "capture": {
     "source_id": "DEFILLAMA-STABLECOIN-ALL-CHARTS-V1",
     "network_retry_policy": "NO_AUTOMATIC_RETRY",
     "staging_backend": "GITHUB_HOSTED_RUNNER_TEMP_OUTSIDE_REPOSITORY",
-    "parse_before_durable_archive": false
+    "parse_before_durable_archive": false,
+    "retrieved_at": "2026-08-08T14:17:19.736297Z",
+    "raw_sha256": "7cffe6fb3a21e891082c06c60e91491edfbc78e9c01e2d549805815a646d9ffd",
+    "manifest_sha256": "ca6f68bab0f19957444dd2eb38bc4f171910851cf258d303725f1d31dff56d8d"
   },
   "durable_archive": {
     "backend": "GITHUB_ACTIONS_ARTIFACT_V4",
-    "raw_artifact_name_template": "stablecoin-first-capture-raw-${GITHUB_SHA}",
-    "metadata_artifact_name_template": "stablecoin-first-capture-metadata-${GITHUB_SHA}",
+    "workflow_run_id": 31261566204,
+    "raw_artifact_id": 9022927539,
+    "metadata_artifact_id": 9022927785,
     "overwrite": false,
     "raw_and_manifest_uploaded_before_parse": true,
     "artifact_id_and_url_bound_into_receipt": true,
     "retention_days": 90,
-    "post_run_mirror_target": "CHATGPT_LIBRARY_IF_AVAILABLE"
+    "post_run_mirror_target": "CHATGPT_LIBRARY",
+    "post_run_mirror_status": "COMPLETED_OUT_OF_REPOSITORY"
+  },
+  "coverage_metadata": {
+    "raw_row_count": 3175,
+    "historical_row_count": 3175,
+    "historical_start": "2017-11-29T00:00:00Z",
+    "historical_end": "2026-08-08T00:00:00Z",
+    "historical_cutoff": "2026-08-08T00:00:00Z",
+    "historical_classification": "RECONSTRUCTED_HISTORY_RESEARCHER_EXPOSED_HISTORY"
   },
   "rerun_guard": {
     "same_run_existing_raw_artifact_blocks_fetch": true,
     "automatic_rerun": false,
-    "failed_capture_requires_manual_reconciliation": true
+    "failed_capture_requires_manual_reconciliation": true,
+    "executor_locked_to_executed_head_sha": true
   },
   "allowed_release": "CAPTURE_PROVENANCE_AND_COVERAGE_METADATA_ONLY",
+  "research_result_status": "NO_RESEARCH_RESULT_CAPTURE_METADATA_ONLY",
   "forbidden_release": [
     "SOURCE_VALUE_SERIES",
     "FEATURE_VALUE_SERIES",
@@ -44,8 +61,7 @@
     "EQUITY_CURVE"
   ],
   "explicit_non_actions": [
-    "NO_CAPTURE_DURING_PULL_REQUEST_CI",
-    "NO_DATASET_REGISTRY_MUTATION_BY_EXECUTION_JOB",
+    "NO_SECOND_FIRST_CAPTURE",
     "NO_FEATURE_COMPUTATION",
     "NO_MODEL_FIT",
     "NO_STAGE1_RUN",
@@ -53,5 +69,6 @@
     "NO_BRRK_CHANGE",
     "NO_PHASE6_7_8_AUTHORITY_CHANGE",
     "NO_PRODUCTION_AUTHORIZATION"
-  ]
+  ],
+  "evidence_ref": "research/stablecoin_liquidity_0001/FIRST_CAPTURE_EVIDENCE.json"
 }
