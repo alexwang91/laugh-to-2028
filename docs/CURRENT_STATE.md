@@ -20,7 +20,8 @@ Phase 7 program state             MONITOR_ONLY
 Phase 8 bear-short research       PREREGISTERED_TRIGGER_ABSENT_NOT_RUN / MERGED #111
 Phase 0-8 drift audit             COMPLETE / PASS_FINAL_HEAD_VERIFIED / DRIFT_2 REMEDIATED
 Program epistemic governance v1   PG0-PG6 COMPLETE / CI-ENFORCED / NO-DRIFT CLOSEOUT
-Future research gate repair       PR #121 / GOVERNANCE ONLY / DRIFT_0
+Future research gate repair       MERGED #121 / GOVERNANCE ONLY / DRIFT_0
+Future prereg validator repair    PR #122 / GOVERNANCE ONLY / DRIFT_0
 production authorization          NONE
 first real short authorization    NONE
 ```
@@ -132,6 +133,8 @@ Future formal result-bearing research must be prospectively covered by exactly o
 
 PR #121 repairs the cross-gate conflict between future-research registration and the final no-drift regression without broadening the legacy allowlist. A post-boundary formal `research/**` path is eligible only when exactly one valid `PROGRAM_GOVERNED_V1` record owns it, its governed prefix did not exist at the legacy boundary, and the registration already existed at the path's first introduction commit. Rename/copy laundering of legacy research and post-hoc registration remain blocking. This repair changes governance enforcement only and creates no research, strategy, evidence or production authority.
 
+PR #122 repairs a second preregistration-only validator contradiction. Required future fields must be present, while pre-result accounting arrays such as secondary metrics, dataset refs, lineage and evidence refs may truthfully remain empty. `PREREGISTERED_NOT_RUN` explicitly blocks result evidence, evaluated variants and promotion. This prevents fake placeholder provenance while keeping result-bearing states fail-closed. The repair changes governance validation only and does not itself preregister or run research.
+
 The deterministic audit may report `WARNING` for real legacy governance debt; that is intentional and must not be converted into a false clean `PASS` by inventing history.
 
 Final report: `docs/PROGRAM_LEVEL_EPISTEMIC_GOVERNANCE_V1_FINAL_REPORT_2026-08-08.md`.
@@ -158,7 +161,8 @@ RESUME REAL PHASE-6 ZERO-AUTHORITY ELAPSED OBSERVATION UNDER GOVERNANCE V1 PROVE
 ACCUMULATE GENUINELY FUTURE EVIDENCE ONLY; DO NOT REBUILD OR BACKFILL ELAPSED TIME
 KEEP signature_authorized = false AND order_submission_authorized = false
 REQUIRE AT LEAST 14 ELAPSED CALENDAR DAYS AND 10 SCHEDULED DECISIONS PLUS FROZEN QUALITY CRITERIA
-AFTER THE FUTURE-RESEARCH GATE REPAIR IS MERGED, PREREGISTER STABLECOIN-LIQUIDITY-0001 UNDER PROGRAM_GOVERNED_V1 BEFORE CREATING ITS FORMAL RESEARCH PATH
+AFTER PR #122 IS MERGED, PREREGISTER STABLECOIN-LIQUIDITY-0001 UNDER PROGRAM_GOVERNED_V1 BEFORE CREATING ITS FORMAL RESEARCH PATH
+KEEP DATASET REFS EMPTY UNTIL EXACT SOURCE COVERAGE / FIELDS / PIT PUBLICATION SEMANTICS CAN BE FROZEN TRUTHFULLY; DO NOT INVENT PLACEHOLDER SLICES
 DO NOT DOWNLOAD FULL STABLECOIN/HOLDER-COST HISTORY, RUN A BACKTEST, FIT A MODEL OR GENERATE A RESEARCH RESULT BEFORE THE RELEVANT PREREGISTRATION/DATA CONTRACT IS FROZEN
 KEEP ONCHAIN-HOLDER-COST-0001 AS BACKLOG UNTIL THE STABLECOIN INFORMATION TEST REACHES ITS FROZEN STOPPING POINT
 DO NOT START SUPERTrend / FUNDING-OI / RELATIVE-STRENGTH / NEW-ALLOCATION RESEARCH AS PART OF PHASE-6 OBSERVATION
