@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "experiment_id": "BEAR-SHORT-0001",
+  "phase_id": "PHASE-8",
+  "status": "PREREGISTERED_TRIGGER_ABSENT_NOT_RUN",
+  "registered_at_utc": "2026-08-08T06:50:00Z",
+  "required_trigger": "CONFIRMED_BEAR_TRANSITION_ARTIFACT",
+  "trigger_present": false,
+  "core_candidate_universe": ["BTC", "ETH", "SOL", "BNB"],
+  "top20_expansion": {
+    "allowed": true,
+    "require_contemporaneous_membership": true,
+    "minimum_perp_history_days": 90,
+    "required_filters": [
+      "sufficient_live_liquidity",
+      "reliable_perp_market",
+      "acceptable_spread_depth",
+      "non_pathological_funding",
+      "no_market_structure_issue"
+    ]
+  },
+  "research_question": "Do weakest/high-beta/crowded contemporaneous Top20 entrants provide superior after-cost short economics versus short BTC or the BRRK basket?",
+  "benchmarks": ["SHORT_BTC", "SHORT_EQUAL_WEIGHT_BRRK"],
+  "cost_requirements": ["execution_cost", "funding", "spread_depth_capacity"],
+  "required_robustness": ["multiple_start_dates", "held_out_bear_segments", "cost_sensitivity", "funding_stress", "liquidity_stress"],
+  "selection_status": "NONE_TRIGGER_ABSENT",
+  "short_ready": false,
+  "production_authorized": false,
+  "first_real_short_authorized": false,
+  "run_authority": "NOT_AUTHORIZED_UNTIL_CONFIRMED_BEAR_TRANSITION_AND_SEPARATE_RUN_DECISION",
+  "forbidden": [
+    "use_current_subjective_market_view_as_trigger",
+    "open_real_short",
+    "treat_research_rank_as_production_authorization",
+    "relax_safety_filters_after_results",
+    "use_survivorship-biased_current_top20_for_historical_membership"
+  ]
+}

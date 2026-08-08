@@ -15,51 +15,40 @@ P5.5 validation                COMPLETE / IMMUTABLE / NO_PROMOTION / FAIL_STOP
 P5.6 cycle integration         BLOCKED / NO ELIGIBLE P5.5 CANDIDATE
 Phase 6 implementation/replay  PASS_SHADOW_ONLY_IMPLEMENTATION_REPLAY / MERGED #109
 Phase 6 live elapsed evidence  MEASUREMENT_INCONCLUSIVE_TIME_DEPENDENT
-Phase 7 readiness implementation IN PROGRESS / branch phase-7/limited-live-readiness-gates
-Phase 7 program state          MONITOR_ONLY / LAUNCH BLOCKED
-Phase 8 bear-short research    NEXT AFTER P7 READINESS IMPLEMENTATION
+Phase 7 readiness gate         IMPLEMENTED / CI VALIDATION IN PR #110 / LAUNCH BLOCKED
+Phase 7 program state          MONITOR_ONLY
+Phase 8 bear-short research    BEAR-SHORT-0001 PREREGISTERED / TRIGGER ABSENT / NOT RUN
 production authorization       NONE
+first real short authorization NONE
 ```
 
-## Phase 5 disposition
+## Phase 5
 
-P5.5 immutable result commit: `ae20890d87567c98e403e3558219d5de55daef67`.
-Summary SHA256: `ccbdc067f9f7f1277e6eecaa2f74f31f84e3a1882ccef418e097b2ea66bf6e71`.
-No candidate passed every frozen gate; P5.6 remains blocked. No cycle-risk overlay is authorized.
+P5.5 immutable result commit `ae20890d87567c98e403e3558219d5de55daef67`; summary SHA256 `ccbdc067f9f7f1277e6eecaa2f74f31f84e3a1882ccef418e097b2ea66bf6e71`. No eligible cycle overlay; P5.6 remains blocked.
 
-## Phase 6 disposition
+## Phase 6
 
-Merged PR #109 at merge commit `1763d3c6f2c2d68f77f9e68b3cf9e252e4b799d4`.
-Implementation/replay evidence passed canonical P3.2 independent parity, committed golden vectors, deterministic shadow tests, fail-closed checks, zero-authority contract and no-signer/no-submit static boundary.
+Merged PR #109 at `1763d3c6f2c2d68f77f9e68b3cf9e252e4b799d4`. Canonical P3.2 parity/golden vectors and zero-authority shadow implementation/replay passed. Actual elapsed shadow evidence remains time-dependent and inconclusive until the frozen real-time requirements are observed.
+
+## Phase 7
+
+Readiness gate is implementation-only. Current launch blockers include Phase 6 elapsed evidence not passed and no explicit owner approval. Launch checklist remains fail-closed; program remains `MONITOR_ONLY`. Explicit approval remains required for MONITOR_ONLY->ACTIVE, FLAT->LONG, FLAT->SHORT, and first short exposure of a new bear phase.
+
+## Phase 8
+
+`BEAR-SHORT-0001` freezes the candidate universe, Top20 historical-membership requirement, execution/funding/market-structure safety filters, BTC/BRRK short benchmarks and robustness requirements.
+
+There is no canonical confirmed-bear transition artifact in the repository. Therefore:
 
 ```text
-Phase 6 implementation/replay = PASS_SHADOW_ONLY_IMPLEMENTATION_REPLAY
-Phase 6 live elapsed evidence = MEASUREMENT_INCONCLUSIVE_TIME_DEPENDENT
+BEAR-SHORT-0001 status     PREREGISTERED_TRIGGER_ABSENT_NOT_RUN
+selection_status           NONE_TRIGGER_ABSENT
+short_ready                false
+production_authorized      false
+first_real_short_authorized false
 ```
 
-Real elapsed acceptance still requires >=14 calendar days, >=10 scheduled decisions, >=1 emergency drill and zero critical reconciliation/target-drift/schedule failures. CI/replay does not backfill that clock.
-
-## Phase 7 readiness boundary
-
-The Phase 7 implementation branch adds a pure pre-launch authorization gate only. Current launch is intentionally blocked by at least:
-
-```text
-PHASE6_LIVE_ELAPSED_EVIDENCE_NOT_PASSED
-EXPLICIT_OWNER_APPROVAL_NOT_PRESENT
-```
-
-Required evidence also includes a frozen release, Trading Agent credential only, master wallet private key absent, withdrawal/transfer automation absent, gross cap exactly 1.0, kill switch tested, startup reconciliation passed and monitoring active.
-
-Explicit human approval remains required for:
-
-```text
-MONITOR_ONLY -> ACTIVE
-FLAT -> LONG
-FLAT -> SHORT
-first short exposure of a new bear phase
-```
-
-No approval record is created by Phase 7 readiness implementation.
+No subjective current-market judgment is substituted for the missing trigger.
 
 ## Frozen product boundaries
 
@@ -68,16 +57,16 @@ No approval record is created by Phase 7 readiness implementation.
 - No >1 production leverage.
 - No P5 cycle overlay.
 - No automated withdrawal/transfer.
-- No real-money launch authorization.
-- No first bear short authorization.
+- No live launch authorization.
+- No real short authorization.
 
 ## Exact next action
 
 ```text
-COMPLETE PHASE 7 READINESS GATE CI/GOVERNANCE AND MERGE
-KEEP PROGRAM MONITOR_ONLY / LAUNCH BLOCKED
-THEN COMPLETE PHASE 8 BEAR-SHORT RESEARCH PREREG/TOOLING/EVIDENCE WITHOUT REAL SHORT
-THEN RUN PHASE 0-8 FULL PROJECT DRIFT AUDIT
-FIX MATERIAL DRIFT, RERUN CI, MERGE AUDIT REMEDIATIONS
+MERGE P7 READINESS GATE AFTER FINAL-HEAD GREEN
+VALIDATE/MERGE P8 RESEARCH PACKAGE WITHOUT RUNNING TRIGGER-DEPENDENT SHORT ECONOMICS
+THEN EXECUTE PHASE 0-8 FULL PROJECT DRIFT AUDIT
+REMEDIATE MATERIAL DRIFT INCLUDING LEGACY EXECUTION BYPASS/CAP SEMANTICS
+RERUN ALL APPLICABLE CI AND MERGE REMEDIATIONS
 DO NOT PRODUCTION-AUTHORIZE ANYTHING
 ```

@@ -1,0 +1,48 @@
+name: Phase 8 bear-short research contract
+
+on:
+  pull_request:
+    paths:
+      - 'execution/plan-b-bot/beta_bot/bear_short_research.py'
+      - 'execution/plan-b-bot/tests/test_phase8_bear_short_research.py'
+      - 'research/bear_short_0001/BEAR-SHORT-0001.json'
+      - 'docs/PHASE8_BEAR_SHORT_RESEARCH_2026-08-08.md'
+      - 'docs/CURRENT_STATE.md'
+      - '.github/workflows/phase8-bear-short-research.yml'
+  push:
+    branches: ['phase-8/**']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  research-contract:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: execution/plan-b-bot/requirements-dev.txt
+      - run: pip install -r execution/plan-b-bot/requirements-dev.txt
+      - name: Compile and test Phase 8 research primitives
+        working-directory: execution/plan-b-bot
+        run: |
+          python -m py_compile beta_bot/bear_short_research.py tests/test_phase8_bear_short_research.py
+          pytest -q tests/test_phase8_bear_short_research.py
+      - name: Enforce trigger absence and no short authority
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          c=json.loads(Path('research/bear_short_0001/BEAR-SHORT-0001.json').read_text())
+          assert c['status']=='PREREGISTERED_TRIGGER_ABSENT_NOT_RUN'
+          assert c['trigger_present'] is False
+          assert c['selection_status']=='NONE_TRIGGER_ABSENT'
+          assert c['short_ready'] is False
+          assert c['production_authorized'] is False
+          assert c['first_real_short_authorized'] is False
+          PY
