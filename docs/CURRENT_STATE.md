@@ -1,72 +1,123 @@
 # BRRK Current State
 
-Last updated: 2026-08-08
+Last updated: 2026-08-08  
 Status: **authoritative current-state handoff**
 
 ## Executive state
 
 ```text
-Phase 0-3                      COMPLETE / MERGED
-Phase 4 leverage research      FAIL_STOP / no eligible >1 candidate
-production gross cap           1.0
-production_authorized_components []
-P5.1-P5.4                      COMPLETE / frozen evidence and implementation
-P5.5 validation                COMPLETE / IMMUTABLE / NO_PROMOTION / FAIL_STOP
-P5.6 cycle integration         BLOCKED / NO ELIGIBLE P5.5 CANDIDATE
-Phase 6 implementation/replay  PASS_SHADOW_ONLY_IMPLEMENTATION_REPLAY / MERGED #109
-Phase 6 live elapsed evidence  MEASUREMENT_INCONCLUSIVE_TIME_DEPENDENT
-Phase 7 readiness gate         IMPLEMENTED / CI VALIDATION IN PR #110 / LAUNCH BLOCKED
-Phase 7 program state          MONITOR_ONLY
-Phase 8 bear-short research    BEAR-SHORT-0001 PREREGISTERED / TRIGGER ABSENT / NOT RUN
-production authorization       NONE
-first real short authorization NONE
+Phase 0-3                         COMPLETE / MERGED
+Phase 4 leverage research         FAIL_STOP / no eligible >1 candidate
+production gross cap              1.0
+production_authorized_components = []
+P5.1-P5.4                         COMPLETE / frozen
+P5.5 validation                   COMPLETE / IMMUTABLE / NO_PROMOTION / FAIL_STOP
+P5.6 cycle integration            BLOCKED / NO ELIGIBLE P5.5 CANDIDATE
+Phase 6 implementation/replay     PASS_SHADOW_ONLY_IMPLEMENTATION_REPLAY / MERGED #109
+Phase 6 live elapsed evidence     MEASUREMENT_INCONCLUSIVE_TIME_DEPENDENT
+Phase 7 readiness gate            IMPLEMENTED / MERGED #110 / LAUNCH BLOCKED
+Phase 7 program state             MONITOR_ONLY
+Phase 8 bear-short research       PREREGISTERED_TRIGGER_ABSENT_NOT_RUN / MERGED #111
+Phase 0-8 drift audit             COMPLETE / PASS_FINAL_HEAD_VERIFIED / DRIFT_2 REMEDIATED
+production authorization          NONE
+first real short authorization    NONE
+```
+
+## Phase 4
+
+`LEVERAGE-0040` and `LEVERAGE-0041` remain immutable `NO_PROMOTION`. No research cap, operating drawdown budget or prospective production leverage cap was selected. Current production gross remains `1.0` and P4.6 remains blocked.
+
+`LEVERAGE-0040` summary SHA256 remains:
+
+```text
+3bb4dc46c61a5e9c7e049862575a89b2771830410ce4bc2bb25c83e469f52fc0
 ```
 
 ## Phase 5
 
-P5.5 immutable result commit `ae20890d87567c98e403e3558219d5de55daef67`; summary SHA256 `ccbdc067f9f7f1277e6eecaa2f74f31f84e3a1882ccef418e097b2ea66bf6e71`. No eligible cycle overlay; P5.6 remains blocked.
+P5.5 immutable result commit `ae20890d87567c98e403e3558219d5de55daef67`; summary SHA256 `ccbdc067f9f7f1277e6eecaa2f74f31f84e3a1882ccef418e097b2ea66bf6e71`.
+
+No profile/map combination passes the frozen validation stack. P5.6 remains `BLOCKED / NO ELIGIBLE CANDIDATE`; no cycle-risk multiplier is carried into Phase 6/7.
 
 ## Phase 6
 
-Merged PR #109 at `1763d3c6f2c2d68f77f9e68b3cf9e252e4b799d4`. Canonical P3.2 parity/golden vectors and zero-authority shadow implementation/replay passed. Actual elapsed shadow evidence remains time-dependent and inconclusive until the frozen real-time requirements are observed.
+Merged PR #109 at `1763d3c6f2c2d68f77f9e68b3cf9e252e4b799d4`.
+
+Machine contract: `config/phase6_shadow_contract.json`.
+
+Canonical P3.2 parity/golden vectors and zero-authority shadow implementation/replay passed. The shadow path can read account/market/order-book state and compute hypothetical routing, but it cannot sign or submit orders.
+
+Actual elapsed evidence remains time-dependent. The frozen contract requires at least 14 elapsed calendar days, at least 10 scheduled decisions and the required live-shadow quality criteria before the live-observation state can change from:
+
+```text
+MEASUREMENT_INCONCLUSIVE_TIME_DEPENDENT
+```
+
+No CI replay or historical replay may backfill that elapsed-time evidence.
 
 ## Phase 7
 
-Readiness gate is implementation-only. Current launch blockers include Phase 6 elapsed evidence not passed and no explicit owner approval. Launch checklist remains fail-closed; program remains `MONITOR_ONLY`. Explicit approval remains required for MONITOR_ONLY->ACTIVE, FLAT->LONG, FLAT->SHORT, and first short exposure of a new bear phase.
+Readiness gate merged in PR #110. Machine contract: `config/phase7_launch_readiness.json`.
+
+Current state is `MONITOR_ONLY`; production authorization is false. Launch is blocked at minimum by missing Phase 6 elapsed evidence and missing explicit owner approval. The gate also requires production-release, credential, monitoring, reconciliation and kill-switch evidence.
+
+Human approval remains mandatory for:
+
+```text
+MONITOR_ONLY -> ACTIVE
+FLAT -> LONG
+FLAT -> SHORT
+first short exposure of a new bear phase
+```
 
 ## Phase 8
 
-`BEAR-SHORT-0001` freezes the candidate universe, Top20 historical-membership requirement, execution/funding/market-structure safety filters, BTC/BRRK short benchmarks and robustness requirements.
+`BEAR-SHORT-0001` research package merged in PR #111. Machine contract: `research/bear_short_0001/BEAR-SHORT-0001.json`.
 
-There is no canonical confirmed-bear transition artifact in the repository. Therefore:
+No canonical `CONFIRMED_BEAR_TRANSITION_ARTIFACT` exists, therefore:
 
 ```text
-BEAR-SHORT-0001 status     PREREGISTERED_TRIGGER_ABSENT_NOT_RUN
-selection_status           NONE_TRIGGER_ABSENT
-short_ready                false
-production_authorized      false
-first_real_short_authorized false
+status                       PREREGISTERED_TRIGGER_ABSENT_NOT_RUN
+selection_status             NONE_TRIGGER_ABSENT
+short_ready                  false
+production_authorized        false
+first_real_short_authorized  false
 ```
 
-No subjective current-market judgment is substituted for the missing trigger.
+No subjective market judgment substitutes for the missing trigger and no trigger-dependent short economics has been run.
+
+## Phase 0-8 drift audit
+
+Machine contract: `config/phase0_8_drift_audit.json`. Evidence report: `docs/PHASE_0_8_DRIFT_AUDIT_2026-08-08.md`.
+
+The audit is complete and remediated three drift classes without economic retuning:
+
+1. **Legacy execution authority bypass** — normal risk increases are fail-closed behind explicit production authority.
+2. **Legacy production-cap drift** — production-facing `NORMAL_BETA_CAP` default/ceiling is `1.0`.
+3. **Authoritative handoff drift** — README/CURRENT_STATE/NEXT_STEPS reflect completed Phase 6/7/8 work.
+
+Same-direction reductions and emergency flatten remain available. The audit status is `PASS_FINAL_HEAD_VERIFIED` and does not confer production authority.
 
 ## Frozen product boundaries
 
 - BRRK relative ranking unchanged.
 - Production gross cap remains 1.0.
+- `production_authorized_components = []`.
 - No >1 production leverage.
 - No P5 cycle overlay.
 - No automated withdrawal/transfer.
 - No live launch authorization.
 - No real short authorization.
+- Legacy credentials / `TRADING_MODE=trade` do not create production authority.
 
 ## Exact next action
 
 ```text
-MERGE P7 READINESS GATE AFTER FINAL-HEAD GREEN
-VALIDATE/MERGE P8 RESEARCH PACKAGE WITHOUT RUNNING TRIGGER-DEPENDENT SHORT ECONOMICS
-THEN EXECUTE PHASE 0-8 FULL PROJECT DRIFT AUDIT
-REMEDIATE MATERIAL DRIFT INCLUDING LEGACY EXECUTION BYPASS/CAP SEMANTICS
-RERUN ALL APPLICABLE CI AND MERGE REMEDIATIONS
-DO NOT PRODUCTION-AUTHORIZE ANYTHING
+VERIFY CANONICAL MAIN CONTAINS THE PHASE 0-8 AUDIT CLOSEOUT
+CONTINUE REAL PHASE-6 ZERO-AUTHORITY ELAPSED OBSERVATION
+DO NOT REBUILD OR BACKFILL PHASE-6 ELAPSED EVIDENCE
+WHEN PHASE-6 EVIDENCE ACTUALLY PASSES, REVIEW PHASE-7 CHECKLIST
+DO NOT ACTIVATE PHASE 7 WITHOUT THE COMPLETE CHECKLIST AND EXPLICIT OWNER APPROVAL
+DO NOT RUN BEAR-SHORT-0001 ECONOMICS WITHOUT THE FROZEN CONFIRMED-BEAR TRIGGER
+DO NOT PRODUCTION-AUTHORIZE ANYTHING THROUGH THE AUDIT CLOSEOUT
 ```

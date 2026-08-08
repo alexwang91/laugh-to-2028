@@ -62,6 +62,9 @@ class Settings:
 
     @property
     def can_trade(self) -> bool:
+        # This means credentials/execution plumbing are configured, not that new
+        # production risk has been authorized.  service.py applies the separate
+        # canonical production-authority boundary before risk-increasing orders.
         return self.trading_mode == "trade"
 
     @classmethod
@@ -78,7 +81,7 @@ class Settings:
             external_cash_usd=_env_float("EXTERNAL_CASH_USD", 0.0),
             rebalance_band=_env_float("REBALANCE_BAND", 0.05),
             min_trade_usd=_env_float("MIN_TRADE_USD", 100.0),
-            normal_beta_cap=_env_float("NORMAL_BETA_CAP", 1.30),
+            normal_beta_cap=_env_float("NORMAL_BETA_CAP", 1.0),
             max_platform_leverage=int(_env_float("MAX_PLATFORM_LEVERAGE", 2.0)),
             max_slippage_bps=_env_float("MAX_SLIPPAGE_BPS", 15.0),
             request_timeout_seconds=_env_float("REQUEST_TIMEOUT_SECONDS", 15.0),
@@ -111,9 +114,9 @@ class Settings:
             )
         if not 0.0 < self.rebalance_band <= 0.5:
             raise ValueError("REBALANCE_BAND must be in (0, 0.5]")
-        if not 0.0 < self.normal_beta_cap <= 1.30:
+        if not 0.0 < self.normal_beta_cap <= 1.0:
             raise ValueError(
-                "NORMAL_BETA_CAP must be in (0, 1.30]; higher leverage requires the registered P4 study"
+                "NORMAL_BETA_CAP must be in (0, 1.0]; production leverage above 1.0 is not authorized"
             )
         if self.max_platform_leverage > 2:
             raise ValueError("MAX_PLATFORM_LEVERAGE cannot exceed 2 in this version")

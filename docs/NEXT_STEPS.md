@@ -4,7 +4,7 @@ Last updated: 2026-08-08
 
 ## Current instruction
 
-**P5.5 completed with zero eligible candidates. Do not retune the failed cycle overlay or force P5.6. Merge the immutable closeout, record P5.6 as blocked, and continue Phase 6 using the currently authorized baseline architecture in strict zero-trading shadow mode.**
+**Phase 0–8 drift audit/remediation is complete. Do not start another strategy implementation phase. The next real dependency is Phase 6 zero-authority elapsed-shadow evidence. Production remains unauthorized.**
 
 ## Immediate state
 
@@ -12,73 +12,87 @@ Last updated: 2026-08-08
 Phase 0-3                              COMPLETE / MERGED
 Phase 4 leverage research              FAIL_STOP / no eligible >1 candidate
 production gross cap                   1.0
-production_authorized_components       []
-P5.1 event taxonomy                    COMPLETE / FROZEN
-P5.2 feature evidence                  COMPLETE / IMMUTABLE
-P5.3 V1                               IMMUTABLE / ARCHITECTURE_FAIL
-P5.3 V2                               IMMUTABLE EVIDENCE / ARCHITECTURE_PASS
-P5.4 fixed candidates + pure mapping   COMPLETE / NO SELECTION
+production_authorized_components = []
+P5.1-P5.4                              COMPLETE / FROZEN
 P5.5 joint validation                  COMPLETE / IMMUTABLE / NO_PROMOTION / FAIL_STOP
 P5.5 result commit                     ae20890d87567c98e403e3558219d5de55daef67
 P5.5 summary SHA256                    ccbdc067f9f7f1277e6eecaa2f74f31f84e3a1882ccef418e097b2ea66bf6e71
 P5.6 integration                       BLOCKED / NO ELIGIBLE CANDIDATE
-Phase 6 integrated shadow              NEXT / BASELINE ONLY
-Phase 7 limited-live readiness         NOT STARTED / explicit actual-launch approval required
-Phase 8 bear-short research            NOT STARTED
+Phase 6 implementation/replay          PASS_SHADOW_ONLY_IMPLEMENTATION_REPLAY / MERGED #109
+Phase 6 live elapsed evidence          MEASUREMENT_INCONCLUSIVE_TIME_DEPENDENT
+Phase 7 readiness gate                 IMPLEMENTED / MERGED #110 / LAUNCH BLOCKED
+Phase 7 mode                           MONITOR_ONLY
+Phase 8 BEAR-SHORT-0001                PREREGISTERED_TRIGGER_ABSENT_NOT_RUN / MERGED #111
+Phase 0-8 drift audit                  COMPLETE / PASS_FINAL_HEAD_VERIFIED / DRIFT_2 REMEDIATED
+production authorization               NONE
+first real short authorization         NONE
 ```
 
-## P5.5 interpretation
+## Audit closeout
 
-No profile/map combination passes the frozen event, economics, start-date, held-out and broad-policy gates.
+Machine contract: `config/phase0_8_drift_audit.json`. Evidence report: `docs/PHASE_0_8_DRIFT_AUDIT_2026-08-08.md`.
 
-The key structural trade-off is:
+Completed remediation:
 
-- `HARD_ONLY`: economic parity with baseline, but insufficient terminal de-risk behavior;
-- gradual maps: improve absolute drawdown but sacrifice too much CAGR/terminal wealth and fail robustness.
+- legacy BTC-only normal service cannot add directional risk merely because `TRADING_MODE=trade`;
+- same-direction risk reduction and emergency-flat capability remain available;
+- legacy production-facing `NORMAL_BETA_CAP` is capped at `1.0`;
+- authoritative handoff documentation reflects completed Phase 6/7/8 work;
+- cross-phase regression tests pin production policy, LEVERAGE-0040 digest and Phase 6/7/8 boundaries.
 
-Representative 5-bps `BALANCED/GENTLE`:
+The audit closeout does not authorize production trading.
+
+## Phase 6 evidence accumulation — current dependency
+
+Phase 6 implementation/replay is complete. Do **not** rebuild the shadow harness or manufacture historical substitutes for elapsed time.
+
+The remaining dependency is the frozen live observation requirement in `config/phase6_shadow_contract.json`:
 
 ```text
-CAGR     79.7629% -> 72.1452%  (-7.6177 pp)
-MaxDD    33.5292% -> 31.5212%  (+2.0080 pp improvement)
+minimum elapsed calendar days   14
+minimum scheduled decisions     10
+status before evidence exists   MEASUREMENT_INCONCLUSIVE_TIME_DEPENDENT
 ```
 
-This is not a near-threshold miss. Same-experiment post-result tuning is forbidden.
+Continue the zero-authority observation mechanism and record real evidence only. Phase 6 shadow may read real account/market/order-book state and calculate hypothetical actions, but cannot sign or submit orders.
 
-## P5.6 disposition
+## Phase 7 boundary
+
+The Phase 7 readiness gate is implemented, not activated. Current mode is `MONITOR_ONLY`.
+
+Do not transition to ACTIVE until the complete launch checklist is satisfied, including Phase 6 elapsed evidence and explicit owner approval. Human approval remains required for:
 
 ```text
-P5.6 = BLOCKED / NO ELIGIBLE P5.5 CANDIDATE
+MONITOR_ONLY -> ACTIVE
+FLAT -> LONG
+FLAT -> SHORT
+first short exposure of a new bear phase
 ```
 
-Do not integrate a cycle-risk multiplier into production/shadow baseline.
+Credentials, `TRADING_MODE=trade`, a durable ledger or a historical mainnet confirmation string are not substitutes for production authorization.
 
-## Phase 6 baseline shadow scope
+## Phase 8 boundary
 
-Phase 6 should exercise the existing execution spine end-to-end while keeping zero trading authority:
+`BEAR-SHORT-0001` is preregistered but trigger-absent. Do not run trigger-dependent economics until a repository-valid `CONFIRMED_BEAR_TRANSITION_ARTIFACT` exists under the frozen contract.
 
-- frozen BRRK/P4.1 target computation;
-- market/account read-only inputs;
-- hypothetical target/order generation;
-- route/cost/reconciliation/restart/emergency logic;
-- persistent audit logs and deterministic replay;
-- explicit no-signer / no-order-submit invariant;
-- no secret/withdrawal/external-transfer scope;
-- gross cap remains `1.0`;
-- no P5 cycle overlay.
-
-Where the roadmap requires elapsed shadow duration or event coverage that cannot be manufactured instantly, classify that criterion explicitly as `MEASUREMENT_INCONCLUSIVE / TIME_DEPENDENT`; complete all code/readiness evidence and start/define the observation mechanism without pretending elapsed time has occurred.
-
-## Exact next step
+Until then:
 
 ```text
-FINAL-HEAD CI/GOVERNANCE FOR P5.5 CLOSEOUT
-EXACT-HEAD MERGE
-VERIFY NEW MAIN
-RECORD P5.6 BLOCKED
-AUDIT EXISTING EXECUTION SPINE FOR PHASE-6 SHADOW INVARIANTS
-IMPLEMENT / TEST ZERO-SIGNATURE INTEGRATED SHADOW HARNESS
-RUN DETERMINISTIC / HISTORICAL-REPLAY SHADOW EVIDENCE
-CLASSIFY REAL-ELAPSED-TIME CRITERIA SEPARATELY
-NO PRODUCTION AUTHORIZATION
+status                       PREREGISTERED_TRIGGER_ABSENT_NOT_RUN
+short_ready                  false
+production_authorized        false
+first_real_short_authorized  false
+```
+
+A subjective market view must not be used as the trigger.
+
+## Exact execution order
+
+```text
+1. VERIFY MAIN CONTAINS THE PHASE 0-8 AUDIT CLOSEOUT AND POLICY INVARIANTS
+2. CONTINUE REAL PHASE-6 ZERO-AUTHORITY ELAPSED OBSERVATION
+3. WHEN PHASE-6 EVIDENCE ACTUALLY PASSES, REVIEW PHASE-7 CHECKLIST
+4. REQUIRE EXPLICIT HUMAN APPROVAL BEFORE MONITOR_ONLY -> ACTIVE OR ZERO -> RISK
+5. WAIT FOR THE FROZEN CONFIRMED-BEAR TRIGGER BEFORE BEAR-SHORT-0001 ECONOMICS
+6. REQUIRE A SEPARATE HUMAN GATE BEFORE ANY FIRST REAL SHORT
 ```
