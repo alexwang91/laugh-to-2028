@@ -1,0 +1,95 @@
+{
+  "schema_version": 1,
+  "gate_id": "STABLECOIN-LIQUIDITY-0001-FIRST-CAPTURE-GATE-V1",
+  "research_id": "STABLECOIN-LIQUIDITY-0001",
+  "status": "FROZEN_NOT_EXECUTED",
+  "production_authorized": false,
+  "purpose": "Define the only allowed first historical capture sequence before any result-bearing use of Stablecoin data.",
+  "required_sequence": [
+    "FETCH_ONCE_FROM_FROZEN_SOURCE",
+    "PERSIST_EXACT_RAW_BYTES_CREATE_ONLY",
+    "PERSIST_MANIFEST_CREATE_ONLY",
+    "VERIFY_RAW_HASH_AND_MANIFEST_IDENTITY",
+    "PARSE_ONLY_THE_PERSISTED_VERIFIED_BYTES",
+    "SELECT_FROZEN_HISTORICAL_COVERAGE",
+    "EMIT_METADATA_ONLY"
+  ],
+  "live_execution_guards": {
+    "explicit_live_flag_required": true,
+    "durable_storage_attestation_required": true,
+    "storage_root_must_be_absolute": true,
+    "storage_root_must_be_outside_repository": true,
+    "existing_capture_artifact_policy": "HARD_FAIL_NO_SECOND_FETCH_UNTIL_MANUAL_RECONCILIATION",
+    "network_retry_policy": "NO_AUTOMATIC_RETRY"
+  },
+  "allowed_metadata_output_fields": [
+    "schema_version",
+    "gate_id",
+    "research_id",
+    "dataset_id",
+    "source_id",
+    "retrieved_at",
+    "raw_sha256",
+    "raw_size_bytes",
+    "raw_row_count",
+    "historical_row_count",
+    "historical_start",
+    "historical_end",
+    "historical_cutoff",
+    "historical_classification",
+    "parser_version",
+    "raw_relative_path",
+    "manifest_relative_path",
+    "research_result_status"
+  ],
+  "forbidden_outputs": [
+    "SOURCE_VALUE_SERIES",
+    "FEATURE_VALUE_SERIES",
+    "LABEL_SERIES",
+    "MODEL_COEFFICIENTS",
+    "OOS_PREDICTIONS",
+    "SIGNALS",
+    "PERFORMANCE_METRICS",
+    "EQUITY_CURVE"
+  ],
+  "registry_handoff": {
+    "dataset_registry_owns": [
+      "dataset_slice_id",
+      "dataset_id",
+      "dataset_version",
+      "source",
+      "assets",
+      "fields",
+      "resolution",
+      "start",
+      "end",
+      "transformation",
+      "pit_publication_semantics",
+      "data_budget",
+      "contamination_state",
+      "consumed"
+    ],
+    "manifest_owns": [
+      "raw_sha256",
+      "raw_size_bytes",
+      "retrieved_at",
+      "response_headers",
+      "raw_relative_path",
+      "source_sdk_commit",
+      "parser_version"
+    ],
+    "raw_hash_must_not_be_added_as_unregistered_dataset_slice_property": true
+  },
+  "explicit_non_actions": [
+    "NO_LIVE_CAPTURE_IN_THIS_PR",
+    "NO_DATASET_REGISTRY_MUTATION_IN_THIS_PR",
+    "NO_RESEARCH_REGISTRY_RESULT_MUTATION_IN_THIS_PR",
+    "NO_REAL_FEATURE_COMPUTATION",
+    "NO_MODEL_FIT",
+    "NO_STAGE1_RUN",
+    "NO_EDGE_REGISTRY_CHANGE",
+    "NO_BRRK_CHANGE",
+    "NO_PHASE6_7_8_AUTHORITY_CHANGE",
+    "NO_PRODUCTION_AUTHORIZATION"
+  ]
+}
