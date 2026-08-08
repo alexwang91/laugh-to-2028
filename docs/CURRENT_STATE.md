@@ -20,6 +20,7 @@ Phase 7 program state             MONITOR_ONLY
 Phase 8 bear-short research       PREREGISTERED_TRIGGER_ABSENT_NOT_RUN / MERGED #111
 Phase 0-8 drift audit             COMPLETE / PASS_FINAL_HEAD_VERIFIED / DRIFT_2 REMEDIATED
 Program epistemic governance v1   PG0-PG6 COMPLETE / CI-ENFORCED / NO-DRIFT CLOSEOUT
+Future research gate repair       PR #121 / GOVERNANCE ONLY / DRIFT_0
 production authorization          NONE
 first real short authorization    NONE
 ```
@@ -118,6 +119,7 @@ The implementation extends rather than replaces existing experiment, decision an
 - `config/edge_registry.json` — evidence-admitted incremental edges only;
 - `research/governance/validate.py` — fail-closed registry validation;
 - `research/governance/audit.py` — deterministic program audit;
+- `research/governance/future_policy.py` — shared future-path ownership and prospective-provenance policy;
 - `research/governance/enforce_future.py` — exact-PR-diff prospective research registration enforcement;
 - `research/governance/no_drift.py` — boundary-to-HEAD strategy/evidence/authority no-drift regression;
 - `.github/workflows/research-governance.yml` — CI enforcement.
@@ -127,6 +129,8 @@ PG4 conservatively maps 17 `RETROSPECTIVE_LEGACY` research records. Six governan
 The Dataset Exposure Registry remains empty for retrospective history rather than inventing release/consumption events. The Edge Registry remains empty because no legacy feature was retroactively declared a governance-v1 independent/incremental edge.
 
 Future formal result-bearing research must be prospectively covered by exactly one `PROGRAM_GOVERNED_V1` record with the frozen required fields, declared path ownership, variant budget, stopping rules, lineage/data references and `production_authorized=false`. Changed legacy formal research paths are treated as new post-boundary research activity and cannot bypass prospective registration or existing immutable-evidence correction rules.
+
+PR #121 repairs the cross-gate conflict between future-research registration and the final no-drift regression without broadening the legacy allowlist. A post-boundary formal `research/**` path is eligible only when exactly one valid `PROGRAM_GOVERNED_V1` record owns it, its governed prefix did not exist at the legacy boundary, and the registration already existed at the path's first introduction commit. Rename/copy laundering of legacy research and post-hoc registration remain blocking. This repair changes governance enforcement only and creates no research, strategy, evidence or production authority.
 
 The deterministic audit may report `WARNING` for real legacy governance debt; that is intentional and must not be converted into a false clean `PASS` by inventing history.
 
@@ -154,7 +158,9 @@ RESUME REAL PHASE-6 ZERO-AUTHORITY ELAPSED OBSERVATION UNDER GOVERNANCE V1 PROVE
 ACCUMULATE GENUINELY FUTURE EVIDENCE ONLY; DO NOT REBUILD OR BACKFILL ELAPSED TIME
 KEEP signature_authorized = false AND order_submission_authorized = false
 REQUIRE AT LEAST 14 ELAPSED CALENDAR DAYS AND 10 SCHEDULED DECISIONS PLUS FROZEN QUALITY CRITERIA
-REGISTER ANY NEW FORMAL RESEARCH PROSPECTIVELY UNDER PROGRAM_GOVERNED_V1 BEFORE RESULT-BEARING WORK
+AFTER THE FUTURE-RESEARCH GATE REPAIR IS MERGED, PREREGISTER STABLECOIN-LIQUIDITY-0001 UNDER PROGRAM_GOVERNED_V1 BEFORE CREATING ITS FORMAL RESEARCH PATH
+DO NOT DOWNLOAD FULL STABLECOIN/HOLDER-COST HISTORY, RUN A BACKTEST, FIT A MODEL OR GENERATE A RESEARCH RESULT BEFORE THE RELEVANT PREREGISTRATION/DATA CONTRACT IS FROZEN
+KEEP ONCHAIN-HOLDER-COST-0001 AS BACKLOG UNTIL THE STABLECOIN INFORMATION TEST REACHES ITS FROZEN STOPPING POINT
 DO NOT START SUPERTrend / FUNDING-OI / RELATIVE-STRENGTH / NEW-ALLOCATION RESEARCH AS PART OF PHASE-6 OBSERVATION
 DO NOT CHANGE BRRK / BNB / PARAMETERS / COSTS / HISTORICAL EVIDENCE / PRODUCTION AUTHORITY
 DO NOT ACTIVATE PHASE 7 WITHOUT THE COMPLETE CHECKLIST AND EXPLICIT OWNER APPROVAL
