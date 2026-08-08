@@ -109,25 +109,9 @@ After a later arm change, the first eligible scheduled decision is the first can
 
 ## Phase 7 / 8 authority
 
-Phase 7 remains:
-
-```text
-current_program_state = MONITOR_ONLY
-production_authorized = false
-launch                 = BLOCKED
-```
+Phase 7 remains `MONITOR_ONLY`, launch-blocked and `production_authorized=false`. Phase 8 remains `PREREGISTERED_TRIGGER_ABSENT_NOT_RUN`, `short_ready=false` and `first_real_short_authorized=false`.
 
 Human approval remains mandatory for `MONITOR_ONLY -> ACTIVE`, `FLAT -> LONG`, `FLAT -> SHORT` and the first short exposure of a new bear phase.
-
-Phase 8 remains:
-
-```text
-status                      = PREREGISTERED_TRIGGER_ABSENT_NOT_RUN
-trigger_present             = false
-short_ready                 = false
-production_authorized       = false
-first_real_short_authorized = false
-```
 
 ## Program-Level Epistemic Governance v1
 
@@ -138,7 +122,7 @@ research_governance_version = 1
 legacy_boundary_commit      = 896cbd123b7a0c38943815dd802f0f9dcd12e1c2
 ```
 
-Authority is separated across decision/research/dataset/edge registries and the Phase 6/7/8 machine contracts. Future formal research is fail-closed and must be preregistered prospectively. Historical unknowns remain explicit research-governance debt instead of being fabricated.
+Authority is separated across decision/research/dataset/edge registries and Phase 6/7/8 machine contracts. Future formal research is fail-closed and must be preregistered prospectively. Historical unknowns remain explicit research-governance debt instead of being fabricated.
 
 Core checks:
 
