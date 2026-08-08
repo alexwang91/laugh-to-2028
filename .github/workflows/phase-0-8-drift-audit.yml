@@ -1,0 +1,59 @@
+name: Phase 0-8 drift audit
+
+on:
+  pull_request:
+    paths:
+      - 'README.md'
+      - 'docs/CURRENT_STATE.md'
+      - 'docs/NEXT_STEPS.md'
+      - 'docs/PHASE_0_8_DRIFT_AUDIT_2026-08-08.md'
+      - 'config/decision_registry.json'
+      - 'config/phase0_8_drift_audit.json'
+      - 'config/phase6_shadow_contract.json'
+      - 'config/phase7_launch_readiness.json'
+      - 'research/bear_short_0001/**'
+      - 'research/results/leverage_0040/summary.sha256'
+      - 'execution/plan-b-bot/**'
+      - '.github/workflows/phase-0-8-drift-audit.yml'
+  push:
+    branches:
+      - 'audit/phase0-8-final-drift-remediation'
+    paths:
+      - 'README.md'
+      - 'docs/**'
+      - 'config/**'
+      - 'research/bear_short_0001/**'
+      - 'research/results/leverage_0040/summary.sha256'
+      - 'execution/plan-b-bot/**'
+      - '.github/workflows/phase-0-8-drift-audit.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+          cache-dependency-path: execution/plan-b-bot/requirements-dev.txt
+
+      - name: Install execution test dependencies
+        working-directory: execution/plan-b-bot
+        run: python -m pip install -r requirements-dev.txt
+
+      - name: Phase 0-8 drift invariants
+        working-directory: execution/plan-b-bot
+        run: >-
+          python -m pytest -q
+          tests/test_phase0_8_drift_audit.py
+          tests/test_service_reconciliation_gate.py
+
+      - name: Legacy configuration regression
+        working-directory: execution/plan-b-bot
+        run: python -m pytest -q tests/test_config.py
