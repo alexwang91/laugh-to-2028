@@ -1,0 +1,269 @@
+{
+  "schema_version": 1,
+  "governance_id": "PROGRAM-LEVEL-EPISTEMIC-GOVERNANCE-V1",
+  "research_governance_version": 1,
+  "status": "FROZEN_SEMANTICS_BEFORE_V1_REGISTRY_IMPLEMENTATION",
+  "legacy_boundary_commit": "896cbd123b7a0c38943815dd802f0f9dcd12e1c2",
+  "legacy_boundary_rule": "Research whose historically result-bearing work predates this commit is RETROSPECTIVE_LEGACY. New formal result-bearing research created after this boundary must use PROGRAM_GOVERNED_V1. PG0 audit documentation after the boundary is governance work, not a strategy experiment.",
+  "governance_modes": [
+    "RETROSPECTIVE_LEGACY",
+    "PROGRAM_GOVERNED_V1"
+  ],
+  "legacy_unknown_values": [
+    "UNKNOWN",
+    "NOT_HISTORICALLY_RECORDED"
+  ],
+  "retrospective_provenance_status": [
+    "FACT",
+    "INFERRED_FROM_REPOSITORY",
+    "UNKNOWN"
+  ],
+  "authority_planes": {
+    "decision_authorization": {
+      "source_of_truth": "config/decision_registry.json",
+      "owns": [
+        "product_decisions",
+        "implementation_verified",
+        "stopped_rejected",
+        "shadow_only",
+        "production_authorization"
+      ]
+    },
+    "research": {
+      "source_of_truth": "config/research_registry.json",
+      "owns": [
+        "research_family",
+        "hypothesis",
+        "experiment",
+        "lineage",
+        "objective_type",
+        "trial_variant_accounting",
+        "researcher_decisions",
+        "evidence_references"
+      ]
+    },
+    "dataset_exposure": {
+      "source_of_truth": "config/dataset_exposure_registry.json",
+      "owns": [
+        "dataset_slice_identity",
+        "data_budget",
+        "validation_consumption",
+        "information_release",
+        "researcher_exposure",
+        "contamination_state"
+      ]
+    },
+    "edge": {
+      "source_of_truth": "config/edge_registry.json",
+      "owns": [
+        "admitted_information_edges",
+        "incremental_evidence_status",
+        "allowed_use"
+      ],
+      "rule": "An edge is an evidence conclusion, never a researcher-declared independent_edge boolean. The registry may be empty."
+    },
+    "phase_authority": {
+      "sources_of_truth": [
+        "config/phase6_shadow_contract.json",
+        "config/phase7_launch_readiness.json",
+        "research/bear_short_0001/BEAR-SHORT-0001.json"
+      ],
+      "rule": "Research governance references phase authority and may not override it."
+    }
+  },
+  "research_hierarchy": [
+    "PROGRAM",
+    "RESEARCH_FAMILY",
+    "HYPOTHESIS",
+    "EXPERIMENT",
+    "EVIDENCE",
+    "DECISION"
+  ],
+  "research_domains": [
+    "DIRECTION_REGIME",
+    "RELATIVE_VALUE",
+    "VOLATILITY_TAIL",
+    "DERIVATIVES_CROWDING",
+    "LIQUIDITY_EXECUTION",
+    "PORTFOLIO_INTEGRATION",
+    "RISK_CONTROL",
+    "DATA_QUALITY",
+    "ROBUSTNESS_AUDIT",
+    "FAILURE_ANALYSIS",
+    "STRUCTURAL_SIMPLIFICATION",
+    "OPTIONS_VOLATILITY",
+    "ORDER_FLOW",
+    "MICROSTRUCTURE",
+    "CROSS_VENUE_BASIS"
+  ],
+  "objective_types": [
+    "ALPHA_DISCOVERY",
+    "MECHANISM_TEST",
+    "RISK_CONTROL",
+    "EXECUTION_IMPROVEMENT",
+    "STRUCTURAL_SIMPLIFICATION",
+    "DATA_QUALITY",
+    "ROBUSTNESS_AUDIT",
+    "FAILURE_ANALYSIS",
+    "PORTFOLIO_INTEGRATION"
+  ],
+  "lineage_relation_types": [
+    "RESULT_INFORMED",
+    "PARAMETER_DESCENDANT",
+    "MECHANISM_FORK",
+    "NEW_TARGET_FORK",
+    "NEW_DATA_FORK",
+    "IMPLEMENTATION_FIX",
+    "MEASUREMENT_FIX",
+    "EXTERNAL_HYPOTHESIS",
+    "INDEPENDENT_REPLICATION",
+    "SUPERSEDES"
+  ],
+  "lineage_rules": [
+    "Lineage is a directed acyclic graph; parent/ref targets must exist.",
+    "A validation/result-informed descendant may not claim complete independence from the informing ancestor.",
+    "IMPLEMENTATION_FIX and MEASUREMENT_FIX must remain distinguishable from NEW_HYPOTHESIS semantics.",
+    "A failed experiment may not be revived as an independent hypothesis by parameter-only retuning.",
+    "A new independent fork after failure requires a material new mechanism, target, data source, market structure, execution assumption, regime event or externally generated hypothesis."
+  ],
+  "data_budgets": {
+    "DEVELOPMENT": "Exploration, plotting, debugging, repeated fitting and feature engineering are allowed; performance is not treated as true out-of-sample evidence.",
+    "VALIDATION": "Used for preregistered candidate comparison; every release of result information is recorded as an exposure event.",
+    "SEALED": "Formal result information is unavailable before the experiment is frozen. Once released, the slice is consumed and cannot be renamed or repartitioned back into pristine holdout status.",
+    "TEMPORALLY_UNSEEN": "Data genuinely produced after the relevant research freeze. Future Phase 6 elapsed shadow observations enter here as zero-authority evidence after governance v1 is merged."
+  },
+  "dataset_slice_identity_fields": [
+    "dataset_id",
+    "dataset_version",
+    "source",
+    "assets",
+    "fields",
+    "resolution",
+    "start",
+    "end",
+    "transformation",
+    "pit_publication_semantics"
+  ],
+  "exposure_release_types": [
+    "PASS_FAIL_ONLY",
+    "PRIMARY_METRIC_ONLY",
+    "PREDECLARED_METRIC_SET",
+    "EVENT_SUMMARY",
+    "FULL_TABLE",
+    "EQUITY_CURVE",
+    "RAW_DATA"
+  ],
+  "contamination_states": [
+    "DATA_SEALED",
+    "OUTPUT_BLINDED",
+    "RESEARCHER_EXPOSED_HISTORY",
+    "TEMPORALLY_UNSEEN"
+  ],
+  "contamination_identity_rule": "Exposure identity is evaluated over time x asset x field x source x transformation, not by calendar date alone.",
+  "researcher_degrees_of_freedom_fields": [
+    "declared_parameter_candidates",
+    "actual_parameter_candidates_evaluated",
+    "universes_evaluated",
+    "horizons_evaluated",
+    "rebalance_variants",
+    "feature_representations",
+    "special_cases_introduced",
+    "researcher_decisions",
+    "validation_exposure_events",
+    "related_family_trials"
+  ],
+  "mandatory_trial_accounting": [
+    "total_registered_experiments",
+    "family_trial_count",
+    "variant_count",
+    "parameter_candidate_count",
+    "validation_exposure_count",
+    "result_informed_descendant_count",
+    "failed_ancestor_count"
+  ],
+  "evidence_dimensions": [
+    "TEMPORAL_NOVELTY",
+    "STATISTICAL_SUFFICIENCY",
+    "GOVERNANCE_INTEGRITY",
+    "OPERATIONAL_REALISM"
+  ],
+  "evidence_confidence_values": [
+    "HIGH",
+    "MEDIUM",
+    "LOW",
+    "UNKNOWN"
+  ],
+  "evidence_confidence_rule": "If confidence labels are used they must be derived from explicit deterministic rules; researchers may not assign them after observing results and no probability is implied.",
+  "future_research_funnel": [
+    "STAGE_0_HYPOTHESIS",
+    "STAGE_1_INFORMATION_TEST",
+    "STAGE_2_ROBUSTNESS",
+    "STAGE_3_INCREMENTAL_INFORMATION",
+    "STAGE_4_PORTFOLIO_TRANSLATION",
+    "STAGE_5_ECONOMICS",
+    "STAGE_6_SHADOW",
+    "STAGE_7_ELAPSED_FUTURE_EVIDENCE"
+  ],
+  "portfolio_integration_rule": "An information edge does not enter BRRK automatically. Portfolio translation is a separately preregistered PORTFOLIO_INTEGRATION experiment and PASS only makes the result eligible for the next research stage.",
+  "feature_family_rule": "Features are first classified by underlying information family. Alternative indicator representations do not constitute independent alpha solely because their names or formulas differ.",
+  "primary_metric_rule": "Every PROGRAM_GOVERNED_V1 formal experiment freezes a primary metric before result release. A secondary metric may not replace it post hoc because the primary metric failed.",
+  "winner_selection_rule": "Selected historical performance is not an unbiased estimate of expected future performance; interpretation must include family trial count, variant count, validation exposure and selection process.",
+  "sample_independence_rule": "Bars or events are not assumed independent observations. Interpretation must consider serial correlation, overlapping horizons, regime clustering, cross-asset correlation and shared macro shocks.",
+  "multiple_testing": {
+    "raw_accounting": "MANDATORY",
+    "dsr": "APPLICABILITY_GATED_WHEN_SHARPE_IS_A_RELEVANT_SELECTION_METRIC_AND_COMPARABLE_TRIAL_UNIVERSE_IS_DEFENSIBLE",
+    "pbo": "DEFERRED_NOT_APPLICABLE_TO_GENERIC_V1",
+    "white_reality_check": "DEFERRED_NOT_APPLICABLE_TO_GENERIC_V1",
+    "hansen_spa": "DEFERRED_NOT_APPLICABLE_TO_GENERIC_V1"
+  },
+  "audit_severity": [
+    "INFO",
+    "WARNING",
+    "ERROR",
+    "BLOCKING"
+  ],
+  "future_fail_closed_examples": {
+    "missing_primary_metric": "BLOCKING",
+    "missing_stopping_rule": "BLOCKING",
+    "consumed_sealed_data_claimed_pristine": "BLOCKING",
+    "invalid_or_circular_lineage": "BLOCKING",
+    "illegal_production_authorization": "BLOCKING",
+    "legacy_unknown_peek_history": "WARNING_RESEARCH_GOVERNANCE_DEBT"
+  },
+  "production_semantics": {
+    "default_research_production_authorized": false,
+    "research_pass_meaning": "ELIGIBLE_FOR_NEXT_RESEARCH_STAGE",
+    "automatic_production_promotion": false,
+    "current_production_gross_cap": 1.0,
+    "current_production_authorized_components": []
+  },
+  "framework_claim": "Program-Level Epistemic Governance v1 reduces research-process overfit; it does not eliminate it.",
+  "known_limits": [
+    "researcher_existing_historical_knowledge",
+    "limited_independent_crypto_regimes",
+    "serial_correlation",
+    "regime_clustering",
+    "cross_asset_dependence",
+    "market_nonstationarity",
+    "hidden_qualitative_choices",
+    "unknown_historical_trials",
+    "future_structural_breaks"
+  ],
+  "implementation_scope": "MINIMAL_SUFFICIENT_INSTITUTIONAL_FRAMEWORK",
+  "explicit_non_goals": [
+    "database",
+    "api_server",
+    "dashboard",
+    "feature_store",
+    "kubernetes",
+    "streaming_platform",
+    "ml_platform",
+    "deep_learning",
+    "transformer",
+    "reinforcement_learning",
+    "full_sealed_evaluation_server",
+    "automatic_production_promotion",
+    "single_governance_score",
+    "single_complexity_score"
+  ]
+}
