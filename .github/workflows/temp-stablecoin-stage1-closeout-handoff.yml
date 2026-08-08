@@ -1,0 +1,31 @@
+name: Temporary Stablecoin Stage-1 terminal handoff patch
+
+on:
+  push:
+    branches:
+      - research/stablecoin-liquidity-0001-stage1-closeout
+
+permissions:
+  contents: write
+
+jobs:
+  handoff-once:
+    if: contains(github.event.head_commit.message, '[STABLECOIN_STAGE1_CLOSEOUT_HANDOFF_V2]')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/stablecoin-liquidity-0001-stage1-closeout
+          fetch-depth: 0
+      - name: Patch authoritative terminal handoff
+        run: python research/stablecoin_liquidity_0001/_temp_closeout_handoff_patch.py
+      - name: Remove helpers and commit terminal handoff
+        run: |
+          set -euo pipefail
+          git rm .github/workflows/temp-stablecoin-stage1-closeout-handoff.yml
+          git rm research/stablecoin_liquidity_0001/_temp_closeout_handoff_patch.py
+          git add docs/CURRENT_STATE.md
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Research [DRIFT_0]: hand off Stablecoin Stage-1 terminal FAIL_STOP'
+          git push origin HEAD:research/stablecoin-liquidity-0001-stage1-closeout
