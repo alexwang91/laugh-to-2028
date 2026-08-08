@@ -20,7 +20,7 @@
 | Phase 7 program mode | **MONITOR_ONLY** |
 | Phase 8 bear-short research | **BEAR-SHORT-0001 PREREGISTERED / TRIGGER ABSENT / NOT RUN / MERGED #111** |
 | Phase 0–8 drift audit | **COMPLETE / PASS_FINAL_HEAD_VERIFIED / DRIFT_2 REMEDIATED** |
-| Program-Level Epistemic Governance v1 | **PG0–PG6 COMPLETE / FINAL NO-DRIFT GATE REQUIRED ON MERGE** |
+| Program-Level Epistemic Governance v1 | **PG0–PG6 COMPLETE / CI-ENFORCED / NO-DRIFT CLOSEOUT** |
 | Production-authorized components | **none** |
 
 ```text
@@ -144,7 +144,7 @@ The framework **reduces research-process overfit**. It does not eliminate market
 
 ## Exact next dependency
 
-After governance v1 final-head CI is green and merged, resume the existing Phase 6 **zero-authority elapsed observation** path. New observations should enter the governance ledger as genuinely `TEMPORALLY_UNSEEN` / `ZERO_AUTHORITY_SHADOW` evidence from inception.
+Resume the existing Phase 6 **zero-authority elapsed observation** path under Governance v1 provenance. New observations should enter the governance ledger as genuinely `TEMPORALLY_UNSEEN` / `ZERO_AUTHORITY_SHADOW` evidence from inception.
 
 Do not backfill elapsed time. Do not start a new alpha/indicator/leverage/short/allocation program merely because governance v1 is complete. Any future research idea must enter the new prospective funnel and still cannot authorize production automatically.
 
