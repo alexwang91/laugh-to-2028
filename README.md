@@ -17,6 +17,7 @@
 | Phase 6 implementation/replay | **PASS / SHADOW ONLY / MERGED #109** |
 | Phase 6 real elapsed evidence | **MEASUREMENT_INCONCLUSIVE_TIME_DEPENDENT / CLOCK NOT ARMED** |
 | Phase 6 live-observation preactivation gate | **PREACTIVATION_BLOCKED_FAIL_CLOSED / GOVERNANCE V1** |
+| Phase 6 durable evidence backend | **FROZEN / ACTIONS_ARTIFACT_V4 / 90D / NO CREDIT** |
 | Phase 7 readiness gate | **IMPLEMENTED / MERGED #110 / LAUNCH BLOCKED** |
 | Phase 7 program mode | **MONITOR_ONLY** |
 | Phase 8 bear-short research | **BEAR-SHORT-0001 PREREGISTERED / TRIGGER ABSENT / NOT RUN / MERGED #111** |
@@ -81,7 +82,9 @@ minimum decisions     = 10
 
 Elapsed-time evidence cannot be replayed or backfilled. A repository audit found that the pre-existing `phase6-integrated-shadow.yml` is implementation/replay safety CI only: it has no scheduled future collector and no durable elapsed-evidence persistence. Therefore no automatic elapsed clock may be inferred from the Phase 6 PASS.
 
-Governance v1 now contains `research/governance/phase6_live_observation_gate.json` plus `phase6_live_observation_gate.py`. The gate is deliberately **not armed**. It prevents schedule/elapsed credit until the observation account identity, current-position/equity valuation semantics and durable create-only evidence backend are prospectively frozen. The first eligible decision after a future arm is the first canonical 00:00 UTC decision strictly after the arm commit timestamp; replay, rerun, duplicate timestamps and manual dispatch cannot create scheduled-decision credit.
+Governance v1 contains `research/governance/phase6_live_observation_gate.json` plus `phase6_live_observation_gate.py`. The gate is deliberately **not armed**. Schedule/duplicate-credit semantics are frozen, and the durable evidence backend is now separately frozen by `phase6_live_evidence_contract.json` / `phase6_live_evidence.py` to GitHub Actions Artifact v4 with 90-day retention, `overwrite=false`, immutable artifact identity outputs and a separately uploaded hash-bound receipt. The backend contract itself creates zero elapsed credit.
+
+Two pre-arm dependencies remain: one explicit read-only observation account identity and current-position/account-equity valuation semantics for the permitted observation surfaces. The first eligible decision after a future arm remains the first canonical 00:00 UTC decision strictly after the arm commit timestamp; replay, rerun, duplicate timestamps and manual dispatch cannot create scheduled-decision credit.
 
 Phase 7 machine contract: `config/phase7_launch_readiness.json`.
 
@@ -133,6 +136,7 @@ Commands:
 ```bash
 python -m research.governance.validate
 python -m research.governance.enforce_future --base <PR_BASE_SHA>
+python -m research.governance.phase6_live_evidence
 python -m research.governance.phase6_live_observation_gate
 python -m research.governance.audit
 python -m research.governance.no_drift
@@ -151,15 +155,14 @@ The framework **reduces research-process overfit**. It does not eliminate market
 
 ## Exact next dependency
 
-Freeze the remaining Phase 6 live-observation operational semantics **before** arming any schedule or elapsed-evidence credit:
+Two Phase 6 live-observation operational semantics remain unresolved **before** any schedule or elapsed-evidence credit may be armed:
 
 1. identify one explicit read-only observation account;
 2. freeze how combined current positions and account equity are valued across the permitted observation surfaces, without changing P3.2/P3.3 economics;
-3. freeze a durable create-only evidence backend and receipt identity;
-4. then prospectively arm the collector in a separate change;
-5. only the first 00:00 UTC decision strictly after that arm commit may begin scheduled-decision credit.
+3. then prospectively arm the collector in a separate change;
+4. only the first 00:00 UTC decision strictly after that arm commit may begin scheduled-decision credit.
 
-Until then the Phase 6 live elapsed state remains `MEASUREMENT_INCONCLUSIVE_TIME_DEPENDENT`, with clock not armed. Do not backfill elapsed time and do not call replay/test artifacts live evidence.
+The durable create-only evidence backend/receipt identity and schedule/duplicate-credit rules are already frozen. Until the remaining two dependencies close, the Phase 6 live elapsed state remains `MEASUREMENT_INCONCLUSIVE_TIME_DEPENDENT`, with clock not armed. Do not backfill elapsed time and do not call replay/test artifacts live evidence.
 
 After the Phase-6 collection path is truly armed, resume the original infrastructure plan: formal research lifecycle/state-machine enforcement, then Research Queue / trial-overlap accounting, before starting another result-bearing research family.
 
