@@ -22,7 +22,7 @@ Phase 0-8 drift audit             COMPLETE / PASS_FINAL_HEAD_VERIFIED / DRIFT_2 
 Program epistemic governance v1   PG0-PG6 COMPLETE / CI-ENFORCED / NO-DRIFT CLOSEOUT
 Future research gate repair       MERGED #121 / GOVERNANCE ONLY / DRIFT_0
 Future prereg validator repair    MERGED #122 / GOVERNANCE ONLY / DRIFT_0
-Stablecoin liquidity research     STABLECOIN-LIQUIDITY-0001 / DATA CONTRACT FROZEN / SOURCE BOUND / NO FULL HISTORY / NO RESULT
+Stablecoin liquidity research     STABLECOIN-LIQUIDITY-0001 / DATA CONTRACT + CAPTURE GATE FROZEN / NO FULL HISTORY / NO RESULT
 production authorization          NONE
 first real short authorization    NONE
 ```
@@ -124,7 +124,7 @@ The implementation extends rather than replaces existing experiment, decision an
 - `research/governance/future_policy.py` — shared future-path ownership and prospective-provenance policy;
 - `research/governance/enforce_future.py` — exact-PR-diff prospective research registration enforcement;
 - `research/governance/no_drift.py` — boundary-to-HEAD strategy/evidence/authority no-drift regression;
-- `.github/workflows/research-governance.yml` — CI enforcement, including the current governed Stablecoin data-contract regression suite.
+- `.github/workflows/research-governance.yml` — CI enforcement, including the current governed Stablecoin data-contract and capture-gate regression suite.
 
 PG4 conservatively maps 17 `RETROSPECTIVE_LEGACY` research records. Six governance-debt classes remain explicit because historical trial counts, information releases, dataset consumption, lineage, informal researcher decisions and complete candidate universes cannot be reconstructed truthfully. `UNKNOWN` remains `UNKNOWN`.
 
@@ -137,6 +137,8 @@ PR #121 repairs the cross-gate conflict between future-research registration and
 PR #122 repairs a second preregistration-only validator contradiction. Required future fields must be present, while pre-result accounting arrays such as secondary metrics, dataset refs, lineage and evidence refs may truthfully remain empty. `PREREGISTERED_NOT_RUN` explicitly blocks result evidence, evaluated variants and promotion. This prevents fake placeholder provenance while keeping result-bearing states fail-closed. The repair changes governance validation only and does not itself preregister or run research.
 
 PR #123 prospectively registered `STABLECOIN-LIQUIDITY-0001` before its governed formal path existed. That registration remains the frozen Stage-1 hypothesis/metric/variant boundary; the data-contract work below does not alter its research result criteria.
+
+PR #124 froze the Stablecoin source/data/PIT contract and created the prospectively owned formal path without retrieving full history or releasing a result. The first-capture gate now freezes the only allowed transition from source binding to the first immutable historical raw snapshot; it does not execute that transition.
 
 ## STABLECOIN-LIQUIDITY-0001
 
@@ -153,6 +155,7 @@ actual_variants_evaluated     0
 governed_path_prefix          research/stablecoin_liquidity_0001/
 formal research path          CREATED UNDER PROSPECTIVE OWNER
 data contract                 STABLECOIN-LIQUIDITY-0001-DATA-CONTRACT-V1 / FROZEN
+capture gate                  STABLECOIN-LIQUIDITY-0001-FIRST-CAPTURE-GATE-V1 / FROZEN_NOT_EXECUTED
 primary source                DEFILLAMA-STABLECOIN-ALL-CHARTS-V1
 source endpoint               https://stablecoins.llama.fi/stablecoincharts/all
 historical full capture       NOT RUN
@@ -177,11 +180,15 @@ end    = latest schema-valid row <= cutoff
 use every valid row in the frozen coverage; no result-driven date selection
 ```
 
-Concrete historical `start/end`, dataset version and raw SHA256 are intentionally not fabricated in `config/dataset_exposure_registry.json`. They become knowable only after the first immutable full-history capture and must then be registered before result-bearing model evaluation.
+Concrete historical `start/end` and dataset version are intentionally not fabricated in `config/dataset_exposure_registry.json`. They become knowable only after the first immutable full-history capture and must then be registered before result-bearing model evaluation.
 
 Raw-vintage semantics are frozen as exact-response-byte SHA256 plus create-only storage. Raw source payloads are gitignored and recurring forward collection requires durable external create-only/versioned storage. The repository filesystem implementation is only a deterministic local/CI reference backend. Schema drift, duplicate timestamps, non-200 captures, raw-hash mismatch and silent overwrite are hard failures.
 
-The primary feature definition remains aggregate USD-pegged stablecoin value 20-day log growth plus 20-day growth acceleration with exact lag-date matching. Missing dates are not interpolated or forward-filled. No real feature series, model, prediction, backtest or performance result has been produced by the data-contract change.
+The first-capture gate requires the strict order `FETCH ONCE -> PERSIST RAW -> PERSIST MANIFEST -> VERIFY -> PARSE PERSISTED BYTES -> SELECT FROZEN COVERAGE -> EMIT METADATA ONLY`. Live execution requires explicit flags, an absolute storage root outside the repository and an operator attestation that the location is durable create-only/versioned storage. If any first-capture artifact already exists, another fetch is blocked until manual reconciliation. CI uses synthetic injected captures only and cannot call the live endpoint.
+
+Governance-v1 Dataset Registry schema does not contain a `raw_hash` dataset-slice property and rejects unregistered properties. Dataset slice identity therefore records source/field/resolution/start/end/transformation/PIT/budget/contamination semantics; exact raw SHA256, byte length, retrieval time, response headers, raw object identity and parser version remain immutable manifest/provenance properties and may be referenced through allowed evidence references.
+
+The primary feature definition remains aggregate USD-pegged stablecoin value 20-day log growth plus 20-day growth acceleration with exact lag-date matching. Missing dates are not interpolated or forward-filled. No real feature series, model, prediction, backtest or performance result has been produced by the data-contract or capture-gate work.
 
 A Stage-1 PASS cannot modify BRRK, write an admitted edge, create a multiplier, authorize leverage/shorts, change Phase 7 or confer production authority. It can only make a separately preregistered robustness-stage research ID eligible to start. `ONCHAIN-HOLDER-COST-0001` remains backlog and is not registered or run.
 
@@ -211,12 +218,15 @@ RESUME REAL PHASE-6 ZERO-AUTHORITY ELAPSED OBSERVATION UNDER GOVERNANCE V1 PROVE
 ACCUMULATE GENUINELY FUTURE PHASE-6 EVIDENCE ONLY; DO NOT REBUILD OR BACKFILL ELAPSED TIME
 KEEP signature_authorized = false AND order_submission_authorized = false
 REQUIRE AT LEAST 14 ELAPSED CALENDAR DAYS AND 10 SCHEDULED DECISIONS PLUS FROZEN QUALITY CRITERIA
-MERGE THE STABLECOIN DATA-CONTRACT/SOURCE-IDENTITY PR BEFORE ANY FULL-HISTORY CAPTURE
-AFTER MERGE, EXECUTE EXACTLY ONE CONTROLLED FULL-HISTORY RAW CAPTURE FROM THE FROZEN DEFILLAMA ENDPOINT AND PERSIST EXACT BYTES + MANIFEST IMMUTABLY BEFORE PARSING
-IMMEDIATELY MATERIALIZE THE TRUTHFUL HISTORICAL DATASET SLICE IDENTITY IN config/dataset_exposure_registry.json USING THE OBSERVED START/END + RAW HASH; CLASSIFY IT RESEARCHER_EXPOSED_HISTORY
+MERGE THE STABLECOIN FIRST-CAPTURE GATE PR BEFORE ANY LIVE STABLECOIN FETCH
+AFTER MERGE, EXECUTE EXACTLY ONE CONTROLLED FULL-HISTORY RAW CAPTURE FROM THE FROZEN DEFILLAMA ENDPOINT USING DURABLE EXTERNAL CREATE-ONLY/VERSIONED STORAGE
+PERSIST EXACT RAW BYTES + MANIFEST AND VERIFY THEM BEFORE PARSING; EMIT METADATA ONLY, NOT SOURCE VALUES OR RESEARCH PERFORMANCE
+IF ANY CAPTURE/PARSE/SCHEMA FAILURE OCCURS, PRESERVE THE ARTIFACTS AND DO NOT AUTOMATICALLY FETCH AGAIN; REQUIRE MANUAL RECONCILIATION
+MATERIALIZE THE TRUTHFUL HISTORICAL DATASET SLICE IDENTITY ONLY AFTER THE CAPTURE ESTABLISHES OBSERVED START/END; KEEP RAW SHA256 IN IMMUTABLE MANIFEST/PROVENANCE, NOT AS AN UNREGISTERED DATASET-SLICE PROPERTY
+CLASSIFY HISTORICAL DATA AS RESEARCHER_EXPOSED_HISTORY; DO NOT CLAIM TEMPORALLY_UNSEEN FROM RECONSTRUCTED HISTORY
 DO NOT SELECT OR TRIM THE HISTORICAL WINDOW BASED ON VALUES OR RESEARCH PERFORMANCE
 DO NOT FIT RIDGE, CONSTRUCT OOS PREDICTIONS, RUN THE STAGE-1 INFORMATION TEST, GENERATE A SIGNAL OR RELEASE A RESULT UNTIL THE DATASET SLICE AND RUN INTERFACE ARE FROZEN
-START GENUINELY FORWARD RAW-VINTAGE COLLECTION ONLY WITH DURABLE CREATE-ONLY/VERSIONED STORAGE; DO NOT CLAIM TEMPORALLY_UNSEEN FROM RECONSTRUCTED HISTORY
+START GENUINELY FORWARD RAW-VINTAGE COLLECTION ONLY WITH DURABLE CREATE-ONLY/VERSIONED STORAGE; DO NOT BACKFILL FIRST-SEEN HISTORY
 KEEP ONCHAIN-HOLDER-COST-0001 AS BACKLOG UNTIL THE STABLECOIN INFORMATION TEST REACHES ITS FROZEN STOPPING POINT
 DO NOT START SUPERTrend / FUNDING-OI / RELATIVE-STRENGTH / NEW-ALLOCATION RESEARCH AS PART OF PHASE-6 OBSERVATION
 DO NOT CHANGE BRRK / BNB / PARAMETERS / COSTS / HISTORICAL EVIDENCE / PRODUCTION AUTHORITY
