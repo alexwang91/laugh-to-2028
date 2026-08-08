@@ -22,7 +22,7 @@
 | Phase 7 limited-live readiness gate | **IMPLEMENTED / MERGED #110 / LAUNCH BLOCKED** |
 | Phase 7 program mode | **MONITOR_ONLY** |
 | Phase 8 bear-short research | **BEAR-SHORT-0001 PREREGISTERED / TRIGGER ABSENT / NOT RUN / MERGED #111** |
-| Phase 0–8 drift audit | **PASS_FINAL_HEAD_VERIFIED / DRIFT_2 REMEDIATED / PENDING MERGE #112** |
+| Phase 0–8 drift audit | **COMPLETE / PASS_FINAL_HEAD_VERIFIED / DRIFT_2 REMEDIATED** |
 | Production-authorized components | **none** |
 
 ```text
@@ -133,13 +133,13 @@ Do not replace the missing trigger with a subjective current-market view and do 
 
 ## Phase 0–8 drift audit
 
-Machine contract: `config/phase0_8_drift_audit.json`.
+Machine contract: `config/phase0_8_drift_audit.json`. Evidence report: `docs/PHASE_0_8_DRIFT_AUDIT_2026-08-08.md`.
 
 The audit found and remediated three drift classes without changing strategy economics:
 
 1. legacy `TRADING_MODE=trade` could previously reach normal risk-increasing execution without the Phase 7 authority boundary;
 2. legacy production-facing configuration/documentation still exposed `NORMAL_BETA_CAP=1.30`;
-3. authoritative handoff docs lagged already-merged Phase 6/7/8 state.
+3. authoritative handoff docs lagged already-completed Phase 6/7/8 work.
 
 Current invariants are:
 
@@ -150,11 +150,9 @@ same-direction risk reduction            = preserved
 emergency flatten                        = preserved
 ```
 
-All applicable checks passed on the pre-closeout verification head `aa94f4c03c7897c4b6420f151f679c7f8da1b283`. The closeout status head must pass the same final CI before exact-head merge of PR #112.
+The audit closeout is `PASS_FINAL_HEAD_VERIFIED`. Audit success does **not** mean Phase 6 elapsed evidence passed, Phase 7 launch was approved, a bear transition was confirmed, or any real short was authorized.
 
-Audit success does **not** mean Phase 6 elapsed evidence passed, Phase 7 launch was approved, a bear transition was confirmed, or any real short was authorized.
-
-## Exact next dependency after audit merge
+## Exact next dependency
 
 The next repository dependency is **real Phase 6 zero-authority elapsed-shadow evidence**, not another strategy implementation phase. Continue the frozen observation mechanism; do not manufacture elapsed time.
 
