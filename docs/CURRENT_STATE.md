@@ -15,7 +15,7 @@ P5.2 feature evidence          COMPLETE / IMMUTABLE / DESCRIPTIVE CLOSEOUT
 P5.3 V1                       COMPLETE / IMMUTABLE / ARCHITECTURE_FAIL
 P5.3 V2                       COMPLETE / IMMUTABLE EVIDENCE / ARCHITECTURE_PASS
 P5.4 behavior mapping          COMPLETE / FIXED 4-MAP FAMILY / PURE IMPLEMENTATION / NO SELECTION
-P5.5 validation                PREREGISTERED / NO CANDIDATE ECONOMICS RUN
+P5.5 validation                IMPLEMENTED / R1+R2 FROZEN / RESULT NOT RUN
 P5.6 integration               NOT STARTED
 Phase 6 shadow                 NOT STARTED
 Phase 7 limited-live readiness NOT STARTED / actual launch requires explicit approval
@@ -27,62 +27,85 @@ production authorization       NONE
 
 P5.3 V2 immutable summary SHA256: `05d5d68a59c8b13f1122d98ed75d03934defdc9d73c7dd92e038c92fd97d2e52`.
 
-P5.4 canonical contract: `P5.4-FIXED-STATE-GROSS-BEHAVIOR-V1` with four maps `HARD_ONLY / GENTLE / BALANCED / DEFENSIVE`. The pure implementation only scales total frozen BRRK gross and cannot change relative asset ranking, create shorts or exceed gross 1.0.
+P5.4 canonical contract: `P5.4-FIXED-STATE-GROSS-BEHAVIOR-V1`; four maps `HARD_ONLY / GENTLE / BALANCED / DEFENSIVE`; pure scalar total-gross implementation only.
 
-## P5.5 preregistration
+## P5.5 frozen research contracts
 
-Contract: `P5.5-JOINT-PROFILE-MAP-VALIDATION-V1`  
-Pre-result semantic amendment: `P5.5-JOINT-PROFILE-MAP-VALIDATION-V1-R1`
+- base: `P5.5-JOINT-PROFILE-MAP-VALIDATION-V1`
+- R1: frozen pre-result MaxDD sign semantics (`abs(MaxDD)` comparison)
+- R2: frozen pre-result common-coverage correction
 
-P5.5 evaluates exactly 12 joint candidates:
+P5.5 evaluates exactly:
 
 ```text
 EARLY / BALANCED / CONSERVATIVE
 x
 HARD_ONLY / GENTLE / BALANCED / DEFENSIVE
+= 12 candidates
 ```
 
-`BRRK_NO_CYCLE_CONTROL` remains non-promotable comparator.
+`BRRK_NO_CYCLE_CONTROL` is non-promotable comparator.
 
-### Data boundary
+### R2 common observable window
 
-The authoritative BRRK target builder freezes its economic evaluation start at `2022-12-10`. Therefore P5.5 explicitly separates:
+The immutable P5.2 feature result explicitly ends `2026-02-28`; the immutable P5.3 V2 MARKET_STATE path inherits that end. Phase-4 BRRK targets/prices extend through `2026-08-02`.
 
-1. **all-event behavior diagnostics** across the full P5.3 V2 history, including the 2021 terminal/second-wind/control events, with no candidate return claims; and
-2. **authoritative BRRK economics** only from `2022-12-10` through `2026-08-02` using the frozen BRRK target authority.
+Before any P5.5 candidate economics, R2 therefore freezes:
 
-No 2021 BRRK economic path may be fabricated.
+```text
+authoritative economic start  2022-12-10
+authoritative economic end    2026-02-28
+rule                           min(BRRK target/price end, frozen MARKET_STATE end)
+forward-fill MARKET_STATE      forbidden
+fabricate feature/state data   forbidden
+absent later state -> zero     forbidden
+```
+
+2021 remains all-event behavior diagnostics only; no 2021 BRRK economic path is fabricated.
 
 ### Economic semantics
 
 P5.5 reuses repository-established mechanics:
 
-- authoritative prices/targets from `run_leverage_0040_once_r1.py`;
-- `simulate_p3_3_economic_path` timing/current-weight drift mechanics;
+- authoritative BRRK prices/targets rebuilt by `run_leverage_0040_once_r1.py`;
+- `simulate_p3_3_economic_path` with drifted current weights;
+- decision target held over next daily return;
 - 5% L1 rebalance band;
-- cost grid `5 / 10 / 20 / 50 bps` per executed absolute weight change;
-- matched same-target-source comparator;
-- metrics: terminal multiple, CAGR, MaxDD, Sharpe, Calmar, turnover and gross.
+- costs `5 / 10 / 20 / 50 bps` per executed absolute weight change;
+- no funding in primary selection;
+- matched unmodified BRRK comparator;
+- metrics: terminal multiple, CAGR, MaxDD, Sharpe, Calmar, turnover and average gross.
 
-R1 clarifies MaxDD sign semantics before any result: compare absolute drawdown magnitudes; candidate may worsen absolute MaxDD by at most 1 percentage point at 5/10 bps.
+### Validation/selection discipline
 
-### Selection discipline
+Hard gates remain frozen:
 
-Primary objective: highest 5-bps after-cost CAGR **among candidates passing every hard gate**. Gates include:
+- terminal-event partial de-risk;
+- 2021/2025 second-wind preservation;
+- known 2021 false FLAT retained and finite <=10d;
+- cost sensitivity and usefulness;
+- start-date robustness;
+- event-held-out robustness;
+- adjacent-policy robustness.
 
-- terminal-event partial de-risk timing;
-- second-wind preservation;
-- immutable 2021 false-FLAT visibility and <=10-day V2 episode;
-- after-cost CAGR/Calmar/turnover/end-multiple constraints;
-- four start-date robustness slices;
-- six economic-window event-held-out checks;
-- adjacent-policy robustness to prevent a knife-edge selection.
+Primary objective remains highest 5-bps after-cost CAGR **among all-gate passers**. No eligible candidate -> `NO_PROMOTION / FAIL_STOP`.
 
-If no candidate is eligible: `NO_PROMOTION / FAIL_STOP`. No post-result profile or multiplier retuning is allowed.
+## Implementation state
+
+Implemented but not run:
+
+- `p5_5_validation.py`: pure event/economic/robustness gates + frozen selector;
+- `run_p5_5_joint_validation.py`: base matched BRRK runner;
+- `run_p5_5_joint_validation_r2.py`: pre-result common-coverage corrected entrypoint;
+- `validate_p5_5_joint_validation_result.py`: immutable result validator;
+- synthetic tests for held-out math, MaxDD R1 semantics, robustness, adjacency and near-tie selection;
+- dedicated pre/post-result CI and one-time RUN_ONCE workflow.
+
+No candidate economics has been produced at this state.
 
 ## Frozen product boundaries
 
-- BRRK-0011 relative ranking unchanged;
+- BRRK relative ranking unchanged;
 - P4.1 defensive scale `[0,1]` unchanged;
 - production gross cap `1.0`;
 - actual zero-exposure -> risk-on remains explicit-human-gated;
@@ -92,12 +115,11 @@ If no candidate is eligible: `NO_PROMOTION / FAIL_STOP`. No post-result profile 
 ## Exact next action
 
 ```text
-CI-VERIFY / MERGE P5.5 PREREGISTRATION
-VERIFY NEW MAIN
-IMPLEMENT P5.5 RUNNER / VALIDATOR WITHOUT CHANGING CONTRACT
-RUN PRE-RUN INPUT/PARITY GATES
-RUN P5.5 ONCE
-COMMIT IMMUTABLE RESULT
-SELECT ONLY IF EVERY FROZEN GATE PASSES
-THEN P5.6 INTEGRATES ONLY AN ACCEPTED SELECTION; OTHERWISE FAIL-STOP/BLOCK
+OPEN / CI-VERIFY P5.5 IMPLEMENTATION PR
+PRE-RUN GATES MUST BE GREEN
+SUBMIT ONE RUN_ONCE MARKER
+COMMIT / VALIDATE IMMUTABLE P5.5 RESULT
+IF A CANDIDATE PASSES ALL FROZEN GATES -> P5.6 INTEGRATION ELIGIBLE
+ELSE -> P5.5 NO_PROMOTION / P5.6 BLOCKED
+NO PRODUCTION AUTHORIZATION
 ```
