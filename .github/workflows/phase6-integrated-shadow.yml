@@ -7,6 +7,7 @@ on:
       - 'execution/plan-b-bot/tests/test_phase6_integrated_shadow.py'
       - 'config/phase6_shadow_contract.json'
       - 'docs/PHASE6_INTEGRATED_SHADOW_2026-08-08.md'
+      - 'docs/CURRENT_STATE.md'
       - '.github/workflows/phase6-integrated-shadow.yml'
   push:
     branches:
@@ -16,16 +17,24 @@ on:
       - 'execution/plan-b-bot/tests/test_phase6_integrated_shadow.py'
       - 'config/phase6_shadow_contract.json'
       - 'docs/PHASE6_INTEGRATED_SHADOW_2026-08-08.md'
+      - 'docs/CURRENT_STATE.md'
       - '.github/workflows/phase6-integrated-shadow.yml'
   workflow_dispatch:
 
 permissions:
   contents: read
 
+env:
+  PYTHONHASHSEED: '0'
+  OMP_NUM_THREADS: '1'
+  OPENBLAS_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+  NUMEXPR_NUM_THREADS: '1'
+
 jobs:
   phase6-shadow-safety:
     runs-on: ubuntu-24.04
-    timeout-minutes: 20
+    timeout-minutes: 35
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -35,6 +44,10 @@ jobs:
           cache-dependency-path: execution/plan-b-bot/requirements-dev.txt
       - name: Install pinned execution test runtime
         run: pip install -r execution/plan-b-bot/requirements-dev.txt
+      - name: Reconfirm canonical P3.2 target parity
+        run: |
+          python research/integration/p3_2_target_parity.py
+          python research/integration/p3_2_golden_compare.py
       - name: Compile canonical shadow module
         working-directory: execution/plan-b-bot
         run: python -m py_compile beta_bot/shadow_system.py tests/test_phase6_integrated_shadow.py
