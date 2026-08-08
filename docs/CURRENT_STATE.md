@@ -17,7 +17,9 @@ P5.3 V2                       COMPLETE / IMMUTABLE EVIDENCE / ARCHITECTURE_PASS
 P5.4 behavior mapping          COMPLETE / FIXED 4-MAP FAMILY / PURE IMPLEMENTATION / NO SELECTION
 P5.5 validation                COMPLETE / IMMUTABLE / NO_PROMOTION / FAIL_STOP
 P5.6 cycle integration         BLOCKED / NO ELIGIBLE P5.5 CANDIDATE
-Phase 6 shadow                 NEXT / BASELINE ARCHITECTURE ONLY / ZERO TRADING AUTHORITY
+Phase 6 shadow implementation  IN PR #109 / ZERO-AUTHORITY CANONICAL BRRK BASELINE
+Phase 6 replay gate            RUNNING / P3.2 PARITY + SHADOW SAFETY + FAIL-CLOSED
+Phase 6 live elapsed evidence  MEASUREMENT_INCONCLUSIVE_TIME_DEPENDENT
 Phase 7 limited-live readiness NOT STARTED / actual launch requires explicit approval
 Phase 8 bear-short research    NOT STARTED
 production authorization       NONE
@@ -63,7 +65,7 @@ This is not a near-threshold miss suitable for post-result rescue. Do not retune
 
 ## P5.6 disposition
 
-P5.6 has no eligible P5.5 candidate to integrate. Its honest disposition is:
+P5.6 has no eligible P5.5 candidate to integrate:
 
 ```text
 P5.6 = BLOCKED / NO ELIGIBLE CYCLE-RISK OVERLAY
@@ -71,31 +73,61 @@ P5.6 = BLOCKED / NO ELIGIBLE CYCLE-RISK OVERLAY
 
 Do not force-select a failed candidate merely to complete the roadmap.
 
-Phase 6 may continue using the currently authorized baseline research/execution architecture only:
+## Phase 6 canonical shadow implementation
 
-- BRRK-0011 directional ranking;
-- P4.1 frozen defensive scale `[0,1]`;
-- no P5 cycle overlay;
-- production gross cap `1.0`;
-- zero trading/signing authority in shadow mode.
+PR #109 replaces the legacy BTC-only shadow interpretation with a canonical integrated **zero-authority** shadow boundary:
+
+```text
+P3.1 canonical data
+  -> P3.2 BRRK-0011 target authority
+  -> P3.3 rebalance control
+  -> read-only route projection
+  -> hypothetical orders + reconciliation/audit only
+```
+
+Frozen Phase 6 properties:
+
+- BRRK-0011 long baseline only;
+- no P5 cycle overlay (`NONE_P5_6_BLOCKED`);
+- target and post-control gross `<= 1.0`;
+- no executor/signer/Exchange/private-key dependency in the shadow orchestration;
+- no order submission, withdrawal, transfer or production activation;
+- reference/data/identity/cost/state/schedule/route failures discard the whole hypothetical order set;
+- emergency mode calculates hypothetical flattening only;
+- P3.2 independent parity and committed historical golden vectors are rerun as Phase 6 CI dependencies.
+
+CI/replay can establish only:
+
+```text
+PASS_SHADOW_ONLY_IMPLEMENTATION_REPLAY
+```
+
+It cannot fabricate elapsed live-shadow time. Full Phase 6 time-dependent evidence requires at least 14 elapsed calendar days, at least 10 scheduled decisions, at least one emergency drill, and zero critical reconciliation/target-drift/schedule failures. Until then:
+
+```text
+Phase 6 live elapsed evidence = MEASUREMENT_INCONCLUSIVE_TIME_DEPENDENT
+```
 
 ## Frozen product boundaries
 
 - BRRK relative ranking unchanged;
-- no >1 leverage;
+- no >1 production leverage;
 - no P5 cycle overlay selected;
 - actual zero-exposure -> risk-on remains explicit-human-gated;
+- `MONITOR_ONLY -> ACTIVE` remains explicit-human-gated;
+- first actual bear short remains explicit-human-gated;
 - no automated withdrawals/external transfers;
 - production authorization remains none.
 
 ## Exact next action
 
 ```text
-FINAL-HEAD CI / GOVERNANCE FOR P5.5 RESULT
-EXACT-HEAD MERGE P5.5
-VERIFY NEW MAIN
-RECORD P5.6 BLOCKED / NO CANDIDATE
-ENTER PHASE 6 BASELINE INTEGRATED SHADOW READINESS
-PROVE NO-SIGNER / NO-ORDER / READ-ONLY / HYPOTHETICAL-ORDER INVARIANTS
+MAKE PR #109 FINAL-HEAD CI/GOVERNANCE GREEN
+EXACT-HEAD MERGE PHASE 6 ZERO-AUTHORITY SHADOW IMPLEMENTATION
+RECORD IMPLEMENTATION/REPLAY PASS IF EVIDENCE PASSES
+KEEP LIVE ELAPSED SHADOW EVIDENCE TIME-DEPENDENT / NOT FABRICATED
+THEN IMPLEMENT PHASE 7 LIMITED-LIVE READINESS GATES WITHOUT LAUNCHING
+THEN PROCEED TO PHASE 8 BEAR-SHORT RESEARCH WITH FIRST REAL SHORT HUMAN-GATED
+AFTER P8, RUN PHASE 0-8 PROJECT DRIFT AUDIT AND CORRECT IDENTIFIED DRIFT
 DO NOT PRODUCTION-AUTHORIZE ANYTHING
 ```
