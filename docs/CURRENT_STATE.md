@@ -19,7 +19,7 @@ Phase 7 readiness gate            IMPLEMENTED / MERGED #110 / LAUNCH BLOCKED
 Phase 7 program state             MONITOR_ONLY
 Phase 8 bear-short research       PREREGISTERED_TRIGGER_ABSENT_NOT_RUN / MERGED #111
 Phase 0-8 drift audit             COMPLETE / PASS_FINAL_HEAD_VERIFIED / DRIFT_2 REMEDIATED
-Program epistemic governance v1   PG0-PG2 COMPLETE / PG3 NEXT
+Program epistemic governance v1   PG0-PG3 COMPLETE / PG4 NEXT
 production authorization          NONE
 first real short authorization    NONE
 ```
@@ -103,29 +103,29 @@ Same-direction reductions and emergency flatten remain available. The audit stat
 
 ## Program-Level Epistemic Governance v1
 
-PG0 repository audit and PG1 semantic freeze are complete. Canonical governance semantics remain in:
-
-- `config/research_governance_v1.json`;
-- `docs/PROGRAM_GOVERNANCE_V1_SPEC_2026-08-08.md`.
-
-The prospective boundary remains:
+PG0 repository audit, PG1 semantic freeze and PG2 registry/schema creation are complete. The prospective boundary remains:
 
 ```text
 legacy_boundary_commit = 896cbd123b7a0c38943815dd802f0f9dcd12e1c2
 research_governance_version = 1
 ```
 
-PG2 machine registries now exist:
+PG3 adds deterministic tooling under `research/governance/`:
 
-- `config/research_registry.json`;
-- `config/dataset_exposure_registry.json`;
-- `config/edge_registry.json`.
+```text
+python -m research.governance.validate
+python -m research.governance.audit
+python -m research.governance.audit --json
+python -m unittest research.governance.test_governance
+```
 
-Their schemas are frozen under `research/governance/schemas/`. All three registries are intentionally empty at PG2. No historical trial/exposure fact has been invented and the Edge Registry contains no retroactive BRRK admission.
+The validator checks future required metadata, researcher degrees of freedom, duplicate IDs, typed-lineage refs/cycles, false independence, dataset references, sealed-data consumption, exposure semantics, variant budgets, edge admission and research/edge production-authority violations. Result-released program-governed research requires the four evidence dimensions: temporal novelty, statistical sufficiency, governance integrity and operational realism.
 
-Detailed legacy mapping remains deferred to PG4. PG3 must first add deterministic validation, typed-lineage/data-exposure checks and the program audit command.
+The audit deterministically derives family/trial/variant counts, validation exposure, governance debt, lineage defects, possible family duplication, edge state and production provenance from machine registries. It is a derived report, not an authority plane.
 
-Historical research branches remain retained until PG4 retrospective provenance mapping is complete.
+PG4 is now unblocked to map legacy research conservatively. Mapping must use `FACT`, `INFERRED_FROM_REPOSITORY` and `UNKNOWN`; absent historical trials/views/decisions must not be reconstructed by guesswork. The Edge Registry remains empty.
+
+Historical research branches remain retained until PG4 provenance mapping is complete.
 
 ## Frozen product boundaries
 
@@ -142,10 +142,11 @@ Historical research branches remain retained until PG4 retrospective provenance 
 ## Exact next action
 
 ```text
-PG3: IMPLEMENT DETERMINISTIC PROGRAM VALIDATOR AND AUDIT COMMAND
-VALIDATE DUPLICATE IDS / LINEAGE REFS / DAG CYCLES / DATASET REFS / SEALED CONSUMPTION / VARIANT BUDGET / PRODUCTION BOUNDARIES
-DERIVE COUNTS FROM MACHINE REGISTRIES; DO NOT HAND-COPY AUDIT REPORTS
-DO NOT MAP LEGACY FACTS UNTIL THE VALIDATOR EXISTS
+PG4: RETROSPECTIVELY MAP EXISTING RESEARCH USING REPOSITORY EVIDENCE ONLY
+LABEL EACH CLAIM FACT / INFERRED_FROM_REPOSITORY / UNKNOWN
+CREATE RESEARCH_GOVERNANCE_DEBT FOR UNRECOVERABLE TRIALS / EXPOSURES / DECISIONS / LINEAGE
+DO NOT RETROACTIVELY ADMIT BRRK OR ANY LEGACY FEATURE INTO EDGE_REGISTRY
+DO NOT REINTERPRET OR RERUN IMMUTABLE NEGATIVE RESULTS
 DO NOT START SUPERTrend / FUNDING-OI / RELATIVE-STRENGTH / NEW-ALLOCATION RESEARCH
 DO NOT CHANGE BRRK / BNB / PARAMETERS / COSTS / PRODUCTION AUTHORITY
 AFTER GOVERNANCE V1 MERGES, RESUME REAL PHASE-6 ZERO-AUTHORITY ELAPSED OBSERVATION

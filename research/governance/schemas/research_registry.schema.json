@@ -25,6 +25,35 @@
       },
       "additionalProperties": false
     },
+    "research_process_complexity": {
+      "type": "object",
+      "required": ["declared_parameter_candidates", "actual_parameter_candidates_evaluated", "universes_evaluated", "horizons_evaluated", "rebalance_variants", "feature_representations", "special_cases_introduced", "validation_exposure_event_refs"],
+      "properties": {
+        "declared_parameter_candidates": {"oneOf": [{"type": "array"}, {"enum": ["UNKNOWN", "NOT_HISTORICALLY_RECORDED"]}]},
+        "actual_parameter_candidates_evaluated": {"oneOf": [{"type": "array"}, {"enum": ["UNKNOWN", "NOT_HISTORICALLY_RECORDED"]}]},
+        "universes_evaluated": {"oneOf": [{"type": "array"}, {"enum": ["UNKNOWN", "NOT_HISTORICALLY_RECORDED"]}]},
+        "horizons_evaluated": {"oneOf": [{"type": "array"}, {"enum": ["UNKNOWN", "NOT_HISTORICALLY_RECORDED"]}]},
+        "rebalance_variants": {"oneOf": [{"type": "array"}, {"enum": ["UNKNOWN", "NOT_HISTORICALLY_RECORDED"]}]},
+        "feature_representations": {"oneOf": [{"type": "array"}, {"enum": ["UNKNOWN", "NOT_HISTORICALLY_RECORDED"]}]},
+        "special_cases_introduced": {"oneOf": [{"type": "array"}, {"enum": ["UNKNOWN", "NOT_HISTORICALLY_RECORDED"]}]},
+        "validation_exposure_event_refs": {"oneOf": [{"type": "array", "items": {"type": "string"}}, {"enum": ["UNKNOWN", "NOT_HISTORICALLY_RECORDED"]}]},
+        "related_family_trials": {"oneOf": [{"type": "integer", "minimum": 0}, {"enum": ["UNKNOWN", "NOT_HISTORICALLY_RECORDED"]}]}
+      },
+      "additionalProperties": false
+    },
+    "evidence_scorecard": {
+      "type": "object",
+      "required": ["temporal_novelty", "statistical_sufficiency", "governance_integrity", "operational_realism"],
+      "properties": {
+        "temporal_novelty": {"type": "string"},
+        "statistical_sufficiency": {"type": "string"},
+        "governance_integrity": {"type": "string"},
+        "operational_realism": {"type": "string"},
+        "derived_confidence": {"enum": ["HIGH", "MEDIUM", "LOW", "UNKNOWN"]},
+        "confidence_rule_ref": {"type": ["string", "null"]}
+      },
+      "additionalProperties": false
+    },
     "research_record": {
       "type": "object",
       "required": ["research_id", "research_family_id", "research_governance_version", "governance_mode", "objective_type", "production_authorized"],
@@ -59,11 +88,13 @@
         "allowed_followup": {"oneOf": [{"type": "array", "items": {"type": "string"}}, {"type": "string"}]},
         "forbidden_followup": {"oneOf": [{"type": "array", "items": {"type": "string"}}, {"type": "string"}]},
         "researcher_decisions": {"oneOf": [{"type": "array", "items": {"type": "string"}}, {"type": "string"}]},
+        "research_process_complexity": {"$ref": "#/$defs/research_process_complexity"},
         "lineage_edges": {"type": "array", "items": {"$ref": "#/$defs/lineage_edge"}},
         "result_status": {"type": ["string", "null"]},
         "failure_reason": {"type": ["string", "null"]},
         "promotion_state": {"type": ["string", "null"]},
         "evidence_refs": {"type": "array", "items": {"type": "string"}},
+        "evidence_scorecard": {"$ref": "#/$defs/evidence_scorecard"},
         "decision_refs": {"type": "array", "items": {"type": "string"}},
         "production_relevance": {"type": ["string", "null"]},
         "production_authorized": {"const": false},
@@ -73,7 +104,7 @@
       },
       "allOf": [{
         "if": {"properties": {"governance_mode": {"const": "PROGRAM_GOVERNED_V1"}}, "required": ["governance_mode"]},
-        "then": {"required": ["research_family_id", "research_domain", "created_at", "created_before_result", "question", "hypothesis", "hypothesis_origin", "economic_mechanism", "primary_target", "primary_metric", "secondary_metrics", "feature_families", "horizon", "universe", "development_dataset_refs", "validation_dataset_refs", "sealed_dataset_refs", "declared_variant_budget", "actual_variants_evaluated", "stopping_rule", "success_criteria", "failure_criteria", "allowed_followup", "forbidden_followup", "researcher_decisions", "lineage_edges", "result_status", "failure_reason", "promotion_state", "evidence_refs", "production_relevance", "provenance_status"]}
+        "then": {"required": ["research_family_id", "research_domain", "created_at", "created_before_result", "question", "hypothesis", "hypothesis_origin", "economic_mechanism", "primary_target", "primary_metric", "secondary_metrics", "feature_families", "horizon", "universe", "development_dataset_refs", "validation_dataset_refs", "sealed_dataset_refs", "declared_variant_budget", "actual_variants_evaluated", "stopping_rule", "success_criteria", "failure_criteria", "allowed_followup", "forbidden_followup", "researcher_decisions", "research_process_complexity", "lineage_edges", "result_status", "failure_reason", "promotion_state", "evidence_refs", "production_relevance", "provenance_status"]}
       }],
       "additionalProperties": false
     },

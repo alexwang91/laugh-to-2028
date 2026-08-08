@@ -1,0 +1,39 @@
+name: Research governance core
+
+on:
+  pull_request:
+    paths:
+      - 'config/research_governance_v1.json'
+      - 'config/research_registry.json'
+      - 'config/dataset_exposure_registry.json'
+      - 'config/edge_registry.json'
+      - 'research/governance/**'
+      - '.github/workflows/research-governance.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'config/research_governance_v1.json'
+      - 'config/research_registry.json'
+      - 'config/dataset_exposure_registry.json'
+      - 'config/edge_registry.json'
+      - 'research/governance/**'
+      - '.github/workflows/research-governance.yml'
+
+jobs:
+  governance-core:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run governance unit tests
+        run: python -m unittest research.governance.test_governance
+      - name: Validate canonical registries
+        run: python -m research.governance.validate
+      - name: Emit deterministic audit twice
+        run: |
+          python -m research.governance.audit --json > /tmp/audit-a.json
+          python -m research.governance.audit --json > /tmp/audit-b.json
+          diff -u /tmp/audit-a.json /tmp/audit-b.json
+          cat /tmp/audit-a.json
