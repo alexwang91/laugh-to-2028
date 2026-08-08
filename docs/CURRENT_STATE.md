@@ -18,7 +18,7 @@ Phase 6 live elapsed evidence     MEASUREMENT_INCONCLUSIVE_TIME_DEPENDENT
 Phase 7 readiness gate            IMPLEMENTED / MERGED #110 / LAUNCH BLOCKED
 Phase 7 program state             MONITOR_ONLY
 Phase 8 bear-short research       PREREGISTERED_TRIGGER_ABSENT_NOT_RUN / MERGED #111
-Phase 0-8 drift audit             DRIFT_2 / REMEDIATION PENDING FINAL-HEAD CI
+Phase 0-8 drift audit             PASS_FINAL_HEAD_VERIFIED / DRIFT_2 REMEDIATED / PR #112 PENDING MERGE
 production authorization          NONE
 first real short authorization    NONE
 ```
@@ -88,15 +88,17 @@ No subjective market judgment substitutes for the missing trigger and no trigger
 
 ## Phase 0-8 drift audit
 
-Machine contract: `config/phase0_8_drift_audit.json`.
+Machine contract: `config/phase0_8_drift_audit.json`. Evidence report: `docs/PHASE_0_8_DRIFT_AUDIT_2026-08-08.md`.
 
-Material findings remediated on the audit branch:
+The audit remediated three drift classes without economic retuning:
 
-1. **Legacy execution authority bypass** — the BTC-only service could infer executable risk-increase capability from `TRADING_MODE=trade`; normal new-risk authority is now explicitly fail-closed.
-2. **Legacy production-cap drift** — `NORMAL_BETA_CAP=1.30` remained in config/docs; production-facing default and ceiling are now `1.0`.
-3. **Authoritative handoff drift** — README/CURRENT_STATE/NEXT_STEPS lagged already-merged Phase 6/7/8 work; they are being aligned in this closeout.
+1. **Legacy execution authority bypass** — normal risk increases are now fail-closed behind explicit production authority.
+2. **Legacy production-cap drift** — production-facing `NORMAL_BETA_CAP` default/ceiling is `1.0`.
+3. **Authoritative handoff drift** — README/CURRENT_STATE/NEXT_STEPS now reflect merged Phase 6/7/8 state.
 
-Risk-reducing behavior is intentionally preserved: same-direction reductions and emergency flatten remain available even though legacy normal risk increases are blocked.
+Same-direction reductions and emergency flatten remain available.
+
+All applicable checks passed on pre-closeout head `aa94f4c03c7897c4b6420f151f679c7f8da1b283`. PR #112 may merge only after its closeout status head receives the same final-head CI/governance confirmation.
 
 ## Frozen product boundaries
 
@@ -113,12 +115,11 @@ Risk-reducing behavior is intentionally preserved: same-direction reductions and
 ## Exact next action
 
 ```text
-COMPLETE PHASE 0-8 DRIFT-AUDIT MACHINE GATE
-RUN ALL APPLICABLE FINAL-HEAD CI / GOVERNANCE
-IF GREEN, EXACT-HEAD MERGE AUDIT REMEDIATION
+WAIT ONLY FOR PR #112 CLOSEOUT-HEAD CI/GOVERNANCE TO COMPLETE
+IF ALL GREEN, EXACT-HEAD MERGE PR #112
 VERIFY NEW MAIN
-THEN ACCUMULATE REAL PHASE-6 ELAPSED SHADOW EVIDENCE
-DO NOT ACTIVATE PHASE 7 WITHOUT EXPLICIT OWNER APPROVAL
+THEN CONTINUE REAL PHASE-6 ZERO-AUTHORITY ELAPSED OBSERVATION
+DO NOT ACTIVATE PHASE 7 WITHOUT THE COMPLETE CHECKLIST AND EXPLICIT OWNER APPROVAL
 DO NOT RUN BEAR-SHORT-0001 ECONOMICS WITHOUT THE FROZEN CONFIRMED-BEAR TRIGGER
 DO NOT PRODUCTION-AUTHORIZE ANYTHING THROUGH THE AUDIT MERGE
 ```
