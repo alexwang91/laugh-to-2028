@@ -1,0 +1,15 @@
+{
+  "handoff_id": "DUAL-LAYER-FUSION-ARCH-SANITY-V1-HANDOFF",
+  "base_main": "112a2373e0f9d75d85e04c1d58b0a96e45713eac",
+  "scope": "ARCHITECTURE_SANITY_ONLY",
+  "core_execution_files_changed": 0,
+  "canonical_brrk_changed": false,
+  "p3_2_changed": false,
+  "p3_3_changed": false,
+  "router_or_executor_changed": false,
+  "phase6_authority_changed": false,
+  "production_authorized": false,
+  "diagnostic_parameters_frozen_before_economics": true,
+  "promotion_eligible": false,
+  "next": "Run governance/no-drift CI, then execute exactly the frozen non-promotable economic diagnostic using already-exposed Stablecoin development history. Do not retune after results."
+}
