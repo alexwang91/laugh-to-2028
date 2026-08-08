@@ -1032,6 +1032,110 @@
       "provenance_status": "INFERRED_FROM_REPOSITORY",
       "governed_path_prefixes": [],
       "notes": ["No repository-valid confirmed bear trigger exists; no trigger-dependent economics were run."]
+    },
+    {
+      "research_id": "STABLECOIN-LIQUIDITY-0001",
+      "research_family_id": "STABLECOIN_LIQUIDITY",
+      "research_domain": "DIRECTION_REGIME",
+      "research_governance_version": 1,
+      "governance_mode": "PROGRAM_GOVERNED_V1",
+      "objective_type": "MECHANISM_TEST",
+      "created_at": "2026-08-08T12:38:18Z",
+      "created_before_result": true,
+      "question": "Does stablecoin liquidity provide incremental information about future 20-day canonical BRRK outcomes beyond the frozen price/regime information already available to BRRK-0011?",
+      "hypothesis": "A prospectively frozen stablecoin-liquidity state contains incremental predictive information about future 20-day canonical BRRK net returns beyond the frozen BRRK price/regime state vector.",
+      "hypothesis_origin": "EXTERNAL_HYPOTHESIS",
+      "economic_mechanism": "Changes in aggregate USD-pegged stablecoin supply may proxy changes in crypto-native deployable liquidity and risk appetite that are not fully represented by the frozen BRRK price/regime state.",
+      "primary_target": "future_20d_net_return_of_canonical_brrk_p3_2_target_path",
+      "primary_metric": "mean_walk_forward_oos_squared_error_loss_differential_baseline_minus_augmented_with_HAC_lag_19",
+      "secondary_metrics": [
+        "walk_forward_oos_absolute_error_loss_differential_baseline_minus_augmented",
+        "walk_forward_oos_return_sign_accuracy_difference_augmented_minus_baseline"
+      ],
+      "feature_families": ["STABLECOIN_LIQUIDITY_STATE_V1"],
+      "horizon": "20d",
+      "universe": ["BTC", "ETH", "SOL", "BNB"],
+      "development_dataset_refs": [],
+      "validation_dataset_refs": [],
+      "sealed_dataset_refs": [],
+      "declared_variant_budget": 1,
+      "actual_variants_evaluated": 0,
+      "parameter_candidate_count": 1,
+      "stopping_rule": "Do not retrieve full historical data or evaluate the model until the exact source/data contract and PIT semantics are frozen. Then run exactly one frozen Stage-1 information-test variant once. Release only the preregistered primary result classification and primary metric first. PASS may create a separately preregistered robustness-stage research ID; FAIL or INCONCLUSIVE stops this research ID with no rescue tuning.",
+      "success_criteria": [
+        "At least 730 valid walk-forward OOS predictions remain after decision-time filtering, training-only normalization and 20-day label purging.",
+        "The mean baseline-minus-augmented squared-error loss differential is greater than zero.",
+        "A one-sided HAC test with maximum lag 19 rejects H0: mean loss differential <= 0 at alpha=0.05.",
+        "No PIT, provenance, data-contract, variant-budget or governance blocking finding occurs."
+      ],
+      "failure_criteria": [
+        "FAIL_NO_INCREMENTAL_INFORMATION if the mean primary loss differential is <= 0 after the frozen run.",
+        "INCONCLUSIVE if the mean primary loss differential is > 0 but the one-sided HAC criterion is not met, or fewer than 730 valid OOS predictions remain.",
+        "Any PIT, provenance, unregistered-variant or data-contract violation invalidates the run rather than becoming a research result."
+      ],
+      "allowed_followup": [
+        "Only PASS_INCREMENTAL_INFORMATION may create a new separately preregistered robustness-stage research ID.",
+        "A later portfolio-integration experiment requires a separate research ID after robustness and incremental-information admission; no direct integration is allowed from this Stage-1 result."
+      ],
+      "forbidden_followup": [
+        "No same-ID feature, horizon, target, estimator, regularization, availability-lag, universe or threshold rescue after any result is observed.",
+        "No selection among USDT-only, USDC-only or other stablecoin decompositions based on observed performance.",
+        "No direct Edge Registry admission, BRRK modification, portfolio multiplier, leverage, short, Phase-7 activation or production authorization from this experiment."
+      ],
+      "researcher_decisions": [
+        "Baseline is the canonical frozen P3.2 BRRK state/target path; do not rebuild a substitute price model.",
+        "Augmented model differs from baseline only by STABLECOIN_LIQUIDITY_STATE_V1.",
+        "STABLECOIN_LIQUIDITY_STATE_V1 is fixed as aggregate USD-pegged stablecoin supply 20-day log growth plus acceleration defined as current 20-day log growth minus the immediately preceding 20-day log growth.",
+        "Primary estimator is Ridge regression with alpha=1.0; no hyperparameter grid is permitted under this research ID.",
+        "All normalization is expanding and training-only; full-sample z-scores, winsorization, percentiles or quantiles are forbidden.",
+        "At decision timestamp T, only observations with available_at <= T may be used; 20-day labels not fully realized by T are purged from training.",
+        "If a historical source row lacks a verifiable publication timestamp, the primary reconstructed-history proxy is available_at = metric_date + 2 days. LAG_1D and LAG_3D are reserved for a separately preregistered robustness stage and cannot replace LAG_2D after observing this result.",
+        "If a source later exposes a verifiable historical publication timestamp, exact publication semantics may replace the proxy only if frozen in the data contract before the first result-bearing retrieval/evaluation.",
+        "USDT/USDC decomposition may be collected only as a predeclared diagnostic in a later contract and cannot substitute for the aggregate primary feature after seeing results."
+      ],
+      "research_process_complexity": {
+        "declared_parameter_candidates": [
+          "RIDGE_ALPHA=1.0",
+          "PRIMARY_HORIZON=20D",
+          "PRIMARY_RECONSTRUCTED_HISTORY_AVAILABILITY_PROXY=LAG_2D_WHEN_PUBLICATION_TIMESTAMP_UNVERIFIABLE",
+          "HAC_MAX_LAG=19",
+          "MIN_VALID_OOS_PREDICTIONS=730"
+        ],
+        "actual_parameter_candidates_evaluated": [],
+        "universes_evaluated": [],
+        "horizons_evaluated": [],
+        "rebalance_variants": [],
+        "feature_representations": [
+          "STABLECOIN_LIQUIDITY_STATE_V1=aggregate_USD_pegged_supply_20d_log_growth+20d_growth_acceleration"
+        ],
+        "special_cases_introduced": [],
+        "validation_exposure_event_refs": [],
+        "related_family_trials": 1
+      },
+      "lineage_edges": [
+        {
+          "relation": "NEW_DATA_FORK",
+          "ref_research_id": "BRRK-0011",
+          "provenance_status": "FACT",
+          "evidence_ref": null
+        }
+      ],
+      "result_status": "PREREGISTERED_NOT_RUN",
+      "failure_reason": null,
+      "promotion_state": "NONE",
+      "evidence_refs": [],
+      "production_relevance": "Research-only Stage-1 external-information test. A PASS is eligible only for the next separately preregistered research stage and cannot change BRRK, phase authority or production authorization.",
+      "production_authorized": false,
+      "provenance_status": "FACT",
+      "governed_path_prefixes": ["research/stablecoin_liquidity_0001/"],
+      "notes": [
+        "No formal research path exists yet; this registry commit must precede path creation to preserve prospective provenance.",
+        "Dataset refs intentionally remain empty until exact source, fields, coverage window, transformations and PIT publication semantics can be frozen truthfully before full historical retrieval.",
+        "DefiLlama is a source candidate from the pre-run source audit, not yet a bound dataset source in this registry record.",
+        "Historical third-party data without verifiable publication timestamps must be labeled reconstructed/researcher-exposed history, never pristine PIT or temporally unseen evidence.",
+        "Forward snapshots collected only after a frozen data contract may later qualify as TEMPORALLY_UNSEEN if their raw vintages are immutable and retrieval/hash provenance is preserved.",
+        "ONCHAIN-HOLDER-COST-0001 remains backlog and is not registered, run or evaluated by this change."
+      ]
     }
   ],
   "research_governance_debt": [
@@ -1048,7 +1152,7 @@
       "category": "historical_validation_exposure_unknown",
       "status": "OPEN",
       "description": "Historical result views/peek counts and the information released in each view were not consistently recorded as exposure events.",
-      "affected_research_ids": ["BRRK-0011", "PIT-ALPHA-0016-0018", "ASYM-BETA-0024", "TSMOM-ALPHA-0029", "FUNDING-PNL-0003", "CARRY-PNL-0031-CARRY-RF-0036", "EXPOSURE-SMOOTH-0038-CONTINUOUS-BETA", "LEVERAGE-0039", "LEVERAGE-0040", "LEVERAGE-0041", "P5.1-EVENT-TAXONOMY-V1", "P5.2-FEATURE-FAMILIES-V1", "P5.3-STATE-MODEL-STRUCTURE-V1", "P5.3-MARKET-STATE-PERMISSION-SEPARATION-V2", "P5.4-FIXED-STATE-GROSS-BEHAVIOR-V1", "P5.5-JOINT-PROFILE-MAP-VALIDATION-V1", "BEAR-SHORT-0001"],
+      "affected_research_ids": ["BRRK-0011", "PIT-ALPHA-0016-0018", "ASYM-BETA-0024", "TSMOM-ALPHA-0029", "FUNDING-PNL-0003", "CARRY-PNL-0031-CARRY-RF-0036", "EXPOSURE-SMOOTH-0038-CONTINUOUS-BETA", "LEVERAGE-0039", "LEVERAGE-0040", "LEVERAGE-0041", "P5.1-EVENT-TAXONOMY-V1", "P5.2-FEATURE-FAMILIES-V1", "P5.3-STATE-MODEL-STRUCTURE-V1", "P5.4-FIXED-STATE-GROSS-BEHAVIOR-V1", "P5.5-JOINT-PROFILE-MAP-VALIDATION-V1", "BEAR-SHORT-0001"],
       "evidence_refs": ["docs/PROGRAM_GOVERNANCE_PG0_REPOSITORY_AUDIT_2026-08-08.md"]
     },
     {
