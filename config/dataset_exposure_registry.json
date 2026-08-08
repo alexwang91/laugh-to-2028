@@ -2,6 +2,37 @@
   "schema_version": 1,
   "registry_id": "DATASET-EXPOSURE-REGISTRY-V1",
   "research_governance_version": 1,
-  "dataset_slices": [],
-  "exposure_events": []
+  "dataset_slices": [
+    {
+      "dataset_slice_id": "STABLECOIN-LIQUIDITY-0001-DEFILLAMA-HIST-V1",
+      "dataset_id": "DEFILLAMA-STABLECOIN-ALL-CHARTS",
+      "dataset_version": "capture-20260808T141719736297Z-sha256-7cffe6fb3a21e891082c06c60e91491edfbc78e9c01e2d549805815a646d9ffd",
+      "source": "DEFILLAMA-STABLECOIN-ALL-CHARTS-V1",
+      "assets": ["AGGREGATE_USD_PEGGED_STABLECOINS"],
+      "fields": ["totalCirculatingUSD.peggedUSD"],
+      "resolution": "1D",
+      "start": "2017-11-29T00:00:00Z",
+      "end": "2026-08-08T00:00:00Z",
+      "transformation": "IDENTITY_RAW_PRIMARY_FIELD_WITH_RECONSTRUCTED_AVAILABLE_AT_LAG_2D",
+      "pit_publication_semantics": "RECONSTRUCTED_HISTORY; published_at=null; available_at=metric_timestamp+2_calendar_days; later revisions cannot be backdated",
+      "data_budget": "VALIDATION",
+      "contamination_state": "RESEARCHER_EXPOSED_HISTORY",
+      "consumed": true,
+      "researcher_exposed_history": true,
+      "provenance_status": "FACT",
+      "evidence_refs": ["research/stablecoin_liquidity_0001/FIRST_CAPTURE_EVIDENCE.json"]
+    }
+  ],
+  "exposure_events": [
+    {
+      "exposure_id": "STABLECOIN-LIQUIDITY-0001-RAW-DATA-20260808T141719Z",
+      "research_id": "STABLECOIN-LIQUIDITY-0001",
+      "dataset_slice_ref": "STABLECOIN-LIQUIDITY-0001-DEFILLAMA-HIST-V1",
+      "timestamp": "2026-08-08T14:17:19.736297Z",
+      "release_type": "RAW_DATA",
+      "result_informed_followup": false,
+      "provenance_status": "FACT",
+      "evidence_ref": "research/stablecoin_liquidity_0001/FIRST_CAPTURE_EVIDENCE.json"
+    }
+  ]
 }
