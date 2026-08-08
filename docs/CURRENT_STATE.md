@@ -19,7 +19,7 @@ Phase 7 readiness gate            IMPLEMENTED / MERGED #110 / LAUNCH BLOCKED
 Phase 7 program state             MONITOR_ONLY
 Phase 8 bear-short research       PREREGISTERED_TRIGGER_ABSENT_NOT_RUN / MERGED #111
 Phase 0-8 drift audit             COMPLETE / PASS_FINAL_HEAD_VERIFIED / DRIFT_2 REMEDIATED
-Program epistemic governance v1   PG0-PG4 COMPLETE / PG5 NEXT
+Program epistemic governance v1   PG0-PG5 COMPLETE / PG6 NEXT
 production authorization          NONE
 first real short authorization    NONE
 ```
@@ -103,27 +103,28 @@ Same-direction reductions and emergency flatten remain available. The audit stat
 
 ## Program-Level Epistemic Governance v1
 
-PG0 repository audit, PG1 semantic freeze, PG2 registries/schemas and PG3 deterministic validator/audit are complete. The prospective boundary remains:
+PG0 repository audit, PG1 semantic freeze, PG2 registries/schemas, PG3 deterministic validator/audit and PG4 retrospective mapping are complete. The prospective boundary remains:
 
 ```text
 legacy_boundary_commit = 896cbd123b7a0c38943815dd802f0f9dcd12e1c2
 research_governance_version = 1
 ```
 
-PG4 retrospective mapping is complete in:
+PG4 conservatively mapped 17 `RETROSPECTIVE_LEGACY` research records and six open governance-debt categories. Dataset exposure remains un-backfilled where historical release/consumption facts cannot be proved, and the Edge Registry remains empty.
 
-- `config/research_registry.json`;
-- `docs/PROGRAM_GOVERNANCE_PG4_RETROSPECTIVE_MAPPING_2026-08-08.md`.
+PG5 adds prospective fail-closed enforcement in:
 
-The Research Registry now contains 17 conservative `RETROSPECTIVE_LEGACY` records covering the canonical BRRK research target, stopped/rejected/shadow-only research lines, EXPOSURE-SMOOTH-0038, leverage 0039/0040/0041, P5.1-P5.5 and BEAR-SHORT-0001. Typed lineage is recorded only where committed contracts prove the relation.
+- `research/governance/enforce_future.py`;
+- `research/governance/test_future_enforcement.py`;
+- `.github/workflows/research-governance.yml`.
 
-Six open `RESEARCH_GOVERNANCE_DEBT` categories explicitly preserve unrecoverable historical parameter trials, validation exposure, dataset-exposure history, lineage gaps, researcher decisions and candidate-universe gaps. The correct derived PG4 audit state is therefore expected to be `WARNING`, not an artificial clean PASS.
+For pull requests, the governance workflow now fetches full history, validates registries, runs all governance tests, compares the exact PR base against `HEAD`, and blocks changed formal `research/**` paths unless exactly one `PROGRAM_GOVERNED_V1` record owns them through a non-broad `governed_path_prefixes` declaration. `research/governance/**` and `research/common/**` are infrastructure and are excluded from formal-research path ownership.
 
-`config/dataset_exposure_registry.json` remains empty because legacy slice identity plus historical release/consumption history cannot be reconstructed reliably enough to backfill. `config/edge_registry.json` remains empty; no BRRK/P5/legacy feature has been retroactively admitted as a governance-v1 edge.
+Future formal research must contain the frozen registration fields before result-bearing work can merge. This includes explicit presence of `failure_reason`; it may be `null` before a result exists but cannot be omitted. The existing validator continues to block duplicate IDs, invalid/circular lineage, false independence, invalid dataset/exposure transitions, unregistered variants, illegal edge admission and research/edge production authorization.
 
-Phase 6/7/8 authority remains in its existing contracts and is not duplicated into the Research Registry.
+Legacy records remain grandfathered when unchanged. A post-boundary change to a formal legacy research path is treated as new research activity and cannot bypass prospective v1 coverage or existing immutable-evidence/correction rules.
 
-Historical research branches have now served the PG4 provenance audit. No branch deletion is authorized by PG4; any cleanup would require a separate future decision.
+PG6 must now update canonical docs and add final no-drift regression proving strategy outputs/configs, immutable research evidence and production authority remain unchanged.
 
 ## Frozen product boundaries
 
@@ -140,11 +141,12 @@ Historical research branches have now served the PG4 provenance audit. No branch
 ## Exact next action
 
 ```text
-PG5: ADD DIFF-AWARE FAIL-CLOSED CI FOR ALL NEW FORMAL RESEARCH
-REQUIRE PROGRAM_GOVERNED_V1 REGISTRATION IN THE SAME CHANGE BEFORE RESULT-BEARING RESEARCH CAN MERGE
-FAIL ON MISSING HYPOTHESIS / PRIMARY METRIC / STOPPING RULE / FAILURE_REASON / VARIANT BUDGET / DATA BUDGET / LINEAGE / PRODUCTION BOUNDARY
-FAIL ON NEW UNREGISTERED RESEARCH PATHS AND INVALID GOVERNED_PATH_PREFIXES
-KEEP LEGACY RECORDS GRANDFATHERED; DO NOT RETROACTIVELY FAIL THE REPOSITORY
+PG6: UPDATE README / CURRENT_STATE / NEXT_STEPS / PROJECT GOVERNANCE / CANONICAL SOURCE-OF-TRUTH DOCS
+ADD MACHINE NO-DRIFT REGRESSION FOR STRATEGY CONFIGS / BRRK PARITY / IMMUTABLE RESULTS / PHASE 6-8 AUTHORITY
+PROVE PRODUCTION GROSS CAP = 1.0 AND production_authorized_components = []
+PROVE BTC / ETH / SOL / BNB UNIVERSE UNCHANGED AND BNB REMAINS
+PROVE TRANSACTION-COST ASSUMPTIONS AND HISTORICAL EVIDENCE HASHES UNCHANGED
+GENERATE FINAL A-L PROGRAM-LEVEL EPISTEMIC GOVERNANCE V1 REPORT
 DO NOT START SUPERTrend / FUNDING-OI / RELATIVE-STRENGTH / NEW-ALLOCATION RESEARCH
 DO NOT CHANGE BRRK / BNB / PARAMETERS / COSTS / PRODUCTION AUTHORITY
 AFTER GOVERNANCE V1 MERGES, RESUME REAL PHASE-6 ZERO-AUTHORITY ELAPSED OBSERVATION
