@@ -4,24 +4,43 @@
   "research_id": "STABLECOIN-LIQUIDITY-0001",
   "status": "FROZEN_NOT_EXECUTED",
   "production_authorized": false,
-  "purpose": "Define the only allowed first historical capture sequence before any result-bearing use of Stablecoin data.",
+  "purpose": "Define the only allowed first historical capture sequence before any result-bearing use of Stablecoin data, with a durable external archive receipt required before parsing.",
   "required_sequence": [
     "FETCH_ONCE_FROM_FROZEN_SOURCE",
     "PERSIST_EXACT_RAW_BYTES_CREATE_ONLY",
     "PERSIST_MANIFEST_CREATE_ONLY",
     "VERIFY_RAW_HASH_AND_MANIFEST_IDENTITY",
+    "ARCHIVE_RAW_AND_MANIFEST_TO_DURABLE_EXTERNAL_STORE",
+    "CREATE_DURABILITY_RECEIPT_CREATE_ONLY",
+    "VERIFY_DURABILITY_RECEIPT_IDENTITY",
     "PARSE_ONLY_THE_PERSISTED_VERIFIED_BYTES",
     "SELECT_FROZEN_HISTORICAL_COVERAGE",
     "EMIT_METADATA_ONLY"
   ],
   "live_execution_guards": {
     "explicit_live_flag_required": true,
-    "durable_storage_attestation_required": true,
-    "storage_root_must_be_absolute": true,
-    "storage_root_must_be_outside_repository": true,
+    "staging_root_must_be_absolute": true,
+    "staging_root_must_be_outside_repository": true,
+    "external_durable_copy_required_before_parse": true,
+    "durability_receipt_required_before_parse": true,
+    "durability_receipt_write_semantics": "CREATE_ONLY_VERSIONED_COPY",
     "existing_capture_artifact_policy": "HARD_FAIL_NO_SECOND_FETCH_UNTIL_MANUAL_RECONCILIATION",
     "network_retry_policy": "NO_AUTOMATIC_RETRY"
   },
+  "allowed_staging_output_fields": [
+    "schema_version",
+    "gate_id",
+    "research_id",
+    "dataset_id",
+    "source_id",
+    "retrieved_at",
+    "raw_sha256",
+    "manifest_sha256",
+    "raw_size_bytes",
+    "raw_relative_path",
+    "manifest_relative_path",
+    "state"
+  ],
   "allowed_metadata_output_fields": [
     "schema_version",
     "gate_id",
@@ -30,6 +49,7 @@
     "source_id",
     "retrieved_at",
     "raw_sha256",
+    "manifest_sha256",
     "raw_size_bytes",
     "raw_row_count",
     "historical_row_count",
@@ -40,6 +60,10 @@
     "parser_version",
     "raw_relative_path",
     "manifest_relative_path",
+    "durable_backend",
+    "durable_raw_ref",
+    "durable_manifest_ref",
+    "durability_archived_at",
     "research_result_status"
   ],
   "forbidden_outputs": [
@@ -77,6 +101,14 @@
       "raw_relative_path",
       "source_sdk_commit",
       "parser_version"
+    ],
+    "durability_receipt_owns": [
+      "manifest_sha256",
+      "durable_backend",
+      "durable_raw_ref",
+      "durable_manifest_ref",
+      "archived_at",
+      "write_semantics"
     ],
     "raw_hash_must_not_be_added_as_unregistered_dataset_slice_property": true
   },
