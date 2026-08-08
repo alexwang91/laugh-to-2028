@@ -102,11 +102,33 @@ def _install_common(monkeypatch, *, current_qty, target_qty):
     monkeypatch.setattr(service, "build_portfolio_plan", lambda **_kwargs: plan)
     monkeypatch.setattr(service, "send_telegram", lambda *_args, **_kwargs: None)
     monkeypatch.setattr(service, "normal_new_risk_disabled", lambda _settings: False)
+    # Most tests below isolate reconciliation/kill-switch behavior, so explicitly
+    # open the legacy authority seam in-test. Production default remains closed.
+    monkeypatch.setattr(service, "legacy_normal_service_new_risk_authorized", lambda: True)
     monkeypatch.setattr(
         service,
         "_restart_recovery",
         lambda *_args, **_kwargs: _restart_report(current_qty),
     )
+
+
+def test_canonical_production_authority_blocks_clean_legacy_risk_increase(monkeypatch):
+    _install_common(monkeypatch, current_qty=0.0, target_qty=0.4)
+    monkeypatch.setattr(service, "legacy_normal_service_new_risk_authorized", lambda: False)
+    monkeypatch.setattr(
+        service,
+        "_account_reconciliation",
+        lambda *_args, **_kwargs: _report(actual_qty=0.0, target_qty=0.4, clean=True),
+    )
+    submitted = []
+    monkeypatch.setattr(service, "execute_target_position", lambda *_args, **_kwargs: submitted.append(True))
+
+    payload = service.run_strategy(DummySettings())
+
+    assert submitted == []
+    assert payload["result"] == "trade_blocked_phase7_authority_not_integrated"
+    assert payload["risk_increase_blocked"] is True
+    assert payload["legacy_production_authority_allows_new_risk"] is False
 
 
 def test_unexplained_reconciliation_blocks_risk_increase(monkeypatch):
@@ -133,6 +155,7 @@ def test_unexplained_reconciliation_blocks_risk_increase(monkeypatch):
 
 def test_same_direction_reduce_remains_available_during_reconciliation_uncertainty(monkeypatch):
     _install_common(monkeypatch, current_qty=0.5, target_qty=0.2)
+    monkeypatch.setattr(service, "legacy_normal_service_new_risk_authorized", lambda: False)
     monkeypatch.setattr(service, "_restart_recovery", lambda *_args, **_kwargs: _restart_report(0.5, clean=False))
     monkeypatch.setattr(service, "reconcile_persistent_orders", lambda _settings: (_ for _ in ()).throw(LedgerUncertainState("unknown submit result")))
     monkeypatch.setattr(service, "_account_reconciliation", lambda *_args, **_kwargs: _report(actual_qty=0.5, target_qty=0.2))
@@ -144,6 +167,7 @@ def test_same_direction_reduce_remains_available_during_reconciliation_uncertain
     assert submitted == [True]
     assert payload["risk_increase_blocked"] is False
     assert payload["reconciliation_override"] == "REDUCE_RISK_ACTION_ALLOWED"
+    assert payload["legacy_production_authority_allows_new_risk"] is False
 
 
 def test_new_risk_kill_switch_blocks_clean_risk_increase(monkeypatch):
@@ -163,6 +187,7 @@ def test_new_risk_kill_switch_blocks_clean_risk_increase(monkeypatch):
 
 def test_new_risk_kill_switch_preserves_same_direction_reduction(monkeypatch):
     _install_common(monkeypatch, current_qty=0.5, target_qty=0.2)
+    monkeypatch.setattr(service, "legacy_normal_service_new_risk_authorized", lambda: False)
     monkeypatch.setattr(service, "normal_new_risk_disabled", lambda _settings: True)
     monkeypatch.setattr(service, "_account_reconciliation", lambda *_args, **_kwargs: _report(actual_qty=0.5, target_qty=0.2, clean=True))
     monkeypatch.setattr(service, "reconcile_persistent_orders", lambda _settings: {"blocking_unresolved_after": 0})
