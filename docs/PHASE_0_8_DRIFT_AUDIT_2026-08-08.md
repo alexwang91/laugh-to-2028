@@ -1,6 +1,6 @@
 # Phase 0–8 Full Drift Audit — 2026-08-08
 
-Status: **REMEDIATION IMPLEMENTED / FINAL-HEAD CI PENDING**  
+Status: **PASS_FINAL_HEAD_VERIFIED / PENDING EXACT-HEAD MERGE**  
 Drift classification: **DRIFT_2**  
 Economic retuning: **NONE**  
 Production authorization: **NONE**
@@ -59,9 +59,9 @@ Top-level README and roadmap handoff files lagged already-merged Phase 6/7/8 wor
 
 Remediation:
 
-- README now records merged Phase 6/7/8 state;
-- `docs/CURRENT_STATE.md` now points to the audit closeout as current work;
-- `docs/NEXT_STEPS.md` now points to real Phase 6 elapsed evidence as the next post-audit dependency.
+- README records merged Phase 6/7/8 state;
+- `docs/CURRENT_STATE.md` points to the audit closeout as the completed repository task;
+- `docs/NEXT_STEPS.md` points to real Phase 6 elapsed evidence as the next dependency.
 
 ## Machine-enforced invariants
 
@@ -96,6 +96,28 @@ The audit does not modify:
 - Phase 7 owner approval state;
 - Phase 8 trigger state or candidate economics.
 
+## Verification evidence
+
+Pre-closeout verification head:
+
+```text
+aa94f4c03c7897c4b6420f151f679c7f8da1b283
+```
+
+All applicable workflows on that head passed, including:
+
+- Phase 0 baseline contract;
+- P3.2 target research-live parity and committed golden vectors;
+- P4.3 cap1 parity and LEVERAGE-0040/0041 compatibility contracts;
+- P5 frozen preregistration/implementation compatibility workflows;
+- Phase 6 integrated shadow safety / zero-signer / zero-submit checks;
+- Phase 7 limited-live readiness gate;
+- Phase 8 bear-short research contract;
+- PR handoff governance;
+- dedicated Phase 0–8 drift audit and legacy authority behavior tests.
+
+The closeout status commit must receive the same final-head CI confirmation before exact-head merge. No semantic change is permitted between that confirmation and merge.
+
 ## Remaining external/time/human boundaries
 
 After this audit merges, the next dependency is **not another implementation phase**. It is real Phase 6 observation time under the frozen contract.
@@ -109,4 +131,4 @@ No repository merge may convert these conditions into a pass by assertion:
 
 ## Closeout rule
 
-Only after the audit branch final head passes the dedicated audit gate plus all applicable repository CI/governance should the machine contract status be changed to `PASS_FINAL_HEAD_VERIFIED`, followed by one final CI pass and exact-head merge.
+Exact-head merge is permitted only if the closeout head passes the dedicated audit gate plus all applicable repository CI/governance. That merge does not grant production authority.
