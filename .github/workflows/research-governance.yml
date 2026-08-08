@@ -43,6 +43,8 @@ jobs:
           python-version: '3.12'
       - name: Run governance unit tests
         run: python -m unittest discover -s research/governance -p 'test_*.py'
+      - name: Verify Phase 6 live-observation preactivation gate
+        run: python -m research.governance.phase6_live_observation_gate
       - name: Run STABLECOIN-LIQUIDITY-0001 data-contract unit tests
         run: python -m unittest discover -s research/stablecoin_liquidity_0001 -p 'test_*.py'
       - name: Validate canonical registries
