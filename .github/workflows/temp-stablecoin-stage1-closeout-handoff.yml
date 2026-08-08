@@ -1,0 +1,190 @@
+name: Temporary Stablecoin Stage-1 terminal handoff patch
+
+on:
+  push:
+    branches:
+      - research/stablecoin-liquidity-0001-stage1-closeout
+
+permissions:
+  contents: write
+
+jobs:
+  handoff-once:
+    if: contains(github.event.head_commit.message, '[STABLECOIN_STAGE1_CLOSEOUT_HANDOFF_V1]')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/stablecoin-liquidity-0001-stage1-closeout
+          fetch-depth: 0
+      - name: Replace only Stablecoin terminal section and next action
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('docs/CURRENT_STATE.md')
+          s=p.read_text(encoding='utf-8')
+
+          old='Stablecoin liquidity research     STABLECOIN-LIQUIDITY-0001 / STAGE-1 ONE-SHOT CLAIMED + ARMED_NOT_EXECUTED / NO RESULT'
+          new='Stablecoin liquidity research     STABLECOIN-LIQUIDITY-0001 / STAGE-1 COMPLETE / FAIL_NO_INCREMENTAL_INFORMATION / TERMINAL STOP'
+          if s.count(old)!=1:
+              raise SystemExit(f'unexpected executive Stablecoin line count: {s.count(old)}')
+          s=s.replace(old,new,1)
+
+          workflow_old='- `.github/workflows/research-governance.yml` — CI enforcement, including the governed Stablecoin data-contract/capture-gate regression suite. The temporary live one-shot executor used for the first capture has been removed after successful execution.'
+          workflow_new='- `.github/workflows/research-governance.yml` — CI enforcement, including the governed Stablecoin data-contract/capture-gate/run-interface regression suite. Both temporary live executors (first capture and Stage-1 result execution) were removed immediately after their one-shot use.'
+          if s.count(workflow_old)!=1:
+              raise SystemExit('unexpected workflow handoff text')
+          s=s.replace(workflow_old,workflow_new,1)
+
+          lineage_old='PR #121 repaired the cross-gate conflict between future-research registration and the final no-drift regression without broadening the legacy allowlist. PR #122 repaired preregistration-only validator semantics so empty pre-result dataset/evidence arrays do not require fabricated placeholders. PR #123 prospectively registered `STABLECOIN-LIQUIDITY-0001`. PR #124 froze its source/data/PIT contract. PR #125 froze the one-shot first-capture gate. PR #126 split capture/persist from finalize so durable archival must precede parsing. PR #127 armed and executed the single governed capture on merge commit `824f58151bcef2203c320e4b94b8070dcac77dae` through GitHub Actions run `31261566204`; both governance and capture jobs completed successfully.'
+          lineage_new=lineage_old+' PR #128 registered the captured validation slice/exposure and removed the capture executor. PR #129 froze `STABLECOIN-LIQUIDITY-0001-RUN-INTERFACE-V1`. PR #130 irreversibly claimed and executed Stage-1 exactly once on merge `dd50ec35085eee2a2883dc1b29e3dd21ec52b043`, workflow run `31264048473`, producing the immutable primary FAIL result now closed out below.'
+          if s.count(lineage_old)!=1:
+              raise SystemExit('unexpected Stablecoin lineage paragraph')
+          s=s.replace(lineage_old,lineage_new,1)
+
+          section_start=s.index('## STABLECOIN-LIQUIDITY-0001\n')
+          section_end=s.index('## Frozen product boundaries\n', section_start)
+          replacement='''## STABLECOIN-LIQUIDITY-0001
+
+`STABLECOIN-LIQUIDITY-0001` was a prospectively governed Stage-1 mechanism test asking whether the frozen `STABLECOIN_LIQUIDITY_STATE_V1` feature family adds predictive information about future 20-day canonical BRRK net returns beyond the frozen P3.2 BRRK price/regime state.
+
+The research ID has now reached its frozen stopping point:
+
+```text
+result_status                    FAIL_NO_INCREMENTAL_INFORMATION
+failure_reason                   PRIMARY_MEAN_LOSS_DIFFERENTIAL_NONPOSITIVE
+promotion_state                  NO_PROMOTION
+production_authorized            false
+declared_variant_budget          1
+actual_variants_evaluated        1
+run_interface                    STABLECOIN-LIQUIDITY-0001-RUN-INTERFACE-V1 / IMMUTABLE PRE-RESULT CONTRACT
+run_once_marker                  RUN_ONCE_STAGE1.marker / PERMANENT / DO NOT DELETE
+stage1 execution                 STABLECOIN-LIQUIDITY-0001-STAGE1-RUN-V1 / EXECUTED ONCE / TERMINAL FAIL_STOP
+stage1 merge commit              dd50ec35085eee2a2883dc1b29e3dd21ec52b043
+stage1 workflow run              31264048473 / run_attempt=1 / SUCCESS
+validation dataset               STABLECOIN-LIQUIDITY-0001-DEFILLAMA-HIST-V1
+validation exposure              STABLECOIN-LIQUIDITY-0001-RAW-DATA-20260808T141719Z
+historical classification        RECONSTRUCTED_HISTORY_RESEARCHER_EXPOSED_HISTORY
+primary result evidence          research/stablecoin_liquidity_0001/STAGE1_PRIMARY_RESULT.json
+edge admission                   NONE
+portfolio integration            NONE
+stage2 robustness eligibility    NONE / PRIMARY STAGE-1 FAILED
+```
+
+### Immutable primary result
+
+```text
+valid_oos_prediction_count       933
+mean_primary_loss_differential   -5430210.12771038
+hac_max_lag                      19
+hac_test_statistic               -1.2454264237630361
+hac_one_sided_p_value            0.8935124773215692
+primary_result_digest            d920d45397d45ae5636a2f3c682600778d4d087d97e035ba911844cca65821ff
+classification                   FAIL_NO_INCREMENTAL_INFORMATION
+```
+
+The preregistered primary differential is `MSE_baseline - MSE_augmented`; therefore a non-positive mean is an immediate frozen failure condition. The observed mean is materially negative, so the augmented Stablecoin model did not demonstrate incremental predictive information beyond the frozen P3.2 BRRK state. The OOS count exceeds the 730 minimum, but the one-sided HAC result (`t=-1.2454264237630361`, `p=0.8935124773215692`) likewise provides no support for a positive incremental-information effect.
+
+This is a **terminal research failure**, not an invitation to retune. LAG_1D/LAG_3D, alternative Ridge alpha, alternative horizon, alternative feature representation, secondary metrics, predictions and coefficient paths cannot be used to rescue this ID. No Stage-2 robustness research is eligible from this failed Stage-1. `RUN_ONCE_STAGE1.marker` remains permanently committed and the same research ID may never be rerun.
+
+### Provenance and data state
+
+The first Stablecoin capture remains the immutable reconstructed-history validation dataset:
+
+```text
+historical_start                 2017-11-29T00:00:00Z
+historical_end                   2026-08-08T00:00:00Z
+historical_rows                  3175
+stablecoin_raw_sha256            7cffe6fb3a21e891082c06c60e91491edfbc78e9c01e2d549805815a646d9ffd
+stablecoin_capture_run           31261566204
+```
+
+Historical publication/first-seen timestamps were unavailable, so the data remains `RESEARCHER_EXPOSED_HISTORY`, never sealed or `TEMPORALLY_UNSEEN`. The Stage-1 execution verified that raw hash, captured exact Binance input pages before model evaluation, durably archived those inputs and their receipt, passed the frozen six-date canonical P3.2 parity gate, then ran exactly one paired baseline/augmented walk-forward Ridge variant.
+
+Stage-1 immutable artifacts from workflow run `31264048473` are:
+
+```text
+Binance input artifact ID        9023613464
+Binance input digest             sha256:26748abdd75a7568872617b5bc2f6618b8b3a315cbcd785cf1175e4c606354db
+Binance receipt artifact ID      9023613629
+Binance receipt digest           sha256:bdf9ed3486c426c75f4b7cd9eed2e88bc2843c457459481b0eb56e14429ce9d3
+primary result artifact ID       9023630485
+primary result artifact digest   sha256:6eac38957c3592e18eb2cb4706e87be12daeca6cfe504065af19e944984674f1
+```
+
+The input ZIP, receipt ZIP, primary-result ZIP and primary JSON were also mirrored outside the repository to ChatGPT Library. Predictions, coefficients, feature importance and secondary metrics were not persisted/released.
+
+The temporary Stage-1 live execution job is removed in the closeout change. `RUN_INTERFACE.json` itself is intentionally not rewritten after observing the result; it remains the immutable pre-result contract that governed the one-shot test.
+
+### Authority consequence
+
+The FAIL result creates no edge and no authority:
+
+- Edge Registry remains empty.
+- BRRK relative ranking, BTC/ETH/SOL/BNB universe and BNB membership remain unchanged.
+- No Stablecoin multiplier or portfolio feature is created.
+- Production gross cap remains `1.0`.
+- `production_authorized_components = []`.
+- Phase 6 elapsed observation is independent and unchanged.
+- Phase 7 remains `MONITOR_ONLY` / launch blocked.
+- Phase 8 bear-short remains trigger-absent/not-run.
+- No leverage, short or first-real-short authority is created.
+
+`ONCHAIN-HOLDER-COST-0001` remains only a separate backlog idea. Stablecoin has now reached its stopping point, so Holder Cost may be considered later only through a **new prospective preregistration**; it is not started by this closeout.
+
+'''
+          s=s[:section_start]+replacement+s[section_end:]
+
+          next_start=s.index('## Exact next action\n')
+          next_replacement='''## Exact next action
+
+```text
+RESUME REAL PHASE-6 ZERO-AUTHORITY ELAPSED OBSERVATION UNDER GOVERNANCE V1 PROVENANCE
+ACCUMULATE GENUINELY FUTURE PHASE-6 EVIDENCE ONLY; DO NOT REBUILD OR BACKFILL ELAPSED TIME
+KEEP signature_authorized = false AND order_submission_authorized = false
+REQUIRE AT LEAST 14 ELAPSED CALENDAR DAYS AND 10 SCHEDULED DECISIONS PLUS FROZEN QUALITY CRITERIA
+MERGE THE STABLECOIN STAGE-1 CLOSEOUT PR ONLY AFTER REGISTRY VALIDATION + NO-DRIFT + P3.2 PARITY/GOLDEN + PHASE-6 SAFETY CHECKS PASS
+KEEP STABLECOIN-LIQUIDITY-0001 AT FAIL_NO_INCREMENTAL_INFORMATION / NO_PROMOTION / TERMINAL STOP
+KEEP RUN_ONCE_STAGE1.marker PERMANENT; DO NOT DELETE, RERUN, RETRY OR REUSE THIS RESEARCH ID
+DO NOT TEST LAG_1D/LAG_3D, NEW RIDGE ALPHA, NEW HORIZON, NEW STABLECOIN REPRESENTATION OR SECONDARY-METRIC RESCUE UNDER THIS ID
+DO NOT START A STABLECOIN STAGE-2 ROBUSTNESS ID BECAUSE STAGE-1 FAILED
+KEEP EDGE REGISTRY EMPTY FOR STABLECOIN; DO NOT CREATE A MULTIPLIER OR PORTFOLIO INTEGRATION
+KEEP THE COMPLETED STAGE-1 LIVE EXECUTOR REMOVED FROM CURRENT HEAD
+ONCHAIN-HOLDER-COST-0001 MAY ONLY BE CONSIDERED LATER AS A SEPARATE NEW PROSPECTIVE RESEARCH ID; DO NOT START IT AS PART OF THIS CLOSEOUT
+DO NOT CHANGE BRRK / BNB / PARAMETERS / COSTS / HISTORICAL LEGACY EVIDENCE / PRODUCTION AUTHORITY
+DO NOT ACTIVATE PHASE 7 WITHOUT THE COMPLETE CHECKLIST AND EXPLICIT OWNER APPROVAL
+DO NOT RUN BEAR-SHORT-0001 ECONOMICS WITHOUT THE FROZEN CONFIRMED-BEAR TRIGGER
+DO NOT AUTHORIZE A FIRST REAL SHORT WITHOUT THE SEPARATE HUMAN GATE
+```
+'''
+          s=s[:next_start]+next_replacement
+          p.write_text(s,encoding='utf-8')
+          PY
+      - name: Validate terminal handoff facts
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          s=Path('docs/CURRENT_STATE.md').read_text(encoding='utf-8')
+          required=[
+            'STAGE-1 COMPLETE / FAIL_NO_INCREMENTAL_INFORMATION / TERMINAL STOP',
+            'actual_variants_evaluated        1',
+            'valid_oos_prediction_count       933',
+            'mean_primary_loss_differential   -5430210.12771038',
+            'hac_one_sided_p_value            0.8935124773215692',
+            'stage2 robustness eligibility    NONE / PRIMARY STAGE-1 FAILED',
+            'edge admission                   NONE',
+            'portfolio integration            NONE',
+            'DO NOT DELETE, RERUN, RETRY OR REUSE THIS RESEARCH ID'
+          ]
+          for item in required:
+              assert item in s, item
+          PY
+      - name: Remove helper and commit authoritative terminal handoff
+        run: |
+          set -euo pipefail
+          git rm .github/workflows/temp-stablecoin-stage1-closeout-handoff.yml
+          git add docs/CURRENT_STATE.md
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Research [DRIFT_0]: hand off Stablecoin Stage-1 terminal FAIL_STOP'
+          git push origin HEAD:research/stablecoin-liquidity-0001-stage1-closeout
