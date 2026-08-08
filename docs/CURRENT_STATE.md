@@ -18,7 +18,7 @@ Phase 6 live elapsed evidence     MEASUREMENT_INCONCLUSIVE_TIME_DEPENDENT
 Phase 7 readiness gate            IMPLEMENTED / MERGED #110 / LAUNCH BLOCKED
 Phase 7 program state             MONITOR_ONLY
 Phase 8 bear-short research       PREREGISTERED_TRIGGER_ABSENT_NOT_RUN / MERGED #111
-Phase 0-8 drift audit             PASS_FINAL_HEAD_VERIFIED / DRIFT_2 REMEDIATED / PR #112 PENDING MERGE
+Phase 0-8 drift audit             COMPLETE / PASS_FINAL_HEAD_VERIFIED / DRIFT_2 REMEDIATED
 production authorization          NONE
 first real short authorization    NONE
 ```
@@ -90,15 +90,13 @@ No subjective market judgment substitutes for the missing trigger and no trigger
 
 Machine contract: `config/phase0_8_drift_audit.json`. Evidence report: `docs/PHASE_0_8_DRIFT_AUDIT_2026-08-08.md`.
 
-The audit remediated three drift classes without economic retuning:
+The audit is complete and remediated three drift classes without economic retuning:
 
-1. **Legacy execution authority bypass** — normal risk increases are now fail-closed behind explicit production authority.
+1. **Legacy execution authority bypass** — normal risk increases are fail-closed behind explicit production authority.
 2. **Legacy production-cap drift** — production-facing `NORMAL_BETA_CAP` default/ceiling is `1.0`.
-3. **Authoritative handoff drift** — README/CURRENT_STATE/NEXT_STEPS now reflect merged Phase 6/7/8 state.
+3. **Authoritative handoff drift** — README/CURRENT_STATE/NEXT_STEPS reflect completed Phase 6/7/8 work.
 
-Same-direction reductions and emergency flatten remain available.
-
-All applicable checks passed on pre-closeout head `aa94f4c03c7897c4b6420f151f679c7f8da1b283`. PR #112 may merge only after its closeout status head receives the same final-head CI/governance confirmation.
+Same-direction reductions and emergency flatten remain available. The audit status is `PASS_FINAL_HEAD_VERIFIED` and does not confer production authority.
 
 ## Frozen product boundaries
 
@@ -115,11 +113,11 @@ All applicable checks passed on pre-closeout head `aa94f4c03c7897c4b6420f151f679
 ## Exact next action
 
 ```text
-WAIT ONLY FOR PR #112 CLOSEOUT-HEAD CI/GOVERNANCE TO COMPLETE
-IF ALL GREEN, EXACT-HEAD MERGE PR #112
-VERIFY NEW MAIN
-THEN CONTINUE REAL PHASE-6 ZERO-AUTHORITY ELAPSED OBSERVATION
+VERIFY CANONICAL MAIN CONTAINS THE PHASE 0-8 AUDIT CLOSEOUT
+CONTINUE REAL PHASE-6 ZERO-AUTHORITY ELAPSED OBSERVATION
+DO NOT REBUILD OR BACKFILL PHASE-6 ELAPSED EVIDENCE
+WHEN PHASE-6 EVIDENCE ACTUALLY PASSES, REVIEW PHASE-7 CHECKLIST
 DO NOT ACTIVATE PHASE 7 WITHOUT THE COMPLETE CHECKLIST AND EXPLICIT OWNER APPROVAL
 DO NOT RUN BEAR-SHORT-0001 ECONOMICS WITHOUT THE FROZEN CONFIRMED-BEAR TRIGGER
-DO NOT PRODUCTION-AUTHORIZE ANYTHING THROUGH THE AUDIT MERGE
+DO NOT PRODUCTION-AUTHORIZE ANYTHING THROUGH THE AUDIT CLOSEOUT
 ```
