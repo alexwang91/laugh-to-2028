@@ -18,7 +18,7 @@ Phase 6 live elapsed evidence     MEASUREMENT_INCONCLUSIVE_TIME_DEPENDENT / CLOC
 Phase 6 observation preactivation PREACTIVATION_BLOCKED_FAIL_CLOSED
 Phase 6 durable evidence backend  FROZEN / ACTIONS_ARTIFACT_V4 / 90D / NO CREDIT / MERGED #133
 Phase 6 valuation contract        PHASE6-LIVE-VALUATION-V1 / CANDIDATE #134 / STANDARD MODE ONLY
-Phase 6 pre-arm dependencies      3 OF 4 FROZEN / ACCOUNT IDENTITY UNRESOLVED
+Phase 6 pre-arm dependencies      3 OF 4 FROZEN IN #134 CANDIDATE / ACCOUNT IDENTITY UNRESOLVED
 Phase 7 readiness gate            IMPLEMENTED / MERGED #110 / LAUNCH BLOCKED
 Phase 7 program state             MONITOR_ONLY
 Phase 8 bear-short research       PREREGISTERED_TRIGGER_ABSENT_NOT_RUN / MERGED #111
@@ -240,9 +240,9 @@ Unknown nonzero spot/perp assets, duplicate identities, invalid marks, nonpositi
 4. schedule + duplicate-credit rule          FROZEN / MERGED #132/#133
 ```
 
-Therefore PR #134 advances Phase-6 preactivation from 2/4 to **3/4**, but does not arm anything.
+Therefore PR #134 advances Phase-6 preactivation from 2/4 to **3/4 if merged**, but does not arm anything.
 
-The one remaining external dependency is one exact verified read-only Hyperliquid master/subaccount address compatible with `PHASE6-LIVE-VALUATION-V1`. The address must represent the actual observed account, not an agent-wallet identity. No address may be invented or derived from a private key merely to close the gate.
+The one remaining external dependency after a successful #134 merge is one exact verified read-only Hyperliquid master/subaccount address compatible with `PHASE6-LIVE-VALUATION-V1`. The address must represent the actual observed account, not an agent-wallet identity. No address may be invented or derived from a private key merely to close the gate.
 
 If the eventual account does not return `userAbstraction=disabled`, the collector remains blocked. V1 must not be broadened post-observation merely to make that account fit.
 
