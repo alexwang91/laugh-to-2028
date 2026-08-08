@@ -58,3 +58,128 @@ jobs:
           python -m research.governance.audit --json > /tmp/audit-b.json
           diff -u /tmp/audit-a.json /tmp/audit-b.json
           cat /tmp/audit-a.json
+
+  stablecoin-first-capture-execution:
+    if: >-
+      github.event_name == 'push' &&
+      github.ref == 'refs/heads/main' &&
+      contains(github.event.head_commit.message, '[STABLECOIN_FIRST_CAPTURE_EXECUTE_V1]')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Preflight one-shot rerun guard
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RAW_ARTIFACT_NAME: stablecoin-first-capture-raw-${{ github.sha }}
+        run: |
+          set -euo pipefail
+          COUNT="$(curl -fsSL \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${GH_TOKEN}" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "${GITHUB_API_URL}/repos/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}/artifacts?per_page=100" \
+            | python -c 'import json,os,sys; d=json.load(sys.stdin); n=os.environ["RAW_ARTIFACT_NAME"]; print(sum(1 for a in d.get("artifacts",[]) if a.get("name")==n and not a.get("expired",False)))')"
+          if [ "${COUNT}" != "0" ]; then
+            echo "Existing raw artifact for this run; refusing a second source fetch." >&2
+            exit 41
+          fi
+      - name: Capture and persist exact raw bytes without parsing
+        id: capture
+        run: |
+          set -euo pipefail
+          STAGING="${RUNNER_TEMP}/stablecoin-first-capture"
+          STAGING_JSON="${RUNNER_TEMP}/stablecoin-staging.json"
+          python -m research.stablecoin_liquidity_0001.capture_once \
+            --storage-root "${STAGING}" \
+            --capture-only \
+            --execute-live-capture \
+            > "${STAGING_JSON}"
+          echo "staging_root=${STAGING}" >> "${GITHUB_OUTPUT}"
+          echo "staging_json=${STAGING_JSON}" >> "${GITHUB_OUTPUT}"
+      - name: Archive raw snapshot before any parse
+        id: raw_archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: stablecoin-first-capture-raw-${{ github.sha }}
+          path: |
+            ${{ steps.capture.outputs.staging_root }}/**
+            ${{ steps.capture.outputs.staging_json }}
+          if-no-files-found: error
+          overwrite: false
+          retention-days: 90
+      - name: Create hash-bound durability receipt
+        env:
+          STAGING_JSON: ${{ steps.capture.outputs.staging_json }}
+          RECEIPT_PATH: ${{ runner.temp }}/stablecoin-durability-receipt.json
+          ARTIFACT_ID: ${{ steps.raw_archive.outputs.artifact-id }}
+          ARTIFACT_URL: ${{ steps.raw_archive.outputs.artifact-url }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          import os
+          from datetime import datetime, timezone
+          from pathlib import Path
+          from research.stablecoin_liquidity_0001.capture_once import CaptureStagingMetadata, write_durability_receipt
+
+          staging = CaptureStagingMetadata(**json.loads(Path(os.environ['STAGING_JSON']).read_text(encoding='utf-8')))
+          artifact_id = os.environ['ARTIFACT_ID']
+          artifact_url = os.environ['ARTIFACT_URL']
+          if not artifact_id or not artifact_url:
+              raise SystemExit('missing immutable artifact identity')
+          write_durability_receipt(
+              Path(os.environ['RECEIPT_PATH']),
+              staging,
+              durable_backend='GITHUB_ACTIONS_ARTIFACT_V4',
+              durable_raw_ref=f'{artifact_url}#artifact_id={artifact_id}&raw={staging.raw_relative_path}',
+              durable_manifest_ref=f'{artifact_url}#artifact_id={artifact_id}&manifest={staging.manifest_relative_path}',
+              archived_at=datetime.now(timezone.utc).isoformat().replace('+00:00','Z'),
+          )
+          PY
+      - name: Finalize metadata-only parse after durable receipt
+        id: finalize
+        env:
+          STAGING_ROOT: ${{ steps.capture.outputs.staging_root }}
+          STAGING_JSON: ${{ steps.capture.outputs.staging_json }}
+          RECEIPT_PATH: ${{ runner.temp }}/stablecoin-durability-receipt.json
+          METADATA_PATH: ${{ runner.temp }}/stablecoin-capture-metadata.json
+        run: |
+          set -euo pipefail
+          python -m research.stablecoin_liquidity_0001.capture_once \
+            --storage-root "${STAGING_ROOT}" \
+            --finalize-after-durable-copy \
+            --staging-json "${STAGING_JSON}" \
+            --durability-receipt "${RECEIPT_PATH}" \
+            > "${METADATA_PATH}"
+          echo "receipt_path=${RECEIPT_PATH}" >> "${GITHUB_OUTPUT}"
+          echo "metadata_path=${METADATA_PATH}" >> "${GITHUB_OUTPUT}"
+      - name: Archive receipt and metadata
+        uses: actions/upload-artifact@v4
+        with:
+          name: stablecoin-first-capture-metadata-${{ github.sha }}
+          path: |
+            ${{ steps.finalize.outputs.receipt_path }}
+            ${{ steps.finalize.outputs.metadata_path }}
+          if-no-files-found: error
+          overwrite: false
+          retention-days: 90
+      - name: Emit allowed capture metadata summary
+        env:
+          METADATA_PATH: ${{ steps.finalize.outputs.metadata_path }}
+        run: |
+          python - <<'PY' >> "${GITHUB_STEP_SUMMARY}"
+          import json, os
+          from pathlib import Path
+          m=json.loads(Path(os.environ['METADATA_PATH']).read_text(encoding='utf-8'))
+          print('## STABLECOIN-LIQUIDITY-0001 first capture')
+          for k in ('research_id','source_id','retrieved_at','raw_sha256','manifest_sha256','raw_size_bytes','raw_row_count','historical_row_count','historical_start','historical_end','historical_cutoff','historical_classification','durable_backend','durable_raw_ref','durable_manifest_ref','research_result_status'):
+              print(f'- **{k}**: `{m[k]}`')
+          PY
