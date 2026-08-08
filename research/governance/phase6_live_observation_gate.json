@@ -62,6 +62,7 @@
   "notes": [
     "This gate exists because Phase 6 implementation/replay passed but no scheduled future-only collector with durable evidence persistence was present on main.",
     "The preactivation gate does not itself start the 14-day elapsed clock or create any credited scheduled decision.",
+    "An open PR or unmerged branch carrying this gate has no elapsed-credit or arm authority; only the merged main-branch copy may participate in a later prospective arm decision.",
     "The canonical target/rebalance/router/shadow implementation blobs remain unchanged under Governance v1 no-drift.",
     "Arming requires a later prospective change after the observation account identity, valuation semantics and durable evidence backend are frozen and verifiable."
   ]
