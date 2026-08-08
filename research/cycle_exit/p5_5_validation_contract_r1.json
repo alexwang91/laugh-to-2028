@@ -1,0 +1,32 @@
+{
+  "amendment_id": "P5.5-JOINT-PROFILE-MAP-VALIDATION-V1-R1",
+  "status": "FROZEN_BEFORE_ANY_P5_5_CANDIDATE_ECONOMICS",
+  "registered_at_utc": "2026-08-08T00:30:00Z",
+  "base_contract": "P5.5-JOINT-PROFILE-MAP-VALIDATION-V1",
+  "result_observed_before_amendment": false,
+  "reason": "Max drawdown values are negative. The base contract field name candidate_minus_baseline_max_drawdown_pp_max was sign-ambiguous and could incorrectly reject a large improvement. R1 freezes the intended invariant before any candidate economics: compare absolute drawdown magnitudes and permit at most 0.01 absolute worsening versus the matched BRRK baseline.",
+  "replacement_semantics": {
+    "max_drawdown_improvement_abs": "abs(baseline_max_drawdown) - abs(candidate_max_drawdown); positive means candidate improves drawdown",
+    "max_drawdown_absolute_worsening": "max(0, abs(candidate_max_drawdown) - abs(baseline_max_drawdown))",
+    "at_5bps_max_drawdown_absolute_worsening_max": 0.01,
+    "at_10bps_max_drawdown_absolute_worsening_max": 0.01,
+    "minimum_usefulness_drawdown_improvement_min": 0.02
+  },
+  "unchanged": [
+    "candidate set",
+    "P5.3 profiles",
+    "P5.4 multiplier maps",
+    "economic start/end",
+    "cost grid",
+    "rebalance band",
+    "all event-behavior gates",
+    "all CAGR/Calmar/turnover/end-multiple gates",
+    "start-date robustness",
+    "event-held-out robustness",
+    "broad-policy robustness",
+    "selection objective/tie-breaks",
+    "run authority",
+    "production authorization"
+  ],
+  "production_authorized": false
+}

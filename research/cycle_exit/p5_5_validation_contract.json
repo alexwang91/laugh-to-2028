@@ -1,0 +1,156 @@
+{
+  "contract_id": "P5.5-JOINT-PROFILE-MAP-VALIDATION-V1",
+  "status": "PREREGISTERED_BEFORE_ANY_P5_5_CANDIDATE_ECONOMICS",
+  "registered_at_utc": "2026-08-08T00:28:00Z",
+  "base_main": "a03b575ccc9cfce38590f05b1a76b5f62d46d863",
+  "objective": "Maximize long-run after-cost compounded wealth/CAGR among candidates that pass every frozen risk, robustness, event-behavior and implementation hard gate. Risk is a constraint, not an objective to minimize.",
+  "upstream": {
+    "p5_3_v2_result_summary_sha256": "05d5d68a59c8b13f1122d98ed75d03934defdc9d73c7dd92e038c92fd97d2e52",
+    "p5_4_contract_git_blob_sha": "595a8488616ac8d333335cf2bc9cc509d808d7e8",
+    "p5_4_mapping_engine_git_blob_sha": "a6842ddb572f7af7da928a7a8a0c6f1582ef7c56",
+    "p5_2_summary_sha256": "3f6dc3c512d22ac8f71d43ed155f2602cd40d5caf3d617c0e130e170727e0627",
+    "authoritative_brrk_target_builder": "research/leverage_0040/run_leverage_0040_once_r1.py::_load_frozen_targets_corrected",
+    "authoritative_price_builder": "research/leverage_0040/run_leverage_0040_once_r1.py::_fetch_prices_corrected",
+    "economic_path_engine": "research/leverage_0040/study_core.py::simulate_p3_3_economic_path",
+    "path_metrics_engine": "research/leverage_0040/study_core.py::path_metrics"
+  },
+  "candidate_set": {
+    "profiles": ["EARLY", "BALANCED", "CONSERVATIVE"],
+    "behavior_maps": ["HARD_ONLY", "GENTLE", "BALANCED", "DEFENSIVE"],
+    "promotable_combinations": 12,
+    "non_promotable_comparator": "BRRK_NO_CYCLE_CONTROL"
+  },
+  "evaluation_layers": {
+    "all_event_behavior_diagnostics": {
+      "window": "all frozen P5.1 events and controls from the P5.3 V2 state history",
+      "purpose": "Evaluate timing, second-wind preservation, false hard-risk episodes and state/multiplier behavior without pretending BRRK target economics existed before the frozen BRRK evaluation start.",
+      "uses_candidate_returns": false,
+      "uses_frozen_event_buckets": true
+    },
+    "authoritative_brrk_economics": {
+      "evaluation_session_start": "2022-12-10",
+      "evaluation_session_end": "2026-08-02",
+      "first_decision_date": "2022-12-09",
+      "reason": "The authoritative BRRK target builder itself freezes evaluation_start_session=2022-12-10. No 2021 BRRK economic path may be fabricated.",
+      "cost_bps_per_abs_weight_change": [5.0, 10.0, 20.0, 50.0],
+      "rebalance_band_l1": 0.05,
+      "fill_fraction": 1.0,
+      "transaction_cost_multiplier": 1.0,
+      "funding_in_primary_selection": false,
+      "primary_role": "matched price/turnover/cost comparison of cycle overlay versus the same frozen BRRK target authority"
+    }
+  },
+  "economic_path_semantics": {
+    "decision_target_t_held_over_next_daily_return": true,
+    "compare_target_to_drifted_current_economic_weights": true,
+    "executed_turnover_is_l1_change_in_accepted_weights": true,
+    "cost_return": "executed_turnover * cost_bps / 10000",
+    "cycle_target": "frozen_brrk_target * preregistered P5.4 multiplier for the P5.3 V2 MARKET_STATE on the decision date",
+    "comparator_target": "unmodified frozen_brrk_target",
+    "counterfactual_reentry_after_flat": "allowed in research economics only so missed upside can be measured; it never unlocks operational RISK_PERMISSION_LOCK",
+    "no_short": true,
+    "gross_cap": 1.0
+  },
+  "required_metrics": [
+    "end_multiple",
+    "cagr",
+    "max_drawdown",
+    "sharpe",
+    "calmar",
+    "turnover",
+    "average_gross",
+    "cycle_zero_exposure_days",
+    "candidate_minus_baseline_cagr_pp",
+    "candidate_minus_baseline_end_multiple",
+    "candidate_minus_baseline_max_drawdown_pp"
+  ],
+  "event_behavior_gates": {
+    "terminal_2021_target_lead_mean_multiplier_max": 0.90,
+    "terminal_2021_near_event_mean_multiplier_max": 0.90,
+    "second_wind_2021_near_event_mean_multiplier_min": 0.85,
+    "second_wind_2025_near_event_mean_multiplier_min": 0.70,
+    "false_flat_2021_must_remain_present": true,
+    "false_flat_2021_max_market_state_episode_days": 10,
+    "later_events_must_remain_observable": true,
+    "interpretation": "The single terminal label need not reach FLAT before the anchor; timely partial de-risk is sufficient. Second-wind gates protect upside continuation. The known 2021 false FLAT is not hidden; only its finite V2 duration is bounded."
+  },
+  "economic_hard_gates": {
+    "at_5bps": {
+      "candidate_minus_baseline_cagr_pp_min": -0.005,
+      "candidate_minus_baseline_max_drawdown_pp_max": 0.01,
+      "calmar_ratio_vs_baseline_min": 0.95,
+      "turnover_ratio_vs_baseline_max": 1.50
+    },
+    "at_10bps": {
+      "candidate_minus_baseline_cagr_pp_min": -0.010,
+      "candidate_minus_baseline_max_drawdown_pp_max": 0.01
+    },
+    "at_20bps": {
+      "end_multiple_ratio_vs_baseline_min": 0.98
+    },
+    "at_50bps": {
+      "end_multiple_must_remain_positive": true
+    },
+    "minimum_usefulness": "At 5 bps, require either CAGR/end-multiple improvement over baseline OR at least 0.02 absolute MaxDD improvement with no more than 0.005 CAGR penalty.",
+    "no_nonpositive_nav": true
+  },
+  "start_date_robustness": {
+    "starts": ["2022-12-10", "2023-06-01", "2024-01-01", "2025-01-01"],
+    "cost_bps": 5.0,
+    "worst_relative_cagr_pp_min": -0.015,
+    "median_relative_cagr_pp_min": -0.005
+  },
+  "event_held_out_robustness": {
+    "economic_window_events": [
+      "P5C-2024-MAR-MAY-MASKING",
+      "P5C-2025-PRE-JUNE-HIGH-VOL",
+      "P5E-2025-JUNE-NEW-HIGH",
+      "P5E-2025-AUG-NEW-HIGH",
+      "P5E-2025-OCT-NEW-HIGH-DELEVERAGING",
+      "P5E-2025-LATE-DETERIORATION"
+    ],
+    "excluded_interval": "the frozen event target_lead + near_event + immediate_after union",
+    "cost_bps": 5.0,
+    "rule": "Recompute candidate-versus-baseline CAGR after removing each event interval from both return streams. Every held-out relative CAGR must be >= -0.015 and the median must be >= -0.005.",
+    "purpose": "Prevent a single 2025 episode from creating a knife-edge apparent winner."
+  },
+  "broad_policy_robustness": {
+    "map_order": ["HARD_ONLY", "GENTLE", "BALANCED", "DEFENSIVE"],
+    "profile_order": ["EARLY", "BALANCED", "CONSERVATIVE"],
+    "rule": "A selected combination must have at least one adjacent profile with the same map OR one adjacent map with the same profile that also passes all non-selection hard gates.",
+    "boundary_selection_allowed": true
+  },
+  "selection_rule": {
+    "eligible": "Only combinations passing event behavior, all economic hard gates, start-date robustness, event-held-out robustness and broad-policy robustness.",
+    "primary": "highest 5 bps after-cost CAGR",
+    "near_tie_threshold_annualized_cagr": 0.005,
+    "near_tie": "If eligible combinations are within 0.005 annualized CAGR of the best, choose higher Calmar, then higher Sharpe, then smaller absolute MaxDD, then lower turnover, then less aggressive map order, then BALANCED profile if still tied, otherwise lexical stable order.",
+    "no_eligible_candidate": "NO_PROMOTION / FAIL_STOP",
+    "production_authorized": false
+  },
+  "required_outputs": [
+    "input_manifest.json",
+    "candidate_metrics_by_cost.csv",
+    "event_behavior.csv",
+    "start_date_robustness.csv",
+    "event_held_out_robustness.csv",
+    "candidate_gate_matrix.csv",
+    "selected_candidate.json",
+    "summary.json",
+    "summary.sha256"
+  ],
+  "forbidden": [
+    "change P5.3 profile thresholds after observing P5.5 economics",
+    "change P5.4 multiplier values after observing P5.5 economics",
+    "add a new candidate after observing P5.5 economics",
+    "fabricate BRRK target economics before 2022-12-10",
+    "use 2021 event labels as if they were available to the strategy in real time",
+    "change rebalance band or cost grid after results",
+    "drop the 2021 false FLAT from diagnostics",
+    "select on raw drawdown minimization instead of the frozen compounded-wealth objective",
+    "interpret counterfactual research reentry as live permission",
+    "authorize production/live trading"
+  ],
+  "run_authority": "AUTHORIZED_ONCE_AFTER_IMPLEMENTATION_AND_PRE_RUN_CI_GREEN_BY_OWNER_CONTINUOUS_EXECUTION_INSTRUCTION_2026_08_08",
+  "production_authorized": false
+}
