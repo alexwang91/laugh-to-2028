@@ -25,14 +25,20 @@ class Phase6LiveObservationGateTests(unittest.TestCase):
         self.phase6 = json.loads(
             (ROOT / "config/phase6_shadow_contract.json").read_text(encoding="utf-8")
         )
+        self.evidence_contract = json.loads(
+            (ROOT / "research/governance/phase6_live_evidence_contract.json").read_text(
+                encoding="utf-8"
+            )
+        )
         self.workflow = (ROOT / ".github/workflows/research-governance.yml").read_text(
             encoding="utf-8"
         )
 
-    def validate(self, gate=None, workflow=None):
+    def validate(self, gate=None, workflow=None, evidence_contract=None):
         return validate_gate_mapping(
             gate or self.gate,
             phase6_contract=self.phase6,
+            evidence_contract=evidence_contract or self.evidence_contract,
             workflow_text=self.workflow if workflow is None else workflow,
         )
 
@@ -41,6 +47,8 @@ class Phase6LiveObservationGateTests(unittest.TestCase):
         self.assertEqual(snapshot["status"], "PREACTIVATION_BLOCKED_FAIL_CLOSED")
         self.assertFalse(snapshot["collector_armed"])
         self.assertFalse(snapshot["dependencies_ready"])
+        self.assertTrue(snapshot["durable_evidence_backend_frozen"])
+        self.assertEqual(snapshot["durable_evidence_backend"], "GITHUB_ACTIONS_ARTIFACT_V4")
         self.assertFalse(snapshot["schedule_configured"])
         self.assertFalse(snapshot["elapsed_evidence_credit_authorized"])
         self.assertFalse(snapshot["production_authorized"])
@@ -92,7 +100,18 @@ class Phase6LiveObservationGateTests(unittest.TestCase):
         gate["schedule_configured"] = True
         gate["elapsed_evidence_credit_authorized"] = True
         gate["armed_commit"] = "deadbeef"
-        with self.assertRaises(Phase6ObservationGateError, msg="missing account/valuation/backend must block"):
+        with self.assertRaises(Phase6ObservationGateError, msg="missing account/valuation must block"):
+            self.validate(gate=gate)
+
+    def test_evidence_backend_flag_requires_valid_frozen_contract(self) -> None:
+        evidence = copy.deepcopy(self.evidence_contract)
+        evidence["backend"]["overwrite"] = True
+        with self.assertRaises(Phase6ObservationGateError):
+            self.validate(evidence_contract=evidence)
+
+        gate = copy.deepcopy(self.gate)
+        gate["required_before_arm"]["durable_create_only_evidence_backend_frozen"] = False
+        with self.assertRaises(Phase6ObservationGateError):
             self.validate(gate=gate)
 
     def test_frozen_phase6_acceptance_thresholds_cannot_drift(self) -> None:
@@ -104,7 +123,12 @@ class Phase6LiveObservationGateTests(unittest.TestCase):
         phase6 = copy.deepcopy(self.phase6)
         phase6["acceptance"]["live_shadow_observation"]["minimum_elapsed_calendar_days"] = 13
         with self.assertRaises(Phase6ObservationGateError):
-            validate_gate_mapping(gate=self.gate, phase6_contract=phase6, workflow_text=self.workflow)
+            validate_gate_mapping(
+                gate=self.gate,
+                phase6_contract=phase6,
+                evidence_contract=self.evidence_contract,
+                workflow_text=self.workflow,
+            )
 
 
 if __name__ == "__main__":
