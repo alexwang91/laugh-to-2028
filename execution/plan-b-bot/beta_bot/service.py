@@ -22,6 +22,7 @@ from .model import build_signal
 from .notify import send_telegram
 from .order_ledger import LedgerUncertainState, OrderLedger
 from .portfolio import build_portfolio_plan, parse_account_equity, parse_position_qty
+from .production_authority import legacy_normal_service_new_risk_authorized
 from .product_config import load_product_config
 from .restart_recovery import RestartRecoveryReport, recover_cold_start
 
@@ -211,8 +212,14 @@ def _run_strategy_core(settings: Settings) -> dict:
             current_qty,
             plan.target_perp_qty,
         )
+        production_authority_blocks_increase = bool(
+            increases_risk and not legacy_normal_service_new_risk_authorized()
+        )
         kill_switch_active = normal_new_risk_disabled(settings)
         payload["new_risk_kill_switch_active"] = kill_switch_active
+        payload["legacy_production_authority_allows_new_risk"] = bool(
+            legacy_normal_service_new_risk_authorized()
+        )
         restart_blocks_increase = bool(
             restart_report
             and not restart_report.risk_increase_allowed
@@ -224,12 +231,18 @@ def _run_strategy_core(settings: Settings) -> dict:
             and increases_risk
         )
         kill_switch_blocks_increase = bool(kill_switch_active and increases_risk)
-        if restart_blocks_increase or account_blocks_increase or kill_switch_blocks_increase:
-            payload["result"] = (
-                "trade_blocked_new_risk_kill_switch"
-                if kill_switch_blocks_increase
-                else "trade_blocked_account_reconciliation"
-            )
+        if (
+            production_authority_blocks_increase
+            or restart_blocks_increase
+            or account_blocks_increase
+            or kill_switch_blocks_increase
+        ):
+            if production_authority_blocks_increase:
+                payload["result"] = "trade_blocked_phase7_authority_not_integrated"
+            elif kill_switch_blocks_increase:
+                payload["result"] = "trade_blocked_new_risk_kill_switch"
+            else:
+                payload["result"] = "trade_blocked_account_reconciliation"
             payload["orders"] = []
             payload["risk_increase_blocked"] = True
         else:
