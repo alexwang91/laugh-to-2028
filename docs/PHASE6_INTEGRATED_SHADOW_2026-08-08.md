@@ -4,7 +4,7 @@ Date: 2026-08-08
 
 ## Status
 
-`IMPLEMENTATION_AND_REPLAY_PENDING / ZERO TRADING AUTHORITY`
+`PASS_SHADOW_ONLY_IMPLEMENTATION_REPLAY / LIVE ELAPSED EVIDENCE INCONCLUSIVE / ZERO TRADING AUTHORITY`
 
 Phase 5 is closed with P5.5 `NO_PROMOTION`; P5.6 is blocked. Phase 6 therefore shadows the frozen BRRK-0011 long baseline only. It does not carry a cycle-exit overlay forward and does not reinterpret a failed P5 candidate as production logic.
 
@@ -18,7 +18,7 @@ P3.1 canonical daily data
   -> Phase 6 hypothetical orders + reconciliation/audit
 ```
 
-The Phase 6 orchestration module does **not** import the executor, signer, Hyperliquid `Exchange`, account key material, withdrawal or transfer code. It may consume real read-only account/market/order-book/funding observations, but its terminal output is an immutable hypothetical-order/audit record only.
+The Phase 6 orchestration module does **not** import the executor, signer, Hyperliquid `Exchange`, account key material, withdrawal or transfer code. It may consume real read-only account/market/order-book/funding observations, but its terminal output is a hypothetical-order/audit record only.
 
 ## Frozen safety boundaries
 
@@ -65,20 +65,26 @@ The shadow decision fails closed on:
 
 ## P6.3 acceptance split
 
-### A. Implementation/replay evidence
+### A. Implementation/replay evidence — PASS
 
-CI may establish only:
+Phase 6 CI run `31244319650` on evidence head `df73bd2b7d40a40c79b677ef78e12e086c2aa045` established:
 
-- exact canonical gross and long-only invariants;
-- deterministic target/current reconciliation;
-- atomic fail-closed behavior;
-- emergency hypothetical flatten behavior;
-- complete audit serialization/digest;
-- zero signer/executor/import path.
+- independent multi-date P3.2 target parity: PASS;
+- committed historical P3.2 golden vectors: PASS;
+- canonical gross and long-only invariants: PASS;
+- deterministic target/current reconciliation: PASS;
+- atomic fail-closed behavior: PASS;
+- emergency hypothetical flatten behavior: PASS;
+- audit serialization/digest: PASS;
+- static zero signer/executor/submission import path: PASS.
 
-A green replay earns `PASS_SHADOW_ONLY_IMPLEMENTATION_REPLAY`, not production authorization.
+Therefore the implementation/replay disposition is:
 
-### B. Time-dependent live-shadow evidence
+`PASS_SHADOW_ONLY_IMPLEMENTATION_REPLAY`
+
+This is not production authorization.
+
+### B. Time-dependent live-shadow evidence — INCONCLUSIVE
 
 Actual live-shadow acceptance additionally requires **both**:
 
@@ -95,4 +101,4 @@ Historical replay or CI must never backfill this clock.
 
 ## Phase 7 boundary
 
-Phase 7 readiness work may be implemented and tested without trading authority, but `MONITOR_ONLY -> ACTIVE`, `FLAT -> LONG`, `FLAT -> SHORT`, and the first bear short remain explicit human approval boundaries. No Phase 6 artifact changes those boundaries.
+Phase 7 readiness work may be implemented and tested without trading authority. Actual launch remains blocked pending review of Phase 6 time-dependent evidence and explicit owner approval. `MONITOR_ONLY -> ACTIVE`, `FLAT -> LONG`, `FLAT -> SHORT`, and the first bear short remain explicit human approval boundaries. No Phase 6 artifact changes those boundaries.
