@@ -4,7 +4,7 @@ Last updated: 2026-08-08
 
 ## Current instruction
 
-**P5.3 V2 architecture evidence passed with exact V1 signal parity and without hiding the 2021 false FLAT. Close/merge V2, then preregister P5.4 fixed state-to-gross-risk behavior candidates. P5.4 defines candidates only; P5.5 owns joint profile/mapping robustness and economic selection.**
+**P5.3 V2 is complete immutable `ARCHITECTURE_PASS` with no profile selected. P5.4 now preregisters exactly three fixed state-to-total-gross behavior maps before any economic evaluation. Validate/merge the P5.4 contract, then implement the mapping mechanics only. P5.5 owns all joint profile/map economics and winner selection.**
 
 ## Immediate state
 
@@ -18,109 +18,126 @@ P5.1 event taxonomy                    COMPLETE / FROZEN
 P5.2 feature evidence                  COMPLETE / IMMUTABLE / DESCRIPTIVE CLOSEOUT
 P5.3 V1                               COMPLETE / IMMUTABLE / ARCHITECTURE_FAIL
 P5.3 V2                               COMPLETE / IMMUTABLE EVIDENCE / ARCHITECTURE_PASS
-P5.3 V2 result commit                  e732b7ebe570236bf43084caecb6ea15f7edecb8
-P5.3 V2 summary SHA256                 05d5d68a59c8b13f1122d98ed75d03934defdc9d73c7dd92e038c92fd97d2e52
 P5.3 selected profile                  NONE
-P5.4 behavior mapping                  NEXT / PREREGISTER FIXED CANDIDATES
+P5.4 contract                          P5.4-FIXED-GROSS-BEHAVIOR-CANDIDATES-V1
+P5.4 fixed behavior maps               PREREGISTERED / NO ECONOMIC EVALUATION
+P5.4 selected map                      NONE
 P5.5 validation                        NOT STARTED
 P5.6 integration                       NOT STARTED
 ```
 
-## P5.3 V2 result interpretation
+## Frozen P5.4 candidate family
 
-V2 is an **architecture pass only**:
-
-- V1 normalization parity = exact;
-- V1 evidence-atom parity = exact;
-- V1 raw-candidate parity = exact;
-- V1 final-state parity through first FLAT = exact;
-- false raw FLAT on `2021-02-23` remains visible;
-- MARKET_STATE later recovers and frozen later events remain observable;
-- MARKET_STATE has no permission-unlock authority.
-
-The false-FLAT episode lasted 6 days for EARLY/BALANCED and 8 days for CONSERVATIVE. It remains negative signal-quality evidence and must be charged in P5.5.
-
-## P5.4 fixed-candidate requirements
-
-P5.4 may now define a small, preregistered candidate family mapping the seven MARKET_STATE values to **total gross-risk multipliers**.
-
-Hard structural rules:
-
-- all multipliers in `[0,1]`; Phase 4 authorized no >1 leverage;
-- `NORMAL_BULL = 1.0` for every mapping;
-- mappings must be monotone non-increasing with market-state severity;
-- `FLAT = 0.0` for mappings that use FLAT as actual zero exposure;
-- `LATE_BULL_ROTATION` must not automatically be treated as bearish/zero;
-- behavior layer scales total BRRK gross only;
-- BRRK-0011 relative BTC/ETH/SOL/BNB ranking is unchanged;
-- P4.1 defensive scale remains upstream and unchanged;
-- no P5.4 winner is selected in P5.4;
-- no market-state improvement automatically clears operational risk permission after an implemented zero exposure.
-
-P5.4 candidates must be few enough to avoid an implicit grid-search/overfit rescue. Numerical candidate values must be frozen before P5.5 economic/event evaluation.
-
-## P5.5 validation ownership
-
-P5.5 must evaluate the Cartesian candidate set of:
+State order:
 
 ```text
-P5.3 profiles  EARLY / BALANCED / CONSERVATIVE
-x
-P5.4 fixed behavior maps
+NORMAL_BULL
+BTC_LEADERSHIP_MATURING
+LATE_BULL_ROTATION
+EXHAUSTION_WATCH
+DE_RISK_1
+DE_RISK_2
+FLAT
 ```
 
-Required validation dimensions:
+Maps:
 
-- leave-one-event-out or comparable event-held-out analysis;
-- 7–14 day target lead behavior without forcing every event to fit;
+| State | DE_RISK_ONLY | PROGRESSIVE | EARLY_DEFENSIVE |
+| --- | ---: | ---: | ---: |
+| NORMAL_BULL | 1.00 | 1.00 | 1.00 |
+| BTC_LEADERSHIP_MATURING | 1.00 | 1.00 | 0.95 |
+| LATE_BULL_ROTATION | 1.00 | 0.95 | 0.90 |
+| EXHAUSTION_WATCH | 1.00 | 0.80 | 0.70 |
+| DE_RISK_1 | 0.65 | 0.55 | 0.45 |
+| DE_RISK_2 | 0.30 | 0.25 | 0.20 |
+| FLAT | 0.00 | 0.00 | 0.00 |
+
+No fourth map may be added after P5.5 economics. Dense/continuous multiplier search is forbidden.
+
+## Frozen composition
+
+```text
+P5.4 target asset weight
+= frozen upstream P4.1/BRRK target asset weight
+x fixed cycle gross multiplier(MARKET_STATE)
+```
+
+This guarantees:
+
+- P5.4 can only preserve/reduce existing gross;
+- every multiplier is in `[0,1]`;
+- no >1 leverage is introduced;
+- BRRK relative asset ranking is unchanged;
+- no shorts are added;
+- freed risk moves to cash/stablecoin.
+
+`DATA_INSUFFICIENT` has no map. P5.5 matched economic evaluation starts on `2021-01-17`, the common P5.3 initialization date.
+
+## Permission boundary
+
+`FLAT=0` is a research target-gross rule. An actual integrated system that reaches zero exposure must remain:
+
+```text
+LOCKED_PENDING_HUMAN_APPROVAL
+```
+
+MARKET_STATE recovery cannot unlock it.
+
+For P5.5 historical signal economics, a post-FLAT positive target may be computed only as `RESEARCH_HYPOTHETICAL_REENTRY`. That does not authorize a live order.
+
+## P5.5 frozen candidate set
+
+P5.5 must evaluate exactly:
+
+```text
+3 frozen P5.3 profiles
+x
+3 frozen P5.4 maps
+=
+9 joint candidates
+```
+
+plus the required upstream baseline without a cycle overlay.
+
+P5.5 owns:
+
+- event-held-out/leave-one-event-out robustness;
+- 7–14 day lead behavior;
 - false-positive duration;
 - missed upside;
 - drawdown avoided;
-- terminal wealth / CAGR impact;
+- terminal wealth / CAGR;
 - turnover and explicit cost sensitivity;
 - second-wind preservation;
 - terminal 2021 bear-transition behavior;
-- non-top-control behavior including the 2021 false FLAT;
+- non-top controls including the 2021 false FLAT;
 - no single-event dependency;
-- broad-region/nearby-policy robustness rather than a knife-edge winner.
+- nearby-policy robustness.
 
-If no candidate is robust, P5.5 must fail-stop rather than force a selection.
-
-## P5.6 integration boundary
-
-Only a P5.5-selected and accepted profile/mapping may enter P5.6. P5.6 may control total gross exposure; it must not change BRRK relative asset ranking or authorize >1 leverage.
-
-## Later roadmap
-
-After P5.6 integration:
-
-```text
-Phase 6  integrated shadow / no signatures / no trading
-Phase 7  limited-live readiness; actual real-money launch still requires explicit human approval
-Phase 8  bear-short research; first real short remains human-gated
-then     full Phase 0-8 drift audit / review / corrective PRs
-```
+No P5.4 winner may be chosen before those tests. If no candidate is robust, fail-stop.
 
 ## Frozen product boundaries
 
+- BRRK-0011 relative ranking unchanged;
 - BTC/ETH/SOL/BNB long universe unchanged;
 - XRP feature-only;
 - Hyperliquid primary venue;
-- production gross cap `1.0`;
-- `production_authorized_components = []`;
-- actual zero-exposure -> risk-on remains human-gated;
+- P4.1 defensive scaler `[0,1]` unchanged;
+- production gross `1.0`;
+- actual re-risk after implemented zero exposure remains human-gated;
 - no withdrawal/external-transfer automation;
 - no production authorization.
 
 ## Exact next step
 
 ```text
-FINAL-HEAD CI / GOVERNANCE FOR P5.3 V2 RESULT
-EXACT-HEAD MERGE P5.3 V2
+RUN FRESH P5.4 PREREG CI / GOVERNANCE
+IF GREEN, EXACT-HEAD MERGE THE PREREGISTRATION
 VERIFY NEW MAIN
-CREATE P5.4 PREREG BRANCH
-FREEZE A SMALL FIXED STATE->GROSS CANDIDATE FAMILY
-IMPLEMENT MAPPING TESTS ONLY AFTER PREREG
-DO NOT SELECT A WINNER UNTIL P5.5
+CREATE FRESH P5.4 IMPLEMENTATION BRANCH
+IMPLEMENT THE THREE FIXED MAPS EXACTLY
+TEST MONOTONICITY / GROSS-ONLY SCALING / RELATIVE-RANKING PARITY / FLAT=0
+DO NOT RUN P5.5 ECONOMICS UNTIL P5.4 IMPLEMENTATION GATES ARE GREEN
+DO NOT SELECT A WINNER
 DO NOT PRODUCTION-AUTHORIZE ANYTHING
 ```
