@@ -1,0 +1,97 @@
+{
+  "id": "PHASE-0-8-DRIFT-AUDIT-V1",
+  "as_of": "2026-08-08",
+  "status": "REMEDIATION_IMPLEMENTED_PENDING_FINAL_HEAD_CI",
+  "drift_level": "DRIFT_2",
+  "scope": {
+    "phases": [0, 1, 2, 3, 4, 5, 6, 7, 8],
+    "economic_retuning_allowed": false,
+    "immutable_result_changes_allowed": false,
+    "production_authorization_allowed": false
+  },
+  "canonical_production_policy": {
+    "gross_cap": 1.0,
+    "production_authorized_components": [],
+    "legacy_normal_service_new_risk_authorized": false,
+    "same_direction_risk_reduction_preserved": true,
+    "emergency_flatten_preserved": true
+  },
+  "findings": [
+    {
+      "id": "AUDIT-P08-001",
+      "severity": "MATERIAL",
+      "category": "EXECUTION_AUTHORITY_BYPASS",
+      "finding": "The legacy BTC-only service inferred executable normal risk-increase capability from TRADING_MODE=trade without the canonical Phase-7 production-authority boundary.",
+      "remediation": "Added an explicit fail-closed production_authority boundary; normal risk increases are blocked while same-direction reductions remain available.",
+      "status": "REMEDIATED"
+    },
+    {
+      "id": "AUDIT-P08-002",
+      "severity": "MATERIAL",
+      "category": "PRODUCTION_CAP_CONFIGURATION",
+      "finding": "Legacy production-facing configuration and operator documentation still exposed NORMAL_BETA_CAP=1.30 despite the canonical production gross cap being 1.0.",
+      "remediation": "Default and validation ceiling are 1.0; operator examples/documentation are aligned to the canonical cap.",
+      "status": "REMEDIATED"
+    },
+    {
+      "id": "AUDIT-P08-003",
+      "severity": "HANDOFF",
+      "category": "AUTHORITATIVE_DOCUMENTATION_DRIFT",
+      "finding": "README/CURRENT_STATE/NEXT_STEPS lagged merged Phase 6/7/8 state and could direct a maintainer back to completed work.",
+      "remediation": "Authoritative handoff documents are updated to merged Phase 6/7/8 state and the remaining real-time/human-trigger boundaries.",
+      "status": "REMEDIATED"
+    }
+  ],
+  "phase_invariants": {
+    "phase_0_to_3": {
+      "status": "COMPLETE_MERGED",
+      "canonical_directional_core": "BRRK-0011"
+    },
+    "phase_4": {
+      "leverage_research": "FAIL_STOP_NO_ELIGIBLE_GT1_CANDIDATE",
+      "production_gross_cap": 1.0,
+      "production_leverage_authorized": false
+    },
+    "phase_5": {
+      "p5_5": "COMPLETE_IMMUTABLE_NO_PROMOTION_FAIL_STOP",
+      "p5_6": "BLOCKED_NO_ELIGIBLE_CANDIDATE",
+      "cycle_overlay_selected": false
+    },
+    "phase_6": {
+      "implementation_replay": "PASS_SHADOW_ONLY_IMPLEMENTATION_REPLAY",
+      "live_elapsed_evidence": "MEASUREMENT_INCONCLUSIVE_TIME_DEPENDENT",
+      "sign_orders": false,
+      "submit_orders": false,
+      "production_authorized": false
+    },
+    "phase_7": {
+      "readiness_gate": "IMPLEMENTED_CURRENTLY_BLOCKED",
+      "current_mode": "MONITOR_ONLY",
+      "launch_allowed_now": false,
+      "production_authorized": false,
+      "human_transitions_required": [
+        "MONITOR_ONLY_TO_ACTIVE",
+        "FLAT_TO_LONG",
+        "FLAT_TO_SHORT",
+        "FIRST_SHORT_IN_NEW_BEAR_PHASE"
+      ]
+    },
+    "phase_8": {
+      "experiment": "BEAR-SHORT-0001",
+      "status": "PREREGISTERED_TRIGGER_ABSENT_NOT_RUN",
+      "trigger_state": "TRIGGER_ABSENT",
+      "economics_run_permitted": false,
+      "production_authorized": false,
+      "live_or_shadow_trading_authorized": false
+    }
+  },
+  "non_promotions_are_not_overridden": true,
+  "audit_pass_does_not_mean": [
+    "PHASE_6_ELAPSED_EVIDENCE_PASSED",
+    "PHASE_7_LAUNCH_APPROVED",
+    "PRODUCTION_ACTIVE",
+    "BEAR_TRANSITION_CONFIRMED",
+    "SHORT_READY",
+    "FIRST_REAL_SHORT_AUTHORIZED"
+  ]
+}
