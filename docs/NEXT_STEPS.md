@@ -4,7 +4,7 @@ Last updated: 2026-08-08
 
 ## Current instruction
 
-**Freeze the account-identity binding rules without fabricating an address; after that, the unique remaining Phase-6 pre-arm dependency is the real public observation account address. Production remains unauthorized.**
+**Close PR #136 without retuning its observed Stablecoin mapping, then return to the unique Phase-6 pre-arm dependency: one exact public Hyperliquid observation account address. Production remains unauthorized.**
 
 ## Immediate state
 
@@ -13,52 +13,61 @@ Phase 6 implementation/replay          PASS_SHADOW_ONLY_IMPLEMENTATION_REPLAY / 
 Phase 6 live elapsed evidence          MEASUREMENT_INCONCLUSIVE_TIME_DEPENDENT / CLOCK NOT ARMED
 Phase 6 durable evidence backend       FROZEN / MERGED #133
 Phase 6 valuation contract             PHASE6-LIVE-VALUATION-V1 / MERGED #134
-Phase 6 account-identity rules         PHASE6-LIVE-ACCOUNT-IDENTITY-V1 / CANDIDATE / UNBOUND
+Phase 6 account-identity rules         PHASE6-LIVE-ACCOUNT-IDENTITY-V1 / MERGED #135 / UNBOUND
 Phase 6 pre-arm dependencies           3/4 FROZEN
 remaining dependency                   EXACT PUBLIC OBSERVATION ACCOUNT IDENTITY
+dual-layer sanity                      COMPLETE / NON-PROMOTABLE / NO INTEGRATION
 Phase 7                                MONITOR_ONLY / LAUNCH BLOCKED
 Phase 8                                TRIGGER ABSENT / NOT RUN
 production gross cap                   1.0
 production_authorized_components = []
 ```
 
-## Current candidate — identity binding rules only
+## PR #136 result — do not retune
 
-The candidate freezes the future binding contract under `research/governance/**` while intentionally keeping:
+The one-variant architecture sanity check used already-exposed Stablecoin history only and therefore has no promotion authority. It preserved canonical BRRK relative weights and allowed the external layer only to reduce gross with pre-frozen caps `SUPPORTIVE=1.00`, `NEUTRAL=0.80`, `RESTRICTIVE=0.60`.
 
-```text
-account_address                     null
-identity_frozen                     false
-binding_evidence                    null
-collector_armed                     false
-schedule_configured                 false
-elapsed_evidence_credit_authorized  false
-```
-
-Frozen rules:
+Matched 2022-12-10 through 2026-08-02, 5 bps, canonical P3.3 L1 band 0.05:
 
 ```text
-address format           0x + 40 hexadecimal characters
-accepted userRole        user / subAccount
-rejected userRole        agent / vault / missing
-required userAbstraction disabled
-subaccount master        evidence required; no silent substitution
-private-key discovery    forbidden
-production authority     false
+baseline CAGR        65.3056777%
+fused CAGR           57.2191846%
+delta                -8.0864931 pp
+
+baseline MaxDD      -33.5292296%
+fused MaxDD         -32.5723083%
+improvement           0.9569213 pp
+
+baseline Sharpe       1.3561161
+fused Sharpe          1.3556295
+
+baseline Calmar       1.9477238
+fused Calmar          1.7566819
+
+baseline turnover    91.0866089
+fused turnover       103.1500774
 ```
 
-The preactivation gate must derive its account-identity dependency from the validated identity contract. A hand-edited gate flag cannot turn an unbound contract into a frozen identity.
+Interpretation:
 
-## Candidate closeout sequence
+- external fusion **does** mechanically change exposure and rebalance timing;
+- this specific frozen Stablecoin state/cap mapping is economically inferior;
+- do not tune 1.00/0.80/0.60 after seeing the result;
+- do not rescue `STABLECOIN-LIQUIDITY-0001`;
+- do not admit an edge or change canonical P3.2/P3.3;
+- any future dual-layer validation must be a new prospective research ID with independent/unexposed evidence.
+
+## #136 closeout sequence
 
 ```text
-1. KEEP account_address=null AND identity_frozen=false
-2. RUN FINAL GOVERNANCE / NO-DRIFT / P3.2 PARITY / PHASE-6 SAFETY CI
-3. MERGE ONLY WITH EXPECTED-HEAD PROTECTION IF ALL REQUIRED CHECKS ARE GREEN
-4. VERIFY NEW MAIN AND CANONICAL AUTHORITY INVARIANTS
+1. KEEP research/governance/dual_layer_fusion_sanity_result.json IMMUTABLE IN ECONOMIC CONTENT
+2. VERIFY TEMPORARY DIAGNOSTIC WORKFLOW EDIT IS FULLY RESTORED TO MAIN BLOB
+3. RUN FINAL GOVERNANCE / NO-DRIFT / HANDOFF CI ON THE FINAL HEAD
+4. VERIFY NO P3.1 / P3.2 / P3.3 / ROUTER / EXECUTOR / PHASE-6 RUNTIME FILE CHANGED
+5. MERGE ONLY WITH EXPECTED-HEAD PROTECTION IF ALL REQUIRED FINAL-HEAD CHECKS ARE GREEN
 ```
 
-## Unique next task after this candidate
+## Unique operational task after #136
 
 Obtain one exact **public read-only Hyperliquid master/subaccount address** and bind it prospectively.
 
@@ -99,14 +108,8 @@ Historical backfill, replay, CI replay, reruns, duplicate timestamps and manual 
 
 ## Do not substitute other work
 
-Until the Phase-6 observation dependency is closed, do not start Stablecoin rescue/Stage-2, Holder Cost, new leverage/allocation/funding alpha, new short research, portfolio optimization or production deployment as a substitute.
+Do not start Stablecoin rescue, post-result cap tuning, leverage/allocation rescue, new short research or production deployment as a substitute for the Phase-6 account-identity blocker.
 
-Keep BRRK-0011, BTC/ETH/SOL/BNB, XRP feature-only, BNB perp-only, P3.2/P3.3, transaction costs, immutable research results and production authority unchanged.
+Keep BRRK-0011, BTC/ETH/SOL/BNB, XRP feature-only, BNB perp-only, P3.2/P3.3, immutable research results and production authority unchanged.
 
-## After genuine Phase-6 collection is operational
-
-```text
-1. formal research lifecycle/state-machine enforcement
-2. Research Queue + trial/overlap accounting
-3. only then consider a new prospectively registered result-bearing research family
-```
+After genuine Phase-6 collection becomes operational, resume the governance/infrastructure roadmap and only then open a new formally preregistered dual-layer evidence study if independent external evidence is available.
