@@ -1,0 +1,148 @@
+{
+  "schema_version": 1,
+  "contract_id": "BRRK-SIGNAL-ATTRIBUTION-AUDIT-V1",
+  "status": "COMPLETE_NON_PROMOTABLE_DIAGNOSTIC_AUDIT",
+  "classification": "NON_PROMOTABLE_DIAGNOSTIC_AUDIT",
+  "canonical_baseline_reproduced": true,
+  "evaluation": {
+    "session_start": "2022-12-10",
+    "session_end": "2026-08-02",
+    "cost_bps": 5.0,
+    "p3_3_band": 0.05
+  },
+  "canonical_metrics": {
+    "cagr": 0.6530567772272526,
+    "max_drawdown": -0.335292296117361,
+    "sharpe": 1.35611613609405,
+    "calmar": 1.9477237765065316,
+    "avg_gross_exposure": 0.7543536295598086,
+    "turnover": 91.08660891147298,
+    "end_multiple": 6.2525274410172225
+  },
+  "daily_distribution": {
+    "session_count": 1332,
+    "positive_sessions": 665,
+    "negative_sessions": 637,
+    "zero_sessions": 30,
+    "win_rate_excluding_zero": 0.510752688172043,
+    "active_session_count": 1302,
+    "active_win_rate": 0.510752688172043,
+    "mean_positive_return": 0.016367643591617048,
+    "mean_negative_return": -0.01365326691958943,
+    "median_positive_return": 0.010015198777197963,
+    "median_negative_return": -0.00856610793158099,
+    "payoff_ratio_mean_win_to_abs_mean_loss": 1.1988078522168994,
+    "profit_factor": 1.2515027028637962
+  },
+  "holding_cycle_distribution": {
+    "cycle_count": 262,
+    "positive_cycles": 142,
+    "negative_cycles": 119,
+    "zero_cycles": 1,
+    "cycle_win_rate_excluding_zero": 0.5440613026819924,
+    "mean_positive_cycle_return": 0.04190973844986845,
+    "mean_negative_cycle_return": -0.03129524617898343,
+    "cycle_payoff_ratio": 1.3391726721106052,
+    "cycle_profit_factor": 1.598004365039546
+  },
+  "return_concentration": {
+    "total_log_growth": 1.8329857725672407,
+    "best_10": {
+      "share_of_total_log_growth": 0.5154603391390638,
+      "same_horizon_cagr_if_zeroed": 0.2757602968332036
+    },
+    "best_20": {
+      "share_of_total_log_growth": 0.9161152399643627,
+      "same_horizon_cagr_if_zeroed": 0.04306414576731532
+    },
+    "best_50": {
+      "share_of_total_log_growth": 1.8034006372495122,
+      "same_horizon_cagr_if_zeroed": -0.33222913600060844
+    },
+    "worst_10_same_horizon_cagr_if_zeroed": 1.0588539863990616,
+    "worst_20_same_horizon_cagr_if_zeroed": 1.4424175568379463,
+    "worst_50_same_horizon_cagr_if_zeroed": 2.5896702563472447
+  },
+  "external_fusion_attribution": {
+    "actual_path_delta_decomposition": {
+      "impacted_session_count": 868,
+      "beneficial_delta_session_count": 417,
+      "harmful_delta_session_count": 451,
+      "sum_delta_on_baseline_negative_sessions": 1.1305444024787148,
+      "sum_delta_on_baseline_positive_sessions": -1.3929560797100073,
+      "net_sum_daily_return_delta": -0.26241167723129266
+    },
+    "by_external_state": {
+      "SUPPORTIVE": {
+        "session_count": 514,
+        "baseline_win_rate_excluding_zero": 0.5077821011673151,
+        "baseline_mean_return": 0.0022316844338198124,
+        "baseline_compounded_return_over_state_sessions": 1.6768274912082455,
+        "mean_baseline_target_gross": 0.7795786326554616,
+        "frozen_cap": 1.0,
+        "fraction_canonical_target_already_at_or_below_cap": 1.0,
+        "intervention_session_count": 0
+      },
+      "NEUTRAL": {
+        "session_count": 546,
+        "baseline_win_rate_excluding_zero": 0.5386064030131826,
+        "baseline_mean_return": 0.0011993945357756867,
+        "baseline_compounded_return_over_state_sessions": 0.67599917361767,
+        "fused_compounded_return_over_state_sessions": 0.6030839764823934,
+        "mean_baseline_target_gross": 0.7949902792473748,
+        "mean_fused_target_gross": 0.653451726488493,
+        "frozen_cap": 0.8,
+        "fraction_canonical_target_already_at_or_below_cap": 0.29120879120879123,
+        "intervention_session_count": 387,
+        "sum_session_return_delta_fused_minus_baseline": -0.09221579727073959
+      },
+      "RESTRICTIVE": {
+        "session_count": 272,
+        "baseline_win_rate_excluding_zero": 0.4591439688715953,
+        "baseline_mean_return": 0.0014168997982719172,
+        "baseline_compounded_return_over_state_sessions": 0.39367471998616277,
+        "fused_compounded_return_over_state_sessions": 0.21383572759918512,
+        "mean_baseline_target_gross": 0.6243357159125233,
+        "mean_fused_target_gross": 0.4078782727810056,
+        "frozen_cap": 0.6,
+        "fraction_canonical_target_already_at_or_below_cap": 0.44485294117647056,
+        "intervention_session_count": 151,
+        "sum_session_return_delta_fused_minus_baseline": -0.17013620841935095
+      }
+    },
+    "representative_missed_upside": [
+      {"date":"2024-11-06","state":"RESTRICTIVE","baseline_return":0.10485413692764357,"fused_return":0.06327558625973931,"delta":-0.041578550667904265},
+      {"date":"2023-03-17","state":"RESTRICTIVE","baseline_return":0.09590453536936819,"fused_return":0.05741287261218885,"delta":-0.038491662757179336},
+      {"date":"2023-03-12","state":"RESTRICTIVE","baseline_return":0.07451470000549053,"fused_return":0.04458839639988886,"delta":-0.029926303605601667}
+    ],
+    "representative_loss_savings": [
+      {"date":"2023-03-09","state":"RESTRICTIVE","baseline_return":-0.06245937618799593,"fused_return":-0.03747201943419026,"delta":0.024987356753805666},
+      {"date":"2024-07-03","state":"RESTRICTIVE","baseline_return":-0.0508452257082888,"fused_return":-0.03051884091671713,"delta":0.020326384791571672},
+      {"date":"2023-03-03","state":"RESTRICTIVE","baseline_return":-0.04796452934224009,"fused_return":-0.028771773082094658,"delta":0.01919275626014543}
+    ]
+  },
+  "frozen_interpretation": {
+    "brrk_is_high_hit_rate_strategy": false,
+    "brrk_is_payoff_and_right_tail_dependent": true,
+    "external_layer_provided_real_left_tail_protection": true,
+    "external_layer_preserved_right_tail_sufficiently": false,
+    "restrictive_state_had_negative_brrk_expectation": false,
+    "external_layer_was_partly_redundant_with_existing_brrk_defensiveness": true,
+    "conclusion": "BRRK earns the canonical return with only about a 51.08% active-day win rate and 54.41% holding-cycle win rate. Its edge is positive payoff asymmetry plus extreme right-tail participation: the best 20 sessions account for about 91.61% of total log growth. The frozen external overlay did save losses on negative BRRK sessions, but clipped more upside on positive sessions than it saved, and RESTRICTIVE still had positive mean and compounded BRRK returns. Future external research must be evaluated conditionally on BRRK and payoff-weighted, with explicit preservation of right-tail participation, rather than by standalone hit rate."
+  },
+  "execution_evidence": {
+    "workflow_run_id": 31281609977,
+    "diagnostic_job_id": 93163763958,
+    "executed_branch_head_sha": "3cb49dff8cd57add26c9a968c22a22b3ef9a3824",
+    "executed_pr_merge_ref_sha": "78fc1304ffd5d98a852c89dec7d179dbaad58bab",
+    "artifact_id": 9028603496,
+    "artifact_zip_sha256": "efb59a4b7c238b2df0d56131c24b575dcca1d4e330589ea47cd0d48d4930bfeb",
+    "stablecoin_raw_sha256": "7cffe6fb3a21e891082c06c60e91491edfbc78e9c01e2d549805815a646d9ffd"
+  },
+  "parameter_search_performed": false,
+  "retuning_performed": false,
+  "promotion_eligible": false,
+  "production_authorized": false,
+  "signature_authorized": false,
+  "order_submission_authorized": false
+}

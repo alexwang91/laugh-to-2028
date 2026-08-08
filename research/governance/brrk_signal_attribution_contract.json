@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "contract_id": "BRRK-SIGNAL-ATTRIBUTION-AUDIT-V1",
+  "classification": "NON_PROMOTABLE_DIAGNOSTIC_AUDIT",
+  "base_main": "999415d048886fe3910ab36489ae9872131ac1bc",
+  "purpose": "Explain how canonical BRRK earns returns and why the previously frozen Stablecoin external gross-cap diagnostic reduced economics, without optimizing or changing any strategy rule.",
+  "evaluation": {
+    "session_start": "2022-12-10",
+    "session_end": "2026-08-02",
+    "cost_bps": 5.0,
+    "p3_3_l1_band": 0.05,
+    "canonical_baseline_cagr": 0.6530567772272526,
+    "canonical_baseline_max_drawdown": -0.3352922961173609
+  },
+  "frozen_metrics": {
+    "session_win_rate": "positive net-return sessions divided by nonzero net-return sessions; exact-zero tolerance=1e-15",
+    "active_session_win_rate": "same definition restricted to held gross exposure > 1e-12",
+    "payoff_ratio": "mean positive session return divided by absolute mean negative session return",
+    "profit_factor": "sum positive session returns divided by absolute sum negative session returns",
+    "holding_cycle": "a new cycle starts on any session with executed turnover > 1e-12; cycle return compounds from that session until the session before the next turnover-positive session",
+    "cycle_win_rate": "positive compounded holding-cycle returns divided by nonzero holding-cycle returns",
+    "return_concentration": "rank canonical daily net returns; for N in [10,20,50], report share of total log growth contributed by the N best sessions and same-horizon CAGR after setting those N session returns to zero; also report CAGR after setting the N worst session returns to zero",
+    "external_state_conditioning": "assign each return session the external state computed on its immediately preceding decision date using the already-frozen D-2/D-22/D-42 Stablecoin semantics",
+    "external_path_delta": "compare the already-frozen fused path with canonical baseline session by session; report fused-minus-baseline return deltas separately on baseline-positive and baseline-negative sessions",
+    "overlap": "for each external state report mean canonical BRRK target gross and fraction of decision rows on which canonical gross was already at or below that state's frozen gross cap"
+  },
+  "explicit_non_actions": [
+    "NO_PARAMETER_SEARCH",
+    "NO_THRESHOLD_SEARCH",
+    "NO_CAP_RETUNING",
+    "NO_BRRK_CHANGE",
+    "NO_P3_2_CHANGE",
+    "NO_P3_3_CHANGE",
+    "NO_ROUTER_OR_EXECUTOR_CHANGE",
+    "NO_NEW_EXTERNAL_DATA",
+    "NO_EDGE_ADMISSION",
+    "NO_PRODUCTION_AUTHORIZATION"
+  ],
+  "production_authorized": false,
+  "signature_authorized": false,
+  "order_submission_authorized": false
+}
