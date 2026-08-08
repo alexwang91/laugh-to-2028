@@ -19,6 +19,7 @@ Phase 7 readiness gate            IMPLEMENTED / MERGED #110 / LAUNCH BLOCKED
 Phase 7 program state             MONITOR_ONLY
 Phase 8 bear-short research       PREREGISTERED_TRIGGER_ABSENT_NOT_RUN / MERGED #111
 Phase 0-8 drift audit             COMPLETE / PASS_FINAL_HEAD_VERIFIED / DRIFT_2 REMEDIATED
+Program epistemic governance v1   PREPARED / IMPLEMENTATION NOT STARTED
 production authorization          NONE
 first real short authorization    NONE
 ```
@@ -54,6 +55,8 @@ MEASUREMENT_INCONCLUSIVE_TIME_DEPENDENT
 ```
 
 No CI replay or historical replay may backfill that elapsed-time evidence.
+
+The Phase 6 contract is unchanged. New observation-infrastructure work is sequenced after Program-Level Epistemic Governance v1 so future elapsed observations can enter the new provenance/evidence model from inception.
 
 ## Phase 7
 
@@ -98,6 +101,18 @@ The audit is complete and remediated three drift classes without economic retuni
 
 Same-direction reductions and emergency flatten remain available. The audit status is `PASS_FINAL_HEAD_VERIFIED` and does not confer production authority.
 
+## Program-Level Epistemic Governance v1 — prepared next program
+
+Pre-implementation handoff:
+
+`docs/PROGRAM_LEVEL_EPISTEMIC_GOVERNANCE_V1_HANDOFF_2026-08-08.md`
+
+The next program is a governance upgrade, not a strategy experiment. Its purpose is to extend the current experiment-level preregistration / immutable evidence / fail-stop system into program-level accounting for research families, typed lineage, validation exposure, dataset-slice contamination, researcher degrees of freedom, evidence provenance and retrospective governance debt.
+
+This preparation does not implement the framework and does not claim that prior experiments were historically governed by it. Existing experiments must remain immutable and be mapped conservatively in a legacy/retrospective mode with `UNKNOWN` for unrecoverable historical facts.
+
+Historical research branches are intentionally retained as potential provenance for the retrospective audit.
+
 ## Frozen product boundaries
 
 - BRRK relative ranking unchanged.
@@ -113,11 +128,13 @@ Same-direction reductions and emergency flatten remain available. The audit stat
 ## Exact next action
 
 ```text
-VERIFY CANONICAL MAIN CONTAINS THE PHASE 0-8 AUDIT CLOSEOUT
-CONTINUE REAL PHASE-6 ZERO-AUTHORITY ELAPSED OBSERVATION
+START PROGRAM-LEVEL EPISTEMIC GOVERNANCE V1 FROM CANONICAL MAIN
+FIRST AUDIT AND REUSE EXISTING GOVERNANCE; DO NOT BUILD A PARALLEL REPLACEMENT SYSTEM
+FREEZE A PROSPECTIVE LEGACY BOUNDARY BEFORE NEW RESEARCH CONSUMES MORE HISTORY
+DO NOT START SUPERTrend / FUNDING-OI / RELATIVE-STRENGTH / NEW-ALLOCATION RESEARCH
+DO NOT CHANGE BRRK / BNB / PARAMETERS / COSTS / PRODUCTION AUTHORITY
+AFTER GOVERNANCE V1 MERGES, RESUME REAL PHASE-6 ZERO-AUTHORITY ELAPSED OBSERVATION
 DO NOT REBUILD OR BACKFILL PHASE-6 ELAPSED EVIDENCE
-WHEN PHASE-6 EVIDENCE ACTUALLY PASSES, REVIEW PHASE-7 CHECKLIST
 DO NOT ACTIVATE PHASE 7 WITHOUT THE COMPLETE CHECKLIST AND EXPLICIT OWNER APPROVAL
 DO NOT RUN BEAR-SHORT-0001 ECONOMICS WITHOUT THE FROZEN CONFIRMED-BEAR TRIGGER
-DO NOT PRODUCTION-AUTHORIZE ANYTHING THROUGH THE AUDIT CLOSEOUT
 ```
