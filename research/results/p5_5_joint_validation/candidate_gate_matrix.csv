@@ -1,0 +1,13 @@
+profile,behavior_map,event_behavior_pass,economic_pass,robustness_pass,non_selection_pass,event__terminal_target_lead,event__terminal_near_event,event__second_wind_2021,event__second_wind_2025,event__false_flat_present,event__false_flat_finite,event__later_events_observable,economic__cagr_5,economic__dd_5,economic__calmar_5,economic__turnover_5,economic__cagr_10,economic__dd_10,economic__end_20,economic__positive_50,economic__minimum_usefulness,economic__positive_nav_all_costs,robust__start_worst,robust__start_median,robust__heldout_worst,robust__heldout_median,broad_policy_pass,eligible
+EARLY,HARD_ONLY,False,False,True,False,False,False,True,True,True,True,True,True,True,True,True,True,True,True,True,False,True,True,True,True,True,False,False
+EARLY,GENTLE,True,False,False,False,True,True,True,True,True,True,True,False,True,False,True,False,True,False,True,False,True,False,False,False,False,False,False
+EARLY,BALANCED,True,False,False,False,True,True,True,True,True,True,True,False,True,False,True,False,True,False,True,False,True,False,False,False,False,False,False
+EARLY,DEFENSIVE,False,False,False,False,True,True,True,False,True,True,True,False,True,False,True,False,True,False,True,False,True,False,False,False,False,False,False
+BALANCED,HARD_ONLY,False,False,True,False,False,False,True,True,True,True,True,True,True,True,True,True,True,True,True,False,True,True,True,True,True,False,False
+BALANCED,GENTLE,True,False,False,False,True,True,True,True,True,True,True,False,True,True,True,False,True,False,True,False,True,False,False,False,False,False,False
+BALANCED,BALANCED,True,False,False,False,True,True,True,True,True,True,True,False,True,False,True,False,True,False,True,False,True,False,False,False,False,False,False
+BALANCED,DEFENSIVE,True,False,False,False,True,True,True,True,True,True,True,False,True,False,True,False,True,False,True,False,True,False,False,False,False,False,False
+CONSERVATIVE,HARD_ONLY,False,False,True,False,False,False,True,True,True,True,True,True,True,True,True,True,True,True,True,False,True,True,True,True,True,False,False
+CONSERVATIVE,GENTLE,True,False,False,False,True,True,True,True,True,True,True,False,True,False,True,False,True,False,True,False,True,False,False,False,False,False,False
+CONSERVATIVE,BALANCED,True,False,False,False,True,True,True,True,True,True,True,False,True,False,True,False,True,False,True,False,True,False,False,False,False,False,False
+CONSERVATIVE,DEFENSIVE,True,False,False,False,True,True,True,True,True,True,True,False,True,False,True,False,True,False,True,False,True,False,False,False,False,False,False

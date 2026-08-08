@@ -1,0 +1,62 @@
+{
+  "brrk_target_frame_sha256": "bb73a92986b3119105071919a65ce2ba06a05608b6f78d6c1530b11411783417",
+  "candidate_count": 12,
+  "common_observable_end_correction": {
+    "effective_end": "2026-02-28",
+    "fabricated_state_extension": false,
+    "forward_fill_market_state": false,
+    "rule": "min(frozen BRRK target/price end, immutable P5.3 V2 MARKET_STATE evidence end)"
+  },
+  "contract_git_blob_sha": "96a923189fce1682d2cee2dd0b34afdb3e3bd3a7",
+  "cost_bps": [
+    5.0,
+    10.0,
+    20.0,
+    50.0
+  ],
+  "decision_start": "2022-12-09",
+  "defensive_scale_sha256": "9e95ecf6a0f16c3fcf893306a92d6ca528887bf870277a5f47437237512dac2d",
+  "evaluation_session_end": "2026-02-28",
+  "evaluation_session_start": "2022-12-10",
+  "funding_in_primary_selection": false,
+  "p5_2_summary_sha256": "3f6dc3c512d22ac8f71d43ed155f2602cd40d5caf3d617c0e130e170727e0627",
+  "p5_3_v2_summary_sha256": "05d5d68a59c8b13f1122d98ed75d03934defdc9d73c7dd92e038c92fd97d2e52",
+  "p5_4_contract_git_blob_sha": "595a8488616ac8d333335cf2bc9cc509d808d7e8",
+  "p5_4_engine_git_blob_sha": "a6842ddb572f7af7da928a7a8a0c6f1582ef7c56",
+  "p5_5_r2_git_blob_sha": "57073e6948e0c7540c453f193a1be7c21979b7d5",
+  "price_frame_sha256": "92a8c0eaa11f6b0dbe048ef7ed66ddcc3ed111655476bf24d464c53b2869ab99",
+  "r1_git_blob_sha": "98f651811b7edcb1f0b4c3047b87d95bffed087a",
+  "rebalance_band_l1": 0.05,
+  "resolved_events_sha256": "f74dc3cfbb9bd5160e9f57b934fee83edc3173977fea76c5c141d996d6b5fa69",
+  "study_id": "P5.5-JOINT-PROFILE-MAP-VALIDATION-V1",
+  "target_authority_meta": {
+    "decision_count": 45,
+    "evaluation_start_session": "2022-12-10",
+    "feature_assets": [
+      "BTC",
+      "ETH",
+      "SOL",
+      "BNB",
+      "XRP"
+    ],
+    "feature_price_frame_sha256": "43325adedd7e588a5711c77842d4a054638ae916d939ca6f8c7e445947f00c1c",
+    "first_decision_date": "2022-12-09",
+    "last_decision": {
+      "date": "2026-07-21",
+      "final_scale": 0.009600519865636481,
+      "full_scale_cdar95_corrected": 0.16331279325293963,
+      "full_scale_cvar95": 0.13573137534843085,
+      "meta_scale": 0.0,
+      "riskoff_probability": 0.9903994801343635
+    },
+    "published_banded_weights_used_for_scale": false,
+    "target_assets": [
+      "BTC",
+      "ETH",
+      "SOL",
+      "BNB"
+    ]
+  },
+  "taxonomy_git_blob_sha": "73d010666fbfd957ec15214a00883a90a8adba5a",
+  "v2_state_paths_sha256": "b7372dad6f916828cfc96bb4b5af523a8d073101f873c60cc4a1ca205abc1015"
+}
