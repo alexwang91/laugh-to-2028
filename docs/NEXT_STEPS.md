@@ -4,7 +4,7 @@ Last updated: 2026-08-08
 
 ## Current instruction
 
-**Program-Level Epistemic Governance v1 is complete across PG0-PG6. The next dependency is genuine future Phase 6 zero-authority elapsed observation under the new provenance/evidence model. Production remains unauthorized.**
+**Program-Level Epistemic Governance v1 is complete across PG0-PG6. Stablecoin Stage-1 is terminal FAIL. The highest-priority dependency is to make genuine future Phase 6 zero-authority elapsed observation operational without weakening no-drift or fabricating account/evidence semantics. Production remains unauthorized.**
 
 Canonical governance closeout:
 
@@ -24,126 +24,98 @@ production gross cap                   1.0
 production_authorized_components = []
 P5.1-P5.4                              COMPLETE / FROZEN
 P5.5 joint validation                  COMPLETE / IMMUTABLE / NO_PROMOTION / FAIL_STOP
-P5.5 result commit                     ae20890d87567c98e403e3558219d5de55daef67
-P5.5 summary SHA256                    ccbdc067f9f7f1277e6eecaa2f74f31f84e3a1882ccef418e097b2ea66bf6e71
 P5.6 integration                       BLOCKED / NO ELIGIBLE CANDIDATE
 Phase 6 implementation/replay          PASS_SHADOW_ONLY_IMPLEMENTATION_REPLAY / MERGED #109
-Phase 6 live elapsed evidence          MEASUREMENT_INCONCLUSIVE_TIME_DEPENDENT
+Phase 6 live elapsed evidence          MEASUREMENT_INCONCLUSIVE_TIME_DEPENDENT / CLOCK NOT ARMED
+Phase 6 observation preactivation      PREACTIVATION_BLOCKED_FAIL_CLOSED
 Phase 7 readiness gate                 IMPLEMENTED / MERGED #110 / LAUNCH BLOCKED
 Phase 7 mode                           MONITOR_ONLY
 Phase 8 BEAR-SHORT-0001                PREREGISTERED_TRIGGER_ABSENT_NOT_RUN / MERGED #111
-Phase 0-8 drift audit                  COMPLETE / PASS_FINAL_HEAD_VERIFIED / DRIFT_2 REMEDIATED
 Program epistemic governance v1        PG0-PG6 COMPLETE / CI-ENFORCED / NO-DRIFT CLOSEOUT
+Stablecoin liquidity Stage-1           FAIL_NO_INCREMENTAL_INFORMATION / NO_PROMOTION / TERMINAL STOP
 production authorization               NONE
 first real short authorization         NONE
 ```
 
-## Governance v1 closeout
+## Corrected governance/data state
 
-Governance v1 is an institutional research-control layer, not a new alpha program. It extends existing experiment contracts and keeps research, decision and production authority separate.
+The Dataset Exposure Registry is **not globally empty**. It contains the prospectively recorded Stablecoin reconstructed-history validation slice and RAW_DATA exposure created during `STABLECOIN-LIQUIDITY-0001`. Legacy retrospective exposure remains intentionally unbackfilled where historical facts cannot be reconstructed truthfully.
 
-The frozen prospective boundary is:
+The Edge Registry remains empty. Stablecoin failed its preregistered incremental-information test and created no edge; governance v1 also does not infer edges retroactively from legacy naming or historical PASS labels.
 
-```text
-legacy_boundary_commit = 896cbd123b7a0c38943815dd802f0f9dcd12e1c2
-research_governance_version = 1
-```
+Stablecoin is closed at its frozen stopping point. Do not rerun it, test rescue lags/alphas/horizons/representations under the same ID, start Stage-2, or create a Stablecoin multiplier/portfolio integration.
 
-Implemented controls include:
+## Phase 6 — actual blocker found by live-state audit
 
-- research-family accounting and typed lineage DAG;
-- explicit variant/trial budgets and researcher degrees of freedom;
-- structured dataset/exposure semantics;
-- prospective data budgets including SEALED and TEMPORALLY_UNSEEN evidence;
-- preservation of negative results and same-line tuning ancestry;
-- 17 conservative `RETROSPECTIVE_LEGACY` records;
-- six explicit legacy governance-debt classes;
-- deterministic registry validation and program audit;
-- exact-PR-diff fail-closed future-research registration enforcement;
-- final legacy-boundary-to-HEAD no-drift regression;
-- evidence-gated Edge Registry admission with no retroactive legacy edge claims.
-
-The Dataset Exposure Registry remains empty for retrospective history because historical release/consumption facts cannot be reconstructed truthfully. The Edge Registry remains empty because v1 does not infer independent/incremental information from legacy naming or isolated historical PASS results.
-
-A governance audit `WARNING` caused by explicit legacy debt is expected. Do not erase that debt by guessing missing historical facts.
-
-## Phase 6 — exact next dependency
-
-Phase 6 implementation/replay is complete. The frozen live-observation requirement remains:
+The frozen Phase 6 contract still requires:
 
 ```text
 minimum elapsed calendar days   14
 minimum scheduled decisions     10
-status before evidence exists   MEASUREMENT_INCONCLUSIVE_TIME_DEPENDENT
-signature_authorized            false
-order_submission_authorized     false
-production_authorized           false
+minimum emergency drills        1
+critical reconciliation errors  0
+unexplained target drift         0
+schedule failures                0
+signature_authorized             false
+order_submission_authorized      false
+production_authorized            false
 ```
 
-Resume only **real, forward Phase 6 zero-authority observation**. Genuinely future observations should be recorded under Governance v1 provenance from inception.
+The existing `.github/workflows/phase6-integrated-shadow.yml` is implementation/replay safety CI only. It has PR/push/manual triggers, no scheduled future collector and no durable elapsed-evidence persistence. Therefore no automatic Phase-6 elapsed evidence has been accumulating.
 
-Do not manufacture, replay, interpolate or backfill elapsed time. Historical/CI replay cannot satisfy the elapsed-calendar requirement.
+Governance v1 no-drift also forbids casually adding a new execution path under `beta_bot/` or mutating the frozen strategy/execution blobs. The correct place for elapsed-observation provenance control is the already-authorized `research/governance/**` plane.
 
-The observation program must remain economically passive: it may read state and compute hypothetical decisions/orders, but it must not sign or submit production orders.
+`research/governance/phase6_live_observation_gate.json` and `phase6_live_observation_gate.py` therefore freeze a fail-closed **preactivation** state. The gate does not start the elapsed clock. It blocks schedule/credit until all required operational semantics are frozen.
+
+## Required before the collector may be armed
+
+Exactly these unresolved dependencies must be closed prospectively:
+
+1. **Observation account identity** — select and freeze one explicit read-only account identity. Never invent account state.
+2. **Current-position/equity valuation contract** — freeze how the Phase-6 observation portfolio converts the permitted account surfaces into the P3.3 `current_positions_notional_usd` and `account_equity_usd`, including spot/perp treatment. This is operational measurement semantics, not a new alpha rule.
+3. **Durable create-only evidence backend** — freeze where each scheduled run's raw/derived evidence and receipt are durably stored before they can be credited. Ephemeral-only CI output must not be called durable provenance.
+4. **Schedule/duplicate rule** — already frozen by the preactivation gate: manual dispatch does not count as a scheduled decision; reruns and duplicate decision timestamps do not create new credit; a manual emergency drill may count only toward the drill requirement.
+
+When a later prospective change arms the collector, its first eligible decision is the first canonical `00:00 UTC` decision **strictly after the arm commit timestamp**. Nothing before that point can be backfilled or credited.
+
+## Execution order
+
+```text
+1. KEEP PROGRAM-LEVEL EPISTEMIC GOVERNANCE V1 + NO-DRIFT AUTHORITATIVE
+2. MERGE THE PHASE-6 LIVE-OBSERVATION PREACTIVATION GATE ONLY AFTER ALL CI IS GREEN
+3. FREEZE ONE READ-ONLY OBSERVATION ACCOUNT IDENTITY
+4. FREEZE CURRENT-POSITION / ACCOUNT-EQUITY VALUATION SEMANTICS WITHOUT CHANGING P3.2/P3.3 ECONOMICS
+5. FREEZE A DURABLE CREATE-ONLY EVIDENCE BACKEND + RECEIPT IDENTITY
+6. PROSPECTIVELY ARM THE FUTURE-ONLY COLLECTOR IN A SEPARATE CHANGE
+7. CREDIT ONLY GENUINELY FUTURE SCHEDULED DECISIONS AFTER THE ARM COMMIT; NEVER BACKFILL/REPLAY/RERUN-CREDIT
+8. ACCUMULATE >=14 ELAPSED DAYS, >=10 SCHEDULED DECISIONS, >=1 EMERGENCY DRILL, WITH ALL FROZEN QUALITY COUNTS AT ZERO
+9. KEEP PHASE 7 MONITOR_ONLY UNTIL PHASE-6 EVIDENCE + COMPLETE CHECKLIST + EXPLICIT OWNER APPROVAL
+10. AFTER THE PHASE-6 COLLECTION PATH IS OPERATIONAL, IMPLEMENT THE FORMAL RESEARCH LIFECYCLE/STATE MACHINE
+11. THEN IMPLEMENT RESEARCH QUEUE + TRIAL/OVERLAP ACCOUNTING
+12. ONLY AFTER THOSE INFRASTRUCTURE LAYERS, CONSIDER A NEW RESULT-BEARING RESEARCH FAMILY THROUGH A NEW PROSPECTIVE ID
+13. WAIT FOR THE FROZEN CONFIRMED-BEAR TRIGGER BEFORE BEAR-SHORT-0001 ECONOMICS
+14. REQUIRE A SEPARATE HUMAN GATE BEFORE ANY FIRST REAL SHORT
+```
 
 ## Future research rule
 
-Any material post-boundary result-bearing research must be registered prospectively as exactly one `PROGRAM_GOVERNED_V1` record before formal results are consumed.
+Any material post-boundary result-bearing research must be registered prospectively as exactly one `PROGRAM_GOVERNED_V1` record before formal results are consumed. Different experiment IDs or cosmetic parameter changes do not reset result-informed history into independence; failed ancestors remain part of the evidence lineage.
 
-The record must freeze the required governance fields, including primary metric, data budget, variant budget, stopping/pass/fail rules, lineage/data references, researcher decision surface, governed path ownership and `production_authorized=false`.
+`ONCHAIN-HOLDER-COST-0001` remains only a backlog idea. It is not started by the Stablecoin closeout or by Phase-6 observation work.
 
-Different experiment IDs or cosmetic parameter changes do not reset result-informed history into independence. Failed ancestors remain part of the evidence lineage.
+## Phase 7 / 8 boundaries
 
-## Phase 7 boundary
+Phase 7 remains `MONITOR_ONLY` and `production_authorized=false`. Do not transition to ACTIVE until the complete launch checklist is satisfied, including Phase 6 elapsed evidence and explicit owner approval. Credentials, `TRADING_MODE=trade`, a durable ledger or a historical mainnet confirmation string are not substitutes for production authorization.
 
-The Phase 7 readiness gate is implemented, not activated. Current mode is `MONITOR_ONLY`.
-
-Do not transition to ACTIVE until the complete launch checklist is satisfied, including Phase 6 elapsed evidence and explicit owner approval. Human approval remains required for:
-
-```text
-MONITOR_ONLY -> ACTIVE
-FLAT -> LONG
-FLAT -> SHORT
-first short exposure of a new bear phase
-```
-
-Credentials, `TRADING_MODE=trade`, a durable ledger or a historical mainnet confirmation string are not substitutes for production authorization.
-
-## Phase 8 boundary
-
-`BEAR-SHORT-0001` is preregistered but trigger-absent. Do not run trigger-dependent economics until a repository-valid `CONFIRMED_BEAR_TRANSITION_ARTIFACT` exists under the frozen contract.
-
-Until then:
-
-```text
-status                       PREREGISTERED_TRIGGER_ABSENT_NOT_RUN
-trigger_present              false
-short_ready                  false
-production_authorized        false
-first_real_short_authorized  false
-```
-
-A subjective market view must not be used as the trigger.
-
-## Exact execution order
-
-```text
-1. KEEP PROGRAM-LEVEL EPISTEMIC GOVERNANCE V1 CI/REGISTRIES AUTHORITATIVE FOR FUTURE RESEARCH
-2. RESUME REAL PHASE-6 ZERO-AUTHORITY ELAPSED OBSERVATION
-3. RECORD ONLY GENUINELY FORWARD OBSERVATIONS; DO NOT BACKFILL THE 14-DAY / 10-DECISION REQUIREMENT
-4. KEEP SIGNING / ORDER SUBMISSION / PRODUCTION AUTHORITY FALSE THROUGH PHASE 6
-5. IF NEW FORMAL RESEARCH IS NEEDED, REGISTER PROGRAM_GOVERNED_V1 BEFORE RESULT-BEARING WORK
-6. AFTER PHASE-6 ELAPSED + QUALITY EVIDENCE EXISTS, RE-EVALUATE THE EXISTING PHASE-7 READINESS CHECKLIST
-7. REQUIRE EXPLICIT HUMAN APPROVAL BEFORE MONITOR_ONLY -> ACTIVE OR ZERO -> RISK
-8. WAIT FOR THE FROZEN CONFIRMED-BEAR TRIGGER BEFORE BEAR-SHORT-0001 ECONOMICS
-9. REQUIRE A SEPARATE HUMAN GATE BEFORE ANY FIRST REAL SHORT
-```
+`BEAR-SHORT-0001` remains `PREREGISTERED_TRIGGER_ABSENT_NOT_RUN`. A subjective market view cannot substitute for `CONFIRMED_BEAR_TRANSITION_ARTIFACT`, and no first real short may occur without the separate human gate.
 
 ## Explicit non-goals
 
 Do **not** start as part of Phase 6 observation:
 
 ```text
+Stablecoin rescue research
+Holder Cost research
 Supertrend research
 funding/OI alpha research
 new relative-strength research
