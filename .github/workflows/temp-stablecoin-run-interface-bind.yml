@@ -1,0 +1,81 @@
+name: Temporary Stablecoin run-interface registry bind
+
+on:
+  push:
+    branches:
+      - research/stablecoin-liquidity-0001-run-interface
+
+permissions:
+  contents: write
+
+jobs:
+  bind-once:
+    if: contains(github.event.head_commit.message, '[STABLECOIN_BIND_RUN_INTERFACE_V1]')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/stablecoin-liquidity-0001-run-interface
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Bind Stablecoin validation slice and exposure without changing result state
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          path = Path('config/research_registry.json')
+          data = json.loads(path.read_text(encoding='utf-8'))
+          matches = [r for r in data['records'] if r.get('research_id') == 'STABLECOIN-LIQUIDITY-0001']
+          if len(matches) != 1:
+              raise SystemExit(f'expected exactly one Stablecoin research record, found {len(matches)}')
+          record = matches[0]
+          if record.get('result_status') != 'PREREGISTERED_NOT_RUN':
+              raise SystemExit('refuse binding after Stage-1 result state changed')
+          if record.get('actual_variants_evaluated') != 0:
+              raise SystemExit('refuse binding after any variant was evaluated')
+          if record.get('evidence_refs') != []:
+              raise SystemExit('pre-result research evidence refs must remain empty')
+          if record.get('validation_dataset_refs') not in ([], ['STABLECOIN-LIQUIDITY-0001-DEFILLAMA-HIST-V1']):
+              raise SystemExit('unexpected existing validation dataset refs')
+          complexity = record.get('research_process_complexity')
+          if not isinstance(complexity, dict):
+              raise SystemExit('missing research_process_complexity')
+          if complexity.get('validation_exposure_event_refs') not in ([], ['STABLECOIN-LIQUIDITY-0001-RAW-DATA-20260808T141719Z']):
+              raise SystemExit('unexpected existing validation exposure refs')
+
+          record['validation_dataset_refs'] = ['STABLECOIN-LIQUIDITY-0001-DEFILLAMA-HIST-V1']
+          complexity['validation_exposure_event_refs'] = ['STABLECOIN-LIQUIDITY-0001-RAW-DATA-20260808T141719Z']
+          record['notes'] = [
+              'Formal research path, frozen Data Contract, first-capture provenance and Stage-1 Run Interface now exist prospectively under the registered governed prefix.',
+              'Validation dataset STABLECOIN-LIQUIDITY-0001-DEFILLAMA-HIST-V1 is reconstructed RESEARCHER_EXPOSED_HISTORY and was exposed as RAW_DATA before Stage-1; it is not sealed or temporally unseen.',
+              'The exact Stage-1 baseline/augmented design, PIT alignment, label, walk-forward purge, normalization, Ridge alpha=1.0, HAC lag=19, release policy and one-shot execution lock are frozen in research/stablecoin_liquidity_0001/RUN_INTERFACE.json before any real Stage-1 model evaluation.',
+              'No Stage-1 feature computation, model fit, OOS prediction or research result has occurred at this binding state.',
+              'ONCHAIN-HOLDER-COST-0001 remains backlog and is not registered, run or evaluated by this change.'
+          ]
+          path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + '\n', encoding='utf-8')
+          PY
+      - name: Validate only intended Stablecoin binding changed semantically
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('config/research_registry.json').read_text())
+          r=next(x for x in d['records'] if x['research_id']=='STABLECOIN-LIQUIDITY-0001')
+          assert r['validation_dataset_refs']==['STABLECOIN-LIQUIDITY-0001-DEFILLAMA-HIST-V1']
+          assert r['research_process_complexity']['validation_exposure_event_refs']==['STABLECOIN-LIQUIDITY-0001-RAW-DATA-20260808T141719Z']
+          assert r['result_status']=='PREREGISTERED_NOT_RUN'
+          assert r['actual_variants_evaluated']==0
+          assert r['evidence_refs']==[]
+          PY
+      - name: Remove temporary workflow and commit exact registry binding
+        run: |
+          set -euo pipefail
+          git rm .github/workflows/temp-stablecoin-run-interface-bind.yml
+          git add config/research_registry.json
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Research [DRIFT_0]: bind Stablecoin validation data to frozen run interface'
+          git push origin HEAD:research/stablecoin-liquidity-0001-run-interface
