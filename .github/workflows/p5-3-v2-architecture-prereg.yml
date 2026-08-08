@@ -7,6 +7,7 @@ on:
       - "docs/P5_3_V2_ARCHITECTURE_PREREG.md"
       - "execution/plan-b-bot/tests/test_p5_3_v2_architecture_prereg.py"
       - ".github/workflows/p5-3-v2-architecture-prereg.yml"
+      - "research/results/p5_3_v2_market_state/**"
       - "README.md"
       - "docs/CURRENT_STATE.md"
       - "docs/NEXT_STEPS.md"
@@ -16,6 +17,7 @@ on:
       - "research/cycle_exit/p5_3_v2_architecture_contract.json"
       - "execution/plan-b-bot/tests/test_p5_3_v2_architecture_prereg.py"
       - ".github/workflows/p5-3-v2-architecture-prereg.yml"
+      - "research/results/p5_3_v2_market_state/**"
 
 permissions:
   contents: read
@@ -35,12 +37,11 @@ jobs:
         run: pip install -r execution/plan-b-bot/requirements-dev.txt
       - name: Validate P5.3 V2 architecture preregistration
         run: pytest -q execution/plan-b-bot/tests/test_p5_3_v2_architecture_prereg.py
-      - name: Prove immutable V1 result and no V2 historical result
+      - name: Prove immutable V1 and V2 lifecycle boundary
         run: |
           set -euo pipefail
           python research/cycle_exit/validate_p5_3_state_path_result.py
           test "$(cat research/results/p5_3_state_paths/summary.sha256)" = "a2e5be8d605af5a2c8206235402fe3a66b08fd994eaa8a71e84cfb1e3cbfed8f"
-          test ! -e research/results/p5_3_v2_market_state/summary.json
           python - <<'PY'
           import json
           from pathlib import Path
@@ -54,3 +55,9 @@ jobs:
           assert c['architecture_layers']['MARKET_STATE']['flat_absorbing'] is False
           assert c['architecture_layers']['RISK_PERMISSION_LOCK']['automatic_unlock_forbidden'] is True
           PY
+          if test -e research/results/p5_3_v2_market_state/summary.json; then
+            python research/cycle_exit/validate_p5_3_v2_state_path_result.py
+            test "$(cat research/results/p5_3_v2_market_state/summary.sha256)" = "05d5d68a59c8b13f1122d98ed75d03934defdc9d73c7dd92e038c92fd97d2e52"
+          else
+            test ! -d research/results/p5_3_v2_market_state
+          fi

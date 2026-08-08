@@ -1,0 +1,28 @@
+{
+  "architecture_contract_id": "P5.3-MARKET-STATE-PERMISSION-SEPARATION-V2",
+  "architecture_pass": true,
+  "artifact_sha256": {
+    "daily_market_state_paths.csv": "b7372dad6f916828cfc96bb4b5af523a8d073101f873c60cc4a1ca205abc1015",
+    "event_state_first_occurrence.csv": "dc7c9789fe388a6d69d954e4812f274daa7a57aad2ca8af61cb89737a68a4ece",
+    "event_state_occupancy.csv": "9f53b2730cd99b4325a1aacb546d3012af901cbb3a1f4982ec5abe9e68d36436",
+    "flat_episodes.csv": "14a50b126393d787c99350dc02a9e72bc6c6f48428b4b60c75c427dc82dd36b8",
+    "normalization_counts.csv": "6b1ed2ea07fa42ba15681fdf06c90935a59393adc71b19cfbbe339cfe1bddf3f",
+    "normalized_percentiles.csv": "dd8a6bef0c55dd1f508bbc313995456f96617ccd10cef94a85ee9057facd1f26",
+    "profile_summary.csv": "63056a58032d89b818f78a9ca37362efcb78c062b45d75800ac15c0062d7dff8",
+    "v1_v2_parity_summary.json": "3839f31c636f0771b8f8c37c278503c3141e2dde26b50a58c71f8495c64c8299"
+  },
+  "atom_parity_fraction": 1.0,
+  "false_flat_reproduced": true,
+  "later_events_observable": true,
+  "normalization_count_parity": true,
+  "normalization_parity": true,
+  "p5_4_mapping_selected": false,
+  "post_false_flat_nonflat_exists": true,
+  "pre_first_flat_state_parity_fraction": 1.0,
+  "production_authorized": false,
+  "profile_selected": false,
+  "raw_candidate_parity_fraction": 1.0,
+  "risk_permission_unlock_authorized": false,
+  "status": "ONE_TIME_FROZEN_V2_MARKET_STATE_EVIDENCE_COMPLETE",
+  "study_id": "P5.3-V2-MARKET-STATE-PATH-EVIDENCE-V1"
+}

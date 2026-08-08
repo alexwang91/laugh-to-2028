@@ -1,0 +1,4 @@
+profile,episode,start_date,end_date,duration_days,first_nonflat_after_episode
+EARLY,1,2021-02-23,2021-02-28,6,2021-03-01
+BALANCED,1,2021-02-23,2021-02-28,6,2021-03-01
+CONSERVATIVE,1,2021-02-23,2021-03-02,8,2021-03-03
