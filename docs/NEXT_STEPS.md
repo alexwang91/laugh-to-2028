@@ -23,7 +23,7 @@ Phase 6 live elapsed evidence          MEASUREMENT_INCONCLUSIVE_TIME_DEPENDENT /
 Phase 6 observation preactivation      PREACTIVATION_BLOCKED_FAIL_CLOSED
 Phase 6 durable evidence backend       FROZEN / ACTIONS_ARTIFACT_V4 / 90D / NO CREDIT / MERGED #133
 Phase 6 valuation contract             PHASE6-LIVE-VALUATION-V1 / PR #134 CANDIDATE
-Phase 6 pre-arm dependencies           3/4 FROZEN / ACCOUNT IDENTITY REMAINS
+Phase 6 pre-arm dependencies           3/4 FROZEN IN #134 CANDIDATE / ACCOUNT IDENTITY REMAINS
 Phase 7 readiness gate                 IMPLEMENTED / MERGED #110 / LAUNCH BLOCKED
 Phase 7 mode                           MONITOR_ONLY
 Phase 8 BEAR-SHORT-0001                PREREGISTERED_TRIGGER_ABSENT_NOT_RUN / MERGED #111
@@ -38,11 +38,11 @@ first real short authorization         NONE
 Four dependencies govern whether a future scheduled collector may ever be armed:
 
 1. **Observation account identity — UNRESOLVED.** One exact public read-only Hyperliquid master/subaccount address must be frozen and verified. It must be the actual observed account, not an agent-wallet identity. Do not invent it and do not derive it from a private key merely to satisfy the gate.
-2. **Current-position/equity valuation contract — FROZEN IN PR #134 CANDIDATE.** `PHASE6-LIVE-VALUATION-V1` supports only explicit Hyperliquid Standard mode (`userAbstraction=disabled`), maps verified canonical spot + signed perp exposure into existing P3.3 inputs, and fails closed on unsupported modes/assets.
+2. **Current-position/equity valuation contract — PR #134 CANDIDATE.** `PHASE6-LIVE-VALUATION-V1` supports only explicit Hyperliquid Standard mode (`userAbstraction=disabled`), maps verified canonical spot + signed perp exposure into existing P3.3 inputs, and fails closed on unsupported modes/assets. It becomes authoritative only after final green CI and merge.
 3. **Durable create-only evidence backend — FROZEN / MERGED #133.** GitHub Actions Artifact v4, 90-day retention, overwrite false, evidence bundle + hash-bound receipt before credit.
 4. **Schedule/duplicate-credit rule — FROZEN.** Manual dispatch is not a scheduled decision; reruns and duplicate decision timestamps create no new credit; a manual emergency drill may count only toward the drill requirement.
 
-The current gate therefore remains:
+The current gate remains:
 
 ```text
 collector_armed                    false
