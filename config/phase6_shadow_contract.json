@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "phase_id": "PHASE-6",
+  "contract_id": "P6-INTEGRATED-SHADOW-V1-2026-08-08",
+  "status": "IMPLEMENTATION_AND_REPLAY_PENDING",
+  "canonical_strategy": "BRRK-0011_LONG_BASELINE",
+  "cycle_layer": "NONE_P5_6_BLOCKED",
+  "production_gross_cap": 1.0,
+  "production_authorized": false,
+  "signature_authorized": false,
+  "order_submission_authorized": false,
+  "allowed_inputs": [
+    "canonical_P3_2_target",
+    "canonical_P3_3_rebalance_plan",
+    "read_only_account_state",
+    "read_only_market_data",
+    "funding",
+    "live_order_books",
+    "read_only_router_projection",
+    "offline_reference_target"
+  ],
+  "forbidden_capabilities": [
+    "private_key",
+    "order_signature",
+    "order_submission",
+    "withdrawal",
+    "transfer",
+    "production_state_activation"
+  ],
+  "required_daily_audit_fields": [
+    "target_BRRK_weights",
+    "cycle_layer_status",
+    "leverage_target",
+    "route_projection",
+    "hypothetical_orders",
+    "expected_cost",
+    "target_reference_drift",
+    "alerts",
+    "emergency_hypothetical_action"
+  ],
+  "drift_checks": [
+    "feature_reference_match",
+    "target_reference_match",
+    "data_complete",
+    "instrument_identity_match",
+    "cost_model_ok",
+    "state_transition_explained",
+    "daily_schedule_ok"
+  ],
+  "acceptance": {
+    "implementation_and_replay": {
+      "critical_reconciliation_errors": 0,
+      "unexplained_target_drift": 0,
+      "gross_cap_violations": 0,
+      "signer_or_submit_paths": 0,
+      "emergency_drill_required": true,
+      "audit_digest_required": true
+    },
+    "live_shadow_observation": {
+      "minimum_elapsed_calendar_days": 14,
+      "minimum_scheduled_decisions": 10,
+      "minimum_emergency_drills": 1,
+      "critical_reconciliation_errors": 0,
+      "unexplained_target_drift": 0,
+      "schedule_failures": 0,
+      "status_until_elapsed_evidence_exists": "MEASUREMENT_INCONCLUSIVE_TIME_DEPENDENT"
+    }
+  },
+  "phase7_handoff": "BLOCKED_UNTIL_PHASE6_IMPLEMENTATION_REPLAY_GREEN_AND_TIME_DEPENDENT_SHADOW_EVIDENCE_REVIEWED",
+  "notes": [
+    "P5.5 ended NO_PROMOTION, therefore no cycle-exit overlay is carried into Phase 6.",
+    "The shadow orchestration must remain physically incapable of signing or submitting orders.",
+    "Elapsed-time evidence must not be simulated or backfilled and cannot be declared complete by CI replay alone."
+  ]
+}

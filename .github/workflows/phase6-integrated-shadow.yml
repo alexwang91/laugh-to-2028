@@ -1,0 +1,73 @@
+name: Phase 6 integrated shadow safety
+
+on:
+  pull_request:
+    paths:
+      - 'execution/plan-b-bot/beta_bot/shadow_system.py'
+      - 'execution/plan-b-bot/tests/test_phase6_integrated_shadow.py'
+      - 'config/phase6_shadow_contract.json'
+      - 'docs/PHASE6_INTEGRATED_SHADOW_2026-08-08.md'
+      - '.github/workflows/phase6-integrated-shadow.yml'
+  push:
+    branches:
+      - 'phase-6/**'
+    paths:
+      - 'execution/plan-b-bot/beta_bot/shadow_system.py'
+      - 'execution/plan-b-bot/tests/test_phase6_integrated_shadow.py'
+      - 'config/phase6_shadow_contract.json'
+      - 'docs/PHASE6_INTEGRATED_SHADOW_2026-08-08.md'
+      - '.github/workflows/phase6-integrated-shadow.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  phase6-shadow-safety:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install execution test dependencies
+        working-directory: execution/plan-b-bot
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt -r requirements-dev.txt
+      - name: Compile canonical shadow module
+        working-directory: execution/plan-b-bot
+        run: python -m py_compile beta_bot/shadow_system.py tests/test_phase6_integrated_shadow.py
+      - name: Run Phase 6 deterministic safety and replay tests
+        working-directory: execution/plan-b-bot
+        run: pytest -q tests/test_phase6_integrated_shadow.py
+      - name: Verify zero-authority contract
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          contract = json.loads(Path('config/phase6_shadow_contract.json').read_text())
+          assert contract['production_gross_cap'] == 1.0
+          assert contract['production_authorized'] is False
+          assert contract['signature_authorized'] is False
+          assert contract['order_submission_authorized'] is False
+          assert contract['cycle_layer'] == 'NONE_P5_6_BLOCKED'
+          assert contract['acceptance']['live_shadow_observation']['status_until_elapsed_evidence_exists'] == 'MEASUREMENT_INCONCLUSIVE_TIME_DEPENDENT'
+          PY
+      - name: Static no-signer/no-submit boundary
+        run: |
+          python - <<'PY'
+          import ast
+          from pathlib import Path
+          path = Path('execution/plan-b-bot/beta_bot/shadow_system.py')
+          tree = ast.parse(path.read_text())
+          imports = []
+          for node in ast.walk(tree):
+              if isinstance(node, ast.Import):
+                  imports.extend(a.name for a in node.names)
+              elif isinstance(node, ast.ImportFrom):
+                  imports.append(node.module or '')
+          forbidden = ('executor', 'hyperliquid.exchange', 'eth_account', 'web3')
+          assert not any(any(x in name for x in forbidden) for name in imports), imports
+          PY
