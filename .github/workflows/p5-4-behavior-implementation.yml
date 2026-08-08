@@ -1,0 +1,45 @@
+name: P5.4 behavior mapping implementation
+
+on:
+  pull_request:
+    paths:
+      - "research/cycle_exit/p5_4_behavior_mapping_contract.json"
+      - "research/cycle_exit/p5_4_behavior_mapping.py"
+      - "execution/plan-b-bot/tests/test_p5_4_behavior_mapping*.py"
+      - ".github/workflows/p5-4-behavior-implementation.yml"
+      - "docs/CURRENT_STATE.md"
+      - "docs/NEXT_STEPS.md"
+  push:
+    branches: [main]
+    paths:
+      - "research/cycle_exit/p5_4_behavior_mapping.py"
+      - "execution/plan-b-bot/tests/test_p5_4_behavior_mapping.py"
+      - ".github/workflows/p5-4-behavior-implementation.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  pure-mapping:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: execution/plan-b-bot/requirements-dev.txt
+      - name: Install pinned runtime
+        run: pip install -r execution/plan-b-bot/requirements-dev.txt
+      - name: Verify immutable V2 dependency
+        run: |
+          python research/cycle_exit/validate_p5_3_v2_state_path_result.py
+          test "$(cat research/results/p5_3_v2_market_state/summary.sha256)" = "05d5d68a59c8b13f1122d98ed75d03934defdc9d73c7dd92e038c92fd97d2e52"
+      - name: Run frozen P5.4 contract and mechanics tests
+        run: |
+          pytest -q \
+            execution/plan-b-bot/tests/test_p5_4_behavior_mapping_prereg.py \
+            execution/plan-b-bot/tests/test_p5_4_behavior_mapping.py
+      - name: Compile pure mapping layer
+        run: python -m py_compile research/cycle_exit/p5_4_behavior_mapping.py
