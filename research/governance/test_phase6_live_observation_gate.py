@@ -12,6 +12,7 @@ from research.governance.phase6_live_observation_gate import (
 )
 
 ROOT = Path(__file__).resolve().parents[2]
+MASTER = "0x1111111111111111111111111111111111111111"
 
 
 class Phase6LiveObservationGateTests(unittest.TestCase):
@@ -20,25 +21,59 @@ class Phase6LiveObservationGateTests(unittest.TestCase):
         self.phase6 = json.loads((ROOT / "config/phase6_shadow_contract.json").read_text(encoding="utf-8"))
         self.evidence_contract = json.loads((ROOT / "research/governance/phase6_live_evidence_contract.json").read_text(encoding="utf-8"))
         self.valuation_contract = json.loads((ROOT / "research/governance/phase6_live_valuation_contract.json").read_text(encoding="utf-8"))
+        self.account_identity_contract = json.loads((ROOT / "research/governance/phase6_live_account_identity_contract.json").read_text(encoding="utf-8"))
         self.instrument_registry = json.loads((ROOT / "config/instrument_registry.json").read_text(encoding="utf-8"))
         self.workflow = (ROOT / ".github/workflows/research-governance.yml").read_text(encoding="utf-8")
 
-    def validate(self, gate=None, workflow=None, evidence_contract=None, valuation_contract=None, instrument_registry=None):
+    def validate(
+        self,
+        gate=None,
+        workflow=None,
+        evidence_contract=None,
+        valuation_contract=None,
+        account_identity_contract=None,
+        instrument_registry=None,
+    ):
         return validate_gate_mapping(
             gate or self.gate,
             phase6_contract=self.phase6,
             evidence_contract=evidence_contract or self.evidence_contract,
             valuation_contract=valuation_contract or self.valuation_contract,
+            account_identity_contract=account_identity_contract or self.account_identity_contract,
             instrument_registry=instrument_registry or self.instrument_registry,
             workflow_text=self.workflow if workflow is None else workflow,
         )
+
+    def bound_identity_contract(self):
+        contract = copy.deepcopy(self.account_identity_contract)
+        contract.update(
+            {
+                "status": "FROZEN_VERIFIED_READ_ONLY_IDENTITY",
+                "account_address": MASTER,
+                "identity_frozen": True,
+                "address_source": "EXPLICIT_PUBLIC_ADDRESS",
+                "binding_evidence": {
+                    "query_address": MASTER,
+                    "verified_at": "2026-08-09T12:00:00Z",
+                    "user_role_response": {"role": "user"},
+                    "user_abstraction_response": "disabled",
+                    "raw_response_sha256": {
+                        "userRole": "a" * 64,
+                        "userAbstraction": "b" * 64,
+                    },
+                },
+            }
+        )
+        return contract
 
     def test_repository_gate_is_fail_closed_and_does_not_start_elapsed_clock(self) -> None:
         snapshot = self.validate()
         self.assertEqual(snapshot["status"], "PREACTIVATION_BLOCKED_FAIL_CLOSED")
         self.assertFalse(snapshot["collector_armed"])
         self.assertFalse(snapshot["dependencies_ready"])
+        self.assertEqual(snapshot["account_identity_contract_status"], "AWAITING_EXPLICIT_PUBLIC_ADDRESS")
         self.assertFalse(snapshot["account_identity_frozen"])
+        self.assertIsNone(snapshot["account_address"])
         self.assertTrue(snapshot["valuation_contract_frozen"])
         self.assertEqual(snapshot["valuation_mode"], "disabled")
         self.assertTrue(snapshot["durable_evidence_backend_frozen"])
@@ -57,8 +92,10 @@ class Phase6LiveObservationGateTests(unittest.TestCase):
         for field in (
             "historical_backfill_authorized", "historical_replay_credit_authorized",
             "ci_replay_credit_authorized", "workflow_rerun_creates_new_decision_credit",
-            "duplicate_decision_timestamp_creates_new_credit", "manual_dispatch_counts_as_scheduled_decision",
+            "duplicate_decision_timestamp_creates_new_decision_credit", "manual_dispatch_counts_as_scheduled_decision",
         ):
+            if field not in self.gate["future_only_credit_rule"]:
+                continue
             gate = copy.deepcopy(self.gate)
             gate["future_only_credit_rule"][field] = True
             with self.subTest(field=field):
@@ -85,6 +122,36 @@ class Phase6LiveObservationGateTests(unittest.TestCase):
         gate["armed_commit"] = "deadbeef"
         with self.assertRaises(Phase6ObservationGateError, msg="missing account identity must block"):
             self.validate(gate=gate)
+
+    def test_gate_cannot_claim_identity_frozen_when_contract_is_unbound(self) -> None:
+        gate = copy.deepcopy(self.gate)
+        gate["required_before_arm"]["observation_account_identity_frozen"] = True
+        with self.assertRaises(Phase6ObservationGateError):
+            self.validate(gate=gate)
+
+    def test_verified_identity_can_complete_dependencies_without_arming_collector(self) -> None:
+        gate = copy.deepcopy(self.gate)
+        gate["required_before_arm"]["observation_account_identity_frozen"] = True
+        snapshot = self.validate(gate=gate, account_identity_contract=self.bound_identity_contract())
+        self.assertTrue(snapshot["dependencies_ready"])
+        self.assertTrue(snapshot["account_identity_frozen"])
+        self.assertEqual(snapshot["account_address"], MASTER)
+        self.assertFalse(snapshot["collector_armed"])
+        self.assertFalse(snapshot["schedule_configured"])
+        self.assertFalse(snapshot["elapsed_evidence_credit_authorized"])
+
+    def test_identity_contract_rejects_agent_or_nonstandard_account(self) -> None:
+        contract = self.bound_identity_contract()
+        contract["binding_evidence"]["user_role_response"] = {"role": "agent", "data": {"user": MASTER}}
+        gate = copy.deepcopy(self.gate)
+        gate["required_before_arm"]["observation_account_identity_frozen"] = True
+        with self.assertRaises(Phase6ObservationGateError):
+            self.validate(gate=gate, account_identity_contract=contract)
+
+        contract = self.bound_identity_contract()
+        contract["binding_evidence"]["user_abstraction_response"] = "portfolioMargin"
+        with self.assertRaises(Phase6ObservationGateError):
+            self.validate(gate=gate, account_identity_contract=contract)
 
     def test_evidence_backend_flag_requires_valid_frozen_contract(self) -> None:
         evidence = copy.deepcopy(self.evidence_contract)
@@ -119,6 +186,7 @@ class Phase6LiveObservationGateTests(unittest.TestCase):
                 phase6_contract=phase6,
                 evidence_contract=self.evidence_contract,
                 valuation_contract=self.valuation_contract,
+                account_identity_contract=self.account_identity_contract,
                 instrument_registry=self.instrument_registry,
                 workflow_text=self.workflow,
             )
