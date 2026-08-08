@@ -246,7 +246,8 @@
     "stage1_execution_id": "STABLECOIN-LIQUIDITY-0001-STAGE1-RUN-V1",
     "required_explicit_token": "[STABLECOIN_STAGE1_EXECUTE_V1]",
     "run_once_marker": "research/stablecoin_liquidity_0001/RUN_ONCE_STAGE1.marker",
-    "marker_write_semantics": "CREATE_ONLY_AFTER_RESULT_ARTIFACT_IS_DURABLY_PERSISTED",
+    "marker_write_semantics": "CREATE_ONLY_BEFORE_RESULT_BEARING_EXECUTION",
+    "marker_persistence_rule": "Once claimed, the marker is retained across success, failure or invalidation and may never be deleted to rerun the same research ID.",
     "automatic_retry_after_any_result_bearing_output": false,
     "second_variant_under_same_research_id_forbidden": true
   },
