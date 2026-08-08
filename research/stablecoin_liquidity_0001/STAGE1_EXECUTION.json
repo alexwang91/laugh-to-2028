@@ -3,14 +3,18 @@
   "execution_id": "STABLECOIN-LIQUIDITY-0001-STAGE1-RUN-V1",
   "research_id": "STABLECOIN-LIQUIDITY-0001",
   "run_interface_id": "STABLECOIN-LIQUIDITY-0001-RUN-INTERFACE-V1",
-  "status": "ARMED_NOT_EXECUTED",
+  "status": "EXECUTED_ONCE_PRIMARY_RESULT_RELEASED_FAIL_STOP",
   "production_authorized": false,
   "run_once_marker": "research/stablecoin_liquidity_0001/RUN_ONCE_STAGE1.marker",
   "trigger": {
     "event": "push",
     "branch": "main",
     "required_head_commit_token": "[STABLECOIN_STAGE1_EXECUTE_V1]",
-    "pull_request_result_execution_forbidden": true
+    "executed_head_sha": "dd50ec35085eee2a2883dc1b29e3dd21ec52b043",
+    "executed_workflow_run_id": 31264048473,
+    "executed_run_attempt": 1,
+    "pull_request_result_execution_forbidden": true,
+    "future_execution_forbidden": true
   },
   "stablecoin_input": {
     "dataset_slice_id": "STABLECOIN-LIQUIDITY-0001-DEFILLAMA-HIST-V1",
@@ -25,7 +29,11 @@
     "capture_before_evaluation": true,
     "archive_backend": "GITHUB_ACTIONS_ARTIFACT_V4",
     "overwrite": false,
-    "network_retry_after_result_bearing_output": false
+    "network_retry_after_result_bearing_output": false,
+    "input_artifact_id": 9023613464,
+    "input_artifact_digest": "sha256:26748abdd75a7568872617b5bc2f6618b8b3a315cbcd785cf1175e4c606354db",
+    "receipt_artifact_id": 9023613629,
+    "receipt_artifact_digest": "sha256:bdf9ed3486c426c75f4b7cd9eed2e88bc2843c457459481b0eb56e14429ce9d3"
   },
   "pre_result_gates": [
     "VERIFY_RUN_ONCE_MARKER_PRESENT_AND_MATCHING",
@@ -36,6 +44,7 @@
     "VERIFY_BINANCE_DURABILITY_RECEIPT",
     "RECONFIRM_BATCH_PATH_AGAINST_CANONICAL_P3_2_CALCULATE_TARGET_ON_FROZEN_PARITY_DATES"
   ],
+  "pre_result_gate_status": "ALL_PASS",
   "result_execution": {
     "variant_count": 1,
     "baseline": "BRRK_P3_2_PRICE_REGIME_STATE_V1",
@@ -43,29 +52,42 @@
     "ridge_alpha": 1.0,
     "hac_max_lag": 19,
     "minimum_pass_oos": 730,
-    "result_release": "PRIMARY_FIELDS_ONLY"
+    "result_release": "PRIMARY_FIELDS_ONLY",
+    "actual_variants_evaluated": 1,
+    "classification": "FAIL_NO_INCREMENTAL_INFORMATION",
+    "valid_oos_prediction_count": 933,
+    "mean_primary_loss_differential": -5430210.12771038,
+    "hac_test_statistic": -1.2454264237630361,
+    "hac_one_sided_p_value": 0.8935124773215692,
+    "primary_result_digest": "d920d45397d45ae5636a2f3c682600778d4d087d97e035ba911844cca65821ff"
   },
   "durable_outputs": {
-    "price_capture_artifact_prefix": "stablecoin-stage1-binance-input-",
-    "primary_result_artifact_prefix": "stablecoin-stage1-primary-result-",
+    "price_capture_artifact_id": 9023613464,
+    "price_capture_artifact_digest": "sha256:26748abdd75a7568872617b5bc2f6618b8b3a315cbcd785cf1175e4c606354db",
+    "receipt_artifact_id": 9023613629,
+    "receipt_artifact_digest": "sha256:bdf9ed3486c426c75f4b7cd9eed2e88bc2843c457459481b0eb56e14429ce9d3",
+    "primary_result_artifact_id": 9023630485,
+    "primary_result_artifact_digest": "sha256:6eac38957c3592e18eb2cb4706e87be12daeca6cfe504065af19e944984674f1",
     "primary_result_must_be_uploaded_before_job_summary": true,
-    "predictions_or_coefficients_artifact_forbidden_in_first_release": true
+    "predictions_or_coefficients_artifact_forbidden_in_first_release": true,
+    "library_mirror_status": "COMPLETE_FOR_INPUT_RECEIPT_AND_PRIMARY_RESULT"
   },
   "failure_policy": {
     "marker_is_never_deleted": true,
     "automatic_retry_forbidden": true,
     "same_research_id_rerun_forbidden": true,
-    "pre_result_gate_failure_state": "INVALIDATED_STOPPED_NO_RERUN_UNDER_THIS_RESEARCH_ID",
-    "result_bearing_failure_state": "INVALIDATED_STOPPED_NO_RERUN_UNDER_THIS_RESEARCH_ID"
+    "current_terminal_state": "FAIL_STOP_NO_INCREMENTAL_INFORMATION_NO_RERUN_NO_RESCUE"
   },
+  "evidence_ref": "research/stablecoin_liquidity_0001/STAGE1_PRIMARY_RESULT.json",
   "explicit_non_actions": [
-    "NO_STAGE1_RESULT_IN_PULL_REQUEST_CI",
+    "NO_SECOND_STAGE1_RUN",
     "NO_PARAMETER_TUNING",
     "NO_LAG_RESCUE",
     "NO_HORIZON_RESCUE",
     "NO_FEATURE_REPRESENTATION_RESCUE",
-    "NO_EDGE_REGISTRY_ADMISSION_BY_EXECUTOR",
-    "NO_PORTFOLIO_INTEGRATION_BY_EXECUTOR",
+    "NO_STAGE2_RUN",
+    "NO_EDGE_REGISTRY_ADMISSION",
+    "NO_PORTFOLIO_INTEGRATION",
     "NO_BRRK_CHANGE",
     "NO_PHASE6_7_8_AUTHORITY_CHANGE",
     "NO_PRODUCTION_AUTHORIZATION"

@@ -1141,7 +1141,7 @@
       ],
       "sealed_dataset_refs": [],
       "declared_variant_budget": 1,
-      "actual_variants_evaluated": 0,
+      "actual_variants_evaluated": 1,
       "parameter_candidate_count": 1,
       "stopping_rule": "Do not retrieve full historical data or evaluate the model until the exact source/data contract and PIT semantics are frozen. Then run exactly one frozen Stage-1 information-test variant once. Release only the preregistered primary result classification and primary metric first. PASS may create a separately preregistered robustness-stage research ID; FAIL or INCONCLUSIVE stops this research ID with no rescue tuning.",
       "success_criteria": [
@@ -1183,12 +1183,20 @@
           "HAC_MAX_LAG=19",
           "MIN_VALID_OOS_PREDICTIONS=730"
         ],
-        "actual_parameter_candidates_evaluated": [],
-        "universes_evaluated": [],
-        "horizons_evaluated": [],
-        "rebalance_variants": [],
+        "actual_parameter_candidates_evaluated": [
+          "RIDGE_ALPHA_1.0"
+        ],
+        "universes_evaluated": [
+          "CANONICAL_BRRK_BTC_ETH_SOL_BNB"
+        ],
+        "horizons_evaluated": [
+          "20_CALENDAR_DAYS"
+        ],
+        "rebalance_variants": [
+          "DAILY_00UTC_CANONICAL_P3_2"
+        ],
         "feature_representations": [
-          "STABLECOIN_LIQUIDITY_STATE_V1=aggregate_USD_pegged_supply_20d_log_growth+20d_growth_acceleration"
+          "STABLECOIN_LIQUIDITY_STATE_V1"
         ],
         "special_cases_introduced": [],
         "validation_exposure_event_refs": [
@@ -1204,10 +1212,12 @@
           "evidence_ref": null
         }
       ],
-      "result_status": "PREREGISTERED_NOT_RUN",
-      "failure_reason": null,
-      "promotion_state": "NONE",
-      "evidence_refs": [],
+      "result_status": "FAIL_NO_INCREMENTAL_INFORMATION",
+      "failure_reason": "PRIMARY_MEAN_LOSS_DIFFERENTIAL_NONPOSITIVE",
+      "promotion_state": "NO_PROMOTION",
+      "evidence_refs": [
+        "research/stablecoin_liquidity_0001/STAGE1_PRIMARY_RESULT.json"
+      ],
       "production_relevance": "Research-only Stage-1 external-information test. A PASS is eligible only for the next separately preregistered research stage and cannot change BRRK, phase authority or production authorization.",
       "production_authorized": false,
       "provenance_status": "FACT",
@@ -1215,12 +1225,21 @@
         "research/stablecoin_liquidity_0001/"
       ],
       "notes": [
-        "Formal research path, frozen Data Contract, first-capture provenance and Stage-1 Run Interface now exist prospectively under the registered governed prefix.",
-        "Validation dataset STABLECOIN-LIQUIDITY-0001-DEFILLAMA-HIST-V1 is reconstructed RESEARCHER_EXPOSED_HISTORY and was exposed as RAW_DATA before Stage-1; it is not sealed or temporally unseen.",
-        "The exact Stage-1 baseline/augmented design, PIT alignment, label, walk-forward purge, normalization, Ridge alpha=1.0, HAC lag=19, release policy and one-shot execution lock are frozen in research/stablecoin_liquidity_0001/RUN_INTERFACE.json before any real Stage-1 model evaluation.",
-        "No Stage-1 feature computation, model fit, OOS prediction or research result has occurred at this binding state.",
-        "ONCHAIN-HOLDER-COST-0001 remains backlog and is not registered, run or evaluated by this change."
-      ]
+        "Stage-1 executed exactly once under STABLECOIN-LIQUIDITY-0001-RUN-INTERFACE-V1 on merge dd50ec35085eee2a2883dc1b29e3dd21ec52b043 / workflow run 31264048473.",
+        "Primary result: FAIL_NO_INCREMENTAL_INFORMATION; valid OOS=933; mean baseline-minus-augmented squared-error differential=-5430210.12771038; HAC lag=19; t=-1.2454264237630361; one-sided p=0.8935124773215692.",
+        "The frozen failure rule mean_primary_loss_differential <= 0 triggered STOP. No alternative lag, alpha, horizon, feature representation, secondary metric, prediction table or coefficient path was evaluated or released to rescue the result.",
+        "No Stage-2 robustness research is eligible from this failed Stage-1 ID; Edge Registry remains unchanged and no portfolio or production authority is created.",
+        "RUN_ONCE_STAGE1.marker is retained permanently; this research ID may not be rerun.",
+        "ONCHAIN-HOLDER-COST-0001 remains separate backlog and is not started by this closeout."
+      ],
+      "evidence_scorecard": {
+        "temporal_novelty": "RECONSTRUCTED_HISTORY_RESEARCHER_EXPOSED_HISTORY_NOT_TEMPORALLY_UNSEEN",
+        "statistical_sufficiency": "PRIMARY_TEST_N_933_EXCEEDS_730_BUT_MEAN_LOSS_DIFFERENTIAL_IS_NEGATIVE_AND_ONE_SIDED_HAC_P_0.8935",
+        "governance_integrity": "HIGH_PREREGISTERED_ONE_SHOT_PRIMARY_ONLY_NO_RESCUE",
+        "operational_realism": "MECHANISM_TEST_ONLY_NO_EDGE_OR_PRODUCTION_TRANSLATION",
+        "derived_confidence": "MEDIUM",
+        "confidence_rule_ref": "research/stablecoin_liquidity_0001/RUN_INTERFACE.json"
+      }
     }
   ],
   "research_governance_debt": [

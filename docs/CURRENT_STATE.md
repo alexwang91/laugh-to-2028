@@ -22,7 +22,7 @@ Phase 0-8 drift audit             COMPLETE / PASS_FINAL_HEAD_VERIFIED / DRIFT_2 
 Program epistemic governance v1   PG0-PG6 COMPLETE / CI-ENFORCED / NO-DRIFT CLOSEOUT
 Future research gate repair       MERGED #121 / GOVERNANCE ONLY / DRIFT_0
 Future prereg validator repair    MERGED #122 / GOVERNANCE ONLY / DRIFT_0
-Stablecoin liquidity research     STABLECOIN-LIQUIDITY-0001 / STAGE-1 ONE-SHOT CLAIMED + ARMED_NOT_EXECUTED / NO RESULT
+Stablecoin liquidity research     STABLECOIN-LIQUIDITY-0001 / STAGE-1 COMPLETE / FAIL_NO_INCREMENTAL_INFORMATION / TERMINAL STOP
 production authorization          NONE
 first real short authorization    NONE
 ```
@@ -124,7 +124,7 @@ The implementation extends rather than replaces existing experiment, decision an
 - `research/governance/future_policy.py` — shared future-path ownership and prospective-provenance policy;
 - `research/governance/enforce_future.py` — exact-PR-diff prospective research registration enforcement;
 - `research/governance/no_drift.py` — boundary-to-HEAD strategy/evidence/authority no-drift regression;
-- `.github/workflows/research-governance.yml` — CI enforcement, including the governed Stablecoin data-contract/capture-gate regression suite. The temporary live one-shot executor used for the first capture has been removed after successful execution.
+- `.github/workflows/research-governance.yml` — CI enforcement, including the governed Stablecoin data-contract/capture-gate/run-interface regression suite. Both temporary live executors (first capture and Stage-1 result execution) were removed immediately after their one-shot use.
 
 PG4 conservatively maps 17 `RETROSPECTIVE_LEGACY` research records. Six governance-debt classes remain explicit because historical trial counts, information releases, dataset consumption, lineage, informal researcher decisions and complete candidate universes cannot be reconstructed truthfully. `UNKNOWN` remains `UNKNOWN`.
 
@@ -132,78 +132,95 @@ The Edge Registry remains empty because no feature has yet passed governance-v1 
 
 Future formal result-bearing research must be prospectively covered by exactly one `PROGRAM_GOVERNED_V1` record with the frozen required fields, declared path ownership, variant budget, stopping rules, lineage/data references and `production_authorized=false`. Changed legacy formal research paths are treated as new post-boundary research activity and cannot bypass prospective registration or existing immutable-evidence correction rules.
 
-PR #121 repaired the cross-gate conflict between future-research registration and the final no-drift regression without broadening the legacy allowlist. PR #122 repaired preregistration-only validator semantics so empty pre-result dataset/evidence arrays do not require fabricated placeholders. PR #123 prospectively registered `STABLECOIN-LIQUIDITY-0001`. PR #124 froze its source/data/PIT contract. PR #125 froze the one-shot first-capture gate. PR #126 split capture/persist from finalize so durable archival must precede parsing. PR #127 armed and executed the single governed capture on merge commit `824f58151bcef2203c320e4b94b8070dcac77dae` through GitHub Actions run `31261566204`; both governance and capture jobs completed successfully.
+PR #121 repaired the cross-gate conflict between future-research registration and the final no-drift regression without broadening the legacy allowlist. PR #122 repaired preregistration-only validator semantics so empty pre-result dataset/evidence arrays do not require fabricated placeholders. PR #123 prospectively registered `STABLECOIN-LIQUIDITY-0001`. PR #124 froze its source/data/PIT contract. PR #125 froze the one-shot first-capture gate. PR #126 split capture/persist from finalize so durable archival must precede parsing. PR #127 armed and executed the single governed capture on merge commit `824f58151bcef2203c320e4b94b8070dcac77dae` through GitHub Actions run `31261566204`; both governance and capture jobs completed successfully. PR #128 registered the captured validation slice/exposure and removed the capture executor. PR #129 froze `STABLECOIN-LIQUIDITY-0001-RUN-INTERFACE-V1`. PR #130 irreversibly claimed and executed Stage-1 exactly once on merge `dd50ec35085eee2a2883dc1b29e3dd21ec52b043`, workflow run `31264048473`, producing the immutable primary FAIL result now closed out below.
 
 ## STABLECOIN-LIQUIDITY-0001
 
-`STABLECOIN-LIQUIDITY-0001` remains a `PROGRAM_GOVERNED_V1` Stage-1 external-information mechanism test asking whether a frozen stablecoin-liquidity information family adds predictive information about future 20-day canonical BRRK outcomes beyond the frozen P3.2 BRRK price/regime state.
+`STABLECOIN-LIQUIDITY-0001` was a prospectively governed Stage-1 mechanism test asking whether the frozen `STABLECOIN_LIQUIDITY_STATE_V1` feature family adds predictive information about future 20-day canonical BRRK net returns beyond the frozen P3.2 BRRK price/regime state.
 
-Current state is strictly:
-
-```text
-result_status                 PREREGISTERED_NOT_RUN
-promotion_state               NONE
-production_authorized         false
-declared_variant_budget       1
-actual_variants_evaluated     0
-governed_path_prefix          research/stablecoin_liquidity_0001/
-formal research path          CREATED UNDER PROSPECTIVE OWNER
-data contract                 STABLECOIN-LIQUIDITY-0001-DATA-CONTRACT-V1 / FROZEN
-capture gate                  STABLECOIN-LIQUIDITY-0001-FIRST-CAPTURE-GATE-V1 / FROZEN CONTRACT
-capture execution             STABLECOIN-LIQUIDITY-0001-FIRST-CAPTURE-EXECUTION-V1 / EXECUTED_ONCE_METADATA_ONLY
-capture merge commit          824f58151bcef2203c320e4b94b8070dcac77dae
-capture workflow run          31261566204 / SUCCESS
-historical full capture       COMPLETE / 3175 DAILY ROWS / 2017-11-29 THROUGH 2026-08-08
-historical classification     RECONSTRUCTED_HISTORY_RESEARCHER_EXPOSED_HISTORY
-run interface                  STABLECOIN-LIQUIDITY-0001-RUN-INTERFACE-V1 / FROZEN_NOT_EXECUTED
-stage1 run marker              RUN_ONCE_STAGE1.marker / CLAIMED_BEFORE_RESULT_BEARING_EXECUTION / IRREVERSIBLE IF MERGED
-stage1 execution              STABLECOIN-LIQUIDITY-0001-STAGE1-RUN-V1 / ARMED_NOT_EXECUTED / PR CI NON-RESULT-BEARING
-research-registry validation ref STABLECOIN-LIQUIDITY-0001-DEFILLAMA-HIST-V1
-validation exposure ref         STABLECOIN-LIQUIDITY-0001-RAW-DATA-20260808T141719Z
-real feature computation        NOT RUN
-real BRRK Stage-1 state path    NOT RUN
-Ridge fit                       NOT RUN
-OOS predictions                 NONE
-dataset exposure registry     STABLECOIN-LIQUIDITY-0001-DEFILLAMA-HIST-V1 / VALIDATION / CONSUMED / RESEARCHER_EXPOSED_HISTORY
-dataset provenance evidence   research/stablecoin_liquidity_0001/FIRST_CAPTURE_EVIDENCE.json
-research result evidence      NONE
-edge admission                NONE
-portfolio integration         NONE
-```
-
-The frozen source reference remains the official `DefiLlama/api-sdk` repository at commit `f0d43119c746dda0c1ad8460c37ac9e00e8e5161`, repository package version `0.1.4`, mapping `stablecoins.getAllCharts()` to `GET https://stablecoins.llama.fi/stablecoincharts/all`.
-
-The single first capture was retrieved at `2026-08-08T14:17:19.736297Z`. Metadata-only validation established:
+The research ID has now reached its frozen stopping point:
 
 ```text
-raw_row_count        3175
-historical_row_count 3175
-historical_start     2017-11-29T00:00:00Z
-historical_end       2026-08-08T00:00:00Z
-historical_cutoff    2026-08-08T00:00:00Z
-raw_size_bytes       1223275
-raw_sha256           7cffe6fb3a21e891082c06c60e91491edfbc78e9c01e2d549805815a646d9ffd
-manifest_sha256      ca6f68bab0f19957444dd2eb38bc4f171910851cf258d303725f1d31dff56d8d
-research result      NO_RESEARCH_RESULT_CAPTURE_METADATA_ONLY
+result_status                    FAIL_NO_INCREMENTAL_INFORMATION
+failure_reason                   PRIMARY_MEAN_LOSS_DIFFERENTIAL_NONPOSITIVE
+promotion_state                  NO_PROMOTION
+production_authorized            false
+declared_variant_budget          1
+actual_variants_evaluated        1
+run_interface                    STABLECOIN-LIQUIDITY-0001-RUN-INTERFACE-V1 / IMMUTABLE PRE-RESULT CONTRACT
+run_once_marker                  RUN_ONCE_STAGE1.marker / PERMANENT / DO NOT DELETE
+stage1 execution                 STABLECOIN-LIQUIDITY-0001-STAGE1-RUN-V1 / EXECUTED ONCE / TERMINAL FAIL_STOP
+stage1 merge commit              dd50ec35085eee2a2883dc1b29e3dd21ec52b043
+stage1 workflow run              31264048473 / run_attempt=1 / SUCCESS
+validation dataset               STABLECOIN-LIQUIDITY-0001-DEFILLAMA-HIST-V1
+validation exposure              STABLECOIN-LIQUIDITY-0001-RAW-DATA-20260808T141719Z
+historical classification        RECONSTRUCTED_HISTORY_RESEARCHER_EXPOSED_HISTORY
+primary result evidence          research/stablecoin_liquidity_0001/STAGE1_PRIMARY_RESULT.json
+edge admission                   NONE
+portfolio integration            NONE
+stage2 robustness eligibility    NONE / PRIMARY STAGE-1 FAILED
 ```
 
-Exact raw bytes + manifest were uploaded before parsing to GitHub Actions artifact `9022927539`; receipt + metadata were archived as artifact `9022927785`. Exact raw/manifest/staging/receipt/metadata files were additionally mirrored out of repository to ChatGPT Library with hash identity preserved. The temporary live executor is removed in the current registration/closeout change so repository HEAD no longer contains a repeatable live first-capture job.
+### Immutable primary result
 
-Historical rows expose observation timestamps but no verifiable original historical publication/first-seen timestamps. Historical data therefore remains reconstructed / `RESEARCHER_EXPOSED_HISTORY`; its frozen primary availability rule remains `available_at = metric_timestamp + 2 calendar days`. It cannot be relabeled pristine sealed data or `TEMPORALLY_UNSEEN`.
+```text
+valid_oos_prediction_count       933
+mean_primary_loss_differential   -5430210.12771038
+hac_max_lag                      19
+hac_test_statistic               -1.2454264237630361
+hac_one_sided_p_value            0.8935124773215692
+primary_result_digest            d920d45397d45ae5636a2f3c682600778d4d087d97e035ba911844cca65821ff
+classification                   FAIL_NO_INCREMENTAL_INFORMATION
+```
 
-The Dataset Exposure Registry records this slice as `VALIDATION` because it belongs to a preregistered Stage-1 candidate comparison. The raw retrieval is explicitly recorded as a `RAW_DATA` exposure with `consumed=true`; this prevents later claims that the reconstructed history was an unseen holdout. Raw SHA256 remains in immutable provenance, not as an unregistered Dataset Registry property.
+The preregistered primary differential is `MSE_baseline - MSE_augmented`; therefore a non-positive mean is an immediate frozen failure condition. The observed mean is materially negative, so the augmented Stablecoin model did not demonstrate incremental predictive information beyond the frozen P3.2 BRRK state. The OOS count exceeds the 730 minimum, but the one-sided HAC result (`t=-1.2454264237630361`, `p=0.8935124773215692`) likewise provides no support for a positive incremental-information effect.
 
-The primary feature definition remains aggregate USD-pegged stablecoin value 20-day log growth plus 20-day growth acceleration with exact lag-date matching. Missing dates are not interpolated or forward-filled. No real feature series has been computed, no Ridge model has been fit, no OOS predictions exist and no research performance result has been released.
+This is a **terminal research failure**, not an invitation to retune. LAG_1D/LAG_3D, alternative Ridge alpha, alternative horizon, alternative feature representation, secondary metrics, predictions and coefficient paths cannot be used to rescue this ID. No Stage-2 robustness research is eligible from this failed Stage-1. `RUN_ONCE_STAGE1.marker` remains permanently committed and the same research ID may never be rerun.
 
-`RUN_INTERFACE.json` freezes the 35-column continuous canonical P3.2 BRRK price/regime baseline state, exact LAG_2D Stablecoin alignment, future 20-calendar-day canonical BRRK net-return label, paired-row eligibility, minimum 365 fully realized expanding training rows, training-only StandardScaler, Ridge alpha=1.0 with no grid, one-sided Bartlett/Newey-West lag 19, minimum 730 OOS PASS threshold, primary-first release policy and a create-only pre-execution Stage-1 run marker. Baseline and augmented rows/labels/training dates are identical; augmented differs only by the two frozen Stablecoin columns. The interface is synthetic-tested only and has not executed real Stage-1 data/model logic.
+### Provenance and data state
 
-The Stage-1 execution branch adds the irreversible marker claim and an armed push-only executor. Before any Ridge evaluation, it must verify the frozen Stablecoin raw SHA256, capture and durably archive exact Binance daily pages, archive a hash-bound durability receipt, build the canonical P3.2 batch state path, and match `calculate_target()` on all six frozen parity dates. Predictions/coefficients are never persisted; only the frozen primary-result JSON may be durably archived and released. A GitHub rerun is blocked by `github.run_attempt == 1`.
+The first Stablecoin capture remains the immutable reconstructed-history validation dataset:
 
-A Stage-1 PASS cannot modify BRRK, write an admitted edge, create a multiplier, authorize leverage/shorts, change Phase 7 or confer production authority. It can only make a separately preregistered robustness-stage research ID eligible to start. `ONCHAIN-HOLDER-COST-0001` remains backlog and is not registered or run.
+```text
+historical_start                 2017-11-29T00:00:00Z
+historical_end                   2026-08-08T00:00:00Z
+historical_rows                  3175
+stablecoin_raw_sha256            7cffe6fb3a21e891082c06c60e91491edfbc78e9c01e2d549805815a646d9ffd
+stablecoin_capture_run           31261566204
+```
 
-The deterministic audit may report `WARNING` for real legacy governance debt; that is intentional and must not be converted into a false clean `PASS` by inventing history.
+Historical publication/first-seen timestamps were unavailable, so the data remains `RESEARCHER_EXPOSED_HISTORY`, never sealed or `TEMPORALLY_UNSEEN`. The Stage-1 execution verified that raw hash, captured exact Binance input pages before model evaluation, durably archived those inputs and their receipt, passed the frozen six-date canonical P3.2 parity gate, then ran exactly one paired baseline/augmented walk-forward Ridge variant.
 
-Final governance report: `docs/PROGRAM_LEVEL_EPISTEMIC_GOVERNANCE_V1_FINAL_REPORT_2026-08-08.md`.
+Stage-1 immutable artifacts from workflow run `31264048473` are:
+
+```text
+Binance input artifact ID        9023613464
+Binance input digest             sha256:26748abdd75a7568872617b5bc2f6618b8b3a315cbcd785cf1175e4c606354db
+Binance receipt artifact ID      9023613629
+Binance receipt digest           sha256:bdf9ed3486c426c75f4b7cd9eed2e88bc2843c457459481b0eb56e14429ce9d3
+primary result artifact ID       9023630485
+primary result artifact digest   sha256:6eac38957c3592e18eb2cb4706e87be12daeca6cfe504065af19e944984674f1
+```
+
+The input ZIP, receipt ZIP, primary-result ZIP and primary JSON were also mirrored outside the repository to ChatGPT Library. Predictions, coefficients, feature importance and secondary metrics were not persisted/released.
+
+The temporary Stage-1 live execution job is removed in the closeout change. `RUN_INTERFACE.json` itself is intentionally not rewritten after observing the result; it remains the immutable pre-result contract that governed the one-shot test.
+
+### Authority consequence
+
+The FAIL result creates no edge and no authority:
+
+- Edge Registry remains empty.
+- BRRK relative ranking, BTC/ETH/SOL/BNB universe and BNB membership remain unchanged.
+- No Stablecoin multiplier or portfolio feature is created.
+- Production gross cap remains `1.0`.
+- `production_authorized_components = []`.
+- Phase 6 elapsed observation is independent and unchanged.
+- Phase 7 remains `MONITOR_ONLY` / launch blocked.
+- Phase 8 bear-short remains trigger-absent/not-run.
+- No leverage, short or first-real-short authority is created.
+
+`ONCHAIN-HOLDER-COST-0001` remains only a separate backlog idea. Stablecoin has now reached its stopping point, so Holder Cost may be considered later only through a **new prospective preregistration**; it is not started by this closeout.
 
 ## Frozen product boundaries
 
@@ -227,19 +244,15 @@ RESUME REAL PHASE-6 ZERO-AUTHORITY ELAPSED OBSERVATION UNDER GOVERNANCE V1 PROVE
 ACCUMULATE GENUINELY FUTURE PHASE-6 EVIDENCE ONLY; DO NOT REBUILD OR BACKFILL ELAPSED TIME
 KEEP signature_authorized = false AND order_submission_authorized = false
 REQUIRE AT LEAST 14 ELAPSED CALENDAR DAYS AND 10 SCHEDULED DECISIONS PLUS FROZEN QUALITY CRITERIA
-MERGE THE STABLECOIN STAGE-1 EXECUTION PR ONLY AFTER GOVERNANCE + SYNTHETIC EXECUTOR SELF-TEST + NO-DRIFT + P3.2 PARITY/GOLDEN + PHASE-6 SAFETY CHECKS PASS
-KEEP THE TEMPORARY LIVE FIRST-CAPTURE EXECUTOR REMOVED AFTER THE SUCCESSFUL 824f5815 CAPTURE; DO NOT EXECUTE A SECOND FIRST CAPTURE
-RUN INTERFACE STABLECOIN-LIQUIDITY-0001-RUN-INTERFACE-V1 REMAINS FROZEN_NOT_EXECUTED; THE EXECUTION PR MAY IMPLEMENT ONLY THAT FROZEN INTERFACE AND MAY NOT MODIFY ITS ECONOMIC/STATISTICAL DEGREES OF FREEDOM
-RESEARCH REGISTRY BINDS STABLECOIN-LIQUIDITY-0001-DEFILLAMA-HIST-V1 AND VALIDATION EXPOSURE STABLECOIN-LIQUIDITY-0001-RAW-DATA-20260808T141719Z WHILE result_status REMAINS PREREGISTERED_NOT_RUN AND actual_variants_evaluated REMAINS 0
-CURRENT STAGE-1 EXECUTION PR HAS CLAIMED RUN_ONCE_STAGE1.marker AND ARMED STABLECOIN-LIQUIDITY-0001-STAGE1-RUN-V1; IF MERGED THE CLAIM MAY NEVER BE DELETED EVEN IF EXECUTION FAILS OR INVALIDATES
-PULL-REQUEST CI MUST NOT FIT RIDGE ON REAL DATA, CONSTRUCT REAL OOS PREDICTIONS, RUN STAGE-1 OR RELEASE A RESULT; PR CI IS SYNTHETIC/PREFLIGHT ONLY
-ONLY A FULLY GREEN MERGE COMMIT CONTAINING [STABLECOIN_STAGE1_EXECUTE_V1] MAY RUN THE SINGLE STAGE-1 VARIANT, AND ONLY ON github.run_attempt == 1; NO RESCUE TUNING, NO AUTOMATIC OR MANUAL RERUN UNDER THIS RESEARCH ID
-CLASSIFY HISTORICAL DATA AS RESEARCHER_EXPOSED_HISTORY; DO NOT CLAIM TEMPORALLY_UNSEEN FROM RECONSTRUCTED HISTORY
-DO NOT SELECT OR TRIM THE HISTORICAL WINDOW BASED ON VALUES OR RESEARCH PERFORMANCE
-START GENUINELY FORWARD RAW-VINTAGE COLLECTION ONLY UNDER A SEPARATELY FROZEN RECURRING-COLLECTION CONTRACT; DO NOT BACKFILL FIRST-SEEN HISTORY
-KEEP ONCHAIN-HOLDER-COST-0001 AS BACKLOG UNTIL THE STABLECOIN INFORMATION TEST REACHES ITS FROZEN STOPPING POINT
-DO NOT START SUPERTrend / FUNDING-OI / RELATIVE-STRENGTH / NEW-ALLOCATION RESEARCH AS PART OF PHASE-6 OBSERVATION
-DO NOT CHANGE BRRK / BNB / PARAMETERS / COSTS / HISTORICAL EVIDENCE / PRODUCTION AUTHORITY
+MERGE THE STABLECOIN STAGE-1 CLOSEOUT PR ONLY AFTER REGISTRY VALIDATION + NO-DRIFT + P3.2 PARITY/GOLDEN + PHASE-6 SAFETY CHECKS PASS
+KEEP STABLECOIN-LIQUIDITY-0001 AT FAIL_NO_INCREMENTAL_INFORMATION / NO_PROMOTION / TERMINAL STOP
+KEEP RUN_ONCE_STAGE1.marker PERMANENT; DO NOT DELETE, RERUN, RETRY OR REUSE THIS RESEARCH ID
+DO NOT TEST LAG_1D/LAG_3D, NEW RIDGE ALPHA, NEW HORIZON, NEW STABLECOIN REPRESENTATION OR SECONDARY-METRIC RESCUE UNDER THIS ID
+DO NOT START A STABLECOIN STAGE-2 ROBUSTNESS ID BECAUSE STAGE-1 FAILED
+KEEP EDGE REGISTRY EMPTY FOR STABLECOIN; DO NOT CREATE A MULTIPLIER OR PORTFOLIO INTEGRATION
+KEEP THE COMPLETED STAGE-1 LIVE EXECUTOR REMOVED FROM CURRENT HEAD
+ONCHAIN-HOLDER-COST-0001 MAY ONLY BE CONSIDERED LATER AS A SEPARATE NEW PROSPECTIVE RESEARCH ID; DO NOT START IT AS PART OF THIS CLOSEOUT
+DO NOT CHANGE BRRK / BNB / PARAMETERS / COSTS / HISTORICAL LEGACY EVIDENCE / PRODUCTION AUTHORITY
 DO NOT ACTIVATE PHASE 7 WITHOUT THE COMPLETE CHECKLIST AND EXPLICIT OWNER APPROVAL
 DO NOT RUN BEAR-SHORT-0001 ECONOMICS WITHOUT THE FROZEN CONFIRMED-BEAR TRIGGER
 DO NOT AUTHORIZE A FIRST REAL SHORT WITHOUT THE SEPARATE HUMAN GATE
