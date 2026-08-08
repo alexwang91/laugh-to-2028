@@ -8,6 +8,12 @@ on:
       - 'config/dataset_exposure_registry.json'
       - 'config/edge_registry.json'
       - 'research/**'
+      - 'README.md'
+      - 'docs/CURRENT_STATE.md'
+      - 'docs/NEXT_STEPS.md'
+      - 'docs/PROJECT_GOVERNANCE_2026-08-05.md'
+      - 'docs/PROGRAM_GOVERNANCE_*.md'
+      - 'docs/PROGRAM_LEVEL_EPISTEMIC_GOVERNANCE_V1_FINAL_REPORT_2026-08-08.md'
       - '.github/workflows/research-governance.yml'
   push:
     branches: [main]
@@ -17,6 +23,12 @@ on:
       - 'config/dataset_exposure_registry.json'
       - 'config/edge_registry.json'
       - 'research/**'
+      - 'README.md'
+      - 'docs/CURRENT_STATE.md'
+      - 'docs/NEXT_STEPS.md'
+      - 'docs/PROJECT_GOVERNANCE_2026-08-05.md'
+      - 'docs/PROGRAM_GOVERNANCE_*.md'
+      - 'docs/PROGRAM_LEVEL_EPISTEMIC_GOVERNANCE_V1_FINAL_REPORT_2026-08-08.md'
       - '.github/workflows/research-governance.yml'
 
 jobs:
@@ -36,6 +48,8 @@ jobs:
       - name: Enforce post-boundary formal research registration
         if: github.event_name == 'pull_request'
         run: python -m research.governance.enforce_future --base "${{ github.event.pull_request.base.sha }}"
+      - name: Run final no-drift regression
+        run: python -m research.governance.no_drift
       - name: Emit deterministic audit twice
         run: |
           python -m research.governance.audit --json > /tmp/audit-a.json
