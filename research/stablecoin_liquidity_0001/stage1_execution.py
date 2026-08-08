@@ -43,7 +43,6 @@ from research.stablecoin_liquidity_0001.data_contract import parse_source_payloa
 from research.stablecoin_liquidity_0001.run_interface import (  # noqa: E402
     BASELINE_FEATURE_ORDER,
     FIRST_RELEASE_FIELDS,
-    MIN_PASS_OOS,
     MIN_TRAINING_ROWS,
     PRIMARY_HAC_LAG,
     RESEARCH_ID,
@@ -533,8 +532,9 @@ def self_test() -> None:
     _verify_dependencies()
     _verify_contracts()
     rng = np.random.default_rng(20260808)
-    x = rng.normal(size=(MIN_TRAINING_ROWS + 5, len(BASELINE_FEATURE_ORDER)))
-    extra = rng.normal(size=(MIN_TRAINING_ROWS + 5, len(STABLECOIN_FEATURE_ORDER)))
+    synthetic_rows = MIN_TRAINING_ROWS + 20 + 5
+    x = rng.normal(size=(synthetic_rows, len(BASELINE_FEATURE_ORDER)))
+    extra = rng.normal(size=(synthetic_rows, len(STABLECOIN_FEATURE_ORDER)))
     y = 0.01 * x[:, 0] + 0.02 * extra[:, 0] + rng.normal(scale=0.01, size=len(x))
     dates = [datetime(2025, 1, 1, tzinfo=timezone.utc) + timedelta(days=i) for i in range(len(x))]
     rows = [
