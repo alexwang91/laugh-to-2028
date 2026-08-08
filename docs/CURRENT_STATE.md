@@ -19,7 +19,8 @@ P5.2 feature families          COMPLETE / IMMUTABLE / DESCRIPTIVE CLOSEOUT
 P5.3 V1 state model            COMPLETE / IMMUTABLE / NO_PROMOTION / ARCHITECTURE_FAIL
 P5.3 V2 architecture           COMPLETE / IMMUTABLE EVIDENCE / ARCHITECTURE_PASS
 P5.3 selected profile          NONE
-P5.4 behavior mapping          NEXT / FIXED-CANDIDATE PREREGISTRATION
+P5.4 behavior candidates       PREREGISTERED / FIXED / NO ECONOMIC EVALUATION
+P5.4 selected map              NONE
 P5.5 validation                NOT STARTED
 P5.6 integration               NOT STARTED
 Phase 6 integrated shadow      NOT STARTED
@@ -32,83 +33,110 @@ production authorization       NONE
 
 Current production gross cap remains `1.0`.
 
-## Immutable upstream research
+## Immutable P5.3 handoff
 
-### P5.1
+P5.3 V1 is immutable `NO_PROMOTION / ARCHITECTURE_FAIL`.
 
-Contract: `P5.1-EVENT-TAXONOMY-V1`  
-Taxonomy blob SHA: `73d010666fbfd957ec15214a00883a90a8adba5a`
-
-Events, anchors and five evaluation buckets remain frozen. Only 2021 November is explicitly terminal.
-
-### P5.2
-
-Contract: `P5.2-FEATURE-FAMILIES-V1`  
-Result commit: `61d585afb64afbe3ead6422e7e62cde6c59fad40`  
-Summary SHA256: `3f6dc3c512d22ac8f71d43ed155f2602cd40d5caf3d617c0e130e170727e0627`
-
-P5.2 remains descriptive only. Six requested data families remain `DATA_SOURCE_PENDING`; favorable proxy substitution is forbidden.
-
-## P5.3 V1 immutable negative result
-
-Contract: `P5.3-STATE-MODEL-STRUCTURE-V1`  
-Result commit: `7703b3ffec906a9d2ea58b33ee7feea5cd2f0a89`  
-Summary SHA256: `a2e5be8d605af5a2c8206235402fe3a66b08fd994eaa8a71e84cfb1e3cbfed8f`
-
-All profiles first entered `FLAT` on `2021-02-23` inside frozen `P5C-2021-JAN-FEB-HIGH-VOL`, a `HIGH_VOLATILITY_NON_TOP_CONTROL`. V1 made market state absorbing, producing a degenerate path. V1 is immutable and must not be rerun or retuned.
-
-## P5.3 V2 architecture result
-
-Architecture contract: `P5.3-MARKET-STATE-PERMISSION-SEPARATION-V2`  
-Evidence contract: `P5.3-V2-MARKET-STATE-PATH-EVIDENCE-V1`  
-Result commit: `e732b7ebe570236bf43084caecb6ea15f7edecb8`  
-Summary SHA256: `05d5d68a59c8b13f1122d98ed75d03934defdc9d73c7dd92e038c92fd97d2e52`
-
-V2 changed only architecture: continuous research `MARKET_STATE` is no longer absorbing at `FLAT`; operational `RISK_PERMISSION_LOCK` remains separate and human-gated.
-
-Frozen parity/result boundary:
+P5.3 V2 architecture result:
 
 ```text
-architecture_pass                    true
-raw_candidate_parity_fraction        1.0
-atom_parity_fraction                 1.0
-normalization_parity                 true
-normalization_count_parity           true
-pre_first_flat_state_parity_fraction 1.0
-false_flat_reproduced                true
-post_false_flat_nonflat_exists       true
-later_events_observable              true
-profile_selected                     false
-p5_4_mapping_selected                false
-risk_permission_unlock_authorized    false
-production_authorized                false
+architecture contract    P5.3-MARKET-STATE-PERMISSION-SEPARATION-V2
+evidence contract        P5.3-V2-MARKET-STATE-PATH-EVIDENCE-V1
+result commit            e732b7ebe570236bf43084caecb6ea15f7edecb8
+summary SHA256           05d5d68a59c8b13f1122d98ed75d03934defdc9d73c7dd92e038c92fd97d2e52
+architecture_pass        true
+selected profile         NONE
+production authorization NONE
 ```
 
-The immutable false-FLAT remains visible but no longer erases the sample:
+V2 preserves exact V1 signal parity and the `2021-02-23` false raw FLAT, while making later MARKET_STATE history observable. Operational re-risk permission remains separate and explicit-human-gated.
+
+Formal closeout: `docs/P5_3_V2_MARKET_STATE_CLOSEOUT.md`.
+
+## P5.4 frozen preregistration
+
+Contract: `P5.4-FIXED-GROSS-BEHAVIOR-CANDIDATES-V1`  
+Documentation: `docs/P5_4_FIXED_GROSS_BEHAVIOR_PREREG.md`  
+Status: `FROZEN_BEFORE_P5_4_ECONOMIC_EVALUATION`
+
+P5.4 defines exactly three behavior maps over the frozen MARKET_STATE order:
 
 ```text
-EARLY         FLAT 2021-02-23..2021-02-28  -> non-FLAT 2021-03-01
-BALANCED      FLAT 2021-02-23..2021-02-28  -> non-FLAT 2021-03-01
-CONSERVATIVE  FLAT 2021-02-23..2021-03-02  -> non-FLAT 2021-03-03
+state order:
+NORMAL_BULL
+BTC_LEADERSHIP_MATURING
+LATE_BULL_ROTATION
+EXHAUSTION_WATCH
+DE_RISK_1
+DE_RISK_2
+FLAT
 ```
 
-Architecture pass does not select a profile and does not validate economics. Formal closeout: `docs/P5_3_V2_MARKET_STATE_CLOSEOUT.md`.
+Frozen multipliers:
 
-## P5.4 boundary
+```text
+DE_RISK_ONLY     1.00  1.00  1.00  1.00  0.65  0.30  0.00
+PROGRESSIVE      1.00  1.00  0.95  0.80  0.55  0.25  0.00
+EARLY_DEFENSIVE  1.00  0.95  0.90  0.70  0.45  0.20  0.00
+```
 
-P5.4 is now eligible to preregister **fixed candidate state-to-gross-risk mappings**. It must not select a winner or alter BRRK relative asset ranking. Because Phase 4 produced no eligible >1 leverage candidate, every P5.4 gross-risk multiplier must remain in `[0,1]`.
+These values are fixed before P5.5 economics and are not a dense optimization grid.
 
-P5.5 owns joint profile + behavior-map robustness/economic selection. The immutable 2021 false FLAT must be charged as missed-upside/false-positive evidence rather than hidden.
+### Composition
+
+For each risky asset:
+
+```text
+P5.4 target weight
+= frozen upstream P4.1/BRRK target weight
+x cycle gross multiplier(MARKET_STATE)
+```
+
+Therefore P5.4:
+
+- can only preserve/reduce upstream gross;
+- cannot exceed gross multiplier `1.0`;
+- cannot introduce >1 leverage;
+- does not change relative BTC/ETH/SOL/BNB ranking;
+- does not add shorts;
+- sends freed risk budget to cash/stablecoin.
+
+`DATA_INSUFFICIENT` has no P5.4 mapping. P5.5 matched evaluation starts on common P5.3 initialization date `2021-01-17`.
+
+### Permission boundary
+
+All candidate maps set `FLAT=0.0`, but MARKET_STATE recovery does not authorize live re-risk.
+
+An actual zero-exposure implementation must remain `LOCKED_PENDING_HUMAN_APPROVAL` until explicit human approval.
+
+P5.5 may compute post-FLAT positive targets only as `RESEARCH_HYPOTHETICAL_REENTRY` for historical economics; this has no production execution authority.
+
+## P5.5 frozen handoff from P5.4
+
+P5.5 candidate set is exactly:
+
+```text
+EARLY / BALANCED / CONSERVATIVE
+x
+DE_RISK_ONLY / PROGRESSIVE / EARLY_DEFENSIVE
+=
+9 joint candidates
+```
+
+A baseline without the cycle overlay is required.
+
+P5.5 owns joint profile/map selection and must evaluate leave-one-event-out robustness, lead/lag, false-positive duration, missed upside, drawdown avoided, terminal wealth/CAGR, turnover/cost sensitivity, second-wind preservation, terminal 2021 behavior, non-top controls including the false FLAT, no single-event dependency and nearby-policy robustness.
+
+If no candidate is robust, P5.5 must fail-stop.
 
 ## Frozen product boundaries
 
-- directional core: BRRK-0011;
-- tradable long universe: BTC / ETH / SOL / BNB;
+- BRRK-0011 relative ranking unchanged;
+- BTC/ETH/SOL/BNB long universe unchanged;
 - XRP feature-only;
-- primary venue: Hyperliquid;
-- daily decision boundary: 00:00 UTC;
+- Hyperliquid primary venue;
 - P4.1 defensive scale `[0,1]` unchanged;
-- production gross remains `1.0`;
+- production gross `1.0`;
 - actual zero-exposure -> risk-on remains human-gated;
 - no automated withdrawals/external transfers;
 - no production authorization.
@@ -116,11 +144,13 @@ P5.5 owns joint profile + behavior-map robustness/economic selection. The immuta
 ## Exact next action
 
 ```text
-CLOSE / CI-VERIFY / MERGE P5.3 V2 RESULT PR
-VERIFY NEW MAIN
-PREREGISTER P5.4 FIXED STATE->GROSS-RISK CANDIDATE MAPS
-DO NOT SELECT A P5.4 WINNER
-IMPLEMENT CANDIDATE MAPPING MECHANICS
-THEN P5.5 OWNS LEAVE-ONE-EVENT-OUT / COST / SECOND-WIND / TERMINAL-WEALTH VALIDATION
+RUN FRESH P5.4 PREREG CONTRACT CI / GOVERNANCE
+VERIFY IMMUTABLE P5.3 V2 VALIDATOR
+VERIFY NO P5.5 ECONOMIC RESULT EXISTS
+IF GREEN, MERGE P5.4 PREREGISTRATION
+CREATE FRESH P5.4 IMPLEMENTATION BRANCH
+IMPLEMENT DETERMINISTIC STATE->GROSS MAPPING ONLY
+DO NOT RUN P5.5 ECONOMICS UNTIL IMPLEMENTATION PARITY IS GREEN
+DO NOT SELECT A WINNER IN P5.4
 DO NOT PRODUCTION-AUTHORIZE ANYTHING
 ```
