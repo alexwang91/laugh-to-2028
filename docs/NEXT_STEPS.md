@@ -1,10 +1,10 @@
 # BRRK Next Steps
 
-Last updated: 2026-08-07
+Last updated: 2026-08-08
 
 ## Current instruction
 
-**P5.3 V1 is immutable `NO_PROMOTION / ARCHITECTURE_FAIL`. P5.3 V2 is now preregistered as an architecture-isolation study before any V2 state path. Validate and merge the V2 contract, then implement only the separation between continuous MARKET_STATE and human-gated RISK_PERMISSION_LOCK. Do not retune V1 signals or start P5.4.**
+**P5.3 V2 architecture evidence passed with exact V1 signal parity and without hiding the 2021 false FLAT. Close/merge V2, then preregister P5.4 fixed state-to-gross-risk behavior candidates. P5.4 defines candidates only; P5.5 owns joint profile/mapping robustness and economic selection.**
 
 ## Immediate state
 
@@ -14,161 +14,113 @@ LEVERAGE-0040 / 0041                   COMPLETE / IMMUTABLE / NO_PROMOTION
 Phase 4 leverage research              FAIL_STOP
 production gross cap                   1.0
 production_authorized_components       []
-P5.1 event taxonomy                    COMPLETE / MERGED / FROZEN
+P5.1 event taxonomy                    COMPLETE / FROZEN
 P5.2 feature evidence                  COMPLETE / IMMUTABLE / DESCRIPTIVE CLOSEOUT
-P5.3 V1 state model                    COMPLETE / IMMUTABLE / NO_PROMOTION / ARCHITECTURE_FAIL
-P5.3 V1 result commit                  7703b3ffec906a9d2ea58b33ee7feea5cd2f0a89
-P5.3 V1 summary SHA256                 a2e5be8d605af5a2c8206235402fe3a66b08fd994eaa8a71e84cfb1e3cbfed8f
-P5.3 V2 contract                       P5.3-MARKET-STATE-PERMISSION-SEPARATION-V2
-P5.3 V2 architecture                   PREREGISTERED / FROZEN BEFORE V2 STATE PATHS
-P5.3 V2 state paths                    NOT RUN
-P5.4 behavior mapping                  BLOCKED PENDING V2 CLOSEOUT
+P5.3 V1                               COMPLETE / IMMUTABLE / ARCHITECTURE_FAIL
+P5.3 V2                               COMPLETE / IMMUTABLE EVIDENCE / ARCHITECTURE_PASS
+P5.3 V2 result commit                  e732b7ebe570236bf43084caecb6ea15f7edecb8
+P5.3 V2 summary SHA256                 05d5d68a59c8b13f1122d98ed75d03934defdc9d73c7dd92e038c92fd97d2e52
+P5.3 selected profile                  NONE
+P5.4 behavior mapping                  NEXT / PREREGISTER FIXED CANDIDATES
+P5.5 validation                        NOT STARTED
+P5.6 integration                       NOT STARTED
 ```
 
-## Why V2 exists
+## P5.3 V2 result interpretation
 
-V1 produced a fully observed false raw FLAT on `2021-02-23` inside frozen `P5C-2021-JAN-FEB-HIGH-VOL`, a `HIGH_VOLATILITY_NON_TOP_CONTROL`. V1 then made the market-state variable absorbing, preventing useful evaluation of later regimes.
+V2 is an **architecture pass only**:
 
-V2 does not erase the false trigger. It tests one architecture hypothesis only:
+- V1 normalization parity = exact;
+- V1 evidence-atom parity = exact;
+- V1 raw-candidate parity = exact;
+- V1 final-state parity through first FLAT = exact;
+- false raw FLAT on `2021-02-23` remains visible;
+- MARKET_STATE later recovers and frozen later events remain observable;
+- MARKET_STATE has no permission-unlock authority.
+
+The false-FLAT episode lasted 6 days for EARLY/BALANCED and 8 days for CONSERVATIVE. It remains negative signal-quality evidence and must be charged in P5.5.
+
+## P5.4 fixed-candidate requirements
+
+P5.4 may now define a small, preregistered candidate family mapping the seven MARKET_STATE values to **total gross-risk multipliers**.
+
+Hard structural rules:
+
+- all multipliers in `[0,1]`; Phase 4 authorized no >1 leverage;
+- `NORMAL_BULL = 1.0` for every mapping;
+- mappings must be monotone non-increasing with market-state severity;
+- `FLAT = 0.0` for mappings that use FLAT as actual zero exposure;
+- `LATE_BULL_ROTATION` must not automatically be treated as bearish/zero;
+- behavior layer scales total BRRK gross only;
+- BRRK-0011 relative BTC/ETH/SOL/BNB ranking is unchanged;
+- P4.1 defensive scale remains upstream and unchanged;
+- no P5.4 winner is selected in P5.4;
+- no market-state improvement automatically clears operational risk permission after an implemented zero exposure.
+
+P5.4 candidates must be few enough to avoid an implicit grid-search/overfit rescue. Numerical candidate values must be frozen before P5.5 economic/event evaluation.
+
+## P5.5 validation ownership
+
+P5.5 must evaluate the Cartesian candidate set of:
 
 ```text
-MARKET_STATE
-  should keep describing the market after a severe FLAT observation
-
-RISK_PERMISSION_LOCK
-  should remain a separate operational human-approval boundary
+P5.3 profiles  EARLY / BALANCED / CONSERVATIVE
+x
+P5.4 fixed behavior maps
 ```
 
-## Frozen V1 inheritance
+Required validation dimensions:
 
-The first V2 study must keep unchanged:
+- leave-one-event-out or comparable event-held-out analysis;
+- 7–14 day target lead behavior without forcing every event to fit;
+- false-positive duration;
+- missed upside;
+- drawdown avoided;
+- terminal wealth / CAGR impact;
+- turnover and explicit cost sensitivity;
+- second-wind preservation;
+- terminal 2021 bear-transition behavior;
+- non-top-control behavior including the 2021 false FLAT;
+- no single-event dependency;
+- broad-region/nearby-policy robustness rather than a knife-edge winner.
 
-- P5.1 taxonomy, anchors and five evaluation buckets;
-- immutable P5.2 feature panel;
-- V1 runtime feature set;
-- V1 evidence atoms;
-- V1 raw candidate priority;
-- causal percentile normalization;
-- EARLY/BALANCED/CONSERVATIVE percentile thresholds;
-- escalation persistence values;
-- de-escalation clear-period values;
-- missing-data fail-closed semantics.
+If no candidate is robust, P5.5 must fail-stop rather than force a selection.
 
-Before V2 interpretation, normalized values, evidence atoms and raw candidates must exactly match immutable V1.
+## P5.6 integration boundary
 
-## Frozen profile values
+Only a P5.5-selected and accepted profile/mapping may enter P5.6. P5.6 may control total gross exposure; it must not change BRRK relative asset ranking or authorize >1 leverage.
 
-| Profile | Moderate high/low | Strong high/low | Escalation | Clear |
-| --- | --- | --- | ---: | ---: |
-| EARLY | 0.65 / 0.35 | 0.80 / 0.20 | 2d | 5d |
-| BALANCED | 0.70 / 0.30 | 0.85 / 0.15 | 3d | 5d |
-| CONSERVATIVE | 0.75 / 0.25 | 0.90 / 0.10 | 3d | 7d |
+## Later roadmap
 
-## Single V2 architecture change
-
-V1 ordinary de-escalation excluded `current_state == FLAT`. V2 removes only that exclusion for **MARKET_STATE**.
+After P5.6 integration:
 
 ```text
-raw FLAT
-  -> immediate MARKET_STATE FLAT, unchanged from V1
-
-MARKET_STATE FLAT + raw below FLAT for existing clear period
-  -> DE_RISK_2
-
-further recovery
-  -> one severity step only after each new full clear period
-
-raw returns FLAT before clear completes
-  -> reset recovery counter, remain FLAT
+Phase 6  integrated shadow / no signatures / no trading
+Phase 7  limited-live readiness; actual real-money launch still requires explicit human approval
+Phase 8  bear-short research; first real short remains human-gated
+then     full Phase 0-8 drift audit / review / corrective PRs
 ```
-
-No special post-FLAT threshold or new free parameter exists.
-
-## RISK_PERMISSION_LOCK
-
-Operational permission is separate:
-
-```text
-UNLOCKED
-LOCKED_PENDING_HUMAN_APPROVAL
-```
-
-Rules:
-
-- MARKET_STATE cannot unlock permission;
-- automatic unlock is forbidden;
-- explicit human approval is the only unlock authority;
-- market recovery does not itself authorize a live risk increase.
-
-Do not fabricate a V2 historical permission-lock path before P5.4 defines which market states actually map to zero exposure.
-
-## V2 failure-preservation gate
-
-V2 must reproduce the immutable V1 signal evidence, including:
-
-```text
-false raw FLAT date   2021-02-23
-event                  P5C-2021-JAN-FEB-HIGH-VOL
-class                  HIGH_VOLATILITY_NON_TOP_CONTROL
-V1 near-event FLAT     6 / 7 days
-```
-
-If the raw FLAT disappears, V2 implementation has violated the preregistration.
-
-## Required V2 evidence — later
-
-After preregistration is merged and implementation parity is green, a separate controlled evidence run must report:
-
-- full MARKET_STATE paths for all three profiles;
-- exact V1 normalization/atom/raw-candidate parity;
-- every MARKET_STATE FLAT episode and duration;
-- first recovery date after each FLAT episode;
-- every P5.1 event-bucket occupancy;
-- second-wind behavior;
-- non-top-control FLAT occupancy;
-- terminal-event lead/near-event states;
-- transitions/churn;
-- direct V1-vs-V2 state-path delta;
-- assertion that market recovery never changes operational permission.
-
-## Architecture pass boundary
-
-An architecture pass means only that:
-
-- V1 raw/evidence parity is exact;
-- the false FLAT remains visible;
-- later market regimes remain classifiable instead of being permanently erased by an earlier FLAT;
-- operational re-risk remains human-gated.
-
-It does not accept signal quality, select a profile, select P5.4 gross behavior, or authorize production.
-
-## P5.4 remains blocked
-
-Do not define or test state-to-gross multipliers until V2 evidence is complete and reviewable. P5.4 cannot be used to compensate for V1/V2 classification defects.
 
 ## Frozen product boundaries
 
-- BRRK-0011 relative ranking unchanged;
 - BTC/ETH/SOL/BNB long universe unchanged;
 - XRP feature-only;
 - Hyperliquid primary venue;
-- P4.1 defensive scaler `[0,1]` unchanged;
-- production gross `1.0`;
-- actual re-risk after implemented zero exposure remains human-gated;
+- production gross cap `1.0`;
+- `production_authorized_components = []`;
+- actual zero-exposure -> risk-on remains human-gated;
 - no withdrawal/external-transfer automation;
 - no production authorization.
 
 ## Exact next step
 
 ```text
-RUN FRESH V2 PREREG CONTRACT CI / GOVERNANCE
-VERIFY IMMUTABLE V1 VALIDATOR STILL PASSES
-VERIFY NO V2 RESULT EXISTS
-IF GREEN, EXACT-HEAD MERGE V2 PREREGISTRATION
-CREATE FRESH V2 IMPLEMENTATION BRANCH FROM NEW MAIN
-IMPLEMENT ONLY NON-ABSORBING MARKET_STATE FLAT RECOVERY
-PROVE EXACT V1 RAW / ATOM / NORMALIZATION PARITY
-DO NOT RUN V2 HISTORICAL STATE PATHS UNTIL IMPLEMENTATION GATES ARE GREEN
-DO NOT START P5.4
+FINAL-HEAD CI / GOVERNANCE FOR P5.3 V2 RESULT
+EXACT-HEAD MERGE P5.3 V2
+VERIFY NEW MAIN
+CREATE P5.4 PREREG BRANCH
+FREEZE A SMALL FIXED STATE->GROSS CANDIDATE FAMILY
+IMPLEMENT MAPPING TESTS ONLY AFTER PREREG
+DO NOT SELECT A WINNER UNTIL P5.5
 DO NOT PRODUCTION-AUTHORIZE ANYTHING
 ```
