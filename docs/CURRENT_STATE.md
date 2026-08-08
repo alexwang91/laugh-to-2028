@@ -15,111 +15,87 @@ P5.2 feature evidence          COMPLETE / IMMUTABLE / DESCRIPTIVE CLOSEOUT
 P5.3 V1                       COMPLETE / IMMUTABLE / ARCHITECTURE_FAIL
 P5.3 V2                       COMPLETE / IMMUTABLE EVIDENCE / ARCHITECTURE_PASS
 P5.4 behavior mapping          COMPLETE / FIXED 4-MAP FAMILY / PURE IMPLEMENTATION / NO SELECTION
-P5.5 validation                IMPLEMENTED / R1+R2 FROZEN / RESULT NOT RUN
-P5.6 integration               NOT STARTED
-Phase 6 shadow                 NOT STARTED
+P5.5 validation                COMPLETE / IMMUTABLE / NO_PROMOTION / FAIL_STOP
+P5.6 cycle integration         BLOCKED / NO ELIGIBLE P5.5 CANDIDATE
+Phase 6 shadow                 NEXT / BASELINE ARCHITECTURE ONLY / ZERO TRADING AUTHORITY
 Phase 7 limited-live readiness NOT STARTED / actual launch requires explicit approval
 Phase 8 bear-short research    NOT STARTED
 production authorization       NONE
 ```
 
-## Frozen upstream
+## P5.5 immutable result
 
-P5.3 V2 immutable summary SHA256: `05d5d68a59c8b13f1122d98ed75d03934defdc9d73c7dd92e038c92fd97d2e52`.
-
-P5.4 canonical contract: `P5.4-FIXED-STATE-GROSS-BEHAVIOR-V1`; four maps `HARD_ONLY / GENTLE / BALANCED / DEFENSIVE`; pure scalar total-gross implementation only.
-
-## P5.5 frozen research contracts
-
-- base: `P5.5-JOINT-PROFILE-MAP-VALIDATION-V1`
-- R1: frozen pre-result MaxDD sign semantics (`abs(MaxDD)` comparison)
-- R2: frozen pre-result common-coverage correction
-
-P5.5 evaluates exactly:
+- contract: `P5.5-JOINT-PROFILE-MAP-VALIDATION-V1`
+- pre-result amendments: `R1`, `R2`
+- result commit: `ae20890d87567c98e403e3558219d5de55daef67`
+- summary SHA256: `ccbdc067f9f7f1277e6eecaa2f74f31f84e3a1882ccef418e097b2ea66bf6e71`
+- economic window: `2022-12-10 .. 2026-02-28`
+- candidates: `12`
+- eligible candidates: `0`
 
 ```text
-EARLY / BALANCED / CONSERVATIVE
-x
-HARD_ONLY / GENTLE / BALANCED / DEFENSIVE
-= 12 candidates
+selection_status          NO_PROMOTION_FAIL_STOP
+profile_selected          NONE
+behavior_map_selected     NONE
+p5_6_integration_eligible false
+production_authorized     false
+risk_permission_unlock    false
 ```
 
-`BRRK_NO_CYCLE_CONTROL` is non-promotable comparator.
+Formal closeout: `docs/P5_5_VALIDATION_CLOSEOUT.md`.
 
-### R2 common observable window
+### Main finding
 
-The immutable P5.2 feature result explicitly ends `2026-02-28`; the immutable P5.3 V2 MARKET_STATE path inherits that end. Phase-4 BRRK targets/prices extend through `2026-08-02`.
+The frozen P5.4 family does not contain a robust cycle overlay under the frozen objective.
 
-Before any P5.5 candidate economics, R2 therefore freezes:
+`HARD_ONLY` preserves baseline economics in the authoritative sample but fails the terminal-event partial-de-risk gates. Gradual policies generally improve absolute MaxDD, but the return sacrifice is materially too large. Example at 5 bps:
 
 ```text
-authoritative economic start  2022-12-10
-authoritative economic end    2026-02-28
-rule                           min(BRRK target/price end, frozen MARKET_STATE end)
-forward-fill MARKET_STATE      forbidden
-fabricate feature/state data   forbidden
-absent later state -> zero     forbidden
+BRRK baseline CAGR          79.7629%
+BALANCED / GENTLE CAGR      72.1452%   (-7.6177 pp)
+BRRK baseline MaxDD         33.5292%
+BALANCED / GENTLE MaxDD     31.5212%   (+2.0080 pp improvement)
 ```
 
-2021 remains all-event behavior diagnostics only; no 2021 BRRK economic path is fabricated.
+EARLY/GENTLE gives roughly +2.93pp absolute drawdown improvement but loses ~14.04pp CAGR. More defensive maps sacrifice still more compounded wealth. Gradual maps also fail frozen start-date and/or event-held-out robustness.
 
-### Economic semantics
+This is not a near-threshold miss suitable for post-result rescue. Do not retune P5.3 profiles or P5.4 multiplier values under the same experiment.
 
-P5.5 reuses repository-established mechanics:
+## P5.6 disposition
 
-- authoritative BRRK prices/targets rebuilt by `run_leverage_0040_once_r1.py`;
-- `simulate_p3_3_economic_path` with drifted current weights;
-- decision target held over next daily return;
-- 5% L1 rebalance band;
-- costs `5 / 10 / 20 / 50 bps` per executed absolute weight change;
-- no funding in primary selection;
-- matched unmodified BRRK comparator;
-- metrics: terminal multiple, CAGR, MaxDD, Sharpe, Calmar, turnover and average gross.
+P5.6 has no eligible P5.5 candidate to integrate. Its honest disposition is:
 
-### Validation/selection discipline
+```text
+P5.6 = BLOCKED / NO ELIGIBLE CYCLE-RISK OVERLAY
+```
 
-Hard gates remain frozen:
+Do not force-select a failed candidate merely to complete the roadmap.
 
-- terminal-event partial de-risk;
-- 2021/2025 second-wind preservation;
-- known 2021 false FLAT retained and finite <=10d;
-- cost sensitivity and usefulness;
-- start-date robustness;
-- event-held-out robustness;
-- adjacent-policy robustness.
+Phase 6 may continue using the currently authorized baseline research/execution architecture only:
 
-Primary objective remains highest 5-bps after-cost CAGR **among all-gate passers**. No eligible candidate -> `NO_PROMOTION / FAIL_STOP`.
-
-## Implementation state
-
-Implemented but not run:
-
-- `p5_5_validation.py`: pure event/economic/robustness gates + frozen selector;
-- `run_p5_5_joint_validation.py`: base matched BRRK runner;
-- `run_p5_5_joint_validation_r2.py`: pre-result common-coverage corrected entrypoint;
-- `validate_p5_5_joint_validation_result.py`: immutable result validator;
-- synthetic tests for held-out math, MaxDD R1 semantics, robustness, adjacency and near-tie selection;
-- dedicated pre/post-result CI and one-time RUN_ONCE workflow.
-
-No candidate economics has been produced at this state.
+- BRRK-0011 directional ranking;
+- P4.1 frozen defensive scale `[0,1]`;
+- no P5 cycle overlay;
+- production gross cap `1.0`;
+- zero trading/signing authority in shadow mode.
 
 ## Frozen product boundaries
 
 - BRRK relative ranking unchanged;
-- P4.1 defensive scale `[0,1]` unchanged;
-- production gross cap `1.0`;
+- no >1 leverage;
+- no P5 cycle overlay selected;
 - actual zero-exposure -> risk-on remains explicit-human-gated;
 - no automated withdrawals/external transfers;
-- no production authorization.
+- production authorization remains none.
 
 ## Exact next action
 
 ```text
-OPEN / CI-VERIFY P5.5 IMPLEMENTATION PR
-PRE-RUN GATES MUST BE GREEN
-SUBMIT ONE RUN_ONCE MARKER
-COMMIT / VALIDATE IMMUTABLE P5.5 RESULT
-IF A CANDIDATE PASSES ALL FROZEN GATES -> P5.6 INTEGRATION ELIGIBLE
-ELSE -> P5.5 NO_PROMOTION / P5.6 BLOCKED
-NO PRODUCTION AUTHORIZATION
+FINAL-HEAD CI / GOVERNANCE FOR P5.5 RESULT
+EXACT-HEAD MERGE P5.5
+VERIFY NEW MAIN
+RECORD P5.6 BLOCKED / NO CANDIDATE
+ENTER PHASE 6 BASELINE INTEGRATED SHADOW READINESS
+PROVE NO-SIGNER / NO-ORDER / READ-ONLY / HYPOTHETICAL-ORDER INVARIANTS
+DO NOT PRODUCTION-AUTHORIZE ANYTHING
 ```
