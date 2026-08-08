@@ -13,6 +13,10 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Mapping
 
+from .phase6_live_evidence import (
+    CONTRACT_RELATIVE_PATH as EVIDENCE_CONTRACT_RELATIVE_PATH,
+    validate_evidence_contract,
+)
 from .validate import repo_root_from_module
 
 
@@ -50,6 +54,7 @@ def validate_gate_mapping(
     gate: Mapping[str, Any],
     *,
     phase6_contract: Mapping[str, Any],
+    evidence_contract: Mapping[str, Any],
     workflow_text: str,
 ) -> dict[str, Any]:
     if int(gate.get("schema_version", -1)) != 1:
@@ -58,6 +63,8 @@ def validate_gate_mapping(
         raise Phase6ObservationGateError("unexpected Phase-6 observation gate id")
     if gate.get("canonical_phase6_contract") != str(PHASE6_CONTRACT_RELATIVE_PATH):
         raise Phase6ObservationGateError("gate must point to canonical Phase-6 contract")
+    if gate.get("evidence_backend_contract") != str(EVIDENCE_CONTRACT_RELATIVE_PATH):
+        raise Phase6ObservationGateError("gate must point to frozen Phase-6 evidence backend contract")
     if gate.get("canonical_decision_time_utc") != "00:00:00":
         raise Phase6ObservationGateError("Phase-6 canonical decision time must remain 00:00:00 UTC")
 
@@ -66,6 +73,15 @@ def validate_gate_mapping(
             raise Phase6ObservationGateError(f"{field} must remain false")
         if phase6_contract.get(field) is not False:
             raise Phase6ObservationGateError(f"canonical Phase-6 {field} drift detected")
+
+    try:
+        evidence_snapshot = validate_evidence_contract(evidence_contract)
+    except Exception as exc:
+        raise Phase6ObservationGateError(f"invalid frozen evidence backend contract: {exc}") from exc
+    if evidence_snapshot.get("credit_active") is not False:
+        raise Phase6ObservationGateError("evidence backend contract cannot itself activate elapsed credit")
+    if evidence_snapshot.get("production_authorized") is not False:
+        raise Phase6ObservationGateError("evidence backend contract cannot confer production authority")
 
     live = phase6_contract.get("acceptance", {}).get("live_shadow_observation", {})
     evidence = gate.get("evidence_requirements", {})
@@ -109,6 +125,8 @@ def validate_gate_mapping(
     }
     if set(required_before_arm) != required_keys:
         raise Phase6ObservationGateError("required-before-arm dependency set drift detected")
+    if required_before_arm.get("durable_create_only_evidence_backend_frozen") is not True:
+        raise Phase6ObservationGateError("validated Phase-6 evidence backend must be marked frozen")
 
     armed = gate.get("collector_armed") is True
     schedule_configured = gate.get("schedule_configured") is True
@@ -142,6 +160,8 @@ def validate_gate_mapping(
         "status": gate.get("status"),
         "collector_armed": armed,
         "dependencies_ready": dependencies_ready,
+        "durable_evidence_backend_frozen": True,
+        "durable_evidence_backend": evidence_snapshot.get("backend"),
         "schedule_configured": schedule_configured,
         "elapsed_evidence_credit_authorized": credit_authorized,
         "phase6_live_status": live.get("status"),
@@ -155,8 +175,14 @@ def gate_snapshot(root: Path | None = None) -> dict[str, Any]:
     repo_root = Path(root or repo_root_from_module())
     gate = _load_json(repo_root / GATE_RELATIVE_PATH)
     phase6 = _load_json(repo_root / PHASE6_CONTRACT_RELATIVE_PATH)
+    evidence_contract = _load_json(repo_root / EVIDENCE_CONTRACT_RELATIVE_PATH)
     workflow = (repo_root / WORKFLOW_RELATIVE_PATH).read_text(encoding="utf-8")
-    return validate_gate_mapping(gate, phase6_contract=phase6, workflow_text=workflow)
+    return validate_gate_mapping(
+        gate,
+        phase6_contract=phase6,
+        evidence_contract=evidence_contract,
+        workflow_text=workflow,
+    )
 
 
 def main() -> int:

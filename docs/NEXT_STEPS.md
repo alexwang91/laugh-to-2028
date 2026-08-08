@@ -28,6 +28,7 @@ P5.6 integration                       BLOCKED / NO ELIGIBLE CANDIDATE
 Phase 6 implementation/replay          PASS_SHADOW_ONLY_IMPLEMENTATION_REPLAY / MERGED #109
 Phase 6 live elapsed evidence          MEASUREMENT_INCONCLUSIVE_TIME_DEPENDENT / CLOCK NOT ARMED
 Phase 6 observation preactivation      PREACTIVATION_BLOCKED_FAIL_CLOSED
+Phase 6 durable evidence backend       FROZEN / ACTIONS_ARTIFACT_V4 / 90D / NO CREDIT
 Phase 7 readiness gate                 IMPLEMENTED / MERGED #110 / LAUNCH BLOCKED
 Phase 7 mode                           MONITOR_ONLY
 Phase 8 BEAR-SHORT-0001                PREREGISTERED_TRIGGER_ABSENT_NOT_RUN / MERGED #111
@@ -65,16 +66,18 @@ The existing `.github/workflows/phase6-integrated-shadow.yml` is implementation/
 
 Governance v1 no-drift also forbids casually adding a new execution path under `beta_bot/` or mutating the frozen strategy/execution blobs. The correct place for elapsed-observation provenance control is the already-authorized `research/governance/**` plane.
 
-`research/governance/phase6_live_observation_gate.json` and `phase6_live_observation_gate.py` therefore freeze a fail-closed **preactivation** state. The gate does not start the elapsed clock. It blocks schedule/credit until all required operational semantics are frozen.
+`research/governance/phase6_live_observation_gate.json` and `phase6_live_observation_gate.py` freeze a fail-closed **preactivation** state. The gate does not start the elapsed clock.
+
+`research/governance/phase6_live_evidence_contract.json` and `phase6_live_evidence.py` now freeze the durable storage/provenance mechanism to GitHub Actions Artifact v4 with 90-day retention, `overwrite=false`, hard failure on empty upload, immutable artifact ID/URL/digest, exact raw-input/provenance/shadow-record evidence categories and a separately uploaded hash-bound receipt. This closes the storage semantic only; it creates zero elapsed credit.
 
 ## Required before the collector may be armed
 
-Exactly these unresolved dependencies must be closed prospectively:
+Four pre-arm dependencies are tracked. Two are now frozen and two remain unresolved:
 
-1. **Observation account identity** — select and freeze one explicit read-only account identity. Never invent account state.
-2. **Current-position/equity valuation contract** — freeze how the Phase-6 observation portfolio converts the permitted account surfaces into the P3.3 `current_positions_notional_usd` and `account_equity_usd`, including spot/perp treatment. This is operational measurement semantics, not a new alpha rule.
-3. **Durable create-only evidence backend** — freeze where each scheduled run's raw/derived evidence and receipt are durably stored before they can be credited. Ephemeral-only CI output must not be called durable provenance.
-4. **Schedule/duplicate rule** — already frozen by the preactivation gate: manual dispatch does not count as a scheduled decision; reruns and duplicate decision timestamps do not create new credit; a manual emergency drill may count only toward the drill requirement.
+1. **Observation account identity — UNRESOLVED.** Select and freeze one explicit read-only account identity. Never invent account state.
+2. **Current-position/equity valuation contract — UNRESOLVED.** Freeze how the Phase-6 observation portfolio converts the permitted account surfaces into the P3.3 `current_positions_notional_usd` and `account_equity_usd`, including spot/perp treatment. This is operational measurement semantics, not a new alpha rule.
+3. **Durable create-only evidence backend — FROZEN.** `GITHUB_ACTIONS_ARTIFACT_V4`, retention 90 days, overwrite false, evidence bundle + receipt required before credit. Runner files/logs/step summaries alone are not evidence.
+4. **Schedule/duplicate rule — FROZEN.** Manual dispatch does not count as a scheduled decision; reruns and duplicate decision timestamps do not create new credit; a manual emergency drill may count only toward the drill requirement.
 
 When a later prospective change arms the collector, its first eligible decision is the first canonical `00:00 UTC` decision **strictly after the arm commit timestamp**. Nothing before that point can be backfilled or credited.
 
@@ -82,19 +85,20 @@ When a later prospective change arms the collector, its first eligible decision 
 
 ```text
 1. KEEP PROGRAM-LEVEL EPISTEMIC GOVERNANCE V1 + NO-DRIFT AUTHORITATIVE
-2. MERGE THE PHASE-6 LIVE-OBSERVATION PREACTIVATION GATE ONLY AFTER ALL CI IS GREEN
-3. FREEZE ONE READ-ONLY OBSERVATION ACCOUNT IDENTITY
-4. FREEZE CURRENT-POSITION / ACCOUNT-EQUITY VALUATION SEMANTICS WITHOUT CHANGING P3.2/P3.3 ECONOMICS
-5. FREEZE A DURABLE CREATE-ONLY EVIDENCE BACKEND + RECEIPT IDENTITY
+2. KEEP THE MERGED PHASE-6 PREACTIVATION GATE FAIL-CLOSED
+3. KEEP PHASE6-LIVE-EVIDENCE-BACKEND-V1 FROZEN; DO NOT CALL ITS EXISTENCE ELAPSED EVIDENCE
+4. FREEZE ONE READ-ONLY OBSERVATION ACCOUNT IDENTITY
+5. FREEZE CURRENT-POSITION / ACCOUNT-EQUITY VALUATION SEMANTICS WITHOUT CHANGING P3.2/P3.3 ECONOMICS
 6. PROSPECTIVELY ARM THE FUTURE-ONLY COLLECTOR IN A SEPARATE CHANGE
-7. CREDIT ONLY GENUINELY FUTURE SCHEDULED DECISIONS AFTER THE ARM COMMIT; NEVER BACKFILL/REPLAY/RERUN-CREDIT
-8. ACCUMULATE >=14 ELAPSED DAYS, >=10 SCHEDULED DECISIONS, >=1 EMERGENCY DRILL, WITH ALL FROZEN QUALITY COUNTS AT ZERO
-9. KEEP PHASE 7 MONITOR_ONLY UNTIL PHASE-6 EVIDENCE + COMPLETE CHECKLIST + EXPLICIT OWNER APPROVAL
-10. AFTER THE PHASE-6 COLLECTION PATH IS OPERATIONAL, IMPLEMENT THE FORMAL RESEARCH LIFECYCLE/STATE MACHINE
-11. THEN IMPLEMENT RESEARCH QUEUE + TRIAL/OVERLAP ACCOUNTING
-12. ONLY AFTER THOSE INFRASTRUCTURE LAYERS, CONSIDER A NEW RESULT-BEARING RESEARCH FAMILY THROUGH A NEW PROSPECTIVE ID
-13. WAIT FOR THE FROZEN CONFIRMED-BEAR TRIGGER BEFORE BEAR-SHORT-0001 ECONOMICS
-14. REQUIRE A SEPARATE HUMAN GATE BEFORE ANY FIRST REAL SHORT
+7. CREDIT ONLY GENUINELY FUTURE SCHEDULED DECISIONS AFTER THE ARM COMMIT AND ONLY AFTER EVIDENCE BUNDLE + RECEIPT ARCHIVE SUCCEED
+8. NEVER BACKFILL / REPLAY-CREDIT / RERUN-CREDIT / DUPLICATE-CREDIT
+9. ACCUMULATE >=14 ELAPSED DAYS, >=10 SCHEDULED DECISIONS, >=1 EMERGENCY DRILL, WITH ALL FROZEN QUALITY COUNTS AT ZERO
+10. KEEP PHASE 7 MONITOR_ONLY UNTIL PHASE-6 EVIDENCE + COMPLETE CHECKLIST + EXPLICIT OWNER APPROVAL
+11. AFTER THE PHASE-6 COLLECTION PATH IS OPERATIONAL, IMPLEMENT THE FORMAL RESEARCH LIFECYCLE/STATE MACHINE
+12. THEN IMPLEMENT RESEARCH QUEUE + TRIAL/OVERLAP ACCOUNTING
+13. ONLY AFTER THOSE INFRASTRUCTURE LAYERS, CONSIDER A NEW RESULT-BEARING RESEARCH FAMILY THROUGH A NEW PROSPECTIVE ID
+14. WAIT FOR THE FROZEN CONFIRMED-BEAR TRIGGER BEFORE BEAR-SHORT-0001 ECONOMICS
+15. REQUIRE A SEPARATE HUMAN GATE BEFORE ANY FIRST REAL SHORT
 ```
 
 ## Future research rule

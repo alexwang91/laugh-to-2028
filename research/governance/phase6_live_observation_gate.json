@@ -4,6 +4,7 @@
   "status": "PREACTIVATION_BLOCKED_FAIL_CLOSED",
   "purpose": "GOVERN_PHASE6_FUTURE_ONLY_ELAPSED_EVIDENCE_ACTIVATION_WITHOUT_CHANGING_STRATEGY_OR_PRODUCTION_AUTHORITY",
   "canonical_phase6_contract": "config/phase6_shadow_contract.json",
+  "evidence_backend_contract": "research/governance/phase6_live_evidence_contract.json",
   "canonical_decision_time_utc": "00:00:00",
   "production_authorized": false,
   "signature_authorized": false,
@@ -15,7 +16,7 @@
   "required_before_arm": {
     "observation_account_identity_frozen": false,
     "current_position_and_equity_valuation_contract_frozen": false,
-    "durable_create_only_evidence_backend_frozen": false,
+    "durable_create_only_evidence_backend_frozen": true,
     "schedule_and_duplicate_credit_rule_frozen": true
   },
   "future_only_credit_rule": {
@@ -63,7 +64,8 @@
     "This gate exists because Phase 6 implementation/replay passed but no scheduled future-only collector with durable evidence persistence was present on main.",
     "The preactivation gate does not itself start the 14-day elapsed clock or create any credited scheduled decision.",
     "An open PR or unmerged branch carrying this gate has no elapsed-credit or arm authority; only the merged main-branch copy may participate in a later prospective arm decision.",
+    "The durable evidence backend is now frozen to the separately validated Phase-6 live-evidence contract, but no Phase-6 live evidence has been collected by that fact alone.",
     "The canonical target/rebalance/router/shadow implementation blobs remain unchanged under Governance v1 no-drift.",
-    "Arming requires a later prospective change after the observation account identity, valuation semantics and durable evidence backend are frozen and verifiable."
+    "Arming still requires a later prospective change after the observation account identity and valuation semantics are frozen and verifiable."
   ]
 }
