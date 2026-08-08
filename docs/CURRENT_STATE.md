@@ -7,24 +7,20 @@ Status: **authoritative current-state handoff**
 
 ```text
 Phase 0-3                         COMPLETE / MERGED
-Phase 4 leverage research         FAIL_STOP / no eligible >1 candidate
-production gross cap              1.0
-production_authorized_components = []
-P5.1-P5.4                         COMPLETE / FROZEN
-P5.5 validation                   COMPLETE / IMMUTABLE / NO_PROMOTION / FAIL_STOP
-P5.6 cycle integration            BLOCKED / NO ELIGIBLE CANDIDATE
+Phase 4 leverage research         FAIL_STOP / NO_PROMOTION
+P5.5                              COMPLETE / IMMUTABLE / NO_PROMOTION / FAIL_STOP
+P5.6                              BLOCKED / NO ELIGIBLE CANDIDATE
 Phase 6 implementation/replay     PASS_SHADOW_ONLY_IMPLEMENTATION_REPLAY / MERGED #109
 Phase 6 live elapsed evidence     MEASUREMENT_INCONCLUSIVE_TIME_DEPENDENT / CLOCK NOT ARMED
-Phase 6 observation preactivation PREACTIVATION_BLOCKED_FAIL_CLOSED
-Phase 6 durable evidence backend  FROZEN / ACTIONS_ARTIFACT_V4 / 90D / NO CREDIT / MERGED #133
-Phase 6 valuation contract        PHASE6-LIVE-VALUATION-V1 / PR #134 CANDIDATE / STANDARD MODE ONLY
+Phase 6 evidence backend          FROZEN / MERGED #133
+Phase 6 valuation contract        PHASE6-LIVE-VALUATION-V1 / PR #134 CANDIDATE
 Phase 6 pre-arm dependencies      3/4 FROZEN IN #134 CANDIDATE / ACCOUNT IDENTITY UNRESOLVED
-Phase 7 program state             MONITOR_ONLY / LAUNCH BLOCKED
-Phase 8 bear-short research       PREREGISTERED_TRIGGER_ABSENT_NOT_RUN
-Program epistemic governance v1   PG0-PG6 COMPLETE / CI-ENFORCED / NO-DRIFT
-Stablecoin liquidity Stage-1      FAIL_NO_INCREMENTAL_INFORMATION / TERMINAL STOP
-production authorization          NONE
-first real short authorization    NONE
+Phase 7                           MONITOR_ONLY / LAUNCH BLOCKED
+Phase 8                           TRIGGER ABSENT / NOT RUN
+Stablecoin Stage-1               FAIL_NO_INCREMENTAL_INFORMATION / TERMINAL STOP
+production gross cap              1.0
+production_authorized_components = []
+first real short authority        NONE
 ```
 
 Authoritative `main` before PR #134: `af8ff7c6ce3bf16dd81ab9f510393d38fc790b63`.
@@ -39,6 +35,7 @@ primary venue                    Hyperliquid
 decision boundary                00:00 UTC
 P3.2 target engine               P3.2-BRRK0011-V1
 P3.3 rebalance control           P3.3-L1-BAND-V1 / aggregate L1 0.05
+BNB route policy                 PERP_ONLY_DEFAULT
 production gross cap             1.0
 production_authorized_components []
 P5 cycle overlay                 none promoted
@@ -50,28 +47,23 @@ Credentials, `TRADING_MODE=trade`, historical confirmations or shadow implementa
 
 ## Immutable research closeout
 
-```text
-LEVERAGE-0040 / 0041   IMMUTABLE / NO_PROMOTION
-P5.5                   IMMUTABLE / NO_PROMOTION_FAIL_STOP
-P5.6                   BLOCKED / NO ELIGIBLE CANDIDATE
-Stablecoin Stage-1     FAIL_NO_INCREMENTAL_INFORMATION / TERMINAL STOP
-```
+`LEVERAGE-0040` and `LEVERAGE-0041` remain immutable `NO_PROMOTION`; P5.5 remains immutable `NO_PROMOTION_FAIL_STOP`; P5.6 remains blocked.
 
-Stablecoin primary evidence remains:
+Stablecoin primary result remains:
 
 ```text
+result_status                    FAIL_NO_INCREMENTAL_INFORMATION
 valid_oos_prediction_count       933
 mean_primary_loss_differential   -5430210.12771038
 hac_test_statistic               -1.2454264237630361
 hac_one_sided_p_value            0.8935124773215692
 primary_result_digest            d920d45397d45ae5636a2f3c682600778d4d087d97e035ba911844cca65821ff
-stage1 workflow run              31264048473 / SUCCESS
 promotion_state                  NO_PROMOTION
 edge admission                   NONE
 stage2 robustness eligibility    NONE
 ```
 
-`RUN_ONCE_STAGE1.marker` remains permanent. No same-ID Stablecoin rescue/rerun is permitted.
+`RUN_ONCE_STAGE1.marker` remains permanent; no same-ID rerun/rescue is permitted.
 
 ## Governance v1
 
@@ -82,7 +74,7 @@ research_governance_version 1
 
 Decision, research, dataset-exposure, edge and phase/live authority remain separated. Future result-bearing research must be prospectively registered; historical unknowns remain explicit governance debt.
 
-## Phase 6 — implementation vs real elapsed evidence
+## Phase 6 — elapsed evidence remains unstarted
 
 Merged implementation/replay:
 
@@ -93,7 +85,7 @@ signature_authorized         false
 order_submission_authorized  false
 ```
 
-Real elapsed state:
+Real elapsed acceptance remains:
 
 ```text
 status                       MEASUREMENT_INCONCLUSIVE_TIME_DEPENDENT
@@ -109,7 +101,7 @@ Historical replay, CI replay, reruns and duplicate decision timestamps create no
 
 ### Durable evidence backend — merged #133
 
-`PHASE6-LIVE-EVIDENCE-BACKEND-V1` is frozen to GitHub Actions Artifact v4 with 90-day retention, `overwrite=false`, immutable artifact identity and a separately uploaded hash-bound receipt. It creates zero elapsed credit by itself.
+`PHASE6-LIVE-EVIDENCE-BACKEND-V1` is frozen to GitHub Actions Artifact v4 with 90-day retention, `overwrite=false`, immutable artifact identity and a separately uploaded hash-bound receipt. The backend creates zero elapsed credit by itself.
 
 ### Valuation contract — PR #134 candidate
 
@@ -134,7 +126,7 @@ spot component = balances[].total * verified spot markPx
 current_positions_notional_usd = spot + perp by economic asset
 ```
 
-Spot identities remain `BTC->UBTC`, `ETH->UETH`, `SOL->USOL`; BNB remains `PERP_ONLY_DEFAULT` with spot forbidden.
+Spot identities remain `BTC->UBTC`, `ETH->UETH`, `SOL->USOL`; BNB spot remains forbidden.
 
 Standard-mode equity is first-perp-dex `marginSummary.accountValue` + spot USDC + permitted canonical spot mark-to-market. Unknown nonzero assets, duplicate identities, invalid marks, nonpositive equity and unsupported surfaces hard fail.
 
@@ -159,19 +151,19 @@ signature_authorized               false
 order_submission_authorized        false
 ```
 
-If #134 merges after final green CI, the only remaining external dependency is one exact verified public read-only Hyperliquid master/subaccount address compatible with Standard mode. Do not invent or derive that address from a private key.
+If #134 passes final CI and merges, the only remaining pre-arm dependency is one exact verified public read-only Hyperliquid master/subaccount address compatible with Standard mode. Do not invent or derive that address from a private key.
 
 ## Phase 7 / 8
 
 Phase 7 remains `MONITOR_ONLY`, launch-blocked and `production_authorized=false`.
 
-Phase 8 remains `PREREGISTERED_TRIGGER_ABSENT_NOT_RUN`, `short_ready=false`, `production_authorized=false`, `first_real_short_authorized=false`.
+Phase 8 remains trigger-absent/not-run with `short_ready=false`, `production_authorized=false` and `first_real_short_authorized=false`.
 
 ## Drift status for PR #134
 
-The first candidate governance run passed the valuation unit tests, preactivation gate, registry validation and future-research enforcement. Its only no-drift failure was two temporary candidate `docs/**` paths outside the Governance-v1 allowlist. They were removed; the allowlist was not broadened.
+The first candidate governance run passed valuation unit tests, preactivation gate, registry validation and future-research enforcement. Its only no-drift failure was two temporary candidate `docs/**` paths outside the Governance-v1 allowlist. They were removed; the allowlist was not broadened.
 
-Canonical strategy/economic/authority state remains unchanged. Final merge requires a fresh green final-head governance/no-drift/parity/Phase-6 safety matrix. Intermediate failures are not relabeled as PASS.
+Canonical product/strategy/economic/production authority remains unchanged. Final merge requires a fresh green final-head governance/no-drift/parity/Phase-6 safety matrix; intermediate failures are not relabeled as PASS.
 
 ## Exact next action
 
@@ -188,4 +180,4 @@ Canonical strategy/economic/authority state remains unchanged. Final merge requi
 10. KEEP PHASE 7 MONITOR_ONLY AND ALL PRODUCTION/SIGNATURE/SUBMISSION AUTHORITY FALSE
 ```
 
-After Phase-6 collection becomes operational, resume the infrastructure roadmap: formal research lifecycle/state-machine enforcement, then Research Queue / trial-overlap accounting. Do not substitute new result-bearing research for the remaining Phase-6 dependency.
+After genuine Phase-6 collection becomes operational, resume the infrastructure roadmap: formal research lifecycle/state-machine enforcement, then Research Queue / trial-overlap accounting.
