@@ -4,7 +4,7 @@ Last updated: 2026-08-08
 
 ## Current instruction
 
-**Finish PR #134, then freeze the one remaining Phase-6 pre-arm dependency: the exact public read-only Hyperliquid observation account identity. Production remains unauthorized.**
+**Freeze the account-identity binding rules without fabricating an address; after that, the unique remaining Phase-6 pre-arm dependency is the real public observation account address. Production remains unauthorized.**
 
 ## Immediate state
 
@@ -12,45 +12,78 @@ Last updated: 2026-08-08
 Phase 6 implementation/replay          PASS_SHADOW_ONLY_IMPLEMENTATION_REPLAY / MERGED #109
 Phase 6 live elapsed evidence          MEASUREMENT_INCONCLUSIVE_TIME_DEPENDENT / CLOCK NOT ARMED
 Phase 6 durable evidence backend       FROZEN / MERGED #133
-Phase 6 valuation contract             PHASE6-LIVE-VALUATION-V1 / PR #134 CANDIDATE
-Phase 6 pre-arm dependencies           3/4 FROZEN IN #134 CANDIDATE
-remaining dependency                   OBSERVATION ACCOUNT IDENTITY
+Phase 6 valuation contract             PHASE6-LIVE-VALUATION-V1 / MERGED #134
+Phase 6 account-identity rules         PHASE6-LIVE-ACCOUNT-IDENTITY-V1 / CANDIDATE / UNBOUND
+Phase 6 pre-arm dependencies           3/4 FROZEN
+remaining dependency                   EXACT PUBLIC OBSERVATION ACCOUNT IDENTITY
 Phase 7                                MONITOR_ONLY / LAUNCH BLOCKED
 Phase 8                                TRIGGER ABSENT / NOT RUN
 production gross cap                   1.0
 production_authorized_components = []
 ```
 
-## PR #134 closeout
+## Current candidate — identity binding rules only
+
+The candidate freezes the future binding contract under `research/governance/**` while intentionally keeping:
 
 ```text
-1. KEEP PHASE6-LIVE-VALUATION-V1 STANDARD-MODE ONLY
-2. KEEP BNB PERP_ONLY_DEFAULT
-3. KEEP P3.2/P3.3 ECONOMICS UNCHANGED
-4. RUN FINAL-HEAD GOVERNANCE / NO-DRIFT / PARITY / PHASE-6 SAFETY CI
-5. MERGE ONLY WITH EXPECTED-HEAD PROTECTION IF REQUIRED CHECKS ARE GREEN
-6. VERIFY NEW MAIN AND CANONICAL AUTHORITY INVARIANTS
+account_address                     null
+identity_frozen                     false
+binding_evidence                    null
+collector_armed                     false
+schedule_configured                 false
+elapsed_evidence_credit_authorized  false
 ```
 
-## Unique next task after #134
+Frozen rules:
 
-Freeze one exact **public read-only Hyperliquid master/subaccount address** and verify:
+```text
+address format           0x + 40 hexadecimal characters
+accepted userRole        user / subAccount
+rejected userRole        agent / vault / missing
+required userAbstraction disabled
+subaccount master        evidence required; no silent substitution
+private-key discovery    forbidden
+production authority     false
+```
+
+The preactivation gate must derive its account-identity dependency from the validated identity contract. A hand-edited gate flag cannot turn an unbound contract into a frozen identity.
+
+## Candidate closeout sequence
+
+```text
+1. KEEP account_address=null AND identity_frozen=false
+2. RUN FINAL GOVERNANCE / NO-DRIFT / P3.2 PARITY / PHASE-6 SAFETY CI
+3. MERGE ONLY WITH EXPECTED-HEAD PROTECTION IF ALL REQUIRED CHECKS ARE GREEN
+4. VERIFY NEW MAIN AND CANONICAL AUTHORITY INVARIANTS
+```
+
+## Unique next task after this candidate
+
+Obtain one exact **public read-only Hyperliquid master/subaccount address** and bind it prospectively.
+
+Required verification:
 
 ```text
 address is explicit and exact
 address is the actual observed master/subaccount
-address is not an agent-wallet identity
+userRole is user OR subAccount
+userRole is NOT agent / vault / missing
 userAbstraction == disabled
 account fits PHASE6-LIVE-VALUATION-V1
 unsupported nonzero assets/surfaces are not silently ignored
-no private key is required or consumed
+non-secret address provenance is persisted
+raw userRole + userAbstraction response SHA256 digests are persisted
+no private key is required, supplied or derived
 ```
 
-If the account is Unified Account, Portfolio Margin, `default`, DEX abstraction, or otherwise outside V1, mark it `BLOCKED / INCOMPATIBLE`; do not broaden V1 post-observation simply to make the account fit.
+For a subaccount, preserve the returned master address as evidence but continue observing the exact subaccount address; do not silently replace it with the master.
+
+If the real address is an agent wallet, vault, missing account, Unified Account, Portfolio Margin, `default`, DEX abstraction or otherwise outside V1, the correct outcome is **BLOCKED / INCOMPATIBLE**. Do not broaden the contract after observing the account merely to make it fit.
 
 ## Arm boundary after 4/4
 
-Freezing the account does not start elapsed credit. A separate prospective arm change is required.
+A valid account binding completes the dependency set but still does not start elapsed credit. A separate prospective arm change is required.
 
 ```text
 first eligible decision          FIRST 00:00 UTC STRICTLY AFTER ARM COMMIT
