@@ -4,7 +4,7 @@ Last updated: 2026-08-08
 
 ## Current instruction
 
-**Close the Phase 0–8 drift audit without changing economic research. Production remains unauthorized. After the audit merge, the next real dependency is Phase 6 elapsed shadow evidence; Phase 7 activation and Phase 8 short execution remain separate human/trigger boundaries.**
+**Phase 0–8 drift remediation is verified on the pre-closeout head. Merge PR #112 only after its closeout head is fully green. After that merge, do not start a new strategy implementation phase: continue real Phase 6 zero-authority elapsed-shadow observation. Production remains unauthorized.**
 
 ## Immediate state
 
@@ -23,30 +23,30 @@ Phase 6 live elapsed evidence          MEASUREMENT_INCONCLUSIVE_TIME_DEPENDENT
 Phase 7 readiness gate                 IMPLEMENTED / MERGED #110 / LAUNCH BLOCKED
 Phase 7 mode                           MONITOR_ONLY
 Phase 8 BEAR-SHORT-0001                PREREGISTERED_TRIGGER_ABSENT_NOT_RUN / MERGED #111
-Phase 0-8 drift audit                  DRIFT_2 / REMEDIATION PENDING FINAL-HEAD CI
+Phase 0-8 drift audit                  PASS_FINAL_HEAD_VERIFIED / PR #112 PENDING EXACT-HEAD MERGE
 production authorization               NONE
 first real short authorization         NONE
 ```
 
-## Current audit closeout
+## Audit closeout
 
-The Phase 0–8 audit is non-economic. It must not retune or rewrite immutable research results.
+Machine contract: `config/phase0_8_drift_audit.json`. Evidence report: `docs/PHASE_0_8_DRIFT_AUDIT_2026-08-08.md`.
 
-Material remediation scope:
+Verified remediation:
 
-- block the legacy BTC-only normal service from adding directional risk without canonical production authority;
-- preserve same-direction reduction and emergency-flat capability;
-- enforce the production-facing legacy beta cap at `1.0`;
-- align authoritative handoff documentation to already-merged Phase 6/7/8 state;
-- add a cross-phase machine gate for production policy and trigger/approval boundaries.
+- legacy BTC-only normal service cannot add directional risk merely because `TRADING_MODE=trade`;
+- same-direction risk reduction and emergency-flat capability remain available;
+- legacy production-facing `NORMAL_BETA_CAP` is capped at `1.0`;
+- authoritative handoff documentation reflects merged Phase 6/7/8 state;
+- cross-phase regression tests pin production policy, LEVERAGE-0040 digest and Phase 6/7/8 boundaries.
 
-Machine contract: `config/phase0_8_drift_audit.json`.
+Pre-closeout verification head `aa94f4c03c7897c4b6420f151f679c7f8da1b283` passed all applicable workflows. The closeout status head must also be fully green before exact-head merge.
 
-## After the audit merge — Phase 6 evidence accumulation
+## After PR #112 merge — Phase 6 evidence accumulation
 
-Phase 6 implementation/replay is already complete. Do **not** rebuild the shadow harness or manufacture historical substitutes for elapsed time.
+Phase 6 implementation/replay is complete. Do **not** rebuild the shadow harness or manufacture historical substitutes for elapsed time.
 
-The remaining Phase 6 dependency is the frozen live observation requirement in `config/phase6_shadow_contract.json`:
+The remaining dependency is the frozen live observation requirement in `config/phase6_shadow_contract.json`:
 
 ```text
 minimum elapsed calendar days   14
@@ -58,13 +58,7 @@ Continue the zero-authority observation mechanism and record real evidence only.
 
 ## Phase 7 boundary
 
-The Phase 7 readiness gate is implemented, not activated.
-
-Current mode:
-
-```text
-MONITOR_ONLY
-```
+The Phase 7 readiness gate is implemented, not activated. Current mode is `MONITOR_ONLY`.
 
 Do not transition to ACTIVE until the complete launch checklist is satisfied, including Phase 6 elapsed evidence and explicit owner approval. Human approval remains required for:
 
@@ -95,13 +89,12 @@ A subjective market view must not be used as the trigger.
 ## Exact execution order
 
 ```text
-1. FINISH PHASE 0-8 DRIFT-AUDIT CONTRACT / TESTS / DOC ALIGNMENT
-2. RUN ALL APPLICABLE FINAL-HEAD CI AND GOVERNANCE
-3. IF GREEN, EXACT-HEAD MERGE THE AUDIT REMEDIATION
-4. VERIFY CANONICAL MAIN AND PRODUCTION POLICY: gross=1.0 / authorized_components=[]
-5. CONTINUE REAL PHASE-6 ZERO-AUTHORITY ELAPSED OBSERVATION
-6. WHEN PHASE-6 EVIDENCE ACTUALLY PASSES, REVIEW PHASE-7 CHECKLIST
-7. REQUIRE EXPLICIT HUMAN APPROVAL BEFORE MONITOR_ONLY -> ACTIVE OR ZERO -> RISK
-8. WAIT FOR THE FROZEN CONFIRMED-BEAR TRIGGER BEFORE BEAR-SHORT-0001 ECONOMICS
-9. REQUIRE A SEPARATE HUMAN GATE BEFORE ANY FIRST REAL SHORT
+1. VERIFY PR #112 CLOSEOUT HEAD ALL APPLICABLE CI/GOVERNANCE GREEN
+2. EXACT-HEAD MERGE PR #112
+3. VERIFY CANONICAL MAIN: gross=1.0 / production_authorized_components=[] / legacy new-risk authority=false
+4. CONTINUE REAL PHASE-6 ZERO-AUTHORITY ELAPSED OBSERVATION
+5. WHEN PHASE-6 EVIDENCE ACTUALLY PASSES, REVIEW PHASE-7 CHECKLIST
+6. REQUIRE EXPLICIT HUMAN APPROVAL BEFORE MONITOR_ONLY -> ACTIVE OR ZERO -> RISK
+7. WAIT FOR THE FROZEN CONFIRMED-BEAR TRIGGER BEFORE BEAR-SHORT-0001 ECONOMICS
+8. REQUIRE A SEPARATE HUMAN GATE BEFORE ANY FIRST REAL SHORT
 ```
