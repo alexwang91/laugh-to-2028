@@ -68,7 +68,11 @@ def _run(root: Path, *args: str) -> str:
 
 
 def _normalize(path: str) -> str:
-    value = str(PurePosixPath(path.strip().lstrip("./")))
+    value = path.strip()
+    while value.startswith("./"):
+        value = value[2:]
+    value = value.lstrip("/")
+    value = str(PurePosixPath(value))
     return "" if value == "." else value
 
 
