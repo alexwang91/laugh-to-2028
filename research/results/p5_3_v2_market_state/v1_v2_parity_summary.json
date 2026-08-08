@@ -1,0 +1,19 @@
+{
+  "all_signal_field_parity_fraction": 1.0,
+  "atom_parity_fraction": 1.0,
+  "false_flat_reproduced": true,
+  "first_v1_flat_by_profile": {
+    "BALANCED": "2021-02-23",
+    "CONSERVATIVE": "2021-02-23",
+    "EARLY": "2021-02-23"
+  },
+  "normalization_count_parity": true,
+  "normalization_parity": true,
+  "post_false_flat_nonflat_by_profile": {
+    "BALANCED": true,
+    "CONSERVATIVE": true,
+    "EARLY": true
+  },
+  "pre_first_flat_state_parity_fraction": 1.0,
+  "raw_candidate_parity_fraction": 1.0
+}
