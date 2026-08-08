@@ -7,7 +7,7 @@ on:
       - 'config/research_registry.json'
       - 'config/dataset_exposure_registry.json'
       - 'config/edge_registry.json'
-      - 'research/governance/**'
+      - 'research/**'
       - '.github/workflows/research-governance.yml'
   push:
     branches: [main]
@@ -16,7 +16,7 @@ on:
       - 'config/research_registry.json'
       - 'config/dataset_exposure_registry.json'
       - 'config/edge_registry.json'
-      - 'research/governance/**'
+      - 'research/**'
       - '.github/workflows/research-governance.yml'
 
 jobs:
@@ -24,13 +24,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
       - name: Run governance unit tests
-        run: python -m unittest research.governance.test_governance
+        run: python -m unittest discover -s research/governance -p 'test_*.py'
       - name: Validate canonical registries
         run: python -m research.governance.validate
+      - name: Enforce post-boundary formal research registration
+        if: github.event_name == 'pull_request'
+        run: python -m research.governance.enforce_future --base "${{ github.event.pull_request.base.sha }}"
       - name: Emit deterministic audit twice
         run: |
           python -m research.governance.audit --json > /tmp/audit-a.json
