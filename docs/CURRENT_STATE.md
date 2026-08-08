@@ -14,7 +14,8 @@ P5.1-P5.4                         COMPLETE / frozen
 P5.5 validation                   COMPLETE / IMMUTABLE / NO_PROMOTION / FAIL_STOP
 P5.6 cycle integration            BLOCKED / NO ELIGIBLE P5.5 CANDIDATE
 Phase 6 implementation/replay     PASS_SHADOW_ONLY_IMPLEMENTATION_REPLAY / MERGED #109
-Phase 6 live elapsed evidence     MEASUREMENT_INCONCLUSIVE_TIME_DEPENDENT
+Phase 6 live elapsed evidence     MEASUREMENT_INCONCLUSIVE_TIME_DEPENDENT / CLOCK NOT ARMED
+Phase 6 observation preactivation PREACTIVATION_BLOCKED_FAIL_CLOSED / GOVERNANCE V1
 Phase 7 readiness gate            IMPLEMENTED / MERGED #110 / LAUNCH BLOCKED
 Phase 7 program state             MONITOR_ONLY
 Phase 8 bear-short research       PREREGISTERED_TRIGGER_ABSENT_NOT_RUN / MERGED #111
@@ -23,6 +24,7 @@ Program epistemic governance v1   PG0-PG6 COMPLETE / CI-ENFORCED / NO-DRIFT CLOS
 Future research gate repair       MERGED #121 / GOVERNANCE ONLY / DRIFT_0
 Future prereg validator repair    MERGED #122 / GOVERNANCE ONLY / DRIFT_0
 Stablecoin liquidity research     STABLECOIN-LIQUIDITY-0001 / STAGE-1 COMPLETE / FAIL_NO_INCREMENTAL_INFORMATION / TERMINAL STOP
+Stablecoin terminal closeout      MERGED #131 / main 0d6cef33f556a745850470e237c5ba021cddaa80
 production authorization          NONE
 first real short authorization    NONE
 ```
@@ -49,9 +51,9 @@ Merged PR #109 at `1763d3c6f2c2d68f77f9e68b3cf9e252e4b799d4`.
 
 Machine contract: `config/phase6_shadow_contract.json`.
 
-Canonical P3.2 parity/golden vectors and zero-authority shadow implementation/replay passed. The shadow path can read account/market/order-book state and compute hypothetical routing, but it cannot sign or submit orders.
+Canonical P3.2 parity/golden vectors and zero-authority shadow implementation/replay passed. The shadow path can consume read-only account/market/order-book state and compute hypothetical routing, but it cannot sign or submit orders.
 
-Actual elapsed evidence remains time-dependent. The frozen contract requires at least 14 elapsed calendar days, at least 10 scheduled decisions and the required live-shadow quality criteria before the live-observation state can change from:
+Actual elapsed evidence remains time-dependent. The frozen contract requires at least 14 elapsed calendar days, at least 10 scheduled decisions, at least one emergency drill and zero frozen quality violations before the live-observation state can change from:
 
 ```text
 MEASUREMENT_INCONCLUSIVE_TIME_DEPENDENT
@@ -59,7 +61,30 @@ MEASUREMENT_INCONCLUSIVE_TIME_DEPENDENT
 
 No CI replay or historical replay may backfill that elapsed-time evidence.
 
-Program-Level Epistemic Governance v1 is now implemented so future elapsed observations can enter the provenance/evidence model from inception. This does not create, accelerate or backfill Phase 6 elapsed evidence.
+A live-state audit after Stablecoin closeout found that `.github/workflows/phase6-integrated-shadow.yml` is implementation/replay safety CI only: it has PR/push/manual triggers, no scheduled future collector and no durable elapsed-evidence persistence. Therefore the Phase-6 real elapsed clock has **not** been automatically accumulating.
+
+Governance v1 no-drift also keeps the canonical strategy/execution/config blobs byte-identical to the frozen boundary except for already-authorized governance/prospective research paths. The repair therefore does not add a new execution path under `beta_bot/` and does not weaken the no-drift allowlist.
+
+The machine preactivation gate is:
+
+- `research/governance/phase6_live_observation_gate.json`
+- `research/governance/phase6_live_observation_gate.py`
+
+Current gate state is:
+
+```text
+status                              PREACTIVATION_BLOCKED_FAIL_CLOSED
+collector_armed                     false
+schedule_configured                 false
+elapsed_evidence_credit_authorized  false
+production_authorized               false
+signature_authorized                false
+order_submission_authorized         false
+```
+
+Before a future collector may be armed, three still-unresolved operational semantics must be frozen prospectively: one explicit read-only observation account identity; current-position/account-equity valuation semantics for the permitted observation surfaces; and a durable create-only evidence backend/receipt identity. The schedule/duplicate rule is already frozen: manual dispatch cannot count as a scheduled decision, reruns/duplicate decision timestamps create no new credit, and a manual emergency drill may count only toward the drill requirement.
+
+The first eligible scheduled decision after a future arm is the first canonical `00:00 UTC` decision strictly after the arm commit timestamp. The preactivation gate itself starts no clock and creates no elapsed evidence.
 
 ## Phase 7
 
@@ -124,21 +149,22 @@ The implementation extends rather than replaces existing experiment, decision an
 - `research/governance/future_policy.py` — shared future-path ownership and prospective-provenance policy;
 - `research/governance/enforce_future.py` — exact-PR-diff prospective research registration enforcement;
 - `research/governance/no_drift.py` — boundary-to-HEAD strategy/evidence/authority no-drift regression;
-- `.github/workflows/research-governance.yml` — CI enforcement, including the governed Stablecoin data-contract/capture-gate/run-interface regression suite. Both temporary live executors (first capture and Stage-1 result execution) were removed immediately after their one-shot use.
+- `research/governance/phase6_live_observation_gate.py` — fail-closed Phase-6 future-elapsed preactivation control;
+- `.github/workflows/research-governance.yml` — CI enforcement, including Stablecoin regressions and the Phase-6 live-observation preactivation gate. Both temporary Stablecoin live executors (first capture and Stage-1 result execution) were removed immediately after their one-shot use.
 
 PG4 conservatively maps 17 `RETROSPECTIVE_LEGACY` research records. Six governance-debt classes remain explicit because historical trial counts, information releases, dataset consumption, lineage, informal researcher decisions and complete candidate universes cannot be reconstructed truthfully. `UNKNOWN` remains `UNKNOWN`.
 
-The Edge Registry remains empty because no feature has yet passed governance-v1 incremental-information admission. Historical legacy dataset exposure remains unbackfilled where provenance is unknown; the new Stablecoin slice is the first prospectively recorded reconstructed-history validation exposure under this workflow.
+The Edge Registry remains empty because no feature has yet passed governance-v1 incremental-information admission. Historical legacy dataset exposure remains unbackfilled where provenance is unknown; the Stablecoin slice is the first prospectively recorded reconstructed-history validation exposure under this workflow. Therefore the Dataset Exposure Registry is not globally empty.
 
 Future formal result-bearing research must be prospectively covered by exactly one `PROGRAM_GOVERNED_V1` record with the frozen required fields, declared path ownership, variant budget, stopping rules, lineage/data references and `production_authorized=false`. Changed legacy formal research paths are treated as new post-boundary research activity and cannot bypass prospective registration or existing immutable-evidence correction rules.
 
-PR #121 repaired the cross-gate conflict between future-research registration and the final no-drift regression without broadening the legacy allowlist. PR #122 repaired preregistration-only validator semantics so empty pre-result dataset/evidence arrays do not require fabricated placeholders. PR #123 prospectively registered `STABLECOIN-LIQUIDITY-0001`. PR #124 froze its source/data/PIT contract. PR #125 froze the one-shot first-capture gate. PR #126 split capture/persist from finalize so durable archival must precede parsing. PR #127 armed and executed the single governed capture on merge commit `824f58151bcef2203c320e4b94b8070dcac77dae` through GitHub Actions run `31261566204`; both governance and capture jobs completed successfully. PR #128 registered the captured validation slice/exposure and removed the capture executor. PR #129 froze `STABLECOIN-LIQUIDITY-0001-RUN-INTERFACE-V1`. PR #130 irreversibly claimed and executed Stage-1 exactly once on merge `dd50ec35085eee2a2883dc1b29e3dd21ec52b043`, workflow run `31264048473`, producing the immutable primary FAIL result now closed out below.
+PR #121 repaired the cross-gate conflict between future-research registration and the final no-drift regression without broadening the legacy allowlist. PR #122 repaired preregistration-only validator semantics so empty pre-result dataset/evidence arrays do not require fabricated placeholders. PR #123 prospectively registered `STABLECOIN-LIQUIDITY-0001`. PR #124 froze its source/data/PIT contract. PR #125 froze the one-shot first-capture gate. PR #126 split capture/persist from finalize so durable archival must precede parsing. PR #127 armed and executed the single governed capture on merge commit `824f58151bcef2203c320e4b94b8070dcac77dae` through GitHub Actions run `31261566204`; both governance and capture jobs completed successfully. PR #128 registered the captured validation slice/exposure and removed the capture executor. PR #129 froze `STABLECOIN-LIQUIDITY-0001-RUN-INTERFACE-V1`. PR #130 irreversibly claimed and executed Stage-1 exactly once on merge `dd50ec35085eee2a2883dc1b29e3dd21ec52b043`, workflow run `31264048473`, producing the immutable primary FAIL result. PR #131 merged terminal closeout at `0d6cef33f556a745850470e237c5ba021cddaa80`, removed the completed Stage-1 live executor and made the FAIL_STOP authoritative on `main`.
 
 ## STABLECOIN-LIQUIDITY-0001
 
 `STABLECOIN-LIQUIDITY-0001` was a prospectively governed Stage-1 mechanism test asking whether the frozen `STABLECOIN_LIQUIDITY_STATE_V1` feature family adds predictive information about future 20-day canonical BRRK net returns beyond the frozen P3.2 BRRK price/regime state.
 
-The research ID has now reached its frozen stopping point:
+The research ID has reached its frozen stopping point:
 
 ```text
 result_status                    FAIL_NO_INCREMENTAL_INFORMATION
@@ -204,7 +230,7 @@ primary result artifact digest   sha256:6eac38957c3592e18eb2cb4706e87be12daeca6c
 
 The input ZIP, receipt ZIP, primary-result ZIP and primary JSON were also mirrored outside the repository to ChatGPT Library. Predictions, coefficients, feature importance and secondary metrics were not persisted/released.
 
-The temporary Stage-1 live execution job is removed in the closeout change. `RUN_INTERFACE.json` itself is intentionally not rewritten after observing the result; it remains the immutable pre-result contract that governed the one-shot test.
+The temporary Stage-1 live execution job is removed. `RUN_INTERFACE.json` itself is intentionally not rewritten after observing the result; it remains the immutable pre-result contract that governed the one-shot test.
 
 ### Authority consequence
 
@@ -220,7 +246,7 @@ The FAIL result creates no edge and no authority:
 - Phase 8 bear-short remains trigger-absent/not-run.
 - No leverage, short or first-real-short authority is created.
 
-`ONCHAIN-HOLDER-COST-0001` remains only a separate backlog idea. Stablecoin has now reached its stopping point, so Holder Cost may be considered later only through a **new prospective preregistration**; it is not started by this closeout.
+`ONCHAIN-HOLDER-COST-0001` remains only a separate backlog idea. Stablecoin has reached its stopping point, so Holder Cost may be considered later only through a **new prospective preregistration**; it is not started by this closeout.
 
 ## Frozen product boundaries
 
@@ -240,18 +266,23 @@ The FAIL result creates no edge and no authority:
 ## Exact next action
 
 ```text
-RESUME REAL PHASE-6 ZERO-AUTHORITY ELAPSED OBSERVATION UNDER GOVERNANCE V1 PROVENANCE
-ACCUMULATE GENUINELY FUTURE PHASE-6 EVIDENCE ONLY; DO NOT REBUILD OR BACKFILL ELAPSED TIME
-KEEP signature_authorized = false AND order_submission_authorized = false
-REQUIRE AT LEAST 14 ELAPSED CALENDAR DAYS AND 10 SCHEDULED DECISIONS PLUS FROZEN QUALITY CRITERIA
-MERGE THE STABLECOIN STAGE-1 CLOSEOUT PR ONLY AFTER REGISTRY VALIDATION + NO-DRIFT + P3.2 PARITY/GOLDEN + PHASE-6 SAFETY CHECKS PASS
+KEEP PHASE-6 LIVE ELAPSED STATUS AT MEASUREMENT_INCONCLUSIVE_TIME_DEPENDENT; THE CLOCK IS NOT ARMED
+KEEP THE PHASE-6 PREACTIVATION GATE FAIL-CLOSED UNTIL ALL REQUIRED OPERATIONAL SEMANTICS ARE FROZEN
+FREEZE ONE EXPLICIT READ-ONLY OBSERVATION ACCOUNT IDENTITY; DO NOT FABRICATE ACCOUNT STATE
+FREEZE CURRENT-POSITION / ACCOUNT-EQUITY VALUATION SEMANTICS WITHOUT CHANGING P3.2/P3.3 ECONOMICS
+FREEZE A DURABLE CREATE-ONLY EVIDENCE BACKEND + RECEIPT IDENTITY BEFORE ANY ELAPSED CREDIT
+THEN ARM THE FUTURE-ONLY COLLECTOR IN A SEPARATE PROSPECTIVE CHANGE
+COUNT ONLY THE FIRST 00:00 UTC DECISION STRICTLY AFTER THE ARM COMMIT AND LATER GENUINE SCHEDULED DECISIONS
+DO NOT BACKFILL, REPLAY-CREDIT, RERUN-CREDIT OR DUPLICATE-CREDIT THE 14-DAY / 10-DECISION REQUIREMENT
+KEEP signature_authorized = false AND order_submission_authorized = false AND production_authorized = false
 KEEP STABLECOIN-LIQUIDITY-0001 AT FAIL_NO_INCREMENTAL_INFORMATION / NO_PROMOTION / TERMINAL STOP
 KEEP RUN_ONCE_STAGE1.marker PERMANENT; DO NOT DELETE, RERUN, RETRY OR REUSE THIS RESEARCH ID
 DO NOT TEST LAG_1D/LAG_3D, NEW RIDGE ALPHA, NEW HORIZON, NEW STABLECOIN REPRESENTATION OR SECONDARY-METRIC RESCUE UNDER THIS ID
 DO NOT START A STABLECOIN STAGE-2 ROBUSTNESS ID BECAUSE STAGE-1 FAILED
 KEEP EDGE REGISTRY EMPTY FOR STABLECOIN; DO NOT CREATE A MULTIPLIER OR PORTFOLIO INTEGRATION
 KEEP THE COMPLETED STAGE-1 LIVE EXECUTOR REMOVED FROM CURRENT HEAD
-ONCHAIN-HOLDER-COST-0001 MAY ONLY BE CONSIDERED LATER AS A SEPARATE NEW PROSPECTIVE RESEARCH ID; DO NOT START IT AS PART OF THIS CLOSEOUT
+AFTER PHASE-6 COLLECTION IS OPERATIONAL, IMPLEMENT THE FORMAL RESEARCH LIFECYCLE/STATE MACHINE, THEN RESEARCH QUEUE + TRIAL/OVERLAP ACCOUNTING
+ONCHAIN-HOLDER-COST-0001 MAY ONLY BE CONSIDERED LATER AS A SEPARATE NEW PROSPECTIVE RESEARCH ID
 DO NOT CHANGE BRRK / BNB / PARAMETERS / COSTS / HISTORICAL LEGACY EVIDENCE / PRODUCTION AUTHORITY
 DO NOT ACTIVATE PHASE 7 WITHOUT THE COMPLETE CHECKLIST AND EXPLICIT OWNER APPROVAL
 DO NOT RUN BEAR-SHORT-0001 ECONOMICS WITHOUT THE FROZEN CONFIRMED-BEAR TRIGGER
