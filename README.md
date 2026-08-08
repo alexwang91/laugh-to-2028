@@ -19,7 +19,7 @@
 | Phase 6 preactivation gate | **PREACTIVATION_BLOCKED_FAIL_CLOSED** |
 | Phase 6 durable evidence backend | **FROZEN / ACTIONS_ARTIFACT_V4 / 90D / NO CREDIT / MERGED #133** |
 | Phase 6 valuation contract | **PHASE6-LIVE-VALUATION-V1 / PR #134 CANDIDATE / STANDARD MODE ONLY** |
-| Phase 6 pre-arm state | **3/4 FROZEN / ACCOUNT IDENTITY REMAINS** |
+| Phase 6 pre-arm state | **3/4 FROZEN IN #134 CANDIDATE / ACCOUNT IDENTITY REMAINS** |
 | Phase 7 readiness gate | **IMPLEMENTED / MERGED #110 / LAUNCH BLOCKED** |
 | Phase 7 program mode | **MONITOR_ONLY** |
 | Phase 8 bear-short research | **BEAR-SHORT-0001 PREREGISTERED / TRIGGER ABSENT / NOT RUN / MERGED #111** |
@@ -90,9 +90,9 @@ The preactivation gate is frozen in `research/governance/phase6_live_observation
 
 The durable evidence backend is frozen in `phase6_live_evidence_contract.json` / `.py` to GitHub Actions Artifact v4 with 90-day retention, `overwrite=false`, immutable artifact identity outputs and a separately uploaded hash-bound receipt. The backend contract creates zero elapsed credit by itself.
 
-PR #134 freezes `PHASE6-LIVE-VALUATION-V1` as an operational measurement contract. V1 accepts only explicit Hyperliquid Standard mode (`userAbstraction=disabled`) and maps verified UBTC/UETH/USOL spot holdings plus signed BTC/ETH/SOL/BNB perp notionals into the existing P3.3 position/equity inputs. Unsupported account modes/assets fail closed; BNB remains perp-only.
+PR #134 proposes `PHASE6-LIVE-VALUATION-V1` as an operational measurement contract. V1 accepts only explicit Hyperliquid Standard mode (`userAbstraction=disabled`) and maps verified UBTC/UETH/USOL spot holdings plus signed BTC/ETH/SOL/BNB perp notionals into the existing P3.3 position/equity inputs. Unsupported account modes/assets fail closed; BNB remains perp-only.
 
-Current pre-arm dependency state:
+Current candidate pre-arm dependency state:
 
 ```text
 observation account identity          UNRESOLVED
@@ -103,7 +103,7 @@ collector_armed                       false
 elapsed_evidence_credit_authorized    false
 ```
 
-Therefore only one external pre-arm dependency remains after #134: **one exact verified public read-only Hyperliquid master/subaccount address compatible with Standard mode**. The address must not be invented or derived from a private key merely to close the gate.
+If #134 passes final CI and merges unchanged, only one external pre-arm dependency remains: **one exact verified public read-only Hyperliquid master/subaccount address compatible with Standard mode**. The address must not be invented or derived from a private key merely to close the gate.
 
 After a later arm change, the first eligible scheduled decision is the first canonical `00:00 UTC` decision strictly after the arm commit timestamp. Replay, rerun, duplicate timestamps and manual dispatch cannot create scheduled-decision credit.
 
@@ -138,15 +138,7 @@ research_governance_version = 1
 legacy_boundary_commit      = 896cbd123b7a0c38943815dd802f0f9dcd12e1c2
 ```
 
-Authority is separated across:
-
-- `config/decision_registry.json` — product/decision/production authority;
-- `config/research_registry.json` — research families, experiments, lineage and trial/variant accounting;
-- `config/dataset_exposure_registry.json` — dataset slices and information-release/exposure events;
-- `config/edge_registry.json` — admitted incremental-information edges only;
-- Phase 6/7/8 machine contracts — live/phase authority.
-
-Future formal research is fail-closed and must be preregistered prospectively. Historical unknowns remain explicit research-governance debt instead of being fabricated.
+Authority is separated across decision/research/dataset/edge registries and the Phase 6/7/8 machine contracts. Future formal research is fail-closed and must be preregistered prospectively. Historical unknowns remain explicit research-governance debt instead of being fabricated.
 
 Core checks:
 
