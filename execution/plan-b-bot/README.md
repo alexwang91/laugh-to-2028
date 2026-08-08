@@ -1,63 +1,59 @@
-# Adaptive BTC Beta Bot
+# Adaptive BTC Beta Bot — Legacy Execution Service
 
-A daily, low-frequency Hyperliquid execution service for the frozen asymmetric BTC beta model developed and backtested in this project.
+This directory contains the project's older BTC-only Hyperliquid execution service. It is retained for execution-safety, ledger, reconciliation and emergency-control tests, but it is **not** the canonical BRRK multi-asset production authority.
 
 ## Safety state
 
 The repository defaults to:
 
-- Hyperliquid **testnet**
-- **shadow** mode
-- no wallet private key
-- no real orders
-- maximum portfolio beta 1.5
-- maximum Hyperliquid leverage setting 2x
+- Hyperliquid **testnet**;
+- **shadow** mode;
+- no wallet private key;
+- no real orders;
+- production-facing legacy beta cap **1.0**;
+- maximum Hyperliquid platform leverage setting 2x;
+- **legacy normal-service new-risk authority disabled**.
 
-Do not put a private key in source code, GitHub, or `.env.example`. Use an approved Hyperliquid API Wallet key in encrypted deployment environment variables.
+`TRADING_MODE=trade`, credentials, a durable ledger, or the historical mainnet confirmation string only configure execution plumbing. They do **not** authorize new directional production risk. The current legacy service blocks risk-increasing normal orders through `beta_bot.production_authority`; same-direction risk reduction remains available.
 
-## Model
+Do not put a private key in source code, GitHub, or `.env.example`. Use an approved Trading Agent/API Wallet key only in an encrypted deployment environment and only after the canonical Phase 6/7 evidence and explicit owner gates have been satisfied.
 
-The bot currently implements the BTC execution model, not the full BRRK / PIT dynamic-universe research stack:
+## Legacy model
+
+This service implements an older BTC execution model, not the full canonical BRRK target authority:
 
 - completed daily BTC candles only;
 - 20/60/120/240-day risk-adjusted momentum;
 - 30-day realized volatility;
-- defensive beta 0.18–0.65 when trend is negative;
-- normal positive-trend beta cap 1.30;
-- optional hard cap 1.50;
+- defensive beta logic from the legacy model;
+- production-facing normal beta capped at 1.0;
 - heuristic positive-funding filter;
 - 0.05 rebalance band.
 
-The funding filter is **not** a validated historical alpha result. Historical funding backtesting remains a project backlog item.
+The funding filter is **not** a validated historical alpha result. Do not treat this service as a substitute for the frozen P3.2/P3.3 BRRK target/rebalance chain.
 
 ## Persistent execution ledger
 
-P1.2 stores execution truth in SQLite, keyed by the deterministic Hyperliquid CLOID. It persists the economic intent before any order submission, then persists the submission attempt/response, OID, status history, fills, fees, average fill price, remaining quantity and reconciliation timestamps.
+P1.2 stores execution truth in SQLite, keyed by deterministic Hyperliquid CLOID. It persists economic intent before submission, submission attempt/response, OID, status history, fills, fees, average fill price, remaining quantity and reconciliation timestamps.
 
-Trade mode requires both:
+Trade plumbing requires both:
 
-- `ORDER_LEDGER_PATH` pointing to a persistent filesystem location;
-- `ORDER_LEDGER_DURABLE_STORAGE=true`, which is an explicit operator assertion that the configured path really survives process/container replacement.
+- `ORDER_LEDGER_PATH` on persistent storage;
+- `ORDER_LEDGER_DURABLE_STORAGE=true` only when that storage genuinely survives process/container replacement.
 
-The Docker image declares `/data` as the intended mount point. The operator still has to attach durable storage to that path. A Docker `VOLUME` declaration alone is not production authorization.
+The current SQLite backend rejects `TRADING_MODE=trade` on Vercel. Restart reconciliation queries Hyperliquid order/fill truth and fails closed on ambiguous or incomplete evidence.
 
-The current local SQLite backend deliberately rejects `TRADING_MODE=trade` when `VERCEL=1`. Vercel remains usable for market/shadow endpoints, but this repository does not treat a function-local SQLite file as durable execution truth.
-
-Restart reconciliation queries Hyperliquid `orderStatus` by CLOID and `userFillsByTime` for fill truth. Exchange facts replace conflicting local observations while preserving an audit event. Database corruption, ambiguous exchange responses, unknown CLOID after a durable submission attempt, truncated fill windows, or an exchange-filled order without complete fill evidence fail closed.
-
-P1.2 does **not** implement the full P1.3 partial-fill lifecycle, retry policy, distributed locking, order slicing, reversal safety or production readiness.
+These engineering controls still do not constitute production authorization.
 
 ## Endpoints
 
 - `/api/health`: deployment health
-- `/api/status`: market-only signal
-- `/api/cron`: account calculation and optional execution
+- `/api/status`: legacy market-only signal
+- `/api/cron`: legacy account calculation and, only where authority permits, execution plumbing
 
 ## Environment
 
-See `.env.example`.
-
-Shadow account mode requires the master/public account address and any external BTC/cash included in strategy NAV. Testnet execution additionally requires a separately approved API Wallet key, `TRADING_MODE=trade`, and a durable ledger mount.
+See `.env.example`. The example intentionally caps `NORMAL_BETA_CAP=1.0` and keeps shadow/testnet defaults.
 
 ## Local test
 
@@ -68,36 +64,26 @@ pip install -r requirements-dev.txt
 pytest -q
 ```
 
-Run once in shadow mode:
+## Activation boundary
 
-```bash
-cp .env.example .env
-set -a; source .env; set +a
-python run_once.py
+There is currently **no supported sequence in this directory that turns the legacy BTC-only service into an authorized production BRRK system**. Testnet engineering exercises may be performed with separately approved test credentials, but mainnet/new-risk production launch must instead satisfy the canonical Phase 6 elapsed-shadow evidence, Phase 7 readiness checklist, production release freeze and explicit owner transition approval.
+
+The following remain explicit human boundaries:
+
+```text
+MONITOR_ONLY -> ACTIVE
+FLAT -> LONG
+FLAT -> SHORT
+first short exposure of a new bear phase
 ```
-
-## Activation sequence
-
-1. Confirm `/api/health` and market-only `/api/status`.
-2. Add public account configuration; keep `TRADING_MODE=shadow`.
-3. Compare target quantities against manual calculations.
-4. Create a dedicated Hyperliquid API Wallet on testnet.
-5. Provision a persistent filesystem mount for `ORDER_LEDGER_PATH`; do not use Vercel function-local storage for trade mode.
-6. Add the API Wallet private key only in encrypted environment variables.
-7. Trade on testnet and reconcile every fill/position.
-8. Do not move to mainnet until the engineering backlog in the root `docs/NEXT_STEPS.md` is closed.
 
 ## Known limitations
 
-- order-size precision is currently hardcoded in the executor;
-- the existing reversal route still does not perform a fresh position/fill read between close and open legs;
-- P1.2 records partial fills but does not yet implement the P1.3 partial-fill state machine/retry lifecycle;
-- simultaneous multi-process coordination/distributed locking is not implemented;
-- order slicing is incomplete;
-- notifications are not isolated from execution success/failure;
-- native emergency reduce-only protection is missing;
-- endpoint/security hardening is incomplete;
-- the SQLite backend requires an operator-provided durable filesystem and is not enabled for Vercel trade mode;
-- this version supports BTC only.
+- this service is BTC-only and is not the canonical BRRK multi-asset path;
+- order-size precision remains legacy executor behavior;
+- reversal/execution lifecycle remains an engineering risk surface;
+- distributed locking/order slicing are incomplete;
+- SQLite needs operator-provided durable storage;
+- production authority is intentionally fail-closed for normal risk increases.
 
-This directory is therefore a **testnet/shadow execution implementation**, not production-ready live trading infrastructure.
+This directory is therefore a **legacy testnet/shadow and risk-reduction execution implementation**, not production-ready BRRK live infrastructure.
