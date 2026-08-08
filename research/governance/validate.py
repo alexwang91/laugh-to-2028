@@ -19,6 +19,20 @@ PROGRAM_REQUIRED = [
     "lineage_edges", "result_status", "promotion_state", "evidence_refs", "production_relevance",
     "production_authorized", "provenance_status",
 ]
+# Presence and non-emptiness are different governance semantics. Empty arrays are
+# valid before a result for fields such as secondary metrics, dataset refs,
+# lineage, evidence refs and actual decision/exposure accounting. Requiring
+# placeholder values in those fields would fabricate provenance and can also
+# falsely classify a preregistration as result-bearing evidence.
+PROGRAM_NONEMPTY = [
+    "research_id", "research_family_id", "research_governance_version", "governance_mode",
+    "objective_type", "research_domain", "created_at", "created_before_result", "question",
+    "hypothesis", "hypothesis_origin", "economic_mechanism", "primary_target", "primary_metric",
+    "feature_families", "horizon", "universe", "declared_variant_budget", "stopping_rule",
+    "success_criteria", "failure_criteria", "allowed_followup", "forbidden_followup",
+    "research_process_complexity", "result_status", "promotion_state", "production_relevance",
+    "provenance_status",
+]
 DOF_REQUIRED = [
     "declared_parameter_candidates", "actual_parameter_candidates_evaluated", "universes_evaluated",
     "horizons_evaluated", "rebalance_variants", "feature_representations",
@@ -150,15 +164,18 @@ def validate_repo(root: Path | None = None) -> list[Finding]:
             _add(out, "BLOCKING", "INVALID_GOVERNANCE_MODE", repr(mode), rid)
         if mode == "PROGRAM_GOVERNED_V1":
             for field in PROGRAM_REQUIRED:
-                if _blank(record, field):
+                if field not in record:
                     _add(out, "BLOCKING", "MISSING_PROGRAM_FIELD", field, rid)
+            for field in PROGRAM_NONEMPTY:
+                if _blank(record, field):
+                    _add(out, "BLOCKING", "BLANK_PROGRAM_FIELD", field, rid)
             if record.get("created_before_result") is not True:
                 _add(out, "BLOCKING", "NOT_CREATED_BEFORE_RESULT", "future formal research must be frozen before results", rid)
             if record.get("objective_type") not in objectives:
                 _add(out, "BLOCKING", "INVALID_OBJECTIVE_TYPE", repr(record.get("objective_type")), rid)
             if record.get("research_domain") not in domains:
                 _add(out, "BLOCKING", "INVALID_RESEARCH_DOMAIN", repr(record.get("research_domain")), rid)
-            for field in ("research_family_id", "question", "hypothesis", "economic_mechanism", "primary_target", "primary_metric", "stopping_rule"):
+            for field in ("research_family_id", "question", "hypothesis", "hypothesis_origin", "economic_mechanism", "primary_target", "primary_metric", "stopping_rule"):
                 if record.get(field) in UNKNOWN:
                     _add(out, "BLOCKING", "UNKNOWN_NOT_ALLOWED_FUTURE", field, rid)
             dof = record.get("research_process_complexity")
@@ -176,6 +193,14 @@ def validate_repo(root: Path | None = None) -> list[Finding]:
             if _count(declared) and _count(actual) and actual > declared:
                 _add(out, "BLOCKING", "UNREGISTERED_VARIANTS", f"{actual}>{declared}", rid)
             status = str(record.get("result_status") or "").upper()
+            preregistered = status == "PREREGISTERED_NOT_RUN"
+            if preregistered:
+                if record.get("evidence_refs"):
+                    _add(out, "BLOCKING", "PREREG_WITH_RESULT_EVIDENCE", "preregistered-not-run research cannot contain result evidence refs", rid)
+                if actual != 0:
+                    _add(out, "BLOCKING", "PREREG_WITH_EVALUATED_VARIANTS", f"actual_variants_evaluated={actual!r}", rid)
+                if record.get("promotion_state") != "NONE":
+                    _add(out, "BLOCKING", "PREREG_WITH_PROMOTION", repr(record.get("promotion_state")), rid)
             released = bool(record.get("evidence_refs")) or any(token in status for token in ("PASS", "FAIL", "REJECT", "NO_PROMOTION", "SHADOW"))
             if released:
                 scorecard = record.get("evidence_scorecard")
