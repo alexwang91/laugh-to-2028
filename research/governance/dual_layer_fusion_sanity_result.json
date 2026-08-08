@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "contract_id": "DUAL-LAYER-FUSION-ARCH-SANITY-V1",
+  "status": "COMPLETE_NON_PROMOTABLE_DIAGNOSTIC",
+  "classification": "NON_PROMOTABLE_ARCHITECTURE_DIAGNOSTIC",
+  "variant_budget": 1,
+  "retuned_after_result": false,
+  "evaluation": {
+    "session_start": "2022-12-10",
+    "session_end": "2026-08-02",
+    "cost_bps": 5.0,
+    "p3_3_band": 0.05
+  },
+  "external_state_counts_on_target_rows": {
+    "SUPPORTIVE": 514,
+    "NEUTRAL": 546,
+    "RESTRICTIVE": 273
+  },
+  "baseline": {
+    "avg_gross_exposure": 0.7543536295598086,
+    "cagr": 0.6530567772272526,
+    "calmar": 1.9477237765065316,
+    "end_multiple": 6.2525274410172225,
+    "max_drawdown": -0.335292296117361,
+    "sharpe": 1.35611613609405,
+    "turnover": 91.08660891147298
+  },
+  "fused": {
+    "avg_gross_exposure": 0.6522043579438902,
+    "cagr": 0.5721918459387902,
+    "calmar": 1.7566819040843014,
+    "end_multiple": 5.207386236680811,
+    "max_drawdown": -0.3257230831651644,
+    "sharpe": 1.3556294571487453,
+    "turnover": 103.15007735843056
+  },
+  "delta_fused_minus_baseline": {
+    "avg_gross_exposure": -0.10214927161591836,
+    "cagr": -0.0808649312884624,
+    "calmar": -0.19104187242223025,
+    "end_multiple": -1.0451412043364119,
+    "max_drawdown": 0.009569212952196593,
+    "sharpe": -0.0004866789453046305,
+    "turnover": 12.063468446957586
+  },
+  "input_evidence": {
+    "stablecoin_raw_sha256": "7cffe6fb3a21e891082c06c60e91491edfbc78e9c01e2d549805815a646d9ffd",
+    "stablecoin_history_role": "RESEARCHER_EXPOSED_DEVELOPMENT_SANITY_ONLY",
+    "brrk_target_frame_sha256": "bbb538ccfc0001e9458c5f7a4bed60eeed13a7c6d92a7f775a29af2affada5b8",
+    "brrk_feature_price_frame_sha256": "43325adedd7e588a5711c77842d4a054638ae916d939ca6f8c7e445947f00c1c",
+    "canonical_baseline_reproduction_required": true,
+    "canonical_baseline_reproduction_passed": true
+  },
+  "execution_evidence": {
+    "github_actions_run_id": 31278349657,
+    "diagnostic_job_id": 93155478718,
+    "executed_pr_head_sha": "b7b2ce52264174f740469efa650ec5629eb0c118",
+    "artifact_id": 9027682170,
+    "artifact_digest": "sha256:50949675cf004c1421e6d7e918e935e43d6da776742603468c8e5c011c689811",
+    "downloaded_result_sha256": "9d3cd090f20687a0cc247a9be7e9bc35218c656e5aea6f9203793bf94e15a2a0"
+  },
+  "result_interpretation": {
+    "mechanical_fusion_changes_portfolio_path": true,
+    "cagr_improved": false,
+    "drawdown_improved_absolute": true,
+    "drawdown_improvement_fraction": 0.009569212952196593,
+    "risk_adjusted_improvement": false,
+    "turnover_improved": false,
+    "conclusion": "The frozen external gross-cap composition materially changes timing/exposure, but this single preregistered Stablecoin-state mapping reduces CAGR by about 8.09 percentage points, improves max drawdown by only about 0.96 percentage points, leaves Sharpe essentially unchanged, lowers Calmar, and increases turnover. It is not an acceptable integration candidate."
+  },
+  "promotion_eligible": false,
+  "edge_registry_admission": false,
+  "stablecoin_research_rescue": false,
+  "production_authorized": false,
+  "signature_authorized": false,
+  "order_submission_authorized": false,
+  "forbidden_followup": "Do not retune the frozen state thresholds or 1.00/0.80/0.60 caps using this observed result. Any future external-layer validation requires a new prospectively registered research ID and independent/unexposed evidence."
+}
