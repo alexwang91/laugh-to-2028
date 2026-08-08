@@ -119,7 +119,7 @@ schedule failures                0
 
 ## Research / product boundaries while Phase 6 is unresolved
 
-Do not start any substitute result-bearing work merely because the observation account is pending:
+Do not start substitute result-bearing work merely because the observation account is pending:
 
 ```text
 Stablecoin rescue research
