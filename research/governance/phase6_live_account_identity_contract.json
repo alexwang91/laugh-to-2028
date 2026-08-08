@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "contract_id": "PHASE6-LIVE-ACCOUNT-IDENTITY-V1",
+  "status": "AWAITING_EXPLICIT_PUBLIC_ADDRESS",
+  "venue": "hyperliquid",
+  "info_endpoint": "https://api.hyperliquid.xyz/info",
+  "account_address": null,
+  "identity_frozen": false,
+  "address_source": null,
+  "address_format": "0x_PLUS_40_HEX_CHARS",
+  "required_queries": {
+    "user_role": {
+      "request_type": "userRole",
+      "accepted_roles": ["user", "subAccount"],
+      "rejected_roles": ["agent", "vault", "missing"]
+    },
+    "user_abstraction": {
+      "request_type": "userAbstraction",
+      "required_value": "disabled"
+    }
+  },
+  "subaccount_policy": {
+    "subaccount_address_may_be_observed_directly": true,
+    "returned_master_address_required_for_subaccount": true,
+    "silent_substitution_to_master_for_observation": false
+  },
+  "binding_evidence": null,
+  "production_authorized": false,
+  "signature_authorized": false,
+  "order_submission_authorized": false,
+  "elapsed_evidence_credit_authorized": false,
+  "forbidden": [
+    "private_key_input",
+    "private_key_derivation_to_discover_address",
+    "agent_wallet_as_observation_identity",
+    "vault_as_observation_identity",
+    "fabricated_or_guessed_address",
+    "silent_master_subaccount_substitution",
+    "production_state_activation"
+  ],
+  "notes": [
+    "This contract freezes the identity-binding rules before any concrete observation address is supplied.",
+    "The contract does not freeze an account identity while account_address is null.",
+    "Hyperliquid account-data queries must use the actual master/subaccount address rather than an agent/API-wallet address.",
+    "A later binding change must persist the exact public address, its non-secret provenance, userRole result and userAbstraction result before identity_frozen may become true.",
+    "If the supplied account is an agent, vault, missing role, unsupported abstraction mode or otherwise incompatible with PHASE6-LIVE-VALUATION-V1, the correct outcome is BLOCKED_INCOMPATIBLE rather than broadening the contract after observation.",
+    "Binding an identity does not arm the collector, configure a schedule, create elapsed credit or authorize production."
+  ]
+}

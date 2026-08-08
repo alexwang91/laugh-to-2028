@@ -7,6 +7,10 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Mapping
 
+from .phase6_live_account_identity import (
+    CONTRACT_RELATIVE_PATH as ACCOUNT_IDENTITY_CONTRACT_RELATIVE_PATH,
+    validate_identity_contract,
+)
 from .phase6_live_evidence import (
     CONTRACT_RELATIVE_PATH as EVIDENCE_CONTRACT_RELATIVE_PATH,
     validate_evidence_contract,
@@ -52,6 +56,7 @@ def validate_gate_mapping(
     phase6_contract: Mapping[str, Any],
     evidence_contract: Mapping[str, Any],
     valuation_contract: Mapping[str, Any],
+    account_identity_contract: Mapping[str, Any],
     instrument_registry: Mapping[str, Any],
     workflow_text: str,
 ) -> dict[str, Any]:
@@ -65,6 +70,8 @@ def validate_gate_mapping(
         raise Phase6ObservationGateError("gate must point to frozen Phase-6 evidence backend contract")
     if gate.get("valuation_contract") != str(VALUATION_CONTRACT_RELATIVE_PATH):
         raise Phase6ObservationGateError("gate must point to frozen Phase-6 valuation contract")
+    if gate.get("account_identity_contract") != str(ACCOUNT_IDENTITY_CONTRACT_RELATIVE_PATH):
+        raise Phase6ObservationGateError("gate must point to Phase-6 account identity contract")
     if gate.get("canonical_decision_time_utc") != "00:00:00":
         raise Phase6ObservationGateError("Phase-6 canonical decision time must remain 00:00:00 UTC")
 
@@ -93,6 +100,21 @@ def validate_gate_mapping(
         raise Phase6ObservationGateError("valuation contract cannot confer production authority")
     if valuation_snapshot.get("supported_user_abstraction") != "disabled":
         raise Phase6ObservationGateError("Phase-6 V1 valuation must remain Standard/disabled only")
+
+    try:
+        identity_snapshot = validate_identity_contract(account_identity_contract)
+    except Exception as exc:
+        raise Phase6ObservationGateError(f"invalid account identity contract: {exc}") from exc
+    for field in (
+        "production_authorized",
+        "signature_authorized",
+        "order_submission_authorized",
+        "elapsed_evidence_credit_authorized",
+    ):
+        if identity_snapshot.get(field) is not False:
+            raise Phase6ObservationGateError(f"account identity contract cannot confer {field}")
+    if identity_snapshot.get("identity_frozen") is True and identity_snapshot.get("user_abstraction") != "disabled":
+        raise Phase6ObservationGateError("bound account identity must remain compatible with Standard valuation")
 
     live = phase6_contract.get("acceptance", {}).get("live_shadow_observation", {})
     evidence = gate.get("evidence_requirements", {})
@@ -138,6 +160,12 @@ def validate_gate_mapping(
     if required_before_arm.get("current_position_and_equity_valuation_contract_frozen") is not True:
         raise Phase6ObservationGateError("validated Phase-6 valuation contract must be marked frozen")
 
+    identity_frozen = identity_snapshot.get("identity_frozen") is True
+    if (required_before_arm.get("observation_account_identity_frozen") is True) != identity_frozen:
+        raise Phase6ObservationGateError(
+            "gate account-identity dependency must exactly match validated identity contract"
+        )
+
     armed = gate.get("collector_armed") is True
     schedule_configured = gate.get("schedule_configured") is True
     credit_authorized = gate.get("elapsed_evidence_credit_authorized") is True
@@ -170,7 +198,9 @@ def validate_gate_mapping(
         "status": gate.get("status"),
         "collector_armed": armed,
         "dependencies_ready": dependencies_ready,
-        "account_identity_frozen": required_before_arm.get("observation_account_identity_frozen") is True,
+        "account_identity_contract_status": identity_snapshot.get("status"),
+        "account_identity_frozen": identity_frozen,
+        "account_address": identity_snapshot.get("account_address"),
         "valuation_contract_frozen": True,
         "valuation_mode": valuation_snapshot.get("supported_user_abstraction"),
         "durable_evidence_backend_frozen": True,
@@ -191,6 +221,7 @@ def gate_snapshot(root: Path | None = None) -> dict[str, Any]:
         phase6_contract=_load_json(repo_root / PHASE6_CONTRACT_RELATIVE_PATH),
         evidence_contract=_load_json(repo_root / EVIDENCE_CONTRACT_RELATIVE_PATH),
         valuation_contract=_load_json(repo_root / VALUATION_CONTRACT_RELATIVE_PATH),
+        account_identity_contract=_load_json(repo_root / ACCOUNT_IDENTITY_CONTRACT_RELATIVE_PATH),
         instrument_registry=_load_json(repo_root / INSTRUMENT_REGISTRY_RELATIVE_PATH),
         workflow_text=(repo_root / WORKFLOW_RELATIVE_PATH).read_text(encoding="utf-8"),
     )

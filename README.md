@@ -14,8 +14,9 @@ P5.6                              BLOCKED / NO ELIGIBLE CANDIDATE
 Phase 6 implementation/replay     PASS_SHADOW_ONLY_IMPLEMENTATION_REPLAY / MERGED #109
 Phase 6 live elapsed evidence     MEASUREMENT_INCONCLUSIVE_TIME_DEPENDENT / CLOCK NOT ARMED
 Phase 6 evidence backend          FROZEN / MERGED #133
-Phase 6 valuation contract        PHASE6-LIVE-VALUATION-V1 / PR #134 CANDIDATE
-Phase 6 pre-arm state             3/4 FROZEN IN #134 CANDIDATE / ACCOUNT IDENTITY REMAINS
+Phase 6 valuation contract        PHASE6-LIVE-VALUATION-V1 / MERGED #134
+Phase 6 identity-binding rules    PHASE6-LIVE-ACCOUNT-IDENTITY-V1 / CANDIDATE / ADDRESS UNBOUND
+Phase 6 pre-arm state             3/4 FROZEN / ACCOUNT IDENTITY REMAINS UNRESOLVED
 Phase 7                           MONITOR_ONLY / LAUNCH BLOCKED
 Phase 8                           TRIGGER ABSENT / NOT RUN
 Stablecoin Stage-1               FAIL_NO_INCREMENTAL_INFORMATION / TERMINAL STOP
@@ -49,30 +50,41 @@ The canonical Phase-6 shadow implementation is zero-authority. Real elapsed evid
 
 The durable evidence backend is frozen to GitHub Actions Artifact v4 with 90-day retention, `overwrite=false`, immutable artifact identity and a hash-bound receipt; its existence creates zero elapsed credit.
 
-PR #134 proposes `PHASE6-LIVE-VALUATION-V1`, limited to explicit Hyperliquid Standard mode (`userAbstraction=disabled`). It maps verified UBTC/UETH/USOL spot holdings plus signed BTC/ETH/SOL/BNB perp notionals into the existing P3.3 current-position/equity inputs. Unsupported modes/assets fail closed; BNB spot remains forbidden.
+`PHASE6-LIVE-VALUATION-V1` merged in PR #134 and remains limited to explicit Hyperliquid Standard mode (`userAbstraction=disabled`). It maps verified UBTC/UETH/USOL spot holdings plus signed BTC/ETH/SOL/BNB perp notionals into the existing P3.3 current-position/equity inputs. Unsupported modes/assets fail closed; BNB spot remains forbidden.
 
-Candidate pre-arm state:
+The current identity-rule candidate `PHASE6-LIVE-ACCOUNT-IDENTITY-V1` freezes how a future public address may be bound, but does **not** bind an address now:
+
+```text
+account_address                     null
+identity_frozen                     false
+accepted userRole                   user / subAccount
+rejected userRole                   agent / vault / missing
+required userAbstraction            disabled
+private-key discovery/derivation    forbidden
+collector_armed                     false
+elapsed_evidence_credit_authorized  false
+```
+
+A subaccount may be observed directly, but its returned master address must be preserved as evidence and must not silently replace the queried subaccount identity. Agent/API-wallet addresses are never valid observation identities.
+
+Current pre-arm state remains:
 
 ```text
 observation account identity          UNRESOLVED
-current-position/equity valuation     PR #134 CANDIDATE / TESTED
+current-position/equity valuation     FROZEN / MERGED #134
 durable evidence backend              FROZEN / MERGED #133
 schedule + duplicate-credit rule      FROZEN
 collector_armed                       false
 elapsed_evidence_credit_authorized    false
 ```
 
-If #134 passes final CI and merges, only one pre-arm dependency remains: one exact verified **public read-only Hyperliquid master/subaccount address** compatible with Standard mode. Do not invent or derive it from a private key.
-
 ## Exact next dependency
 
-1. Run final #134 governance/no-drift/parity/Phase-6 safety CI.
-2. Expected-head merge only if required checks are green.
-3. Verify new `main` and canonical invariants.
-4. Freeze one exact public read-only Hyperliquid master/subaccount address.
-5. Verify `userAbstraction=disabled` and `PHASE6-LIVE-VALUATION-V1` compatibility.
-6. Only at 4/4 dependencies create a separate prospective arm change.
-7. First eligible credited decision = first `00:00 UTC` strictly after the arm commit.
+After the identity-rule candidate passes final CI and merges, obtain one exact verified **public read-only Hyperliquid master/subaccount address**. Validate its `userRole` and require `userAbstraction=disabled`; persist non-secret provenance and raw-response digests before `identity_frozen` may become true.
+
+Do not invent an address, use an agent/API wallet, or derive an address from a private key merely to close the gate. If the real account is incompatible, remain blocked rather than broadening the contract post-observation.
+
+Even 4/4 dependencies do not arm the system automatically. A separate prospective arm change is required, and the first eligible credited decision remains the first `00:00 UTC` strictly after that arm commit.
 
 Phase 7 remains `MONITOR_ONLY`; Phase 8 remains trigger-absent/not-run; all production/signature/submission authority remains false.
 
