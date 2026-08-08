@@ -1,0 +1,146 @@
+{
+  "contract_id": "P5.4-FIXED-GROSS-BEHAVIOR-CANDIDATES-V1",
+  "status": "FROZEN_BEFORE_P5_4_ECONOMIC_EVALUATION",
+  "registered_at_utc": "2026-08-08T00:16:00Z",
+  "base_main": "9c630c9b4b22146ffabd8fd3f62b08477f3da0f7",
+  "scope": "Define a small fixed family of MARKET_STATE-to-total-gross-risk multipliers for downstream P5.5 validation. P5.4 does not select a winner and does not authorize production.",
+  "immutable_dependencies": {
+    "p5_3_v2_architecture_contract": "P5.3-MARKET-STATE-PERMISSION-SEPARATION-V2",
+    "p5_3_v2_result_commit": "e732b7ebe570236bf43084caecb6ea15f7edecb8",
+    "p5_3_v2_summary_sha256": "05d5d68a59c8b13f1122d98ed75d03934defdc9d73c7dd92e038c92fd97d2e52",
+    "p5_3_selected_profile": null,
+    "p4_1_defensive_scale_domain": [0.0, 1.0],
+    "phase4_above_one_candidate_eligible": false,
+    "production_gross_cap": 1.0
+  },
+  "state_order": [
+    "NORMAL_BULL",
+    "BTC_LEADERSHIP_MATURING",
+    "LATE_BULL_ROTATION",
+    "EXHAUSTION_WATCH",
+    "DE_RISK_1",
+    "DE_RISK_2",
+    "FLAT"
+  ],
+  "candidate_maps": {
+    "DE_RISK_ONLY": {
+      "purpose": "Delayed intervention comparator: preserve upstream gross through exhaustion and reduce only after explicit de-risk states.",
+      "multipliers": {
+        "NORMAL_BULL": 1.0,
+        "BTC_LEADERSHIP_MATURING": 1.0,
+        "LATE_BULL_ROTATION": 1.0,
+        "EXHAUSTION_WATCH": 1.0,
+        "DE_RISK_1": 0.65,
+        "DE_RISK_2": 0.30,
+        "FLAT": 0.0
+      }
+    },
+    "PROGRESSIVE": {
+      "purpose": "Moderate progressive reduction beginning in late-bull rotation/exhaustion without treating rotation as a bearish exit.",
+      "multipliers": {
+        "NORMAL_BULL": 1.0,
+        "BTC_LEADERSHIP_MATURING": 1.0,
+        "LATE_BULL_ROTATION": 0.95,
+        "EXHAUSTION_WATCH": 0.80,
+        "DE_RISK_1": 0.55,
+        "DE_RISK_2": 0.25,
+        "FLAT": 0.0
+      }
+    },
+    "EARLY_DEFENSIVE": {
+      "purpose": "Earlier total-risk reduction sensitivity case while retaining meaningful late-bull participation.",
+      "multipliers": {
+        "NORMAL_BULL": 1.0,
+        "BTC_LEADERSHIP_MATURING": 0.95,
+        "LATE_BULL_ROTATION": 0.90,
+        "EXHAUSTION_WATCH": 0.70,
+        "DE_RISK_1": 0.45,
+        "DE_RISK_2": 0.20,
+        "FLAT": 0.0
+      }
+    }
+  },
+  "candidate_family_design": {
+    "candidate_count": 3,
+    "continuous_grid_search_forbidden": true,
+    "post_result_new_candidate_forbidden_under_same_contract": true,
+    "purpose": "Coarse behavioral sensitivity family rather than numerical optimization. P5.5 evaluates all 3 P5.3 profiles x all 3 maps as a frozen 9-combination set."
+  },
+  "composition_rule": {
+    "formula": "p5_4_target_asset_weight = frozen_upstream_p4_1_brrk_target_asset_weight * cycle_gross_multiplier(MARKET_STATE)",
+    "gross_formula": "p5_4_target_gross = frozen_upstream_p4_1_target_gross * cycle_gross_multiplier(MARKET_STATE)",
+    "relative_ranking_unchanged": true,
+    "cycle_layer_can_increase_upstream_gross": false,
+    "freed_risk_budget_goes_to_cash": true,
+    "shorts_added": false,
+    "leverage_above_one_added": false
+  },
+  "structural_rules": {
+    "all_multipliers_in_closed_unit_interval": true,
+    "normal_bull_multiplier_exactly_one": true,
+    "monotone_nonincreasing_with_state_severity": true,
+    "flat_multiplier_exactly_zero": true,
+    "late_bull_rotation_must_remain_positive": true,
+    "no_asset_specific_multiplier": true,
+    "no_profile_specific_behavior_map": true,
+    "no_intraday_risk_addition": true
+  },
+  "data_insufficient_rule": {
+    "market_state": "DATA_INSUFFICIENT",
+    "mapping_defined": false,
+    "p5_5_matched_economic_start": "2021-01-17",
+    "rule": "P5.5 matched economic comparisons begin on the common P5.3 profile initialization date 2021-01-17. P5.4 does not invent a gross multiplier for DATA_INSUFFICIENT."
+  },
+  "risk_permission_boundary": {
+    "flat_market_multiplier": 0.0,
+    "actual_zero_exposure_requires_lock": true,
+    "lock_state": "LOCKED_PENDING_HUMAN_APPROVAL",
+    "market_state_recovery_can_unlock": false,
+    "automatic_live_reentry_forbidden": true,
+    "research_economic_reentry_semantics": "P5.5 may compute hypothetical MARKET_STATE-driven economic targets after a historical FLAT solely to evaluate signal/mapping economics. Any 0-to-positive transition must be labeled RESEARCH_HYPOTHETICAL_REENTRY and has no production execution authority.",
+    "production_unlock_authority": "EXPLICIT_HUMAN_APPROVAL_ONLY"
+  },
+  "p5_5_handoff": {
+    "frozen_profile_set": ["EARLY", "BALANCED", "CONSERVATIVE"],
+    "frozen_map_set": ["DE_RISK_ONLY", "PROGRESSIVE", "EARLY_DEFENSIVE"],
+    "joint_candidate_count": 9,
+    "baseline_without_cycle_overlay_required": true,
+    "winner_selection_in_p5_4_forbidden": true,
+    "winner_selection_owner": "P5.5",
+    "required_p5_5_dimensions": [
+      "leave-one-event-out or comparable event-held-out robustness",
+      "lead/lag distribution",
+      "false-positive duration",
+      "missed upside",
+      "drawdown avoided",
+      "terminal wealth and CAGR impact",
+      "turnover and explicit cost sensitivity",
+      "second-wind preservation",
+      "terminal 2021 bear-transition behavior",
+      "non-top-control behavior including the 2021 false FLAT",
+      "no single-event dependency",
+      "nearby-policy robustness rather than a knife-edge winner"
+    ],
+    "fail_stop_if_no_robust_candidate": true
+  },
+  "selection": {
+    "profile_selected": false,
+    "behavior_map_selected": false,
+    "production_behavior_selected": false,
+    "production_authorized": false,
+    "status": "FIXED_CANDIDATES_ONLY"
+  },
+  "forbidden": [
+    "select a P5.3 profile in P5.4",
+    "select a winning P5.4 map before P5.5",
+    "add a fourth map after seeing P5.5 economics",
+    "perform a continuous or dense multiplier grid search",
+    "change P5.3 V2 MARKET_STATE history",
+    "change BRRK-0011 relative asset ranking",
+    "allow any multiplier above 1.0",
+    "treat LATE_BULL_ROTATION as automatic zero exposure",
+    "let MARKET_STATE recovery automatically unlock live risk",
+    "add short exposure",
+    "authorize production"
+  ]
+}
