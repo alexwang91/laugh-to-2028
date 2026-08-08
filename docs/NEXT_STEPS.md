@@ -4,65 +4,81 @@ Last updated: 2026-08-08
 
 ## Current instruction
 
-**P5.5 validation rules are frozen and the runner/validator are implemented. R2 aligns the economic end to the immutable P5.3 state-evidence end `2026-02-28` before any candidate economics. Run preflight CI, then one deterministic RUN_ONCE.**
+**P5.5 completed with zero eligible candidates. Do not retune the failed cycle overlay or force P5.6. Merge the immutable closeout, record P5.6 as blocked, and continue Phase 6 using the currently authorized baseline architecture in strict zero-trading shadow mode.**
 
 ## Immediate state
 
 ```text
 Phase 0-3                              COMPLETE / MERGED
-Phase 4 leverage research              FAIL_STOP
+Phase 4 leverage research              FAIL_STOP / no eligible >1 candidate
 production gross cap                   1.0
 production_authorized_components       []
 P5.1 event taxonomy                    COMPLETE / FROZEN
-P5.2 feature evidence                  COMPLETE / IMMUTABLE through 2026-02-28
+P5.2 feature evidence                  COMPLETE / IMMUTABLE
 P5.3 V1                               IMMUTABLE / ARCHITECTURE_FAIL
-P5.3 V2                               IMMUTABLE EVIDENCE / ARCHITECTURE_PASS through 2026-02-28
+P5.3 V2                               IMMUTABLE EVIDENCE / ARCHITECTURE_PASS
 P5.4 fixed candidates + pure mapping   COMPLETE / NO SELECTION
-P5.5 validation contract               MERGED / FROZEN R1+R2
-P5.5 runner/validator                  IMPLEMENTED / NOT RUN
-P5.6 integration                       NOT STARTED
-Phase 6-8                              NOT STARTED
+P5.5 joint validation                  COMPLETE / IMMUTABLE / NO_PROMOTION / FAIL_STOP
+P5.5 result commit                     ae20890d87567c98e403e3558219d5de55daef67
+P5.5 summary SHA256                    ccbdc067f9f7f1277e6eecaa2f74f31f84e3a1882ccef418e097b2ea66bf6e71
+P5.6 integration                       BLOCKED / NO ELIGIBLE CANDIDATE
+Phase 6 integrated shadow              NEXT / BASELINE ONLY
+Phase 7 limited-live readiness         NOT STARTED / explicit actual-launch approval required
+Phase 8 bear-short research            NOT STARTED
 ```
 
-## R2 common-coverage rule
+## P5.5 interpretation
 
-P5.5 needs both frozen BRRK targets and frozen cycle state. BRRK prices/targets extend to `2026-08-02`, but immutable P5.2/P5.3 evidence ends `2026-02-28`.
+No profile/map combination passes the frozen event, economics, start-date, held-out and broad-policy gates.
 
-The pre-result R2 correction therefore freezes:
+The key structural trade-off is:
+
+- `HARD_ONLY`: economic parity with baseline, but insufficient terminal de-risk behavior;
+- gradual maps: improve absolute drawdown but sacrifice too much CAGR/terminal wealth and fail robustness.
+
+Representative 5-bps `BALANCED/GENTLE`:
 
 ```text
-P5.5 economic window  2022-12-10 .. 2026-02-28
-no MARKET_STATE forward-fill
-no fabricated feature/state extension
-no treating absent post-end state as a deliberate zero-risk signal
+CAGR     79.7629% -> 72.1452%  (-7.6177 pp)
+MaxDD    33.5292% -> 31.5212%  (+2.0080 pp improvement)
 ```
 
-All candidate values, event gates, cost grid, robustness thresholds and selection rules are unchanged.
+This is not a near-threshold miss. Same-experiment post-result tuning is forbidden.
 
-## P5.5 implementation
+## P5.6 disposition
 
-The runner:
+```text
+P5.6 = BLOCKED / NO ELIGIBLE P5.5 CANDIDATE
+```
 
-- rebuilds authoritative frozen BRRK targets/prices through existing Phase-4 authority;
-- applies the already-frozen P5.4 scalar mapping to each V2 MARKET_STATE profile;
-- runs exactly 12 profile/map candidates at `5/10/20/50 bps`;
-- uses the existing drifted-weight 5% L1 economic simulator;
-- computes event behavior on the full 2021–2026 V2 state evidence without inventing 2021 BRRK returns;
-- computes four start-date robustness slices and six event-held-out tests;
-- builds frozen gate matrix and broad-policy adjacency;
-- selects by highest 5-bps CAGR only among all-gate passers;
-- fail-stops if none pass;
-- never grants production or re-risk permission.
+Do not integrate a cycle-risk multiplier into production/shadow baseline.
+
+## Phase 6 baseline shadow scope
+
+Phase 6 should exercise the existing execution spine end-to-end while keeping zero trading authority:
+
+- frozen BRRK/P4.1 target computation;
+- market/account read-only inputs;
+- hypothetical target/order generation;
+- route/cost/reconciliation/restart/emergency logic;
+- persistent audit logs and deterministic replay;
+- explicit no-signer / no-order-submit invariant;
+- no secret/withdrawal/external-transfer scope;
+- gross cap remains `1.0`;
+- no P5 cycle overlay.
+
+Where the roadmap requires elapsed shadow duration or event coverage that cannot be manufactured instantly, classify that criterion explicitly as `MEASUREMENT_INCONCLUSIVE / TIME_DEPENDENT`; complete all code/readiness evidence and start/define the observation mechanism without pretending elapsed time has occurred.
 
 ## Exact next step
 
 ```text
-OPEN P5.5 IMPLEMENTATION PR
-RUN FINAL PRE-RUN CI
-IF GREEN -> COMMIT THE SINGLE RUN_ONCE MARKER
-RUN / VALIDATE / COMMIT IMMUTABLE P5.5 RESULT
-CLOSEOUT + MERGE
-IF RESEARCH CANDIDATE EXISTS -> P5.6 INTEGRATE IT
-IF NONE -> P5.6 BLOCKED / FAIL_STOP
-CONTINUE TO PHASE 6 READINESS WITHOUT FAKING A MISSING P5.6 CANDIDATE
+FINAL-HEAD CI/GOVERNANCE FOR P5.5 CLOSEOUT
+EXACT-HEAD MERGE
+VERIFY NEW MAIN
+RECORD P5.6 BLOCKED
+AUDIT EXISTING EXECUTION SPINE FOR PHASE-6 SHADOW INVARIANTS
+IMPLEMENT / TEST ZERO-SIGNATURE INTEGRATED SHADOW HARNESS
+RUN DETERMINISTIC / HISTORICAL-REPLAY SHADOW EVIDENCE
+CLASSIFY REAL-ELAPSED-TIME CRITERIA SEPARATELY
+NO PRODUCTION AUTHORIZATION
 ```
