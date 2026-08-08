@@ -4,7 +4,11 @@ Last updated: 2026-08-08
 
 ## Current instruction
 
-**Phase 0–8 drift audit/remediation is complete. Do not start another strategy implementation phase. The next real dependency is Phase 6 zero-authority elapsed-shadow evidence. Production remains unauthorized.**
+**Phase 0–8 drift audit/remediation is complete. Before consuming more historical data in new strategy research or building further Phase 6 observation infrastructure, implement Program-Level Epistemic Governance v1. Production remains unauthorized.**
+
+Pre-implementation handoff:
+
+`docs/PROGRAM_LEVEL_EPISTEMIC_GOVERNANCE_V1_HANDOFF_2026-08-08.md`
 
 ## Immediate state
 
@@ -24,29 +28,56 @@ Phase 7 readiness gate                 IMPLEMENTED / MERGED #110 / LAUNCH BLOCKE
 Phase 7 mode                           MONITOR_ONLY
 Phase 8 BEAR-SHORT-0001                PREREGISTERED_TRIGGER_ABSENT_NOT_RUN / MERGED #111
 Phase 0-8 drift audit                  COMPLETE / PASS_FINAL_HEAD_VERIFIED / DRIFT_2 REMEDIATED
+Program epistemic governance v1        PREPARED / IMPLEMENTATION NOT STARTED
 production authorization               NONE
 first real short authorization         NONE
 ```
 
-## Audit closeout
+## Program-Level Epistemic Governance v1 — next program
 
-Machine contract: `config/phase0_8_drift_audit.json`. Evidence report: `docs/PHASE_0_8_DRIFT_AUDIT_2026-08-08.md`.
+This is a governance upgrade, not a new alpha/strategy program.
 
-Completed remediation:
+The next session must first audit and reuse existing experiment-level governance, then add the minimum sufficient program-level controls for:
 
-- legacy BTC-only normal service cannot add directional risk merely because `TRADING_MODE=trade`;
-- same-direction risk reduction and emergency-flat capability remain available;
-- legacy production-facing `NORMAL_BETA_CAP` is capped at `1.0`;
-- authoritative handoff documentation reflects completed Phase 6/7/8 work;
-- cross-phase regression tests pin production policy, LEVERAGE-0040 digest and Phase 6/7/8 boundaries.
+- research-family accounting;
+- typed research-lineage DAG;
+- structured validation/data exposure events;
+- dataset-slice identity and contamination accounting;
+- researcher degrees of freedom and trial/variant counts;
+- prospective research data budgets;
+- primary metrics and stopping rules;
+- negative-result preservation and same-line-tuning controls;
+- retrospective legacy mapping with `UNKNOWN` for unrecoverable history;
+- research-governance debt;
+- machine-auditable provenance and deterministic program audit;
+- fail-closed CI rules for future research;
+- lightweight edge-registry schema without inventing new alpha.
 
-The audit closeout does not authorize production trading.
+Do not overload `config/decision_registry.json` with every trial/exposure record. Keep decision/production authority separate from detailed research/exposure facts while linking them by stable IDs.
 
-## Phase 6 evidence accumulation — current dependency
+Do not treat `validation_peek_count` as the only source of truth. Prefer structured exposure events that record what information was released; derive simple peek counts from those events.
 
-Phase 6 implementation/replay is complete. Do **not** rebuild the shadow harness or manufacture historical substitutes for elapsed time.
+Do not allow an experiment to assert `independent_edge=true` by declaration. Independence/incrementality must be an evidence conclusion against existing information families.
 
-The remaining dependency is the frozen live observation requirement in `config/phase6_shadow_contract.json`:
+Do not introduce a single 0–100 governance score or complexity score.
+
+## Legacy / retrospective boundary
+
+The new framework must be prospective. Existing immutable experiments retain their historical states and are not retroactively claimed to have satisfied the new framework.
+
+At implementation start:
+
+1. re-read canonical `main`;
+2. verify no new strategy research has occurred after the prepared handoff;
+3. freeze an explicit `legacy_boundary_commit` and `research_governance_version`;
+4. map prior experiments conservatively as legacy/retrospective records;
+5. write `UNKNOWN` where historical trial count, validation exposure or researcher decisions cannot be recovered.
+
+Historical research branches are intentionally retained until retrospective provenance mapping is complete.
+
+## Phase 6 sequencing
+
+Phase 6 implementation/replay is complete. Its frozen elapsed requirement remains:
 
 ```text
 minimum elapsed calendar days   14
@@ -54,7 +85,9 @@ minimum scheduled decisions     10
 status before evidence exists   MEASUREMENT_INCONCLUSIVE_TIME_DEPENDENT
 ```
 
-Continue the zero-authority observation mechanism and record real evidence only. Phase 6 shadow may read real account/market/order-book state and calculate hypothetical actions, but cannot sign or submit orders.
+Do not manufacture historical substitutes for elapsed time.
+
+Further Phase 6 observation-infrastructure work should resume **after** Program-Level Epistemic Governance v1 is merged so genuinely future observations can enter the new evidence/provenance model from inception.
 
 ## Phase 7 boundary
 
@@ -89,10 +122,33 @@ A subjective market view must not be used as the trigger.
 ## Exact execution order
 
 ```text
-1. VERIFY MAIN CONTAINS THE PHASE 0-8 AUDIT CLOSEOUT AND POLICY INVARIANTS
-2. CONTINUE REAL PHASE-6 ZERO-AUTHORITY ELAPSED OBSERVATION
-3. WHEN PHASE-6 EVIDENCE ACTUALLY PASSES, REVIEW PHASE-7 CHECKLIST
-4. REQUIRE EXPLICIT HUMAN APPROVAL BEFORE MONITOR_ONLY -> ACTIVE OR ZERO -> RISK
-5. WAIT FOR THE FROZEN CONFIRMED-BEAR TRIGGER BEFORE BEAR-SHORT-0001 ECONOMICS
-6. REQUIRE A SEPARATE HUMAN GATE BEFORE ANY FIRST REAL SHORT
+1. VERIFY CANONICAL MAIN AND READ THE PROGRAM-GOVERNANCE V1 HANDOFF
+2. PG0: AUDIT EXISTING GOVERNANCE / OVERLAP / LEGACY EVIDENCE BEFORE DESIGN
+3. PG1: FREEZE GOVERNANCE SEMANTICS, VERSION AND LEGACY BOUNDARY
+4. PG2: ADD MINIMAL MACHINE-READABLE REGISTRIES / SCHEMAS
+5. PG3: ADD VALIDATOR + DETERMINISTIC PROGRAM AUDIT
+6. PG4: RETROSPECTIVELY MAP LEGACY RESEARCH CONSERVATIVELY; UNKNOWN MEANS UNKNOWN
+7. PG5: ENFORCE FUTURE-RESEARCH CI FAIL-CLOSED RULES
+8. PG6: UPDATE HANDOFF DOCS AND PROVE NO STRATEGY / PARAMETER / AUTHORITY DRIFT
+9. ONLY AFTER GOVERNANCE V1 MERGES, RESUME REAL PHASE-6 ZERO-AUTHORITY ELAPSED OBSERVATION
+10. REQUIRE EXPLICIT HUMAN APPROVAL BEFORE MONITOR_ONLY -> ACTIVE OR ZERO -> RISK
+11. WAIT FOR THE FROZEN CONFIRMED-BEAR TRIGGER BEFORE BEAR-SHORT-0001 ECONOMICS
+12. REQUIRE A SEPARATE HUMAN GATE BEFORE ANY FIRST REAL SHORT
 ```
+
+## Explicit non-goals for the next session
+
+Do **not** start:
+
+```text
+Supertrend research
+funding/OI alpha research
+new relative-strength research
+new asset-allocation research
+new leverage research
+new short-model research
+portfolio optimization
+production deployment
+```
+
+Do not modify BRRK-0011, BNB membership, strategy parameters, transaction-cost assumptions, frozen research results or production authority as part of the governance upgrade.
