@@ -1,0 +1,66 @@
+name: Temporary Stablecoin Run Interface handoff patch
+
+on:
+  push:
+    branches:
+      - research/stablecoin-liquidity-0001-run-interface
+
+permissions:
+  contents: write
+
+jobs:
+  patch-once:
+    if: contains(github.event.head_commit.message, '[STABLECOIN_PATCH_RUN_INTERFACE_HANDOFF_V1]')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/stablecoin-liquidity-0001-run-interface
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Patch authoritative Stablecoin Run Interface handoff only
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('docs/CURRENT_STATE.md')
+          s=p.read_text(encoding='utf-8')
+          replacements={
+          'Stablecoin liquidity research     STABLECOIN-LIQUIDITY-0001 / FIRST CAPTURE COMPLETE / VALIDATION SLICE REGISTERED / NO STAGE-1 RESULT':'Stablecoin liquidity research     STABLECOIN-LIQUIDITY-0001 / RUN INTERFACE FROZEN_NOT_EXECUTED / VALIDATION DATA BOUND / NO STAGE-1 RESULT',
+          'real feature computation      NOT RUN\nresearch-registry dataset refs [] / TO BE BOUND BEFORE STAGE-1 IN RUN-INTERFACE FREEZE':'run interface                  STABLECOIN-LIQUIDITY-0001-RUN-INTERFACE-V1 / FROZEN_NOT_EXECUTED\nresearch-registry validation ref STABLECOIN-LIQUIDITY-0001-DEFILLAMA-HIST-V1\nvalidation exposure ref         STABLECOIN-LIQUIDITY-0001-RAW-DATA-20260808T141719Z\nreal feature computation        NOT RUN\nreal BRRK Stage-1 state path    NOT RUN\nRidge fit                       NOT RUN\nOOS predictions                 NONE',
+          'MERGE THE STABLECOIN FIRST-CAPTURE REGISTRATION/CLOSEOUT PR ONLY AFTER GOVERNANCE + NO-DRIFT + PARITY/SAFETY CHECKS PASS':'MERGE THE STABLECOIN RUN-INTERFACE PR ONLY AFTER GOVERNANCE + NO-DRIFT + P3.2 PARITY/GOLDEN + PHASE-6 SAFETY CHECKS PASS',
+          'NEXT STABLECOIN PR MUST FREEZE THE RUN INTERFACE BEFORE ANY REAL FEATURE COMPUTATION OR MODEL FIT':'RUN INTERFACE STABLECOIN-LIQUIDITY-0001-RUN-INTERFACE-V1 IS FROZEN_NOT_EXECUTED; DO NOT MODIFY ITS ECONOMIC/STATISTICAL DEGREES OF FREEDOM AFTER MERGE',
+          'IN THAT RUN-INTERFACE FREEZE, BIND STABLECOIN-LIQUIDITY-0001-DEFILLAMA-HIST-V1 AS THE RESEARCH VALIDATION DATASET AND ACCOUNT FOR STABLECOIN-LIQUIDITY-0001-RAW-DATA-20260808T141719Z':'RESEARCH REGISTRY BINDS STABLECOIN-LIQUIDITY-0001-DEFILLAMA-HIST-V1 AND VALIDATION EXPOSURE STABLECOIN-LIQUIDITY-0001-RAW-DATA-20260808T141719Z WHILE result_status REMAINS PREREGISTERED_NOT_RUN AND actual_variants_evaluated REMAINS 0',
+          'FREEZE CANONICAL BRRK BASELINE INPUTS, AS-OF MATERIALIZATION, 20D EXACT-LAG FEATURE BUILD, TRAINING WINDOWS, LABEL PURGE, EXPANDING TRAINING-ONLY NORMALIZATION, RIDGE ALPHA=1.0, OOS DATES, HAC LAG=19, MINIMUM 730 OOS, OUTPUT-RELEASE POLICY AND ONE-SHOT EXECUTION LOCK':'NEXT STABLECOIN PR MAY ONLY ARM THE FROZEN ONE-SHOT STAGE-1 EXECUTION: CLAIM CREATE-ONLY RUN MARKER BEFORE RESULT-BEARING COMPUTATION, VERIFY STABLECOIN RAW HASH, FREEZE/PERSIST BINANCE PRICE PAYLOAD PROVENANCE, RECONFIRM CANONICAL P3.2 PARITY, THEN EXECUTE EXACTLY THE FROZEN INTERFACE ONCE',
+          'DO NOT FIT RIDGE, CONSTRUCT REAL OOS PREDICTIONS, RUN THE STAGE-1 INFORMATION TEST, GENERATE A SIGNAL OR RELEASE A RESULT WHILE CREATING OR FIXING THE RUN INTERFACE':'DO NOT FIT RIDGE, CONSTRUCT REAL OOS PREDICTIONS, RUN STAGE-1 OR RELEASE A RESULT IN THE RUN-INTERFACE PR ITSELF',
+          'AFTER THE RUN INTERFACE IS SEPARATELY FROZEN AND MERGED, RUN EXACTLY ONE STAGE-1 VARIANT; NO RESCUE TUNING OR REPEATED EVALUATION':'AFTER THE RUN INTERFACE IS MERGED, RUN EXACTLY ONE STAGE-1 VARIANT UNDER [STABLECOIN_STAGE1_EXECUTE_V1]; NO RESCUE TUNING, NO AUTOMATIC RETRY AFTER RESULT-BEARING OUTPUT, AND NO REPEATED EVALUATION'
+          }
+          for old,new in replacements.items():
+              if s.count(old)!=1:
+                  raise SystemExit(f'unexpected handoff match count for: {old[:80]!r}: {s.count(old)}')
+              s=s.replace(old,new,1)
+          anchor='The primary feature definition remains aggregate USD-pegged stablecoin value 20-day log growth plus 20-day growth acceleration with exact lag-date matching. Missing dates are not interpolated or forward-filled. No real feature series has been computed, no Ridge model has been fit, no OOS predictions exist and no research performance result has been released.'
+          insert=anchor+'\n\n`RUN_INTERFACE.json` freezes the 35-column continuous canonical P3.2 BRRK price/regime baseline state, exact LAG_2D Stablecoin alignment, future 20-calendar-day canonical BRRK net-return label, paired-row eligibility, minimum 365 fully realized expanding training rows, training-only StandardScaler, Ridge alpha=1.0 with no grid, one-sided Bartlett/Newey-West lag 19, minimum 730 OOS PASS threshold, primary-first release policy and a create-only pre-execution Stage-1 run marker. Baseline and augmented rows/labels/training dates are identical; augmented differs only by the two frozen Stablecoin columns. The interface is synthetic-tested only and has not executed real Stage-1 data/model logic.'
+          if s.count(anchor)!=1:
+              raise SystemExit('unexpected primary-feature anchor count')
+          s=s.replace(anchor,insert,1)
+          p.write_text(s,encoding='utf-8')
+          PY
+      - name: Validate handoff remains pre-result
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          s=Path('docs/CURRENT_STATE.md').read_text()
+          for x in ['RUN INTERFACE FROZEN_NOT_EXECUTED','actual_variants_evaluated     0','Ridge fit                       NOT RUN','OOS predictions                 NONE','research result evidence      NONE','edge admission                NONE','portfolio integration         NONE']:
+              assert x in s, x
+          PY
+      - name: Remove temporary workflow and commit handoff patch
+        run: |
+          set -euo pipefail
+          git rm .github/workflows/temp-stablecoin-current-state-run-interface.yml
+          git add docs/CURRENT_STATE.md
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Research [DRIFT_0]: hand off frozen Stablecoin Run Interface'
+          git push origin HEAD:research/stablecoin-liquidity-0001-run-interface
