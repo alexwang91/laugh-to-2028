@@ -4,7 +4,7 @@
 
 **回测结果、研究结论、代码合并与生产授权是不同层级。这个仓库不构成收益承诺或投资建议。**
 
-## 当前状态 — 2026-08-07
+## 当前状态 — 2026-08-08
 
 | 模块 | 状态 |
 | --- | --- |
@@ -19,9 +19,11 @@
 | P5.1 cycle-top event taxonomy | **COMPLETE / MERGED / FROZEN** |
 | P5.2 feature-family evidence | **COMPLETE / IMMUTABLE / DESCRIPTIVE CLOSEOUT** |
 | P5.3 V1 state model | **COMPLETE / IMMUTABLE / NO_PROMOTION / ARCHITECTURE_FAIL** |
-| P5.3 V2 architecture | **PREREGISTERED / FROZEN BEFORE V2 STATE PATHS** |
-| P5.4 behavior mapping | **BLOCKED PENDING V2 CLOSEOUT** |
-| P5.5–P5.6 | **NOT STARTED** |
+| P5.3 V2 architecture | **COMPLETE / IMMUTABLE EVIDENCE / ARCHITECTURE_PASS** |
+| P5.3 selected profile | **NONE** |
+| P5.4 behavior mapping | **NEXT / FIXED-CANDIDATE PREREGISTRATION** |
+| P5.5 validation | **NOT STARTED** |
+| P5.6 integration | **NOT STARTED** |
 | Phase 6 integrated shadow | **NOT STARTED** |
 | Phase 7 limited-capital live long | **NOT STARTED / EXPLICIT APPROVAL REQUIRED** |
 | Phase 8 bear-short research | **NOT STARTED** |
@@ -71,76 +73,89 @@ Evidence contract: `P5.3-STATE-PATH-EVIDENCE-V1`
 Result commit: `7703b3ffec906a9d2ea58b33ee7feea5cd2f0a89`  
 Summary SHA256: `a2e5be8d605af5a2c8206235402fe3a66b08fd994eaa8a71e84cfb1e3cbfed8f`
 
-All three profiles first entered FLAT on `2021-02-23` inside frozen non-top control `P5C-2021-JAN-FEB-HIGH-VOL`. Because V1 made the market-state variable absorbing, each profile then spent 1832 of 1869 classified days in FLAT (`98.0203%`). V1 is therefore `NO_PROMOTION / ARCHITECTURE_FAIL`; no profile is eligible for P5.4.
+All three profiles first entered FLAT on `2021-02-23` inside frozen non-top control `P5C-2021-JAN-FEB-HIGH-VOL`. Because V1 made the research market-state variable absorbing, each profile then spent 1832 of 1869 classified days in FLAT (`98.0203%`). V1 is immutable `NO_PROMOTION / ARCHITECTURE_FAIL`.
 
 Formal closeout: `docs/P5_3_STATE_PATH_CLOSEOUT.md`.
 
-## P5.3 V2 — frozen architecture-isolation preregistration
+### P5.3 V2 — immutable architecture-isolation evidence
 
-Contract: `P5.3-MARKET-STATE-PERMISSION-SEPARATION-V2`  
-Documentation: `docs/P5_3_V2_ARCHITECTURE_PREREG.md`  
-Base main: `5b0cac61a45c13d28680e641dd434db4d9a6a2db`
+Architecture contract: `P5.3-MARKET-STATE-PERMISSION-SEPARATION-V2`  
+Evidence contract: `P5.3-V2-MARKET-STATE-PATH-EVIDENCE-V1`  
+Result commit: `e732b7ebe570236bf43084caecb6ea15f7edecb8`  
+Summary SHA256: `05d5d68a59c8b13f1122d98ed75d03934defdc9d73c7dd92e038c92fd97d2e52`
 
-V2 is **not** a V1 signal rescue. It changes one architecture boundary only:
+V2 changed one architecture boundary only:
 
 ```text
 MARKET_STATE
-  continuous market classification across the full historical path
+  continuous research classification across the full historical path
 
 RISK_PERMISSION_LOCK
   separate operational permission; actual re-risk after implemented zero exposure remains human-gated
 ```
 
-### Frozen signal inheritance
-
-The first V2 study keeps V1 exactly unchanged for:
-
-- runtime feature inputs;
-- evidence atoms and raw candidate priority;
-- causal percentile normalization;
-- EARLY / BALANCED / CONSERVATIVE thresholds;
-- escalation persistence and de-escalation clear periods;
-- P5.1 event anchors and buckets.
-
-Before V2 interpretation, normalized values, evidence atoms and raw candidates must exactly match immutable V1.
-
-### Single architecture delta
-
-V1 allowed ordinary de-escalation only when the current state was not FLAT. V2 removes **only that exclusion for `MARKET_STATE`**.
-
-`MARKET_STATE=FLAT` remains the highest severity and raw FLAT still enters immediately. But if the fully evaluated raw candidate stays below FLAT for the existing profile clear period, MARKET_STATE moves exactly one step to `DE_RISK_2`; each later lower step needs a fresh clear period.
-
-No recovery threshold is added and no existing threshold changes.
-
-### Permission boundary remains stricter than market classification
-
-`RISK_PERMISSION_LOCK` is frozen as:
+The V1 signal layer was not retuned. Immutable V2 evidence reports:
 
 ```text
-UNLOCKED
-LOCKED_PENDING_HUMAN_APPROVAL
+architecture_pass                    true
+raw_candidate_parity_fraction        1.0
+atom_parity_fraction                 1.0
+normalization_parity                 true
+normalization_count_parity           true
+pre_first_flat_state_parity_fraction 1.0
+false_flat_reproduced                true
+post_false_flat_nonflat_exists       true
+later_events_observable              true
+profile_selected                     false
+p5_4_mapping_selected                false
+risk_permission_unlock_authorized    false
+production_authorized                false
 ```
 
-MARKET_STATE has zero authority to unlock it. Automatic unlock is forbidden. Only explicit human approval may clear an operational lock.
+The frozen false raw FLAT remains exactly visible on `2021-02-23`, but MARKET_STATE now recovers using the already-frozen clear-period mechanics:
 
-P5.3 V2 does not fabricate a historical permission-lock path because P5.4 has not yet defined which market states map to actual zero directional exposure.
+| Profile | first FLAT episode | first non-FLAT | FLAT days / classified days |
+| --- | --- | --- | ---: |
+| EARLY | 2021-02-23 .. 2021-02-28 | 2021-03-01 | 6 / 1869 |
+| BALANCED | 2021-02-23 .. 2021-02-28 | 2021-03-01 | 6 / 1869 |
+| CONSERVATIVE | 2021-02-23 .. 2021-03-02 | 2021-03-03 | 8 / 1869 |
 
-### V1 failure must reproduce
+This fixes the **research architecture** defect: one early FLAT no longer erases every later event window.
 
-V2 must preserve the `2021-02-23` false raw FLAT in `P5C-2021-JAN-FEB-HIGH-VOL`. It may make later market regimes observable; it may not relabel the control or tune signals to erase the false trigger.
+It does **not** accept the inherited signal layer. The false FLAT remains negative evidence, no profile is selected, and P5.5 must charge false-positive duration and missed upside.
 
-### V2 evaluation boundary
+Examples from the now-observable state history reinforce that distinction:
 
-Architecture pass requires exact V1 raw/evidence parity, preservation of the false FLAT, later event windows remaining classifiable, and no market-state recovery being treated as operational re-risk authorization.
+- 2021 November terminal target-lead is `EXHAUSTION_WATCH` for all profiles rather than `DE_RISK_1+`;
+- 2021 September non-top control produces substantial de-risk occupancy for EARLY;
+- 2021 summer second-wind behavior varies materially by profile.
 
-Architecture pass does **not** select a profile, accept signal quality, select P5.4 behavior, or authorize production. P5.4 remains blocked until V2 evidence closeout.
+Formal V2 closeout: `docs/P5_3_V2_MARKET_STATE_CLOSEOUT.md`.
+
+## P5.4 — next research dependency
+
+The Implementation Roadmap defines P5.4 as **Required Behavior** and P5.5 as the owner of event/economic validation. V2 architecture evidence therefore unblocks P5.4 **research candidate definition only**.
+
+P5.4 may preregister a small fixed family mapping MARKET_STATE to total gross-risk multipliers, subject to:
+
+- all multipliers remain in `[0,1]`; Phase 4 authorized no >1 leverage;
+- `NORMAL_BULL = 1.0`;
+- mappings are monotone non-increasing with state severity;
+- behavior scales total BRRK gross only and does not rewrite relative BTC/ETH/SOL/BNB ranking;
+- `LATE_BULL_ROTATION` is not automatically treated as bearish/zero;
+- an actual zero-exposure action remains human-gated for subsequent re-risk;
+- no P5.4 winner is selected before P5.5;
+- candidate values are frozen before P5.5 economic/event evaluation.
+
+P5.5 must evaluate the Cartesian set of the three frozen P5.3 profiles × preregistered P5.4 behavior maps and may fail-stop if no robust candidate exists.
 
 ## Layer separation
 
 ```text
 BRRK                 = which assets / relative weights
 Cycle MARKET_STATE   = current market-risk classification
-Risk permission      = whether re-risk is operationally allowed
+P5.4 behavior        = candidate total gross-risk response
+Risk permission      = whether actual re-risk is operationally allowed
 Router               = which instruments implement targets
 Execution            = safe realization
 ```
@@ -149,15 +164,14 @@ Execution            = safe realization
 
 1. P5.1 taxonomy — **COMPLETE / FROZEN**.
 2. P5.2 feature evidence — **COMPLETE / IMMUTABLE**.
-3. P5.3 V1 — **COMPLETE / IMMUTABLE / NO_PROMOTION**.
-4. P5.3 V2 architecture prereg — **FROZEN BEFORE V2 STATE PATHS**.
-5. P5.3 V2 implementation/evidence — **NEXT AFTER PREREG MERGE**.
-6. P5.4 behavior mapping — **BLOCKED until V2 closeout**.
-7. P5.5 validation — later.
-8. P5.6 integration — later.
-9. Phase 6 shadow — later, zero trading authority.
-10. Phase 7 limited-capital live — explicit production approval required.
-11. Phase 8 bear-short — later; first short remains human-gated.
+3. P5.3 V1 — **COMPLETE / IMMUTABLE / ARCHITECTURE_FAIL**.
+4. P5.3 V2 — **COMPLETE / IMMUTABLE EVIDENCE / ARCHITECTURE_PASS**.
+5. P5.4 fixed behavior candidates — **NEXT / PREREGISTER BEFORE ECONOMIC TEST**.
+6. P5.5 joint profile/mapping validation — later.
+7. P5.6 integration — later.
+8. Phase 6 shadow — later, zero trading authority.
+9. Phase 7 limited-capital live — explicit production approval required.
+10. Phase 8 bear-short — later; first short remains human-gated.
 
 ## Source-of-truth order
 
