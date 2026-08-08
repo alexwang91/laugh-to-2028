@@ -19,7 +19,7 @@ Phase 7 readiness gate            IMPLEMENTED / MERGED #110 / LAUNCH BLOCKED
 Phase 7 program state             MONITOR_ONLY
 Phase 8 bear-short research       PREREGISTERED_TRIGGER_ABSENT_NOT_RUN / MERGED #111
 Phase 0-8 drift audit             COMPLETE / PASS_FINAL_HEAD_VERIFIED / DRIFT_2 REMEDIATED
-Program epistemic governance v1   PREPARED / IMPLEMENTATION NOT STARTED
+Program epistemic governance v1   PG0 COMPLETE / AUDIT ONLY / PG1 NEXT
 production authorization          NONE
 first real short authorization    NONE
 ```
@@ -101,17 +101,17 @@ The audit is complete and remediated three drift classes without economic retuni
 
 Same-direction reductions and emergency flatten remain available. The audit status is `PASS_FINAL_HEAD_VERIFIED` and does not confer production authority.
 
-## Program-Level Epistemic Governance v1 — prepared next program
+## Program-Level Epistemic Governance v1
 
-Pre-implementation handoff:
+PG0 repository governance audit is complete:
 
-`docs/PROGRAM_LEVEL_EPISTEMIC_GOVERNANCE_V1_HANDOFF_2026-08-08.md`
+`docs/PROGRAM_GOVERNANCE_PG0_REPOSITORY_AUDIT_2026-08-08.md`
 
-The next program is a governance upgrade, not a strategy experiment. Its purpose is to extend the current experiment-level preregistration / immutable evidence / fail-stop system into program-level accounting for research families, typed lineage, validation exposure, dataset-slice contamination, researcher degrees of freedom, evidence provenance and retrospective governance debt.
+PG0 confirmed that the repository already has strong experiment-level preregistration, RUN_ONCE, immutable-evidence/hash, negative-result preservation, phase authority and drift-audit primitives. It also confirmed the missing program-level controls: research-family accounting, typed lineage, dataset-slice/exposure accounting, researcher degrees of freedom, governance debt, a deterministic program audit and prospective fail-closed research validation.
 
-This preparation does not implement the framework and does not claim that prior experiments were historically governed by it. Existing experiments must remain immutable and be mapped conservatively in a legacy/retrospective mode with `UNKNOWN` for unrecoverable historical facts.
+PG0 is audit-only. It did not introduce schemas or registries and did not claim that historical research was already governed by v1.
 
-Historical research branches are intentionally retained as potential provenance for the retrospective audit.
+Historical research branches remain retained until retrospective provenance mapping is complete.
 
 ## Frozen product boundaries
 
@@ -128,9 +128,9 @@ Historical research branches are intentionally retained as potential provenance 
 ## Exact next action
 
 ```text
-START PROGRAM-LEVEL EPISTEMIC GOVERNANCE V1 FROM CANONICAL MAIN
-FIRST AUDIT AND REUSE EXISTING GOVERNANCE; DO NOT BUILD A PARALLEL REPLACEMENT SYSTEM
-FREEZE A PROSPECTIVE LEGACY BOUNDARY BEFORE NEW RESEARCH CONSUMES MORE HISTORY
+PG1: FREEZE PROGRAM-GOVERNANCE V1 SEMANTICS AND PROSPECTIVE LEGACY BOUNDARY
+KEEP DECISION / RESEARCH / DATASET-EXPOSURE / EDGE AUTHORITY PLANES SEPARATE
+DEFINE TYPED LINEAGE, DATA-BUDGET AND EXPOSURE VOCABULARIES BEFORE REGISTRY IMPLEMENTATION
 DO NOT START SUPERTrend / FUNDING-OI / RELATIVE-STRENGTH / NEW-ALLOCATION RESEARCH
 DO NOT CHANGE BRRK / BNB / PARAMETERS / COSTS / PRODUCTION AUTHORITY
 AFTER GOVERNANCE V1 MERGES, RESUME REAL PHASE-6 ZERO-AUTHORITY ELAPSED OBSERVATION
