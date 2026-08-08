@@ -1,12 +1,6 @@
 from __future__ import annotations
 
-"""Fail-closed preactivation gate for genuine future Phase-6 elapsed evidence.
-
-This module is governance infrastructure only. It does not fetch market/account
-state, calculate BRRK targets, sign orders, submit orders, or create elapsed-time
-credit. Its job is to prevent a scheduled live-shadow collector from being armed
-until the missing operational semantics are frozen prospectively.
-"""
+"""Fail-closed preactivation gate for genuine future Phase-6 elapsed evidence."""
 
 import json
 from datetime import datetime, timedelta, timezone
@@ -17,8 +11,12 @@ from .phase6_live_evidence import (
     CONTRACT_RELATIVE_PATH as EVIDENCE_CONTRACT_RELATIVE_PATH,
     validate_evidence_contract,
 )
+from .phase6_live_valuation import (
+    CONTRACT_RELATIVE_PATH as VALUATION_CONTRACT_RELATIVE_PATH,
+    INSTRUMENT_REGISTRY_RELATIVE_PATH,
+    validate_valuation_contract,
+)
 from .validate import repo_root_from_module
-
 
 GATE_RELATIVE_PATH = Path("research/governance/phase6_live_observation_gate.json")
 WORKFLOW_RELATIVE_PATH = Path(".github/workflows/research-governance.yml")
@@ -37,7 +35,6 @@ def _load_json(path: Path) -> dict[str, Any]:
 
 
 def first_eligible_decision_after(armed_commit_timestamp: str) -> str:
-    """Return the first 00:00 UTC decision strictly after the arm commit time."""
     try:
         parsed = datetime.fromisoformat(armed_commit_timestamp.replace("Z", "+00:00"))
     except ValueError as exc:
@@ -46,8 +43,7 @@ def first_eligible_decision_after(armed_commit_timestamp: str) -> str:
         raise Phase6ObservationGateError("armed commit timestamp must be timezone-aware UTC")
     parsed = parsed.astimezone(timezone.utc)
     midnight = parsed.replace(hour=0, minute=0, second=0, microsecond=0)
-    first = midnight + timedelta(days=1)
-    return first.strftime("%Y-%m-%dT00:00:00Z")
+    return (midnight + timedelta(days=1)).strftime("%Y-%m-%dT00:00:00Z")
 
 
 def validate_gate_mapping(
@@ -55,6 +51,8 @@ def validate_gate_mapping(
     *,
     phase6_contract: Mapping[str, Any],
     evidence_contract: Mapping[str, Any],
+    valuation_contract: Mapping[str, Any],
+    instrument_registry: Mapping[str, Any],
     workflow_text: str,
 ) -> dict[str, Any]:
     if int(gate.get("schema_version", -1)) != 1:
@@ -65,6 +63,8 @@ def validate_gate_mapping(
         raise Phase6ObservationGateError("gate must point to canonical Phase-6 contract")
     if gate.get("evidence_backend_contract") != str(EVIDENCE_CONTRACT_RELATIVE_PATH):
         raise Phase6ObservationGateError("gate must point to frozen Phase-6 evidence backend contract")
+    if gate.get("valuation_contract") != str(VALUATION_CONTRACT_RELATIVE_PATH):
+        raise Phase6ObservationGateError("gate must point to frozen Phase-6 valuation contract")
     if gate.get("canonical_decision_time_utc") != "00:00:00":
         raise Phase6ObservationGateError("Phase-6 canonical decision time must remain 00:00:00 UTC")
 
@@ -83,6 +83,17 @@ def validate_gate_mapping(
     if evidence_snapshot.get("production_authorized") is not False:
         raise Phase6ObservationGateError("evidence backend contract cannot confer production authority")
 
+    try:
+        valuation_snapshot = validate_valuation_contract(
+            valuation_contract, instrument_registry=instrument_registry
+        )
+    except Exception as exc:
+        raise Phase6ObservationGateError(f"invalid frozen valuation contract: {exc}") from exc
+    if valuation_snapshot.get("production_authorized") is not False:
+        raise Phase6ObservationGateError("valuation contract cannot confer production authority")
+    if valuation_snapshot.get("supported_user_abstraction") != "disabled":
+        raise Phase6ObservationGateError("Phase-6 V1 valuation must remain Standard/disabled only")
+
     live = phase6_contract.get("acceptance", {}).get("live_shadow_observation", {})
     evidence = gate.get("evidence_requirements", {})
     frozen_pairs = (
@@ -98,22 +109,19 @@ def validate_gate_mapping(
             raise Phase6ObservationGateError(f"Phase-6 evidence threshold drift: {field}")
 
     future = gate.get("future_only_credit_rule", {})
-    required_false = (
+    for field in (
         "historical_backfill_authorized",
         "historical_replay_credit_authorized",
         "ci_replay_credit_authorized",
         "workflow_rerun_creates_new_decision_credit",
         "duplicate_decision_timestamp_creates_new_credit",
         "manual_dispatch_counts_as_scheduled_decision",
-    )
-    for field in required_false:
+    ):
         if future.get(field) is not False:
             raise Phase6ObservationGateError(f"future-only rule must keep {field}=false")
     if future.get("manual_emergency_drill_may_count_as_emergency_drill_only") is not True:
         raise Phase6ObservationGateError("manual emergency drill role drift detected")
-    if future.get("first_eligible_decision") != (
-        "FIRST_00_00_UTC_DECISION_STRICTLY_AFTER_ARM_COMMIT_TIMESTAMP"
-    ):
+    if future.get("first_eligible_decision") != "FIRST_00_00_UTC_DECISION_STRICTLY_AFTER_ARM_COMMIT_TIMESTAMP":
         raise Phase6ObservationGateError("first eligible decision rule drift detected")
 
     required_before_arm = gate.get("required_before_arm", {})
@@ -127,6 +135,8 @@ def validate_gate_mapping(
         raise Phase6ObservationGateError("required-before-arm dependency set drift detected")
     if required_before_arm.get("durable_create_only_evidence_backend_frozen") is not True:
         raise Phase6ObservationGateError("validated Phase-6 evidence backend must be marked frozen")
+    if required_before_arm.get("current_position_and_equity_valuation_contract_frozen") is not True:
+        raise Phase6ObservationGateError("validated Phase-6 valuation contract must be marked frozen")
 
     armed = gate.get("collector_armed") is True
     schedule_configured = gate.get("schedule_configured") is True
@@ -160,6 +170,9 @@ def validate_gate_mapping(
         "status": gate.get("status"),
         "collector_armed": armed,
         "dependencies_ready": dependencies_ready,
+        "account_identity_frozen": required_before_arm.get("observation_account_identity_frozen") is True,
+        "valuation_contract_frozen": True,
+        "valuation_mode": valuation_snapshot.get("supported_user_abstraction"),
         "durable_evidence_backend_frozen": True,
         "durable_evidence_backend": evidence_snapshot.get("backend"),
         "schedule_configured": schedule_configured,
@@ -173,15 +186,13 @@ def validate_gate_mapping(
 
 def gate_snapshot(root: Path | None = None) -> dict[str, Any]:
     repo_root = Path(root or repo_root_from_module())
-    gate = _load_json(repo_root / GATE_RELATIVE_PATH)
-    phase6 = _load_json(repo_root / PHASE6_CONTRACT_RELATIVE_PATH)
-    evidence_contract = _load_json(repo_root / EVIDENCE_CONTRACT_RELATIVE_PATH)
-    workflow = (repo_root / WORKFLOW_RELATIVE_PATH).read_text(encoding="utf-8")
     return validate_gate_mapping(
-        gate,
-        phase6_contract=phase6,
-        evidence_contract=evidence_contract,
-        workflow_text=workflow,
+        _load_json(repo_root / GATE_RELATIVE_PATH),
+        phase6_contract=_load_json(repo_root / PHASE6_CONTRACT_RELATIVE_PATH),
+        evidence_contract=_load_json(repo_root / EVIDENCE_CONTRACT_RELATIVE_PATH),
+        valuation_contract=_load_json(repo_root / VALUATION_CONTRACT_RELATIVE_PATH),
+        instrument_registry=_load_json(repo_root / INSTRUMENT_REGISTRY_RELATIVE_PATH),
+        workflow_text=(repo_root / WORKFLOW_RELATIVE_PATH).read_text(encoding="utf-8"),
     )
 
 

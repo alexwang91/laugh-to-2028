@@ -1,0 +1,102 @@
+{
+  "schema_version": 1,
+  "contract_id": "PHASE6-LIVE-VALUATION-V1",
+  "status": "FROZEN_STANDARD_MODE_ONLY_NO_ACCOUNT_BOUND",
+  "purpose": "MAP_READ_ONLY_HYPERLIQUID_STANDARD_ACCOUNT_STATE_TO_CANONICAL_P3_3_INPUTS_WITHOUT_CHANGING_P3_2_OR_P3_3_ECONOMICS",
+  "production_authorized": false,
+  "signature_authorized": false,
+  "order_submission_authorized": false,
+  "supported_account_mode": {
+    "user_abstraction_info_endpoint": "userAbstraction",
+    "required_value": "disabled",
+    "semantic_mode": "STANDARD_SEPARATE_SPOT_AND_PERP_BALANCES",
+    "unsupported_values_fail_closed": [
+      "unifiedAccount",
+      "portfolioMargin",
+      "default",
+      "dexAbstraction"
+    ]
+  },
+  "canonical_assets": ["BTC", "ETH", "SOL", "BNB"],
+  "quote_asset": "USDC",
+  "spot_identity": {
+    "BTC": "UBTC",
+    "ETH": "UETH",
+    "SOL": "USOL",
+    "BNB": null,
+    "identity_authority": "config/instrument_registry.json",
+    "runtime_identity_must_match_spot_meta": true
+  },
+  "required_read_only_surfaces": [
+    "userAbstraction",
+    "spotClearinghouseState",
+    "clearinghouseState_FIRST_PERP_DEX",
+    "spotMeta",
+    "spotMetaAndAssetCtxs"
+  ],
+  "current_positions_notional_usd": {
+    "perp_component": "SIGN_SZI_TIMES_ABS_POSITION_VALUE",
+    "spot_component": "SPOT_TOTAL_BALANCE_TIMES_SPOT_MARK_PX",
+    "asset_aggregation": "PERP_COMPONENT_PLUS_SPOT_COMPONENT_BY_CANONICAL_ECONOMIC_ASSET",
+    "missing_canonical_asset": "ZERO",
+    "unknown_nonzero_perp_asset": "FAIL_CLOSED",
+    "unknown_nonzero_spot_token": "FAIL_CLOSED",
+    "duplicate_position_or_balance_identity": "FAIL_CLOSED",
+    "bnb_spot": "FORBIDDEN_BY_PERP_ONLY_PRODUCT_POLICY"
+  },
+  "account_equity_usd": {
+    "formula": "FIRST_PERP_DEX_MARGIN_SUMMARY_ACCOUNT_VALUE_PLUS_SPOT_USDC_TOTAL_PLUS_ALLOWED_SPOT_BASE_MARKET_VALUE",
+    "perp_equity_field": "marginSummary.accountValue",
+    "spot_balance_field": "balances[].total",
+    "spot_price_field": "spotMetaAndAssetCtxs.markPx",
+    "spot_hold_field_role": "VALIDATE_ONLY_TOTAL_REMAINS_OWNED_BALANCE",
+    "entry_ntl_field_role": "NOT_USED_FOR_CURRENT_MARK_TO_MARKET_EQUITY",
+    "must_be_finite_and_strictly_positive": true
+  },
+  "account_scope": {
+    "one_exact_master_or_subaccount_address": true,
+    "agent_wallet_address_forbidden": true,
+    "external_exchange_or_wallet_holdings_in_measured_portfolio": "UNSUPPORTED_FAIL_CLOSED",
+    "other_perp_dex_or_vault_or_borrow_lend_positions_in_measured_portfolio": "UNSUPPORTED_FAIL_CLOSED",
+    "account_identity_must_be_frozen_separately_before_arm": true
+  },
+  "pricing_and_identity_rules": {
+    "spot_mark_must_be_finite_positive": true,
+    "perp_position_value_must_be_finite_nonnegative": true,
+    "szi_must_be_finite": true,
+    "spot_total_and_hold_must_be_finite_nonnegative": true,
+    "spot_hold_must_not_exceed_total": true,
+    "raw_bytes_preserved_before_parse": true,
+    "no_nearest_asset_or_symbol_substitution": true,
+    "no_cross_venue_price_substitution": true
+  },
+  "p3_3_binding": {
+    "control_version": "P3.3-L1-BAND-V1",
+    "account_equity_input": "account_equity_usd",
+    "current_position_input": "current_positions_notional_usd",
+    "current_weight_formula_unchanged": "current_notional_usd / account_equity_usd",
+    "unknown_asset_behavior_unchanged": "FAIL_CLOSED",
+    "economic_parameter_change": false
+  },
+  "official_source_checks": {
+    "checked_at": "2026-08-08",
+    "account_abstraction_modes": "https://hyperliquid.gitbook.io/hyperliquid-docs/trading/account-abstraction-modes",
+    "info_endpoint": "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint",
+    "spot_info_endpoint": "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint/spot",
+    "perp_info_endpoint": "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint/perpetuals",
+    "api_notation": "https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/notation"
+  },
+  "explicit_non_actions": [
+    "NO_ACCOUNT_ADDRESS_SELECTION",
+    "NO_UNIFIED_ACCOUNT_VALUATION",
+    "NO_PORTFOLIO_MARGIN_VALUATION",
+    "NO_EXTERNAL_HOLDINGS_AGGREGATION",
+    "NO_P3_2_CHANGE",
+    "NO_P3_3_CHANGE",
+    "NO_SCHEDULE_ARM",
+    "NO_ELAPSED_EVIDENCE_CREDIT",
+    "NO_SIGNING",
+    "NO_ORDER_SUBMISSION",
+    "NO_PRODUCTION_AUTHORIZATION"
+  ]
+}
