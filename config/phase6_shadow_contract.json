@@ -2,7 +2,7 @@
   "schema_version": 1,
   "phase_id": "PHASE-6",
   "contract_id": "P6-INTEGRATED-SHADOW-V1-2026-08-08",
-  "status": "IMPLEMENTATION_AND_REPLAY_PENDING",
+  "status": "PASS_SHADOW_ONLY_IMPLEMENTATION_REPLAY",
   "canonical_strategy": "BRRK-0011_LONG_BASELINE",
   "cycle_layer": "NONE_P5_6_BLOCKED",
   "production_gross_cap": 1.0,
@@ -49,14 +49,20 @@
   ],
   "acceptance": {
     "implementation_and_replay": {
+      "status": "PASS_SHADOW_ONLY_IMPLEMENTATION_REPLAY",
+      "evidence_head": "df73bd2b7d40a40c79b677ef78e12e086c2aa045",
+      "phase6_ci_run_id": 31244319650,
       "critical_reconciliation_errors": 0,
       "unexplained_target_drift": 0,
       "gross_cap_violations": 0,
       "signer_or_submit_paths": 0,
       "emergency_drill_required": true,
-      "audit_digest_required": true
+      "audit_digest_required": true,
+      "p3_2_independent_parity": "PASS",
+      "p3_2_committed_golden_vectors": "PASS"
     },
     "live_shadow_observation": {
+      "status": "MEASUREMENT_INCONCLUSIVE_TIME_DEPENDENT",
       "minimum_elapsed_calendar_days": 14,
       "minimum_scheduled_decisions": 10,
       "minimum_emergency_drills": 1,
@@ -66,10 +72,11 @@
       "status_until_elapsed_evidence_exists": "MEASUREMENT_INCONCLUSIVE_TIME_DEPENDENT"
     }
   },
-  "phase7_handoff": "BLOCKED_UNTIL_PHASE6_IMPLEMENTATION_REPLAY_GREEN_AND_TIME_DEPENDENT_SHADOW_EVIDENCE_REVIEWED",
+  "phase7_handoff": "IMPLEMENTATION_READINESS_MAY_PROCEED_BUT_LAUNCH_BLOCKED_UNTIL_PHASE6_TIME_EVIDENCE_REVIEW_AND_EXPLICIT_OWNER_APPROVAL",
   "notes": [
     "P5.5 ended NO_PROMOTION, therefore no cycle-exit overlay is carried into Phase 6.",
-    "The shadow orchestration must remain physically incapable of signing or submitting orders.",
-    "Elapsed-time evidence must not be simulated or backfilled and cannot be declared complete by CI replay alone."
+    "The shadow orchestration remains physically incapable of signing or submitting orders.",
+    "Implementation/replay passed on CI, including canonical P3.2 parity and committed golden vectors.",
+    "Elapsed-time evidence is not simulated or backfilled and cannot be declared complete by CI replay alone."
   ]
 }
