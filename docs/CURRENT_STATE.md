@@ -17,10 +17,10 @@ P5.3 V2                       COMPLETE / IMMUTABLE EVIDENCE / ARCHITECTURE_PASS
 P5.4 behavior mapping          COMPLETE / FIXED 4-MAP FAMILY / PURE IMPLEMENTATION / NO SELECTION
 P5.5 validation                COMPLETE / IMMUTABLE / NO_PROMOTION / FAIL_STOP
 P5.6 cycle integration         BLOCKED / NO ELIGIBLE P5.5 CANDIDATE
-Phase 6 shadow implementation  IN PR #109 / ZERO-AUTHORITY CANONICAL BRRK BASELINE
-Phase 6 replay gate            RUNNING / P3.2 PARITY + SHADOW SAFETY + FAIL-CLOSED
+Phase 6 shadow implementation  PASS_SHADOW_ONLY_IMPLEMENTATION_REPLAY / PR #109
+Phase 6 canonical parity       PASS / P3.2 INDEPENDENT + COMMITTED GOLDEN VECTORS
 Phase 6 live elapsed evidence  MEASUREMENT_INCONCLUSIVE_TIME_DEPENDENT
-Phase 7 limited-live readiness NOT STARTED / actual launch requires explicit approval
+Phase 7 limited-live readiness NEXT / implementation only / actual launch requires explicit approval
 Phase 8 bear-short research    NOT STARTED
 production authorization       NONE
 ```
@@ -93,20 +93,32 @@ Frozen Phase 6 properties:
 - no executor/signer/Exchange/private-key dependency in the shadow orchestration;
 - no order submission, withdrawal, transfer or production activation;
 - reference/data/identity/cost/state/schedule/route failures discard the whole hypothetical order set;
-- emergency mode calculates hypothetical flattening only;
-- P3.2 independent parity and committed historical golden vectors are rerun as Phase 6 CI dependencies.
+- emergency mode calculates hypothetical flattening only.
 
-CI/replay can establish only:
+Phase 6 implementation/replay evidence is green on head `df73bd2b7d40a40c79b677ef78e12e086c2aa045`, including:
 
 ```text
-PASS_SHADOW_ONLY_IMPLEMENTATION_REPLAY
+P3.2 independent multi-date target parity   PASS
+P3.2 committed historical golden vectors   PASS
+Phase 6 deterministic shadow tests          PASS
+zero-authority contract                     PASS
+static no-signer/no-submit boundary         PASS
+PR handoff governance                       PASS
 ```
 
-It cannot fabricate elapsed live-shadow time. Full Phase 6 time-dependent evidence requires at least 14 elapsed calendar days, at least 10 scheduled decisions, at least one emergency drill, and zero critical reconciliation/target-drift/schedule failures. Until then:
+Therefore:
+
+```text
+Phase 6 implementation/replay = PASS_SHADOW_ONLY_IMPLEMENTATION_REPLAY
+```
+
+This is not full elapsed shadow acceptance. Full time-dependent evidence requires at least 14 elapsed calendar days, at least 10 scheduled decisions, at least one emergency drill, and zero critical reconciliation/target-drift/schedule failures. Until real elapsed evidence exists:
 
 ```text
 Phase 6 live elapsed evidence = MEASUREMENT_INCONCLUSIVE_TIME_DEPENDENT
 ```
+
+Historical replay or CI must not backfill that clock.
 
 ## Frozen product boundaries
 
@@ -122,12 +134,12 @@ Phase 6 live elapsed evidence = MEASUREMENT_INCONCLUSIVE_TIME_DEPENDENT
 ## Exact next action
 
 ```text
-MAKE PR #109 FINAL-HEAD CI/GOVERNANCE GREEN
-EXACT-HEAD MERGE PHASE 6 ZERO-AUTHORITY SHADOW IMPLEMENTATION
-RECORD IMPLEMENTATION/REPLAY PASS IF EVIDENCE PASSES
-KEEP LIVE ELAPSED SHADOW EVIDENCE TIME-DEPENDENT / NOT FABRICATED
-THEN IMPLEMENT PHASE 7 LIMITED-LIVE READINESS GATES WITHOUT LAUNCHING
-THEN PROCEED TO PHASE 8 BEAR-SHORT RESEARCH WITH FIRST REAL SHORT HUMAN-GATED
+FINAL-HEAD CI/GOVERNANCE AFTER PHASE 6 CLOSEOUT
+EXACT-HEAD MERGE PR #109
+VERIFY NEW MAIN
+IMPLEMENT PHASE 7 LIMITED-LIVE READINESS GATES WITHOUT LAUNCHING
+KEEP LAUNCH BLOCKED BY PHASE 6 TIME EVIDENCE + EXPLICIT OWNER APPROVAL
+PROCEED TO PHASE 8 BEAR-SHORT RESEARCH WITHOUT FIRST REAL SHORT
 AFTER P8, RUN PHASE 0-8 PROJECT DRIFT AUDIT AND CORRECT IDENTIFIED DRIFT
 DO NOT PRODUCTION-AUTHORIZE ANYTHING
 ```
