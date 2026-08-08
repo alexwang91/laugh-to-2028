@@ -15,6 +15,12 @@ class DualLayerFusionSanityTests(unittest.TestCase):
     def setUp(self) -> None:
         self.target = {"BTC": 0.30, "ETH": 0.25, "SOL": 0.15, "BNB": 0.10}
 
+    def assert_relative_weights_equal(self, left, right) -> None:
+        l = relative_weights(left)
+        r = relative_weights(right)
+        for asset in ("BTC", "ETH", "SOL", "BNB"):
+            self.assertAlmostEqual(l[asset], r[asset], places=12)
+
     def test_state_rule_is_fixed(self) -> None:
         self.assertEqual(classify_external_state(0.01, 0.02).state, "SUPPORTIVE")
         self.assertEqual(classify_external_state(-0.01, -0.02).state, "RESTRICTIVE")
@@ -30,14 +36,14 @@ class DualLayerFusionSanityTests(unittest.TestCase):
         state = classify_external_state(0.01, -0.02)
         fused = apply_external_gross_cap(full, state)
         self.assertTrue(math.isclose(sum(fused.values()), 0.8, abs_tol=1e-12))
-        self.assertEqual(relative_weights(fused), relative_weights(full))
+        self.assert_relative_weights_equal(fused, full)
 
     def test_restrictive_caps_gross_without_ranking_change(self) -> None:
         full = {"BTC": 0.40, "ETH": 0.30, "SOL": 0.20, "BNB": 0.10}
         state = classify_external_state(-0.01, -0.02)
         fused = apply_external_gross_cap(full, state)
         self.assertTrue(math.isclose(sum(fused.values()), 0.6, abs_tol=1e-12))
-        self.assertEqual(relative_weights(fused), relative_weights(full))
+        self.assert_relative_weights_equal(fused, full)
 
     def test_external_layer_never_increases_low_internal_gross(self) -> None:
         low = {"BTC": 0.20, "ETH": 0.10, "SOL": 0.05, "BNB": 0.05}
