@@ -1,8 +1,13 @@
 {
   "id": "PHASE-0-8-DRIFT-AUDIT-V1",
   "as_of": "2026-08-08",
-  "status": "REMEDIATION_IMPLEMENTED_PENDING_FINAL_HEAD_CI",
+  "status": "PASS_FINAL_HEAD_VERIFIED",
   "drift_level": "DRIFT_2",
+  "verification": {
+    "pre_closeout_head": "aa94f4c03c7897c4b6420f151f679c7f8da1b283",
+    "pre_closeout_all_applicable_checks": "SUCCESS",
+    "closeout_commit_requires_final_ci_before_merge": true
+  },
   "scope": {
     "phases": [0, 1, 2, 3, 4, 5, 6, 7, 8],
     "economic_retuning_allowed": false,
