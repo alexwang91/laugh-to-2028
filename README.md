@@ -36,29 +36,20 @@ first real short authority        NONE
 - BNB remains `PERP_ONLY_DEFAULT`;
 - production gross cap remains `1.0`;
 - no P5 cycle overlay or >1 production leverage was promoted;
-- credentials do not create production authority;
-- no automated withdrawal/external-transfer authority;
+- no production/signature/submission/withdrawal/external-transfer authority;
 - no first real short authorization.
 
 ## Research closeout
 
-`LEVERAGE-0040` and `LEVERAGE-0041` remain immutable `NO_PROMOTION`. P5.5 remains immutable `NO_PROMOTION_FAIL_STOP`.
-
-`STABLECOIN-LIQUIDITY-0001` is terminal `FAIL_NO_INCREMENTAL_INFORMATION / NO_PROMOTION`; no same-ID rerun/rescue, Stage-2 eligibility, edge admission or portfolio integration exists.
+`LEVERAGE-0040` / `0041` remain immutable `NO_PROMOTION`. P5.5 remains immutable `NO_PROMOTION_FAIL_STOP`. `STABLECOIN-LIQUIDITY-0001` remains terminal `FAIL_NO_INCREMENTAL_INFORMATION / NO_PROMOTION`, with no same-ID rescue/rerun, Stage-2 eligibility, edge admission or portfolio integration.
 
 ## Phase 6 preactivation
 
-The canonical Phase-6 shadow implementation is zero-authority and cannot sign or submit orders. Real elapsed evidence still requires >=14 elapsed days, >=10 genuine scheduled decisions, >=1 emergency drill and zero frozen quality failures.
+The canonical Phase-6 shadow implementation is zero-authority. Real elapsed evidence still requires >=14 elapsed days, >=10 genuine scheduled decisions, >=1 emergency drill and zero frozen quality failures.
 
 The durable evidence backend is frozen to GitHub Actions Artifact v4 with 90-day retention, `overwrite=false`, immutable artifact identity and a hash-bound receipt; its existence creates zero elapsed credit.
 
-PR #134 proposes `PHASE6-LIVE-VALUATION-V1`, limited to explicit Hyperliquid Standard mode:
-
-```text
-userAbstraction = disabled
-```
-
-It maps verified UBTC/UETH/USOL spot holdings plus signed BTC/ETH/SOL/BNB perp notionals into the existing P3.3 current-position/equity inputs. Unsupported modes/assets fail closed; BNB spot remains forbidden.
+PR #134 proposes `PHASE6-LIVE-VALUATION-V1`, limited to explicit Hyperliquid Standard mode (`userAbstraction=disabled`). It maps verified UBTC/UETH/USOL spot holdings plus signed BTC/ETH/SOL/BNB perp notionals into the existing P3.3 current-position/equity inputs. Unsupported modes/assets fail closed; BNB spot remains forbidden.
 
 Candidate pre-arm state:
 
@@ -71,7 +62,7 @@ collector_armed                       false
 elapsed_evidence_credit_authorized    false
 ```
 
-If #134 passes final CI and merges, only one pre-arm dependency remains: one exact verified **public read-only Hyperliquid master/subaccount address** compatible with Standard mode. Do not invent or derive the address from a private key.
+If #134 passes final CI and merges, only one pre-arm dependency remains: one exact verified **public read-only Hyperliquid master/subaccount address** compatible with Standard mode. Do not invent or derive it from a private key.
 
 ## Exact next dependency
 
