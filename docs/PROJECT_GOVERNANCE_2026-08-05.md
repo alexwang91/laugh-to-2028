@@ -420,3 +420,82 @@ LIVE CAPITAL AUTHORIZATION: none from this planning PR
 ```
 
 The first implementation PR after this plan should create the canonical product config and decision registry, then begin execution-state hardening.
+
+---
+
+## 19. Program-Level Epistemic Governance v1 overlay — 2026-08-08
+
+Program-Level Epistemic Governance v1 extends this project governance without replacing the existing decision or production authority plane.
+
+Canonical governance sources are:
+
+```text
+config/research_governance_v1.json
+config/research_registry.json
+config/dataset_exposure_registry.json
+config/edge_registry.json
+research/governance/validate.py
+research/governance/audit.py
+research/governance/enforce_future.py
+research/governance/no_drift.py
+.github/workflows/research-governance.yml
+```
+
+The frozen prospective boundary is:
+
+```text
+legacy_boundary_commit = 896cbd123b7a0c38943815dd802f0f9dcd12e1c2
+research_governance_version = 1
+```
+
+### Authority planes remain separate
+
+Research registration, research PASS status or Edge Registry admission never creates production authority.
+
+Production/decision authority remains in the existing decision registry and Phase 6/7/8 machine contracts. Research and edge records are hard-failed if they attempt to self-authorize production.
+
+Current production boundaries remain:
+
+```text
+production gross cap              1.0
+production_authorized_components  []
+Phase 6 production_authorized     false
+Phase 6 signature_authorized      false
+Phase 6 order_submission_authorized false
+Phase 7 current state             MONITOR_ONLY
+Phase 7 production_authorized     false
+Phase 8 trigger                   absent
+first real short authorization    false
+```
+
+### Prospective formal research
+
+Every material post-boundary result-bearing formal research change must be prospectively owned by exactly one `PROGRAM_GOVERNED_V1` record before formal result consumption.
+
+That record must freeze the governance-v1 required fields, including research family, economic mechanism, target, primary metric, data budgets, declared variant budget, stopping/pass/fail rules, lineage, researcher degrees of freedom, governed path ownership and `production_authorized=false`.
+
+A different experiment ID does not by itself create an independent hypothesis. Result-informed descendants remain linked to failed or observed ancestors. Cosmetic parameter changes must not reset historical information exposure.
+
+### Data exposure and temporally unseen evidence
+
+Validation and SEALED releases must be recorded as information-exposure events. Once SEALED information is released it is consumed and cannot be renamed pristine.
+
+`TEMPORALLY_UNSEEN` means data genuinely generated after the relevant research freeze. Phase 6 elapsed live-shadow observations are the immediate next source of such evidence and must not be backfilled with historical or CI replay.
+
+### Legacy uncertainty
+
+Retrospective governance mapping preserves `UNKNOWN` where historical trial counts, exposure history, lineage, researcher decisions or complete candidate universes cannot be established from committed evidence.
+
+The Dataset Exposure Registry therefore does not fabricate retrospective release events. The Edge Registry remains empty until incremental-information evidence supports admission.
+
+A deterministic governance audit may remain `WARNING` because explicit legacy governance debt exists. Such debt is a truthful limitation, not an error to be erased by inference.
+
+### Machine enforcement
+
+The governance workflow must fail closed on malformed registries, invalid/circular lineage, false independence, invalid exposure transitions, variant-budget breaches, illegal edge admission, unregistered post-boundary formal research and any governance-v1 attempt to alter strategy/economic/history/production-authority boundaries.
+
+`research/governance/no_drift.py` provides the final boundary-to-HEAD regression through an allowlisted governance change surface, explicit historical/economic git-blob parity checks and current semantic authority invariants.
+
+Final closeout report: `docs/PROGRAM_LEVEL_EPISTEMIC_GOVERNANCE_V1_FINAL_REPORT_2026-08-08.md`.
+
+After governance v1 closeout, the next operational dependency is real Phase 6 zero-authority elapsed observation, not new alpha research and not production activation.
