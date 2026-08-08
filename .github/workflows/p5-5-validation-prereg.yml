@@ -4,14 +4,17 @@ on:
   pull_request:
     paths:
       - "research/cycle_exit/p5_5_validation_contract*.json"
+      - "research/results/p5_5_joint_validation/**"
       - "execution/plan-b-bot/tests/test_p5_5_validation_prereg.py"
       - ".github/workflows/p5-5-validation-prereg.yml"
       - "docs/CURRENT_STATE.md"
       - "docs/NEXT_STEPS.md"
+      - "docs/P5_5_VALIDATION_CLOSEOUT.md"
   push:
     branches: [main]
     paths:
       - "research/cycle_exit/p5_5_validation_contract*.json"
+      - "research/results/p5_5_joint_validation/**"
       - "execution/plan-b-bot/tests/test_p5_5_validation_prereg.py"
       - ".github/workflows/p5-5-validation-prereg.yml"
 
@@ -38,6 +41,11 @@ jobs:
           test "$(cat research/results/p5_3_v2_market_state/summary.sha256)" = "05d5d68a59c8b13f1122d98ed75d03934defdc9d73c7dd92e038c92fd97d2e52"
           test "$(git hash-object research/cycle_exit/p5_4_behavior_mapping_contract.json)" = "595a8488616ac8d333335cf2bc9cc509d808d7e8"
           test "$(git hash-object research/cycle_exit/p5_4_behavior_mapping.py)" = "a6842ddb572f7af7da928a7a8a0c6f1582ef7c56"
-          test ! -e research/results/p5_5_joint_validation/summary.json
+          if test -e research/results/p5_5_joint_validation/summary.json; then
+            python research/cycle_exit/validate_p5_5_joint_validation_result.py
+            test "$(cat research/results/p5_5_joint_validation/summary.sha256)" = "ccbdc067f9f7f1277e6eecaa2f74f31f84e3a1882ccef418e097b2ea66bf6e71"
+          else
+            test ! -d research/results/p5_5_joint_validation
+          fi
       - name: Validate frozen P5.5 contract
         run: pytest -q execution/plan-b-bot/tests/test_p5_5_validation_prereg.py

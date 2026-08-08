@@ -1,0 +1,26 @@
+{
+  "artifact_sha256": {
+    "candidate_gate_matrix.csv": "db598c2e98dcab35ab96066f30caafc2c2db37f13cb2f80e0808394c984bf605",
+    "candidate_metrics_by_cost.csv": "31777f213400a757b7cb7872ccbb98eb85e7c06856c104ddfeb999b345f6e032",
+    "event_behavior.csv": "788144435e7c22967697047854395d877c2eec4e4131ba2f276e4b861ecb58d9",
+    "event_held_out_robustness.csv": "2d2b25cd8206bd972349e4638da487cdaba623e6d532b1f356d1cb4f8f3250cf",
+    "input_manifest.json": "4afa2a3011076a72b20d9fe1ab4d025c12d1c22f155db946043353e7a2c21b53",
+    "selected_candidate.json": "79a663beabc384affcb6a892539fe45801eb4621c86bf1334b92cda4a43d0489",
+    "start_date_robustness.csv": "695d041328864f373b97d27dff8988eb7e620824182b4c6749edcdb2e5cd440e"
+  },
+  "behavior_map_selected": null,
+  "candidate_count": 12,
+  "common_observable_end": "2026-02-28",
+  "economic_end": "2026-02-28",
+  "economic_start": "2022-12-10",
+  "eligible_candidate_count": 0,
+  "event_diagnostics_include_2021_without_fabricated_brrk_economics": true,
+  "p5_5_r2_applied": true,
+  "p5_6_integration_eligible": false,
+  "production_authorized": false,
+  "profile_selected": null,
+  "risk_permission_unlock_authorized": false,
+  "selection_status": "NO_PROMOTION_FAIL_STOP",
+  "status": "ONE_TIME_FROZEN_P5_5_VALIDATION_COMPLETE",
+  "study_id": "P5.5-JOINT-PROFILE-MAP-VALIDATION-V1"
+}

@@ -4,75 +4,81 @@ Last updated: 2026-08-08
 
 ## Current instruction
 
-**P5.4 fixed behavior candidates are preregistered and the pure scalar mapping mechanics are implemented. Merge only after final-head CI, then freeze P5.5 validation/economic rules before computing any candidate return/cost result.**
+**P5.5 completed with zero eligible candidates. Do not retune the failed cycle overlay or force P5.6. Merge the immutable closeout, record P5.6 as blocked, and continue Phase 6 using the currently authorized baseline architecture in strict zero-trading shadow mode.**
 
 ## Immediate state
 
 ```text
 Phase 0-3                              COMPLETE / MERGED
-Phase 4 leverage research              FAIL_STOP
+Phase 4 leverage research              FAIL_STOP / no eligible >1 candidate
 production gross cap                   1.0
 production_authorized_components       []
 P5.1 event taxonomy                    COMPLETE / FROZEN
 P5.2 feature evidence                  COMPLETE / IMMUTABLE
 P5.3 V1                               IMMUTABLE / ARCHITECTURE_FAIL
 P5.3 V2                               IMMUTABLE EVIDENCE / ARCHITECTURE_PASS
-P5.4 fixed candidates                  PREREGISTERED
-P5.4 pure mapping mechanics            IMPLEMENTED / NO ECONOMIC SELECTION
-P5.5 validation                        NEXT / CONTRACT FIRST
-P5.6 integration                       NOT STARTED
-Phase 6-8                              NOT STARTED
+P5.4 fixed candidates + pure mapping   COMPLETE / NO SELECTION
+P5.5 joint validation                  COMPLETE / IMMUTABLE / NO_PROMOTION / FAIL_STOP
+P5.5 result commit                     ae20890d87567c98e403e3558219d5de55daef67
+P5.5 summary SHA256                    ccbdc067f9f7f1277e6eecaa2f74f31f84e3a1882ccef418e097b2ea66bf6e71
+P5.6 integration                       BLOCKED / NO ELIGIBLE CANDIDATE
+Phase 6 integrated shadow              NEXT / BASELINE ONLY
+Phase 7 limited-live readiness         NOT STARTED / explicit actual-launch approval required
+Phase 8 bear-short research            NOT STARTED
 ```
 
-## P5.4 implementation boundary
+## P5.5 interpretation
 
-The implementation performs only:
+No profile/map combination passes the frozen event, economics, start-date, held-out and broad-policy gates.
+
+The key structural trade-off is:
+
+- `HARD_ONLY`: economic parity with baseline, but insufficient terminal de-risk behavior;
+- gradual maps: improve absolute drawdown but sacrifice too much CAGR/terminal wealth and fail robustness.
+
+Representative 5-bps `BALANCED/GENTLE`:
 
 ```text
-cycle_adjusted_target(asset,t)
-  = frozen_brrk_target(asset,t)
-  * frozen_multiplier(market_state,t)
+CAGR     79.7629% -> 72.1452%  (-7.6177 pp)
+MaxDD    33.5292% -> 31.5212%  (+2.0080 pp improvement)
 ```
 
-It cannot increase gross, cannot alter relative BTC/ETH/SOL/BNB ranking, cannot introduce shorts or XRP targets, and has no permission or production side effects. `FLAT` and `DATA_INSUFFICIENT` map to zero in the overlay candidates.
+This is not a near-threshold miss. Same-experiment post-result tuning is forbidden.
 
-## P5.5 contract must freeze before economics
-
-P5.5 must evaluate exactly 12 preregistered combinations:
+## P5.6 disposition
 
 ```text
-EARLY / BALANCED / CONSERVATIVE
-x
-HARD_ONLY / GENTLE / BALANCED / DEFENSIVE
+P5.6 = BLOCKED / NO ELIGIBLE P5.5 CANDIDATE
 ```
 
-plus the non-promotable `BRRK_NO_CYCLE_CONTROL` comparator.
+Do not integrate a cycle-risk multiplier into production/shadow baseline.
 
-Before any candidate economics, freeze:
+## Phase 6 baseline shadow scope
 
-- exact historical input/target source and digest;
-- exact simulation timing convention;
-- cost grid and turnover convention;
-- metrics: terminal multiple, CAGR, MaxDD, Sharpe, Calmar, turnover;
-- event-level lead/lag, false-positive duration, missed upside and avoided drawdown definitions;
-- second-wind and non-top-control gates;
-- leave-one-event-out or comparable event-held-out procedure;
-- no-single-event-dependency rule;
-- selection objective/tie-breaks;
-- fail-stop rule if no robust combination exists.
+Phase 6 should exercise the existing execution spine end-to-end while keeping zero trading authority:
 
-Reuse established repository path/cost semantics where applicable; do not create a more favorable cycle-specific accounting convention.
+- frozen BRRK/P4.1 target computation;
+- market/account read-only inputs;
+- hypothetical target/order generation;
+- route/cost/reconciliation/restart/emergency logic;
+- persistent audit logs and deterministic replay;
+- explicit no-signer / no-order-submit invariant;
+- no secret/withdrawal/external-transfer scope;
+- gross cap remains `1.0`;
+- no P5 cycle overlay.
 
-## P5.6 and later
-
-Only a P5.5-selected robust combination may be integrated. P5.6 controls total gross only. Phase 6 remains shadow/no signatures, Phase 7 actual capital launch remains explicit-human-approved, and Phase 8 first actual short remains human-gated.
+Where the roadmap requires elapsed shadow duration or event coverage that cannot be manufactured instantly, classify that criterion explicitly as `MEASUREMENT_INCONCLUSIVE / TIME_DEPENDENT`; complete all code/readiness evidence and start/define the observation mechanism without pretending elapsed time has occurred.
 
 ## Exact next step
 
 ```text
-FINAL-HEAD CI/GOVERNANCE FOR P5.4 IMPLEMENTATION
+FINAL-HEAD CI/GOVERNANCE FOR P5.5 CLOSEOUT
 EXACT-HEAD MERGE
 VERIFY NEW MAIN
-PREREGISTER P5.5 VALIDATION + ECONOMIC SELECTION CONTRACT
-ONLY THEN RUN P5.5 EVIDENCE ONCE
+RECORD P5.6 BLOCKED
+AUDIT EXISTING EXECUTION SPINE FOR PHASE-6 SHADOW INVARIANTS
+IMPLEMENT / TEST ZERO-SIGNATURE INTEGRATED SHADOW HARNESS
+RUN DETERMINISTIC / HISTORICAL-REPLAY SHADOW EVIDENCE
+CLASSIFY REAL-ELAPSED-TIME CRITERIA SEPARATELY
+NO PRODUCTION AUTHORIZATION
 ```

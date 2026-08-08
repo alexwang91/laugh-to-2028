@@ -1,0 +1,43 @@
+{
+  "amendment_id": "P5.5-JOINT-PROFILE-MAP-VALIDATION-V1-R2",
+  "status": "FROZEN_BEFORE_ANY_P5_5_CANDIDATE_ECONOMICS",
+  "registered_at_utc": "2026-08-08T00:38:00Z",
+  "base_contract": "P5.5-JOINT-PROFILE-MAP-VALIDATION-V1",
+  "prior_amendment": "P5.5-JOINT-PROFILE-MAP-VALIDATION-V1-R1",
+  "result_observed_before_amendment": false,
+  "reason": "The immutable P5.2 feature evidence data_window ends 2026-02-28 and the immutable P5.3 V2 MARKET_STATE path therefore also ends 2026-02-28, while the base P5.5 draft inherited the Phase-4 BRRK target/price end 2026-08-02. P5.5 requires both frozen BRRK targets and frozen cycle state. Forward-filling MARKET_STATE, fabricating later feature evidence, or treating five months of absent state as a deliberate zero-risk signal is forbidden. Before any candidate economics, R2 freezes the authoritative common observable end at 2026-02-28.",
+  "coverage_evidence": {
+    "p5_2_summary_sha256": "3f6dc3c512d22ac8f71d43ed155f2602cd40d5caf3d617c0e130e170727e0627",
+    "p5_2_data_window_end": "2026-02-28",
+    "p5_3_v2_summary_sha256": "05d5d68a59c8b13f1122d98ed75d03934defdc9d73c7dd92e038c92fd97d2e52",
+    "p5_3_v2_profile_classified_days": 1869,
+    "p5_3_v2_initialization_date": "2021-01-17",
+    "p5_3_v2_last_classified_date": "2026-02-28",
+    "phase4_brrk_target_price_end": "2026-08-02"
+  },
+  "replacement_semantics": {
+    "authoritative_brrk_economics_end": "2026-02-28",
+    "common_observable_end_rule": "min(frozen BRRK target/price end, immutable P5.3 V2 MARKET_STATE evidence end)",
+    "forward_fill_market_state_after_frozen_end": false,
+    "fabricate_feature_or_market_state_extension": false,
+    "missing_post_end_days_as_zero_multiplier": false
+  },
+  "unchanged": [
+    "economic start 2022-12-10",
+    "candidate set",
+    "P5.3 profiles",
+    "P5.4 multiplier maps",
+    "cost grid",
+    "rebalance band",
+    "event behavior gates",
+    "economic hard gates",
+    "start-date robustness starts",
+    "event-held-out robustness events and thresholds",
+    "broad-policy robustness",
+    "selection objective and tie-breaks",
+    "R1 drawdown sign semantics",
+    "run authority",
+    "production authorization"
+  ],
+  "production_authorized": false
+}
