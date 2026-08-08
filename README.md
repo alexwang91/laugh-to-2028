@@ -52,27 +52,11 @@ first real short authority       = NONE
 
 ## Frozen research closeout
 
-`LEVERAGE-0040` and `LEVERAGE-0041` remain immutable `NO_PROMOTION`. No >1 production leverage was selected or authorized.
-
-`LEVERAGE-0040` immutable summary SHA256:
-
-```text
-3bb4dc46c61a5e9c7e049862575a89b2771830410ce4bc2bb25c83e469f52fc0
-```
-
-P5.5 immutable result remains:
-
-```text
-result commit   ae20890d87567c98e403e3558219d5de55daef67
-summary SHA256  ccbdc067f9f7f1277e6eecaa2f74f31f84e3a1882ccef418e097b2ea66bf6e71
-selection       NO_PROMOTION_FAIL_STOP
-```
+`LEVERAGE-0040` and `LEVERAGE-0041` remain immutable `NO_PROMOTION`. P5.5 remains immutable `NO_PROMOTION_FAIL_STOP` and P5.6 is ineligible.
 
 `STABLECOIN-LIQUIDITY-0001` completed its single prospectively governed Stage-1 variant and terminated at `FAIL_NO_INCREMENTAL_INFORMATION / NO_PROMOTION`. It may not be rerun or rescued under the same research ID, creates no Edge Registry entry and changes no BRRK/Phase/production authority.
 
 ## Phase 6 live-observation boundary
-
-Phase 6 machine contract: `config/phase6_shadow_contract.json`.
 
 ```text
 implementation/replay = PASS_SHADOW_ONLY_IMPLEMENTATION_REPLAY
@@ -84,13 +68,11 @@ minimum decisions     = 10
 minimum drills        = 1
 ```
 
-Elapsed-time evidence cannot be replayed or backfilled. The existing `phase6-integrated-shadow.yml` is implementation/replay safety CI only; it does not itself accumulate the required real elapsed evidence.
+Elapsed-time evidence cannot be replayed or backfilled. The existing integrated-shadow workflow is implementation/replay safety CI only; it does not itself accumulate the required real elapsed evidence.
 
-The preactivation gate is frozen in `research/governance/phase6_live_observation_gate.json` / `.py`. It remains deliberately unarmed.
+The preactivation gate remains deliberately unarmed. The durable evidence backend is frozen to GitHub Actions Artifact v4 with 90-day retention, `overwrite=false`, immutable artifact identity outputs and a separately uploaded hash-bound receipt. That backend creates zero elapsed credit by itself.
 
-The durable evidence backend is frozen in `phase6_live_evidence_contract.json` / `.py` to GitHub Actions Artifact v4 with 90-day retention, `overwrite=false`, immutable artifact identity outputs and a separately uploaded hash-bound receipt. The backend contract creates zero elapsed credit by itself.
-
-PR #134 proposes `PHASE6-LIVE-VALUATION-V1` as an operational measurement contract. V1 accepts only explicit Hyperliquid Standard mode (`userAbstraction=disabled`) and maps verified UBTC/UETH/USOL spot holdings plus signed BTC/ETH/SOL/BNB perp notionals into the existing P3.3 position/equity inputs. Unsupported account modes/assets fail closed; BNB remains perp-only.
+PR #134 proposes `PHASE6-LIVE-VALUATION-V1`. It supports only explicit Hyperliquid Standard mode (`userAbstraction=disabled`) and maps verified UBTC/UETH/USOL spot holdings plus signed BTC/ETH/SOL/BNB perp notionals into the existing P3.3 position/equity inputs. Unsupported modes/assets fail closed; BNB remains perp-only.
 
 Current candidate pre-arm dependency state:
 
@@ -103,39 +85,22 @@ collector_armed                       false
 elapsed_evidence_credit_authorized    false
 ```
 
-If #134 passes final CI and merges unchanged, only one external pre-arm dependency remains: **one exact verified public read-only Hyperliquid master/subaccount address compatible with Standard mode**. The address must not be invented or derived from a private key merely to close the gate.
+If #134 passes final CI and merges unchanged, only one external pre-arm dependency remains: one exact verified public read-only Hyperliquid master/subaccount address compatible with Standard mode. The address must not be invented or derived from a private key merely to close the gate.
 
-After a later arm change, the first eligible scheduled decision is the first canonical `00:00 UTC` decision strictly after the arm commit timestamp. Replay, rerun, duplicate timestamps and manual dispatch cannot create scheduled-decision credit.
+A later arm change is separate. Its first eligible scheduled decision is the first canonical `00:00 UTC` decision strictly after the arm commit timestamp. Replay, rerun, duplicate timestamps and manual dispatch cannot create scheduled-decision credit.
 
 ## Phase 7 / 8 authority
 
-Phase 7 remains `MONITOR_ONLY`, launch-blocked and `production_authorized=false`. Phase 8 remains `PREREGISTERED_TRIGGER_ABSENT_NOT_RUN`, `short_ready=false` and `first_real_short_authorized=false`.
-
-Human approval remains mandatory for `MONITOR_ONLY -> ACTIVE`, `FLAT -> LONG`, `FLAT -> SHORT` and the first short exposure of a new bear phase.
+Phase 7 remains `MONITOR_ONLY`, launch-blocked and `production_authorized=false`. Phase 8 remains trigger-absent/not-run with no short or first-real-short authority.
 
 ## Program-Level Epistemic Governance v1
-
-Frozen boundary:
 
 ```text
 research_governance_version = 1
 legacy_boundary_commit      = 896cbd123b7a0c38943815dd802f0f9dcd12e1c2
 ```
 
-Authority is separated across decision/research/dataset/edge registries and Phase 6/7/8 machine contracts. Future formal research is fail-closed and must be preregistered prospectively. Historical unknowns remain explicit research-governance debt instead of being fabricated.
-
-Core checks:
-
-```bash
-python -m research.governance.validate
-python -m research.governance.enforce_future --base <PR_BASE_SHA>
-python -m research.governance.phase6_live_evidence
-python -m research.governance.phase6_live_observation_gate
-python -m research.governance.audit
-python -m research.governance.no_drift
-```
-
-`no_drift` preserves canonical product/economic/authority invariants and does not permit broadening the governance allowlist merely to make a candidate pass.
+Authority remains separated across decision/research/dataset/edge registries and Phase 6/7/8 machine contracts. Future formal research is fail-closed and must be preregistered prospectively. Historical unknowns remain explicit governance debt.
 
 ## Exact next dependency
 
@@ -143,12 +108,12 @@ python -m research.governance.no_drift
 2. Verify the new `main` and canonical no-drift invariants.
 3. Freeze one exact public read-only Hyperliquid master/subaccount address.
 4. Verify `userAbstraction=disabled` and compatibility with `PHASE6-LIVE-VALUATION-V1`.
-5. Only when all 4/4 dependencies are frozen, create a **separate prospective arm change**.
+5. Only when all 4/4 dependencies are frozen, create a separate prospective arm change.
 6. Only genuine future scheduled decisions strictly after the arm commit may count toward Phase-6 elapsed evidence.
 
 Until then Phase 6 remains `MEASUREMENT_INCONCLUSIVE_TIME_DEPENDENT`, Phase 7 remains `MONITOR_ONLY`, Phase 8 remains trigger-absent/not-run, and all production/signature/submission authority remains false.
 
-After the Phase-6 collection path is genuinely operational, resume the infrastructure roadmap: formal research lifecycle/state-machine enforcement, then Research Queue / trial-overlap accounting. Do not substitute new result-bearing research for the unresolved Phase-6 operational dependency.
+After the Phase-6 collection path is genuinely operational, resume the infrastructure roadmap: formal research lifecycle/state-machine enforcement, then Research Queue / trial-overlap accounting.
 
 ## Source-of-truth order
 
