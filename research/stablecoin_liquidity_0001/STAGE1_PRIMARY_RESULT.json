@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "evidence_id": "STABLECOIN-LIQUIDITY-0001-STAGE1-PRIMARY-RESULT-V1",
+  "research_id": "STABLECOIN-LIQUIDITY-0001",
+  "run_interface_id": "STABLECOIN-LIQUIDITY-0001-RUN-INTERFACE-V1",
+  "stage1_execution_id": "STABLECOIN-LIQUIDITY-0001-STAGE1-RUN-V1",
+  "evidence_type": "PRIMARY_RESULT_ONLY",
+  "production_authorized": false,
+  "execution": {
+    "merge_commit": "dd50ec35085eee2a2883dc1b29e3dd21ec52b043",
+    "workflow_run_id": 31264048473,
+    "run_attempt": 1,
+    "workflow_conclusion": "SUCCESS",
+    "stage1_job_conclusion": "SUCCESS"
+  },
+  "frozen_inputs": {
+    "stablecoin_dataset_slice_id": "STABLECOIN-LIQUIDITY-0001-DEFILLAMA-HIST-V1",
+    "stablecoin_raw_sha256": "7cffe6fb3a21e891082c06c60e91491edfbc78e9c01e2d549805815a646d9ffd",
+    "stablecoin_raw_exposure_id": "STABLECOIN-LIQUIDITY-0001-RAW-DATA-20260808T141719Z",
+    "binance_input_artifact_id": 9023613464,
+    "binance_input_artifact_digest": "sha256:26748abdd75a7568872617b5bc2f6618b8b3a315cbcd785cf1175e4c606354db",
+    "binance_receipt_artifact_id": 9023613629,
+    "binance_receipt_artifact_digest": "sha256:bdf9ed3486c426c75f4b7cd9eed2e88bc2843c457459481b0eb56e14429ce9d3"
+  },
+  "primary_result_artifact": {
+    "artifact_id": 9023630485,
+    "artifact_name": "stablecoin-stage1-primary-result-dd50ec35085eee2a2883dc1b29e3dd21ec52b043",
+    "artifact_digest": "sha256:6eac38957c3592e18eb2cb4706e87be12daeca6cfe504065af19e944984674f1",
+    "primary_result_digest": "d920d45397d45ae5636a2f3c682600778d4d087d97e035ba911844cca65821ff"
+  },
+  "primary_result": {
+    "classification": "FAIL_NO_INCREMENTAL_INFORMATION",
+    "valid_oos_prediction_count": 933,
+    "mean_primary_loss_differential": -5430210.12771038,
+    "hac_max_lag": 19,
+    "hac_test_statistic": -1.2454264237630361,
+    "hac_one_sided_p_value": 0.8935124773215692,
+    "primary_result_digest": "d920d45397d45ae5636a2f3c682600778d4d087d97e035ba911844cca65821ff"
+  },
+  "frozen_interpretation": {
+    "failure_rule_triggered": "MEAN_PRIMARY_LOSS_DIFFERENTIAL_LE_ZERO",
+    "stopping_state": "FAIL_STOP_NO_RERUN_NO_RESCUE",
+    "stage2_eligible": false,
+    "edge_admission_eligible": false,
+    "portfolio_integration_eligible": false,
+    "production_authorization_change": false
+  },
+  "library_mirror": {
+    "folder": "/Research/laugh-to-2028/stablecoin-liquidity-0001/stage1/dd50ec35085eee2a2883dc1b29e3dd21ec52b043",
+    "primary_result_json_mirrored": true,
+    "primary_result_zip_mirrored": true,
+    "binance_input_zip_mirrored": true,
+    "binance_receipt_zip_mirrored": true
+  },
+  "explicit_nonclaims": [
+    "NO_PREDICTIONS_TABLE_RELEASED",
+    "NO_COEFFICIENT_PATH_RELEASED",
+    "NO_FEATURE_IMPORTANCE_RELEASED",
+    "NO_SECONDARY_METRICS_RELEASED",
+    "NO_ALTERNATIVE_LAG_EVALUATED",
+    "NO_ALTERNATIVE_ALPHA_EVALUATED",
+    "NO_ALTERNATIVE_HORIZON_EVALUATED",
+    "NO_ALTERNATIVE_FEATURE_REPRESENTATION_EVALUATED",
+    "NO_STAGE2_RUN",
+    "NO_EDGE_REGISTRY_ADMISSION",
+    "NO_PORTFOLIO_INTEGRATION",
+    "NO_BRRK_CHANGE",
+    "NO_PHASE6_7_8_AUTHORITY_CHANGE",
+    "NO_PRODUCTION_AUTHORIZATION"
+  ]
+}
