@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "research_registry.schema.json",
+  "title": "Program-Level Research Registry v1",
+  "type": "object",
+  "required": ["schema_version", "registry_id", "research_governance_version", "legacy_boundary_commit", "records", "research_governance_debt"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "registry_id": {"const": "RESEARCH-REGISTRY-V1"},
+    "research_governance_version": {"const": 1},
+    "legacy_boundary_commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "records": {"type": "array", "items": {"$ref": "#/$defs/research_record"}},
+    "research_governance_debt": {"type": "array", "items": {"$ref": "#/$defs/debt_item"}}
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "lineage_edge": {
+      "type": "object",
+      "required": ["relation", "ref_research_id", "provenance_status"],
+      "properties": {
+        "relation": {"enum": ["RESULT_INFORMED", "PARAMETER_DESCENDANT", "MECHANISM_FORK", "NEW_TARGET_FORK", "NEW_DATA_FORK", "IMPLEMENTATION_FIX", "MEASUREMENT_FIX", "EXTERNAL_HYPOTHESIS", "INDEPENDENT_REPLICATION", "SUPERSEDES"]},
+        "ref_research_id": {"type": "string", "minLength": 1},
+        "provenance_status": {"enum": ["FACT", "INFERRED_FROM_REPOSITORY", "UNKNOWN"]},
+        "evidence_ref": {"type": ["string", "null"]}
+      },
+      "additionalProperties": false
+    },
+    "research_record": {
+      "type": "object",
+      "required": ["research_id", "research_family_id", "research_governance_version", "governance_mode", "objective_type", "production_authorized"],
+      "properties": {
+        "research_id": {"type": "string", "minLength": 1},
+        "research_family_id": {"type": ["string", "null"]},
+        "research_domain": {"type": ["string", "null"]},
+        "research_governance_version": {"const": 1},
+        "governance_mode": {"enum": ["RETROSPECTIVE_LEGACY", "PROGRAM_GOVERNED_V1"]},
+        "objective_type": {"type": "string", "minLength": 1},
+        "created_at": {"type": ["string", "null"]},
+        "created_before_result": {"type": ["boolean", "string"]},
+        "question": {"type": ["string", "null"]},
+        "hypothesis": {"type": ["string", "null"]},
+        "hypothesis_origin": {"type": ["string", "null"]},
+        "economic_mechanism": {"type": ["string", "null"]},
+        "primary_target": {"type": ["string", "null"]},
+        "primary_metric": {"type": ["string", "null"]},
+        "secondary_metrics": {"type": "array", "items": {"type": "string"}},
+        "feature_families": {"type": "array", "items": {"type": "string"}},
+        "horizon": {"type": ["string", "null"]},
+        "universe": {"oneOf": [{"type": "array", "items": {"type": "string"}}, {"type": "string"}]},
+        "development_dataset_refs": {"type": "array", "items": {"type": "string"}},
+        "validation_dataset_refs": {"type": "array", "items": {"type": "string"}},
+        "sealed_dataset_refs": {"type": "array", "items": {"type": "string"}},
+        "declared_variant_budget": {"oneOf": [{"type": "integer", "minimum": 0}, {"enum": ["UNKNOWN", "NOT_HISTORICALLY_RECORDED"]}]},
+        "actual_variants_evaluated": {"oneOf": [{"type": "integer", "minimum": 0}, {"enum": ["UNKNOWN", "NOT_HISTORICALLY_RECORDED"]}]},
+        "parameter_candidate_count": {"oneOf": [{"type": "integer", "minimum": 0}, {"enum": ["UNKNOWN", "NOT_HISTORICALLY_RECORDED"]}]},
+        "stopping_rule": {"type": ["string", "null"]},
+        "success_criteria": {"oneOf": [{"type": "array", "items": {"type": "string"}}, {"type": "string"}]},
+        "failure_criteria": {"oneOf": [{"type": "array", "items": {"type": "string"}}, {"type": "string"}]},
+        "allowed_followup": {"oneOf": [{"type": "array", "items": {"type": "string"}}, {"type": "string"}]},
+        "forbidden_followup": {"oneOf": [{"type": "array", "items": {"type": "string"}}, {"type": "string"}]},
+        "researcher_decisions": {"oneOf": [{"type": "array", "items": {"type": "string"}}, {"type": "string"}]},
+        "lineage_edges": {"type": "array", "items": {"$ref": "#/$defs/lineage_edge"}},
+        "result_status": {"type": ["string", "null"]},
+        "failure_reason": {"type": ["string", "null"]},
+        "promotion_state": {"type": ["string", "null"]},
+        "evidence_refs": {"type": "array", "items": {"type": "string"}},
+        "decision_refs": {"type": "array", "items": {"type": "string"}},
+        "production_relevance": {"type": ["string", "null"]},
+        "production_authorized": {"const": false},
+        "provenance_status": {"enum": ["FACT", "INFERRED_FROM_REPOSITORY", "UNKNOWN"]},
+        "governed_path_prefixes": {"type": "array", "items": {"type": "string"}},
+        "notes": {"type": "array", "items": {"type": "string"}}
+      },
+      "allOf": [{
+        "if": {"properties": {"governance_mode": {"const": "PROGRAM_GOVERNED_V1"}}, "required": ["governance_mode"]},
+        "then": {"required": ["research_family_id", "research_domain", "created_at", "created_before_result", "question", "hypothesis", "hypothesis_origin", "economic_mechanism", "primary_target", "primary_metric", "secondary_metrics", "feature_families", "horizon", "universe", "development_dataset_refs", "validation_dataset_refs", "sealed_dataset_refs", "declared_variant_budget", "actual_variants_evaluated", "stopping_rule", "success_criteria", "failure_criteria", "allowed_followup", "forbidden_followup", "researcher_decisions", "lineage_edges", "result_status", "failure_reason", "promotion_state", "evidence_refs", "production_relevance", "provenance_status"]}
+      }],
+      "additionalProperties": false
+    },
+    "debt_item": {
+      "type": "object",
+      "required": ["debt_id", "category", "status", "description", "affected_research_ids"],
+      "properties": {
+        "debt_id": {"type": "string"},
+        "category": {"type": "string"},
+        "status": {"enum": ["OPEN", "PARTIALLY_RECOVERED", "RESOLVED"]},
+        "description": {"type": "string"},
+        "affected_research_ids": {"type": "array", "items": {"type": "string"}},
+        "evidence_refs": {"type": "array", "items": {"type": "string"}}
+      },
+      "additionalProperties": false
+    }
+  }
+}
