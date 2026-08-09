@@ -1,7 +1,7 @@
 # BRRK Current State
 
 Last updated: 2026-08-09  
-Handoff PR: **V3 candidate — pending PR number**  
+Handoff PR: **#146**  
 Handoff branch: `dashboard/daily-audit-v3`  
 Authoritative baseline main at branch creation: `0c47a89bb853e35a97ecab8c43e88cb9a9ce7508`  
 Latest merged dashboard PR at branch creation: **#145**
@@ -225,9 +225,7 @@ This V3 candidate changes only dashboard HTML/documentation/tests and this hando
 
 ## Exact next task
 
-1. Open the V3 PR with required handoff sections and `DRIFT_0 / NO_CHANGE`.
-2. Bind this document to the actual PR number.
-3. Require governance/no-drift/dashboard CI to be green.
-4. Merge only if final diff remains dashboard/docs/tests only.
-5. Independently verify `https://laugh-to-2028.vercel.app/` serves `v3-daily-audit`.
-6. Continue Phase-6 future-only evidence accumulation independently of dashboard presentation.
+1. Require PR #146 governance/no-drift/dashboard CI to be green.
+2. Merge PR #146 only if final diff remains dashboard/docs/tests only.
+3. Independently verify `https://laugh-to-2028.vercel.app/` serves `v3-daily-audit`.
+4. Continue Phase-6 future-only evidence accumulation independently of dashboard presentation.
