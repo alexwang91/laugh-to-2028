@@ -1,10 +1,10 @@
 # BRRK Current State
 
 Last updated: 2026-08-09  
-Handoff PR: **#143**  
-Handoff branch: `phase-6/arm-activation`  
-Authoritative baseline main at branch creation: `7520c2e620af2fcd9f407a3bfac9205b84120092`  
-Latest merged PR at branch creation: **#142**
+Handoff PR: **#144**  
+Handoff branch: `dashboard/program-timeline-v1`  
+Authoritative baseline main at branch creation: `139287a269cf32281c7753ef63b1df7429d7a289`  
+Latest merged PR at branch creation: **#143**
 
 Status: **authoritative current-state handoff**
 
@@ -20,98 +20,48 @@ Idle Cash execution feasibility   NOT_FEASIBLE_ON_HYPERLIQUID_STANDARD / FUTURE_
 Phase 6 implementation/replay     PASS_SHADOW_ONLY_IMPLEMENTATION_REPLAY
 Phase 6 identity                  VERIFIED / FROZEN / STANDARD-DISABLED
 Phase 6 pre-arm dependencies      4/4
-Phase 6 ARM owner authorization   GRANTED 2026-08-09
-Phase 6 real live preflight       PASS / RUN 31316348226 / NON-CREDITING
+Phase 6 ARM                       MERGED #143 / ACTIVE FUTURE-ONLY OBSERVATION
 Phase 6 ARM marker                cbd58adb05187651ca72d67900a0ccbbd3e83b1e
-Phase 6 activation package        ARMED_FUTURE_ONLY_OBSERVATION_ACTIVE / PR #143
-Phase 6 live elapsed evidence     MEASUREMENT_INCONCLUSIVE_TIME_DEPENDENT / NO CREDIT YET
+Phase 6 daily schedule            00:00 UTC
+Phase 6 live elapsed evidence     MEASUREMENT_INCONCLUSIVE_TIME_DEPENDENT
+Program timeline dashboard        READ-ONLY V1 / PR #144
 Phase 7                           MONITOR_ONLY / LAUNCH BLOCKED
 Phase 8                           TRIGGER ABSENT / NOT RUN
 Production                        NO_CHANGE
 ```
 
-## Bound identity and ARM authority
+## Phase 6 active observation state
 
-`PHASE6-LIVE-ACCOUNT-IDENTITY-V1` remains frozen to the explicit owner-supplied Hyperliquid master account:
-
-```text
-userRole        user
-userAbstraction disabled
-identity_frozen true
-pre-arm deps    4/4
-```
-
-The owner explicitly authorized Phase-6 ARM and future-only zero-authority shadow evidence collection. That authorization does **not** authorize production, signing, order submission, withdrawal, transfer, strategy retuning, or Phase-7 launch.
-
-## Real external preflight
-
-PR #143 ran the actual public/read-only observation chain before activation.
-
-The first preflight exposed a Hyperliquid funding timestamp transport detail: returned hourly funding rows were tens of milliseconds after nominal hour boundaries. Raw bytes were preserved. The fix was confined to a fail-closed Hyperliquid source-boundary adapter with a maximum one-second jitter tolerance; the frozen P3.1 canonicalizer was not relaxed or modified.
-
-The corrected real preflight then passed in workflow run `31316348226`:
+PR #143 was merged to `main` with normal merge commit:
 
 ```text
-observed_at                      2026-08-09T13:40:30Z
-account_equity_usd               53.788314
-shadow_status                    SHADOW_COMPUTED_NO_AUTHORITY
-shadow_alerts                    []
-P3.2 independent parity          PASS
-scheduled decision credit        false
-production_authorized            false
-signature_authorized             false
-order_submission_authorized      false
-input_provenance_digest          bb1e3cfb1946e43b3da917a8513f9cce8b2ae1bdab9735e5d2eac49e66472939
-shadow_record_digest             59a689e42662f3fc871f6c0d67859a83ee136b959acd0299b3cd7ab46ae7cd03
+139287a269cf32281c7753ef63b1df7429d7a289
 ```
 
-The PR preflight is diagnostic only and creates no elapsed-time, scheduled-decision or emergency-drill credit.
-
-## Prospective ARM marker and activation
-
-The durable prospective marker is the dedicated commit:
+The durable prospective ARM marker remains a real ancestor of `main`:
 
 ```text
 cbd58adb05187651ca72d67900a0ccbbd3e83b1e
 ```
 
-The final activation package in PR #143 sets:
+The authoritative live-observation gate is:
 
 ```text
 status                             ARMED_FUTURE_ONLY_OBSERVATION_ACTIVE
 collector_armed                    true
 schedule_configured                true
 elapsed_evidence_credit_authorized true
-armed_commit                       cbd58adb05187651ca72d67900a0ccbbd3e83b1e
 daily schedule                     0 0 * * *  (UTC)
 production_authorized              false
 signature_authorized               false
 order_submission_authorized        false
 ```
 
-The evidence backend is `ARMED_COLLECTING_FUTURE_ONLY` and references the same ARM marker. Credit still requires successful persistence of both the create-only 90-day evidence artifact and the separate hash-bound receipt artifact.
+The evidence backend is `ARMED_COLLECTING_FUTURE_ONLY`. A scheduled decision can become a credit candidate only after both its create-only evidence artifact and separate hash-bound receipt artifact persist successfully. Historical replay, CI replay, pull-request preflight, workflow rerun, duplicate decision timestamps and manual dispatch do not create scheduled-decision credit.
 
-**Important:** scheduled workflows run from the default branch. Therefore PR #143 itself does not start a credited decision. The activation becomes operational only after merge to `main` while preserving the ARM-marker commit in history.
+The first theoretical eligible canonical timestamp is `2026-08-10T00:00:00Z`. It becomes decision #1 only if a genuine `schedule` event succeeds with the required durable evidence pair. No missed timestamp may be backfilled.
 
-The marker was created on 2026-08-09, so the rule-derived first eligible canonical timestamp is `2026-08-10T00:00:00Z`. It becomes decision #1 only if the activation is already on `main` for that genuine schedule event and both required artifacts persist successfully. Otherwise the first actual post-merge scheduled event becomes the first credit candidate. No missed timestamp may be backfilled.
-
-## Zero-authority observation chain
-
-```text
-P3.1 canonical Binance UTC daily data
--> P3.2 BRRK-0011 target
--> independent research-reference parity
--> P3.3 rebalance control
--> Hyperliquid Standard read-only account valuation
--> P2.4 read-only route projection
--> Phase-6 hypothetical shadow record
--> create-only evidence artifact
--> separate hash-bound receipt artifact
-```
-
-Raw public/read-only response bytes are preserved before parsing. The collector imports no executor, signer, private-key or order-submission path.
-
-## Frozen Phase 6 acceptance
+Frozen Phase-6 acceptance remains:
 
 ```text
 minimum elapsed calendar days       14
@@ -122,22 +72,64 @@ unexplained target drift              0
 schedule failures                     0
 ```
 
-Historical backfill/replay, CI replay, pull-request preflight, workflow rerun, duplicate decision timestamps and manual dispatch create no scheduled-decision credit. A manual emergency drill may count only toward the drill requirement after ARM and never becomes a scheduled decision.
+A separately evidenced manual emergency drill is still required before Phase-6 closeout.
 
-## Evidence backend
+## Program Timeline Dashboard V1 — PR #144
 
-`PHASE6-LIVE-EVIDENCE-BACKEND-V1` remains the authority:
+While Phase-6 future evidence accumulates, PR #144 adds a read-only observability dashboard under:
 
-- GitHub Actions artifact v4;
-- 90-day retention for creditable evidence;
-- overwrite disabled;
-- raw market/account/route bytes preserved;
-- input-provenance and shadow-record SHA256 required;
-- evidence artifact uploads before receipt creation;
-- separate receipt artifact uploads before credit;
-- failed uploads, logs, ephemeral files and PR diagnostics create no credit.
+```text
+research/governance/dashboard/
+```
 
-## Production / security authority
+The dashboard is intentionally downstream of authoritative evidence and does not recompute, mutate or replace historical results.
+
+Historical source-of-record inputs displayed by V1 include:
+
+```text
+research/results/pit_disp_0015/daily_equity.csv
+research/results/pit_disp_0015/daily_weights.csv
+research/results/funding_pnl_0003/full_window_daily_equity.csv
+config/research_registry.json
+config/decision_registry.json
+```
+
+The repository historical equity/holdings window used by the canonical chart begins `2022-12-10` and currently extends through `2026-07-31`, i.e. close to four years rather than an invented exact four-year window.
+
+V1 provides:
+
+- a dropdown containing all governed Research Registry records;
+- a separate dropdown for records/scenarios that actually have daily equity artifacts and are therefore chartable;
+- cumulative NAV / PnL;
+- daily PnL percentage;
+- drawdown;
+- stacked historical BTC/ETH/SOL/BNB canonical target weights;
+- research result/promotion/production-state metadata;
+- a large past-to-future program timeline;
+- a Phase-6 future schedule/evidence/receipt ledger based on public GitHub Actions metadata;
+- visible Phase-7 and Phase-8 future gates.
+
+The dashboard freezes this semantic separation:
+
+```text
+historical backtest NAV
+!= Phase-6 hypothetical shadow PnL
+!= future real-account PnL
+```
+
+It must never visually splice those three into one continuous economic return series.
+
+For Phase 6, the UI may label a row only as a **scheduled credit candidate** when public workflow metadata shows:
+
+```text
+schedule event conclusion = success
+AND phase6-evidence-* artifact exists
+AND phase6-receipt-* artifact exists
+```
+
+That UI classification does not itself create evidence credit and is deliberately weaker than formal Phase-6 acceptance review.
+
+## Canonical production / security authority
 
 ```text
 directional core                  BRRK-0011
@@ -154,6 +146,8 @@ order_submission_authorized       false
 first real short authority        NONE
 ```
 
+Dashboard PR #144 changes none of these fields and introduces no signer, private key, order submission, withdrawal, transfer or production-state capability.
+
 ## Other frozen decisions
 
 - F27 R2 remains authoritative; R1 remains superseded-preserved.
@@ -164,7 +158,7 @@ first real short authority        NONE
 
 ## Human-control boundaries that remain
 
-ARM authorization is complete for zero-authority Phase-6 observation. Later explicit human gates remain:
+ARM authorization is complete only for zero-authority Phase-6 observation. Later explicit human gates remain:
 
 - Phase-7 launch approval;
 - `MONITOR_ONLY -> ACTIVE`;
@@ -176,12 +170,12 @@ ARM authorization is complete for zero-authority Phase-6 observation. Later expl
 
 `DRIFT_0`.
 
-The ARM work changes only Phase-6 observation governance, source-boundary read normalization, evidence state and workflow scheduling. Strategy mathematics, frozen P3.1 canonical semantics, immutable economic results, production config, gross cap and execution submission capability remain unchanged.
+PR #144 is an observability-only governance-layer change. It adds dashboard HTML/documentation/tests and this handoff update. It does not modify historical result blobs, `execution/**`, production `config/**`, strategy mathematics, Phase-6 workflow scheduling, immutable economic evidence or execution authority.
 
 ## Exact next task
 
-1. Make the final PR #143 head fully green, including its real non-crediting live preflight.
-2. Merge PR #143 with a **normal merge, not squash/rebase**, so ARM marker commit `cbd58adb05187651ca72d67900a0ccbbd3e83b1e` remains a real ancestor of `main`.
-3. Wait for the first genuine post-merge `00:00 UTC` schedule run.
-4. Credit decision #1 only after both evidence and receipt artifacts succeed; never backfill a missed schedule.
-5. Complete one separately evidenced manual emergency drill before Phase-6 closeout. Phase-7 remains blocked until the full 14-day / 10-decision / 1-drill review passes and the owner later gives separate launch approval.
+1. Make PR #144 fully green under governance/no-drift and handoff CI.
+2. Merge the read-only dashboard without changing Phase-6 or production authority.
+3. Continue allowing the daily Phase-6 schedule to accumulate genuine future evidence independently of the dashboard.
+4. After the first successful scheduled evidence+receipt pair exists, verify that the dashboard ledger reflects it without creating or modifying the underlying credit.
+5. If detailed forward daily target weights, hypothetical shadow return, account equity and alerts are desired in the UI, design a separate read-only derived summary index; do not weaken or replace the canonical create-only evidence/receipt contract.
