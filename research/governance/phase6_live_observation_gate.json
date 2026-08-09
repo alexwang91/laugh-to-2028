@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "gate_id": "PHASE6-LIVE-OBSERVATION-PREACTIVATION-V1",
-  "status": "PREACTIVATION_READY_AWAITING_SEPARATE_ARM",
+  "status": "ARMED_FUTURE_ONLY_OBSERVATION_ACTIVE",
   "purpose": "GOVERN_PHASE6_FUTURE_ONLY_ELAPSED_EVIDENCE_ACTIVATION_WITHOUT_CHANGING_STRATEGY_OR_PRODUCTION_AUTHORITY",
   "canonical_phase6_contract": "config/phase6_shadow_contract.json",
   "evidence_backend_contract": "research/governance/phase6_live_evidence_contract.json",
@@ -11,10 +11,10 @@
   "production_authorized": false,
   "signature_authorized": false,
   "order_submission_authorized": false,
-  "elapsed_evidence_credit_authorized": false,
-  "collector_armed": false,
-  "schedule_configured": false,
-  "armed_commit": null,
+  "elapsed_evidence_credit_authorized": true,
+  "collector_armed": true,
+  "schedule_configured": true,
+  "armed_commit": "cbd58adb05187651ca72d67900a0ccbbd3e83b1e",
   "required_before_arm": {
     "observation_account_identity_frozen": true,
     "current_position_and_equity_valuation_contract_frozen": true,
@@ -65,13 +65,13 @@
     "rerun_counted_as_new_decision"
   ],
   "notes": [
-    "Phase-6 pre-arm dependencies are now 4/4 because the explicit compatible public observation identity is frozen.",
-    "This preactivation-ready state does not itself start the 14-day elapsed clock or create any credited scheduled decision.",
-    "A separate prospective ARM change is still required before collector arming, schedule configuration or elapsed-evidence credit authorization.",
-    "The first eligible scheduled decision remains the first canonical 00:00 UTC decision strictly after the future ARM commit timestamp.",
-    "The durable evidence backend is frozen to the separately validated Phase-6 live-evidence contract, but no Phase-6 live evidence has been collected by that fact alone.",
-    "The valuation contract remains explicit Hyperliquid Standard/disabled mode only; unsupported account abstraction modes fail closed and cannot earn elapsed credit under V1.",
-    "The bound identity is the exact owner-supplied master account with verified userRole=user and userAbstraction=disabled.",
-    "The canonical target/rebalance/router/shadow implementation blobs remain unchanged under Governance v1 no-drift."
+    "All four pre-arm dependencies were frozen before ARM and the real public/read-only preflight workflow run 31316348226 passed with SHADOW_COMPUTED_NO_AUTHORITY and no shadow alerts.",
+    "The prospective owner-authorized ARM marker is commit cbd58adb05187651ca72d67900a0ccbbd3e83b1e; no event at or before that marker receives elapsed or scheduled-decision credit.",
+    "The collector is armed only for zero-authority future shadow observation and the schedule is the canonical daily 00:00 UTC decision boundary.",
+    "The first eligible scheduled decision is the first genuine 00:00 UTC schedule event strictly after the ARM marker commit timestamp and becomes creditable only after both evidence and separate receipt artifacts persist successfully.",
+    "Historical backfill, historical replay, CI replay, pull-request preflight, workflow rerun, duplicate decision timestamps and manual dispatch create no scheduled-decision credit.",
+    "A manual emergency drill may count only toward the emergency-drill requirement and never becomes a scheduled decision.",
+    "The valuation contract remains Hyperliquid Standard/disabled only and the bound identity remains the verified owner-supplied master account.",
+    "Production, signing, order submission, withdrawal, transfer and Phase-7 launch remain unauthorized."
   ]
 }

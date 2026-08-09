@@ -22,13 +22,47 @@ class Phase6LiveEvidenceTests(unittest.TestCase):
             )
         )
 
-    def test_repository_contract_is_frozen_but_not_collecting(self) -> None:
+    def test_repository_contract_is_armed_future_only_and_zero_authority(self) -> None:
         snapshot = validate_evidence_contract(self.contract)
+        self.assertEqual(snapshot["status"], "ARMED_COLLECTING_FUTURE_ONLY")
         self.assertEqual(snapshot["backend"], "GITHUB_ACTIONS_ARTIFACT_V4")
         self.assertEqual(snapshot["retention_days"], 90)
         self.assertFalse(snapshot["overwrite"])
-        self.assertFalse(snapshot["credit_active"])
+        self.assertTrue(snapshot["collection_active"])
+        self.assertTrue(snapshot["credit_active"])
+        self.assertEqual(snapshot["armed_commit"], "cbd58adb05187651ca72d67900a0ccbbd3e83b1e")
         self.assertFalse(snapshot["production_authorized"])
+
+    def test_prearm_fixture_remains_valid_and_inactive(self) -> None:
+        contract = copy.deepcopy(self.contract)
+        contract["status"] = "FROZEN_BACKEND_NOT_COLLECTING"
+        contract["collection_active"] = False
+        contract["elapsed_evidence_credit_active"] = False
+        contract["armed_commit"] = None
+        contract["explicit_non_actions"] = [
+            "NO_ACCOUNT_IDENTITY_SELECTION",
+            "NO_POSITION_OR_EQUITY_VALUATION_CHANGE",
+            "NO_SCHEDULE_ARM",
+            "NO_ELAPSED_EVIDENCE_CREDIT",
+            "NO_SIGNING",
+            "NO_ORDER_SUBMISSION",
+            "NO_PRODUCTION_AUTHORIZATION",
+        ]
+        snapshot = validate_evidence_contract(contract)
+        self.assertFalse(snapshot["collection_active"])
+        self.assertFalse(snapshot["credit_active"])
+        self.assertIsNone(snapshot["armed_commit"])
+
+    def test_armed_backend_requires_real_marker_and_future_only_boundaries(self) -> None:
+        broken = copy.deepcopy(self.contract)
+        broken["armed_commit"] = "deadbeef"
+        with self.assertRaises(Phase6LiveEvidenceError):
+            validate_evidence_contract(broken)
+
+        broken = copy.deepcopy(self.contract)
+        broken["explicit_non_actions"].remove("NO_HISTORICAL_CREDIT")
+        with self.assertRaises(Phase6LiveEvidenceError):
+            validate_evidence_contract(broken)
 
     def test_overwrite_is_forbidden(self) -> None:
         contract = copy.deepcopy(self.contract)
@@ -68,18 +102,6 @@ class Phase6LiveEvidenceTests(unittest.TestCase):
         contract["backend"]["required_upload_outputs"].remove("artifact-digest")
         with self.assertRaises(Phase6LiveEvidenceError):
             validate_evidence_contract(contract)
-
-    def test_backend_contract_does_not_select_account_or_arm_collector(self) -> None:
-        expected = {
-            "NO_ACCOUNT_IDENTITY_SELECTION",
-            "NO_POSITION_OR_EQUITY_VALUATION_CHANGE",
-            "NO_SCHEDULE_ARM",
-            "NO_ELAPSED_EVIDENCE_CREDIT",
-            "NO_SIGNING",
-            "NO_ORDER_SUBMISSION",
-            "NO_PRODUCTION_AUTHORIZATION",
-        }
-        self.assertEqual(set(self.contract["explicit_non_actions"]), expected)
 
 
 if __name__ == "__main__":

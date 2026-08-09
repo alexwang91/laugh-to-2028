@@ -3,6 +3,7 @@ from __future__ import annotations
 """Validation for the frozen Phase-6 live evidence storage/provenance contract."""
 
 import json
+import re
 from pathlib import Path
 from typing import Any, Mapping
 
@@ -13,6 +14,7 @@ CONTRACT_RELATIVE_PATH = Path("research/governance/phase6_live_evidence_contract
 CONTRACT_ID = "PHASE6-LIVE-EVIDENCE-BACKEND-V1"
 BACKEND_ID = "GITHUB_ACTIONS_ARTIFACT_V4"
 RETENTION_DAYS = 90
+SHA_RE = re.compile(r"^[0-9a-f]{40}$")
 
 
 class Phase6LiveEvidenceError(RuntimeError):
@@ -31,8 +33,23 @@ def validate_evidence_contract(contract: Mapping[str, Any]) -> dict[str, Any]:
         raise Phase6LiveEvidenceError("unsupported Phase-6 live-evidence schema")
     if contract.get("contract_id") != CONTRACT_ID:
         raise Phase6LiveEvidenceError("unexpected Phase-6 live-evidence contract id")
-    if contract.get("status") != "FROZEN_BACKEND_NOT_COLLECTING":
-        raise Phase6LiveEvidenceError("evidence backend must remain frozen-not-collecting in this change")
+
+    status = contract.get("status")
+    if status not in {"FROZEN_BACKEND_NOT_COLLECTING", "ARMED_COLLECTING_FUTURE_ONLY"}:
+        raise Phase6LiveEvidenceError("unsupported Phase-6 evidence-backend state")
+    active = status == "ARMED_COLLECTING_FUTURE_ONLY"
+    collection_active = contract.get("collection_active", False) is True
+    credit_active = contract.get("elapsed_evidence_credit_active", False) is True
+    armed_commit = contract.get("armed_commit")
+    if active:
+        if not collection_active or not credit_active:
+            raise Phase6LiveEvidenceError("armed evidence backend requires collection and elapsed credit active")
+        if not isinstance(armed_commit, str) or SHA_RE.fullmatch(armed_commit) is None:
+            raise Phase6LiveEvidenceError("armed evidence backend requires a 40-hex ARM marker SHA")
+    else:
+        if collection_active or credit_active or armed_commit is not None:
+            raise Phase6LiveEvidenceError("pre-arm evidence backend cannot be active or carry an ARM marker")
+
     if contract.get("production_authorized") is not False:
         raise Phase6LiveEvidenceError("evidence storage cannot confer production authority")
 
@@ -98,7 +115,7 @@ def validate_evidence_contract(contract: Mapping[str, Any]) -> dict[str, Any]:
         raise Phase6LiveEvidenceError("receipt identity field set drift detected")
 
     credit = contract.get("credit_rules", {})
-    required_false = (
+    for field in (
         "ephemeral_runner_files_create_credit",
         "step_summary_creates_credit",
         "logs_create_credit",
@@ -106,8 +123,7 @@ def validate_evidence_contract(contract: Mapping[str, Any]) -> dict[str, Any]:
         "expired_artifact_before_acceptance_review_creates_credit",
         "artifact_upload_failure_creates_credit",
         "receipt_upload_failure_creates_credit",
-    )
-    for field in required_false:
+    ):
         if credit.get(field) is not False:
             raise Phase6LiveEvidenceError(f"credit rule must keep {field}=false")
     for field in (
@@ -126,25 +142,39 @@ def validate_evidence_contract(contract: Mapping[str, Any]) -> dict[str, Any]:
         raise Phase6LiveEvidenceError("precedent must not be treated as Phase-6 evidence")
 
     non_actions = set(contract.get("explicit_non_actions", []))
-    required_non_actions = {
-        "NO_ACCOUNT_IDENTITY_SELECTION",
-        "NO_POSITION_OR_EQUITY_VALUATION_CHANGE",
-        "NO_SCHEDULE_ARM",
-        "NO_ELAPSED_EVIDENCE_CREDIT",
-        "NO_SIGNING",
-        "NO_ORDER_SUBMISSION",
-        "NO_PRODUCTION_AUTHORIZATION",
-    }
+    if active:
+        required_non_actions = {
+            "NO_ACCOUNT_IDENTITY_SELECTION",
+            "NO_POSITION_OR_EQUITY_VALUATION_CHANGE",
+            "NO_HISTORICAL_CREDIT",
+            "NO_PULL_REQUEST_CREDIT",
+            "NO_MANUAL_DISPATCH_SCHEDULED_DECISION_CREDIT",
+            "NO_SIGNING",
+            "NO_ORDER_SUBMISSION",
+            "NO_PRODUCTION_AUTHORIZATION",
+        }
+    else:
+        required_non_actions = {
+            "NO_ACCOUNT_IDENTITY_SELECTION",
+            "NO_POSITION_OR_EQUITY_VALUATION_CHANGE",
+            "NO_SCHEDULE_ARM",
+            "NO_ELAPSED_EVIDENCE_CREDIT",
+            "NO_SIGNING",
+            "NO_ORDER_SUBMISSION",
+            "NO_PRODUCTION_AUTHORIZATION",
+        }
     if non_actions != required_non_actions:
         raise Phase6LiveEvidenceError("explicit non-action boundary drift detected")
 
     return {
         "contract_id": CONTRACT_ID,
-        "status": contract["status"],
+        "status": status,
         "backend": BACKEND_ID,
         "retention_days": RETENTION_DAYS,
         "overwrite": False,
-        "credit_active": False,
+        "collection_active": active,
+        "credit_active": active,
+        "armed_commit": armed_commit if active else None,
         "production_authorized": False,
     }
 

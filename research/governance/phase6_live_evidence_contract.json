@@ -1,8 +1,11 @@
 {
   "schema_version": 1,
   "contract_id": "PHASE6-LIVE-EVIDENCE-BACKEND-V1",
-  "status": "FROZEN_BACKEND_NOT_COLLECTING",
+  "status": "ARMED_COLLECTING_FUTURE_ONLY",
   "purpose": "DURABLE_CREATE_ONLY_PROVENANCE_FOR_FUTURE_PHASE6_ZERO_AUTHORITY_OBSERVATIONS",
+  "collection_active": true,
+  "elapsed_evidence_credit_active": true,
+  "armed_commit": "cbd58adb05187651ca72d67900a0ccbbd3e83b1e",
   "production_authorized": false,
   "backend": {
     "provider": "GITHUB_ACTIONS_ARTIFACT_V4",
@@ -72,15 +75,18 @@
   "explicit_non_actions": [
     "NO_ACCOUNT_IDENTITY_SELECTION",
     "NO_POSITION_OR_EQUITY_VALUATION_CHANGE",
-    "NO_SCHEDULE_ARM",
-    "NO_ELAPSED_EVIDENCE_CREDIT",
+    "NO_HISTORICAL_CREDIT",
+    "NO_PULL_REQUEST_CREDIT",
+    "NO_MANUAL_DISPATCH_SCHEDULED_DECISION_CREDIT",
     "NO_SIGNING",
     "NO_ORDER_SUBMISSION",
     "NO_PRODUCTION_AUTHORIZATION"
   ],
   "notes": [
-    "This freezes the storage/provenance mechanism only; it does not assert that any Phase-6 live evidence has been collected.",
-    "Ninety-day Actions-artifact retention materially exceeds the frozen 14-day observation minimum; if a required artifact expires before the acceptance review, the associated decision is not creditable.",
-    "Longer-term archival after Phase-6 acceptance may be added prospectively, but cannot be used to reconstruct an observation whose required artifact expired before acceptance."
+    "The storage/provenance backend is now active only for prospective Phase-6 zero-authority observations after the referenced ARM marker.",
+    "A scheduled run is creditable only after both its 90-day create-only evidence artifact and separate receipt artifact upload successfully.",
+    "Pull-request preflights, historical data replays, workflow reruns, duplicate decision timestamps and manual dispatch do not become scheduled-decision credit.",
+    "Ninety-day Actions-artifact retention materially exceeds the frozen 14-day observation minimum; if a required artifact expires before acceptance review, the associated decision is not creditable.",
+    "Activation of this evidence backend does not authorize production, signing, orders, withdrawal or transfer."
   ]
 }

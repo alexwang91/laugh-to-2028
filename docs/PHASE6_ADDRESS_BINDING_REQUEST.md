@@ -2,7 +2,7 @@
 
 **Production authorization: NO_CHANGE**
 
-This document originally requested only a PUBLIC READ-ONLY Hyperliquid master/subaccount address for identity verification. That request is now fulfilled by the explicit owner-supplied public master identity frozen in `research/governance/phase6_live_account_identity_contract.json`.
+This document originally requested a PUBLIC READ-ONLY Hyperliquid master/subaccount identity. That request is fulfilled, the compatible identity is frozen, and the owner has subsequently authorized the separate Phase-6 ARM transition.
 
 Do NOT provide:
 - private keys
@@ -10,36 +10,32 @@ Do NOT provide:
 - API private keys
 - signing credentials
 
-Providing or binding a public address does not authorize signing, order submission, transfer, withdrawal, production activation, or live trading.
+Neither identity binding nor Phase-6 ARM authorizes signing, order submission, transfer, withdrawal, production activation, or live trading.
 
-Status: `FULFILLED / IDENTITY_BOUND / DEPENDENCIES_4_OF_4 / COLLECTOR_NOT_ARMED`
+Status: `FULFILLED / IDENTITY_BOUND / DEPENDENCIES_4_OF_4 / ARM_AUTHORIZED / FUTURE_ONLY_OBSERVATION`
 
-## 1. Completed identity input
+## 1. Completed identity binding
 
-The completed identity-binding step used one **exact public Hyperliquid master account address** supplied explicitly by the owner.
+The frozen identity is the explicit public Hyperliquid master account supplied by the owner and recorded in `research/governance/phase6_live_account_identity_contract.json`.
 
-The bound identity satisfies the frozen requirements:
+It satisfies:
 
-- `0x` prefix followed by exactly 40 hexadecimal characters;
-- actual master account whose live state will be observed;
-- not an agent/API-wallet address;
-- not a vault address;
-- `userRole = user`;
-- `userAbstraction = disabled`;
-- Standard-account semantics frozen by `PHASE6-LIVE-VALUATION-V1`.
+```text
+address format       0x + 40 hexadecimal characters
+userRole             user
+userAbstraction      disabled
+identity_frozen      true
+agent/API wallet     no
+vault                no
+```
 
-The exact public address, non-secret provenance, parsed read-only responses, verification timestamp and raw-response SHA256 digests are persisted in `research/governance/phase6_live_account_identity_contract.json`.
+The contract persists only the public address, non-secret provenance, parsed read-only responses, verification timestamp and SHA256 digests of the exact raw responses. No secret or signing material is stored.
 
-For a future replacement with a subaccount, the subaccount itself would remain the observed identity. The returned master address would be evidence only; the implementation must not silently substitute the master for the observed subaccount.
+Any future replacement identity remains a separate owner action and must satisfy the same fail-closed rules. A subaccount must be observed as itself; the implementation must not silently substitute its master account.
 
-Agent wallets remain rejected because Hyperliquid account-data queries must use the actual master/subaccount identity. Vaults are a different account surface. Unsupported abstraction modes remain outside the frozen valuation contract. Silent substitution remains prohibited because it would change the identity being measured after observation.
+## 2. Public read-only identity checks
 
-## 2. Public read-only self-check
-
-Hyperliquid's official Info endpoint documentation defines public `POST https://api.hyperliquid.xyz/info` queries for account role and abstraction state:
-
-Official API documentation:
-`https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/info-endpoint`
+Hyperliquid's official Info endpoint supports public `POST https://api.hyperliquid.xyz/info` reads.
 
 Role query:
 
@@ -47,13 +43,7 @@ Role query:
 {"type":"userRole","user":"<PUBLIC_ADDRESS>"}
 ```
 
-Accepted role:
-
-```json
-{"role":"user"}
-```
-
-or a valid `subAccount` role response with master evidence.
+Accepted role is `user` or a valid `subAccount` response with master evidence.
 
 Abstraction query:
 
@@ -61,91 +51,64 @@ Abstraction query:
 {"type":"userAbstraction","user":"<PUBLIC_ADDRESS>"}
 ```
 
-Required abstraction:
+Required value:
 
 ```json
 "disabled"
 ```
 
-The completed owner-browser read-only checks returned `userRole=user` and `userAbstraction=disabled` for the bound identity.
+The bound account passed these checks. `agent`, `vault`, `missing`, `default`, `unifiedAccount`, `portfolioMargin`, `dexAbstraction`, or any unsupported/absent value remains incompatible with Phase-6 V1.
 
-These `/info` reads require no private key, wallet signature, API secret, signing credential, order authorization, transfer authority or withdrawal authority.
+## 3. Historical incompatible probe
 
-Hyperliquid's account-abstraction documentation distinguishes Standard, Unified Account and Portfolio Margin modes. The frozen Phase-6 valuation contract accepts only Standard semantics represented by `userAbstraction=disabled`.
+Closed, unmerged PR #138 previously observed a different identity with `userRole=user` but `userAbstraction=default`. It created no binding, dependency credit, ARM authority or elapsed evidence. That historical address was not reused for the current binding.
 
-If any future replacement identity observes any of the following, the V1 outcome remains `BLOCKED_INCOMPATIBLE`:
+## 4. Completed binding and ARM sequence
 
-- `agent`;
-- `vault`;
-- `missing`;
-- `default`;
-- `unifiedAccount`;
-- `portfolioMargin`;
-- `dexAbstraction`;
-- any other unsupported or absent value.
-
-The contract must not be broadened after observing an incompatible account merely to make that account pass.
-
-## 3. Reconciled historical probe evidence
-
-A prior prospective read-only probe in closed, unmerged PR #138 demonstrated a valid `user` role but returned `userAbstraction="default"`.
-
-That historical evidence established only:
-
-- the probed identity had an acceptable role;
-- it did **not** satisfy `PHASE6-LIVE-ACCOUNT-IDENTITY-V1`;
-- no identity was bound from that probe;
-- no dependency was credited;
-- no elapsed clock started.
-
-That historical address remains confined to its original evidence/discussion context and was not reused for the current binding.
-
-## 4. Binding-success path — completed through the mandatory STOP
-
-The frozen sequence is:
+The project has now completed:
 
 ```text
-valid explicit public master/subaccount identity
--> query userRole and userAbstraction
--> require userRole=user OR subAccount
--> require userAbstraction=disabled
--> persist non-secret provenance + raw response digests
--> freeze exact identity
+explicit compatible public identity
+-> userRole / userAbstraction verification
+-> non-secret provenance + raw-response digests persisted
+-> identity frozen
 -> Phase 6 dependencies = 4/4
--> STOP
+-> mandatory STOP
+-> separate owner ARM authorization
+-> real non-crediting external preflight
+-> prospective ARM marker
+-> future-only collector/schedule activation package
 ```
 
-The current repository state has completed exactly those steps and stops there.
-
-The remaining future sequence is separate and not authorized by identity binding:
+Real preflight workflow run `31316348226` passed with:
 
 ```text
-separate prospective ARM change
--> collector armed
--> schedule configured
--> elapsed-evidence credit authorized
--> first eligible 00:00 UTC decision strictly after ARM commit
--> genuine future-only shadow evidence
--> Phase 6 closeout
--> Phase 7 launch eligibility assessment
+account_equity_usd  53.788314
+shadow_status       SHADOW_COMPUTED_NO_AUTHORITY
+shadow_alerts       []
+scheduled credit    false
 ```
 
-Hard distinctions:
+The prospective ARM marker is:
 
 ```text
-4/4 != CLOCK STARTED
-IDENTITY BOUND != ARM
+cbd58adb05187651ca72d67900a0ccbbd3e83b1e
+```
+
+Once the activation PR is merged to the default branch, the collector is scheduled daily at `00:00 UTC`. Pull-request preflight remains non-crediting.
+
+Hard distinctions remain:
+
+```text
 ARM != HISTORICAL CREDIT
+PR PREFLIGHT != SCHEDULED DECISION
+WALL CLOCK != ACCEPTANCE WITHOUT DURABLE EVIDENCE
 PHASE6 PASS != PHASE7 ACTIVE
 ```
 
-Binding is therefore a readiness dependency, not production activation.
+## 5. Frozen Phase-6 acceptance gate
 
-## 5. Frozen Phase 6 shadow acceptance gate
-
-Authority: `research/governance/phase6_live_observation_gate.json`, gate `PHASE6-LIVE-OBSERVATION-PREACTIVATION-V1`.
-
-The frozen requirements are:
+Authority: `research/governance/phase6_live_observation_gate.json`.
 
 | Requirement | V1 threshold |
 |---|---:|
@@ -156,52 +119,57 @@ The frozen requirements are:
 | unexplained target drift | 0 |
 | schedule failures | 0 |
 
-The first eligible scheduled decision is the first canonical `00:00 UTC` decision **strictly after** the future ARM commit timestamp.
+The first eligible scheduled decision is the first genuine canonical `00:00 UTC` schedule event strictly after the ARM-marker commit timestamp and after the activation exists on `main`.
 
-The following create **no scheduled-decision credit**:
+The ARM marker was created on 2026-08-09, so the rule-derived first eligible timestamp is `2026-08-10T00:00:00Z`; it counts only if the activation is already on `main` for that schedule and both required artifacts persist. Otherwise the next actual post-merge schedule is the first credit candidate. No missed timestamp may be backfilled.
+
+The following create no scheduled-decision credit:
 
 - historical backfill;
 - historical replay;
 - CI replay;
+- pull-request preflight;
 - workflow rerun;
 - duplicate decision timestamp;
 - manual dispatch.
 
-A manual emergency drill may count only toward the emergency-drill requirement when it satisfies the frozen evidence rules; it does not become a scheduled decision.
+A manual emergency drill may count only toward the drill requirement when it satisfies the frozen evidence contract; it never becomes a scheduled decision.
 
-### Theoretical earliest elapsed-time close
+## 6. Evidence persistence
 
-The elapsed clock starts at the **first eligible scheduled 00:00 UTC timestamp after ARM**, not at address submission, identity binding, dependency 4/4, PR opening or identity-binding PR merge.
+Each creditable scheduled observation requires:
 
-Therefore no already-past time receives credit. After a separately authorized ARM, the time condition cannot pass until 14 full calendar days after the first eligible scheduled timestamp, with at least 10 genuine scheduled decisions and all other frozen gates satisfied.
+1. raw public/read-only market, account and route bytes preserved before parsing;
+2. input-provenance SHA256 and shadow-record SHA256;
+3. a create-only GitHub Actions evidence artifact with 90-day retention and overwrite disabled;
+4. a separate hash-bound receipt artifact created only after the evidence upload succeeds.
 
-## 6. Explicit human gates that remain
+Failure of either required artifact upload means no credit.
 
-Authoritative contracts and roadmap retain these human/owner boundaries:
+## 7. Human gates that remain
 
-1. **ARM transition:** identity binding is complete, but a separate prospective ARM change is still required. Identity binding itself cannot arm the collector.
-2. **Phase 7 launch approval:** the Phase-7 launch checklist requires explicit user approval before the limited-capital live long program can start.
-3. **`MONITOR_ONLY -> ACTIVE`:** explicit human approval required.
-4. **`FLAT -> LONG`:** explicit human approval required.
-5. **`FLAT -> SHORT`:** explicit human approval required.
-6. **First short exposure after a confirmed bear transition:** `SHORT_READY` is insufficient; the first short exposure of a new bear phase requires explicit user approval.
+The identity and Phase-6 ARM owner actions are complete for this zero-authority observation phase.
 
-The identity-owner action is complete for the currently frozen public identity. Any future identity replacement would require a new explicit owner action.
+Separate explicit owner approval is still required for:
 
-## 7. Boundary of the completed binding
+1. Phase-7 launch;
+2. `MONITOR_ONLY -> ACTIVE`;
+3. `FLAT -> LONG`;
+4. `FLAT -> SHORT`;
+5. first short exposure after a confirmed new bear phase.
 
-The identity binding does:
+One evidenced manual emergency drill is operationally required before Phase-6 closeout, but it grants no production authority.
 
-- freeze the exact owner-supplied public observation identity;
-- persist non-secret provenance;
-- persist the verified role/mode response data and raw-response SHA256 digests;
-- complete the Phase-6 pre-arm dependencies to 4/4.
+## 8. Security / production boundary
 
-The identity binding does **not**:
+Phase-6 observation does not:
 
-- arm the collector;
-- configure the schedule;
-- start or backfill the elapsed clock;
-- authorize signing, orders, transfers, withdrawals, production activation or live trading.
+- import or derive private keys;
+- sign orders;
+- submit orders;
+- transfer or withdraw assets;
+- activate production;
+- change strategy mathematics or gross cap;
+- authorize Phase 7.
 
-The exact next operational step is a separate future ARM decision.
+Production remains `NO_CHANGE` with gross cap `1.0`, no authorized production components, and signing/order authority false.

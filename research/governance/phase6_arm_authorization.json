@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "arm_id": "PHASE6-LIVE-OBSERVATION-ARM-2026-08-09",
+  "status": "OWNER_AUTHORIZED_PROSPECTIVE_ARM_MARKER",
+  "owner_authorized_at": "2026-08-09T13:41:32Z",
+  "authorization_source": "EXPLICIT_OWNER_INSTRUCTION_IN_ACTIVE_CONVERSATION",
+  "authorization_scope": "ZERO_AUTHORITY_FUTURE_ONLY_PHASE6_SHADOW_OBSERVATION",
+  "identity_contract": "research/governance/phase6_live_account_identity_contract.json",
+  "observation_gate": "research/governance/phase6_live_observation_gate.json",
+  "evidence_contract": "research/governance/phase6_live_evidence_contract.json",
+  "preflight": {
+    "workflow_run_id": 31316348226,
+    "status": "PASS",
+    "observed_at": "2026-08-09T13:40:30Z",
+    "account_equity_usd": 53.788314,
+    "shadow_status": "SHADOW_COMPUTED_NO_AUTHORITY",
+    "shadow_alerts": [],
+    "input_provenance_digest": "bb1e3cfb1946e43b3da917a8513f9cce8b2ae1bdab9735e5d2eac49e66472939",
+    "shadow_record_digest": "59a689e42662f3fc871f6c0d67859a83ee136b959acd0299b3cd7ab46ae7cd03",
+    "scheduled_decision_credit": false
+  },
+  "activation_not_before_this_commit": true,
+  "historical_backfill_authorized": false,
+  "historical_replay_credit_authorized": false,
+  "pull_request_credit_authorized": false,
+  "manual_dispatch_scheduled_decision_credit_authorized": false,
+  "production_authorized": false,
+  "signature_authorized": false,
+  "order_submission_authorized": false,
+  "withdrawal_authorized": false,
+  "transfer_authorized": false,
+  "phase7_launch_authorized": false,
+  "notes": [
+    "This file is the durable marker whose commit SHA is referenced by the activated Phase-6 observation gate.",
+    "The marker follows a successful real public/read-only preflight and creates no elapsed-time or scheduled-decision credit by itself.",
+    "Only genuine future schedule events strictly after this marker may become scheduled-decision credit candidates after evidence and receipt persistence succeeds.",
+    "ARM authorizes zero-authority shadow observation only; it does not authorize production, signing, order submission, withdrawal, transfer or Phase-7 launch."
+  ]
+}
