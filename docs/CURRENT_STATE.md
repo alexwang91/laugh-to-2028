@@ -1,9 +1,9 @@
 # BRRK Current State
 
 Last updated: 2026-08-09  
-Handoff branch: `docs/f27-f7-idle-cash-feasibility`  
-Authoritative baseline main at branch creation: `b1bb618a3a99f5865a79e8fc47cfae485b772037`  
-Latest merged PR at branch creation: **#139**
+Handoff branch: `governance/phase6-bind-public-identity`  
+Authoritative baseline main at branch creation: `f1cfced6ceb9d07cab78825297e46cdf8c60231b`  
+Latest merged PR at branch creation: **#140**
 
 Status: **authoritative current-state handoff**
 
@@ -22,8 +22,8 @@ Phase 6 implementation/replay     PASS_SHADOW_ONLY_IMPLEMENTATION_REPLAY / MERGE
 Phase 6 live elapsed evidence     MEASUREMENT_INCONCLUSIVE_TIME_DEPENDENT / CLOCK NOT ARMED
 Phase 6 evidence backend          FROZEN / MERGED #133
 Phase 6 valuation contract        PHASE6-LIVE-VALUATION-V1 / MERGED #134
-Phase 6 identity contract         PHASE6-LIVE-ACCOUNT-IDENTITY-V1 / MERGED #135 / UNBOUND
-Phase 6 pre-arm dependencies      3/4 / IDENTITY UNRESOLVED
+Phase 6 identity contract         PHASE6-LIVE-ACCOUNT-IDENTITY-V1 / VERIFIED + FROZEN
+Phase 6 pre-arm dependencies      4/4 / READY / AWAITING SEPARATE ARM
 Right-tail admission gate         PROSPECTIVE_FROZEN_RESEARCH_ADMISSION_GATE / V1
 Dual-layer sanity                 COMPLETE / IMMUTABLE / NON-PROMOTABLE / MERGED #136
 BRRK signal attribution           COMPLETE / IMMUTABLE / NON-PROMOTABLE / MERGED #137
@@ -61,7 +61,7 @@ No exact repository-wide count of remaining local implementations is asserted he
 
 ## LEVERAGE-0040 convention note
 
-`docs/LEVERAGE_0040_P4_5_DECISION_2026-08-07.md` now documents that its 65.31% cap-1.00 CAGR uses the study-local observation-count year (`len(returns)/365.25`). It is not the same metric quantity as F27 R2's calendar-span BRRK raw CAGR `65.1661%`.
+`docs/LEVERAGE_0040_P4_5_DECISION_2026-08-07.md` documents that its 65.31% cap-1.00 CAGR uses the study-local observation-count year (`len(returns)/365.25`). It is not the same metric quantity as F27 R2's calendar-span BRRK raw CAGR `65.1661%`.
 
 All LEVERAGE-0040 candidates used the same frozen convention, so this clarification changes no P4.5 result, selection or authority.
 
@@ -89,27 +89,35 @@ $2,000 initial + $100/week, avg capital $4,600 ~= $75.47/year
 
 These are arithmetic illustrations only, not executable quotes or strategy returns.
 
-## Current Phase 6 blocker and readiness
+## Phase 6 identity binding and pre-arm readiness
 
-`PHASE6-LIVE-ACCOUNT-IDENTITY-V1` is merged but no observation identity is bound.
+`PHASE6-LIVE-ACCOUNT-IDENTITY-V1` now freezes the explicit owner-supplied public Hyperliquid master identity after read-only compatibility checks.
+
+Authoritative identity evidence is stored in `research/governance/phase6_live_account_identity_contract.json`:
 
 ```text
-status                             AWAITING_COMPATIBLE_EXPLICIT_PUBLIC_IDENTITY
-account_address                    null
-identity_frozen                    false
-accepted userRole                  user / subAccount
-required userAbstraction           disabled
-dependencies satisfied             3/4
+status                             FROZEN_VERIFIED_READ_ONLY_IDENTITY
+account role                       user
+required/observed userAbstraction  disabled
+identity_frozen                    true
+dependencies satisfied             4/4
 collector_armed                    false
 schedule_configured                false
 elapsed_evidence_credit_authorized false
+armed_commit                       null
 ```
 
-Closed, unmerged PR #138 performed a prospective public read-only probe. The observed account returned `userRole=user` but `userAbstraction=default`, so it was incompatible with V1. No address was bound, no dependency was credited, and no elapsed clock started. The address is intentionally not reproduced here.
+The binding evidence persists non-secret provenance, the parsed `userRole` / `userAbstraction` responses and SHA256 digests of the exact raw response strings. No private key, seed phrase, API secret or signing credential is stored.
 
-A future binding requires an explicit public master/subaccount identity satisfying `userRole=user/subAccount` and `userAbstraction=disabled`. `docs/PHASE6_ADDRESS_BINDING_REQUEST.md` freezes the non-secret request and verification path.
+The preactivation gate is now:
 
-After a valid binding reaches 4/4, work still stops before a **separate prospective ARM change**. The first eligible scheduled decision is the first canonical 00:00 UTC decision strictly after the ARM commit.
+```text
+PREACTIVATION_READY_AWAITING_SEPARATE_ARM
+```
+
+This is a readiness state only. **4/4 does not start the clock.** A separate prospective ARM change is still required before the collector may be armed, a schedule configured, or elapsed-evidence credit authorized.
+
+After a future explicit ARM change, the first eligible scheduled decision remains the first canonical 00:00 UTC decision strictly after the ARM commit timestamp.
 
 Frozen shadow acceptance:
 
@@ -159,13 +167,12 @@ elapsed_evidence_credit_authorized false
 first real short authority        NONE
 ```
 
-A public observation address never authorizes signing, orders, transfers, withdrawals, production activation or live trading.
+A bound public observation address never authorizes signing, orders, transfers, withdrawals, production activation or live trading.
 
 ## Explicit human gates
 
 Still binding:
 
-- explicit compatible identity owner action;
 - separate prospective Phase-6 ARM transition;
 - Phase-7 launch approval;
 - `MONITOR_ONLY -> ACTIVE`;
@@ -173,22 +180,24 @@ Still binding:
 - `FLAT -> SHORT`;
 - first short exposure of a new confirmed bear phase.
 
+The identity-owner action has been completed by this binding; it is no longer the Phase-6 blocker.
+
 ## Stopped / forbidden work
 
 Do not reopen, rerun, rescue, retune or reinterpret immutable/terminal P5.x, LEVERAGE-0040/0041, STABLECOIN-LIQUIDITY-0001, dual-layer sanity, BRRK attribution, or idle-cash R1 evidence for promotion.
 
 Do not implement Idle Cash yield in Standard V1 by silently switching account abstraction, moving collateral off venue, depositing into HLP, staking HYPE or counting non-immediately-callable supplied capital as available margin.
 
-Do not use the right-tail gate to justify post-result threshold search. Do not bind or re-probe the PR #138 address from historical discussion. Do not arm Phase 6 or backfill elapsed credit in this docs-only work.
+Do not arm Phase 6, configure its schedule, backfill elapsed credit or infer Phase-7 launch authority from identity binding.
 
 ## Current drift assessment
 
 `DRIFT_0`.
 
-This docs-only correction changes no strategy mathematics, economic result artifact, execution, config, workflow, production component, gross cap, credential authority or live state. The only `research/**` change permitted in this work package is the explicitly authorized static exact-doc allowlist addition in `research/governance/no_drift.py`; no governance semantics are changed.
+This identity-binding change updates only the Phase-6 governance identity/gate state, its regression tests and handoff documentation. It changes no strategy mathematics, immutable economic result, execution path, config, workflow, production component, gross cap, signer/order authority or elapsed-credit state.
 
 ## Exact next task
 
-This documentation work package is complete once its PR is green and merged.
+After this identity-binding PR is green and merged, **STOP**.
 
-Operationally, Phase 6 remains blocked at 3/4 until a future explicit compatible public master/subaccount identity is supplied and bound under the frozen contract. Identity binding remains separate from the later prospective ARM transition; neither action is authorized by this documentation work.
+The next operational action is a **separate prospective Phase-6 ARM change** and requires explicit owner authorization. Until that separate action occurs, the collector remains unarmed, the schedule remains unconfigured and the 14-day / 10-decision elapsed-evidence clock remains unstarted.
