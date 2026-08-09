@@ -1,10 +1,10 @@
 # BRRK Current State
 
-Last updated: 2026-08-09  
-Handoff PR: **#148**  
-Handoff branch: `dashboard/pro-fund-terminal-v5`  
-Authoritative baseline main at branch creation: `1cc9f6fc5cdea10437613b5248feb66aaeeb8e26`  
-Latest merged dashboard PR at branch creation: **#147**
+Last updated: 2026-08-10  
+Handoff PR: **#149**  
+Handoff branch: `research/brrk-opportunity-audit-0042`  
+Authoritative baseline main at branch creation: `7a8b0385963e96ecce9dc70c313c27507cd99b52`  
+Latest merged dashboard PR at branch creation: **#148**
 
 Status: **authoritative current-state handoff candidate**
 
@@ -24,7 +24,8 @@ Phase 6 ARM                       MERGED #143 / ACTIVE FUTURE-ONLY OBSERVATION
 Phase 6 ARM marker                cbd58adb05187651ca72d67900a0ccbbd3e83b1e
 Phase 6 daily schedule            00:00 UTC
 Phase 6 live elapsed evidence     MEASUREMENT_INCONCLUSIVE_TIME_DEPENDENT
-Program timeline dashboard        READ-ONLY V5 / PROFESSIONAL FUND TERMINAL UI CANDIDATE
+BRRK opportunity-cost audit       0042 DIAGNOSTIC CANDIDATE / NO PROMOTION AUTHORITY
+Program timeline dashboard        READ-ONLY V5 / PROFESSIONAL FUND TERMINAL
 Phase 7                           MONITOR_ONLY / LAUNCH BLOCKED
 Phase 8                           TRIGGER ABSENT / NOT RUN
 Production                        NO_CHANGE
@@ -66,129 +67,50 @@ schedule failures                     0
 
 A separately evidenced manual emergency drill remains required and never counts as a scheduled decision.
 
-## Program Timeline Dashboard V5 — candidate
+## BRRK Opportunity-Cost Audit 0042 — candidate
 
-V4 merged in PR #147 at baseline main:
-
-```text
-1cc9f6fc5cdea10437613b5248feb66aaeeb8e26
-```
-
-V5 remains under:
+This branch adds a deterministic read-only diagnostic audit under `research/governance/` using only already committed canonical historical artifacts:
 
 ```text
-research/governance/dashboard/
-```
-
-and is downstream of authoritative evidence.
-
-### Historical source-of-record inputs
-
-```text
-research/results/pit_disp_0015/daily_equity.csv
 research/results/pit_disp_0015/daily_weights.csv
-research/results/funding_pnl_0003/full_window_daily_equity.csv
-config/research_registry.json
-config/decision_registry.json
+research/results/pit_disp_0015/daily_equity.csv
 ```
 
-The canonical chart window begins `2022-12-10` and currently extends through `2026-07-31`. No exact four-year claim is made.
+The audit is explicitly not a new strategy experiment and has no promotion authority. It freezes the following measurements before CI result review:
 
-### V5 presentation and range statistics
+- validate whether normalized BRRK target mixes equal normalized V1 target mixes on overlap days;
+- BRRK-vs-V1 CAGR and maximum-drawdown difference;
+- observable defensive-scale distribution via BRRK gross / V1 gross where mechanically valid;
+- BTC reserve share on alt-active days;
+- ETH 50% / SOL 35% / BNB 25% structural cap signatures;
+- target-vector change frequency and gap days;
+- top-20 V1 daily log-growth capture and bottom-20 relative exposure.
 
-V5 preserves the V3 calculations and V4 Chinese simplification, while reorganizing presentation into an investment-committee hierarchy: navy executive header, sticky section navigation, professional chart palette, tabular numerals, compact selected-range summary, and restrained white analytical cards. For the user-selected range it recomputes only from the selected existing equity column:
-
-- cumulative return;
-- positive-return-day ratio;
-- daily payoff ratio;
-- maximum drawdown;
-- adjacent target-vector change-day count;
-- summed adjacent target-vector L1 change.
-
-Positive-return-day ratio is explicitly not called holding-cycle win rate. Actual rebalance count, executed turnover and holding-cycle win rate remain unavailable unless an authoritative executed-turnover path is present.
-
-### V5 P3.2 timing boundary
-
-The reviewed canonical runtime implementation freezes:
+The audit explicitly does **not** infer:
 
 ```text
-decision D 00:00 UTC
-consumes exactly completed D-1 UTC daily session
-target row D-1 is intended for D return
+historical daily P3.2 signal-speed causality
+historical P3.3 5% account-gap execution attribution
+winner-cap return counterfactuals
 ```
 
-V5 therefore separates target session, mapped decision timestamp, data cutoff and target holding-return date. It also states that historical NAV row `t` uses the prior target for row-`t` return, rather than falsely pairing row-`t` target with row-`t` return as a cause.
+because those require missing historical state or a separately preregistered strategy experiment.
 
-### V5 P3.3 controller boundary
+The diagnostic may identify which mechanism deserves the next prospective research ID. It may not modify BRRK-0011, Phase 6, Phase 7, signing, order submission, production authorization, or immutable historical results.
 
-The reviewed canonical P3.3 controller freezes:
+## Dashboard V5
+
+PR #148 merged V5 at current baseline main:
 
 ```text
-control_version  P3.3-L1-BAND-V1
-gap metric       L1_ABSOLUTE_WEIGHT_GAP
-rebalance band   0.05
-boundary         REBALANCE_WHEN_L1_GAP_GTE_BAND
+7a8b0385963e96ecce9dc70c313c27507cd99b52
 ```
 
-The actual controller gap compares the current account position weights with the P3.2 model target. Safety overrides bypass the band when the current account has short exposure or current gross above 1.
-
-The existing `pit_disp_0015` historical result directory does not persist daily:
-
-```text
-current_position_weights
-l1_target_gap
-control_turnover_weight
-P3.3 control plans
-```
-
-Therefore V5 does not infer historical actual `HOLD` / `REBALANCE` events from adjacent target rows. The charted adjacent-target L1 series is separately labelled as a target-vector change metric, and the 5% line is controller-rule reference only.
-
-### V5 P3.2 signal / regime boundary
-
-The reviewed canonical target implementation proves model structure including:
-
-```text
-btc_trend < 0 -> BTC-only V1 branch
-ETH/SOL eligibility -> score > 0 AND asset trend > 0 AND ratio trend > 0
-BNB eligibility -> score > 0 AND slow BNB trend > 0 AND slow BNB/BTC trend > 0
-semantic states -> RISK_OFF / BTC_LEAD / MAJOR_ROTATION / ALT_EXPANSION
-long-only gross -> <= 1
-XRP -> feature-only
-```
-
-P3.2 target results can contain `risk_state`, state probabilities, `riskoff_probability`, `meta_scale`, `defensive_scale` and feature snapshots. Those daily snapshots are not persisted in the frozen `pit_disp_0015` historical result directory. V5 therefore does not reverse-engineer a 2023 signal/regime from target weights or NAV.
-
-Frozen V5 source semantics:
-
-```text
-dashboard_version=v5-pro-fund-terminal
-dashboard_record_authoritative=false
-scheduled_decision_credit_created=false
-production_authorized=false
-target_change_mechanics_authoritative_from_canonical_weights=true
-p3_3_rule_authoritative_from_controller=true
-historical_p3_3_execution_state_available=false
-historical_signal_snapshot_available=false
-execution_causality_asserted=false
-```
-
-The economic layers remain:
-
-```text
-historical backtest NAV
-!= Phase-6 hypothetical shadow PnL
-!= future real-account PnL
-```
-
-### Public deployment
-
-Canonical public entry supplied and verified by the owner:
+The public dashboard remains:
 
 ```text
 https://laugh-to-2028.vercel.app/
 ```
-
-V5 deployment is not considered complete by this handoff until the merged public URL is independently observed serving the unique `v5-pro-fund-terminal` marker.
 
 ## Canonical production / security authority
 
@@ -207,7 +129,7 @@ order_submission_authorized       false
 first real short authority        NONE
 ```
 
-V5 changes none of these fields and adds no signer, private key, order submission, withdrawal, transfer, or production capability.
+This audit changes none of these fields and adds no signer, private key, order submission, withdrawal, transfer, or production capability.
 
 ## Other frozen decisions
 
@@ -215,17 +137,17 @@ V5 changes none of these fields and adds no signer, private key, order submissio
 - F7 remains `PARTIAL`; immutable studies are not rewritten.
 - LEVERAGE-0040 remains `FAIL_STOP / NO_PROMOTION`.
 - Idle Cash remains `NOT_FEASIBLE_ON_HYPERLIQUID_STANDARD / FUTURE_OPTION / NOT_AUTHORIZED`.
-- Future new Research IDs capable of lowering canonical BRRK gross remain subject to the frozen right-tail gate.
+- Phase-6 future-only observation continues independently of this diagnostic.
 
 ## Current drift assessment
 
 `DRIFT_0`.
 
-This V5 candidate changes only dashboard HTML/documentation/tests and this handoff. The visible page is reorganized into a professional fund-dashboard hierarchy with a dark executive header, sticky Chinese navigation, compact investment-committee summary, tabular numerals and fixed chart colors; advanced technical/governance material remains collapsed by default. It does not modify `execution/**`, `config/**`, `research/results/**`, strategy mathematics, Phase-6 scheduling, immutable economic evidence, or execution authority.
+This candidate adds only a read-only governance diagnostic, its contract test/spec, and this handoff. It does not modify `execution/**`, `config/**`, `research/results/**`, strategy mathematics, Phase-6 scheduling, immutable economic evidence, or execution authority.
 
 ## Exact next task
 
-1. Require governance/no-drift/dashboard CI to be green.
-2. Merge PR #148 only if the final diff remains dashboard/docs/tests only.
-3. Verify `https://laugh-to-2028.vercel.app/` serves `v5-pro-fund-terminal`.
-4. Continue Phase-6 future-only evidence accumulation independently of dashboard presentation.
+1. Require PR #149 governance/no-drift and all existing strategy/safety CI to stay green.
+2. Read the machine-emitted audit JSON from CI only after the frozen measurement code is committed.
+3. Based on that diagnostic, preregister exactly one or more separate candidate experiments before evaluating any modified strategy economics.
+4. Continue Phase-6 future-only evidence accumulation independently.

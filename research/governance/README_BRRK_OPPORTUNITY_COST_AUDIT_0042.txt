@@ -1,0 +1,1 @@
+BRRK-OPPORTUNITY-COST-AUDIT-0042 is a governance diagnostic over already committed frozen artifacts. It is not a formal strategy experiment, does not change research_registry.json, and has no promotion authority. Any modified-strategy candidate motivated by this diagnostic must receive a separate PROGRAM_GOVERNED_V1 research ID before result-bearing evaluation.
