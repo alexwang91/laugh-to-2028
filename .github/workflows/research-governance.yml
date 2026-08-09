@@ -70,7 +70,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Query public Hyperliquid identity surfaces
+      - name: Query and preserve public Hyperliquid identity surfaces
         run: |
           python - <<'PY'
           import hashlib
@@ -80,8 +80,6 @@ jobs:
           from datetime import datetime, timezone
           from pathlib import Path
 
-          from research.governance.phase6_live_account_identity import verify_identity_observation
-
           address = os.environ['PHASE6_OBSERVATION_ADDRESS']
           endpoint = 'https://api.hyperliquid.xyz/info'
           out = Path('/tmp/phase6_identity_probe')
@@ -89,12 +87,7 @@ jobs:
 
           def post(payload):
               body = json.dumps(payload, separators=(',', ':')).encode('utf-8')
-              req = urllib.request.Request(
-                  endpoint,
-                  data=body,
-                  headers={'Content-Type': 'application/json'},
-                  method='POST',
-              )
+              req = urllib.request.Request(endpoint, data=body, headers={'Content-Type': 'application/json'}, method='POST')
               with urllib.request.urlopen(req, timeout=30) as resp:
                   return resp.read()
 
@@ -102,33 +95,23 @@ jobs:
           abstraction_raw = post({'type': 'userAbstraction', 'user': address})
           role_obj = json.loads(role_raw)
           abstraction_obj = json.loads(abstraction_raw)
-          observation = verify_identity_observation(
-              account_address=address,
-              user_role_response=role_obj,
-              user_abstraction_response=abstraction_obj,
-          )
-          role_sha = hashlib.sha256(role_raw).hexdigest()
-          abstraction_sha = hashlib.sha256(abstraction_raw).hexdigest()
           verified_at = datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z')
-
-          (out / 'userRole.raw.json').write_bytes(role_raw)
-          (out / 'userAbstraction.raw.json').write_bytes(abstraction_raw)
           summary = {
               'account_address': address,
               'verified_at': verified_at,
               'user_role_response': role_obj,
               'user_abstraction_response': abstraction_obj,
               'raw_response_sha256': {
-                  'userRole': role_sha,
-                  'userAbstraction': abstraction_sha,
+                  'userRole': hashlib.sha256(role_raw).hexdigest(),
+                  'userAbstraction': hashlib.sha256(abstraction_raw).hexdigest(),
               },
-              'verified_observation': observation,
           }
+          (out / 'userRole.raw.json').write_bytes(role_raw)
+          (out / 'userAbstraction.raw.json').write_bytes(abstraction_raw)
           (out / 'summary.json').write_text(json.dumps(summary, indent=2, sort_keys=True) + '\n', encoding='utf-8')
-          print('PHASE6_IDENTITY_PROBE=' + json.dumps(summary, sort_keys=True, separators=(',', ':')))
+          print('PHASE6_IDENTITY_RAW=' + json.dumps(summary, sort_keys=True, separators=(',', ':')))
           PY
       - name: Upload identity evidence
-        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: phase6-identity-probe-${{ github.run_id }}-${{ github.run_attempt }}
@@ -136,3 +119,17 @@ jobs:
           if-no-files-found: error
           retention-days: 90
           overwrite: false
+      - name: Verify frozen identity contract compatibility
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from research.governance.phase6_live_account_identity import verify_identity_observation
+          summary = json.loads(Path('/tmp/phase6_identity_probe/summary.json').read_text())
+          result = verify_identity_observation(
+              account_address=summary['account_address'],
+              user_role_response=summary['user_role_response'],
+              user_abstraction_response=summary['user_abstraction_response'],
+          )
+          print('PHASE6_IDENTITY_VERIFIED=' + json.dumps(result, sort_keys=True, separators=(',', ':')))
+          PY
