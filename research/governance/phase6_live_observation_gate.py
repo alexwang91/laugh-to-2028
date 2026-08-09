@@ -1,8 +1,9 @@
 from __future__ import annotations
 
-"""Fail-closed preactivation gate for genuine future Phase-6 elapsed evidence."""
+"""Fail-closed gate for genuine future Phase-6 elapsed evidence."""
 
 import json
+import re
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Mapping
@@ -25,6 +26,8 @@ from .validate import repo_root_from_module
 GATE_RELATIVE_PATH = Path("research/governance/phase6_live_observation_gate.json")
 WORKFLOW_RELATIVE_PATH = Path(".github/workflows/research-governance.yml")
 PHASE6_CONTRACT_RELATIVE_PATH = Path("config/phase6_shadow_contract.json")
+SHA_RE = re.compile(r"^[0-9a-f]{40}$")
+DAILY_CRON = "0 0 * * *"
 
 
 class Phase6ObservationGateError(RuntimeError):
@@ -50,6 +53,12 @@ def first_eligible_decision_after(armed_commit_timestamp: str) -> str:
     return (midnight + timedelta(days=1)).strftime("%Y-%m-%dT00:00:00Z")
 
 
+def _workflow_has_exact_daily_schedule(workflow_text: str) -> bool:
+    return "schedule:" in workflow_text and (
+        f"cron: '{DAILY_CRON}'" in workflow_text or f'cron: "{DAILY_CRON}"' in workflow_text
+    )
+
+
 def validate_gate_mapping(
     gate: Mapping[str, Any],
     *,
@@ -67,7 +76,7 @@ def validate_gate_mapping(
     if gate.get("canonical_phase6_contract") != str(PHASE6_CONTRACT_RELATIVE_PATH):
         raise Phase6ObservationGateError("gate must point to canonical Phase-6 contract")
     if gate.get("evidence_backend_contract") != str(EVIDENCE_CONTRACT_RELATIVE_PATH):
-        raise Phase6ObservationGateError("gate must point to frozen Phase-6 evidence backend contract")
+        raise Phase6ObservationGateError("gate must point to Phase-6 evidence backend contract")
     if gate.get("valuation_contract") != str(VALUATION_CONTRACT_RELATIVE_PATH):
         raise Phase6ObservationGateError("gate must point to frozen Phase-6 valuation contract")
     if gate.get("account_identity_contract") != str(ACCOUNT_IDENTITY_CONTRACT_RELATIVE_PATH):
@@ -84,9 +93,7 @@ def validate_gate_mapping(
     try:
         evidence_snapshot = validate_evidence_contract(evidence_contract)
     except Exception as exc:
-        raise Phase6ObservationGateError(f"invalid frozen evidence backend contract: {exc}") from exc
-    if evidence_snapshot.get("credit_active") is not False:
-        raise Phase6ObservationGateError("evidence backend contract cannot itself activate elapsed credit")
+        raise Phase6ObservationGateError(f"invalid Phase-6 evidence backend contract: {exc}") from exc
     if evidence_snapshot.get("production_authorized") is not False:
         raise Phase6ObservationGateError("evidence backend contract cannot confer production authority")
 
@@ -170,28 +177,51 @@ def validate_gate_mapping(
     schedule_configured = gate.get("schedule_configured") is True
     credit_authorized = gate.get("elapsed_evidence_credit_authorized") is True
     dependencies_ready = all(required_before_arm.get(key) is True for key in required_keys)
+    workflow_has_schedule = _workflow_has_exact_daily_schedule(workflow_text)
+    evidence_credit_active = evidence_snapshot.get("credit_active") is True
+    evidence_collection_active = evidence_snapshot.get("collection_active") is True
 
     if armed:
+        if gate.get("status") != "ARMED_FUTURE_ONLY_OBSERVATION_ACTIVE":
+            raise Phase6ObservationGateError("armed gate status drift")
         if not dependencies_ready:
             raise Phase6ObservationGateError("collector cannot arm before every dependency is frozen")
         if not schedule_configured or not credit_authorized:
             raise Phase6ObservationGateError("armed collector requires schedule and elapsed-credit authorization")
-        if not gate.get("armed_commit"):
-            raise Phase6ObservationGateError("armed collector requires an explicit arm commit")
+        armed_commit = gate.get("armed_commit")
+        if not isinstance(armed_commit, str) or SHA_RE.fullmatch(armed_commit) is None:
+            raise Phase6ObservationGateError("armed collector requires a 40-hex prospective ARM marker")
+        if evidence_snapshot.get("armed_commit") != armed_commit:
+            raise Phase6ObservationGateError("gate and evidence backend must reference the same ARM marker")
+        if not evidence_collection_active or not evidence_credit_active:
+            raise Phase6ObservationGateError("armed gate requires active durable evidence backend")
+        if not workflow_has_schedule:
+            raise Phase6ObservationGateError("armed gate requires exact daily 00:00 UTC schedule")
     else:
+        expected_status = (
+            "PREACTIVATION_READY_AWAITING_SEPARATE_ARM"
+            if dependencies_ready
+            else "PREACTIVATION_BLOCKED_FAIL_CLOSED"
+        )
+        if gate.get("status") != expected_status:
+            raise Phase6ObservationGateError("unarmed gate status does not match dependency readiness")
         if schedule_configured or credit_authorized:
             raise Phase6ObservationGateError("unarmed collector cannot configure schedule or elapsed credit")
         if gate.get("armed_commit") is not None:
             raise Phase6ObservationGateError("unarmed collector must not carry an arm commit")
+        if evidence_collection_active or evidence_credit_active:
+            raise Phase6ObservationGateError("unarmed gate cannot use active evidence collection/credit")
         if "schedule:" in workflow_text:
             raise Phase6ObservationGateError(
                 "research-governance workflow must not schedule Phase-6 elapsed collection while gate is unarmed"
             )
 
+    if evidence_credit_active != credit_authorized:
+        raise Phase6ObservationGateError("evidence-backend credit state must match gate authorization")
     if phase6_contract.get("status") != "PASS_SHADOW_ONLY_IMPLEMENTATION_REPLAY":
         raise Phase6ObservationGateError("canonical Phase-6 implementation/replay status drift detected")
     if live.get("status") != "MEASUREMENT_INCONCLUSIVE_TIME_DEPENDENT":
-        raise Phase6ObservationGateError("Phase-6 live elapsed status must remain inconclusive before evidence")
+        raise Phase6ObservationGateError("Phase-6 live elapsed status must remain inconclusive until evidence review")
 
     return {
         "gate_id": gate["gate_id"],
@@ -205,8 +235,10 @@ def validate_gate_mapping(
         "valuation_mode": valuation_snapshot.get("supported_user_abstraction"),
         "durable_evidence_backend_frozen": True,
         "durable_evidence_backend": evidence_snapshot.get("backend"),
+        "evidence_collection_active": evidence_collection_active,
         "schedule_configured": schedule_configured,
         "elapsed_evidence_credit_authorized": credit_authorized,
+        "armed_commit": gate.get("armed_commit"),
         "phase6_live_status": live.get("status"),
         "production_authorized": False,
         "signature_authorized": False,
