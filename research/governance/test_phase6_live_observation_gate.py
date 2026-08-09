@@ -13,6 +13,8 @@ from research.governance.phase6_live_observation_gate import (
 
 ROOT = Path(__file__).resolve().parents[2]
 MASTER = "0x1111111111111111111111111111111111111111"
+ARM_MARKER = "cbd58adb05187651ca72d67900a0ccbbd3e83b1e"
+SCHEDULE_BLOCK = "  schedule:\n    - cron: '0 0 * * *'\n"
 
 
 class Phase6LiveObservationGateTests(unittest.TestCase):
@@ -35,14 +37,44 @@ class Phase6LiveObservationGateTests(unittest.TestCase):
         instrument_registry=None,
     ):
         return validate_gate_mapping(
-            gate or self.gate,
+            self.gate if gate is None else gate,
             phase6_contract=self.phase6,
-            evidence_contract=evidence_contract or self.evidence_contract,
-            valuation_contract=valuation_contract or self.valuation_contract,
-            account_identity_contract=account_identity_contract or self.account_identity_contract,
-            instrument_registry=instrument_registry or self.instrument_registry,
+            evidence_contract=self.evidence_contract if evidence_contract is None else evidence_contract,
+            valuation_contract=self.valuation_contract if valuation_contract is None else valuation_contract,
+            account_identity_contract=(
+                self.account_identity_contract
+                if account_identity_contract is None
+                else account_identity_contract
+            ),
+            instrument_registry=self.instrument_registry if instrument_registry is None else instrument_registry,
             workflow_text=self.workflow if workflow is None else workflow,
         )
+
+    def prearm_evidence_contract(self):
+        contract = copy.deepcopy(self.evidence_contract)
+        contract["status"] = "FROZEN_BACKEND_NOT_COLLECTING"
+        contract["collection_active"] = False
+        contract["elapsed_evidence_credit_active"] = False
+        contract["armed_commit"] = None
+        contract["explicit_non_actions"] = [
+            "NO_ACCOUNT_IDENTITY_SELECTION",
+            "NO_POSITION_OR_EQUITY_VALUATION_CHANGE",
+            "NO_SCHEDULE_ARM",
+            "NO_ELAPSED_EVIDENCE_CREDIT",
+            "NO_SIGNING",
+            "NO_ORDER_SUBMISSION",
+            "NO_PRODUCTION_AUTHORIZATION",
+        ]
+        return contract
+
+    def unarmed_gate(self):
+        gate = copy.deepcopy(self.gate)
+        gate["status"] = "PREACTIVATION_READY_AWAITING_SEPARATE_ARM"
+        gate["collector_armed"] = False
+        gate["schedule_configured"] = False
+        gate["elapsed_evidence_credit_authorized"] = False
+        gate["armed_commit"] = None
+        return gate
 
     def unbound_identity_contract(self):
         contract = copy.deepcopy(self.account_identity_contract)
@@ -79,29 +111,46 @@ class Phase6LiveObservationGateTests(unittest.TestCase):
         )
         return contract
 
-    def test_repository_gate_is_ready_but_unarmed_and_does_not_start_elapsed_clock(self) -> None:
+    def workflow_without_schedule(self) -> str:
+        self.assertIn(SCHEDULE_BLOCK, self.workflow)
+        return self.workflow.replace(SCHEDULE_BLOCK, "", 1)
+
+    def test_repository_gate_is_armed_future_only_and_zero_authority(self) -> None:
         snapshot = self.validate()
-        self.assertEqual(snapshot["status"], "PREACTIVATION_READY_AWAITING_SEPARATE_ARM")
-        self.assertFalse(snapshot["collector_armed"])
+        self.assertEqual(snapshot["status"], "ARMED_FUTURE_ONLY_OBSERVATION_ACTIVE")
+        self.assertTrue(snapshot["collector_armed"])
         self.assertTrue(snapshot["dependencies_ready"])
         self.assertEqual(snapshot["account_identity_contract_status"], "FROZEN_VERIFIED_READ_ONLY_IDENTITY")
         self.assertTrue(snapshot["account_identity_frozen"])
         self.assertIsNotNone(snapshot["account_address"])
-        self.assertTrue(snapshot["valuation_contract_frozen"])
         self.assertEqual(snapshot["valuation_mode"], "disabled")
-        self.assertTrue(snapshot["durable_evidence_backend_frozen"])
-        self.assertEqual(snapshot["durable_evidence_backend"], "GITHUB_ACTIONS_ARTIFACT_V4")
-        self.assertFalse(snapshot["schedule_configured"])
-        self.assertFalse(snapshot["elapsed_evidence_credit_authorized"])
+        self.assertTrue(snapshot["evidence_collection_active"])
+        self.assertTrue(snapshot["schedule_configured"])
+        self.assertTrue(snapshot["elapsed_evidence_credit_authorized"])
+        self.assertEqual(snapshot["armed_commit"], ARM_MARKER)
         self.assertFalse(snapshot["production_authorized"])
         self.assertFalse(snapshot["signature_authorized"])
         self.assertFalse(snapshot["order_submission_authorized"])
 
-    def test_first_eligible_decision_is_strictly_after_arm_commit(self) -> None:
-        self.assertEqual(first_eligible_decision_after("2026-08-08T16:30:00Z"), "2026-08-09T00:00:00Z")
-        self.assertEqual(first_eligible_decision_after("2026-08-08T00:00:00Z"), "2026-08-09T00:00:00Z")
+    def test_first_eligible_decision_is_strictly_after_arm_commit_timestamp(self) -> None:
+        self.assertEqual(first_eligible_decision_after("2026-08-09T13:41:32Z"), "2026-08-10T00:00:00Z")
+        self.assertEqual(first_eligible_decision_after("2026-08-09T00:00:00Z"), "2026-08-10T00:00:00Z")
 
-    def test_backfill_or_replay_credit_is_rejected(self) -> None:
+    def test_unarmed_ready_fixture_remains_valid_but_has_no_clock(self) -> None:
+        snapshot = self.validate(
+            gate=self.unarmed_gate(),
+            evidence_contract=self.prearm_evidence_contract(),
+            workflow=self.workflow_without_schedule(),
+        )
+        self.assertEqual(snapshot["status"], "PREACTIVATION_READY_AWAITING_SEPARATE_ARM")
+        self.assertFalse(snapshot["collector_armed"])
+        self.assertTrue(snapshot["dependencies_ready"])
+        self.assertFalse(snapshot["evidence_collection_active"])
+        self.assertFalse(snapshot["schedule_configured"])
+        self.assertFalse(snapshot["elapsed_evidence_credit_authorized"])
+        self.assertIsNone(snapshot["armed_commit"])
+
+    def test_backfill_replay_rerun_and_manual_scheduled_credit_are_rejected(self) -> None:
         for field in (
             "historical_backfill_authorized",
             "historical_replay_credit_authorized",
@@ -116,78 +165,58 @@ class Phase6LiveObservationGateTests(unittest.TestCase):
                 with self.assertRaises(Phase6ObservationGateError):
                     self.validate(gate=gate)
 
-    def test_unarmed_gate_rejects_schedule_or_credit(self) -> None:
-        gate = copy.deepcopy(self.gate)
-        gate["schedule_configured"] = True
+    def test_armed_gate_requires_exact_daily_midnight_schedule(self) -> None:
         with self.assertRaises(Phase6ObservationGateError):
-            self.validate(gate=gate)
-        gate = copy.deepcopy(self.gate)
-        gate["elapsed_evidence_credit_authorized"] = True
+            self.validate(workflow=self.workflow_without_schedule())
+        wrong = self.workflow.replace("cron: '0 0 * * *'", "cron: '17 0 * * *'", 1)
         with self.assertRaises(Phase6ObservationGateError):
-            self.validate(gate=gate)
-        with self.assertRaises(Phase6ObservationGateError):
-            self.validate(workflow=self.workflow + "\nschedule:\n  - cron: '17 0 * * *'\n")
+            self.validate(workflow=wrong)
 
-    def test_collector_cannot_arm_with_account_identity_still_unfrozen(self) -> None:
+    def test_gate_and_evidence_backend_must_reference_same_arm_marker(self) -> None:
+        evidence = copy.deepcopy(self.evidence_contract)
+        evidence["armed_commit"] = "a" * 40
+        with self.assertRaises(Phase6ObservationGateError):
+            self.validate(evidence_contract=evidence)
         gate = copy.deepcopy(self.gate)
-        gate["required_before_arm"]["observation_account_identity_frozen"] = False
-        gate["collector_armed"] = True
-        gate["schedule_configured"] = True
-        gate["elapsed_evidence_credit_authorized"] = True
         gate["armed_commit"] = "deadbeef"
-        with self.assertRaises(Phase6ObservationGateError, msg="missing account identity must block"):
-            self.validate(gate=gate, account_identity_contract=self.unbound_identity_contract())
-
-    def test_gate_cannot_claim_identity_frozen_when_contract_is_unbound(self) -> None:
-        gate = copy.deepcopy(self.gate)
-        gate["required_before_arm"]["observation_account_identity_frozen"] = True
         with self.assertRaises(Phase6ObservationGateError):
-            self.validate(gate=gate, account_identity_contract=self.unbound_identity_contract())
+            self.validate(gate=gate)
 
-    def test_verified_identity_can_complete_dependencies_without_arming_collector(self) -> None:
-        gate = copy.deepcopy(self.gate)
-        gate["required_before_arm"]["observation_account_identity_frozen"] = True
-        snapshot = self.validate(gate=gate, account_identity_contract=self.bound_identity_contract())
-        self.assertTrue(snapshot["dependencies_ready"])
-        self.assertTrue(snapshot["account_identity_frozen"])
-        self.assertEqual(snapshot["account_address"], MASTER)
-        self.assertFalse(snapshot["collector_armed"])
-        self.assertFalse(snapshot["schedule_configured"])
-        self.assertFalse(snapshot["elapsed_evidence_credit_authorized"])
+    def test_armed_gate_cannot_lose_any_prearm_dependency(self) -> None:
+        for field in self.gate["required_before_arm"]:
+            gate = copy.deepcopy(self.gate)
+            gate["required_before_arm"][field] = False
+            with self.subTest(field=field):
+                with self.assertRaises(Phase6ObservationGateError):
+                    self.validate(gate=gate)
 
     def test_identity_contract_rejects_agent_or_nonstandard_account(self) -> None:
-        gate = copy.deepcopy(self.gate)
-        gate["required_before_arm"]["observation_account_identity_frozen"] = True
-
         contract = self.bound_identity_contract()
         contract["binding_evidence"]["user_role_response"] = {"role": "agent", "data": {"user": MASTER}}
         with self.assertRaises(Phase6ObservationGateError):
-            self.validate(gate=gate, account_identity_contract=contract)
+            self.validate(account_identity_contract=contract)
 
         contract = self.bound_identity_contract()
         contract["binding_evidence"]["user_abstraction_response"] = "portfolioMargin"
         with self.assertRaises(Phase6ObservationGateError):
-            self.validate(gate=gate, account_identity_contract=contract)
+            self.validate(account_identity_contract=contract)
 
-    def test_evidence_backend_flag_requires_valid_frozen_contract(self) -> None:
+    def test_unbound_identity_still_blocks_arm(self) -> None:
+        gate = copy.deepcopy(self.gate)
+        gate["required_before_arm"]["observation_account_identity_frozen"] = False
+        with self.assertRaises(Phase6ObservationGateError):
+            self.validate(gate=gate, account_identity_contract=self.unbound_identity_contract())
+
+    def test_evidence_backend_and_valuation_must_remain_valid(self) -> None:
         evidence = copy.deepcopy(self.evidence_contract)
         evidence["backend"]["overwrite"] = True
         with self.assertRaises(Phase6ObservationGateError):
             self.validate(evidence_contract=evidence)
-        gate = copy.deepcopy(self.gate)
-        gate["required_before_arm"]["durable_create_only_evidence_backend_frozen"] = False
-        with self.assertRaises(Phase6ObservationGateError):
-            self.validate(gate=gate)
 
-    def test_valuation_flag_requires_valid_standard_mode_contract(self) -> None:
         valuation = copy.deepcopy(self.valuation_contract)
         valuation["supported_account_mode"]["required_value"] = "unifiedAccount"
         with self.assertRaises(Phase6ObservationGateError):
             self.validate(valuation_contract=valuation)
-        gate = copy.deepcopy(self.gate)
-        gate["required_before_arm"]["current_position_and_equity_valuation_contract_frozen"] = False
-        with self.assertRaises(Phase6ObservationGateError):
-            self.validate(gate=gate)
 
     def test_frozen_phase6_acceptance_thresholds_cannot_drift(self) -> None:
         gate = copy.deepcopy(self.gate)
