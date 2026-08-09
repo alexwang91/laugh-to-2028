@@ -33,8 +33,8 @@ class ProgramDashboardContractTests(unittest.TestCase):
         self.assertIn("run.conclusion==='success'&&ev&&receipt", self.html)
         self.assertIn("phase6-evidence-", self.html)
         self.assertIn("phase6-receipt-", self.html)
-        self.assertIn("dashboard itself never creates evidence credit", self.html)
         self.assertIn("scheduled_decision_credit_created=false", self.html)
+        self.assertIn("看板不会自己创造任何有效记录", self.html)
 
     def test_backtest_shadow_and_real_pnl_are_explicitly_non_equivalent(self) -> None:
         for text in (
@@ -50,63 +50,81 @@ class ProgramDashboardContractTests(unittest.TestCase):
         self.assertNotIn("TARGET_ASSETS=['BTC','ETH','SOL','BNB','XRP']", self.html)
         self.assertIn("XRP remains **feature-only**", self.readme)
 
-    def test_v3_exposes_range_statistics_without_renaming_daily_hit_rate(self) -> None:
+    def test_v4_is_light_simplified_chinese_ui(self) -> None:
+        self.assertIn('content="v4-cn-simple-ui"', self.html)
+        self.assertIn("<title>BRRK 策略看板</title>", self.html)
         for text in (
-            "Cumulative return",
-            "Positive-return-day ratio",
-            "Daily payoff ratio",
-            "Max drawdown",
-            "Target-change days",
-            "Holding-cycle win rate",
+            "简洁中文版",
+            "所选区间收益",
+            "上涨天数占比",
+            "这一天发生了什么",
+            "为什么会调整仓位？",
+            "项目现在进行到哪一步？",
+        ):
+            self.assertIn(text, self.html)
+        self.assertIn("--bg:#f5f7fa", self.html)
+        self.assertIn("displayModeBar:false", self.html)
+        self.assertIn("function curveLabel", self.html)
+        self.assertNotIn("BRRK Program Timeline · V3 Daily Audit", self.html)
+        self.assertNotIn("Selected Range · 重新计算统计", self.html)
+
+    def test_v4_range_statistics_keep_v3_semantics(self) -> None:
+        for text in (
+            "累计收益",
+            "上涨天数占比",
+            "日收益盈亏比",
+            "最大回撤",
+            "目标仓位变化天数",
+            "持仓周期胜率",
         ):
             self.assertIn(text, self.html)
         self.assertIn("Positive-return-day ratio` is not labelled as holding-cycle win rate", self.readme)
-        self.assertIn("metric('Actual rebalance count','UNAVAILABLE')", self.html)
-        self.assertIn("metric('Holding-cycle win rate','UNAVAILABLE')", self.html)
+        self.assertIn("metric('实际再平衡次数','暂无历史记录')", self.html)
+        self.assertIn("metric('持仓周期胜率','暂无历史记录')", self.html)
 
-    def test_v3_freezes_p33_rule_but_does_not_infer_historical_execution(self) -> None:
+    def test_v4_freezes_p33_rule_but_does_not_infer_historical_execution(self) -> None:
         self.assertIn("const P33_REBALANCE_BAND=0.05", self.html)
-        self.assertIn("L1_ABSOLUTE_WEIGHT_GAP", self.html)
-        self.assertIn("REBALANCE_WHEN_L1_GAP_GTE_BAND", self.html)
-        self.assertIn("Historical P3.3 action: UNAVAILABLE", self.html)
+        self.assertIn("总差距达到或超过 5%", self.html)
+        self.assertIn("历史实际调仓动作：暂无记录", self.html)
         self.assertIn("historical_p3_3_execution_state_available=false", self.html)
         self.assertIn("execution_causality_asserted=false", self.html)
         self.assertIn("current_position_weights", self.readme)
         self.assertIn("l1_target_gap", self.readme)
 
-    def test_v3_separates_target_session_decision_and_return_date(self) -> None:
-        self.assertIn("Target session", self.html)
-        self.assertIn("Decision timestamp", self.html)
-        self.assertIn("Data cutoff", self.html)
-        self.assertIn("Target holding return", self.html)
-        self.assertIn("Selected NAV return", self.html)
+    def test_v4_separates_target_decision_and_return_date_in_chinese(self) -> None:
+        for text in (
+            "这一天生成的目标仓位",
+            "下一次决策时间",
+            "当时可用的数据",
+            "这份目标仓位对应的收益日",
+            "是否使用未来数据",
+        ):
+            self.assertIn(text, self.html)
         self.assertIn("uses completed daily data through D-1", self.readme)
         self.assertIn("does not introduce look-ahead", self.readme)
 
-    def test_v3_signal_rules_are_explicit_but_daily_snapshot_is_not_invented(self) -> None:
+    def test_v4_signal_rules_are_chinese_but_daily_snapshot_is_not_invented(self) -> None:
         for text in (
-            "btc_trend < 0",
-            "ETH eligibility",
-            "SOL eligibility",
-            "BNB eligibility",
-            "RISK_OFF / BTC_LEAD / MAJOR_ROTATION / ALT_EXPANSION",
-            "Selected historical daily signal values: UNAVAILABLE",
+            "BTC 逻辑",
+            "ETH 可获得仓位的条件",
+            "SOL 可获得仓位的条件",
+            "BNB 可获得仓位的条件",
+            "市场状态",
+            "历史每天的具体信号值没有被保存",
         ):
             self.assertIn(text, self.html)
         self.assertIn("historical_signal_snapshot_available=false", self.html)
         self.assertIn("never reverse-engineers a 2023 signal/regime", self.readme)
 
-    def test_v3_target_actions_remain_mechanical_only(self) -> None:
+    def test_v4_target_actions_are_chinese_mechanical_labels_only(self) -> None:
         self.assertIn("const REBALANCE_EPS=1e-9", self.html)
-        for action in ("ENTER", "EXIT", "INCREASE", "DECREASE", "HOLD"):
+        for action in ("新开仓", "清仓", "加仓", "减仓", "不变"):
             self.assertIn(action, self.html)
-            self.assertIn(action, self.readme)
-        self.assertIn("目标权重变化（由 canonical weights 派生）", self.html)
+        self.assertIn("模型目标仓位变化，不等于账户真的在当天成交了", self.html)
         self.assertIn("target_change_mechanics_authoritative_from_canonical_weights=true", self.html)
 
-    def test_v3_public_deploy_has_unique_marker(self) -> None:
-        self.assertIn('content="v3-daily-audit"', self.html)
-        self.assertIn("BRRK Program Timeline · V3 Daily Audit", self.html)
+    def test_v4_public_deploy_has_unique_marker(self) -> None:
+        self.assertIn('content="v4-cn-simple-ui"', self.html)
         self.assertIn("https://laugh-to-2028.vercel.app/", self.readme)
 
 
