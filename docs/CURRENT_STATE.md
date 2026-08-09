@@ -1,6 +1,7 @@
 # BRRK Current State
 
 Last updated: 2026-08-09  
+Handoff PR: **#143**  
 Handoff branch: `phase-6/arm-activation`  
 Authoritative baseline main at branch creation: `7520c2e620af2fcd9f407a3bfac9205b84120092`  
 Latest merged PR at branch creation: **#142**
@@ -20,16 +21,18 @@ Phase 6 implementation/replay     PASS_SHADOW_ONLY_IMPLEMENTATION_REPLAY
 Phase 6 identity                  VERIFIED / FROZEN / STANDARD-DISABLED
 Phase 6 pre-arm dependencies      4/4
 Phase 6 ARM owner authorization   GRANTED 2026-08-09
-Phase 6 live preflight            PENDING ON ARM ACTIVATION PR / NON-CREDITING
-Phase 6 live elapsed evidence     MEASUREMENT_INCONCLUSIVE_TIME_DEPENDENT / CLOCK NOT STARTED
+Phase 6 real live preflight       PASS / RUN 31316348226 / NON-CREDITING
+Phase 6 ARM marker                cbd58adb05187651ca72d67900a0ccbbd3e83b1e
+Phase 6 activation package        ARMED_FUTURE_ONLY_OBSERVATION_ACTIVE / PR #143
+Phase 6 live elapsed evidence     MEASUREMENT_INCONCLUSIVE_TIME_DEPENDENT / NO CREDIT YET
 Phase 7                           MONITOR_ONLY / LAUNCH BLOCKED
 Phase 8                           TRIGGER ABSENT / NOT RUN
 Production                        NO_CHANGE
 ```
 
-## Bound identity and ARM scope
+## Bound identity and ARM authority
 
-`PHASE6-LIVE-ACCOUNT-IDENTITY-V1` is frozen to the explicit owner-supplied Hyperliquid master account with:
+`PHASE6-LIVE-ACCOUNT-IDENTITY-V1` remains frozen to the explicit owner-supplied Hyperliquid master account:
 
 ```text
 userRole        user
@@ -38,42 +41,61 @@ identity_frozen true
 pre-arm deps    4/4
 ```
 
-The owner has now explicitly authorized the Phase-6 ARM transition and future-only shadow evidence collection. That authorization permits the zero-authority collector and daily observation schedule required by Phase 6. It does **not** authorize production, signing, order submission, withdrawal, transfer, strategy retuning, or Phase-7 launch.
+The owner explicitly authorized Phase-6 ARM and future-only zero-authority shadow evidence collection. That authorization does **not** authorize production, signing, order submission, withdrawal, transfer, strategy retuning, or Phase-7 launch.
 
-## ARM activation sequence
+## Real external preflight
 
-PR #142 merged the zero-authority collector plumbing at `7520c2e620af2fcd9f407a3bfac9205b84120092` while keeping the gate unarmed.
+PR #143 ran the actual public/read-only observation chain before activation.
 
-The activation branch now uses the pull-request workflow as a real external preflight. A PR event is explicitly diagnostic only and can never receive scheduled-decision or emergency-drill credit.
+The first preflight exposed a Hyperliquid funding timestamp transport detail: returned hourly funding rows were tens of milliseconds after nominal hour boundaries. Raw bytes were preserved. The fix was confined to a fail-closed Hyperliquid source-boundary adapter with a maximum one-second jitter tolerance; the frozen P3.1 canonicalizer was not relaxed or modified.
 
-```text
-ARM activation PR opens
--> real public/read-only Hyperliquid + Binance preflight runs
--> PR preflight artifact only / zero credit
--> if preflight FAILS: stop before ARM
--> if preflight PASSES: create durable ARM marker commit
--> set collector_armed=true
--> set schedule_configured=true
--> set elapsed_evidence_credit_authorized=true
--> add daily 00:00 UTC schedule
--> merge while preserving ARM marker commit
--> first eligible scheduled decision strictly after ARM marker
-```
-
-Until the preflight passes and the activation fields are committed, the authoritative main state remains:
+The corrected real preflight then passed in workflow run `31316348226`:
 
 ```text
-status                             PREACTIVATION_READY_AWAITING_SEPARATE_ARM
-collector_armed                    false
-schedule_configured                false
-elapsed_evidence_credit_authorized false
-armed_commit                       null
-clock                              NOT STARTED
+observed_at                      2026-08-09T13:40:30Z
+account_equity_usd               53.788314
+shadow_status                    SHADOW_COMPUTED_NO_AUTHORITY
+shadow_alerts                    []
+P3.2 independent parity          PASS
+scheduled decision credit        false
+production_authorized            false
+signature_authorized             false
+order_submission_authorized      false
+input_provenance_digest          bb1e3cfb1946e43b3da917a8513f9cce8b2ae1bdab9735e5d2eac49e66472939
+shadow_record_digest             59a689e42662f3fc871f6c0d67859a83ee136b959acd0299b3cd7ab46ae7cd03
 ```
 
-## Zero-authority live collector
+The PR preflight is diagnostic only and creates no elapsed-time, scheduled-decision or emergency-drill credit.
 
-The collector reuses the frozen chain rather than introducing new strategy logic:
+## Prospective ARM marker and activation
+
+The durable prospective marker is the dedicated commit:
+
+```text
+cbd58adb05187651ca72d67900a0ccbbd3e83b1e
+```
+
+The final activation package in PR #143 sets:
+
+```text
+status                             ARMED_FUTURE_ONLY_OBSERVATION_ACTIVE
+collector_armed                    true
+schedule_configured                true
+elapsed_evidence_credit_authorized true
+armed_commit                       cbd58adb05187651ca72d67900a0ccbbd3e83b1e
+daily schedule                     0 0 * * *  (UTC)
+production_authorized              false
+signature_authorized               false
+order_submission_authorized        false
+```
+
+The evidence backend is `ARMED_COLLECTING_FUTURE_ONLY` and references the same ARM marker. Credit still requires successful persistence of both the create-only 90-day evidence artifact and the separate hash-bound receipt artifact.
+
+**Important:** scheduled workflows run from the default branch. Therefore PR #143 itself does not start a credited decision. The activation becomes operational only after merge to `main` while preserving the ARM-marker commit in history.
+
+The marker was created on 2026-08-09, so the rule-derived first eligible canonical timestamp is `2026-08-10T00:00:00Z`. It becomes decision #1 only if the activation is already on `main` for that genuine schedule event and both required artifacts persist successfully. Otherwise the first actual post-merge scheduled event becomes the first credit candidate. No missed timestamp may be backfilled.
+
+## Zero-authority observation chain
 
 ```text
 P3.1 canonical Binance UTC daily data
@@ -100,20 +122,20 @@ unexplained target drift              0
 schedule failures                     0
 ```
 
-Historical backfill/replay, CI replay, workflow reruns, duplicate decision timestamps, pull-request preflights and manual dispatch create no scheduled-decision credit. A manual emergency drill may count only toward the drill requirement after ARM and only with the frozen durable evidence rules.
+Historical backfill/replay, CI replay, pull-request preflight, workflow rerun, duplicate decision timestamps and manual dispatch create no scheduled-decision credit. A manual emergency drill may count only toward the drill requirement after ARM and never becomes a scheduled decision.
 
 ## Evidence backend
 
-`PHASE6-LIVE-EVIDENCE-BACKEND-V1` remains authoritative:
+`PHASE6-LIVE-EVIDENCE-BACKEND-V1` remains the authority:
 
 - GitHub Actions artifact v4;
 - 90-day retention for creditable evidence;
 - overwrite disabled;
 - raw market/account/route bytes preserved;
 - input-provenance and shadow-record SHA256 required;
-- evidence artifact must upload before receipt creation;
-- separate receipt artifact must upload before credit;
-- logs, ephemeral files, PR diagnostics and failed uploads create no credit.
+- evidence artifact uploads before receipt creation;
+- separate receipt artifact uploads before credit;
+- failed uploads, logs, ephemeral files and PR diagnostics create no credit.
 
 ## Production / security authority
 
@@ -142,7 +164,7 @@ first real short authority        NONE
 
 ## Human-control boundaries that remain
 
-ARM authorization is granted for this transition. Later explicit human gates remain:
+ARM authorization is complete for zero-authority Phase-6 observation. Later explicit human gates remain:
 
 - Phase-7 launch approval;
 - `MONITOR_ONLY -> ACTIVE`;
@@ -154,11 +176,12 @@ ARM authorization is granted for this transition. Later explicit human gates rem
 
 `DRIFT_0`.
 
-The activation work changes only Phase-6 zero-authority observation governance/workflow state. Strategy mathematics, immutable economic results, production config, gross cap and execution submission capability remain unchanged.
+The ARM work changes only Phase-6 observation governance, source-boundary read normalization, evidence state and workflow scheduling. Strategy mathematics, frozen P3.1 canonical semantics, immutable economic results, production config, gross cap and execution submission capability remain unchanged.
 
 ## Exact next task
 
-1. Open the ARM activation PR and require the real non-crediting PR preflight to run.
-2. If the external preflight fails, stop before ARM and resolve only the evidenced prerequisite.
-3. If it passes, create the prospective ARM marker and activation fields, add the daily `00:00 UTC` schedule, rerun all CI/preflight, and merge preserving the marker commit.
-4. Do not claim elapsed credit until a genuine post-ARM scheduled run successfully uploads both evidence and receipt artifacts.
+1. Make the final PR #143 head fully green, including its real non-crediting live preflight.
+2. Merge PR #143 with a **normal merge, not squash/rebase**, so ARM marker commit `cbd58adb05187651ca72d67900a0ccbbd3e83b1e` remains a real ancestor of `main`.
+3. Wait for the first genuine post-merge `00:00 UTC` schedule run.
+4. Credit decision #1 only after both evidence and receipt artifacts succeed; never backfill a missed schedule.
+5. Complete one separately evidenced manual emergency drill before Phase-6 closeout. Phase-7 remains blocked until the full 14-day / 10-decision / 1-drill review passes and the owner later gives separate launch approval.
