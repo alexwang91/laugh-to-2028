@@ -1,170 +1,233 @@
 <!doctype html>
 <html lang="zh-CN">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>BRRK Program Timeline Dashboard V2</title>
-  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
-  <style>
-    :root{--bg:#0b0e14;--panel:#111620;--panel2:#171d29;--text:#e8edf5;--muted:#8e9aab;--line:#2b3545;--good:#47c78a;--warn:#f1b35b;--bad:#ef6b73;--accent:#8aa4ff;--cyan:#65c8d0}
-    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-    a{color:var(--accent)}code{color:#b9c7ff}.wrap{max-width:1660px;margin:0 auto;padding:22px}.top{display:flex;gap:18px;align-items:flex-start;justify-content:space-between;margin-bottom:16px}
-    h1{font-size:26px;letter-spacing:-.4px;margin:0 0 5px}.subtitle{color:var(--muted);max-width:1040px}.badge{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:999px;padding:5px 9px;color:var(--muted);background:#0e131c;margin-left:6px;font-size:12px}
-    .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:12px}.card{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:14px;min-width:0}.kpi{grid-column:span 2}.kpi .v{font-size:21px;font-weight:650;margin-top:5px}.kpi .k{color:var(--muted);font-size:12px}.good{color:var(--good)}.warn{color:var(--warn)}.bad{color:var(--bad)}
-    .controls{grid-column:span 12;display:flex;flex-wrap:wrap;gap:12px;align-items:end}.field{min-width:220px;flex:1}.field label{display:block;color:var(--muted);font-size:12px;margin-bottom:5px}.field select,.field input{width:100%;background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:8px;padding:9px 10px}.scrubber{grid-column:span 12}.scrubber input[type=range]{width:100%;accent-color:var(--accent)}
-    .mainchart{grid-column:span 8}.side{grid-column:span 4}.half{grid-column:span 6}.full{grid-column:span 12}.chart{height:360px}.chart.small{height:290px}.chart.tall{height:430px}
-    .section-title{font-size:15px;font-weight:650;margin:0 0 8px}.meta{display:grid;grid-template-columns:132px 1fr;gap:6px 10px}.meta dt{color:var(--muted)}.meta dd{margin:0;overflow-wrap:anywhere}.note{color:var(--muted);font-size:12px;margin-top:9px}.strong-note{border-left:3px solid var(--warn);padding:8px 10px;background:#171711;color:#d9d2bb;border-radius:4px;font-size:12px}
-    .day-grid{display:grid;grid-template-columns:repeat(7,minmax(105px,1fr));gap:8px;margin:10px 0}.metric{background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:9px}.metric .mk{color:var(--muted);font-size:11px}.metric .mv{font-size:17px;font-weight:650;margin-top:3px}.action-enter,.action-increase{color:var(--good)}.action-exit,.action-decrease{color:var(--bad)}.action-hold{color:var(--muted)}
-    .timeline{position:relative;padding-left:22px}.timeline:before{content:"";position:absolute;left:7px;top:6px;bottom:6px;width:2px;background:var(--line)}.event{position:relative;margin:0 0 13px}.event:before{content:"";position:absolute;left:-20px;top:5px;width:10px;height:10px;border-radius:50%;background:var(--accent);border:2px solid var(--panel)}.event.future:before{background:var(--warn)}.event .date{font-size:11px;color:var(--muted)}.event .title{font-weight:620}.event .desc{color:var(--muted);font-size:12px}
-    .table-wrap{overflow:auto;max-height:540px;border:1px solid var(--line);border-radius:9px}table{width:100%;border-collapse:collapse;white-space:nowrap}th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;font-size:12px}th{position:sticky;top:0;background:var(--panel2);z-index:1;color:var(--muted)}tr:hover td{background:#151b26}.pill{display:inline-block;padding:2px 7px;border-radius:999px;border:1px solid var(--line);font-size:11px}.pill.good{border-color:#285f49}.pill.bad{border-color:#733d43}.pill.warn{border-color:#715a37}
-    .phasebar{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-top:8px}.phase{padding:10px 8px;background:var(--panel2);border:1px solid var(--line);border-radius:9px;text-align:center;font-size:12px}.phase.done{border-color:#285f49}.phase.active{border-color:#5367b8}.phase.blocked{border-color:#715a37}.legend{display:flex;gap:12px;flex-wrap:wrap;color:var(--muted);font-size:11px;margin-top:6px}.dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:5px;background:var(--accent)}
-    .error{background:#311c22;border:1px solid #6c3541;color:#ffd3d6;border-radius:9px;padding:10px;margin:10px 0}.hidden{display:none}.semantics{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--muted);font-size:11px;line-height:1.7}
-    @media(max-width:1180px){.kpi{grid-column:span 4}.mainchart,.side,.half{grid-column:span 12}.day-grid{grid-template-columns:repeat(4,1fr)}}@media(max-width:650px){.wrap{padding:12px}.kpi{grid-column:span 6}.top{display:block}.chart{height:310px}.phasebar{grid-template-columns:repeat(2,1fr)}.day-grid{grid-template-columns:repeat(2,1fr)}}
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="dashboard-version" content="v3-daily-audit">
+<title>BRRK Program Timeline Dashboard V3</title>
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+<style>
+:root{--bg:#0a0d13;--panel:#111620;--panel2:#171d29;--text:#e8edf5;--muted:#8e9aab;--line:#2b3545;--good:#47c78a;--warn:#f1b35b;--bad:#ef6b73;--accent:#8aa4ff;--cyan:#65c8d0}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.48 Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
+.wrap{max-width:1700px;margin:auto;padding:20px}h1{font-size:26px;margin:0 0 4px}.sub,.note{color:var(--muted)}.note{font-size:12px}.top{display:flex;justify-content:space-between;gap:18px;margin-bottom:14px}.badges{white-space:nowrap}.badge,.pill{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:4px 8px;color:var(--muted);font-size:11px;margin-left:5px}
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:11px}.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:13px;min-width:0}.kpi{grid-column:span 2}.k{font-size:11px;color:var(--muted)}.v{font-size:20px;font-weight:650;margin-top:4px}.controls,.full{grid-column:span 12}.main{grid-column:span 8}.side{grid-column:span 4}.half{grid-column:span 6}
+.controls{display:flex;gap:10px;flex-wrap:wrap;align-items:end}.field{min-width:180px;flex:1}.field label{display:block;color:var(--muted);font-size:11px;margin-bottom:4px}.field select,.field input{width:100%;padding:8px 9px;background:var(--panel2);border:1px solid var(--line);border-radius:7px;color:var(--text)}
+.title{font-size:15px;font-weight:650;margin-bottom:8px}.chart{height:360px}.chart.small{height:290px}.metrics{display:grid;grid-template-columns:repeat(6,1fr);gap:7px}.metric{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:8px}.metric .mv{font-size:17px;font-weight:650;margin-top:2px}
+.warnbox{border-left:3px solid var(--warn);background:#181710;padding:9px 10px;border-radius:4px;font-size:12px}.goodbox{border-left:3px solid var(--good);background:#111b17;padding:9px 10px;border-radius:4px;font-size:12px}
+.meta{display:grid;grid-template-columns:155px 1fr;gap:5px 8px}.meta dt{color:var(--muted)}.meta dd{margin:0;overflow-wrap:anywhere}
+.table{overflow:auto;max-height:500px;border:1px solid var(--line);border-radius:8px}table{border-collapse:collapse;width:100%;white-space:nowrap}th,td{padding:7px 9px;border-bottom:1px solid var(--line);font-size:11px;text-align:left}th{position:sticky;top:0;background:var(--panel2);color:var(--muted);z-index:2}tr:hover td{background:#151b26}
+.good{color:var(--good)}.warn{color:var(--warn)}.bad{color:var(--bad)}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px}.sem{line-height:1.7;color:var(--muted)}.rule{padding:7px 0;border-bottom:1px solid var(--line)}.rule:last-child{border:0}
+.timeline{border-left:2px solid var(--line);padding-left:16px}.event{margin:0 0 12px}.event b{display:block}.event small{color:var(--muted)}
+.error{background:#301a20;border:1px solid #6d3541;padding:9px;border-radius:8px;margin:8px 0}.hidden{display:none}
+@media(max-width:1150px){.kpi{grid-column:span 4}.main,.side,.half{grid-column:span 12}.metrics{grid-template-columns:repeat(3,1fr)}}@media(max-width:650px){.wrap{padding:10px}.kpi{grid-column:span 6}.top{display:block}.badges{margin-top:8px}.metrics{grid-template-columns:repeat(2,1fr)}.chart{height:310px}}
+</style>
 </head>
 <body>
 <div class="wrap">
-  <div class="top">
-    <div><h1>BRRK Program Timeline · V2</h1><div class="subtitle">历史回测 → canonical target 逐日变化 → 研究决策 → Phase 6 future-only shadow evidence → 后续 Phase 7/8。历史 backtest、Phase-6 shadow 和未来真实账户 PnL 始终分层，不拼接成一条虚假的连续实盘曲线。</div></div>
-    <div><span class="badge" id="mainSha">main …</span><span class="badge" id="updatedAt">loading</span></div>
-  </div>
-  <div id="errorBox" class="error hidden"></div>
-
-  <div class="grid">
-    <div class="card kpi"><div class="k">当前 Phase</div><div class="v" id="phaseKpi">—</div></div>
-    <div class="card kpi"><div class="k">Phase 6 ARM</div><div class="v" id="armKpi">—</div></div>
-    <div class="card kpi"><div class="k">Scheduled Evidence</div><div class="v" id="decisionKpi">—</div></div>
-    <div class="card kpi"><div class="k">历史净值区间</div><div class="v" id="windowKpi">—</div></div>
-    <div class="card kpi"><div class="k">选择曲线 Final NAV</div><div class="v" id="navKpi">—</div></div>
-    <div class="card kpi"><div class="k">选择曲线 Max DD</div><div class="v" id="mddKpi">—</div></div>
-
-    <div class="card controls">
-      <div class="field"><label>全部策略 / 研究条目</label><select id="researchSelect"></select></div>
-      <div class="field"><label>可绘制历史曲线</label><select id="curveSelect"></select></div>
-      <div class="field"><label>时间范围</label><select id="rangeSelect"><option value="all">全部</option><option value="1y">最近 1 年</option><option value="2y">最近 2 年</option><option value="2024">2024+</option></select></div>
-      <div class="field"><label>选择日期</label><input id="dateInput" type="date" /></div>
-      <div class="field"><label>研究条目搜索</label><input id="researchSearch" placeholder="例如 BRRK / CARRY / ROUTER / LEVERAGE" /></div>
-    </div>
-
-    <div class="card scrubber"><div class="section-title">历史日级时间轴 / Scrubber</div><input id="dateSlider" type="range" min="0" max="0" value="0" step="1" /><div class="note">拖动时间轴、点击 NAV / 持仓图或直接选日期，下面的 Daily Drilldown 会同步到同一天。</div></div>
-
-    <div class="card mainchart"><div class="section-title">累计净值 / PnL 时间轴</div><div id="equityChart" class="chart tall"></div><div class="note">基准 NAV=10,000。历史区只读取既有 result CSV，不重算、不覆写任何 immutable evidence。</div></div>
-    <div class="card side"><div class="section-title">策略 / 研究语义</div><dl id="researchMeta" class="meta"></dl><div class="note" id="curveNote"></div></div>
-
-    <div class="card full"><div class="section-title">Daily Drilldown · 选中日期</div><div id="dayMetrics" class="day-grid"></div><div class="table-wrap"><table><thead><tr><th>Asset</th><th>Previous target</th><th>Selected target</th><th>Δ target</th><th>Target action</th></tr></thead><tbody id="actionRows"></tbody></table></div><div id="dayExplanation" class="strong-note" style="margin-top:10px"></div><div id="dayProvenance" class="note"></div></div>
-
-    <div class="card half"><div class="section-title">逐日 PnL %</div><div id="dailyPnlChart" class="chart small"></div></div>
-    <div class="card half"><div class="section-title">Drawdown</div><div id="drawdownChart" class="chart small"></div></div>
-
-    <div class="card half"><div class="section-title">Canonical / governed 历史目标持仓</div><div id="weightsChart" class="chart"></div><div class="note">只把 BTC / ETH / SOL / BNB 当作 target holdings；XRP 保持 feature-only，不作为 target holding 绘制。</div></div>
-    <div class="card half"><div class="section-title">BRRK 收益机制背景</div><dl id="mechanismMeta" class="meta"></dl><div class="note">这是 frozen、non-promotable 的总体归因结果，用于解释 BRRK 的收益分布特征；它不提供逐日 signal→trade 因果证明，也不能用于调参。</div></div>
-
-    <div class="card half"><div class="section-title">研究 / 产品大时间轴</div><div id="timeline" class="timeline"></div></div>
-    <div class="card half"><div class="section-title">V2 证据语义</div><div class="semantics">dashboard_record_authoritative=false<br>scheduled_decision_credit_created=false<br>production_authorized=false<br>target_change_mechanics_authoritative_from_canonical_weights=true<br>execution_causality_asserted=false</div><div class="note">Daily Drilldown 的 ENTER / EXIT / INCREASE / DECREASE / HOLD 仅描述相邻 canonical target weights 的机械变化。没有把 P3.3 实际成交、signal 原因或未来真实账户收益从这些权重变化中反推出来。</div></div>
-
-    <div class="card full"><div class="section-title">Phase 6 每日 Future Evidence Ledger</div><div class="phasebar"><div class="phase done">历史回测<br>frozen</div><div class="phase done">P1–P3<br>implementation</div><div class="phase done">P4/P5<br>research closed</div><div class="phase active">Phase 6<br>ARMED</div><div class="phase blocked">Phase 7<br>launch blocked</div><div class="phase blocked">Phase 8<br>trigger absent</div></div><div class="legend"><span><i class="dot" style="background:var(--good)"></i>evidence + receipt</span><span><i class="dot" style="background:var(--warn)"></i>pending / future</span><span><i class="dot" style="background:var(--bad)"></i>failed / missing</span></div><div class="table-wrap" style="margin-top:12px"><table><thead><tr><th>Canonical Date (UTC)</th><th>GitHub Run</th><th>Run Status</th><th>Evidence</th><th>Receipt</th><th>Scheduled Credit Candidate</th><th>Forward detail</th><th>说明</th></tr></thead><tbody id="phase6Rows"></tbody></table></div><div class="note">公开浏览器只读取 schedule run + artifact identity metadata。V2 不伪造 artifact 内的 target weights、account equity、shadow return、alerts 或 provenance digest；这些字段只有在未来存在安全的 browser-readable derived index 后才能显示。正式 Phase-6 acceptance 仍以 frozen canonical evidence/receipt contract 和正式 review 为准。</div></div>
-
-    <div class="card full"><div class="section-title">全部 Research Registry</div><div class="table-wrap"><table><thead><tr><th>Research ID</th><th>Family</th><th>Domain</th><th>Result</th><th>Promotion</th><th>Production</th></tr></thead><tbody id="researchRows"></tbody></table></div></div>
-  </div>
+<div class="top">
+ <div><h1>BRRK Program Timeline · V3 Daily Audit</h1><div class="sub">逐日 target 审计 + 区间统计 + P3.2/P3.3 决策语义。历史 backtest、Phase-6 hypothetical shadow 与 future real-account PnL 严格分层。</div></div>
+ <div class="badges"><span class="badge">V3 daily-audit</span><span class="badge" id="mainSha">main …</span><span class="badge" id="updated">loading</span></div>
 </div>
+<div id="err" class="error hidden"></div>
+<div class="grid">
+ <div class="card kpi"><div class="k">历史区间</div><div class="v" id="windowKpi">—</div></div>
+ <div class="card kpi"><div class="k">Range Return</div><div class="v" id="rangeReturn">—</div></div>
+ <div class="card kpi"><div class="k">Positive Days</div><div class="v" id="positiveDays">—</div></div>
+ <div class="card kpi"><div class="k">Range Payoff</div><div class="v" id="payoff">—</div></div>
+ <div class="card kpi"><div class="k">Range Max DD</div><div class="v" id="rangeMdd">—</div></div>
+ <div class="card kpi"><div class="k">P3.3 Band</div><div class="v">5.00%</div></div>
+
+ <div class="card controls">
+   <div class="field"><label>历史曲线</label><select id="curve"></select></div>
+   <div class="field"><label>选中日期 / target session</label><input type="date" id="day"></div>
+   <div class="field"><label>Range start</label><input type="date" id="start"></div>
+   <div class="field"><label>Range end</label><input type="date" id="end"></div>
+   <div class="field"><label>快捷区间</label><select id="preset"><option value="all">全部</option><option value="1y">最近1年</option><option value="2y">最近2年</option><option value="2023">2023</option><option value="2024">2024</option><option value="2025">2025</option><option value="2026">2026</option></select></div>
+ </div>
+
+ <div class="card main"><div class="title">累计净值 / 点击任意一天</div><div id="equity" class="chart"></div><div class="note">Range 可通过日期输入或图表框选/缩放更新。NAV 只读取现有 immutable CSV。</div></div>
+ <div class="card side"><div class="title">选中日的时间语义</div><dl id="timing" class="meta"></dl><div class="warnbox" style="margin-top:9px">历史 row <b>t</b> 的 target 是为下一日 return 准备；历史 row <b>t</b> 的 NAV 日收益使用的是 <b>t−1 target</b>。V3 不把同一行 target 与同一行 return 错配成因果关系。</div></div>
+
+ <div class="card full"><div class="title">Selected Range · 重新计算统计</div><div id="rangeMetrics" class="metrics"></div><div class="note">Positive Days 是日收益胜率，不等于 holding-cycle win rate。后者只有在 canonical executed-turnover 序列存在时才允许显示。</div></div>
+
+ <div class="card full"><div class="title">Daily causal audit · target session</div><div id="dayMetrics" class="metrics"></div><div class="table" style="margin-top:9px"><table><thead><tr><th>Asset</th><th>Previous target</th><th>Selected target</th><th>Δ target</th><th>Mechanical target action</th></tr></thead><tbody id="actionRows"></tbody></table></div><div id="explain" class="goodbox" style="margin-top:9px"></div></div>
+
+ <div class="card half"><div class="title">Target vector change L1 · 不是 P3.3 account gap</div><div id="l1chart" class="chart small"></div><div class="note">虚线 5% 仅作为 P3.3 controller reference。曲线是 adjacent canonical target vector L1 change；两者输入不同，不能以曲线越线判定真实 rebalance。</div></div>
+ <div class="card half"><div class="title">P3.3 真正控制阈值</div>
+   <div class="rule"><b>L1_ABSOLUTE_WEIGHT_GAP</b><br><span class="note">Σ |model_target_weight − current_position_weight|</span></div>
+   <div class="rule"><b>REBALANCE_WHEN_L1_GAP_GTE_BAND</b> · <span class="warn">0.05</span></div>
+   <div class="rule"><b>Safety override</b><br><span class="note">current short position 或 current gross &gt; 1 → regardless of band 回到 P3.2 target</span></div>
+   <div class="warnbox" style="margin-top:9px"><b id="p33Status">Historical P3.3 action: UNAVAILABLE</b><br>pit_disp_0015 没有持久化逐日 current_position_weights / l1_target_gap / control_turnover_weight，因此 2023 等历史日期不能被诚实标成 actual HOLD 或 REBALANCE。</div>
+ </div>
+
+ <div class="card half"><div class="title">Canonical target holdings</div><div id="weights" class="chart"></div><div class="note">BTC / ETH / SOL / BNB only。XRP remains feature-only。</div></div>
+ <div class="card half"><div class="title">P3.2 signal / regime 可证明边界</div><div id="signalRules"></div><div class="warnbox" style="margin-top:9px"><b>Selected historical daily signal values: UNAVAILABLE</b><br>冻结 historical result 没有逐日保存 P3.2 `risk_state`, probabilities, `btc_trend`, `btc_vol`, ETH/SOL/BNB score 或 feature snapshot。V3 不从 target/NAV 逆推这些值。</div></div>
+
+ <div class="card half"><div class="title">Daily PnL %</div><div id="daily" class="chart small"></div></div>
+ <div class="card half"><div class="title">Drawdown</div><div id="dd" class="chart small"></div></div>
+
+ <div class="card half"><div class="title">Program timeline</div><div id="timeline" class="timeline"></div></div>
+ <div class="card half"><div class="title">V3 evidence semantics</div><div class="mono sem">
+dashboard_version=v3-daily-audit<br>
+dashboard_record_authoritative=false<br>
+scheduled_decision_credit_created=false<br>
+production_authorized=false<br>
+target_change_mechanics_authoritative_from_canonical_weights=true<br>
+p3_3_rule_authoritative_from_controller=true<br>
+historical_p3_3_execution_state_available=false<br>
+historical_signal_snapshot_available=false<br>
+execution_causality_asserted=false<br>
+historical backtest NAV != Phase-6 hypothetical shadow PnL != future real-account PnL
+ </div></div>
+
+ <div class="card full"><div class="title">Phase 6 future-only schedule / evidence ledger</div><div class="table"><table><thead><tr><th>Run</th><th>Created UTC</th><th>Conclusion</th><th>Evidence artifact</th><th>Receipt artifact</th><th>Scheduled credit candidate</th></tr></thead><tbody id="phase6"></tbody></table></div><div class="note">Candidate 条件仅为公开 metadata：schedule run success + evidence artifact + receipt artifact。dashboard itself never creates evidence credit。</div></div>
+
+ <div class="card full"><div class="title">Research Registry</div><div class="table"><table><thead><tr><th>ID</th><th>Family</th><th>Domain</th><th>Result</th><th>Promotion</th><th>Production</th></tr></thead><tbody id="research"></tbody></table></div></div>
+</div></div>
 <script>
 const OWNER='alexwang91',REPO='laugh-to-2028',REF='main';
 const RAW=`https://raw.githubusercontent.com/${OWNER}/${REPO}/${REF}/`;
 const API=`https://api.github.com/repos/${OWNER}/${REPO}`;
-const PLOT={responsive:true,displaylogo:false,modeBarButtonsToRemove:['lasso2d','select2d']};
-const REBALANCE_EPS=1e-9;
 const TARGET_ASSETS=['BTC','ETH','SOL','BNB'];
-const layoutBase={paper_bgcolor:'#111620',plot_bgcolor:'#111620',font:{color:'#cdd5e0',size:11},margin:{l:54,r:18,t:18,b:42},xaxis:{gridcolor:'#202938',zerolinecolor:'#2b3545'},yaxis:{gridcolor:'#202938',zerolinecolor:'#2b3545'},hovermode:'x unified',legend:{orientation:'h',y:1.08,x:0}};
+const REBALANCE_EPS=1e-9;
+const P33_REBALANCE_BAND=0.05;
+const PATHS={
+ equity:'research/results/pit_disp_0015/daily_equity.csv',
+ weights:'research/results/pit_disp_0015/daily_weights.csv',
+ funding:'research/results/funding_pnl_0003/full_window_daily_equity.csv',
+ research:'config/research_registry.json',
+ decisions:'config/decision_registry.json'
+};
+const PLOT={responsive:true,displaylogo:false};
+const layout={paper_bgcolor:'#111620',plot_bgcolor:'#111620',font:{color:'#cdd5e0',size:11},margin:{l:52,r:18,t:12,b:38},xaxis:{gridcolor:'#202938'},yaxis:{gridcolor:'#202938'},hovermode:'x unified',legend:{orientation:'h'}};
+let state={curves:{},weights:[],dates:[],curve:'BRRK0011_BASELINE',selected:null,start:null,end:null};
 
-const curveCatalog=[
-  {id:'BRRK-0011',label:'BRRK-0011 Canonical price-only',file:'research/results/pit_disp_0015/daily_equity.csv',column:'BRRK0011_BASELINE',weights:'BRRK0011_BASELINE',kind:'CANONICAL_RESEARCH_TARGET'},
-  {id:'BRRK-0011-DISP0014',label:'BRRK-0011 + fixed dispersion panel',file:'research/results/pit_disp_0015/daily_equity.csv',column:'BRRK0011_PLUS_FIXED_PANEL_DISP0014',weights:'BRRK0011_PLUS_FIXED_PANEL_DISP0014',kind:'HISTORICAL_VARIANT'},
-  {id:'BRRK-0011-DISP0015',label:'BRRK-0011 + dynamic universe dispersion',file:'research/results/pit_disp_0015/daily_equity.csv',column:'BRRK0011_PLUS_DYNAMIC_UNIVERSE_DISP0015',weights:'BRRK0011_PLUS_DYNAMIC_UNIVERSE_DISP0015',kind:'HISTORICAL_VARIANT'},
-  {id:'V1-BASELINE',label:'V1 baseline',file:'research/results/pit_disp_0015/daily_equity.csv',column:'V1_BASELINE',weights:'V1_BASELINE',kind:'HISTORICAL_BASELINE'},
-  {id:'FUNDING-PRICE-ONLY',label:'BRRK price-only — funding full window',file:'research/results/funding_pnl_0003/full_window_daily_equity.csv',column:'PRICE_ONLY',weights:'BRRK0011_BASELINE',kind:'FUNDING_CONTROL'},
-  {id:'FUNDING-BINANCE-PROXY',label:'BRRK Binance all-perp funding proxy',file:'research/results/funding_pnl_0003/full_window_daily_equity.csv',column:'BINANCE_ALL_PERP_PROXY',weights:'BRRK0011_BASELINE',kind:'REJECTED_IMPLEMENTATION_SCENARIO'}
-];
-const majorTimeline=[
-  ['2022-12-10','Backtest evidence window begins','Canonical BRRK/V1 daily equity and target-weight artifacts begin.','past'],
-  ['2026-08-04','Research result wave','BRRK, PIT alpha, funding and router evidence frozen into repository results.','past'],
-  ['2026-08-05','Product / research decisions frozen','Long universe, venue, risk, cycle-exit and research stop decisions consolidated.','past'],
-  ['2026-08-08','Phase 6 implementation/replay','Integrated shadow implementation/replay passed; still no elapsed-time credit.','past'],
-  ['2026-08-09','Phase 6 ARM','Future-only zero-authority observation clock armed; daily 00:00 UTC schedule activated.','past'],
-  ['2026-08-10','First theoretical eligible scheduled decision','Only a genuine schedule run with durable evidence + receipt may become decision #1.','future'],
-  ['+14 calendar days','Earliest time gate','Requires >=14 elapsed days, >=10 scheduled decisions, >=1 drill, and zero frozen error counters.','future'],
-  ['After Phase 6 review','Phase 7 launch decision','Still requires separate explicit owner approval; not automatic.','future'],
-  ['Bear trigger only','Phase 8 bear-short research','Trigger absent today; no standing short authority.','future']
-];
-let state={research:[],decisions:[],equityCache:new Map(),weights:[],gate:null,phase6:null,main:null,attribution:null,currentCurve:null,currentFullSeries:null,currentSeries:null,selectedDate:null,dateIndex:[]};
-
-function showError(e){const b=document.getElementById('errorBox');b.classList.remove('hidden');b.textContent=`Dashboard data load error: ${e.message||e}`}
-async function text(path){const r=await fetch(RAW+path,{cache:'no-store'});if(!r.ok)throw new Error(`${path}: HTTP ${r.status}`);return r.text()}
-async function json(path){return JSON.parse(await text(path))}
-async function api(path){const r=await fetch(API+path,{headers:{Accept:'application/vnd.github+json'},cache:'no-store'});if(!r.ok)throw new Error(`GitHub API ${path}: HTTP ${r.status}`);return r.json()}
-function csvParse(s){const lines=s.trim().split(/\r?\n/);const h=lines[0].split(',');return lines.slice(1).filter(Boolean).map(line=>{const c=line.split(',');const o={};h.forEach((k,i)=>o[k]=c[i]);return o})}
-function fmtPct(v,d=2){return Number.isFinite(v)?`${(v*100).toFixed(d)}%`:'—'}
-function fmtNum(v,d=4){return Number.isFinite(v)?Number(v).toFixed(d):'—'}
-function statusClass(s){s=String(s||'');if(/PASS|ACCEPTED|VERIFIED|ACTIVE|SUCCESS|CANONICAL|PRESENT|YES/.test(s))return'good';if(/REJECT|FAIL|BLOCK|STOP|MISSING/.test(s))return'bad';return'warn'}
-function pill(s){return `<span class="pill ${statusClass(s)}">${s||'—'}</span>`}
-function currentCurve(){return curveCatalog.find(x=>x.id===document.getElementById('curveSelect').value)||curveCatalog[0]}
-function filterRange(rows){const v=document.getElementById('rangeSelect').value;if(v==='all')return rows;const last=new Date(rows.at(-1).date+'T00:00:00Z');let cutoff;if(v==='1y'){cutoff=new Date(last);cutoff.setUTCFullYear(cutoff.getUTCFullYear()-1)}else if(v==='2y'){cutoff=new Date(last);cutoff.setUTCFullYear(cutoff.getUTCFullYear()-2)}else cutoff=new Date('2024-01-01T00:00:00Z');return rows.filter(r=>new Date(r.date+'T00:00:00Z')>=cutoff)}
-async function loadCurve(c){if(!state.equityCache.has(c.file))state.equityCache.set(c.file,csvParse(await text(c.file)));return state.equityCache.get(c.file)}
-async function loadWeights(){if(!state.weights.length)state.weights=csvParse(await text('research/results/pit_disp_0015/daily_weights.csv'));return state.weights}
-function calcSeries(rows,col){const clean=rows.map(r=>({date:r.date,v:Number(r[col])})).filter(r=>Number.isFinite(r.v)&&r.v>0);const ret=[],dd=[];let peak=-Infinity;clean.forEach((r,i)=>{peak=Math.max(peak,r.v);dd.push({date:r.date,v:r.v/peak-1});ret.push({date:r.date,v:i?r.v/clean[i-1].v-1:0})});return{clean,ret,dd,mdd:Math.min(...dd.map(x=>x.v)),final:clean.at(-1)?.v}}
-function selectedShapes(){const shapes=[{type:'line',x0:'2026-08-09',x1:'2026-08-09',y0:0,y1:1,yref:'paper',line:{dash:'dot',width:1}}];if(state.selectedDate)shapes.push({type:'line',x0:state.selectedDate,x1:state.selectedDate,y0:0,y1:1,yref:'paper',line:{width:1,color:'#65c8d0'}});return shapes}
-function selectedAnnotations(){const a=[{x:'2026-08-09',y:1,yref:'paper',text:'ARM',showarrow:false,yanchor:'bottom',font:{size:10}}];if(state.selectedDate)a.push({x:state.selectedDate,y:.93,yref:'paper',text:'selected',showarrow:false,yanchor:'bottom',font:{size:10}});return a}
-function weightValue(row,prefix,asset){return Number(row?.[`${prefix}__${asset}`]||0)}
-function classifyTargetAction(prev,curr){if(Math.abs(curr-prev)<=REBALANCE_EPS)return'HOLD';if(Math.abs(prev)<=REBALANCE_EPS&&Math.abs(curr)>REBALANCE_EPS)return'ENTER';if(Math.abs(curr)<=REBALANCE_EPS&&Math.abs(prev)>REBALANCE_EPS)return'EXIT';return curr>prev?'INCREASE':'DECREASE'}
-function actionClass(a){return`action-${a.toLowerCase()}`}
-
-async function renderCurve(){
-  const c=currentCurve();const fullRows=await loadCurve(c);const full=calcSeries(fullRows,c.column);const rangedRows=filterRange(fullRows);const s=calcSeries(rangedRows,c.column);state.currentCurve=c;state.currentFullSeries=full;state.currentSeries=s;state.dateIndex=full.clean.map(x=>x.date);
-  const dateInput=document.getElementById('dateInput'),slider=document.getElementById('dateSlider');dateInput.min=state.dateIndex[0];dateInput.max=state.dateIndex.at(-1);slider.max=Math.max(0,state.dateIndex.length-1);
-  if(!state.selectedDate||!state.dateIndex.includes(state.selectedDate))state.selectedDate=s.clean.at(-1)?.date||state.dateIndex.at(-1);
-  const visibleDates=new Set(s.clean.map(x=>x.date));if(!visibleDates.has(state.selectedDate))state.selectedDate=s.clean.at(-1)?.date||state.selectedDate;
-  dateInput.value=state.selectedDate;slider.value=Math.max(0,state.dateIndex.indexOf(state.selectedDate));
-  document.getElementById('navKpi').textContent=s.final?s.final.toLocaleString(undefined,{maximumFractionDigits:0}):'—';document.getElementById('mddKpi').textContent=fmtPct(s.mdd,1);document.getElementById('mddKpi').className='v '+(s.mdd<-0.3?'bad':'');document.getElementById('curveNote').innerHTML=`曲线语义：<b>${c.kind}</b><br>Equity source: <code>${c.file}</code><br>Column: <code>${c.column}</code><br>Weight prefix: <code>${c.weights}</code>`;
-  Plotly.react('equityChart',[{x:s.clean.map(x=>x.date),y:s.clean.map(x=>x.v),type:'scatter',mode:'lines',name:c.label,line:{width:2}}],{...layoutBase,yaxis:{...layoutBase.yaxis,title:'NAV'},shapes:selectedShapes(),annotations:selectedAnnotations()},PLOT);
-  Plotly.react('dailyPnlChart',[{x:s.ret.map(x=>x.date),y:s.ret.map(x=>x.v*100),type:'bar',name:'Daily PnL %'}],{...layoutBase,yaxis:{...layoutBase.yaxis,title:'%'},shapes:state.selectedDate?[{type:'line',x0:state.selectedDate,x1:state.selectedDate,y0:0,y1:1,yref:'paper',line:{width:1,color:'#65c8d0'}}]:[]},PLOT);
-  Plotly.react('drawdownChart',[{x:s.dd.map(x=>x.date),y:s.dd.map(x=>x.v*100),type:'scatter',mode:'lines',fill:'tozeroy',name:'Drawdown %'}],{...layoutBase,yaxis:{...layoutBase.yaxis,title:'%'},shapes:state.selectedDate?[{type:'line',x0:state.selectedDate,x1:state.selectedDate,y0:0,y1:1,yref:'paper',line:{width:1,color:'#65c8d0'}}]:[]},PLOT);
-  await renderWeights(c.weights);await renderDailyDetail();
+function csv(text){const lines=text.trim().split(/\r?\n/),h=lines[0].split(',');return lines.slice(1).map(line=>{const c=line.split(','),o={};h.forEach((k,i)=>o[k]=c[i]);return o})}
+const n=x=>{const v=Number(x);return Number.isFinite(v)?v:null};
+const pct=x=>x==null?'—':(100*x).toFixed(2)+'%';
+const f=x=>x==null?'—':Number(x).toFixed(4);
+const iso=d=>new Date(d+'T00:00:00Z');
+const dayAdd=(s,k)=>{const d=iso(s);d.setUTCDate(d.getUTCDate()+k);return d.toISOString().slice(0,10)};
+function err(e){document.getElementById('err').textContent=String(e);document.getElementById('err').classList.remove('hidden')}
+async function text(path){const r=await fetch(RAW+path);if(!r.ok)throw new Error(`${path}: ${r.status}`);return r.text()}
+async function json(path){const r=await fetch(RAW+path);if(!r.ok)throw new Error(`${path}: ${r.status}`);return r.json()}
+function metric(k,v){return `<div class="metric"><div class="k">${k}</div><div class="mv">${v}</div></div>`}
+function curveBaseName(name){return name.includes('BRRK0011')?'BRRK0011_BASELINE':name.includes('V1')?'V1_BASELINE':'BRRK0011_BASELINE'}
+function action(prev,curr){if(Math.abs(curr-prev)<=REBALANCE_EPS)return'HOLD';if(Math.abs(prev)<=REBALANCE_EPS&&curr>REBALANCE_EPS)return'ENTER';if(prev>REBALANCE_EPS&&Math.abs(curr)<=REBALANCE_EPS)return'EXIT';return curr>prev?'INCREASE':'DECREASE'}
+function makeSeries(rows,key){return rows.map(r=>({d:r.date,v:n(r[key])})).filter(x=>x.v!=null)}
+function returns(series){return series.map((x,i)=>({d:x.d,v:i?x.v/series[i-1].v-1:null}))}
+function dds(series){let peak=-Infinity;return series.map(x=>{peak=Math.max(peak,x.v);return{d:x.d,v:x.v/peak-1}})}
+function rangeSlice(series){return series.filter(x=>(!state.start||x.d>=state.start)&&(!state.end||x.d<=state.end))}
+function rangeStats(series){
+ const a=rangeSlice(series),rs=returns(a).filter(x=>x.v!=null),pos=rs.filter(x=>x.v>0).map(x=>x.v),neg=rs.filter(x=>x.v<0).map(x=>x.v);
+ const ret=a.length>1?a[a.length-1].v/a[0].v-1:null, hit=rs.length?pos.length/rs.length:null;
+ const payoff=pos.length&&neg.length?(pos.reduce((a,b)=>a+b,0)/pos.length)/Math.abs(neg.reduce((a,b)=>a+b,0)/neg.length):null;
+ const ddv=dds(a).map(x=>x.v),mdd=ddv.length?Math.min(...ddv):null;
+ return{a,rs,ret,hit,payoff,mdd,pos:pos.length,neg:neg.length}
 }
-async function renderWeights(prefix){const all=await loadWeights();const rows=filterRange(all);const traces=TARGET_ASSETS.map(a=>({x:rows.map(r=>r.date),y:rows.map(r=>weightValue(r,prefix,a)*100),type:'scatter',mode:'lines',stackgroup:'one',name:a,line:{width:.6}}));Plotly.react('weightsChart',traces,{...layoutBase,yaxis:{...layoutBase.yaxis,title:'Target weight %'},hovermode:'x unified',shapes:state.selectedDate?[{type:'line',x0:state.selectedDate,x1:state.selectedDate,y0:0,y1:1,yref:'paper',line:{width:1,color:'#65c8d0'}}]:[]},PLOT)}
-
-async function renderDailyDetail(){
-  const c=state.currentCurve;if(!c||!state.selectedDate)return;const full=state.currentFullSeries;const idx=full.clean.findIndex(x=>x.date===state.selectedDate);if(idx<0)return;const point=full.clean[idx],prevPoint=idx>0?full.clean[idx-1]:null;const ret=full.ret[idx]?.v??0,dd=full.dd[idx]?.v??0,cum=point.v/full.clean[0].v-1;
-  const weights=await loadWeights();const wi=weights.findIndex(r=>r.date===state.selectedDate),w=wi>=0?weights[wi]:null,pw=wi>0?weights[wi-1]:null;const actions=TARGET_ASSETS.map(asset=>{const prev=weightValue(pw,c.weights,asset),curr=weightValue(w,c.weights,asset),delta=curr-prev;return{asset,prev,curr,delta,action:classifyTargetAction(prev,curr)}});const gross=actions.reduce((a,x)=>a+Math.abs(x.curr),0),prevGross=actions.reduce((a,x)=>a+Math.abs(x.prev),0),l1=actions.reduce((a,x)=>a+Math.abs(x.delta),0),targetChanged=l1>REBALANCE_EPS;
-  const metrics=[['Date',state.selectedDate],['NAV',point.v.toLocaleString(undefined,{maximumFractionDigits:1})],['Daily PnL',fmtPct(ret)],['Cumulative PnL',fmtPct(cum)],['Drawdown',fmtPct(dd)],['Target gross',fmtPct(gross)],['Target Δ L1',fmtNum(l1,4)]];document.getElementById('dayMetrics').innerHTML=metrics.map(([k,v])=>`<div class="metric"><div class="mk">${k}</div><div class="mv">${v}</div></div>`).join('');
-  document.getElementById('actionRows').innerHTML=actions.map(x=>`<tr><td>${x.asset}</td><td>${fmtPct(x.prev)}</td><td>${fmtPct(x.curr)}</td><td>${x.delta>=0?'+':''}${fmtPct(x.delta)}</td><td class="${actionClass(x.action)}">${x.action}</td></tr>`).join('');
-  const changed=actions.filter(x=>x.action!=='HOLD');const mechanics=changed.length?changed.map(x=>`${x.asset} ${x.action} ${x.delta>=0?'+':''}${fmtPct(x.delta)}`).join('；'):'四个 target holdings 均无变化';
-  document.getElementById('dayExplanation').innerHTML=`<b>目标权重变化（由 canonical weights 派生）</b>：${targetChanged?'TARGET_CHANGE':'NO_TARGET_CHANGE'}，L1 Δ=${fmtNum(l1,4)}，gross ${fmtPct(prevGross)} → ${fmtPct(gross)}。${mechanics}。<br><span class="warn">不声称这是 P3.3 实际成交或某个 signal 的逐日因果解释。</span>`;
-  document.getElementById('dayProvenance').innerHTML=`Equity provenance: <code>${c.file} :: ${c.column}</code> · Target provenance: <code>research/results/pit_disp_0015/daily_weights.csv :: ${c.weights}__BTC/ETH/SOL/BNB</code> · Previous NAV date: <code>${prevPoint?.date||'N/A'}</code> · REBALANCE_EPS=<code>${REBALANCE_EPS}</code>`;
+function weightAt(date,base){
+ const row=state.weights.find(r=>r.date===date); if(!row)return null;
+ const o={};TARGET_ASSETS.forEach(a=>o[a]=n(row[`${base}__${a}`])??0);return o
 }
-function selectDate(date,rerenderPlots=true){if(!state.dateIndex.length)return;let chosen=date;if(!state.dateIndex.includes(chosen)){const t=new Date(date+'T00:00:00Z').getTime();chosen=state.dateIndex.reduce((best,d)=>Math.abs(new Date(d+'T00:00:00Z').getTime()-t)<Math.abs(new Date(best+'T00:00:00Z').getTime()-t)?d:best,state.dateIndex[0])}state.selectedDate=chosen;document.getElementById('dateInput').value=chosen;document.getElementById('dateSlider').value=state.dateIndex.indexOf(chosen);if(rerenderPlots)renderCurve();else renderDailyDetail()}
-
-function renderResearchMeta(){const id=document.getElementById('researchSelect').value;const r=state.research.find(x=>x.research_id===id);const d=state.decisions.find(x=>x.id===id);const m=document.getElementById('researchMeta');if(!r){m.innerHTML='<dt>状态</dt><dd>未找到 registry record</dd>';return}m.innerHTML=`<dt>Research ID</dt><dd><b>${r.research_id}</b></dd><dt>Family</dt><dd>${r.research_family_id||'—'}</dd><dt>Domain</dt><dd>${r.research_domain||'—'}</dd><dt>Result</dt><dd>${pill(r.result_status)}</dd><dt>Promotion</dt><dd>${pill(r.promotion_state)}</dd><dt>Production</dt><dd>${r.production_authorized?'<span class="bad">TRUE</span>':'false'}</dd><dt>Universe</dt><dd>${Array.isArray(r.universe)?r.universe.join(' / '):(r.universe||'—')}</dd><dt>Decision</dt><dd>${d?.decision||r.production_relevance||'—'}</dd>`}
-function renderResearchTable(){const q=document.getElementById('researchSearch').value.trim().toLowerCase();const rows=state.research.filter(r=>!q||JSON.stringify(r).toLowerCase().includes(q));document.getElementById('researchRows').innerHTML=rows.map(r=>`<tr><td>${r.research_id}</td><td>${r.research_family_id||'—'}</td><td>${r.research_domain||'—'}</td><td>${pill(r.result_status)}</td><td>${pill(r.promotion_state)}</td><td>${r.production_authorized?'TRUE':'false'}</td></tr>`).join('')}
-function renderTimeline(){document.getElementById('timeline').innerHTML=majorTimeline.map(([date,title,desc,k])=>`<div class="event ${k==='future'?'future':''}"><div class="date">${date}</div><div class="title">${title}</div><div class="desc">${desc}</div></div>`).join('')}
-function renderMechanism(){const a=state.attribution,m=document.getElementById('mechanismMeta');if(!a){m.innerHTML='<dt>状态</dt><dd>attribution unavailable</dd>';return}const d=a.daily_distribution||{},c=a.holding_cycle_distribution||{},r=a.return_concentration||{},f=a.frozen_interpretation||{};m.innerHTML=`<dt>Audit status</dt><dd>${pill(a.status)}</dd><dt>Active-day win</dt><dd>${fmtPct(d.active_win_rate)}</dd><dt>Cycle win</dt><dd>${fmtPct(c.cycle_win_rate_excluding_zero)}</dd><dt>Daily payoff</dt><dd>${fmtNum(d.payoff_ratio_mean_win_to_abs_mean_loss,3)}</dd><dt>Best-20 log growth</dt><dd>${fmtPct(r.best_20?.share_of_total_log_growth)}</dd><dt>Best-20 zeroed CAGR</dt><dd>${fmtPct(r.best_20?.same_horizon_cagr_if_zeroed)}</dd><dt>Right-tail dependent</dt><dd>${f.brrk_is_payoff_and_right_tail_dependent?'true':'false'}</dd><dt>Promotion eligible</dt><dd>${a.promotion_eligible?'TRUE':'false'}</dd>`}
-
-function nextMidnightAfter(iso){const d=new Date(iso);return new Date(Date.UTC(d.getUTCFullYear(),d.getUTCMonth(),d.getUTCDate()+1))}
-async function renderPhase6Ledger(){let markerTime=null;try{const commit=await api(`/commits/${state.gate.armed_commit}`);markerTime=commit.commit.committer.date||commit.commit.author.date}catch(e){console.warn(e)}const first=nextMidnightAfter(markerTime||'2026-08-09T13:41:58Z');let runs=[];try{const r=await api('/actions/workflows/research-governance.yml/runs?branch=main&event=schedule&per_page=50');runs=r.workflow_runs||[]}catch(e){console.warn('schedule run metadata unavailable',e)}
-  const runByDay=new Map();for(const r of runs){const day=(r.run_started_at||r.created_at||'').slice(0,10);if(day&&!runByDay.has(day))runByDay.set(day,r)}let credited=0;const trs=[];
-  for(let i=0;i<18;i++){const d=new Date(first.getTime()+i*86400000),day=d.toISOString().slice(0,10),run=runByDay.get(day);let ev=false,receipt=false,artifactError=false;if(run){try{const a=await api(`/actions/runs/${run.id}/artifacts`);const names=(a.artifacts||[]).map(x=>x.name);ev=names.some(n=>n.startsWith('phase6-evidence-'));receipt=names.some(n=>n.startsWith('phase6-receipt-'))}catch(e){artifactError=true}}const candidate=Boolean(run)&&run.conclusion==='success'&&ev&&receipt;if(candidate)credited++;const future=d>Date.now();let note=future?'future slot':(!run?'no schedule run metadata':candidate?'durable pair present':'not creditable from metadata');if(artifactError)note='artifact metadata unavailable';const detail=candidate?'artifact detail not browser-indexed':'—';trs.push(`<tr><td>${day} 00:00</td><td>${run?`#${run.run_number} / ${run.id}`:'—'}</td><td>${run?pill(run.conclusion||run.status):pill(future?'PENDING':'MISSING')}</td><td>${ev?pill('PRESENT'):pill(run?'MISSING':'—')}</td><td>${receipt?pill('PRESENT'):pill(run?'MISSING':'—')}</td><td>${candidate?pill('YES'):pill('NO')}</td><td>${detail}</td><td>${note}</td></tr>`)}
-  document.getElementById('phase6Rows').innerHTML=trs.join('');document.getElementById('decisionKpi').textContent=`${credited} / 10`;document.getElementById('decisionKpi').className='v '+(credited>=10?'good':'warn')
+function l1At(i,base){
+ if(i<=0)return null;const a=weightAt(state.dates[i-1],base),b=weightAt(state.dates[i],base);if(!a||!b)return null;
+ return TARGET_ASSETS.reduce((s,k)=>s+Math.abs(b[k]-a[k]),0)
 }
-
-async function init(){try{
-  const [rr,dr,gate,p6,branch,equity,attribution]=await Promise.all([json('config/research_registry.json'),json('config/decision_registry.json'),json('research/governance/phase6_live_observation_gate.json'),json('config/phase6_shadow_contract.json'),api('/branches/main'),loadCurve(curveCatalog[0]),json('research/governance/brrk_signal_attribution_result.json')]);state.research=rr.records||[];state.decisions=dr.decisions||[];state.gate=gate;state.phase6=p6;state.main=branch;state.attribution=attribution;
-  document.getElementById('mainSha').textContent=`main ${branch.commit.sha.slice(0,8)}`;document.getElementById('updatedAt').textContent=`view ${new Date().toISOString().slice(0,16).replace('T',' ')} UTC`;document.getElementById('phaseKpi').textContent='Phase 6';document.getElementById('phaseKpi').className='v good';document.getElementById('armKpi').textContent=gate.collector_armed?'ARMED':'NOT ARMED';document.getElementById('armKpi').className='v '+(gate.collector_armed?'good':'warn');
-  const dates=equity.map(r=>r.date);document.getElementById('windowKpi').textContent=`${dates[0]} → ${dates.at(-1)}`;
-  const rs=document.getElementById('researchSelect');rs.innerHTML=state.research.map(r=>`<option value="${r.research_id}">${r.research_id} · ${r.result_status}</option>`).join('');rs.value=state.research.some(r=>r.research_id==='BRRK-0011')?'BRRK-0011':state.research[0]?.research_id;rs.addEventListener('change',renderResearchMeta);
-  const cs=document.getElementById('curveSelect');cs.innerHTML=curveCatalog.map(c=>`<option value="${c.id}">${c.label}</option>`).join('');cs.addEventListener('change',renderCurve);document.getElementById('rangeSelect').addEventListener('change',renderCurve);document.getElementById('researchSearch').addEventListener('input',renderResearchTable);document.getElementById('dateInput').addEventListener('change',e=>selectDate(e.target.value));document.getElementById('dateSlider').addEventListener('input',e=>{const d=state.dateIndex[Number(e.target.value)];if(d)selectDate(d,true)});
-  renderResearchMeta();renderResearchTable();renderTimeline();renderMechanism();await renderCurve();
-  document.getElementById('equityChart').on('plotly_click',e=>{const d=String(e.points?.[0]?.x||'').slice(0,10);if(d)selectDate(d)});document.getElementById('weightsChart').on('plotly_click',e=>{const d=String(e.points?.[0]?.x||'').slice(0,10);if(d)selectDate(d)});
-  await renderPhase6Ledger();
-}catch(e){console.error(e);showError(e)}}
-window.addEventListener('load',init);
+function targetChangeEvents(base){
+ let c=0,total=0;for(let i=1;i<state.dates.length;i++){const d=state.dates[i];if((state.start&&d<state.start)||(state.end&&d>state.end))continue;const z=l1At(i,base);if(z!=null){total+=z;if(z>REBALANCE_EPS)c++}}
+ return{count:c,total}
+}
+function setRangeFromPreset(){
+ const p=document.getElementById('preset').value,last=state.dates.at(-1),first=state.dates[0];let s=first,e=last;
+ if(p==='1y')s=dayAdd(last,-365); else if(p==='2y')s=dayAdd(last,-730); else if(/^\d{4}$/.test(p)){s=p+'-01-01';e=p+'-12-31'}
+ state.start=s<first?first:s;state.end=e>last?last:e;document.getElementById('start').value=state.start;document.getElementById('end').value=state.end;render()
+}
+function renderRange(series,base){
+ const q=rangeStats(series),tc=targetChangeEvents(base);
+ document.getElementById('rangeReturn').textContent=pct(q.ret);document.getElementById('positiveDays').textContent=pct(q.hit);document.getElementById('payoff').textContent=q.payoff==null?'—':q.payoff.toFixed(2)+'×';document.getElementById('rangeMdd').textContent=pct(q.mdd);
+ document.getElementById('rangeMetrics').innerHTML=[
+ metric('Range rows',q.a.length),metric('Cumulative return',pct(q.ret)),metric('Positive-return-day ratio',pct(q.hit)),
+ metric('Daily payoff ratio',q.payoff==null?'—':q.payoff.toFixed(3)+'×'),metric('Max drawdown',pct(q.mdd)),
+ metric('Target-change days',tc.count),metric('Σ adjacent target L1',pct(tc.total)),metric('Actual rebalance count','UNAVAILABLE'),
+ metric('Holding-cycle win rate','UNAVAILABLE'),metric('Executed turnover','UNAVAILABLE')
+ ].join('')
+}
+function renderDay(series,base){
+ let date=state.selected||state.dates.at(-1),i=state.dates.indexOf(date);if(i<0){i=state.dates.length-1;date=state.dates[i]}state.selected=date;document.getElementById('day').value=date;
+ const p=series.find(x=>x.d===date),pi=series.findIndex(x=>x.d===date),r=pi>0?p.v/series[pi-1].v-1:null;
+ let peak=-Infinity,dd=null;for(const x of series){peak=Math.max(peak,x.v);if(x.d===date){dd=x.v/peak-1;break}}
+ const w=weightAt(date,base),prev=i>0?weightAt(state.dates[i-1],base):null,l1=l1At(i,base),gross=w?TARGET_ASSETS.reduce((s,k)=>s+Math.abs(w[k]),0):null;
+ document.getElementById('dayMetrics').innerHTML=[metric('Historical row',date),metric('NAV',p?f(p.v):'—'),metric('Row daily return',pct(r)),metric('Drawdown',pct(dd)),metric('Target gross',pct(gross)),metric('Adjacent target L1',pct(l1)),metric('Actual P3.3 action','UNAVAILABLE')].join('');
+ document.getElementById('timing').innerHTML=`<dt>Target session</dt><dd>${date}</dd><dt>Decision timestamp</dt><dd>${dayAdd(date,1)} 00:00 UTC (P3.2 timing mapping)</dd><dt>Data cutoff</dt><dd>${date} completed daily close</dd><dt>Target holding return</dt><dd>${dayAdd(date,1)} return</dd><dt>Selected NAV return</dt><dd>${date} return ← uses ${i>0?state.dates[i-1]:'prior'} target</dd><dt>Look-ahead</dt><dd class="good">not introduced</dd>`;
+ const rows=[];if(w)TARGET_ASSETS.forEach(a=>{const pv=prev?prev[a]:0,c=w[a],d=c-pv,ac=action(pv,c);rows.push(`<tr><td>${a}</td><td>${pct(pv)}</td><td>${pct(c)}</td><td>${pct(d)}</td><td>${ac}</td></tr>`)});document.getElementById('actionRows').innerHTML=rows.join('');
+ document.getElementById('explain').innerHTML=`<b>目标权重变化（由 canonical weights 派生）</b><br>${l1==null?'首行没有前序 target。':`相邻 target vector L1 变化 = ${pct(l1)}。`} 这只能证明 model target 在两个冻结结果行之间如何变化；不能证明账户当时的 drifted holding、P3.3 L1 account gap 或是否真正触发成交。`;
+}
+function vline(date){return[{type:'line',x0:date,x1:date,y0:0,y1:1,yref:'paper',line:{color:'#f1b35b',width:1,dash:'dot'}}]}
+function renderCharts(series,base){
+ const q=rangeStats(series),rs=returns(series),ddv=dds(series);
+ Plotly.react('equity',[{x:series.map(x=>x.d),y:series.map(x=>x.v),type:'scatter',mode:'lines',name:state.curve}],{...layout,shapes:vline(state.selected),xaxis:{...layout.xaxis,range:[state.start,state.end]}},PLOT);
+ Plotly.react('daily',[{x:rs.map(x=>x.d),y:rs.map(x=>x.v*100),type:'bar',name:'daily %'}],{...layout,shapes:vline(state.selected),xaxis:{...layout.xaxis,range:[state.start,state.end]},yaxis:{...layout.yaxis,title:'%'}},PLOT);
+ Plotly.react('dd',[{x:ddv.map(x=>x.d),y:ddv.map(x=>x.v*100),type:'scatter',fill:'tozeroy',name:'DD %'}],{...layout,shapes:vline(state.selected),xaxis:{...layout.xaxis,range:[state.start,state.end]},yaxis:{...layout.yaxis,title:'%'}},PLOT);
+ const wt=TARGET_ASSETS.map(a=>({x:state.dates,y:state.dates.map(d=>(weightAt(d,base)||{})[a]??0),type:'scatter',stackgroup:'one',name:a}));
+ Plotly.react('weights',wt,{...layout,shapes:vline(state.selected),xaxis:{...layout.xaxis,range:[state.start,state.end]},yaxis:{...layout.yaxis,tickformat:'.0%'}},PLOT);
+ const l1=state.dates.map((d,i)=>l1At(i,base));
+ Plotly.react('l1chart',[{x:state.dates,y:l1.map(x=>x==null?null:x*100),type:'scatter',mode:'lines',name:'adjacent target L1'},{x:[state.dates[0],state.dates.at(-1)],y:[5,5],type:'scatter',mode:'lines',name:'P3.3 5% reference',line:{dash:'dash'}}],{...layout,shapes:vline(state.selected),xaxis:{...layout.xaxis,range:[state.start,state.end]},yaxis:{...layout.yaxis,title:'%'}},PLOT);
+ ['equity','weights','daily','dd','l1chart'].forEach(id=>{const el=document.getElementById(id);if(!el._v3click){el.on('plotly_click',e=>{const x=String(e.points[0].x).slice(0,10);if(state.dates.includes(x)){state.selected=x;render()}});el._v3click=true}});
+ const e=document.getElementById('equity');if(!e._v3range){e.on('plotly_relayout',ev=>{if(ev['xaxis.range[0]']&&ev['xaxis.range[1]']){state.start=String(ev['xaxis.range[0]']).slice(0,10);state.end=String(ev['xaxis.range[1]']).slice(0,10);document.getElementById('start').value=state.start;document.getElementById('end').value=state.end;renderRange(series,base)}});e._v3range=true}
+}
+function render(){
+ const series=state.curves[state.curve];if(!series)return;const base=curveBaseName(state.curve);renderRange(series,base);renderDay(series,base);renderCharts(series,base)
+}
+function signalRules(){
+ document.getElementById('signalRules').innerHTML=[
+ ['Timing','decision D 00:00 UTC consumes exactly completed D−1 daily session'],
+ ['BTC branch','btc_trend < 0 → V1 rotation places budget in BTC'],
+ ['ETH eligibility','score > 0 AND asset trend > 0 AND ETH/BTC ratio trend > 0'],
+ ['SOL eligibility','score > 0 AND asset trend > 0 AND SOL/BTC ratio trend > 0'],
+ ['BNB eligibility','score > 0 AND slow BNB trend > 0 AND slow BNB/BTC ratio trend > 0'],
+ ['Allocation caps','ETH ≤ 50%, SOL ≤ 35%, BNB ≤ 25% of budget; overflow returns to BTC'],
+ ['Regime states','RISK_OFF / BTC_LEAD / MAJOR_ROTATION / ALT_EXPANSION'],
+ ['P3.2 output','risk_state + probabilities + riskoff_probability + meta_scale + defensive_scale + feature_snapshot'],
+ ['Gross boundary','long-only target, gross ≤ 1; XRP feature-only']
+ ].map(x=>`<div class="rule"><b>${x[0]}</b><br><span class="note">${x[1]}</span></div>`).join('')
+}
+async function phase6(){
+ try{
+  const rr=await fetch(`${API}/actions/workflows/research-governance.yml/runs?branch=main&event=schedule&per_page=20`);if(!rr.ok)throw new Error(rr.status);const runs=(await rr.json()).workflow_runs||[];const out=[];
+  for(const run of runs.slice(0,12)){let arts=[];try{const ar=await fetch(`${API}/actions/runs/${run.id}/artifacts?per_page=100`);if(ar.ok)arts=(await ar.json()).artifacts||[]}catch(_){}
+   const ev=arts.find(a=>a.name.startsWith('phase6-evidence-'));const receipt=arts.find(a=>a.name.startsWith('phase6-receipt-'));const candidate=run.conclusion==='success'&&ev&&receipt;
+   out.push(`<tr><td><a href="${run.html_url}" target="_blank">${run.id}</a></td><td>${run.created_at||'—'}</td><td>${run.conclusion||run.status}</td><td>${ev?ev.name:'—'}</td><td>${receipt?receipt.name:'—'}</td><td class="${candidate?'good':'warn'}">${candidate?'YES':'NO'}</td></tr>`)
+  }document.getElementById('phase6').innerHTML=out.join('')||'<tr><td colspan="6">No public schedule runs returned.</td></tr>'
+ }catch(e){document.getElementById('phase6').innerHTML=`<tr><td colspan="6">metadata unavailable: ${e}</td></tr>`}
+}
+async function registry(){
+ try{const raw=await json(PATHS.research),arr=Array.isArray(raw)?raw:(raw.research||raw.records||raw.items||Object.values(raw).find(Array.isArray)||[]);
+ document.getElementById('research').innerHTML=arr.map(r=>`<tr><td>${r.research_id||r.id||'—'}</td><td>${r.family||r.strategy_family||'—'}</td><td>${r.domain||'—'}</td><td>${r.result||r.status||'—'}</td><td>${r.promotion||r.promotion_status||'—'}</td><td>${String(r.production_authorized??false)}</td></tr>`).join('')||'<tr><td colspan="6">Registry parsed but no array records found.</td></tr>'}catch(e){document.getElementById('research').innerHTML=`<tr><td colspan="6">${e}</td></tr>`}
+}
+function timeline(){
+ const events=[
+ ['2022-12-10','Frozen historical chart window begins','Historical evidence'],
+ ['2026-08-04','BRRK / PIT / attribution research closure','Research evidence'],
+ ['2026-08-09','Phase 6 ARM marker active','Future-only observation clock'],
+ ['2026-08-10 00:00Z','First theoretical eligible scheduled decision','Only a genuine successful schedule + durable evidence/receipt can count'],
+ ['2026-08-24','Earliest theoretical 14-day threshold','Acceptance review still required'],
+ ['Phase 7','MONITOR_ONLY / LAUNCH BLOCKED','Explicit owner approval required'],
+ ['Phase 8','TRIGGER ABSENT / NOT RUN','No automatic activation']
+ ];document.getElementById('timeline').innerHTML=events.map(x=>`<div class="event"><b>${x[0]} · ${x[1]}</b><small>${x[2]}</small></div>`).join('')
+}
+async function boot(){
+ try{
+  const [eqt,wt,ft]=await Promise.all([text(PATHS.equity),text(PATHS.weights),text(PATHS.funding)]);
+  const eq=csv(eqt),wr=csv(wt),fund=csv(ft);state.weights=wr;state.dates=wr.map(r=>r.date);
+  Object.keys(eq[0]).filter(k=>k!=='date').forEach(k=>state.curves[k]=makeSeries(eq,k));
+  Object.keys(fund[0]).filter(k=>k!=='date').forEach(k=>state.curves['FUNDING_'+k]=makeSeries(fund,k));
+  const c=document.getElementById('curve');Object.keys(state.curves).forEach(k=>{const o=document.createElement('option');o.value=k;o.textContent=k;c.appendChild(o)});if(state.curves[state.curve])c.value=state.curve;else state.curve=Object.keys(state.curves)[0];
+  const first=state.dates[0],last=state.dates.at(-1);state.selected=last;state.start=first;state.end=last;['day','start','end'].forEach(id=>{const e=document.getElementById(id);e.min=first;e.max=last});document.getElementById('day').value=last;document.getElementById('start').value=first;document.getElementById('end').value=last;document.getElementById('windowKpi').textContent=`${first.slice(0,4)}–${last.slice(0,4)}`;
+  try{const rr=await fetch(`${API}/commits/${REF}`);if(rr.ok){const j=await rr.json();document.getElementById('mainSha').textContent='main '+j.sha.slice(0,8);document.getElementById('updated').textContent=(j.commit?.committer?.date||'').slice(0,10)}}catch(_){}
+  c.onchange=()=>{state.curve=c.value;render()};document.getElementById('day').onchange=e=>{state.selected=e.target.value;render()};document.getElementById('start').onchange=e=>{state.start=e.target.value;render()};document.getElementById('end').onchange=e=>{state.end=e.target.value;render()};document.getElementById('preset').onchange=setRangeFromPreset;
+  signalRules();timeline();render();phase6();registry()
+ }catch(e){err(e)}
+}
+boot();
 </script>
-</body>
-</html>
+</body></html>
