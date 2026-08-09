@@ -1,7 +1,7 @@
 # BRRK Current State
 
 Last updated: 2026-08-09  
-Handoff PR: **TBD**  
+Handoff PR: **#148**  
 Handoff branch: `dashboard/pro-fund-terminal-v5`  
 Authoritative baseline main at branch creation: `1cc9f6fc5cdea10437613b5248feb66aaeeb8e26`  
 Latest merged dashboard PR at branch creation: **#147**
@@ -225,8 +225,7 @@ This V5 candidate changes only dashboard HTML/documentation/tests and this hando
 
 ## Exact next task
 
-1. Bind this handoff to the V5 PR number after the PR is created.
-2. Require governance/no-drift/dashboard CI to be green.
-3. Merge only if the final diff remains dashboard/docs/tests only.
-4. Verify `https://laugh-to-2028.vercel.app/` serves `v5-pro-fund-terminal`.
-5. Continue Phase-6 future-only evidence accumulation independently of dashboard presentation.
+1. Require governance/no-drift/dashboard CI to be green.
+2. Merge PR #148 only if the final diff remains dashboard/docs/tests only.
+3. Verify `https://laugh-to-2028.vercel.app/` serves `v5-pro-fund-terminal`.
+4. Continue Phase-6 future-only evidence accumulation independently of dashboard presentation.
