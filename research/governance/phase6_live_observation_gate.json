@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "gate_id": "PHASE6-LIVE-OBSERVATION-PREACTIVATION-V1",
-  "status": "PREACTIVATION_BLOCKED_FAIL_CLOSED",
+  "status": "PREACTIVATION_READY_AWAITING_SEPARATE_ARM",
   "purpose": "GOVERN_PHASE6_FUTURE_ONLY_ELAPSED_EVIDENCE_ACTIVATION_WITHOUT_CHANGING_STRATEGY_OR_PRODUCTION_AUTHORITY",
   "canonical_phase6_contract": "config/phase6_shadow_contract.json",
   "evidence_backend_contract": "research/governance/phase6_live_evidence_contract.json",
@@ -16,7 +16,7 @@
   "schedule_configured": false,
   "armed_commit": null,
   "required_before_arm": {
-    "observation_account_identity_frozen": false,
+    "observation_account_identity_frozen": true,
     "current_position_and_equity_valuation_contract_frozen": true,
     "durable_create_only_evidence_backend_frozen": true,
     "schedule_and_duplicate_credit_rule_frozen": true
@@ -65,13 +65,13 @@
     "rerun_counted_as_new_decision"
   ],
   "notes": [
-    "This gate exists because Phase 6 implementation/replay passed but no scheduled future-only collector with durable evidence persistence was present on main.",
-    "The preactivation gate does not itself start the 14-day elapsed clock or create any credited scheduled decision.",
-    "An open PR or unmerged branch carrying this gate has no elapsed-credit or arm authority; only the merged main-branch copy may participate in a later prospective arm decision.",
+    "Phase-6 pre-arm dependencies are now 4/4 because the explicit compatible public observation identity is frozen.",
+    "This preactivation-ready state does not itself start the 14-day elapsed clock or create any credited scheduled decision.",
+    "A separate prospective ARM change is still required before collector arming, schedule configuration or elapsed-evidence credit authorization.",
+    "The first eligible scheduled decision remains the first canonical 00:00 UTC decision strictly after the future ARM commit timestamp.",
     "The durable evidence backend is frozen to the separately validated Phase-6 live-evidence contract, but no Phase-6 live evidence has been collected by that fact alone.",
-    "The valuation contract is frozen to explicit Hyperliquid Standard/disabled mode only; unsupported account abstraction modes fail closed and cannot earn elapsed credit under V1.",
-    "The account-identity contract freezes binding rules only. While account_address is null, identity_frozen remains false and the collector cannot arm.",
-    "A future bound identity must be the actual master/subaccount address, must pass userRole as user/subAccount, must pass userAbstraction=disabled, and must not be an agent/API wallet.",
+    "The valuation contract remains explicit Hyperliquid Standard/disabled mode only; unsupported account abstraction modes fail closed and cannot earn elapsed credit under V1.",
+    "The bound identity is the exact owner-supplied master account with verified userRole=user and userAbstraction=disabled.",
     "The canonical target/rebalance/router/shadow implementation blobs remain unchanged under Governance v1 no-drift."
   ]
 }
