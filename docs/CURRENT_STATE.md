@@ -1,12 +1,12 @@
 # BRRK Current State
 
 Last updated: 2026-08-09  
-Handoff PR: **#145**  
-Handoff branch: `dashboard/program-timeline-v2`  
-Authoritative baseline main at branch creation: `eab80f7e3599eada22c695e3f013f18ae774a2c5`  
-Latest merged dashboard PR at branch creation: **#144**
+Handoff PR: **#146**  
+Handoff branch: `dashboard/daily-audit-v3`  
+Authoritative baseline main at branch creation: `0c47a89bb853e35a97ecab8c43e88cb9a9ce7508`  
+Latest merged dashboard PR at branch creation: **#145**
 
-Status: **authoritative current-state handoff**
+Status: **authoritative current-state handoff candidate**
 
 ## Executive state
 
@@ -24,7 +24,7 @@ Phase 6 ARM                       MERGED #143 / ACTIVE FUTURE-ONLY OBSERVATION
 Phase 6 ARM marker                cbd58adb05187651ca72d67900a0ccbbd3e83b1e
 Phase 6 daily schedule            00:00 UTC
 Phase 6 live elapsed evidence     MEASUREMENT_INCONCLUSIVE_TIME_DEPENDENT
-Program timeline dashboard        READ-ONLY V2 / PR #145 CANDIDATE
+Program timeline dashboard        READ-ONLY V3 / DAILY AUDIT CANDIDATE
 Phase 7                           MONITOR_ONLY / LAUNCH BLOCKED
 Phase 8                           TRIGGER ABSENT / NOT RUN
 Production                        NO_CHANGE
@@ -32,19 +32,13 @@ Production                        NO_CHANGE
 
 ## Phase 6 active observation state
 
-PR #143 was merged to `main` with normal merge commit:
-
-```text
-139287a269cf32281c7753ef63b1df7429d7a289
-```
-
-The durable prospective ARM marker remains a real ancestor of `main`:
+The durable prospective ARM marker remains:
 
 ```text
 cbd58adb05187651ca72d67900a0ccbbd3e83b1e
 ```
 
-The authoritative live-observation gate is:
+The authoritative live-observation gate remains:
 
 ```text
 status                             ARMED_FUTURE_ONLY_OBSERVATION_ACTIVE
@@ -57,11 +51,9 @@ signature_authorized               false
 order_submission_authorized        false
 ```
 
-The evidence backend is `ARMED_COLLECTING_FUTURE_ONLY`. A scheduled decision can become a credit candidate only after both its create-only evidence artifact and separate hash-bound receipt artifact persist successfully. Historical replay, CI replay, pull-request preflight, workflow rerun, duplicate decision timestamps and manual dispatch do not create scheduled-decision credit.
+The evidence backend remains `ARMED_COLLECTING_FUTURE_ONLY`. Genuine scheduled credit still requires a real future `schedule` event plus its create-only evidence artifact and separate hash-bound receipt artifact. Historical replay, pull-request preflight, rerun, duplicate decision timestamps and manual dispatch do not create scheduled-decision credit.
 
-The first theoretical eligible canonical timestamp is `2026-08-10T00:00:00Z`. It becomes decision #1 only if a genuine `schedule` event succeeds with the required durable evidence pair. No missed timestamp may be backfilled.
-
-Frozen Phase-6 acceptance remains:
+First theoretical eligible canonical timestamp remains `2026-08-10T00:00:00Z`. Frozen acceptance remains:
 
 ```text
 minimum elapsed calendar days       14
@@ -72,65 +64,115 @@ unexplained target drift              0
 schedule failures                     0
 ```
 
-A separately evidenced manual emergency drill is still required before Phase-6 closeout.
+A separately evidenced manual emergency drill remains required and never counts as a scheduled decision.
 
-## Program Timeline Dashboard V2 — PR #145 candidate
+## Program Timeline Dashboard V3 — candidate
 
-V1 was merged in PR #144. PR #145 advances the same read-only dashboard under:
+V2 merged in PR #145 at baseline main:
+
+```text
+0c47a89bb853e35a97ecab8c43e88cb9a9ce7508
+```
+
+V3 remains under:
 
 ```text
 research/governance/dashboard/
 ```
 
-The dashboard is intentionally downstream of authoritative evidence and does not recompute, mutate or replace immutable historical result artifacts.
+and is downstream of authoritative evidence.
 
-Historical source-of-record inputs displayed by V2 include:
+### Historical source-of-record inputs
 
 ```text
 research/results/pit_disp_0015/daily_equity.csv
 research/results/pit_disp_0015/daily_weights.csv
 research/results/funding_pnl_0003/full_window_daily_equity.csv
-research/governance/brrk_signal_attribution_result.json
 config/research_registry.json
 config/decision_registry.json
 ```
 
-The repository historical equity/holdings window used by the canonical chart begins `2022-12-10` and currently extends through `2026-07-31`, i.e. close to four years rather than an invented exact four-year window.
+The canonical chart window begins `2022-12-10` and currently extends through `2026-07-31`. No exact four-year claim is made.
 
-V2 preserves V1 and adds:
+### V3 range statistics
 
-- a historical day scrubber, exact date input and chart-click date selection;
-- selected-day NAV, daily PnL, cumulative PnL and running drawdown;
-- selected-day BTC/ETH/SOL/BNB target holdings and target gross;
-- adjacent-day target-weight deltas and L1 delta;
-- deterministic target action labels `ENTER / EXIT / INCREASE / DECREASE / HOLD` with display tolerance `REBALANCE_EPS=1e-9`;
-- explicit source/column provenance for the selected day;
-- frozen BRRK aggregate attribution context including hit rate, payoff and right-tail concentration;
-- the existing Phase-6 public schedule/evidence/receipt ledger and future gates.
+For the user-selected range V3 recomputes only from the selected existing equity column:
 
-### Daily explainability boundary
+- cumulative return;
+- positive-return-day ratio;
+- daily payoff ratio;
+- maximum drawdown;
+- adjacent target-vector change-day count;
+- summed adjacent target-vector L1 change.
 
-V2 deliberately labels the daily mechanical explanation:
+Positive-return-day ratio is explicitly not called holding-cycle win rate. Actual rebalance count, executed turnover and holding-cycle win rate remain unavailable unless an authoritative executed-turnover path is present.
+
+### V3 P3.2 timing boundary
+
+The reviewed canonical runtime implementation freezes:
 
 ```text
-目标权重变化（由 canonical weights 派生）
+decision D 00:00 UTC
+consumes exactly completed D-1 UTC daily session
+target row D-1 is intended for D return
 ```
 
-This is authoritative only as a description of adjacent values already present in canonical `daily_weights.csv`. V2 does **not** assert that an adjacent target change proves P3.3 actual turnover or proves a unique day-level `signal -> trade` cause.
+V3 therefore separates target session, mapped decision timestamp, data cutoff and target holding-return date. It also states that historical NAV row `t` uses the prior target for row-`t` return, rather than falsely pairing row-`t` target with row-`t` return as a cause.
 
-The frozen BRRK attribution audit establishes aggregate portfolio mechanics — including modest hit rate, positive payoff asymmetry and strong right-tail dependence — but does not expose a unique per-day causal signal ledger. Therefore the dashboard does not invent one.
+### V3 P3.3 controller boundary
 
-Frozen V2 display semantics:
+The reviewed canonical P3.3 controller freezes:
 
 ```text
+control_version  P3.3-L1-BAND-V1
+gap metric       L1_ABSOLUTE_WEIGHT_GAP
+rebalance band   0.05
+boundary         REBALANCE_WHEN_L1_GAP_GTE_BAND
+```
+
+The actual controller gap compares the current account position weights with the P3.2 model target. Safety overrides bypass the band when the current account has short exposure or current gross above 1.
+
+The existing `pit_disp_0015` historical result directory does not persist daily:
+
+```text
+current_position_weights
+l1_target_gap
+control_turnover_weight
+P3.3 control plans
+```
+
+Therefore V3 does not infer historical actual `HOLD` / `REBALANCE` events from adjacent target rows. The charted adjacent-target L1 series is separately labelled as a target-vector change metric, and the 5% line is controller-rule reference only.
+
+### V3 P3.2 signal / regime boundary
+
+The reviewed canonical target implementation proves model structure including:
+
+```text
+btc_trend < 0 -> BTC-only V1 branch
+ETH/SOL eligibility -> score > 0 AND asset trend > 0 AND ratio trend > 0
+BNB eligibility -> score > 0 AND slow BNB trend > 0 AND slow BNB/BTC trend > 0
+semantic states -> RISK_OFF / BTC_LEAD / MAJOR_ROTATION / ALT_EXPANSION
+long-only gross -> <= 1
+XRP -> feature-only
+```
+
+P3.2 target results can contain `risk_state`, state probabilities, `riskoff_probability`, `meta_scale`, `defensive_scale` and feature snapshots. Those daily snapshots are not persisted in the frozen `pit_disp_0015` historical result directory. V3 therefore does not reverse-engineer a 2023 signal/regime from target weights or NAV.
+
+Frozen V3 UI semantics:
+
+```text
+dashboard_version=v3-daily-audit
 dashboard_record_authoritative=false
 scheduled_decision_credit_created=false
 production_authorized=false
 target_change_mechanics_authoritative_from_canonical_weights=true
+p3_3_rule_authoritative_from_controller=true
+historical_p3_3_execution_state_available=false
+historical_signal_snapshot_available=false
 execution_causality_asserted=false
 ```
 
-The dashboard continues to freeze this separation:
+The economic layers remain:
 
 ```text
 historical backtest NAV
@@ -138,19 +180,15 @@ historical backtest NAV
 != future real-account PnL
 ```
 
-It must never visually splice those three into one continuous economic return series.
+### Public deployment
 
-For Phase 6, the UI may label a row only as a **scheduled credit candidate** when public workflow metadata shows:
+Canonical public entry supplied and verified by the owner:
 
 ```text
-schedule event conclusion = success
-AND phase6-evidence-* artifact exists
-AND phase6-receipt-* artifact exists
+https://laugh-to-2028.vercel.app/
 ```
 
-That UI classification does not itself create evidence credit and is deliberately weaker than formal Phase-6 acceptance review.
-
-V2 also refuses to fabricate artifact-internal forward details that the public GitHub artifact metadata does not expose. Target weights, account equity, shadow return, cumulative shadow PnL, alerts and provenance digests remain unavailable in the browser until a separately governed derived read-only index exists.
+V3 deployment is not considered complete by this handoff until the merged public URL is independently observed serving the unique `v3-daily-audit` marker.
 
 ## Canonical production / security authority
 
@@ -169,7 +207,7 @@ order_submission_authorized       false
 first real short authority        NONE
 ```
 
-Dashboard V2 changes none of these fields and introduces no signer, private key, order submission, withdrawal, transfer or production-state capability.
+V3 changes none of these fields and adds no signer, private key, order submission, withdrawal, transfer, or production capability.
 
 ## Other frozen decisions
 
@@ -177,28 +215,17 @@ Dashboard V2 changes none of these fields and introduces no signer, private key,
 - F7 remains `PARTIAL`; immutable studies are not rewritten.
 - LEVERAGE-0040 remains `FAIL_STOP / NO_PROMOTION`.
 - Idle Cash remains `NOT_FEASIBLE_ON_HYPERLIQUID_STANDARD / FUTURE_OPTION / NOT_AUTHORIZED`.
-- Future new Research IDs capable of lowering canonical BRRK gross remain subject to the frozen right-tail gate: best-20 log-growth retention >=90% **and** net summed daily-return delta >0.
-
-## Human-control boundaries that remain
-
-ARM authorization is complete only for zero-authority Phase-6 observation. Later explicit human gates remain:
-
-- Phase-7 launch approval;
-- `MONITOR_ONLY -> ACTIVE`;
-- `FLAT -> LONG`;
-- `FLAT -> SHORT`;
-- first short exposure of a new confirmed bear phase.
+- Future new Research IDs capable of lowering canonical BRRK gross remain subject to the frozen right-tail gate.
 
 ## Current drift assessment
 
 `DRIFT_0`.
 
-PR #145 changes only dashboard HTML/documentation/tests and this handoff update. It does not modify historical result blobs, `execution/**`, production `config/**`, strategy mathematics, Phase-6 workflow scheduling, immutable economic evidence or execution authority.
+This V3 candidate changes only dashboard HTML/documentation/tests and this handoff. It does not modify `execution/**`, `config/**`, `research/results/**`, strategy mathematics, Phase-6 scheduling, immutable economic evidence, or execution authority.
 
 ## Exact next task
 
-1. Make PR #145 fully green under governance/no-drift/dashboard and handoff CI.
-2. Merge PR #145 only if the final head remains limited to dashboard/docs/tests and all required checks are green.
-3. Continue allowing the daily Phase-6 schedule to accumulate genuine future evidence independently of the dashboard.
-4. After the first successful scheduled evidence+receipt pair exists, verify that the dashboard ledger reflects it without creating or modifying the underlying credit.
-5. If artifact-internal forward daily details are later required in-browser, design a separate read-only derived index bound to canonical evidence/receipt identities; do not weaken or replace the canonical create-only evidence contract.
+1. Require PR #146 governance/no-drift/dashboard CI to be green.
+2. Merge PR #146 only if final diff remains dashboard/docs/tests only.
+3. Independently verify `https://laugh-to-2028.vercel.app/` serves `v3-daily-audit`.
+4. Continue Phase-6 future-only evidence accumulation independently of dashboard presentation.
