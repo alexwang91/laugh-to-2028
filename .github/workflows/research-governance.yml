@@ -30,6 +30,8 @@ on:
       - 'docs/PROGRAM_GOVERNANCE_*.md'
       - 'docs/PROGRAM_LEVEL_EPISTEMIC_GOVERNANCE_V1_FINAL_REPORT_2026-08-08.md'
       - '.github/workflows/research-governance.yml'
+  schedule:
+    - cron: '0 0 * * *'
   workflow_dispatch:
     inputs:
       emergency_drill:
@@ -121,7 +123,7 @@ jobs:
             if [[ "${{ github.event_name }}" == "workflow_dispatch" && "${{ inputs.emergency_drill }}" == "true" ]]; then
               EXTRA+=(--emergency-drill)
             fi
-            python -m research.governance.phase6_live_collector collect \
+            python -m research.governance.phase6_live_run collect \
               --output-dir phase6_evidence \
               --event-name "${{ github.event_name }}" \
               --run-id "${{ github.run_id }}" \
