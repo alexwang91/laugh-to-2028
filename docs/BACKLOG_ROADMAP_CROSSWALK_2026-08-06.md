@@ -119,6 +119,16 @@ This correction changes no Phase-3 target/control behavior and authorizes no >1 
 
 The remaining legacy research items are not silently promoted by this crosswalk. Their status remains governed by `config/decision_registry.json`, `docs/RESEARCH_HISTORY.md`, experiment preregistrations/results and stopped-line discipline.
 
+### F7 metrics-convention convergence
+
+Disposition: `PARTIAL`.
+
+The calendar-span metric convention now has a shared implementation in `research/common/metrics.py`, and corrected/restated work can use that helper. However, this does **not** mean every historical study-local implementation has been migrated. Frozen/immutable studies such as LEVERAGE-0040 retain their original observation-count annualization and must not be rewritten after results merely to force numerical identity.
+
+`docs/LEVERAGE_0040_P4_5_DECISION_2026-08-07.md` documents this explicitly: its cap-1.00 CAGR near `65.31%` is a study-local observation-count metric, while corrected F27 R2 reports calendar-span BRRK raw CAGR `65.1661%`. Within-table LEVERAGE-0040 comparisons remain internally consistent.
+
+No exact count of remaining independent metric implementations is asserted by this correction because a complete repository-wide caller census was not independently established. F7 can become `RESOLVED` only after remaining active/non-immutable callers are inventoried and either migrated or explicitly frozen as historical exceptions.
+
 ### EXPOSURE-SMOOTH-0038 authority normalization
 
 PR #72 records the experiment as:
@@ -135,9 +145,24 @@ The frozen V1 exposure function and BRRK-0011 remain authoritative. `EXPOSURE-SM
 
 ### F27 idle-cash-credit measurement normalization
 
-The F27 table retained inside `docs/REVIEW_FIX_BACKLOG.md` is R1 superseded historical measurement evidence. PR #72 preserves R1 and adds the authoritative corrected measurement `research/results/idle_cash_credit_0027r2.json`.
+The F27 table retained inside `docs/REVIEW_FIX_BACKLOG.md` is **R1 superseded historical measurement evidence**. Its old wording that called that R1 table the "current source of truth" is superseded by this canonical crosswalk and the authoritative corrected artifact `research/results/idle_cash_credit_0027r2.json`.
 
-Disposition: `RESOLVED` for measurement/authority normalization. R2 is authoritative corrected evidence; R1 remains preserved as superseded historical evidence.
+Disposition: `RESOLVED` for measurement/authority normalization. R2 is authoritative corrected evidence; R1 remains preserved as superseded historical evidence and is not edited away.
+
+R2 fixes the measurement construction that dropped the first realized equity observation and instead preserves day-one PnL from the known `$10,000` starting base. Corrected headline evidence is:
+
+| | V1 baseline | BRRK-0011 core |
+| --- | ---: | ---: |
+| mean idle-cash fraction | 20.5183% | 24.5700% |
+| CAGR, raw -> credited | 61.3127% -> 62.6632% | 65.1661% -> 66.8068% |
+| CAGR delta | **+1.3505 pp** | **+1.6407 pp** |
+| Sharpe (rf=0), raw -> credited | 1.2950 -> 1.3138 | 1.3532 -> 1.3756 |
+| Sharpe (excess over rf), raw -> credited | 1.2724 -> 1.3029 | 1.3667 -> 1.4039 |
+| Max drawdown, raw -> credited | -37.6349% -> -36.6003% | -33.7151% -> -33.5524% |
+
+The BRRK-vs-V1 rf=0 Sharpe gap moves from `+0.0581629` raw to `+0.0617832` credited, a `+0.0036204` shift. The qualitative F27 measurement conclusion is unchanged.
+
+Execution feasibility is a separate question. `docs/IDLE_CASH_EXECUTION_FEASIBILITY.md` concludes `NOT_FEASIBLE_ON_HYPERLIQUID_STANDARD` for frozen Phase-7 V1: the R2 counterfactual credit does not establish an automatic yield source on immediately callable Standard-mode margin. Any future yield implementation requires separate design, contract and approval.
 
 ## Forward sequencing
 
@@ -151,12 +176,11 @@ P3.1 schema-v2 data contract      PASS / MERGED
 => PHASE 3                        COMPLETE
 -> P4.1 frozen <=1 baseline       PASS / MERGED
 -> LEVERAGE-0039                  STOPPED_PRE_RUN / NO RESULT
--> LEVERAGE-0040 prereg           CANDIDATE / NOT RUN
--> P4.3 two-layer runner/parity   NEXT AFTER CORRECTION MERGE
--> P4.4 stress execution
--> P4.5 selection decision
--> P4.6 deployment gate
--> P5 exit intelligence
+-> LEVERAGE-0040                  FAIL_STOP / NO_PROMOTION / IMMUTABLE
+-> P5.x                           CLOSED / NO PROMOTION
+-> Phase 6 pre-arm dependencies   3/4 / IDENTITY UNRESOLVED
 ```
 
-Before any LEVERAGE-0040 execution, the correction preregistration must be merged and cap=1 exact frozen-BRRK parity must pass. P4 must not silently absorb F23 funding-response research, P5 exit logic, short/XRP target exposure, EXPOSURE-SMOOTH-0038 promotion or production authorization.
+The historical pre-run wording below is retained only as lineage: before LEVERAGE-0040 execution, the correction preregistration had to merge and cap=1 parity had to pass. That study has since completed and failed promotion; it must not be rerun or retuned.
+
+Current forward work must not silently absorb F23 funding-response research, P5 exit logic, short/XRP target exposure, EXPOSURE-SMOOTH-0038 promotion, Idle Cash implementation, or production authorization.
