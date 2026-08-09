@@ -1,7 +1,7 @@
 # BRRK Current State
 
 Last updated: 2026-08-09  
-Handoff PR: **TBD**  
+Handoff PR: **#147**  
 Handoff branch: `dashboard/chinese-simple-ui-v4`  
 Authoritative baseline main at branch creation: `ee4cc747ac0bd2edece5b806093134f5303bd039`  
 Latest merged dashboard PR at branch creation: **#146**
@@ -225,7 +225,7 @@ This V4 candidate changes only dashboard HTML/documentation/tests and this hando
 
 ## Exact next task
 
-1. Open the V4 presentation-only PR and bind this handoff to its PR number.
+1. Keep PR #147 limited to dashboard/docs/tests and require all checks to pass.
 2. Require governance/no-drift/dashboard CI to be green.
 3. Merge only if the final diff remains dashboard/docs/tests only.
 4. Verify `https://laugh-to-2028.vercel.app/` serves `v4-cn-simple-ui`.
