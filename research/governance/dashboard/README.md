@@ -1,6 +1,6 @@
 # BRRK Program Timeline Dashboard V1
 
-Read-only observability dashboard for the BRRK program.
+Read-only observability dashboard for the BRRK program. Governance handoff: PR #144.
 
 ## Purpose
 
@@ -48,7 +48,7 @@ A row is displayed as a **scheduled credit candidate** only when public metadata
 2. a `phase6-evidence-*` artifact exists;
 3. a `phase6-receipt-*` artifact exists.
 
-This UI classification is deliberately weaker than formal Phase-6 acceptance. Formal credit remains governed by the canonical evidence contract and later acceptance review. The dashboard never creates credit.
+This UI classification is deliberately weaker than formal Phase-6 acceptance. Formal credit remains governed by the canonical evidence contract and later acceptance review. The dashboard itself never creates evidence credit.
 
 ## Run locally
 
