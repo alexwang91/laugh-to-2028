@@ -23,6 +23,7 @@ ALLOWED_EXACT_PATHS = {
     "config/research_registry.json",
     "README.md",
     "docs/CURRENT_STATE.md",
+    "docs/IDLE_CASH_EXECUTION_FEASIBILITY.md",
     "docs/NEXT_STEPS.md",
     "docs/PHASE6_ADDRESS_BINDING_REQUEST.md",
     "docs/RIGHT_TAIL_PRESERVATION_GATE.md",
