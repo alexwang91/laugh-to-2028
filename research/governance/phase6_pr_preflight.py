@@ -2,19 +2,18 @@ from __future__ import annotations
 
 """PR-only wrapper for a real, non-crediting Phase-6 live preflight.
 
-The canonical collector deliberately accepts only schedule/workflow_dispatch.
-Pull-request execution therefore enters through this wrapper, which uses the
-workflow-dispatch collector path solely to exercise the identical read-only
-external-data chain and then rewrites the diagnostic metadata to the truthful
-pull_request/preflight identity. No receipt is created and no scheduled-decision
-or emergency-drill credit can be produced by this wrapper.
+The canonical scheduled collector keeps strict credit semantics. Pull-request
+execution enters through this wrapper, exercises the identical public/read-only
+external-data chain with Hyperliquid source-boundary normalization, and then
+marks the diagnostic metadata truthfully as pull_request/preflight. No receipt
+is created and no scheduled-decision or emergency-drill credit can be produced.
 """
 
 import argparse
 import json
 from pathlib import Path
 
-from .phase6_live_collector import collect
+from .phase6_live_run import collect_live
 
 
 def _write_context(output_dir: Path, *, status: str, error: Exception | None = None) -> None:
@@ -45,7 +44,7 @@ def run_preflight(
     workflow_sha: str,
 ) -> dict[str, object]:
     _write_context(output_dir, status="RUNNING")
-    metadata = collect(
+    metadata = collect_live(
         output_dir=output_dir,
         event_name="workflow_dispatch",
         run_id=run_id,
