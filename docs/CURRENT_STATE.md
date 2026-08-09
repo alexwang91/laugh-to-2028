@@ -1,10 +1,10 @@
 # BRRK Current State
 
 Last updated: 2026-08-09  
-Handoff PR: **#146**  
-Handoff branch: `dashboard/daily-audit-v3`  
-Authoritative baseline main at branch creation: `0c47a89bb853e35a97ecab8c43e88cb9a9ce7508`  
-Latest merged dashboard PR at branch creation: **#145**
+Handoff PR: **#147**  
+Handoff branch: `dashboard/chinese-simple-ui-v4`  
+Authoritative baseline main at branch creation: `ee4cc747ac0bd2edece5b806093134f5303bd039`  
+Latest merged dashboard PR at branch creation: **#146**
 
 Status: **authoritative current-state handoff candidate**
 
@@ -24,7 +24,7 @@ Phase 6 ARM                       MERGED #143 / ACTIVE FUTURE-ONLY OBSERVATION
 Phase 6 ARM marker                cbd58adb05187651ca72d67900a0ccbbd3e83b1e
 Phase 6 daily schedule            00:00 UTC
 Phase 6 live elapsed evidence     MEASUREMENT_INCONCLUSIVE_TIME_DEPENDENT
-Program timeline dashboard        READ-ONLY V3 / DAILY AUDIT CANDIDATE
+Program timeline dashboard        READ-ONLY V4 / CHINESE SIMPLE UI CANDIDATE
 Phase 7                           MONITOR_ONLY / LAUNCH BLOCKED
 Phase 8                           TRIGGER ABSENT / NOT RUN
 Production                        NO_CHANGE
@@ -66,15 +66,15 @@ schedule failures                     0
 
 A separately evidenced manual emergency drill remains required and never counts as a scheduled decision.
 
-## Program Timeline Dashboard V3 — candidate
+## Program Timeline Dashboard V4 — candidate
 
-V2 merged in PR #145 at baseline main:
+V3 merged in PR #146 at baseline main:
 
 ```text
-0c47a89bb853e35a97ecab8c43e88cb9a9ce7508
+ee4cc747ac0bd2edece5b806093134f5303bd039
 ```
 
-V3 remains under:
+V4 remains under:
 
 ```text
 research/governance/dashboard/
@@ -94,9 +94,9 @@ config/decision_registry.json
 
 The canonical chart window begins `2022-12-10` and currently extends through `2026-07-31`. No exact four-year claim is made.
 
-### V3 range statistics
+### V4 presentation and range statistics
 
-For the user-selected range V3 recomputes only from the selected existing equity column:
+V4 preserves the V3 calculations, but presents them in a simplified Chinese interface. For the user-selected range it recomputes only from the selected existing equity column:
 
 - cumulative return;
 - positive-return-day ratio;
@@ -107,7 +107,7 @@ For the user-selected range V3 recomputes only from the selected existing equity
 
 Positive-return-day ratio is explicitly not called holding-cycle win rate. Actual rebalance count, executed turnover and holding-cycle win rate remain unavailable unless an authoritative executed-turnover path is present.
 
-### V3 P3.2 timing boundary
+### V4 P3.2 timing boundary
 
 The reviewed canonical runtime implementation freezes:
 
@@ -117,9 +117,9 @@ consumes exactly completed D-1 UTC daily session
 target row D-1 is intended for D return
 ```
 
-V3 therefore separates target session, mapped decision timestamp, data cutoff and target holding-return date. It also states that historical NAV row `t` uses the prior target for row-`t` return, rather than falsely pairing row-`t` target with row-`t` return as a cause.
+V4 therefore separates target session, mapped decision timestamp, data cutoff and target holding-return date. It also states that historical NAV row `t` uses the prior target for row-`t` return, rather than falsely pairing row-`t` target with row-`t` return as a cause.
 
-### V3 P3.3 controller boundary
+### V4 P3.3 controller boundary
 
 The reviewed canonical P3.3 controller freezes:
 
@@ -141,9 +141,9 @@ control_turnover_weight
 P3.3 control plans
 ```
 
-Therefore V3 does not infer historical actual `HOLD` / `REBALANCE` events from adjacent target rows. The charted adjacent-target L1 series is separately labelled as a target-vector change metric, and the 5% line is controller-rule reference only.
+Therefore V4 does not infer historical actual `HOLD` / `REBALANCE` events from adjacent target rows. The charted adjacent-target L1 series is separately labelled as a target-vector change metric, and the 5% line is controller-rule reference only.
 
-### V3 P3.2 signal / regime boundary
+### V4 P3.2 signal / regime boundary
 
 The reviewed canonical target implementation proves model structure including:
 
@@ -156,12 +156,12 @@ long-only gross -> <= 1
 XRP -> feature-only
 ```
 
-P3.2 target results can contain `risk_state`, state probabilities, `riskoff_probability`, `meta_scale`, `defensive_scale` and feature snapshots. Those daily snapshots are not persisted in the frozen `pit_disp_0015` historical result directory. V3 therefore does not reverse-engineer a 2023 signal/regime from target weights or NAV.
+P3.2 target results can contain `risk_state`, state probabilities, `riskoff_probability`, `meta_scale`, `defensive_scale` and feature snapshots. Those daily snapshots are not persisted in the frozen `pit_disp_0015` historical result directory. V4 therefore does not reverse-engineer a 2023 signal/regime from target weights or NAV.
 
-Frozen V3 UI semantics:
+Frozen V4 source semantics:
 
 ```text
-dashboard_version=v3-daily-audit
+dashboard_version=v4-cn-simple-ui
 dashboard_record_authoritative=false
 scheduled_decision_credit_created=false
 production_authorized=false
@@ -188,7 +188,7 @@ Canonical public entry supplied and verified by the owner:
 https://laugh-to-2028.vercel.app/
 ```
 
-V3 deployment is not considered complete by this handoff until the merged public URL is independently observed serving the unique `v3-daily-audit` marker.
+V4 deployment is not considered complete by this handoff until the merged public URL is independently observed serving the unique `v4-cn-simple-ui` marker.
 
 ## Canonical production / security authority
 
@@ -207,7 +207,7 @@ order_submission_authorized       false
 first real short authority        NONE
 ```
 
-V3 changes none of these fields and adds no signer, private key, order submission, withdrawal, transfer, or production capability.
+V4 changes none of these fields and adds no signer, private key, order submission, withdrawal, transfer, or production capability.
 
 ## Other frozen decisions
 
@@ -221,11 +221,12 @@ V3 changes none of these fields and adds no signer, private key, order submissio
 
 `DRIFT_0`.
 
-This V3 candidate changes only dashboard HTML/documentation/tests and this handoff. It does not modify `execution/**`, `config/**`, `research/results/**`, strategy mathematics, Phase-6 scheduling, immutable economic evidence, or execution authority.
+This V4 candidate changes only dashboard HTML/documentation/tests and this handoff. The visible page is restyled to a light palette, user-facing labels are Chinese, raw curve names are mapped to readable Chinese names, and advanced technical/governance material is collapsed by default. It does not modify `execution/**`, `config/**`, `research/results/**`, strategy mathematics, Phase-6 scheduling, immutable economic evidence, or execution authority.
 
 ## Exact next task
 
-1. Require PR #146 governance/no-drift/dashboard CI to be green.
-2. Merge PR #146 only if final diff remains dashboard/docs/tests only.
-3. Independently verify `https://laugh-to-2028.vercel.app/` serves `v3-daily-audit`.
-4. Continue Phase-6 future-only evidence accumulation independently of dashboard presentation.
+1. Keep PR #147 limited to dashboard/docs/tests and require all checks to pass.
+2. Require governance/no-drift/dashboard CI to be green.
+3. Merge only if the final diff remains dashboard/docs/tests only.
+4. Verify `https://laugh-to-2028.vercel.app/` serves `v4-cn-simple-ui`.
+5. Continue Phase-6 future-only evidence accumulation independently of dashboard presentation.

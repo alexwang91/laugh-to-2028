@@ -1,6 +1,6 @@
-# BRRK Program Timeline Dashboard V3
+# BRRK Program Timeline Dashboard V4
 
-Read-only observability dashboard for the BRRK program. V3 extends V2 with range statistics and an explicit P3.2/P3.3 causal-audit boundary. It changes no strategy mathematics, immutable result artifact, production authorization, signing, order-submission, withdrawal, transfer, or Phase-7 authority.
+Read-only observability dashboard for the BRRK program. V4 keeps the V3 audit semantics and redesigns only the presentation layer into a light, simplified Chinese interface. It changes no strategy mathematics, immutable result artifact, production authorization, signing, order-submission, withdrawal, transfer, or Phase-7 authority.
 
 ## Evidence layers
 
@@ -31,7 +31,21 @@ Runtime rules read and reviewed for V3, but not modified by this dashboard chang
 
 XRP remains **feature-only**. Dashboard target holdings are exactly BTC / ETH / SOL / BNB.
 
-## V3 daily timing contract
+## V4 presentation contract
+
+The public page is intentionally optimized for a non-developer reader:
+
+- light neutral background and white cards;
+- blue as the primary chart color, restrained green/red for positive/negative returns;
+- all primary user-facing headings, controls, table labels, explanations and workflow states are Chinese;
+- raw curve identifiers are mapped to readable Chinese strategy names in the selector;
+- complex P3.2/P3.3, Phase-6 and research-registry detail is collapsed behind Chinese disclosure panels;
+- Plotly's mode bar is disabled so English tool labels do not leak into the primary UI;
+- the homepage prioritizes return, drawdown, target holdings and selected-day changes.
+
+This is presentation-only. All V3 evidence boundaries remain unchanged.
+
+## V4 daily timing contract
 
 P3.2 freezes this timing:
 
@@ -42,7 +56,7 @@ target_session = D-1
 that target is held over D return
 ```
 
-For a selected historical row `t`, V3 therefore separates:
+For a selected historical row `t`, V4 therefore separates:
 
 - the `t` target session;
 - the mapped P3.2 decision time `t+1 00:00 UTC`;
@@ -69,9 +83,9 @@ sum(abs(model_target_weight - current_position_weight))
 
 Safety overrides force repair to the P3.2 target when the current state contains a short position or gross exposure above 1.
 
-The V3 `adjacent target L1` chart is **not** this account gap. It only measures change between adjacent target vectors already stored in `daily_weights.csv`. The displayed 5% line is a controller-rule reference, not a historical execution trigger classification.
+The V4 `adjacent target L1` chart is **not** this account gap. It only measures change between adjacent target vectors already stored in `daily_weights.csv`. The displayed 5% line is a controller-rule reference, not a historical execution trigger classification.
 
-The historical `pit_disp_0015` result directory does not persist daily `current_position_weights`, `l1_target_gap`, `control_turnover_weight`, or P3.3 plans. Therefore V3 reports:
+The historical `pit_disp_0015` result directory does not persist daily `current_position_weights`, `l1_target_gap`, `control_turnover_weight`, or P3.3 plans. Therefore V4 reports:
 
 ```text
 historical_p3_3_execution_state_available=false
@@ -92,7 +106,7 @@ The runtime target implementation proves the model rules and output schema, incl
 - P3.2 output contains `risk_state`, state probabilities, `riskoff_probability`, `meta_scale`, `defensive_scale`, and a feature snapshot;
 - target output is long-only with gross <= 1.
 
-However the frozen historical result directory does not persist these daily P3.2 snapshots. V3 therefore reports:
+However the frozen historical result directory does not persist these daily P3.2 snapshots. V4 therefore reports:
 
 ```text
 historical_signal_snapshot_available=false
@@ -138,10 +152,10 @@ The browser reads public GitHub Actions schedule-run and artifact metadata. A ro
 
 This classification is weaker than formal acceptance. The dashboard itself never creates evidence credit and does not fabricate artifact-internal values not exposed through safe browser-readable evidence.
 
-## Semantics frozen in UI
+## Semantics frozen in source
 
 ```text
-dashboard_version=v3-daily-audit
+dashboard_version=v4-cn-simple-ui
 dashboard_record_authoritative=false
 scheduled_decision_credit_created=false
 production_authorized=false
@@ -164,4 +178,4 @@ Open:
 http://localhost:8000/research/governance/dashboard/
 ```
 
-The public deployment is expected to serve the merged `main` dashboard at `https://laugh-to-2028.vercel.app/`; deployment is considered complete only after that URL is independently verified to expose the V3 marker.
+The public deployment is expected to serve the merged `main` dashboard at `https://laugh-to-2028.vercel.app/`; deployment is considered complete only after that URL is independently verified to expose the V4 marker.
