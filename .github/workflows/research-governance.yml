@@ -83,7 +83,7 @@ jobs:
           cat /tmp/audit-a.json
 
   phase6-live-observation:
-    if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
+    if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
     runs-on: ubuntu-24.04
     timeout-minutes: 35
     steps:
@@ -110,25 +110,44 @@ jobs:
         id: collect
         shell: bash
         run: |
-          EXTRA=()
-          if [[ "${{ github.event_name }}" == "workflow_dispatch" && "${{ inputs.emergency_drill }}" == "true" ]]; then
-            EXTRA+=(--emergency-drill)
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            python -m research.governance.phase6_pr_preflight \
+              --output-dir phase6_evidence \
+              --run-id "${{ github.run_id }}" \
+              --run-attempt "${{ github.run_attempt }}" \
+              --workflow-sha "${{ github.sha }}"
+          else
+            EXTRA=()
+            if [[ "${{ github.event_name }}" == "workflow_dispatch" && "${{ inputs.emergency_drill }}" == "true" ]]; then
+              EXTRA+=(--emergency-drill)
+            fi
+            python -m research.governance.phase6_live_collector collect \
+              --output-dir phase6_evidence \
+              --event-name "${{ github.event_name }}" \
+              --run-id "${{ github.run_id }}" \
+              --run-attempt "${{ github.run_attempt }}" \
+              --workflow-sha "${{ github.sha }}" \
+              "${EXTRA[@]}"
           fi
-          python -m research.governance.phase6_live_collector collect \
-            --output-dir phase6_evidence \
-            --event-name "${{ github.event_name }}" \
-            --run-id "${{ github.run_id }}" \
-            --run-attempt "${{ github.run_attempt }}" \
-            --workflow-sha "${{ github.sha }}" \
-            "${EXTRA[@]}"
           python - <<'PY' >> "$GITHUB_OUTPUT"
           import json
           from pathlib import Path
-          row = json.loads(Path('phase6_evidence/evidence_metadata.json').read_text())
-          print('decision_slug=' + row['decision_slug'])
+          path = Path('phase6_evidence/evidence_metadata.json')
+          if path.exists():
+              row = json.loads(path.read_text())
+              print('decision_slug=' + row['decision_slug'])
           PY
-      - name: Upload unarmed preflight diagnostic
-        if: always() && steps.gate.outputs.armed != 'true'
+      - name: Upload pull-request preflight diagnostic
+        if: always() && github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase6-pr-preflight-${{ github.run_id }}-${{ github.run_attempt }}
+          path: phase6_evidence/
+          if-no-files-found: error
+          retention-days: 7
+          overwrite: false
+      - name: Upload unarmed manual preflight diagnostic
+        if: always() && github.event_name == 'workflow_dispatch' && steps.gate.outputs.armed != 'true'
         uses: actions/upload-artifact@v4
         with:
           name: phase6-preflight-${{ github.run_id }}-${{ github.run_attempt }}
@@ -137,7 +156,7 @@ jobs:
           retention-days: 7
           overwrite: false
       - name: Upload armed evidence bundle
-        if: success() && steps.gate.outputs.armed == 'true'
+        if: success() && github.event_name != 'pull_request' && steps.gate.outputs.armed == 'true'
         id: evidence
         uses: actions/upload-artifact@v4
         with:
@@ -147,7 +166,7 @@ jobs:
           retention-days: 90
           overwrite: false
       - name: Create hash-bound receipt after evidence upload
-        if: success() && steps.gate.outputs.armed == 'true'
+        if: success() && github.event_name != 'pull_request' && steps.gate.outputs.armed == 'true'
         run: |
           python -m research.governance.phase6_live_collector finalize-receipt \
             --evidence-dir phase6_evidence \
@@ -156,7 +175,7 @@ jobs:
             --artifact-url "${{ steps.evidence.outputs.artifact-url }}" \
             --artifact-digest "${{ steps.evidence.outputs.artifact-digest }}"
       - name: Upload separate receipt artifact before credit
-        if: success() && steps.gate.outputs.armed == 'true'
+        if: success() && github.event_name != 'pull_request' && steps.gate.outputs.armed == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: phase6-receipt-${{ steps.collect.outputs.decision_slug }}-${{ github.run_id }}-${{ github.run_attempt }}
