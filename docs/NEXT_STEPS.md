@@ -1,10 +1,10 @@
 # BRRK Next Steps
 
-Last updated: 2026-08-08
+Last updated: 2026-08-09
 
 ## Current instruction
 
-**PR #136 is merged and the BRRK attribution audit is descriptive only. Do not retune Stablecoin or BRRK from the audit. Return to the unique Phase-6 pre-arm dependency: one exact public Hyperliquid observation account address. Production remains unauthorized.**
+**Phase 6 remains 3/4 and identity-unbound. A prior prospective read-only probe in closed, unmerged PR #138 reached a valid `user` role but failed V1 Standard-mode compatibility because `userAbstraction` returned `default`. No address was bound. The next compatible binding still requires an explicit public master/subaccount identity satisfying `userRole=user/subAccount` and `userAbstraction=disabled`. Production remains unauthorized.**
 
 ## Immediate state
 
@@ -15,99 +15,99 @@ Phase 6 durable evidence backend       FROZEN / MERGED #133
 Phase 6 valuation contract             PHASE6-LIVE-VALUATION-V1 / MERGED #134
 Phase 6 account-identity rules         PHASE6-LIVE-ACCOUNT-IDENTITY-V1 / MERGED #135 / UNBOUND
 Phase 6 pre-arm dependencies           3/4 FROZEN
-remaining dependency                   EXACT PUBLIC OBSERVATION ACCOUNT IDENTITY
-dual-layer sanity                      COMPLETE / NON-PROMOTABLE / MERGED #136
-BRRK signal attribution                COMPLETE / NON-PROMOTABLE DIAGNOSTIC / PR #137
+identity blocker                       COMPATIBLE EXPLICIT PUBLIC MASTER/SUBACCOUNT IDENTITY
+collector_armed                        false
+schedule_configured                    false
+elapsed evidence credit                false
 Phase 7                                MONITOR_ONLY / LAUNCH BLOCKED
 Phase 8                                TRIGGER ABSENT / NOT RUN
 production gross cap                   1.0
 production_authorized_components = []
+production_authorized                  false
+signature_authorized                   false
+order_submission_authorized            false
 ```
 
-## BRRK attribution finding — do not optimize from this audit
+The PR #138 address must not be copied, inferred, reused or rebound from historical discussion in this docs-only work.
 
-Matched canonical path: 2022-12-10 through 2026-08-02, 5 bps, P3.3 L1 band 0.05.
+## Future identity action
+
+Use `docs/PHASE6_ADDRESS_BINDING_REQUEST.md`.
+
+A compatible future public identity must:
 
 ```text
-canonical CAGR                       65.3056777%
-active-session win rate              51.0752688%
-holding-cycle win rate               54.4061303%
-daily payoff ratio                    1.1988079
-holding-cycle payoff ratio            1.3391727
-best 10 sessions / log growth        51.5460%
-best 20 sessions / log growth        91.6115%
-CAGR if best 20 sessions zeroed       4.3064%
+be the exact observed master/subaccount
+match 0x + 40 hex characters
+not be an agent/API wallet
+not be a vault
+userRole = user OR subAccount
+userAbstraction = disabled
+fit PHASE6-LIVE-VALUATION-V1 Standard semantics
 ```
 
-The canonical BRRK is therefore **not a high-hit-rate strategy**. Its economics depend on modest positive payoff asymmetry plus preservation of a small number of large right-tail sessions.
+An incompatible role or abstraction yields `BLOCKED_INCOMPATIBLE`. Do not relax the contract to make an observed identity fit.
 
-The already-frozen Stablecoin gross-cap diagnostic did provide real downside protection, but it removed more upside than it saved:
+## What happens after identity binding
 
 ```text
-fused-minus-baseline delta on BRRK-negative sessions   +1.1305444
-fused-minus-baseline delta on BRRK-positive sessions   -1.3929561
-net summed daily return delta                          -0.2624117
+compatible identity verified
+-> non-secret provenance + raw-response digests persisted
+-> identity frozen
+-> dependencies 4/4
+-> STOP
+-> separate prospective ARM change
+-> collector armed + schedule configured
+-> first eligible 00:00 UTC decision strictly after ARM commit
+-> future-only shadow evidence
 ```
 
-`RESTRICTIVE` was not a negative-expectancy BRRK regime: its baseline win rate was only 45.9144%, but mean BRRK return remained positive at about +0.14169% per session and compounded return over those sessions was +39.3675%. Canonical BRRK was already at or below the frozen 0.60 gross cap on about 44.49% of those decision rows, showing material redundancy with BRRK's existing defensiveness.
+`4/4 != CLOCK STARTED`, `IDENTITY BOUND != ARM`, and `ARM != HISTORICAL CREDIT`.
 
-### Research implication
-
-Do **not** use standalone external-signal hit rate as the admission criterion. Any future External Layer study must be newly prospectively registered and must test, before any portfolio mapping:
+Frozen Phase-6 acceptance:
 
 ```text
-1. incremental information conditional on canonical BRRK state/target
-2. payoff-weighted left-tail protection, not just directional accuracy
-3. explicit preservation of BRRK right-tail participation
-4. overlap/redundancy with existing BRRK defensive scale
-5. no post-result threshold/cap search
+minimum elapsed calendar days       14
+minimum scheduled decisions         10
+minimum emergency drills             1
+critical reconciliation errors       0
+unexplained target drift              0
+schedule failures                     0
 ```
 
-The audit does not authorize Stablecoin rescue, cap tuning, edge admission, BRRK modification, or production integration.
+No historical backfill/replay, CI replay, rerun, duplicate timestamp or manual dispatch receives scheduled-decision credit.
 
-## Unique operational task
+## Prospective research admission rule
 
-Obtain one exact **public read-only Hyperliquid master/subaccount address** and bind it prospectively.
-
-Required verification:
+Any future new Research ID that can reduce canonical BRRK target gross must satisfy `docs/RIGHT_TAIL_PRESERVATION_GATE.md`:
 
 ```text
-address is explicit and exact
-address is the actual observed master/subaccount
-userRole is user OR subAccount
-userRole is NOT agent / vault / missing
-userAbstraction == disabled
-account fits PHASE6-LIVE-VALUATION-V1
-unsupported nonzero assets/surfaces are not silently ignored
-non-secret address provenance is persisted
-raw userRole + userAbstraction response SHA256 digests are persisted
-no private key is required, supplied or derived
+canonical best-20 log-growth retention >= 90%
+net summed daily-return delta > 0
 ```
 
-For a subaccount, preserve the returned master address as evidence but continue observing the exact subaccount address; do not silently replace it with the master.
+Both gates must pass. Best-10 and best-50 retention are mandatory reports but have no V1 hard threshold. Historical immutable evidence is excluded from retrospective rescoring.
 
-If the real address is an agent wallet, vault, missing account, Unified Account, Portfolio Margin, `default`, DEX abstraction or otherwise outside V1, the correct outcome is **BLOCKED / INCOMPATIBLE**. Do not broaden the contract after observing the account merely to make it fit.
+## Current authorized docs-only sequence
 
-## Arm boundary after 4/4
+After the Phase-6/right-tail governance PR merges, the exact next task in this work package is:
 
-A valid account binding completes the dependency set but still does not start elapsed credit. A separate prospective arm change is required.
+1. restate F27 documentation from authoritative R2 evidence while leaving R1 immutable;
+2. add the verified LEVERAGE-0040 metric-convention footnote without recomputation;
+3. correct F7 adoption status from live repository evidence;
+4. evaluate Idle Cash execution feasibility against current official Hyperliquid mechanics;
+5. update `CURRENT_STATE.md`, run applicable checks, and merge only at `DRIFT_0`.
 
-```text
-first eligible decision          FIRST 00:00 UTC STRICTLY AFTER ARM COMMIT
-minimum elapsed days             14
-minimum scheduled decisions      10
-minimum emergency drills         1
-critical reconciliation errors   0
-unexplained target drift          0
-schedule failures                 0
-```
+## Human-control boundaries
 
-Historical backfill, replay, CI replay, reruns, duplicate timestamps and manual dispatch do not count as scheduled-decision credit.
+Explicit human approval remains required for:
 
-## Do not substitute other work
+- the future compatible identity owner action;
+- the separate Phase-6 ARM transition;
+- Phase-7 launch;
+- `MONITOR_ONLY -> ACTIVE`;
+- `FLAT -> LONG`;
+- `FLAT -> SHORT`;
+- the first short exposure of a new confirmed bear phase.
 
-Do not start Stablecoin rescue, post-result cap tuning, leverage/allocation rescue, new short research or production deployment as a substitute for the Phase-6 account-identity blocker.
-
-Keep BRRK-0011, BTC/ETH/SOL/BNB, XRP feature-only, BNB perp-only, P3.2/P3.3, immutable research results and production authority unchanged.
-
-After genuine Phase-6 collection becomes operational, resume the governance/infrastructure roadmap. A future dual-layer study, if opened, must use a new prospective research ID and independent/unexposed evidence and must explicitly protect BRRK's right-tail economics.
+Do not substitute Stablecoin rescue, leverage rescue, post-result cap tuning, short research, production deployment, identity probing, collector arming or clock backfill for the current authorized work.
