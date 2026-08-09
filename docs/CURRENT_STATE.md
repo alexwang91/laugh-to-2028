@@ -1,7 +1,7 @@
 # BRRK Current State
 
 Last updated: 2026-08-09  
-Handoff PR: **V2 candidate**  
+Handoff PR: **#145**  
 Handoff branch: `dashboard/program-timeline-v2`  
 Authoritative baseline main at branch creation: `eab80f7e3599eada22c695e3f013f18ae774a2c5`  
 Latest merged dashboard PR at branch creation: **#144**
@@ -24,7 +24,7 @@ Phase 6 ARM                       MERGED #143 / ACTIVE FUTURE-ONLY OBSERVATION
 Phase 6 ARM marker                cbd58adb05187651ca72d67900a0ccbbd3e83b1e
 Phase 6 daily schedule            00:00 UTC
 Phase 6 live elapsed evidence     MEASUREMENT_INCONCLUSIVE_TIME_DEPENDENT
-Program timeline dashboard        READ-ONLY V2 CANDIDATE
+Program timeline dashboard        READ-ONLY V2 / PR #145 CANDIDATE
 Phase 7                           MONITOR_ONLY / LAUNCH BLOCKED
 Phase 8                           TRIGGER ABSENT / NOT RUN
 Production                        NO_CHANGE
@@ -74,9 +74,9 @@ schedule failures                     0
 
 A separately evidenced manual emergency drill is still required before Phase-6 closeout.
 
-## Program Timeline Dashboard V2 — candidate
+## Program Timeline Dashboard V2 — PR #145 candidate
 
-V1 was merged in PR #144. The V2 candidate remains under:
+V1 was merged in PR #144. PR #145 advances the same read-only dashboard under:
 
 ```text
 research/governance/dashboard/
@@ -193,13 +193,12 @@ ARM authorization is complete only for zero-authority Phase-6 observation. Later
 
 `DRIFT_0`.
 
-The V2 candidate changes only dashboard HTML/documentation/tests and this handoff update. It does not modify historical result blobs, `execution/**`, production `config/**`, strategy mathematics, Phase-6 workflow scheduling, immutable economic evidence or execution authority.
+PR #145 changes only dashboard HTML/documentation/tests and this handoff update. It does not modify historical result blobs, `execution/**`, production `config/**`, strategy mathematics, Phase-6 workflow scheduling, immutable economic evidence or execution authority.
 
 ## Exact next task
 
-1. Open the V2 dashboard PR with the required handoff sections, `DRIFT_0`, and `NO_CHANGE` production authorization.
-2. Run full PR governance/no-drift and dashboard contract CI.
-3. Merge only if the final head is green and the diff remains limited to dashboard/docs/tests.
-4. Continue allowing the daily Phase-6 schedule to accumulate genuine future evidence independently of the dashboard.
-5. After the first successful scheduled evidence+receipt pair exists, verify that the dashboard ledger reflects it without creating or modifying the underlying credit.
-6. If artifact-internal forward daily details are later required in-browser, design a separate read-only derived index bound to canonical evidence/receipt identities; do not weaken or replace the canonical create-only evidence contract.
+1. Make PR #145 fully green under governance/no-drift/dashboard and handoff CI.
+2. Merge PR #145 only if the final head remains limited to dashboard/docs/tests and all required checks are green.
+3. Continue allowing the daily Phase-6 schedule to accumulate genuine future evidence independently of the dashboard.
+4. After the first successful scheduled evidence+receipt pair exists, verify that the dashboard ledger reflects it without creating or modifying the underlying credit.
+5. If artifact-internal forward daily details are later required in-browser, design a separate read-only derived index bound to canonical evidence/receipt identities; do not weaken or replace the canonical create-only evidence contract.
