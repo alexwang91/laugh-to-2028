@@ -1,1 +1,219 @@
-[CONTENT_TOO_LARGE]
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="dashboard-version" content="v4-cn-simple-ui">
+<title>BRRK 策略看板</title>
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+<style>
+:root{--bg:#f5f7fa;--panel:#ffffff;--panel2:#f8fafc;--text:#182230;--muted:#667085;--line:#e4e7ec;--good:#18865d;--goodbg:#ecfdf3;--warn:#b54708;--warnbg:#fffaeb;--bad:#c4320a;--accent:#3157d5;--accent2:#eaf0ff;--shadow:0 1px 2px rgba(16,24,40,.04),0 8px 24px rgba(16,24,40,.04)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}
+a{color:var(--accent)}.wrap{max-width:1540px;margin:auto;padding:26px 22px 50px}.top{display:flex;justify-content:space-between;gap:20px;align-items:flex-start;margin-bottom:20px}h1{font-size:28px;line-height:1.2;margin:0 0 8px;letter-spacing:-.4px}.sub{color:var(--muted);font-size:14px;max-width:760px}.badges{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}.badge{border:1px solid var(--line);background:#fff;border-radius:999px;padding:5px 9px;color:var(--muted);font-size:11px}
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px}.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px;min-width:0;box-shadow:var(--shadow)}.kpi{grid-column:span 2}.kpi.wide{grid-column:span 4}.k{font-size:12px;color:var(--muted)}.v{font-size:23px;font-weight:700;margin-top:4px;letter-spacing:-.3px}.full{grid-column:span 12}.main{grid-column:span 8}.side{grid-column:span 4}.half{grid-column:span 6}.title{font-size:16px;font-weight:700;margin-bottom:10px}.section-sub{font-size:12px;color:var(--muted);margin:-5px 0 12px}
+.controls{grid-column:span 12;display:grid;grid-template-columns:2fr repeat(4,1fr);gap:10px}.field label{display:block;color:var(--muted);font-size:12px;margin-bottom:5px}.field select,.field input{width:100%;padding:10px 11px;background:#fff;border:1px solid #d0d5dd;border-radius:10px;color:var(--text);outline:none}.field select:focus,.field input:focus{border-color:#84a0ff;box-shadow:0 0 0 3px #eef2ff}
+.chart{height:380px}.chart.small{height:270px}.metrics{display:grid;grid-template-columns:repeat(5,1fr);gap:9px}.metric{background:var(--panel2);border:1px solid #edf0f3;border-radius:12px;padding:11px}.metric .mv{font-size:18px;font-weight:700;margin-top:3px}.note{font-size:12px;color:var(--muted)}.tip{padding:12px 13px;border-radius:12px;background:var(--accent2);color:#30436f;font-size:13px}.goodbox{padding:12px 13px;border-radius:12px;background:var(--goodbg);color:#16694b;font-size:13px}.warnbox{padding:12px 13px;border-radius:12px;background:var(--warnbg);color:#7a2e0e;font-size:13px}
+.meta{display:grid;grid-template-columns:130px 1fr;gap:7px 10px}.meta dt{color:var(--muted)}.meta dd{margin:0}.table{overflow:auto;max-height:460px;border:1px solid var(--line);border-radius:12px}table{border-collapse:collapse;width:100%;white-space:nowrap}th,td{padding:9px 10px;border-bottom:1px solid #eef1f4;font-size:12px;text-align:left}th{position:sticky;top:0;background:#f8fafc;color:var(--muted);z-index:2}tr:hover td{background:#fafbfc}.good{color:var(--good)}.warn{color:var(--warn)}.bad{color:var(--bad)}
+.details-card{grid-column:span 12;padding:0}details{border-radius:16px}summary{cursor:pointer;list-style:none;padding:16px;font-weight:700}summary::-webkit-details-marker{display:none}summary:after{content:'展开';float:right;color:var(--muted);font-weight:400;font-size:12px}details[open] summary:after{content:'收起'}.details-body{padding:0 16px 16px;border-top:1px solid var(--line)}.rule{padding:10px 0;border-bottom:1px solid #eef1f4}.rule:last-child{border:0}.timeline{border-left:2px solid #d9e1f2;padding-left:16px}.event{margin:0 0 13px}.event b{display:block}.event small{color:var(--muted)}.sem-hidden{display:none}.error{background:#fef3f2;border:1px solid #fecdca;color:#b42318;padding:10px;border-radius:10px;margin-bottom:12px}.hidden{display:none}
+@media(max-width:1120px){.kpi{grid-column:span 4}.kpi.wide{grid-column:span 4}.main,.side,.half{grid-column:span 12}.controls{grid-template-columns:repeat(2,1fr)}.metrics{grid-template-columns:repeat(3,1fr)}}@media(max-width:680px){.wrap{padding:14px 10px 32px}.top{display:block}.badges{justify-content:flex-start;margin-top:10px}.kpi,.kpi.wide{grid-column:span 6}.controls{grid-template-columns:1fr}.metrics{grid-template-columns:repeat(2,1fr)}.chart{height:310px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div><h1>BRRK 策略看板</h1><div class="sub">主要看四件事：赚了多少、回撤多大、每天目标仓位怎么变、现在项目走到哪一步。复杂的技术规则都放到下面“详细说明”里。</div></div>
+    <div class="badges"><span class="badge">简洁中文版</span><span class="badge" id="mainSha">主分支 …</span><span class="badge" id="updated">更新中</span></div>
+  </div>
+  <div id="err" class="error hidden"></div>
+  <div class="grid">
+    <div class="card kpi"><div class="k">历史数据</div><div class="v" id="windowKpi">—</div></div>
+    <div class="card kpi"><div class="k">所选区间收益</div><div class="v" id="rangeReturn">—</div></div>
+    <div class="card kpi"><div class="k">上涨天数占比</div><div class="v" id="positiveDays">—</div></div>
+    <div class="card kpi"><div class="k">日收益盈亏比</div><div class="v" id="payoff">—</div></div>
+    <div class="card kpi wide"><div class="k">所选区间最大回撤</div><div class="v" id="rangeMdd">—</div></div>
+
+    <div class="card controls">
+      <div class="field"><label>选择策略</label><select id="curve"></select></div>
+      <div class="field"><label>查看某一天</label><input type="date" id="day"></div>
+      <div class="field"><label>区间开始</label><input type="date" id="start"></div>
+      <div class="field"><label>区间结束</label><input type="date" id="end"></div>
+      <div class="field"><label>快捷选择</label><select id="preset"><option value="all">全部历史</option><option value="1y">最近 1 年</option><option value="2y">最近 2 年</option><option value="2023">2023 年</option><option value="2024">2024 年</option><option value="2025">2025 年</option><option value="2026">2026 年</option></select></div>
+    </div>
+
+    <div class="card main"><div class="title">净值走势</div><div class="section-sub">点击图上的任意一天，可以直接查看当天数据。</div><div id="equity" class="chart"></div></div>
+    <div class="card side"><div class="title">所选区间概览</div><div id="rangeMetrics" class="metrics" style="grid-template-columns:1fr 1fr"></div><div class="tip" style="margin-top:12px">“上涨天数占比”只是每天涨跌的比例，不等于一次完整持仓从买入到卖出的胜率。</div></div>
+
+    <div class="card full"><div class="title">这一天发生了什么</div><div id="dayMetrics" class="metrics"></div><div id="explain" class="goodbox" style="margin-top:12px"></div><div class="table" style="margin-top:12px"><table><thead><tr><th>币种</th><th>上一天目标仓位</th><th>当天目标仓位</th><th>变化</th><th>动作</th></tr></thead><tbody id="actionRows"></tbody></table></div></div>
+
+    <div class="card half"><div class="title">目标持仓变化</div><div class="section-sub">看 BTC、ETH、SOL、BNB 的目标仓位怎么随时间变化。</div><div id="weights" class="chart"></div></div>
+    <div class="card half"><div class="title">每日收益率</div><div class="section-sub">正数代表当天上涨，负数代表当天下跌。</div><div id="daily" class="chart"></div></div>
+
+    <div class="card half"><div class="title">历史回撤</div><div class="section-sub">距离此前净值高点跌了多少。</div><div id="dd" class="chart small"></div></div>
+    <div class="card half"><div class="title">目标仓位变化幅度</div><div class="section-sub">只表示模型目标仓位变化，不代表真实账户实际成交量。</div><div id="l1chart" class="chart small"></div></div>
+
+    <div class="card details-card"><details><summary>为什么会调整仓位？</summary><div class="details-body"><div class="grid" style="margin-top:14px"><div class="half"><div class="title">模型判断规则</div><div id="signalRules"></div><div class="warnbox" style="margin-top:10px"><b>历史每天的具体信号值没有被保存。</b><br>所以这里能告诉你“规则是什么”，但不能凭净值或仓位倒推出 2023 年某一天当时的完整市场状态。</div></div><div class="half"><div class="title">什么时候真正触发账户调仓</div><div class="rule"><b>核心判断</b><br><span class="note">比较“模型目标仓位”和“账户当前实际仓位”的总差距。</span></div><div class="rule"><b>默认阈值</b><br><span class="note">总差距达到或超过 5%，才进入再平衡判断。</span></div><div class="rule"><b>安全例外</b><br><span class="note">如果账户意外出现空头，或总仓位超过 100%，可以不等 5% 阈值直接纠正。</span></div><div class="warnbox" style="margin-top:10px"><b id="p33Status">历史实际调仓动作：暂无记录</b><br>历史回测文件没有保存每天的实际账户仓位差，因此不能把某一天直接标成“真实已调仓”或“真实未调仓”。</div></div></div></div></details></div>
+
+    <div class="card details-card"><details><summary>日期为什么要错开一天？</summary><div class="details-body"><div style="padding-top:14px"><dl id="timing" class="meta"></dl><div class="tip" style="margin-top:10px">简单理解：当天收盘后算出新的目标仓位，这份目标仓位是给下一天用的；当天净值变化对应的是上一天算出来的仓位。</div></div></div></details></div>
+
+    <div class="card details-card"><details><summary>项目现在进行到哪一步？</summary><div class="details-body"><div class="grid" style="margin-top:14px"><div class="half"><div class="title">项目时间线</div><div id="timeline" class="timeline"></div></div><div class="half"><div class="title">第 6 阶段未来观察记录</div><div class="table"><table><thead><tr><th>运行编号</th><th>创建时间（UTC）</th><th>结果</th><th>证据文件</th><th>回执文件</th><th>可作为候选记录</th></tr></thead><tbody id="phase6"></tbody></table></div><div class="note" style="margin-top:8px">这里只是公开只读展示。看板不会自己创造任何有效记录，也不会授权实盘。</div></div></div></div></details></div>
+
+    <div class="card details-card"><details><summary>查看全部研究记录</summary><div class="details-body"><div class="table" style="margin-top:14px"><table><thead><tr><th>研究编号</th><th>类型</th><th>领域</th><th>结果</th><th>晋级状态</th><th>允许实盘</th></tr></thead><tbody id="research"></tbody></table></div></div></details></div>
+
+    <!-- 保留机器可读的治理语义；不作为普通用户界面展示。 -->
+    <div class="sem-hidden">dashboard_version=v4-cn-simple-ui<br>v3-daily-audit<br>dashboard_record_authoritative=false<br>scheduled_decision_credit_created=false<br>production_authorized=false<br>target_change_mechanics_authoritative_from_canonical_weights=true<br>p3_3_rule_authoritative_from_controller=true<br>historical_p3_3_execution_state_available=false<br>historical_signal_snapshot_available=false<br>execution_causality_asserted=false<br>historical backtest NAV != Phase-6 hypothetical shadow PnL != future real-account PnL</div>
+  </div>
+</div>
+<script>
+const OWNER='alexwang91',REPO='laugh-to-2028',REF='main';
+const RAW=`https://raw.githubusercontent.com/${OWNER}/${REPO}/${REF}/`;
+const API=`https://api.github.com/repos/${OWNER}/${REPO}`;
+const TARGET_ASSETS=['BTC','ETH','SOL','BNB'];
+const REBALANCE_EPS=1e-9;
+const P33_REBALANCE_BAND=0.05;
+const PATHS={
+ equity:'research/results/pit_disp_0015/daily_equity.csv',
+ weights:'research/results/pit_disp_0015/daily_weights.csv',
+ funding:'research/results/funding_pnl_0003/full_window_daily_equity.csv',
+ research:'config/research_registry.json',
+ decisions:'config/decision_registry.json'
+};
+const PLOT={responsive:true,displaylogo:false,displayModeBar:false};
+const layout={paper_bgcolor:'#ffffff',plot_bgcolor:'#ffffff',font:{color:'#475467',size:11},margin:{l:52,r:18,t:12,b:38},xaxis:{gridcolor:'#eef2f6',linecolor:'#d0d5dd'},yaxis:{gridcolor:'#eef2f6',linecolor:'#d0d5dd'},hovermode:'x unified',legend:{orientation:'h',font:{color:'#475467'}}};
+let state={curves:{},weights:[],dates:[],curve:'BRRK0011_BASELINE',selected:null,start:null,end:null};
+
+function csv(text){const lines=text.trim().split(/\r?\n/),h=lines[0].split(',');return lines.slice(1).map(line=>{const c=line.split(','),o={};h.forEach((k,i)=>o[k]=c[i]);return o})}
+const n=x=>{const v=Number(x);return Number.isFinite(v)?v:null};
+const pct=x=>x==null?'—':(100*x).toFixed(2)+'%';
+const f=x=>x==null?'—':Number(x).toFixed(4);
+const iso=d=>new Date(d+'T00:00:00Z');
+const dayAdd=(s,k)=>{const d=iso(s);d.setUTCDate(d.getUTCDate()+k);return d.toISOString().slice(0,10)};
+function err(e){document.getElementById('err').textContent=String(e);document.getElementById('err').classList.remove('hidden')}
+async function text(path){const r=await fetch(RAW+path);if(!r.ok)throw new Error(`${path}: ${r.status}`);return r.text()}
+async function json(path){const r=await fetch(RAW+path);if(!r.ok)throw new Error(`${path}: ${r.status}`);return r.json()}
+function metric(k,v){return `<div class="metric"><div class="k">${k}</div><div class="mv">${v}</div></div>`}
+function curveLabel(k){const m={
+ 'BRRK0011_BASELINE':'BRRK 基准策略','V1_BASELINE':'V1 基准策略',
+ 'BRRK0011_PLUS_FIXED_PANEL_DISP0014':'BRRK + 固定扩展面板','BRRK0011_PLUS_DYNAMIC_UNIVERSE_DISP0015':'BRRK + 动态币种池',
+ 'V1_PLUS_FIXED_PANEL_DISP0014':'V1 + 固定扩展面板','V1_PLUS_DYNAMIC_UNIVERSE_DISP0015':'V1 + 动态币种池',
+ 'FUNDING_PRICE_ONLY':'仅价格收益','FUNDING_BINANCE_ALL_PERP_PROXY':'含资金费率代理','FUNDING_BINANCE_ALL_PERP_PROXY_COMPOUNDED_SENSITIVITY':'资金费率复利敏感性'};return m[k]||k}
+function zhRunStatus(x){const m={success:'成功',failure:'失败',cancelled:'已取消',in_progress:'运行中',queued:'排队中',completed:'已完成',skipped:'已跳过'};return m[x]||x||'—'}
+function zhRegistry(x){if(x==null)return'—';const s=String(x);const m={PASS:'通过',FAIL:'失败',FAIL_STOP:'失败并停止',NO_PROMOTION:'不晋级',PROMOTED:'已晋级',COMPLETE:'完成',PARTIAL:'部分完成',CANDIDATE:'候选',ACTIVE:'启用',BLOCKED:'阻止',MONITOR_ONLY:'仅观察',NOT_RUN:'未运行',true:'是',false:'否'};return m[s]||s.replaceAll('_',' ')}
+function curveBaseName(name){return name.includes('BRRK0011')?'BRRK0011_BASELINE':name.includes('V1')?'V1_BASELINE':'BRRK0011_BASELINE'}
+function action(prev,curr){if(Math.abs(curr-prev)<=REBALANCE_EPS)return'不变';if(Math.abs(prev)<=REBALANCE_EPS&&curr>REBALANCE_EPS)return'新开仓';if(prev>REBALANCE_EPS&&Math.abs(curr)<=REBALANCE_EPS)return'清仓';return curr>prev?'加仓':'减仓'}
+function makeSeries(rows,key){return rows.map(r=>({d:r.date,v:n(r[key])})).filter(x=>x.v!=null)}
+function returns(series){return series.map((x,i)=>({d:x.d,v:i?x.v/series[i-1].v-1:null}))}
+function dds(series){let peak=-Infinity;return series.map(x=>{peak=Math.max(peak,x.v);return{d:x.d,v:x.v/peak-1}})}
+function rangeSlice(series){return series.filter(x=>(!state.start||x.d>=state.start)&&(!state.end||x.d<=state.end))}
+function rangeStats(series){
+ const a=rangeSlice(series),rs=returns(a).filter(x=>x.v!=null),pos=rs.filter(x=>x.v>0).map(x=>x.v),neg=rs.filter(x=>x.v<0).map(x=>x.v);
+ const ret=a.length>1?a[a.length-1].v/a[0].v-1:null, hit=rs.length?pos.length/rs.length:null;
+ const payoff=pos.length&&neg.length?(pos.reduce((a,b)=>a+b,0)/pos.length)/Math.abs(neg.reduce((a,b)=>a+b,0)/neg.length):null;
+ const ddv=dds(a).map(x=>x.v),mdd=ddv.length?Math.min(...ddv):null;
+ return{a,rs,ret,hit,payoff,mdd,pos:pos.length,neg:neg.length}
+}
+function weightAt(date,base){
+ const row=state.weights.find(r=>r.date===date); if(!row)return null;
+ const o={};TARGET_ASSETS.forEach(a=>o[a]=n(row[`${base}__${a}`])??0);return o
+}
+function l1At(i,base){
+ if(i<=0)return null;const a=weightAt(state.dates[i-1],base),b=weightAt(state.dates[i],base);if(!a||!b)return null;
+ return TARGET_ASSETS.reduce((s,k)=>s+Math.abs(b[k]-a[k]),0)
+}
+function targetChangeEvents(base){
+ let c=0,total=0;for(let i=1;i<state.dates.length;i++){const d=state.dates[i];if((state.start&&d<state.start)||(state.end&&d>state.end))continue;const z=l1At(i,base);if(z!=null){total+=z;if(z>REBALANCE_EPS)c++}}
+ return{count:c,total}
+}
+function setRangeFromPreset(){
+ const p=document.getElementById('preset').value,last=state.dates.at(-1),first=state.dates[0];let s=first,e=last;
+ if(p==='1y')s=dayAdd(last,-365); else if(p==='2y')s=dayAdd(last,-730); else if(/^\d{4}$/.test(p)){s=p+'-01-01';e=p+'-12-31'}
+ state.start=s<first?first:s;state.end=e>last?last:e;document.getElementById('start').value=state.start;document.getElementById('end').value=state.end;render()
+}
+function renderRange(series,base){
+ const q=rangeStats(series),tc=targetChangeEvents(base);
+ document.getElementById('rangeReturn').textContent=pct(q.ret);document.getElementById('positiveDays').textContent=pct(q.hit);document.getElementById('payoff').textContent=q.payoff==null?'—':q.payoff.toFixed(2)+'×';document.getElementById('rangeMdd').textContent=pct(q.mdd);
+ document.getElementById('rangeMetrics').innerHTML=[
+ metric('区间天数',q.a.length),metric('累计收益',pct(q.ret)),metric('上涨天数占比',pct(q.hit)),
+ metric('日收益盈亏比',q.payoff==null?'—':q.payoff.toFixed(3)+'×'),metric('最大回撤',pct(q.mdd)),
+ metric('目标仓位变化天数',tc.count),metric('累计目标仓位变化幅度',pct(tc.total)),metric('实际再平衡次数','暂无历史记录'),
+ metric('持仓周期胜率','暂无历史记录'),metric('实际成交换手','暂无历史记录')
+ ].join('')
+}
+function renderDay(series,base){
+ let date=state.selected||state.dates.at(-1),i=state.dates.indexOf(date);if(i<0){i=state.dates.length-1;date=state.dates[i]}state.selected=date;document.getElementById('day').value=date;
+ const p=series.find(x=>x.d===date),pi=series.findIndex(x=>x.d===date),r=pi>0?p.v/series[pi-1].v-1:null;
+ let peak=-Infinity,dd=null;for(const x of series){peak=Math.max(peak,x.v);if(x.d===date){dd=x.v/peak-1;break}}
+ const w=weightAt(date,base),prev=i>0?weightAt(state.dates[i-1],base):null,l1=l1At(i,base),gross=w?TARGET_ASSETS.reduce((s,k)=>s+Math.abs(w[k]),0):null;
+ document.getElementById('dayMetrics').innerHTML=[metric('日期',date),metric('净值',p?f(p.v):'—'),metric('当日收益',pct(r)),metric('当日回撤',pct(dd)),metric('目标总仓位',pct(gross)),metric('目标仓位变化幅度',pct(l1)),metric('实际是否调仓','暂无历史记录')].join('');
+ document.getElementById('timing').innerHTML=`<dt>这一天生成的目标仓位</dt><dd>${date}</dd><dt>下一次决策时间</dt><dd>${dayAdd(date,1)} 00:00 UTC</dd><dt>当时可用的数据</dt><dd>只使用 ${date} 已结束的日线数据</dd><dt>这份目标仓位对应的收益日</dt><dd>${dayAdd(date,1)}</dd><dt>当前这一天的净值收益</dt><dd>${date}，实际对应前一日目标仓位</dd><dt>是否使用未来数据</dt><dd class="good">没有</dd>`;
+ const rows=[];if(w)TARGET_ASSETS.forEach(a=>{const pv=prev?prev[a]:0,c=w[a],d=c-pv,ac=action(pv,c);rows.push(`<tr><td>${a}</td><td>${pct(pv)}</td><td>${pct(c)}</td><td>${pct(d)}</td><td>${ac}</td></tr>`)});document.getElementById('actionRows').innerHTML=rows.join('');
+ document.getElementById('explain').innerHTML=`<b>这一天发生了什么？</b><br>${l1==null?'这是历史第一条记录，没有上一天可比较。':`与上一天相比，目标仓位总变化幅度为 ${pct(l1)}。`} 下表会告诉你 BTC、ETH、SOL、BNB 分别是加仓、减仓、清仓还是不变。需要注意：这里展示的是模型目标仓位变化，不等于账户真的在当天成交了。`;
+}
+function vline(date){return[{type:'line',x0:date,x1:date,y0:0,y1:1,yref:'paper',line:{color:'#f59e0b',width:1,dash:'dot'}}]}
+function renderCharts(series,base){
+ const q=rangeStats(series),rs=returns(series),ddv=dds(series);
+ Plotly.react('equity',[{x:series.map(x=>x.d),y:series.map(x=>x.v),type:'scatter',mode:'lines',name:curveLabel(state.curve),line:{color:'#3157d5',width:2}}],{...layout,shapes:vline(state.selected),xaxis:{...layout.xaxis,range:[state.start,state.end]}},PLOT);
+ Plotly.react('daily',[{x:rs.map(x=>x.d),y:rs.map(x=>x.v*100),type:'bar',name:'每日收益率',marker:{color:rs.map(x=>x.v==null?'#cbd5e1':x.v>=0?'#2e8b70':'#d95c59')}}],{...layout,shapes:vline(state.selected),xaxis:{...layout.xaxis,range:[state.start,state.end]},yaxis:{...layout.yaxis,title:'%'}},PLOT);
+ Plotly.react('dd',[{x:ddv.map(x=>x.d),y:ddv.map(x=>x.v*100),type:'scatter',fill:'tozeroy',name:'回撤',line:{color:'#d95c59',width:1.5},fillcolor:'rgba(217,92,89,.12)'}],{...layout,shapes:vline(state.selected),xaxis:{...layout.xaxis,range:[state.start,state.end]},yaxis:{...layout.yaxis,title:'%'}},PLOT);
+ const wc={BTC:'#3157d5',ETH:'#6f8ff8',SOL:'#2e8b70',BNB:'#d6a238'};const wt=TARGET_ASSETS.map(a=>({x:state.dates,y:state.dates.map(d=>(weightAt(d,base)||{})[a]??0),type:'scatter',stackgroup:'one',name:a,line:{color:wc[a],width:1.5}}));
+ Plotly.react('weights',wt,{...layout,shapes:vline(state.selected),xaxis:{...layout.xaxis,range:[state.start,state.end]},yaxis:{...layout.yaxis,tickformat:'.0%'}},PLOT);
+ const l1=state.dates.map((d,i)=>l1At(i,base));
+ Plotly.react('l1chart',[{x:state.dates,y:l1.map(x=>x==null?null:x*100),type:'scatter',mode:'lines',name:'目标仓位变化幅度',line:{color:'#7c5cfc',width:1.5}},{x:[state.dates[0],state.dates.at(-1)],y:[5,5],type:'scatter',mode:'lines',name:'5% 控制阈值参考',line:{dash:'dash',color:'#d97706'}}],{...layout,shapes:vline(state.selected),xaxis:{...layout.xaxis,range:[state.start,state.end]},yaxis:{...layout.yaxis,title:'%'}},PLOT);
+ ['equity','weights','daily','dd','l1chart'].forEach(id=>{const el=document.getElementById(id);if(!el._v3click){el.on('plotly_click',e=>{const x=String(e.points[0].x).slice(0,10);if(state.dates.includes(x)){state.selected=x;render()}});el._v3click=true}});
+ const e=document.getElementById('equity');if(!e._v3range){e.on('plotly_relayout',ev=>{if(ev['xaxis.range[0]']&&ev['xaxis.range[1]']){state.start=String(ev['xaxis.range[0]']).slice(0,10);state.end=String(ev['xaxis.range[1]']).slice(0,10);document.getElementById('start').value=state.start;document.getElementById('end').value=state.end;renderRange(series,base)}});e._v3range=true}
+}
+function render(){
+ const series=state.curves[state.curve];if(!series)return;const base=curveBaseName(state.curve);renderRange(series,base);renderDay(series,base);renderCharts(series,base)
+}
+function signalRules(){
+ document.getElementById('signalRules').innerHTML=[
+ ['决策时间','每天 00:00 UTC 做一次决策，只使用前一天已经结束的数据'],
+ ['BTC 逻辑','BTC 趋势转弱时，轮动预算会更偏向 BTC，而不是继续追逐山寨币'],
+ ['ETH 可获得仓位的条件','ETH 评分为正、ETH 自身趋势为正、ETH/BTC 相对趋势为正'],
+ ['SOL 可获得仓位的条件','SOL 评分为正、SOL 自身趋势为正、SOL/BTC 相对趋势为正'],
+ ['BNB 可获得仓位的条件','BNB 评分为正、较慢趋势为正、BNB/BTC 相对趋势为正'],
+ ['单币仓位上限','ETH 最多 50%，SOL 最多 35%，BNB 最多 25%；超出的预算回到 BTC'],
+ ['市场状态','风险关闭 / BTC 主导 / 主流币轮动 / 山寨币扩张'],
+ ['模型会输出什么','市场状态、各状态概率、风险关闭概率、仓位缩放参数和当日特征快照'],
+ ['总仓位限制','只做多，总仓位不超过 100%；XRP 只作为特征，不作为目标持仓']
+ ].map(x=>`<div class="rule"><b>${x[0]}</b><br><span class="note">${x[1]}</span></div>`).join('')
+}
+async function phase6(){
+ try{
+  const rr=await fetch(`${API}/actions/workflows/research-governance.yml/runs?branch=main&event=schedule&per_page=20`);if(!rr.ok)throw new Error(rr.status);const runs=(await rr.json()).workflow_runs||[];const out=[];
+  for(const run of runs.slice(0,12)){let arts=[];try{const ar=await fetch(`${API}/actions/runs/${run.id}/artifacts?per_page=100`);if(ar.ok)arts=(await ar.json()).artifacts||[]}catch(_){}
+   const ev=arts.find(a=>a.name.startsWith('phase6-evidence-'));const receipt=arts.find(a=>a.name.startsWith('phase6-receipt-'));const candidate=run.conclusion==='success'&&ev&&receipt;
+   out.push(`<tr><td><a href="${run.html_url}" target="_blank">${run.id}</a></td><td>${run.created_at||'—'}</td><td>${zhRunStatus(run.conclusion||run.status)}</td><td>${ev?ev.name:'—'}</td><td>${receipt?receipt.name:'—'}</td><td class="${candidate?'good':'warn'}">${candidate?'是':'否'}</td></tr>`)
+  }document.getElementById('phase6').innerHTML=out.join('')||'<tr><td colspan="6">暂时没有读取到公开的定时运行记录。</td></tr>'
+ }catch(e){document.getElementById('phase6').innerHTML=`<tr><td colspan="6">暂时无法读取运行记录：${e}</td></tr>`}
+}
+async function registry(){
+ try{const raw=await json(PATHS.research),arr=Array.isArray(raw)?raw:(raw.research||raw.records||raw.items||Object.values(raw).find(Array.isArray)||[]);
+ document.getElementById('research').innerHTML=arr.map(r=>`<tr><td>${r.research_id||r.id||'—'}</td><td>${zhRegistry(r.family||r.strategy_family)}</td><td>${zhRegistry(r.domain)}</td><td>${zhRegistry(r.result||r.status)}</td><td>${zhRegistry(r.promotion||r.promotion_status)}</td><td>${(r.production_authorized?'是':'否')}</td></tr>`).join('')||'<tr><td colspan="6">研究记录已读取，但没有找到可展示的条目。</td></tr>'}catch(e){document.getElementById('research').innerHTML=`<tr><td colspan="6">${e}</td></tr>`}
+}
+function timeline(){
+ const events=[
+ ['2022-12-10','历史回测数据开始','冻结的历史结果'],
+ ['2026-08-04','核心研究与归因阶段收口','研究证据已冻结'],
+ ['2026-08-09','第 6 阶段观察时钟启动','只从这一刻开始累计未来观察'],
+ ['2026-08-10 00:00Z','理论上的第一次有效定时决策','只有真实定时运行成功并留下完整证据才可能计数'],
+ ['2026-08-24','最早达到 14 天观察门槛','达到时间门槛后仍需正式验收'],
+ ['第 7 阶段','仅观察，禁止上线','需要再次明确人工批准'],
+ ['第 8 阶段','尚未触发','不会自动启动']
+ ];document.getElementById('timeline').innerHTML=events.map(x=>`<div class="event"><b>${x[0]} · ${x[1]}</b><small>${x[2]}</small></div>`).join('')
+}
+async function boot(){
+ try{
+  const [eqt,wt,ft]=await Promise.all([text(PATHS.equity),text(PATHS.weights),text(PATHS.funding)]);
+  const eq=csv(eqt),wr=csv(wt),fund=csv(ft);state.weights=wr;state.dates=wr.map(r=>r.date);
+  Object.keys(eq[0]).filter(k=>k!=='date').forEach(k=>state.curves[k]=makeSeries(eq,k));
+  Object.keys(fund[0]).filter(k=>k!=='date').forEach(k=>state.curves['FUNDING_'+k]=makeSeries(fund,k));
+  const c=document.getElementById('curve');Object.keys(state.curves).forEach(k=>{const o=document.createElement('option');o.value=k;o.textContent=curveLabel(k);c.appendChild(o)});if(state.curves[state.curve])c.value=state.curve;else state.curve=Object.keys(state.curves)[0];
+  const first=state.dates[0],last=state.dates.at(-1);state.selected=last;state.start=first;state.end=last;['day','start','end'].forEach(id=>{const e=document.getElementById(id);e.min=first;e.max=last});document.getElementById('day').value=last;document.getElementById('start').value=first;document.getElementById('end').value=last;document.getElementById('windowKpi').textContent=`${first.slice(0,4)}–${last.slice(0,4)}`;
+  try{const rr=await fetch(`${API}/commits/${REF}`);if(rr.ok){const j=await rr.json();document.getElementById('mainSha').textContent='主分支 '+j.sha.slice(0,8);document.getElementById('updated').textContent=(j.commit?.committer?.date||'').slice(0,10)}}catch(_){}
+  c.onchange=()=>{state.curve=c.value;render()};document.getElementById('day').onchange=e=>{state.selected=e.target.value;render()};document.getElementById('start').onchange=e=>{state.start=e.target.value;render()};document.getElementById('end').onchange=e=>{state.end=e.target.value;render()};document.getElementById('preset').onchange=setRangeFromPreset;
+  signalRules();timeline();render();phase6();registry()
+ }catch(e){err(e)}
+}
+boot();
+</script>
+</body></html>
