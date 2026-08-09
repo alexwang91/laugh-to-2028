@@ -44,8 +44,21 @@ class Phase6LiveObservationGateTests(unittest.TestCase):
             workflow_text=self.workflow if workflow is None else workflow,
         )
 
-    def bound_identity_contract(self):
+    def unbound_identity_contract(self):
         contract = copy.deepcopy(self.account_identity_contract)
+        contract.update(
+            {
+                "status": "AWAITING_EXPLICIT_PUBLIC_ADDRESS",
+                "account_address": None,
+                "identity_frozen": False,
+                "address_source": None,
+                "binding_evidence": None,
+            }
+        )
+        return contract
+
+    def bound_identity_contract(self):
+        contract = self.unbound_identity_contract()
         contract.update(
             {
                 "status": "FROZEN_VERIFIED_READ_ONLY_IDENTITY",
@@ -66,14 +79,14 @@ class Phase6LiveObservationGateTests(unittest.TestCase):
         )
         return contract
 
-    def test_repository_gate_is_fail_closed_and_does_not_start_elapsed_clock(self) -> None:
+    def test_repository_gate_is_ready_but_unarmed_and_does_not_start_elapsed_clock(self) -> None:
         snapshot = self.validate()
-        self.assertEqual(snapshot["status"], "PREACTIVATION_BLOCKED_FAIL_CLOSED")
+        self.assertEqual(snapshot["status"], "PREACTIVATION_READY_AWAITING_SEPARATE_ARM")
         self.assertFalse(snapshot["collector_armed"])
-        self.assertFalse(snapshot["dependencies_ready"])
-        self.assertEqual(snapshot["account_identity_contract_status"], "AWAITING_EXPLICIT_PUBLIC_ADDRESS")
-        self.assertFalse(snapshot["account_identity_frozen"])
-        self.assertIsNone(snapshot["account_address"])
+        self.assertTrue(snapshot["dependencies_ready"])
+        self.assertEqual(snapshot["account_identity_contract_status"], "FROZEN_VERIFIED_READ_ONLY_IDENTITY")
+        self.assertTrue(snapshot["account_identity_frozen"])
+        self.assertIsNotNone(snapshot["account_address"])
         self.assertTrue(snapshot["valuation_contract_frozen"])
         self.assertEqual(snapshot["valuation_mode"], "disabled")
         self.assertTrue(snapshot["durable_evidence_backend_frozen"])
@@ -117,18 +130,19 @@ class Phase6LiveObservationGateTests(unittest.TestCase):
 
     def test_collector_cannot_arm_with_account_identity_still_unfrozen(self) -> None:
         gate = copy.deepcopy(self.gate)
+        gate["required_before_arm"]["observation_account_identity_frozen"] = False
         gate["collector_armed"] = True
         gate["schedule_configured"] = True
         gate["elapsed_evidence_credit_authorized"] = True
         gate["armed_commit"] = "deadbeef"
         with self.assertRaises(Phase6ObservationGateError, msg="missing account identity must block"):
-            self.validate(gate=gate)
+            self.validate(gate=gate, account_identity_contract=self.unbound_identity_contract())
 
     def test_gate_cannot_claim_identity_frozen_when_contract_is_unbound(self) -> None:
         gate = copy.deepcopy(self.gate)
         gate["required_before_arm"]["observation_account_identity_frozen"] = True
         with self.assertRaises(Phase6ObservationGateError):
-            self.validate(gate=gate)
+            self.validate(gate=gate, account_identity_contract=self.unbound_identity_contract())
 
     def test_verified_identity_can_complete_dependencies_without_arming_collector(self) -> None:
         gate = copy.deepcopy(self.gate)

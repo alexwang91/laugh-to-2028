@@ -25,12 +25,26 @@ class Phase6LiveAccountIdentityTests(unittest.TestCase):
             )
         )
 
-    def test_repository_contract_freezes_rules_not_identity(self) -> None:
+    def unbound_contract(self):
+        contract = copy.deepcopy(self.contract)
+        contract.update(
+            {
+                "status": "AWAITING_EXPLICIT_PUBLIC_ADDRESS",
+                "account_address": None,
+                "identity_frozen": False,
+                "address_source": None,
+                "binding_evidence": None,
+            }
+        )
+        return contract
+
+    def test_repository_contract_freezes_verified_read_only_identity(self) -> None:
         snapshot = validate_identity_contract(self.contract)
-        self.assertEqual(snapshot["status"], "AWAITING_EXPLICIT_PUBLIC_ADDRESS")
-        self.assertIsNone(snapshot["account_address"])
-        self.assertFalse(snapshot["identity_frozen"])
-        self.assertFalse(snapshot["binding_ready"])
+        self.assertEqual(snapshot["status"], "FROZEN_VERIFIED_READ_ONLY_IDENTITY")
+        self.assertEqual(snapshot["account_role"], "user")
+        self.assertEqual(snapshot["user_abstraction"], "disabled")
+        self.assertTrue(snapshot["identity_frozen"])
+        self.assertTrue(snapshot["binding_ready"])
         self.assertFalse(snapshot["production_authorized"])
         self.assertFalse(snapshot["signature_authorized"])
         self.assertFalse(snapshot["order_submission_authorized"])
@@ -93,19 +107,19 @@ class Phase6LiveAccountIdentityTests(unittest.TestCase):
                     )
 
     def test_contract_cannot_claim_frozen_identity_without_address(self) -> None:
-        contract = copy.deepcopy(self.contract)
+        contract = self.unbound_contract()
         contract["identity_frozen"] = True
         with self.assertRaises(Phase6AccountIdentityError):
             validate_identity_contract(contract)
 
     def test_contract_cannot_claim_binding_evidence_while_unbound(self) -> None:
-        contract = copy.deepcopy(self.contract)
+        contract = self.unbound_contract()
         contract["address_source"] = "made-up"
         with self.assertRaises(Phase6AccountIdentityError):
             validate_identity_contract(contract)
 
     def test_future_bound_master_fixture_requires_role_mode_and_raw_digests(self) -> None:
-        contract = copy.deepcopy(self.contract)
+        contract = self.unbound_contract()
         contract.update(
             {
                 "status": "FROZEN_VERIFIED_READ_ONLY_IDENTITY",

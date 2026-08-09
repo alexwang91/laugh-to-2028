@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
   "contract_id": "PHASE6-LIVE-ACCOUNT-IDENTITY-V1",
-  "status": "AWAITING_EXPLICIT_PUBLIC_ADDRESS",
+  "status": "FROZEN_VERIFIED_READ_ONLY_IDENTITY",
   "venue": "hyperliquid",
   "info_endpoint": "https://api.hyperliquid.xyz/info",
-  "account_address": null,
-  "identity_frozen": false,
-  "address_source": null,
+  "account_address": "0x5566589aDD9C10304FBdc811140155Dc91204583",
+  "identity_frozen": true,
+  "address_source": "EXPLICIT_OWNER_SUPPLIED_PUBLIC_ADDRESS",
   "address_format": "0x_PLUS_40_HEX_CHARS",
   "required_queries": {
     "user_role": {
@@ -24,7 +24,17 @@
     "returned_master_address_required_for_subaccount": true,
     "silent_substitution_to_master_for_observation": false
   },
-  "binding_evidence": null,
+  "binding_evidence": {
+    "query_address": "0x5566589aDD9C10304FBdc811140155Dc91204583",
+    "verified_at": "2026-08-09T12:51:32Z",
+    "observation_source": "OWNER_BROWSER_READ_ONLY_POST_TO_OFFICIAL_HYPERLIQUID_INFO_ENDPOINT",
+    "user_role_response": {"role": "user"},
+    "user_abstraction_response": "disabled",
+    "raw_response_sha256": {
+      "userRole": "6b3061507ef8cc2ca95320f790a9f9ccb3c850ae081df4b6f6e56e40d57203e4",
+      "userAbstraction": "f693b9deb860600fb93d749df324c55991afe7eba6300113ab381339b23d12d5"
+    }
+  },
   "production_authorized": false,
   "signature_authorized": false,
   "order_submission_authorized": false,
@@ -39,11 +49,10 @@
     "production_state_activation"
   ],
   "notes": [
-    "This contract freezes the identity-binding rules before any concrete observation address is supplied.",
-    "The contract does not freeze an account identity while account_address is null.",
-    "Hyperliquid account-data queries must use the actual master/subaccount address rather than an agent/API-wallet address.",
-    "A later binding change must persist the exact public address, its non-secret provenance, userRole result and userAbstraction result before identity_frozen may become true.",
-    "If the supplied account is an agent, vault, missing role, unsupported abstraction mode or otherwise incompatible with PHASE6-LIVE-VALUATION-V1, the correct outcome is BLOCKED_INCOMPATIBLE rather than broadening the contract after observation.",
-    "Binding an identity does not arm the collector, configure a schedule, create elapsed credit or authorize production."
+    "The explicit public observation identity is now frozen from owner-supplied read-only evidence.",
+    "The verified role is user and the verified userAbstraction is disabled, satisfying the frozen Standard-mode identity contract.",
+    "Hyperliquid account-data queries must continue to use this exact master account address rather than an agent/API-wallet address.",
+    "Binding this identity completes the account-identity dependency only; it does not arm the collector, configure a schedule, create elapsed credit or authorize production.",
+    "Any future identity replacement requires a separate explicit owner action and must not silently substitute another master/subaccount."
   ]
 }
