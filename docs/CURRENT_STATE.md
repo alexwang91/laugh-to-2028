@@ -1,7 +1,7 @@
 # BRRK Current State
 
 Last updated: 2026-08-10  
-Handoff PR: **PENDING**  
+Handoff PR: **#149**  
 Handoff branch: `research/brrk-opportunity-audit-0042`  
 Authoritative baseline main at branch creation: `7a8b0385963e96ecce9dc70c313c27507cd99b52`  
 Latest merged dashboard PR at branch creation: **#148**
@@ -147,8 +147,7 @@ This candidate adds only a read-only governance diagnostic, its contract test/sp
 
 ## Exact next task
 
-1. Open the audit PR and bind this handoff to its PR number.
-2. Require governance/no-drift and all existing strategy/safety CI to stay green.
-3. Read the machine-emitted audit JSON from CI only after the frozen measurement code is committed.
-4. Based on that diagnostic, preregister exactly one or more separate candidate experiments before evaluating any modified strategy economics.
-5. Continue Phase-6 future-only evidence accumulation independently.
+1. Require PR #149 governance/no-drift and all existing strategy/safety CI to stay green.
+2. Read the machine-emitted audit JSON from CI only after the frozen measurement code is committed.
+3. Based on that diagnostic, preregister exactly one or more separate candidate experiments before evaluating any modified strategy economics.
+4. Continue Phase-6 future-only evidence accumulation independently.
