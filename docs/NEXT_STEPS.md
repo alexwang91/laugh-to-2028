@@ -4,7 +4,7 @@ Last updated: 2026-08-09
 
 ## Current instruction
 
-**Phase 6 remains 3/4 and identity-unbound. A prior prospective read-only probe in closed, unmerged PR #138 reached a valid `user` role but failed V1 Standard-mode compatibility because `userAbstraction` returned `default`. No address was bound. The next compatible binding still requires an explicit public master/subaccount identity satisfying `userRole=user/subAccount` and `userAbstraction=disabled`. Production remains unauthorized.**
+**Phase 6 remains 3/4 and identity-unbound. The docs-only F27/F7/Idle-Cash review is complete in its current branch, but it creates no live authority. The next operational dependency is still a future explicit compatible Hyperliquid master/subaccount identity satisfying `userRole=user/subAccount` and `userAbstraction=disabled`. Production remains unauthorized.**
 
 ## Immediate state
 
@@ -28,7 +28,44 @@ signature_authorized                   false
 order_submission_authorized            false
 ```
 
-The PR #138 address must not be copied, inferred, reused or rebound from historical discussion in this docs-only work.
+The PR #138 address must not be copied, inferred, reused or rebound from historical discussion.
+
+## Completed docs-only corrections
+
+### F27
+
+`research/results/idle_cash_credit_0027r2.json` is authoritative; R1 is superseded but preserved unchanged.
+
+Corrected BRRK R2 headline:
+
+```text
+mean idle cash                24.5700%
+raw CAGR                      65.1661%
+credited CAGR                 66.8068%
+CAGR delta                    +1.6407 pp
+rf=0 Sharpe raw -> credited   1.3532 -> 1.3756
+excess Sharpe raw -> credited 1.3667 -> 1.4039
+```
+
+### F7
+
+Status is **PARTIAL**. The shared calendar-span helper exists in `research/common/metrics.py`, but immutable historical studies retain frozen study-local conventions. Do not rewrite immutable results merely to normalize old metrics.
+
+### LEVERAGE-0040
+
+The P4.5 decision now documents that the 65.31% cap-1.00 comparator uses observation-count annualization, so it is not numerically identical to calendar-span F27 R2 BRRK CAGR `65.1661%`. Within-study comparisons remain valid and the immutable decision stays `FAIL_STOP / NO_PROMOTION`.
+
+### Idle Cash execution feasibility
+
+`docs/IDLE_CASH_EXECUTION_FEASIBILITY.md` concludes:
+
+```text
+NOT_FEASIBLE_ON_HYPERLIQUID_STANDARD
+FUTURE_OPTION / NOT_AUTHORIZED
+REQUIRES SEPARATE DESIGN + CONTRACT + APPROVAL
+```
+
+Do not implement the historical ~1.64 pp credit by silently switching to Portfolio Margin, HLP, HYPE staking, off-venue lending or another non-immediately-callable asset. Preserving V1 margin availability, liquidation distance and Standard valuation semantics takes precedence.
 
 ## Future identity action
 
@@ -88,16 +125,6 @@ net summed daily-return delta > 0
 
 Both gates must pass. Best-10 and best-50 retention are mandatory reports but have no V1 hard threshold. Historical immutable evidence is excluded from retrospective rescoring.
 
-## Current authorized docs-only sequence
-
-After the Phase-6/right-tail governance PR merges, the exact next task in this work package is:
-
-1. restate F27 documentation from authoritative R2 evidence while leaving R1 immutable;
-2. add the verified LEVERAGE-0040 metric-convention footnote without recomputation;
-3. correct F7 adoption status from live repository evidence;
-4. evaluate Idle Cash execution feasibility against current official Hyperliquid mechanics;
-5. update `CURRENT_STATE.md`, run applicable checks, and merge only at `DRIFT_0`.
-
 ## Human-control boundaries
 
 Explicit human approval remains required for:
@@ -110,4 +137,4 @@ Explicit human approval remains required for:
 - `FLAT -> SHORT`;
 - the first short exposure of a new confirmed bear phase.
 
-Do not substitute Stablecoin rescue, leverage rescue, post-result cap tuning, short research, production deployment, identity probing, collector arming or clock backfill for the current authorized work.
+Do not substitute Idle Cash implementation, Stablecoin rescue, leverage rescue, post-result cap tuning, short research, production deployment, identity probing, collector arming or clock backfill for the currently blocked Phase-6 identity dependency.
