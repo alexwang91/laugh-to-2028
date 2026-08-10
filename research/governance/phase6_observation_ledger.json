@@ -1,0 +1,97 @@
+{
+  "schema_version": 1,
+  "ledger_id": "PHASE6-LIVE-OBSERVATION-ACCOUNTING-V1",
+  "status": "ACCOUNTING_INDEX_NON_EVIDENCE",
+  "purpose": "INDEX_ALREADY_PERSISTED_FUTURE_ONLY_PHASE6_EVIDENCE_WITHOUT_CREATING_OR_BACKFILLING_OBSERVATIONS",
+  "canonical_phase6_contract": "config/phase6_shadow_contract.json",
+  "observation_gate": "research/governance/phase6_live_observation_gate.json",
+  "evidence_backend_contract": "research/governance/phase6_live_evidence_contract.json",
+  "arm_commit": "cbd58adb05187651ca72d67900a0ccbbd3e83b1e",
+  "first_eligible_decision": "2026-08-10T00:00:00Z",
+  "evidence_authority": "GITHUB_ACTIONS_EVIDENCE_AND_SEPARATE_HASH_BOUND_RECEIPT_ARTIFACTS",
+  "ledger_authority": "ACCOUNTING_INDEX_ONLY",
+  "recording_creates_credit": false,
+  "historical_backfill_authorized": false,
+  "historical_replay_credit_authorized": false,
+  "manual_dispatch_scheduled_decision_credit_authorized": false,
+  "production_authorized": false,
+  "signature_authorized": false,
+  "order_submission_authorized": false,
+  "frozen_acceptance": {
+    "minimum_elapsed_calendar_days": 14,
+    "minimum_scheduled_decisions": 10,
+    "minimum_emergency_drills": 1,
+    "critical_reconciliation_errors": 0,
+    "unexplained_target_drift": 0,
+    "schedule_failures": 0
+  },
+  "progress": {
+    "genuine_scheduled_decisions": 1,
+    "emergency_drills": 0,
+    "distinct_credited_decision_dates": 1,
+    "critical_reconciliation_errors_observed": 0,
+    "unexplained_target_drift_observed": 0,
+    "schedule_failures_observed": 0,
+    "elapsed_requirement_met": false,
+    "scheduled_decision_requirement_met": false,
+    "emergency_drill_requirement_met": false,
+    "phase6_live_acceptance_status": "MEASUREMENT_INCONCLUSIVE_TIME_DEPENDENT"
+  },
+  "entries": [
+    {
+      "decision_timestamp": "2026-08-10T00:00:00Z",
+      "observed_at": "2026-08-10T01:14:21Z",
+      "event_name": "schedule",
+      "github_run_id": "31346545269",
+      "github_run_attempt": "1",
+      "workflow_sha": "405d2f75221ba97734973dd9bee2df04c9ecbcd2",
+      "scheduled_decision_credit_candidate": true,
+      "credit_status": "CREDITED_EXISTING_DURABLE_EVIDENCE",
+      "recorded_after_event": true,
+      "source_evidence_already_persisted": true,
+      "evidence_artifact": {
+        "id": "9047515515",
+        "name": "phase6-evidence-20260810T000000Z-31346545269-1",
+        "digest": "sha256:35324a527eec2e10c44ad8ccd124c0074a3b23f64be4352651037b4209a811a3",
+        "created_at": "2026-08-10T01:14:44Z",
+        "expires_at": "2026-11-08T01:13:41Z"
+      },
+      "receipt_artifact": {
+        "id": "9047516114",
+        "name": "phase6-receipt-20260810T000000Z-31346545269-1",
+        "digest": "sha256:f2299a0dca868c3fcedc4cafd561104930f8b8f52e8ba71d88e0f423d4461380",
+        "created_at": "2026-08-10T01:14:46Z",
+        "expires_at": "2026-11-08T01:13:41Z"
+      },
+      "receipt_binding": {
+        "evidence_artifact_id": "9047515515",
+        "evidence_artifact_digest": "35324a527eec2e10c44ad8ccd124c0074a3b23f64be4352651037b4209a811a3",
+        "evidence_object_digest": "6e0f090101c37724c1b2eaccea77358028a4f3f72dd9e397e3526211145377d5",
+        "input_provenance_digest": "813ab7ed64b2c50504371c698c7f100e227851f40c28c0dde6e9415b6694307b",
+        "shadow_record_digest": "23b4eba438f66b38fdfb0af1661eddfe44d0139424d709a4e3ced3547dff1585"
+      },
+      "observation_checks": {
+        "shadow_status": "SHADOW_COMPUTED_NO_AUTHORITY",
+        "shadow_alerts": [],
+        "target_reference_parity_passed": true,
+        "target_reference_gross_abs_difference": 0.0,
+        "target_reference_max_weight_abs_difference": 0.0,
+        "offline_reference_l1_drift": 0.0,
+        "critical_reconciliation_errors_observed": 0,
+        "unexplained_target_drift_observed": 0,
+        "schedule_failure_observed": 0,
+        "authorization_headers_used_for_market_or_account_reads": false,
+        "secret_material_present": false,
+        "production_authorized": false,
+        "signature_authorized": false,
+        "order_submission_authorized": false
+      }
+    }
+  ],
+  "notes": [
+    "This ledger does not create evidence or credit. It indexes evidence and receipt artifacts that already existed durably after a genuine future schedule event.",
+    "The 2026-08-10 entry is not historical backfill: no observation, decision timestamp, raw input, shadow record, evidence object or receipt was recreated. The accounting record was added after independently checking the already-persisted artifacts.",
+    "A green workflow alone is insufficient. A scheduled entry is creditable here only when the underlying event is schedule-origin, strictly future-only relative to ARM, and both create-only evidence and separate receipt artifacts exist and bind the same run/decision/digests.",
+    "The ledger remains subordinate to frozen Phase-6 contracts and cannot authorize production, signing, orders, withdrawal, transfer, strategy changes or Phase-7 launch."
+  ]
+}
