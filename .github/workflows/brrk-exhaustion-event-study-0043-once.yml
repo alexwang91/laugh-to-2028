@@ -1,0 +1,65 @@
+name: BRRK exhaustion event study 0043 once
+
+on:
+  push:
+    branches:
+      - research/brrk-exhaustion-event-study-0043
+    paths:
+      - .github/workflows/brrk-exhaustion-event-study-0043-once.yml
+
+permissions:
+  contents: read
+
+jobs:
+  diagnostic:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install diagnostic runtime
+        run: python -m pip install --disable-pip-version-check numpy pandas requests scikit-learn
+      - name: Freeze contract tests before result
+        run: python -m unittest research.governance.test_brrk_exhaustion_event_study_0043 -v
+      - name: Execute frozen diagnostic once
+        run: |
+          python research/governance/brrk_exhaustion_event_study.py --output /tmp/BRRK_EXHAUSTION_EVENT_STUDY_0043.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r=json.loads(Path('/tmp/BRRK_EXHAUSTION_EVENT_STUDY_0043.json').read_text())
+          summary={
+            'audit_id':r['audit_id'],
+            'window':r['window'],
+            'event_taxonomy':r['event_taxonomy'],
+            'panel_counts':{k:v['counts'] for k,v in r['panels'].items()},
+            'auc_by_window':{
+              panel:{window:{family:metrics['auc'] for family,metrics in body['windows'][window].items()}
+                     for window in ('PRE14_7','PRE7_0','POST0_7')}
+              for panel,body in r['panels'].items()
+            },
+            'median_gaps_primary':{
+              window:{family:metrics['median_gap_true_minus_continuation']
+                      for family,metrics in r['panels']['down_15pct']['windows'][window].items()}
+              for window in ('PRE14_7','PRE7_0','POST0_7')
+            },
+            'warning_threshold_panel_primary_15pct':r['warning_threshold_panel_primary_15pct'],
+            'anchor_sanity_checks_primary_15pct':r['anchor_sanity_checks_primary_15pct'],
+            'correlation_summary':{
+              'raw_oriented_feature_count':r['correlation_summary']['raw_oriented_feature_count'],
+              'abs_corr_ge_0_85_pair_count':r['correlation_summary']['abs_corr_ge_0_85_pair_count'],
+              'effective_rank_participation_ratio':r['correlation_summary']['effective_rank_participation_ratio'],
+            },
+            'authority':r['authority'],
+          }
+          Path('/tmp/BRRK_EXHAUSTION_EVENT_STUDY_0043_SUMMARY.json').write_text(json.dumps(summary,indent=2,sort_keys=True)+'\n')
+          print('BRRK_EXHAUSTION_SUMMARY_JSON='+json.dumps(summary,separators=(',',':'),sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: brrk-exhaustion-event-study-0043
+          path: |
+            /tmp/BRRK_EXHAUSTION_EVENT_STUDY_0043.json
+            /tmp/BRRK_EXHAUSTION_EVENT_STUDY_0043_SUMMARY.json
+          if-no-files-found: error
