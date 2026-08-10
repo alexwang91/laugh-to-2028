@@ -1240,6 +1240,127 @@
         "derived_confidence": "MEDIUM",
         "confidence_rule_ref": "research/stablecoin_liquidity_0001/RUN_INTERFACE.json"
       }
+    },
+    {
+      "research_id": "BRRK-WINNER-0001",
+      "research_family_id": "BRRK_WINNER_CONCENTRATION",
+      "research_domain": "PORTFOLIO_INTEGRATION",
+      "research_governance_version": 1,
+      "governance_mode": "PROGRAM_GOVERNED_V1",
+      "objective_type": "PORTFOLIO_INTEGRATION",
+      "created_at": "2026-08-10T00:00:00Z",
+      "created_before_result": true,
+      "question": "Does reducing the frozen single-eligible-alt BTC reserve from 50% to 40%, reallocating that 10 percentage points to the sole eligible alt while leaving every signal and defensive-scale rule unchanged, materially improve after-cost BRRK compounded growth without unacceptable drawdown, turnover, or right-tail degradation?",
+      "hypothesis": "When exactly one alt is eligible under the frozen BRRK/V1 eligibility rules, the current 50% BTC / 50% alt split is overly conservative. A fixed 40% BTC / 60% sole-eligible-alt split should improve after-cost CAGR while preserving the canonical BRRK right-tail participation and risk-adjusted profile.",
+      "hypothesis_origin": "RESULT_INFORMED_BY_BRRK_OPPORTUNITY_COST_AUDIT_0042",
+      "economic_mechanism": "The frozen single-alt branch already identifies one asset as the only eligible relative-strength winner but reserves half of gross for BTC. The candidate changes only that portfolio-construction split, retaining the same gross risk budget, the same BRRK defensive scaler, the same long-only universe, the same signal horizons and the same P3.3 simulation semantics.",
+      "primary_target": "after_cost_cagr_improvement_vs_canonical_brrk_subject_to_frozen_risk_right_tail_and_turnover_gates",
+      "primary_metric": "after_cost_cagr_difference_percentage_points_candidate_minus_canonical_brrk",
+      "secondary_metrics": [
+        "maximum_drawdown_difference_percentage_points_candidate_minus_canonical_brrk",
+        "calmar_ratio_candidate_vs_canonical_brrk",
+        "canonical_top20_session_log_growth_capture_ratio",
+        "total_turnover_ratio_candidate_over_canonical_brrk",
+        "end_multiple_candidate_vs_canonical_brrk"
+      ],
+      "feature_families": [
+        "FROZEN_BRRK_SINGLE_ALT_ELIGIBILITY"
+      ],
+      "horizon": "DAILY_00UTC_2022-12-10_THROUGH_2026-08-02_RESEARCHER_EXPOSED_HISTORY",
+      "universe": [
+        "BTC",
+        "ETH",
+        "SOL",
+        "BNB"
+      ],
+      "development_dataset_refs": [
+        "BRRK-WINNER-0001-CANONICAL-HIST-V1"
+      ],
+      "validation_dataset_refs": [],
+      "sealed_dataset_refs": [],
+      "declared_variant_budget": 1,
+      "actual_variants_evaluated": 0,
+      "parameter_candidate_count": 1,
+      "stopping_rule": "Execute exactly one frozen 40/60 single-alt candidate once against the canonical BRRK baseline. If any hard success criterion fails, classify FAIL_NO_PROMOTION and stop this research ID. Do not retune the split, signal horizons, eligibility, caps, defensive scale, cost, P3.3 band, universe, or success gates under this ID after any result is observed.",
+      "success_criteria": [
+        "Candidate after-cost CAGR minus canonical BRRK after-cost CAGR is at least +3.00 percentage points.",
+        "Candidate maximum drawdown is no more than 4.00 percentage points worse than canonical BRRK maximum drawdown.",
+        "Candidate Calmar ratio is greater than or equal to canonical BRRK Calmar ratio.",
+        "Candidate captures at least 98% of canonical BRRK log growth contributed by the canonical best 20 daily return sessions when evaluated on those same dates.",
+        "Candidate total turnover is no more than 1.25 times canonical BRRK total turnover under the same simulator.",
+        "Candidate remains long-only, target gross never exceeds 1.0, target assets remain exactly BTC/ETH/SOL/BNB, and no production authority changes occur."
+      ],
+      "failure_criteria": [
+        "Any hard success criterion failure produces FAIL_NO_PROMOTION for BRRK-WINNER-0001.",
+        "Any canonical baseline reproduction failure invalidates the run rather than becoming an economic result.",
+        "Any data/PIT/governance or variant-budget violation invalidates the run rather than becoming an economic result."
+      ],
+      "allowed_followup": [
+        "A full PASS may create a separately preregistered robustness research ID using a new result-independent contract before any alternative split or broader winner rule is evaluated.",
+        "A FAIL may motivate a materially different mechanism only under a new research ID; it may not rescue this ID with a nearby allocation split."
+      ],
+      "forbidden_followup": [
+        "No same-ID evaluation of 45/55, 35/65, 30/70 or any other BTC/winner split after observing the 40/60 result.",
+        "No modification of the frozen 20/60/120/240 signal horizons or their weights under this ID.",
+        "No modification of eligibility rules, multi-alt allocation, ETH/SOL/BNB multi-alt caps, BRRK defensive scaling, leverage, shorting, P3.3 band, cost assumption or universe under this ID.",
+        "No direct modification of BRRK-0011, Phase 6, Phase 7 or production authorization from this research result."
+      ],
+      "researcher_decisions": [
+        "The only candidate portfolio change is single-alt branch BTC/eligible-alt split 0.50/0.50 -> 0.40/0.60 at unchanged gross.",
+        "A single-alt day is identified mechanically from the frozen V1 target structure as BTC plus exactly one nonzero alt in the canonical single-alt branch; ambiguous rows invalidate rather than trigger the candidate.",
+        "The candidate uses the same daily BRRK defensive gross scale mechanically established by BRRK-OPPORTUNITY-COST-AUDIT-0042; only normalized target composition changes on eligible single-alt rows.",
+        "Canonical price and baseline target reconstruction must reproduce the frozen canonical BRRK metrics within the existing audit tolerance before candidate metrics are released.",
+        "Simulation uses the same 5 bps cost and P3.3 economic simulator semantics as the frozen BRRK signal-attribution audit.",
+        "The historical window is already researcher-exposed and is DEVELOPMENT evidence only; a PASS does not constitute unbiased OOS confirmation or production evidence.",
+        "The canonical best-20 session dates are defined from the canonical baseline only and are not reselected from candidate returns."
+      ],
+      "research_process_complexity": {
+        "declared_parameter_candidates": [
+          "SINGLE_ALT_BTC_SHARE=0.40",
+          "SINGLE_ALT_WINNER_SHARE=0.60"
+        ],
+        "actual_parameter_candidates_evaluated": [],
+        "universes_evaluated": [
+          "CANONICAL_BRRK_BTC_ETH_SOL_BNB"
+        ],
+        "horizons_evaluated": [
+          "CANONICAL_DAILY_WINDOW_2022-12-10_TO_2026-08-02"
+        ],
+        "rebalance_variants": [
+          "CANONICAL_P3_3_5PCT_BAND_SIMULATOR_ONLY"
+        ],
+        "feature_representations": [
+          "FROZEN_V1_SINGLE_ALT_BRANCH_STRUCTURE"
+        ],
+        "special_cases_introduced": [
+          "ONLY_SINGLE_ELIGIBLE_ALT_ROWS_CHANGE_COMPOSITION"
+        ],
+        "validation_exposure_event_refs": [],
+        "related_family_trials": 1
+      },
+      "lineage_edges": [
+        {
+          "relation": "RESULT_INFORMED",
+          "ref_research_id": "BRRK-0011",
+          "provenance_status": "FACT",
+          "evidence_ref": "research/governance/BRRK_OPPORTUNITY_COST_AUDIT_0042.md"
+        }
+      ],
+      "result_status": "PREREGISTERED_NOT_RUN",
+      "failure_reason": null,
+      "promotion_state": "NONE",
+      "evidence_refs": [],
+      "decision_refs": [],
+      "production_relevance": "Research-only portfolio-construction candidate on researcher-exposed history. PASS can only make a separately preregistered robustness stage eligible; it cannot modify canonical BRRK or confer production authority.",
+      "production_authorized": false,
+      "provenance_status": "FACT",
+      "governed_path_prefixes": [
+        "research/brrk_winner_0001/"
+      ],
+      "notes": [
+        "Motivated by BRRK-OPPORTUNITY-COST-AUDIT-0042, which found the defensive scaler beneficial historically and found BTC >= 50% of gross on about 70.17% of alt-active V1 days.",
+        "The older BRRK signal-attribution audit showed right-tail dependence: canonical best 20 sessions account for about 91.61% of total log growth, motivating the explicit right-tail preservation gate."
+      ]
     }
   ],
   "research_governance_debt": [

@@ -21,6 +21,28 @@
       "researcher_exposed_history": true,
       "provenance_status": "FACT",
       "evidence_refs": ["research/stablecoin_liquidity_0001/FIRST_CAPTURE_EVIDENCE.json"]
+    },
+    {
+      "dataset_slice_id": "BRRK-WINNER-0001-CANONICAL-HIST-V1",
+      "dataset_id": "CANONICAL-BRRK-HISTORICAL-PRICE-TARGET-AUTHORITY",
+      "dataset_version": "baseline-main-405d2f75221ba97734973dd9bee2df04c9ecbcd2",
+      "source": "FROZEN_BRRK_RESEARCH_AUTHORITY_AND_PIT_DISP_0015",
+      "assets": ["BTC", "ETH", "SOL", "BNB"],
+      "fields": ["daily_close", "canonical_v1_target", "canonical_brrk_target", "canonical_after_cost_return"],
+      "resolution": "1D",
+      "start": "2022-12-09T00:00:00Z",
+      "end": "2026-08-02T00:00:00Z",
+      "transformation": "FROZEN_CANONICAL_DAILY_PRICE_AND_TARGET_RECONSTRUCTION_WITH_5BPS_P3_3_SIMULATION",
+      "pit_publication_semantics": "RESEARCHER_EXPOSED_HISTORICAL_RECONSTRUCTION; decision D uses completed D-1 UTC daily close; no claim of temporally unseen evidence",
+      "data_budget": "DEVELOPMENT",
+      "contamination_state": "RESEARCHER_EXPOSED_HISTORY",
+      "consumed": false,
+      "researcher_exposed_history": true,
+      "provenance_status": "FACT",
+      "evidence_refs": [
+        "research/governance/BRRK_OPPORTUNITY_COST_AUDIT_0042.md",
+        "audit/brrk-signal-attribution-v1:research/governance/brrk_signal_attribution_result.json"
+      ]
     }
   ],
   "exposure_events": [

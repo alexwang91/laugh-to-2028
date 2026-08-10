@@ -1,10 +1,10 @@
 # BRRK Current State
 
 Last updated: 2026-08-10  
-Handoff PR: **#149**  
-Handoff branch: `research/brrk-opportunity-audit-0042`  
-Authoritative baseline main at branch creation: `7a8b0385963e96ecce9dc70c313c27507cd99b52`  
-Latest merged dashboard PR at branch creation: **#148**
+Handoff PR: **#150**  
+Handoff branch: `research/brrk-winner-0001-prereg`  
+Authoritative baseline main at branch creation: `405d2f75221ba97734973dd9bee2df04c9ecbcd2`  
+Latest merged research PR at branch creation: **#149**
 
 Status: **authoritative current-state handoff candidate**
 
@@ -16,45 +16,23 @@ Phase 4 leverage research         FAIL_STOP / NO_PROMOTION
 P5.5                              COMPLETE / IMMUTABLE / NO_PROMOTION / FAIL_STOP
 F27 idle-cash measurement         R2 AUTHORITATIVE / R1 SUPERSEDED-PRESERVED
 F7 metrics convergence            PARTIAL
-Idle Cash execution feasibility   NOT_FEASIBLE_ON_HYPERLIQUID_STANDARD / FUTURE_OPTION_ONLY
-Phase 6 implementation/replay     PASS_SHADOW_ONLY_IMPLEMENTATION_REPLAY
-Phase 6 identity                  VERIFIED / FROZEN / STANDARD-DISABLED
-Phase 6 pre-arm dependencies      4/4
-Phase 6 ARM                       MERGED #143 / ACTIVE FUTURE-ONLY OBSERVATION
+Phase 6 ARM                       ACTIVE FUTURE-ONLY OBSERVATION
 Phase 6 ARM marker                cbd58adb05187651ca72d67900a0ccbbd3e83b1e
 Phase 6 daily schedule            00:00 UTC
 Phase 6 live elapsed evidence     MEASUREMENT_INCONCLUSIVE_TIME_DEPENDENT
-BRRK opportunity-cost audit       0042 DIAGNOSTIC CANDIDATE / NO PROMOTION AUTHORITY
+BRRK opportunity-cost audit 0042  COMPLETE DIAGNOSTIC / NO PROMOTION AUTHORITY
+BRRK-WINNER-0001                  PREREGISTERED_NOT_RUN / FORMAL PATH CREATED
 Program timeline dashboard        READ-ONLY V5 / PROFESSIONAL FUND TERMINAL
 Phase 7                           MONITOR_ONLY / LAUNCH BLOCKED
 Phase 8                           TRIGGER ABSENT / NOT RUN
 Production                        NO_CHANGE
 ```
 
-## Phase 6 active observation state
+## Phase 6 remains frozen and independent
 
-The durable prospective ARM marker remains:
+The canonical BRRK-0011 strategy remains unchanged while future-only Phase-6 observation continues. Genuine scheduled credit still requires a real `schedule` event plus create-only evidence and a separate hash-bound receipt. Pull-request runs, reruns, replay and manual dispatch do not create scheduled-decision credit.
 
-```text
-cbd58adb05187651ca72d67900a0ccbbd3e83b1e
-```
-
-The authoritative live-observation gate remains:
-
-```text
-status                             ARMED_FUTURE_ONLY_OBSERVATION_ACTIVE
-collector_armed                    true
-schedule_configured                true
-elapsed_evidence_credit_authorized true
-daily schedule                     0 0 * * *  (UTC)
-production_authorized              false
-signature_authorized               false
-order_submission_authorized        false
-```
-
-The evidence backend remains `ARMED_COLLECTING_FUTURE_ONLY`. Genuine scheduled credit still requires a real future `schedule` event plus its create-only evidence artifact and separate hash-bound receipt artifact. Historical replay, pull-request preflight, rerun, duplicate decision timestamps and manual dispatch do not create scheduled-decision credit.
-
-First theoretical eligible canonical timestamp remains `2026-08-10T00:00:00Z`. Frozen acceptance remains:
+Frozen acceptance remains:
 
 ```text
 minimum elapsed calendar days       14
@@ -63,50 +41,92 @@ minimum emergency drills             1
 critical reconciliation errors       0
 unexplained target drift              0
 schedule failures                     0
+production_authorized              false
+signature_authorized               false
+order_submission_authorized        false
 ```
 
-A separately evidenced manual emergency drill remains required and never counts as a scheduled decision.
+## BRRK Opportunity-Cost Audit 0042 — merged
 
-## BRRK Opportunity-Cost Audit 0042 — candidate
-
-This branch adds a deterministic read-only diagnostic audit under `research/governance/` using only already committed canonical historical artifacts:
+PR #149 merged deterministic diagnostic audit at:
 
 ```text
-research/results/pit_disp_0015/daily_weights.csv
-research/results/pit_disp_0015/daily_equity.csv
+405d2f75221ba97734973dd9bee2df04c9ecbcd2
 ```
 
-The audit is explicitly not a new strategy experiment and has no promotion authority. It freezes the following measurements before CI result review:
-
-- validate whether normalized BRRK target mixes equal normalized V1 target mixes on overlap days;
-- BRRK-vs-V1 CAGR and maximum-drawdown difference;
-- observable defensive-scale distribution via BRRK gross / V1 gross where mechanically valid;
-- BTC reserve share on alt-active days;
-- ETH 50% / SOL 35% / BNB 25% structural cap signatures;
-- target-vector change frequency and gap days;
-- top-20 V1 daily log-growth capture and bottom-20 relative exposure.
-
-The audit explicitly does **not** infer:
+Frozen diagnostic results from CI:
 
 ```text
-historical daily P3.2 signal-speed causality
-historical P3.3 5% account-gap execution attribution
-winner-cap return counterfactuals
+V1 CAGR                              61.3150%
+BRRK CAGR                            65.1702%
+BRRK minus V1 CAGR                   +3.8551 pp
+V1 max drawdown                      -37.6349%
+BRRK max drawdown                    -33.7151%
+BRRK MDD improvement                 +3.9198 pp
+BRRK top-20 V1 growth-day capture    ~100%
+alt-active days                      590
+BTC >= 50% of gross on alt-active    70.1695%
+V1 target-change median gap          2 days
+BRRK target-change median gap        2 days
+BRRK maximum target-change gap       120 days
 ```
 
-because those require missing historical state or a separately preregistered strategy experiment.
+Interpretation frozen for follow-up: the defensive scaler is not the first optimization target because it improved both historical CAGR and MDD while preserving V1 top-growth days. The strongest observable rigidity is portfolio construction: BTC remains at least half of gross on about 70% of alt-active days. Historical P3.2 signal-speed causality and P3.3 5% execution-band return attribution remain unavailable from frozen PIT-DISP-0015 artifacts.
 
-The diagnostic may identify which mechanism deserves the next prospective research ID. It may not modify BRRK-0011, Phase 6, Phase 7, signing, order submission, production authorization, or immutable historical results.
+The older non-promotable signal-attribution audit also established that canonical BRRK is right-tail dependent: the canonical best 20 sessions account for about 91.61% of total log growth. Any follow-up must explicitly preserve right-tail participation.
+
+## BRRK-WINNER-0001 — formal preregistration assembled
+
+`BRRK-WINNER-0001` is now present in `config/research_registry.json` as `PROGRAM_GOVERNED_V1`, with `actual_variants_evaluated=0`, `result_status=PREREGISTERED_NOT_RUN`, and production authorization false. The governed path now exists at:
+
+```text
+research/brrk_winner_0001/
+```
+
+No economic runner, modified NAV, candidate return, pass/fail result or promotion decision exists on this preregistration branch.
+
+The single frozen candidate is:
+
+```text
+canonical single-alt branch: BTC 50% / sole eligible alt 50%
+candidate single-alt branch: BTC 40% / sole eligible alt 60%
+all signals                          UNCHANGED
+multi-alt allocation                 UNCHANGED
+defensive scale                      UNCHANGED
+P3.3 simulator / 5 bps cost          UNCHANGED
+universe                             BTC / ETH / SOL / BNB
+gross cap                            <= 1.0
+leverage / shorts                    NONE
+```
+
+Frozen hard success gates before any candidate economics are run:
+
+```text
+after-cost CAGR delta                 >= +3.00 pp vs canonical BRRK
+max drawdown deterioration            <= 4.00 pp
+Calmar                                >= canonical BRRK
+canonical best-20 log-growth capture  >= 98%
+turnover                              <= 1.25x canonical BRRK
+long-only gross                       <= 1.0 every day
+```
+
+Any hard-gate failure means `FAIL_NO_PROMOTION` for this research ID. No same-ID rescue split such as 45/55, 35/65 or 30/70 is allowed after results are observed.
+
+Formal frozen files:
+
+```text
+config/research_registry.json
+config/dataset_exposure_registry.json
+research/governance/BRRK_WINNER_0001_PREREG_DRAFT.json
+research/brrk_winner_0001/README.md
+research/brrk_winner_0001/PREREGISTRATION.json
+```
+
+The development dataset `BRRK-WINNER-0001-CANONICAL-HIST-V1` is explicitly `DEVELOPMENT / RESEARCHER_EXPOSED_HISTORY`; no sealed or unbiased OOS claim is made.
 
 ## Dashboard V5
 
-PR #148 merged V5 at current baseline main:
-
-```text
-7a8b0385963e96ecce9dc70c313c27507cd99b52
-```
-
-The public dashboard remains:
+Public read-only dashboard remains:
 
 ```text
 https://laugh-to-2028.vercel.app/
@@ -120,34 +140,27 @@ long universe                     BTC / ETH / SOL / BNB
 XRP                               feature-only
 primary venue                     Hyperliquid
 decision boundary                 00:00 UTC
-BNB route policy                  PERP_ONLY_DEFAULT
 production gross cap              1.0
 production_authorized_components = []
 production_authorized             false
-signature_authorized              false
-order_submission_authorized       false
+signature_authorized             false
+order_submission_authorized      false
 first real short authority        NONE
 ```
 
-This audit changes none of these fields and adds no signer, private key, order submission, withdrawal, transfer, or production capability.
-
-## Other frozen decisions
-
-- F27 R2 remains authoritative; R1 remains superseded-preserved.
-- F7 remains `PARTIAL`; immutable studies are not rewritten.
-- LEVERAGE-0040 remains `FAIL_STOP / NO_PROMOTION`.
-- Idle Cash remains `NOT_FEASIBLE_ON_HYPERLIQUID_STANDARD / FUTURE_OPTION / NOT_AUTHORIZED`.
-- Phase-6 future-only observation continues independently of this diagnostic.
+BRRK-WINNER-0001 preregistration changes none of these fields.
 
 ## Current drift assessment
 
 `DRIFT_0`.
 
-This candidate adds only a read-only governance diagnostic, its contract test/spec, and this handoff. It does not modify `execution/**`, `config/**`, `research/results/**`, strategy mathematics, Phase-6 scheduling, immutable economic evidence, or execution authority.
+This branch freezes one research hypothesis, one variant and its dataset-exposure contract before any candidate economics are evaluated. It does not modify `execution/**`, `research/results/**`, BRRK-0011 mathematics, Phase-6 collection, immutable economic evidence or production authority.
 
 ## Exact next task
 
-1. Require PR #149 governance/no-drift and all existing strategy/safety CI to stay green.
-2. Read the machine-emitted audit JSON from CI only after the frozen measurement code is committed.
-3. Based on that diagnostic, preregister exactly one or more separate candidate experiments before evaluating any modified strategy economics.
-4. Continue Phase-6 future-only evidence accumulation independently.
+1. Require final PR #150 governance/no-drift/P3.2/Phase-6 safety CI to pass with the registered research ID and formal governed path.
+2. Merge PR #150 only if the final diff remains preregistration/config/docs/tests only and no candidate economics are present.
+3. After merge, create a separate result-bearing branch from the merged preregistration baseline.
+4. Execute the one frozen 40/60 candidate exactly once, first requiring canonical baseline reproduction before candidate metrics are released.
+5. Apply the frozen hard gates without retuning or rescue variants.
+6. Continue Phase-6 future-only evidence accumulation independently.
