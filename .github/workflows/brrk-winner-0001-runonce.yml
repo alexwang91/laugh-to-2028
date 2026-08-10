@@ -5,7 +5,7 @@ on:
     branches:
       - research/brrk-winner-0001-runonce
     paths:
-      - .github/workflows/brrk-winner-0001-runonce.yml
+      - research/brrk_winner_0001/RUN_ONCE.marker
 
 permissions:
   contents: read
@@ -19,7 +19,6 @@ env:
 
 jobs:
   run-once:
-    if: github.event.head_commit.message == 'Temporary: execute BRRK-WINNER-0001 exactly once'
     runs-on: ubuntu-24.04
     timeout-minutes: 45
     steps:
