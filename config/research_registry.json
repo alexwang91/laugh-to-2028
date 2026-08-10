@@ -1702,6 +1702,163 @@
         "derived_confidence": "MEDIUM_SIGNAL_STRUCTURE_PASS_TRIGGER_DESIGN_AND_FUTURE_VALIDATION_STILL_REQUIRED",
         "confidence_rule_ref": "research/brrk_exhaustion_state_0044/RUN_INTERFACE.json"
       }
+    },
+    {
+      "research_id": "BRRK-EXHAUSTION-TRIGGER-0045",
+      "research_family_id": "BRRK_EXHAUSTION_TRIGGER_CONTROL",
+      "research_domain": "RISK_CONTROL",
+      "research_governance_version": 1,
+      "governance_mode": "PROGRAM_GOVERNED_V1",
+      "objective_type": "RISK_CONTROL",
+      "created_at": "2026-08-10T12:43:00Z",
+      "created_before_result": true,
+      "question": "Can one frozen causal exhaustion state machine convert the already-validated 0044 CORE4 state plus result-informed S2 trend disagreement into useful early WATCH and near-peak RISK states while limiting continuation false alarms and preventing premature recovery, without defining any portfolio gross mapping?",
+      "hypothesis": "A fixed percentile-based state machine using CORE4 for broad exhaustion, S2 trend disagreement as confirmation, and S3 price structure only for recovery confirmation can produce useful 7-14 day WATCH signals before genuine exhaustion, escalate severe events to RISK near the peak, and clear risk more slowly than it enters, with acceptable false-trigger and premature-recovery rates.",
+      "hypothesis_origin": "RESULT_INFORMED_BY_BRRK_EXHAUSTION_STATE_0044_CLOSED_PASS",
+      "economic_mechanism": "0044 showed that the low-dimensional exhaustion state survives macro-episode dependence control and that S2 trend disagreement becomes especially discriminative near genuine tops. A causal state machine can therefore separate an early broad WATCH state from a stronger near-peak RISK confirmation. Recovery uses lower exit thresholds, longer persistence, and S3 structure repair to create hysteresis and reduce premature re-risking. The study evaluates state-transition quality only and does not translate states into portfolio weights.",
+      "primary_target": "causal_watch_risk_recovery_state_transitions_with_advance_warning_false_alarm_and_hysteresis_control",
+      "primary_metric": "primary_15pct_TRUE_EXHAUSTION_PRE14_7_WATCH_OR_RISK_event_hit_rate",
+      "secondary_metrics": [
+        "primary_15pct_CONTINUATION_PRE14_0_WATCH_OR_RISK_false_trigger_rate",
+        "primary_15pct_TRUE_episode_PRE14_7_WATCH_OR_RISK_hit_rate",
+        "primary_15pct_CONTINUATION_episode_PRE14_0_WATCH_OR_RISK_false_trigger_rate",
+        "severe_20pct_TRUE_EXHAUSTION_PRE14_7_WATCH_OR_RISK_event_hit_rate",
+        "severe_20pct_TRUE_EXHAUSTION_PRE7_POST3_RISK_confirmation_rate",
+        "primary_15pct_CONTINUATION_PRE14_POST3_RISK_false_trigger_rate",
+        "primary_TRUE_trigger_onset_lead_days_distribution",
+        "primary_TRUE_premature_clear_before_downside_barrier_rate",
+        "continuation_false_trigger_recovery_before_fresh_high_rate",
+        "daily_state_occupancy_and_transition_counts"
+      ],
+      "feature_families": [
+        "CORE4_EQUAL_FIXED_FROM_0044",
+        "S2_TREND_DISAGREEMENT_FIXED_FROM_0044",
+        "S3_PRICE_STRUCTURE_FIXED_FROM_0044_RECOVERY_ONLY"
+      ],
+      "horizon": "DAILY_00UTC_2022-12-10_THROUGH_2026-08-02_RESEARCHER_EXPOSED_DEVELOPMENT_HISTORY_WITH_0044_FROZEN_EVENT_AND_EPISODE_TAXONOMY",
+      "universe": [
+        "BTC",
+        "ETH",
+        "SOL",
+        "BNB",
+        "XRP"
+      ],
+      "development_dataset_refs": [
+        "BRRK-EXHAUSTION-0045-EXPOSED-HIST-V1"
+      ],
+      "validation_dataset_refs": [],
+      "sealed_dataset_refs": [],
+      "declared_variant_budget": 1,
+      "actual_variants_evaluated": 0,
+      "parameter_candidate_count": 1,
+      "stopping_rule": "After this preregistration is merged, implement and execute exactly one complete trigger-state candidate on the frozen 0044 history and taxonomy. No threshold, persistence count, percentile lookback, state ordering, recovery condition, event window, episode rule, success gate, or feature role may be changed after any 0045 output is observed. No alternative trigger candidate, threshold grid, rescue rule, portfolio counterfactual, gross map, or transaction-cost economics may be evaluated under this ID.",
+      "success_criteria": [
+        "At least four usable primary-15% macro episodes exist, with TRUE_EXHAUSTION represented in at least two episodes and CONTINUATION_FALSE_TOP represented in at least two episodes; otherwise classify INSUFFICIENT_EPISODE_DIVERSITY and stop.",
+        "Primary -15% TRUE_EXHAUSTION event WATCH-or-RISK hit rate during PRE14_7 is at least 0.50, which requires at least 5 of 9 frozen primary true events if all remain usable.",
+        "Primary -15% CONTINUATION_FALSE_TOP event WATCH-or-RISK false-trigger rate during PRE14_0 is at most 0.34, which permits at most 2 of 6 frozen continuation events if all remain usable.",
+        "Primary -15% TRUE episode WATCH-or-RISK hit rate during PRE14_7 is at least 0.60.",
+        "Primary -15% CONTINUATION episode WATCH-or-RISK false-trigger rate during PRE14_0 is at most 0.50.",
+        "Severe -20% TRUE_EXHAUSTION event WATCH-or-RISK hit rate during PRE14_7 is at least 0.57, which requires at least 4 of 7 frozen severe true events if all remain usable.",
+        "Severe -20% TRUE_EXHAUSTION event RISK confirmation rate during PRE7_POST3 is at least 0.57.",
+        "Primary -15% CONTINUATION_FALSE_TOP event RISK false-trigger rate during PRE14_POST3 is at most 0.17, which permits at most 1 of 6 frozen continuation events if all remain usable.",
+        "At least four primary TRUE_EXHAUSTION events have a causal WATCH-or-RISK transition onset in PRE21_0, and the median onset lead is between 7 and 21 calendar/session days inclusive.",
+        "Among primary TRUE_EXHAUSTION events with a qualifying PRE21_0 WATCH-or-RISK onset and a frozen -15% downside-barrier date, the premature-clear rate before that downside barrier is at most 0.25.",
+        "The state machine uses exactly the preregistered causal percentile and persistence rules, defines no gross response, and leaves canonical BRRK-0011, Phase 6 and all production/security authority unchanged."
+      ],
+      "failure_criteria": [
+        "Any hard success criterion failure produces FAIL_NO_DYNAMIC_GROSS_STAGE_ELIGIBILITY for BRRK-EXHAUSTION-TRIGGER-0045.",
+        "Failure of episode diversity produces INSUFFICIENT_EPISODE_DIVERSITY and closes the ID.",
+        "Any post-result threshold/persistence modification, alternative state machine, extra feature, use of S5 volume confirmation, alternative event/episode taxonomy, observations after 2026-08-02, portfolio counterfactual or gross mapping invalidates the run rather than becoming a research result."
+      ],
+      "allowed_followup": [
+        "Only a full 0045 PASS may make a separately preregistered dynamic-gross portfolio-translation stage eligible.",
+        "The next stage may map the frozen 0045 states to a small preregistered gross-exposure family and evaluate CAGR/MDD/Calmar/right-tail/turnover/cost only under a new research ID.",
+        "A future-only validation stage remains necessary before any canonical or production consideration."
+      ],
+      "forbidden_followup": [
+        "No same-ID threshold grid, percentile search, persistence search, alternative WATCH/RISK definition, alternative recovery hysteresis, S2-only rescue, CORE4 reweighting, S5 volume reintroduction, breadth/correlation reintroduction, or classifier fitting.",
+        "No same-ID gross mapping, portfolio weights, transaction-cost optimization, canonical strategy modification, Phase 6 modification, leverage, shorting, signing, order submission or production authorization."
+      ],
+      "researcher_decisions": [
+        "0044 is closed PASS_TRIGGER_STAGE_ELIGIBLE and remains immutable. Its CORE4 construction is reused exactly and is not reweighted in 0045.",
+        "0044 result-informed evidence showed S2 trend disagreement was the strongest exposed axis (cross-episode AUC about 0.744 in PRE14_7, 0.893 in PRE7_0 and 0.833 in severe PRE14_7). 0045 therefore uses S2 only as an explicit confirmation input, not as a replacement score or fitted weight.",
+        "0044 preserved negative evidence that S5 volume confirmation reduced CORE4 discrimination and S5 alone was approximately chance in primary PRE14_7. S5 is therefore excluded from 0045 and cannot be reintroduced under this ID.",
+        "The exact 0044 S1-S4 causal z-score construction is reused to compute CORE4, S2 and S3; no 0044 feature mathematics are changed.",
+        "For each date t, pct_CORE4, pct_S2 and pct_S3 are causal percentile ranks of the current state value against the immediately preceding 252 available daily values, excluding date t, requiring at least 60 prior observations. Ties use the fraction of prior values less than or equal to the current value. No full-history rank is permitted.",
+        "Raw DECELERATION condition is pct_CORE4 >= 0.60 OR pct_S2 >= 0.60. DECELERATION entry requires the raw condition on at least 2 of the most recent 3 available sessions.",
+        "Raw WATCH condition is pct_CORE4 >= 0.65 AND pct_S2 >= 0.65. WATCH entry requires the raw condition on at least 2 of the most recent 3 available sessions.",
+        "Raw RISK condition is pct_CORE4 >= 0.75 AND pct_S2 >= 0.80. RISK entry requires the raw condition on at least 2 of the most recent 3 available sessions.",
+        "State entry is hierarchical: from HEALTHY or DECELERATION, the highest currently qualified state is entered; WATCH may escalate to RISK whenever RISK qualifies; RISK cannot downgrade directly to WATCH or DECELERATION.",
+        "A DECELERATION state that never reached WATCH clears to HEALTHY only after the raw DECELERATION condition is false for 3 consecutive available sessions.",
+        "Once WATCH or RISK has been entered, the state cannot fall below WATCH until the recovery-entry condition holds: pct_CORE4 <= 0.45, pct_S2 <= 0.45 and pct_S3 <= 0.50 for 5 consecutive available sessions. At that point the state becomes RECOVERY.",
+        "RECOVERY has a minimum 5-session hold. During RECOVERY, any newly qualified WATCH or RISK condition immediately escalates back to that higher state. After the minimum hold, RECOVERY returns to HEALTHY only when pct_CORE4 <= 0.55, pct_S2 <= 0.55 and pct_S3 <= 0.55 on at least 3 of the most recent 5 available sessions.",
+        "The event and macro-episode taxonomy is exactly the frozen 0044/0043 taxonomy. User-provided historical dates remain sanity context only and do not define state thresholds or pass gates.",
+        "PRE14_7 is sessions -14 through -7 relative to the frozen event peak; PRE14_0 is -14 through 0 inclusive; PRE7_POST3 is -7 through +3 inclusive; PRE14_POST3 is -14 through +3 inclusive; PRE21_0 is -21 through 0 inclusive.",
+        "A WATCH-or-RISK event hit means at least one day in the specified window has state WATCH or RISK. A RISK confirmation means at least one day is exactly RISK.",
+        "A state transition onset is the first transition from a state below WATCH into WATCH or RISK during PRE21_0 after at least one immediately preceding available session below WATCH. Lead is peak session index minus onset session index; calendar labels are also reported.",
+        "A primary TRUE event is prematurely cleared if, after a qualifying PRE21_0 WATCH/RISK onset and before its frozen -15% downside-barrier date, the machine enters RECOVERY or HEALTHY. If no downside-barrier date exists the event is not part of that denominator.",
+        "Episode hit/false-trigger rates give each usable macro episode one vote: TRUE episode hit if any TRUE event in that episode is hit in the frozen window; CONTINUATION episode false trigger if any continuation event in that episode is falsely hit.",
+        "All 0045 evidence remains retrospective researcher-exposed DEVELOPMENT. A PASS only authorizes the next research stage; it does not authorize portfolio, canonical or production changes."
+      ],
+      "research_process_complexity": {
+        "declared_parameter_candidates": [
+          "TRIGGER_STATE_MACHINE_V1_FIXED_CORE4_S2_S3_HYSTERESIS"
+        ],
+        "actual_parameter_candidates_evaluated": [],
+        "universes_evaluated": [
+          "0044_BINANCE_SPOT_BTC_ETH_SOL_BNB_XRP_PLUS_CANONICAL_BRRK_NAV"
+        ],
+        "horizons_evaluated": [
+          "PRE14_7",
+          "PRE14_0",
+          "PRE7_POST3",
+          "PRE14_POST3",
+          "PRE21_0"
+        ],
+        "rebalance_variants": [],
+        "feature_representations": [
+          "CORE4_EQUAL_FIXED",
+          "S2_CONFIRMATION_FIXED",
+          "S3_RECOVERY_CONFIRMATION_FIXED"
+        ],
+        "special_cases_introduced": [
+          "CAUSAL_TRAILING_252_PERCENTILE_RANK",
+          "FAST_ENTRY_SLOW_RECOVERY_HYSTERESIS",
+          "EPISODE_EQUAL_WEIGHT_TRIGGER_DIAGNOSTICS"
+        ],
+        "validation_exposure_event_refs": [
+          "BRRK-EXHAUSTION-TRIGGER-0045-DEVELOPMENT-DATA-REGISTRATION-20260810T124300Z"
+        ],
+        "related_family_trials": 1
+      },
+      "lineage_edges": [
+        {
+          "relation": "RESULT_INFORMED",
+          "ref_research_id": "BRRK-EXHAUSTION-STATE-0044",
+          "provenance_status": "FACT",
+          "evidence_ref": "research/brrk_exhaustion_state_0044/PRIMARY_RESULT.json"
+        }
+      ],
+      "result_status": "PREREGISTERED_NOT_RUN",
+      "failure_reason": null,
+      "promotion_state": "NONE",
+      "evidence_refs": [],
+      "decision_refs": [
+        "research/brrk_exhaustion_trigger_0045/README.md",
+        "research/brrk_exhaustion_trigger_0045/PREREGISTRATION.json"
+      ],
+      "production_relevance": "Research-only result-informed trigger-state study on already exposed history. A full PASS can only make a new dynamic-gross research stage eligible; it cannot alter canonical BRRK, Phase 6 or production authority.",
+      "production_authorized": false,
+      "provenance_status": "FACT",
+      "governed_path_prefixes": [
+        "research/brrk_exhaustion_trigger_0045/"
+      ],
+      "notes": [
+        "0044 passed all frozen macro-episode discrimination gates but intentionally did not define a trigger or portfolio response.",
+        "0045 freezes exactly one state machine candidate before any trigger result is released.",
+        "Entry is deliberately faster than recovery: WATCH/RISK need 2-of-3 confirmation, while recovery needs low exhaustion for five consecutive sessions plus a minimum recovery hold and 3-of-5 repair confirmation.",
+        "Dynamic gross remains explicitly out of scope."
+      ]
     }
   ],
   "research_governance_debt": [
