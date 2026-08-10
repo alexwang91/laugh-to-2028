@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import ast
 import inspect
 import unittest
 
@@ -61,24 +62,30 @@ class TestBrrkExhaustionPulse0046WindowRepair(unittest.TestCase):
         self.assertLess(window_bind_pos, onset_bind_pos)
         self.assertLess(onset_bind_pos, run_pos)
 
-    def test_repair_module_contains_no_research_degrees_of_freedom(self) -> None:
-        src = inspect.getsource(window_compat)
-        forbidden = (
-            "threshold",
-            "VAR",
-            "bootstrap",
-            "S1_",
-            "S2_",
-            "S3_",
-            "S4_",
-            "TRUE_EXHAUSTION",
-            "CONTINUATION_FALSE_TOP",
-            "episode",
-            "gross",
-            "portfolio",
+    def test_repair_module_has_only_two_helpers_and_no_parameter_state(self) -> None:
+        tree = ast.parse(inspect.getsource(window_compat))
+        functions = [node.name for node in tree.body if isinstance(node, ast.FunctionDef)]
+        self.assertEqual(functions, ["window_positions", "earliest_pulse"])
+
+        imports: list[str] = []
+        assignments: list[ast.AST] = []
+        for node in tree.body:
+            if isinstance(node, ast.Import):
+                imports.extend(alias.name for alias in node.names)
+            elif isinstance(node, ast.ImportFrom):
+                # __future__.annotations is language/runtime plumbing only.
+                if node.module != "__future__":
+                    imports.append(str(node.module))
+            elif isinstance(node, (ast.Assign, ast.AnnAssign, ast.AugAssign)):
+                assignments.append(node)
+
+        self.assertEqual(imports, ["numpy", "pandas"])
+        self.assertEqual(assignments, [])
+        public_callables = sorted(
+            name for name, value in vars(window_compat).items()
+            if not name.startswith("_") and inspect.isfunction(value) and value.__module__ == window_compat.__name__
         )
-        for token in forbidden:
-            self.assertNotIn(token, src)
+        self.assertEqual(public_callables, ["earliest_pulse", "window_positions"])
 
 
 if __name__ == "__main__":
