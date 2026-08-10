@@ -6,10 +6,12 @@ The ledger is intentionally non-authoritative. Durable GitHub Actions evidence
 and its separately uploaded hash-bound receipt remain the evidence authority.
 This module only prevents the repository-side accounting index from silently
 creating credit, accepting manual/replay entries, drifting frozen Phase-6
-thresholds, or conferring production/security authority.
+thresholds, weakening receipt identity, or conferring production/security
+authority.
 """
 
 import json
+import math
 import re
 from datetime import datetime, timezone
 from pathlib import Path
@@ -22,6 +24,16 @@ GATE_RELATIVE_PATH = Path("research/governance/phase6_live_observation_gate.json
 PHASE6_CONTRACT_RELATIVE_PATH = Path("config/phase6_shadow_contract.json")
 SHA256_RE = re.compile(r"^(?:sha256:)?[0-9a-f]{64}$")
 SHA40_RE = re.compile(r"^[0-9a-f]{40}$")
+REQUIRED_RECEIPT_IDENTITY = {
+    "github_run_id",
+    "github_run_attempt",
+    "workflow_sha",
+    "decision_timestamp",
+    "observed_at",
+    "shadow_record_digest",
+    "input_provenance_digest",
+    "evidence_object_digest",
+}
 
 
 class Phase6ObservationLedgerError(RuntimeError):
@@ -51,6 +63,28 @@ def _sha256(value: object, *, field: str) -> str:
     if not isinstance(value, str) or SHA256_RE.fullmatch(value) is None:
         raise Phase6ObservationLedgerError(f"{field} must be a SHA-256 digest")
     return value.removeprefix("sha256:")
+
+
+def _finite_number(value: object, *, field: str) -> float:
+    try:
+        result = float(value)
+    except (TypeError, ValueError) as exc:
+        raise Phase6ObservationLedgerError(f"{field} must be numeric") from exc
+    if not math.isfinite(result):
+        raise Phase6ObservationLedgerError(f"{field} must be finite")
+    return result
+
+
+def _nonnegative_int(value: object, *, field: str) -> int:
+    if isinstance(value, bool):
+        raise Phase6ObservationLedgerError(f"{field} must be an integer")
+    try:
+        result = int(value)
+    except (TypeError, ValueError) as exc:
+        raise Phase6ObservationLedgerError(f"{field} must be an integer") from exc
+    if result < 0 or result != _finite_number(value, field=field):
+        raise Phase6ObservationLedgerError(f"{field} must be a nonnegative integer")
+    return result
 
 
 def validate_ledger_mapping(
@@ -111,6 +145,10 @@ def validate_ledger_mapping(
         if frozen.get(field) != live.get(field) or frozen.get(field) != gate_evidence.get(field):
             raise Phase6ObservationLedgerError(f"frozen acceptance drift: {field}")
 
+    gate_receipt_identity = gate_evidence.get("required_receipt_identity")
+    if not isinstance(gate_receipt_identity, list) or set(gate_receipt_identity) != REQUIRED_RECEIPT_IDENTITY:
+        raise Phase6ObservationLedgerError("frozen required receipt identity drift")
+
     entries = ledger.get("entries")
     if not isinstance(entries, list):
         raise Phase6ObservationLedgerError("entries must be a list")
@@ -127,6 +165,10 @@ def validate_ledger_mapping(
         prefix = f"entries[{index}]"
         decision_text = row.get("decision_timestamp")
         decision = _utc(decision_text, field=f"{prefix}.decision_timestamp")
+        observed_text = row.get("observed_at")
+        observed = _utc(observed_text, field=f"{prefix}.observed_at")
+        if observed < decision:
+            raise Phase6ObservationLedgerError(f"{prefix}.observed_at cannot predate decision")
         if decision < first_eligible:
             raise Phase6ObservationLedgerError(f"{prefix} predates first eligible decision")
         if decision_text in seen_decisions:
@@ -179,12 +221,30 @@ def validate_ledger_mapping(
         if _utc(receipt.get("expires_at"), field=f"{prefix}.receipt_artifact.expires_at") <= decision:
             raise Phase6ObservationLedgerError(f"{prefix} receipt expiry must be after decision")
 
+        expected_binding_identity = {
+            "github_run_id": run_id,
+            "github_run_attempt": attempt,
+            "workflow_sha": workflow_sha,
+            "decision_timestamp": decision_text,
+            "observed_at": observed_text,
+        }
+        for field, expected in expected_binding_identity.items():
+            if binding.get(field) != expected:
+                raise Phase6ObservationLedgerError(f"{prefix} receipt identity mismatch: {field}")
+        if binding.get("scheduled_decision_credit_candidate") is not True:
+            raise Phase6ObservationLedgerError(f"{prefix} receipt did not bind scheduled credit candidate")
+
         if str(binding.get("evidence_artifact_id")) != evidence_id:
             raise Phase6ObservationLedgerError(f"{prefix} receipt does not bind evidence artifact id")
         if _sha256(binding.get("evidence_artifact_digest"), field=f"{prefix}.receipt_binding.evidence_artifact_digest") != evidence_digest:
             raise Phase6ObservationLedgerError(f"{prefix} receipt/evidence digest mismatch")
         for digest_field in ("evidence_object_digest", "input_provenance_digest", "shadow_record_digest"):
             _sha256(binding.get(digest_field), field=f"{prefix}.receipt_binding.{digest_field}")
+        missing_receipt_identity = REQUIRED_RECEIPT_IDENTITY - set(binding)
+        if missing_receipt_identity:
+            raise Phase6ObservationLedgerError(
+                f"{prefix} missing frozen receipt identity: {sorted(missing_receipt_identity)}"
+            )
 
         if checks.get("shadow_status") != "SHADOW_COMPUTED_NO_AUTHORITY":
             raise Phase6ObservationLedgerError(f"{prefix} shadow computation was not complete")
@@ -192,11 +252,11 @@ def validate_ledger_mapping(
             raise Phase6ObservationLedgerError(f"{prefix} carries shadow alerts and cannot be clean credit")
         if checks.get("target_reference_parity_passed") is not True:
             raise Phase6ObservationLedgerError(f"{prefix} target reference parity did not pass")
-        if float(checks.get("target_reference_gross_abs_difference", float("nan"))) != 0.0:
+        if _finite_number(checks.get("target_reference_gross_abs_difference"), field=f"{prefix}.target_reference_gross_abs_difference") != 0.0:
             raise Phase6ObservationLedgerError(f"{prefix} gross reference drift is nonzero")
-        if float(checks.get("target_reference_max_weight_abs_difference", float("nan"))) != 0.0:
+        if _finite_number(checks.get("target_reference_max_weight_abs_difference"), field=f"{prefix}.target_reference_max_weight_abs_difference") != 0.0:
             raise Phase6ObservationLedgerError(f"{prefix} weight reference drift is nonzero")
-        if float(checks.get("offline_reference_l1_drift", float("nan"))) != 0.0:
+        if _finite_number(checks.get("offline_reference_l1_drift"), field=f"{prefix}.offline_reference_l1_drift") != 0.0:
             raise Phase6ObservationLedgerError(f"{prefix} offline reference drift is nonzero")
 
         for field in (
@@ -209,11 +269,9 @@ def validate_ledger_mapping(
             if checks.get(field) is not False:
                 raise Phase6ObservationLedgerError(f"{prefix} must keep {field}=false")
 
-        rec = int(checks.get("critical_reconciliation_errors_observed", -1))
-        drift = int(checks.get("unexplained_target_drift_observed", -1))
-        sched = int(checks.get("schedule_failure_observed", -1))
-        if rec < 0 or drift < 0 or sched < 0:
-            raise Phase6ObservationLedgerError(f"{prefix} observed error counts must be nonnegative")
+        rec = _nonnegative_int(checks.get("critical_reconciliation_errors_observed"), field=f"{prefix}.critical_reconciliation_errors_observed")
+        drift = _nonnegative_int(checks.get("unexplained_target_drift_observed"), field=f"{prefix}.unexplained_target_drift_observed")
+        sched = _nonnegative_int(checks.get("schedule_failure_observed"), field=f"{prefix}.schedule_failure_observed")
         reconciliation_errors += rec
         target_drifts += drift
         schedule_failures += sched
@@ -221,19 +279,26 @@ def validate_ledger_mapping(
     progress = ledger.get("progress", {})
     if not isinstance(progress, dict):
         raise Phase6ObservationLedgerError("progress must be an object")
-    if int(progress.get("genuine_scheduled_decisions", -1)) != len(entries):
+    genuine_scheduled = _nonnegative_int(progress.get("genuine_scheduled_decisions"), field="progress.genuine_scheduled_decisions")
+    distinct_decisions = _nonnegative_int(progress.get("distinct_credited_decision_dates"), field="progress.distinct_credited_decision_dates")
+    emergency_drills = _nonnegative_int(progress.get("emergency_drills"), field="progress.emergency_drills")
+    progress_rec = _nonnegative_int(progress.get("critical_reconciliation_errors_observed"), field="progress.critical_reconciliation_errors_observed")
+    progress_drift = _nonnegative_int(progress.get("unexplained_target_drift_observed"), field="progress.unexplained_target_drift_observed")
+    progress_sched = _nonnegative_int(progress.get("schedule_failures_observed"), field="progress.schedule_failures_observed")
+
+    if genuine_scheduled != len(entries):
         raise Phase6ObservationLedgerError("progress scheduled-decision count does not match entries")
-    if int(progress.get("distinct_credited_decision_dates", -1)) != len(seen_decisions):
+    if distinct_decisions != len(seen_decisions):
         raise Phase6ObservationLedgerError("progress distinct-decision count does not match entries")
-    if int(progress.get("critical_reconciliation_errors_observed", -1)) != reconciliation_errors:
+    if progress_rec != reconciliation_errors:
         raise Phase6ObservationLedgerError("progress reconciliation count does not match entries")
-    if int(progress.get("unexplained_target_drift_observed", -1)) != target_drifts:
+    if progress_drift != target_drifts:
         raise Phase6ObservationLedgerError("progress target-drift count does not match entries")
-    if int(progress.get("schedule_failures_observed", -1)) != schedule_failures:
+    if progress_sched != schedule_failures:
         raise Phase6ObservationLedgerError("progress schedule-failure count does not match entries")
 
     expected_decision_met = len(entries) >= int(frozen["minimum_scheduled_decisions"])
-    expected_drill_met = int(progress.get("emergency_drills", -1)) >= int(frozen["minimum_emergency_drills"])
+    expected_drill_met = emergency_drills >= int(frozen["minimum_emergency_drills"])
     if progress.get("scheduled_decision_requirement_met") is not expected_decision_met:
         raise Phase6ObservationLedgerError("scheduled-decision requirement flag drift")
     if progress.get("emergency_drill_requirement_met") is not expected_drill_met:
@@ -245,7 +310,7 @@ def validate_ledger_mapping(
         "ledger_id": ledger["ledger_id"],
         "status": ledger["status"],
         "genuine_scheduled_decisions": len(entries),
-        "emergency_drills": int(progress.get("emergency_drills", 0)),
+        "emergency_drills": emergency_drills,
         "critical_reconciliation_errors_observed": reconciliation_errors,
         "unexplained_target_drift_observed": target_drifts,
         "schedule_failures_observed": schedule_failures,
