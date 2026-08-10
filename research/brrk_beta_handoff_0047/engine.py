@@ -139,7 +139,7 @@ def validate_asset_frame(asset: str, frame: pd.DataFrame) -> None:
         raise FrozenProtocolError(f"Missing columns for {asset}: {missing_columns}")
     if (frame.index.normalize() != frame.index).any():
         raise FrozenProtocolError(f"Non-midnight daily index for {asset}")
-    numeric = frame.loc[:, REQUIRED_FIELDS].to_numpy(dtype=float)
+    numeric = frame.loc[:, list(REQUIRED_FIELDS)].to_numpy(dtype=float)
     if not np.isfinite(numeric).all():
         raise FrozenProtocolError(f"Nonfinite required value for {asset}")
     if (frame["close"] <= 0).any():
@@ -167,7 +167,7 @@ def assemble_common_frames(frames: dict[str, pd.DataFrame]) -> dict[str, pd.Data
         if len(missing):
             sample = [d.strftime("%Y-%m-%d") for d in missing[:5]]
             raise FrozenProtocolError(f"Internal common-history gap for {asset}: {sample}")
-        out = frames[asset].loc[expected, REQUIRED_FIELDS].copy()
+        out = frames[asset].loc[expected, list(REQUIRED_FIELDS)].copy()
         if not out.index.equals(expected):
             raise FrozenProtocolError(f"Common index mismatch for {asset}")
         aligned[asset] = out
@@ -401,7 +401,8 @@ def build_episode_table(prices: pd.DataFrame, panel: pd.DataFrame, target: pd.Da
                 if dt < primary_date:
                     continue
                 started = True
-                if bool(target.loc[dt, "TARGET_AVAILABLE"]) and target.loc[dt, "DURABLE_CAUSE"] == primary_cause:
+                cause_value = target.loc[dt, "DURABLE_CAUSE"]
+                if bool(target.loc[dt, "TARGET_AVAILABLE"]) and pd.notna(cause_value) and str(cause_value) == primary_cause:
                     spell_length += 1
                 else:
                     break
@@ -875,7 +876,7 @@ def build_event_time_rows(panel: pd.DataFrame, episode_table: list[dict[str, Any
                 "event_date": episode["primary_handoff_date"],
                 "event_time": event_time,
                 "date": dt.strftime("%Y-%m-%d"),
-                "same_episode": bool(panel.loc[dt, "EPISODE_ID"] == episode["episode_id"]),
+                "same_episode": bool(pd.notna(panel.loc[dt, "EPISODE_ID"]) and int(panel.loc[dt, "EPISODE_ID"]) == int(episode["episode_id"])),
             }
             for col in feature_cols:
                 value = panel.loc[dt, col]
