@@ -1576,7 +1576,7 @@
       "validation_dataset_refs": [],
       "sealed_dataset_refs": [],
       "declared_variant_budget": 2,
-      "actual_variants_evaluated": 0,
+      "actual_variants_evaluated": 2,
       "parameter_candidate_count": 2,
       "stopping_rule": "After this preregistration is merged, execute exactly one complete diagnostic run evaluating the frozen CORE4 equal-weight state representation and the frozen CORE5-with-volume secondary diagnostic representation on the exact 0043 historical window and event taxonomy. CORE4 controls all pass/fail eligibility. CORE5 may only report incremental information and may not rescue a CORE4 failure. No state axis, representative feature, normalization rule, event rule, episode rule, severity panel, warning window, score weight, success gate, or variant may be changed after any 0044 result is observed. No trigger threshold and no portfolio economics may be evaluated under this ID.",
       "success_criteria": [
@@ -1627,7 +1627,10 @@
           "CORE4_EQUAL=S1_S2_S3_S4_FIXED_EQUAL_WEIGHT",
           "CORE5_VOLUME_DIAGNOSTIC=S1_S2_S3_S4_S5_FIXED_EQUAL_WEIGHT_SECONDARY_ONLY"
         ],
-        "actual_parameter_candidates_evaluated": [],
+        "actual_parameter_candidates_evaluated": [
+          "CORE4_EQUAL=S1_S2_S3_S4_FIXED_EQUAL_WEIGHT",
+          "CORE5_VOLUME_DIAGNOSTIC=S1_S2_S3_S4_S5_FIXED_EQUAL_WEIGHT_SECONDARY_ONLY"
+        ],
         "universes_evaluated": [
           "0043_BINANCE_SPOT_BTC_ETH_SOL_BNB_XRP_PLUS_CANONICAL_BRRK_NAV"
         ],
@@ -1658,13 +1661,18 @@
           "evidence_ref": "research/governance/BRRK_EXHAUSTION_EVENT_STUDY_0043_RESULT.md"
         }
       ],
-      "result_status": "PREREGISTERED_NOT_RUN",
+      "result_status": "PASS_TRIGGER_STAGE_ELIGIBLE",
       "failure_reason": null,
       "promotion_state": "NONE",
-      "evidence_refs": [],
+      "evidence_refs": [
+        "research/brrk_exhaustion_state_0044/PRIMARY_RESULT.json",
+        "research/brrk_exhaustion_state_0044/EXECUTION.json",
+        "research/brrk_exhaustion_state_0044/RUN_ONCE.marker"
+      ],
       "decision_refs": [
+        "research/brrk_exhaustion_state_0044/RESULT.md",
         "research/brrk_exhaustion_state_0044/README.md",
-        "research/brrk_exhaustion_state_0044/PREREGISTRATION.json"
+        "docs/CURRENT_STATE.md"
       ],
       "production_relevance": "Research-only result-informed structural simplification of exhaustion diagnostics on researcher-exposed historical data. A full PASS can only make a separately preregistered trigger-design stage eligible; it cannot alter BRRK targets, Phase 6, or production authority.",
       "production_authorized": false,
@@ -1676,8 +1684,24 @@
         "0043 found primary PRE14_7 total-score AUC 0.7333 and severe-20% PRE14_7 AUC 0.8571, with strongest early information in BRRK disagreement, volatility/downside, price structure and momentum decay.",
         "0043's simple high-percentile absolute trigger was too insensitive; 0044 therefore does not design or test a trigger.",
         "0044 deliberately reduces dimensionality and controls episode dependence before any state-transition or portfolio translation work.",
-        "The 0043 diagnostic itself was recorded under research/governance rather than as a formal PROGRAM_GOVERNED_V1 path; 0044 does not conceal this limitation and uses BRRK-0011 as the registered lineage anchor while citing the exact 0043 result as the result-informed evidence source."
-      ]
+        "The 0043 diagnostic itself was recorded under research/governance rather than as a formal PROGRAM_GOVERNED_V1 path; 0044 does not conceal this limitation and uses BRRK-0011 as the registered lineage anchor while citing the exact 0043 result as the result-informed evidence source.",
+        "Pre-result implementation baseline f6fd1fc3425fefdc6bd024fa032a065accab7c6e passed Research governance core, final no-drift, P3.2 parity, Phase 6 shadow safety and standing repository contracts before any result was released.",
+        "Workflow run 31387906469 failed before the diagnostic step because the temporary workflow file was correctly blocked by no_drift; it produced no artifact and is retained as a pre-result infrastructure failure, not a research result.",
+        "Unique valid result release was workflow run 31388103016 run number 2 attempt 1 from head 9affc7572dd0feefb14fe41e2aea7904c3a132ba after proving only the temporary workflow differed from the green pre-result head and rerunning original no-drift against that exact baseline.",
+        "The 0043 taxonomy reproduced exactly: 16 candidate peaks and fixed 10/15/20 percent panel label counts matched before 0044 scoring.",
+        "CORE4 passed all frozen gates: primary 15 percent PRE14_7 cross-episode AUC 0.750, event AUC 0.7778, severe 20 percent PRE14_7 cross-episode AUC 0.750, LOEO minimum 0.6538 and median 0.7386 with seven usable macro episodes.",
+        "Preserved negative evidence: secondary CORE5 with volume confirmation reduced cross-episode AUC from 0.750 to 0.6759 in PRE14_7 and from 0.7361 to 0.6065 in PRE7_0; S5 volume confirmation alone was 0.500 in primary PRE14_7.",
+        "S2 trend disagreement was the strongest exposed state axis: cross-episode AUC 0.7440 in primary PRE14_7, 0.8929 in primary PRE7_0 and 0.8333 in severe PRE14_7. This may inform a new research ID but cannot be used to reweight or rescue 0044.",
+        "PASS creates eligibility only for a separately preregistered trigger-design stage. 0044 is permanently closed to rerun, reweighting, feature rescue, threshold search, persistence search and gross mapping."
+      ],
+      "evidence_scorecard": {
+        "temporal_novelty": "RESEARCHER_EXPOSED_DEVELOPMENT_HISTORY_2022-12-10_TO_2026-08-02_NOT_INDEPENDENT_OOS",
+        "statistical_sufficiency": "SEVEN_USABLE_MACRO_EPISODES_FIVE_TRUE_EPISODES_FOUR_CONTINUATION_EPISODES_PRIMARY_CROSS_EPISODE_AUC_0_750_LOEO_MIN_0_654_MEDIAN_0_739_ALL_FROZEN_GATES_PASS",
+        "governance_integrity": "HIGH_ATOMIC_PREREGISTRATION_PRE_RESULT_GREEN_BASELINE_ONE_VALID_RESULT_RELEASE_SOURCE_REPRODUCTION_BEFORE_SCORING_NO_RETUNING_NO_RESULT_RERUN",
+        "operational_realism": "SIGNAL_STATE_DIAGNOSTIC_ONLY_NO_TRIGGER_NO_PORTFOLIO_TRANSLATION_NO_TRANSACTION_COST_OR_EXECUTION_ECONOMICS",
+        "derived_confidence": "MEDIUM_SIGNAL_STRUCTURE_PASS_TRIGGER_DESIGN_AND_FUTURE_VALIDATION_STILL_REQUIRED",
+        "confidence_rule_ref": "research/brrk_exhaustion_state_0044/RUN_INTERFACE.json"
+      }
     }
   ],
   "research_governance_debt": [

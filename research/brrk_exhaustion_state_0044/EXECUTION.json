@@ -1,0 +1,58 @@
+{
+  "research_id": "BRRK-EXHAUSTION-STATE-0044",
+  "execution_status": "VALID_RESULT_RELEASED_AND_CLOSED",
+  "pre_result_green_baseline": {
+    "sha": "f6fd1fc3425fefdc6bd024fa032a065accab7c6e",
+    "research_governance_core": "SUCCESS",
+    "p3_2_target_research_live_parity": "SUCCESS",
+    "phase6_integrated_shadow_safety": "SUCCESS",
+    "phase0_8_drift_audit": "SUCCESS",
+    "pr_handoff_governance": "SUCCESS"
+  },
+  "infrastructure_attempts": [
+    {
+      "workflow_run_id": 31387906469,
+      "workflow_run_number": 1,
+      "attempt": 1,
+      "head_sha": "952e70d3c0765a370f3dda11c1353bfaac9bd04d",
+      "result_step_executed": false,
+      "artifact_created": false,
+      "classification": "PRE_RESULT_INFRASTRUCTURE_FAILURE_NO_RESEARCH_RESULT",
+      "reason": "The temporary one-shot workflow file itself was correctly classified as an unauthorized changed path by the original no_drift regression before the diagnostic step."
+    },
+    {
+      "workflow_run_id": 31388103016,
+      "workflow_run_number": 2,
+      "attempt": 1,
+      "head_sha": "9affc7572dd0feefb14fe41e2aea7904c3a132ba",
+      "result_step_executed": true,
+      "artifact_created": true,
+      "classification": "UNIQUE_VALID_RESULT_RELEASE",
+      "pre_result_delta_guard": "Only .github/workflows/brrk-exhaustion-state-0044-once.yml differed from f6fd1fc3425fefdc6bd024fa032a065accab7c6e",
+      "original_no_drift_reconfirmed_on_green_baseline": true,
+      "source_reproduction_status": "MATCHED_0043_FROZEN_TAXONOMY",
+      "result_status": "PASS_TRIGGER_STAGE_ELIGIBLE"
+    }
+  ],
+  "artifact": {
+    "artifact_id": 9062525981,
+    "name": "brrk-exhaustion-state-0044",
+    "digest": "sha256:b109b610710b00904c924680a63305579f3f3c4c799d539906e0853629ddd378",
+    "full_result_sha256": "687ff49d8db8baf54a1cfafcf8863c848011800b6c74689ab0534796ac86ff29",
+    "summary_sha256": "96eeeb4627bc115c6b7752ddf903f290c34b62345512738a4030623e4c212ae0",
+    "result_payload_sha256_without_self_hash": "1b0c3a87737f0d4cf48b20694fa614fc38fcc24732212544fab4ea5350b563c7"
+  },
+  "result_semantics": {
+    "actual_variants_evaluated": 2,
+    "primary_variant": "CORE4_EQUAL_FIXED",
+    "secondary_variant": "CORE5_VOLUME_CONFIRMATION_DIAGNOSTIC_ONLY",
+    "secondary_variant_can_rescue_primary": false,
+    "same_id_rerun_allowed": false,
+    "same_id_retuning_allowed": false,
+    "trigger_defined": false,
+    "portfolio_economics_executed": false,
+    "production_authorized": false,
+    "signature_authorized": false,
+    "order_submission_authorized": false
+  }
+}
