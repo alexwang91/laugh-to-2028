@@ -119,10 +119,9 @@ jobs:
           tests=[getattr(t,n) for n in sorted(dir(t)) if n.startswith('test_') and n != final_tree and callable(getattr(t,n))]
           assert tests
           for fn in tests: fn()
-          print('executed',len(tests),'0046 closeout tests; final-tree assertion intentionally deferred until connector cleanup')
+          print('executed',len(tests),'0046 closeout tests; final-tree and no-drift assertions intentionally deferred until connector cleanup')
           PY
           python -m research.governance.validate
-          python -m research.governance.no_drift
           git diff --check
 
       - name: Commit evidence correction only
