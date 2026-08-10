@@ -530,7 +530,14 @@
         "validation_exposure_event_refs": "UNKNOWN",
         "related_family_trials": "UNKNOWN"
       },
-      "lineage_edges": [],
+      "lineage_edges": [
+        {
+          "relation": "SUPERSEDES",
+          "ref_research_id": "LEVERAGE-0039",
+          "provenance_status": "FACT",
+          "evidence_ref": "research/leverage_0040/LEVERAGE-0040.json"
+        }
+      ],
       "result_status": "REJECTED_STOPPED_NO_PROMOTION",
       "failure_reason": "Caps above 1.0 failed the frozen final promotion rule; no research cap or operating drawdown budget was selected.",
       "promotion_state": "NO_PROMOTION",
@@ -597,14 +604,20 @@
       },
       "lineage_edges": [
         {
-          "relation": "SUPERSEDES",
-          "ref_research_id": "LEVERAGE-0039",
+          "relation": "RESULT_INFORMED",
+          "ref_research_id": "LEVERAGE-0040",
           "provenance_status": "FACT",
           "evidence_ref": "research/leverage_0041/LEVERAGE-0041.json"
         },
         {
           "relation": "MECHANISM_FORK",
           "ref_research_id": "LEVERAGE-0040",
+          "provenance_status": "FACT",
+          "evidence_ref": "research/leverage_0041/LEVERAGE-0041.json"
+        },
+        {
+          "relation": "RESULT_INFORMED",
+          "ref_research_id": "P5.2-FEATURE-FAMILIES-V1",
           "provenance_status": "FACT",
           "evidence_ref": "research/leverage_0041/LEVERAGE-0041.json"
         }
@@ -783,7 +796,14 @@
         "validation_exposure_event_refs": "UNKNOWN",
         "related_family_trials": "UNKNOWN"
       },
-      "lineage_edges": [],
+      "lineage_edges": [
+        {
+          "relation": "RESULT_INFORMED",
+          "ref_research_id": "P5.2-FEATURE-FAMILIES-V1",
+          "provenance_status": "FACT",
+          "evidence_ref": "research/cycle_exit/p5_3_state_model_contract.json"
+        }
+      ],
       "result_status": "COMPLETE_IMMUTABLE_NO_PROMOTION_ARCHITECTURE_FAIL",
       "failure_reason": "Immutable V1 state-path evaluation exposed an architecture failure later preserved explicitly by P5.3 V2.",
       "promotion_state": "NO_PROMOTION",
@@ -1204,9 +1224,6 @@
       "evidence_refs": [
         "research/stablecoin_liquidity_0001/STAGE1_PRIMARY_RESULT.json"
       ],
-      "decision_refs": [
-        "research/stablecoin_liquidity_0001/README.md"
-      ],
       "production_relevance": "Research-only Stage-1 external-information test. A PASS is eligible only for the next separately preregistered research stage and cannot change BRRK, phase authority or production authorization.",
       "production_authorized": false,
       "provenance_status": "FACT",
@@ -1422,7 +1439,7 @@
       "failure_criteria": [
         "Any hard success criterion failure produces FAIL_NO_FUTURE_VALIDATION_ELIGIBILITY for BRRK-WINNER-ROBUSTNESS-0002.",
         "Any failure to reproduce the original 5 bps canonical or 40/60 result within absolute tolerance 5e-10 invalidates the run before robustness metrics are released.",
-        "Any change to the frozen 40/60 allocation, the fixed temporal blocks, the fixed 10/20 bps stress assumptions, inherited safety thresholds, PIT/data semantics, P3.3 band, universe or variant budget invalidates the run rather than becoming an economic result.",
+        "Any change to the frozen 40/60 allocation, the fixed temporal blocks, the fixed 10/20 bps stress assumptions, inherited safety thresholds, PIT/data semantics, P3.3 band, universe or variant budget invalidates the run rather than becoming a research result.",
         "Any use of post-result tuning, selective block omission or selective cost-stress omission invalidates the run rather than becoming a research result."
       ],
       "allowed_followup": [
