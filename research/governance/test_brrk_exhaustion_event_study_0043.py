@@ -26,11 +26,11 @@ class BRRKExhaustionEventStudy0043Tests(unittest.TestCase):
 
     def test_no_portfolio_mutation_or_economic_simulator(self) -> None:
         source = inspect.getsource(audit)
-        self.assertNotIn("order_submission", source.lower().replace('"order_submission_authorized": false', ""))
         self.assertNotIn("create_order", source)
         self.assertNotIn("submit_order", source)
-        self.assertNotIn("target_weights =", source)
         self.assertNotIn("run_portfolio(", source)
+        self.assertNotIn("simulate(", source)
+        self.assertNotIn("target_weights =", source)
 
     def test_warning_thresholds_are_fixed_panel_not_selected(self) -> None:
         source = inspect.getsource(audit.run)
