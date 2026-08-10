@@ -137,7 +137,14 @@ This lineage remains researcher-exposed DEVELOPMENT evidence. It does not alter 
 
 ## BRRK-EXHAUSTION-EVENT-STUDY-0043 — complete diagnostic
 
-0043 remains closed read-only DEVELOPMENT evidence. The unique workflow run was `31381953131`, artifact `9060216534`.
+0043 remains closed read-only DEVELOPMENT evidence. The immutable execution binding remains:
+
+```text
+workflow run                         31381953131 / attempt 1
+artifact id                          9060216534
+```
+
+The 7–14 day exhaustion-ranking signal appears feasible, especially for severe drawdowns. ID 0043 is closed against result-informed pruning, reweighting, threshold rescue, dynamic-gross mapping, or portfolio-economic counterfactual.
 
 Primary `-15%` panel:
 
