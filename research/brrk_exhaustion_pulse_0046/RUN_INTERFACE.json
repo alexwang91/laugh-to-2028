@@ -1,0 +1,93 @@
+{
+  "research_id": "BRRK-EXHAUSTION-PULSE-0046",
+  "status": "IMPLEMENTED_PRE_RESULT_NOT_RUN",
+  "frozen_design_merge_commit": "b25faa350abf034af6abf961a9ec12e8834296fc",
+  "frozen_prereg_merge_commit": "48a140a1d58cba859d537e7dee0ad399c541527a",
+  "frozen_history_end": "2026-08-02",
+  "candidate_count": 1,
+  "actual_variants_evaluated": 0,
+  "unique_execution_policy": "PREPARE_PREDICTORS_THEN_LABEL_BLIND_CALIBRATE_THEN_EXACTLY_ONCE_EVALUATE_AFTER_FULLY_GREEN_PRE_RESULT_SHA",
+  "commands": {
+    "prepare_predictors": "python -m research.brrk_exhaustion_pulse_0046.run_once prepare-predictors --predictor <PREDICTOR_PATH.json>",
+    "calibrate": "python -m research.brrk_exhaustion_pulse_0046.run_once calibrate --predictor <PREDICTOR_PATH.json> --lock <CALIBRATION_LOCK.json>",
+    "evaluate": "python -m research.brrk_exhaustion_pulse_0046.run_once evaluate --predictor <PREDICTOR_PATH.json> --lock <CALIBRATION_LOCK.json> --output <PRIMARY_RESULT.json>"
+  },
+  "frozen_detector": {
+    "axes": ["S1_MOMENTUM_DECELERATION", "S2_TREND_DISAGREEMENT", "S3_PRICE_STRUCTURE", "S4_VOL_DOWNSIDE"],
+    "prechange_baseline_sessions": 64,
+    "change_age_min": 3,
+    "change_age_max": 32,
+    "axis_score": "ONE_SIDED_SLOPE_WORKING_GLR_ELL_HALF_MAX_U_0_SQUARED",
+    "subset_aggregation": "EQUAL_WEIGHT_ALL_15_NONEMPTY_AXIS_SUBSETS",
+    "variance_floor": 1e-8,
+    "pulse": "THRESHOLD_UPCROSSING_ONLY_FIRST_VALID_SESSION_CANNOT_PULSE"
+  },
+  "frozen_calibration": {
+    "input_boundary": "CALIBRATION_PROCESS_READS_ONLY_CREATE_ONLY_PREDICTOR_ARTIFACT_WITH_TIMESTAMPS_AND_S1_S4",
+    "null_model": "VAR1_OLS_WITH_INTERCEPT",
+    "nonstationary_failure": "SPECTRAL_RADIUS_GE_1_FAIL_NULL_MODEL_NONSTATIONARY_BEFORE_LABELS",
+    "residual_bootstrap": "CIRCULAR_MOVING_BLOCK_INTACT_4D_RESIDUAL_VECTORS",
+    "block_length": 7,
+    "seed": 460046,
+    "paths": 5000,
+    "burn_in_sessions": 256,
+    "post_burn_path_sessions": 1460,
+    "arl0_trunc_target": 365,
+    "no_crossing_censor": 1461,
+    "bisection_iterations": 60,
+    "lock_required_before_evaluation_import": true
+  },
+  "pre_result_implementation_clarifications": {
+    "arl_stopping_time_clock": "ONE_BASED_FROM_SYNTHETIC_PATH_SESSION_1; INITIAL_DETECTOR_WARMUP_IS_NONCROSSING_BUT_COUNTS_ON_CLOCK",
+    "multiple_PRE21_0_pulses": "EARLIEST_PULSE_IN_SESSION_WINDOW_CONTROLS_EVENT_ONSET_LEAD_MATCHING_0045_SCAN_DIRECTION",
+    "alarm_spell_p90": "EMPIRICAL_NEAREST_RANK_CEIL_0_9_TIMES_N",
+    "zero_alarm_spells": "MEDIAN_AND_P90_DEFINED_AS_0",
+    "descriptive_ci": "PERCENTILE_2_5_AND_97_5_WITH_MEDIAN_REPORTED; NEVER_GATING",
+    "daily_block_bootstrap_boundaries": "SPELLS_COMPUTED_ON_CONCATENATED_CIRCULAR_BLOCK_BOOTSTRAP_PATH",
+    "subset_fast_path": "PRODUCT_IDENTITY_ALGEBRAICALLY_EQUAL_TO_EXPLICIT_15_SUBSET_LOG_MEAN_EXP",
+    "rolling_ols_fast_path": "PREFIX_MOMENT_ALGEBRAICALLY_EQUAL_TO_EXPLICIT_Q_1_TO_64_OLS"
+  },
+  "uncertainty": {
+    "event_macro_episode_cluster_bootstrap_replicates": 10000,
+    "event_seed": 460047,
+    "daily_circular_block_bootstrap_replicates": 10000,
+    "daily_block_length": 21,
+    "daily_seed": 460048,
+    "daily_iid_p_values": false,
+    "leave_one_macro_episode_out_refit": false
+  },
+  "pre_result_green_sha": null,
+  "calibration_lock_path": "NOT_CREATED_PRE_RESULT",
+  "result_path": "NOT_CREATED_PRE_RESULT",
+  "execution_path": "NOT_CREATED_PRE_RESULT",
+  "run_once_marker": "NOT_CREATED_PRE_RESULT",
+  "same_id_retuning_allowed": false,
+  "same_id_rescue_model_allowed": false,
+  "same_id_result_rerun_allowed": false,
+  "forbidden_after_any_0046_output": [
+    "axis construction or coordinate-basis change",
+    "64-session baseline or 3..32 age-scan change",
+    "subset prior or S2-special-treatment change",
+    "VAR null, block length, seed, path count, burn-in, ARL target or threshold-rule change",
+    "pulse, cooldown, refractory, persistence or hysteresis rescue",
+    "BOCPD, CUSUM, Kalman, classifier or alternate-model rescue",
+    "event window, episode rule, hard-gate or bootstrap-rule change",
+    "data after 2026-08-02",
+    "gross mapping or portfolio economics",
+    "canonical BRRK or Phase 6 changes"
+  ],
+  "authority": {
+    "calibration_executed": false,
+    "event_taxonomy_loaded_by_0046": false,
+    "result_released": false,
+    "future_only_pulse_validation_stage_eligible": false,
+    "dynamic_gross_stage_eligible": false,
+    "gross_mapping_defined": false,
+    "portfolio_economics_executed": false,
+    "canonical_strategy_changed": false,
+    "phase6_observation_changed": false,
+    "production_authorized": false,
+    "signature_authorized": false,
+    "order_submission_authorized": false
+  }
+}

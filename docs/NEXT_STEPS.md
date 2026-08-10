@@ -236,3 +236,51 @@ Separate explicit owner approval remains required for:
 5. After the exact 0046 design freeze is merged, create a separate `PROGRAM_GOVERNED_V1` **preregistration-only PR** that copies the frozen design without running calibration or outcomes.
 6. Require the preregistration PR to register lineage and the already-exposed DEVELOPMENT dataset, freeze one candidate, and preserve 0044/0045 negative evidence.
 7. Do not create the 0046 runner, run historical outcomes, map dynamic gross, evaluate portfolio economics, change canonical BRRK, change Phase 6, or confer any production/security authority during the design-freeze or preregistration stages.
+
+## PR #164 implementation handoff — supersedes the design/preregistration next steps above
+
+The preceding design/preregistration instructions are retained as historical handoff evidence. Current live continuation: PR #163 has actually squash-merged at `48a140a1d58cba859d537e7dee0ad399c541527a`; PR #164 is an implementation-only candidate on `research/brrk-exhaustion-pulse-0046-runonce`.
+
+```text
+Phase 6 ARM                         ACTIVE / INDEPENDENT
+Phase 6 genuine scheduled decisions 1 / >=10
+Phase 6 emergency drills            0 / >=1
+production gross cap                1.0
+production_authorized_components = []
+production_authorized               false
+signature_authorized                false
+order_submission_authorized         false
+
+0046 design                         MERGED / PR #162
+0046 formal preregistration         MERGED / PR #163 / 48a140a1d58cba859d537e7dee0ad399c541527a
+0046 implementation                IMPLEMENTED_PRE_RESULT_NOT_RUN / PR #164
+0046 declared variants             1
+0046 actual variants evaluated     0
+0046 PREDICTOR_PATH.json           NOT CREATED
+0046 historical VAR                NOT RUN
+0046 CALIBRATION_LOCK              NOT CREATED
+0046 threshold                     NONE
+0046 taxonomy loaded               FALSE
+0046 PRIMARY_RESULT                NONE
+0046 EXECUTION                     NONE
+0046 RUN_ONCE.marker               NONE
+0046 portfolio economics           FORBIDDEN
+0046 dynamic-gross eligibility     FALSE
+```
+
+PR #164 enforces a hard information boundary: `prepare-predictors` may reconstruct the exact causal S1-S4 path but emits only timestamp+S1-S4; `calibrate` consumes only that create-only predictor artifact and imports no market/NAV or taxonomy/event/window code; `evaluate` must validate the calibration lock payload hash, code SHA, predictor binding and ARL0 before dynamically importing evaluation/taxonomy code.
+
+The standing governance workflow initially did not discover the formal-path 0046 tests. That false inference was explicitly rejected. A test-only bridge under `research/governance/` now makes the existing immutable discovery command execute the 0046 synthetic suites without altering workflow or governance policy. The suites verify rolling-OLS equivalence, explicit 15-subset equivalence, one-sided slope behavior, pulse semantics, exact 0044 S1-S4 binding, calibration import firewall, lock-before-evaluation-import ordering, frozen constants and pre-result zero authority.
+
+Exact next steps now are:
+
+1. Require the final PR #164 head to remain green across Research governance core, Phase 0-8 drift audit, PR handoff governance, P3.2 parity and Phase-6 integrated shadow safety.
+2. Final-audit the PR diff: generated `PREDICTOR_PATH.json`, `CALIBRATION_LOCK*`, `PRIMARY_RESULT.json`, `EXECUTION.json`, `RUN_ONCE.marker` and `RESULT.md` must remain absent; no central registry, workflow or execution path may change.
+3. Merge #164 as **implementation-only**, then immediately verify live `main` moved to the resulting merge SHA.
+4. Treat that merged SHA as the immutable 0046 pre-result code boundary. Do not change detector mathematics, calibration parameters/seeds, gates, pulse semantics or frozen implementation clarifications afterward.
+5. Create a separate controlled execution branch from the exact merged SHA.
+6. Materialize the create-only timestamp+S1-S4 predictor artifact and verify its payload/digest.
+7. Run label-blind calibration exactly once. If VAR spectral radius is `>=1`, close 0046 as `FAIL_NULL_MODEL_NONSTATIONARY` before labels. Otherwise write/hash-bind `CALIBRATION_LOCK` with threshold, code SHA and predictor/null provenance.
+8. Validate the lock before importing evaluation. Only then may the immutable 0043/0044 taxonomy and macro episodes be loaded.
+9. Execute the frozen historical evaluation exactly once and preserve PASS, FAIL or INSUFFICIENT without same-ID rescue.
+10. Do not map dynamic gross, run portfolio economics, alter canonical BRRK, alter Phase 6, launch Phase 7, sign/submit orders or confer production authority from 0046 DEVELOPMENT evidence.

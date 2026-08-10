@@ -435,3 +435,50 @@ The current working branch adds only the formal 0046 preregistration, its alread
 6. Establish a fully green pre-result implementation SHA before any calibration.
 7. Calibration must write and hash-bind `CALIBRATION_LOCK` before any event taxonomy or macro-episode labels may be loaded.
 8. Do not run outcome evaluation, map dynamic gross, evaluate portfolio economics, change canonical BRRK, alter Phase 6, or confer any production/security authority before the frozen lifecycle permits it.
+
+## PR #164 implementation handoff — supersedes the preregistration-stage handoff above
+
+The preceding PR #163 wording is retained as immutable cross-chat history. The live authoritative continuation is now: PR #163 actually squash-merged at `48a140a1d58cba859d537e7dee0ad399c541527a`; PR #164 implements the already-frozen 0046 candidate on branch `research/brrk-exhaustion-pulse-0046-runonce` and remains **pre-result**.
+
+```text
+0046 exact design                    MERGED / IMMUTABLE / PR #162
+0046 formal preregistration          MERGED / PR #163 / 48a140a1d58cba859d537e7dee0ad399c541527a
+0046 implementation                 IMPLEMENTED_PRE_RESULT_NOT_RUN / PR #164
+declared variants                   1
+actual variants evaluated           0
+PREDICTOR_PATH.json                 NOT CREATED
+historical VAR fit                  NOT RUN
+CALIBRATION_LOCK                    NOT CREATED
+threshold                           NONE
+event taxonomy loaded by 0046       FALSE
+PRIMARY_RESULT                      NONE
+EXECUTION                           NONE
+RUN_ONCE.marker                     NONE
+portfolio economics                 FORBIDDEN
+future-only pulse-validation eligible FALSE
+dynamic-gross eligibility           FALSE
+canonical BRRK change               NONE
+Phase-6 change                      NONE
+production gross cap                1.0
+production_authorized_components = []
+production_authorized               false
+signature_authorized                false
+order_submission_authorized         false
+```
+
+The implementation enforces a three-stage information firewall:
+
+```text
+prepare-predictors
+  raw causal inputs -> create-only timestamp + S1/S2/S3/S4 predictor artifact
+calibrate
+  reads predictor artifact only; no market/NAV or taxonomy/event/window imports
+  -> create-only hash/code-bound CALIBRATION_LOCK
+evaluate
+  validate lock payload hash + code SHA + predictor binding + ARL0 first
+  only then dynamically import evaluation/taxonomy code
+```
+
+Standing CI was explicitly extended through a test-only bridge under `research/governance/`; no workflow or policy was weakened. The immutable discovery command executed 162 tests including 0046 reference-equivalence, one-sided detector, pulse, firewall, frozen-constant and zero-authority suites. The implementation branch contains no generated predictor, lock or result evidence.
+
+The exact next task is to require the final PR #164 head to remain green across Research governance core, Phase 0-8 drift audit, PR handoff governance, P3.2 parity and Phase-6 integrated shadow safety; final-audit the diff for zero generated evidence; merge #164 as implementation-only; verify live `main` moved; then treat that merged SHA as the immutable pre-result code boundary. Only a separate controlled execution branch may materialize the predictor artifact and run label-blind calibration. If VAR spectral radius is `>=1`, close 0046 before labels. Otherwise write/hash-bind `CALIBRATION_LOCK`, validate it, and only then execute the frozen historical evaluation exactly once. Same-ID rescue, dynamic-gross mapping, portfolio economics, canonical BRRK changes, Phase-6 changes and production/security authority remain forbidden.
