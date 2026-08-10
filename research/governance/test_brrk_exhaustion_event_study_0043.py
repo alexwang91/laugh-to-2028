@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import inspect
+from pathlib import Path
 import unittest
 
 from research.governance import brrk_exhaustion_event_study as audit
@@ -42,6 +43,14 @@ class BRRKExhaustionEventStudy0043Tests(unittest.TestCase):
         source = inspect.getsource(audit.build_features)
         self.assertIn('scores["EXHAUSTION_SCORE"] = scores[list(families)].mean', source)
         self.assertNotIn("F8", source)
+
+    def test_current_state_handoff_binds_closed_diagnostic(self) -> None:
+        root = Path(__file__).resolve().parents[2]
+        text = (root / "docs/CURRENT_STATE.md").read_text(encoding="utf-8")
+        self.assertIn("Handoff PR: **#155**", text)
+        self.assertIn("BRRK-EXHAUSTION-EVENT-STUDY-0043 — complete diagnostic", text)
+        self.assertIn("7–14 day exhaustion-ranking signal appears feasible", text)
+        self.assertIn("do not prune, reweight, retune thresholds", text)
 
 
 if __name__ == "__main__":
