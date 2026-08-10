@@ -2,8 +2,8 @@
 
 Last updated: 2026-08-10
 Last merged governance PR: **#161**
-Current working branch: `research/brrk-exhaustion-pulse-0046-design-freeze`
-Authoritative baseline main at branch creation: `c1308fa20e85de69cfa0acf3decb56619d74df58`
+Current working branch: `research/brrk-exhaustion-pulse-0046-prereg`
+Authoritative baseline main at branch creation: `b25faa350abf034af6abf961a9ec12e8834296fc`
 Latest merged research execution PR: **#159**
 
 Status: **authoritative current-state update candidate**
@@ -28,7 +28,7 @@ BRRK-WINNER-ROBUSTNESS-0002       ONE-SHOT PASS / FUTURE-ONLY VALIDATION ELIGIBL
 BRRK exhaustion event study 0043 COMPLETE DIAGNOSTIC / 7-14D SIGNAL FEASIBLE / TRIGGER NOT READY
 BRRK exhaustion state 0044       PASS / TRIGGER STAGE ELIGIBLE / CLOSED
 BRRK exhaustion trigger 0045     FAIL / NO DYNAMIC-GROSS ELIGIBILITY / CLOSED
-BRRK exhaustion pulse 0046       EXACT DESIGN FROZEN / NOT PREREGISTERED / NOT RUN
+BRRK exhaustion pulse 0046       PREREGISTERED_NOT_RUN / PR #163 CANDIDATE / NO RESULT
 Program timeline dashboard        READ-ONLY V5 / PROFESSIONAL FUND TERMINAL
 Phase 7                           MONITOR_ONLY / LAUNCH BLOCKED
 Phase 8                           TRIGGER ABSENT / NOT RUN
@@ -327,16 +327,16 @@ The zero PRE21_0 onset count is binding negative evidence: captured events were 
 
 Canonical BRRK-0011, the winner lineage, Phase 6, signing, order submission and production authority remain unchanged.
 
-## BRRK-EXHAUSTION-PULSE-0046 — exact design frozen, not preregistered
+## BRRK-EXHAUSTION-PULSE-0046 — formal preregistration candidate, not run
 
-Issue #160 remains design/literature history only. The exact proposed architecture is now frozen separately in `research/governance/BRRK_EXHAUSTION_PULSE_0046_DESIGN_FREEZE_2026-08-10.md`. No result-bearing 0046 registration, runner, calibration or result exists yet.
+PR #163 is the preregistration-only continuation of the exact design frozen by PR #162. On this branch, `BRRK-EXHAUSTION-PULSE-0046` is registered as one `PROGRAM_GOVERNED_V1` candidate with the already exposed DEVELOPMENT slice through `2026-08-02`. No runner, calibration threshold, pulse date or historical outcome result exists.
 
-The design review rejected two freedoms from the first Issue #160 draft:
+The preregistration keeps the two design corrections that were made before formal registration:
 
-1. `CORE4 + S2 + S3 + S4` is not the primary coordinate basis because CORE4 already contains S1–S4 and would implicitly duplicate S2/S3/S4 in a coordinate-sparse detector. Primary coordinates are exactly symmetric `S1/S2/S3/S4`; CORE4 remains benchmark-only.
-2. No extra Kalman/local-linear latent-state smoother is used. The 0044 axes are already causal trailing-z bounded composites; a second smoother would add parameters and latency. Instead the detector estimates a 64-session causal pre-change linear baseline directly for each axis and detects positive slope departure.
+1. `CORE4 + S2 + S3 + S4` is rejected as the primary coordinate basis because CORE4 already contains S1–S4 and would implicitly duplicate S2/S3/S4. Primary coordinates remain exactly symmetric `S1/S2/S3/S4`; CORE4 is benchmark-only.
+2. No extra Kalman/local-linear latent-state smoother is used. The detector estimates a 64-session causal pre-change linear baseline directly for each axis and detects positive slope departure.
 
-Frozen proposed primary candidate:
+Frozen primary candidate:
 
 ```text
 S1 / S2 / S3 / S4 exactly from 0044
@@ -351,9 +351,9 @@ S1 / S2 / S3 / S4 exactly from 0044
     -> Transition Pulse = threshold upcrossing only
 ```
 
-There is no WATCH/RISK state, persistence vote, cooldown, refractory period, recovery threshold or hysteresis machine under the primary 0046 design. BOCPD is excluded from 0046 rather than retained as a second candidate; any BOCPD study requires a later new research ID.
+There is no WATCH/RISK state, persistence vote, cooldown, refractory period, recovery threshold or hysteresis machine. BOCPD remains excluded from 0046; any BOCPD study requires a later new research ID.
 
-Frozen proposed hard gates preserve the comparable 0045 event/episode hit and false-pulse requirements while adding anti-stickiness gates:
+Frozen hard gates:
 
 ```text
 primary TRUE PRE14_7 event pulse hit          >=0.50
@@ -369,18 +369,23 @@ median raw-alarm spell                        <=7 sessions
 label-blind truncated ARL0                    >=365
 ```
 
-The occupancy ceiling is explicitly result-informed and demands roughly a 50% reduction from failed 0045 WATCH+RISK occupancy. It is not presented as independent validation.
+The occupancy ceiling is explicitly result-informed and demands roughly a 50% reduction from failed 0045 WATCH+RISK occupancy. It is not independent validation.
 
-A future 0046 PASS may at most produce `PASS_FUTURE_ONLY_PULSE_VALIDATION_ELIGIBLE`. It **does not** make dynamic gross eligible. Failure remains immutable and cannot be rescued under the same ID.
+A later 0046 PASS may at most produce `PASS_FUTURE_ONLY_PULSE_VALIDATION_ELIGIBLE`. It **does not** make dynamic gross eligible. Failure remains immutable and cannot be rescued under the same ID.
 
-Current lifecycle:
+Current lifecycle on PR #163 branch:
 
 ```text
-0046 exact design                 FROZEN IN DESIGN-ONLY DOC
-0046 formal PROGRAM_GOVERNED_V1  NOT REGISTERED
-0046 dataset/exposure row         NOT CREATED
+0046 exact design                 FROZEN BY PR #162
+0046 formal PROGRAM_GOVERNED_V1  PREREGISTERED_NOT_RUN / MERGE PENDING
+0046 dataset/exposure row         REGISTERED ON PR BRANCH / DEVELOPMENT EXPOSED
+0046 declared variants            1
+0046 actual variants evaluated    0
 0046 runner                       NOT CREATED
+0046 RUN_INTERFACE                NOT CREATED
+0046 CALIBRATION_LOCK             NOT CREATED
 0046 calibration                  NOT RUN
+0046 threshold                    NONE
 0046 historical outcome result    NONE
 0046 portfolio economics          FORBIDDEN
 dynamic-gross eligibility         FALSE
@@ -412,20 +417,21 @@ order_submission_authorized      false
 first real short authority        NONE
 ```
 
-The BRRK-WINNER development and robustness PASS results, Phase-6 observation credit, and 0046 design freeze do not change any of these fields.
+The BRRK-WINNER development and robustness PASS results, Phase-6 observation credit, and 0046 preregistration do not change any of these fields.
 
 ## Current drift assessment
 
 `DRIFT_0`.
 
-The current working branch adds only the design-only 0046 mathematical freeze and updates cross-chat status. It does not create a formal research ID, runner, calibration, outcome result or portfolio counterfactual. It does not change `execution/**`, canonical BRRK mathematics, the Phase-6 collector/schedule/evidence, leverage/shorting, signing, order submission or production authority.
+The current working branch adds only the formal 0046 preregistration, its already exposed DEVELOPMENT dataset registration, fail-closed preregistration tests and this cross-chat handoff. It does not create a runner, calibration lock, threshold, pulse dates, outcome result or portfolio counterfactual. It does not change `execution/**`, canonical BRRK mathematics, the Phase-6 collector/schedule/evidence, leverage/shorting, signing, order submission or production authority.
 
 ## Exact next task
 
-1. Validate and merge this 0046 design-only freeze only if existing governance/no-drift/continuity checks remain green.
-2. Preserve Phase-6 automatic future-only observation independently at 00:00 UTC; the design PR must not alter Phase-6 evidence or credit.
-3. Preserve 0044 PASS and 0045 FAIL as immutable; never rerun, retune or rescue either ID.
-4. After the design freeze is merged, create a **separate formal preregistration PR** for `BRRK-EXHAUSTION-PULSE-0046` that copies the frozen detector, calibration firewall, hard gates and governance boundaries without alteration.
-5. The preregistration PR may register lineage and exposed DEVELOPMENT data but must not execute calibration or outcomes.
-6. Only after a fully green preregistration baseline may a separate implementation/run-once PR be considered.
-7. Do not run 0046, map dynamic gross, evaluate portfolio economics, change canonical BRRK, alter Phase 6, or confer any production/security authority during the design-freeze or preregistration stages.
+1. Require PR #163 final governance/no-drift/continuity/P3.2/Phase-6 checks to be green and retain all negative evidence.
+2. Squash-merge PR #163 only if the final diff remains preregistration-only, zero-result and zero-authority.
+3. Preserve Phase-6 automatic future-only observation independently at 00:00 UTC; 0046 must not alter Phase-6 evidence or credit.
+4. Preserve 0044 PASS and 0045 FAIL as immutable; never rerun, retune or rescue either ID.
+5. After PR #163 is merged, create a separate 0046 implementation branch from the new `main` and implement the frozen detector plus `RUN_INTERFACE` exactly.
+6. Establish a fully green pre-result implementation SHA before any calibration.
+7. Calibration must write and hash-bind `CALIBRATION_LOCK` before any event taxonomy or macro-episode labels may be loaded.
+8. Do not run outcome evaluation, map dynamic gross, evaluate portfolio economics, change canonical BRRK, alter Phase 6, or confer any production/security authority before the frozen lifecycle permits it.
