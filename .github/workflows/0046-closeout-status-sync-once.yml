@@ -1,0 +1,87 @@
+name: 0046 closeout status sync once
+
+on:
+  push:
+    branches:
+      - governance/0046-closeout-status-sync
+    paths:
+      - .github/workflows/0046-closeout-status-sync-once.yml
+
+permissions:
+  contents: write
+
+jobs:
+  sync-status-pointers:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: governance/0046-closeout-status-sync
+          fetch-depth: 0
+
+      - name: Update only current status pointers
+        shell: bash
+        run: |
+          BASE_SHA="$(git rev-parse HEAD^)"
+          export BASE_SHA
+          python - <<'PY'
+          import os
+          from pathlib import Path
+
+          current = Path('docs/CURRENT_STATE.md')
+          text = current.read_text()
+          replacements = {
+              'Last merged governance PR: **#161**': 'Last merged research-governance PR: **#166**',
+              'Current working branch: `research/brrk-exhaustion-pulse-0046-prereg`': 'Current working branch: `governance/0046-closeout-status-sync`',
+              'Authoritative baseline main at branch creation: `b25faa350abf034af6abf961a9ec12e8834296fc`': f'Authoritative baseline main at branch creation: `{os.environ["BASE_SHA"]}`',
+              'Latest merged research execution PR: **#159**': 'Latest merged research result closeout PR: **#166**',
+              'Status: **authoritative current-state update candidate**': 'Status: **authoritative current state / 0046 immutable FAIL closed**',
+              'BRRK exhaustion pulse 0046       PREREGISTERED_NOT_RUN / PR #163 CANDIDATE / NO RESULT': 'BRRK exhaustion pulse 0046       FAIL / CLOSED / NO FUTURE-ONLY PULSE-VALIDATION ELIGIBILITY',
+          }
+          for old, new in replacements.items():
+              assert old in text, f'missing CURRENT_STATE pointer: {old}'
+              text = text.replace(old, new, 1)
+          current.write_text(text)
+
+          nxt = Path('docs/NEXT_STEPS.md')
+          text = nxt.read_text()
+          old_instruction = '**Phase-6 ARM remains active on `main` and independent of 0046 research. The first genuine future-only scheduled decision at `2026-08-10T00:00:00Z` is indexed as scheduled decision #1 from already-persisted evidence plus a separate hash-bound receipt. Continue automatic daily `00:00 UTC` observation without backfill. Separately, the proposed 0046 Transition Pulse mathematics is now frozen in a design-only document; do not run it. The next research step is a new formal preregistration PR that copies the frozen design without alteration.**'
+          new_instruction = '**Phase-6 ARM remains active on `main` and independent of 0046 research. `BRRK-EXHAUSTION-PULSE-0046` is now permanently closed `FAIL_NO_FUTURE_ONLY_PULSE_VALIDATION_ELIGIBILITY` after one valid historical result. Do not rerun, retune, rescue, map dynamic gross, or run portfolio economics under 0046. Any future exhaustion research requires a materially new mechanism and a new research ID. Continue Phase-6 automatic daily `00:00 UTC` observation without backfill and complete its separately required emergency drill.**'
+          assert old_instruction in text
+          text = text.replace(old_instruction, new_instruction, 1)
+          pointer_replacements = {
+              '0046 exact design                        FROZEN DESIGN-ONLY / NOT PREREGISTERED': '0046 exact design                        MERGED / IMMUTABLE / PR #162',
+              '0046 runner                              NOT CREATED': '0046 runner                              CLOSED / PERMANENT RUN_ONCE.marker',
+              '0046 calibration                         NOT RUN': '0046 calibration                         COMPLETE / FROZEN / ARL0 365.0472',
+              '0046 historical result                   NONE': '0046 historical result                   FAIL / CLOSED / VALID RUN 31419044159',
+          }
+          for old, new in pointer_replacements.items():
+              assert old in text, f'missing NEXT_STEPS pointer: {old}'
+              text = text.replace(old, new, 1)
+          nxt.write_text(text)
+          PY
+
+      - name: Self-delete temporary workflow
+        run: rm -f .github/workflows/0046-closeout-status-sync-once.yml
+
+      - name: Validate status-only diff
+        shell: bash
+        run: |
+          git diff --check
+          mapfile -t changed < <(git diff --name-only)
+          printf 'changed=%s\n' "${changed[*]}"
+          test "${#changed[@]}" -eq 3
+          printf '%s\n' "${changed[@]}" | grep -qx '.github/workflows/0046-closeout-status-sync-once.yml'
+          printf '%s\n' "${changed[@]}" | grep -qx 'docs/CURRENT_STATE.md'
+          printf '%s\n' "${changed[@]}" | grep -qx 'docs/NEXT_STEPS.md'
+          python -m unittest discover -s research/governance -p 'test_*.py'
+          python -m research.governance.validate
+          python -m research.governance.no_drift
+
+      - name: Commit status sync without temporary workflow
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'docs: sync 0046 immutable closeout status pointers'
+          git push origin HEAD:governance/0046-closeout-status-sync
