@@ -1,12 +1,12 @@
 # BRRK Current State
 
 Last updated: 2026-08-10
-Handoff PR: **#159**
-Handoff branch: `research/brrk-exhaustion-trigger-0045-runonce`
-Authoritative baseline main at branch creation: `c48577bb95c9fc78e5d0d78b86f30905b3636503`
-Latest merged research PR at branch creation: **#158**
+Last merged research handoff PR: **#159**
+Current working branch: `governance/phase6-observation-ledger-20260810`
+Authoritative baseline main at branch creation: `b15d4c2be8b50d60c7166ede8833f24d1f84bfab`
+Latest merged research PR at branch creation: **#159**
 
-Status: **authoritative current-state handoff candidate**
+Status: **authoritative current-state update candidate**
 
 ## Executive state
 
@@ -19,6 +19,8 @@ F7 metrics convergence            PARTIAL
 Phase 6 ARM                       ACTIVE FUTURE-ONLY OBSERVATION
 Phase 6 ARM marker                cbd58adb05187651ca72d67900a0ccbbd3e83b1e
 Phase 6 daily schedule            00:00 UTC
+Phase 6 genuine scheduled credit  1 / >=10
+Phase 6 emergency drills          0 / >=1
 Phase 6 live elapsed evidence     MEASUREMENT_INCONCLUSIVE_TIME_DEPENDENT
 BRRK opportunity-cost audit 0042  COMPLETE DIAGNOSTIC / NO PROMOTION AUTHORITY
 BRRK-WINNER-0001                  ONE-SHOT PASS / CLOSED
@@ -26,6 +28,7 @@ BRRK-WINNER-ROBUSTNESS-0002       ONE-SHOT PASS / FUTURE-ONLY VALIDATION ELIGIBL
 BRRK exhaustion event study 0043 COMPLETE DIAGNOSTIC / 7-14D SIGNAL FEASIBLE / TRIGGER NOT READY
 BRRK exhaustion state 0044       PASS / TRIGGER STAGE ELIGIBLE / CLOSED
 BRRK exhaustion trigger 0045     FAIL / NO DYNAMIC-GROSS ELIGIBILITY / CLOSED
+BRRK exhaustion pulse 0046       DESIGN ONLY / EXACT STATISTICAL CONTRACT NOT YET FROZEN
 Program timeline dashboard        READ-ONLY V5 / PROFESSIONAL FUND TERMINAL
 Phase 7                           MONITOR_ONLY / LAUNCH BLOCKED
 Phase 8                           TRIGGER ABSENT / NOT RUN
@@ -49,6 +52,51 @@ production_authorized              false
 signature_authorized               false
 order_submission_authorized        false
 ```
+
+### First genuine future-only scheduled decision — credited existing durable evidence
+
+The first rule-eligible canonical decision after the ARM marker was `2026-08-10T00:00:00Z`. GitHub Actions run `31346545269`, attempt 1, was a real `event=schedule` run on `main` and completed successfully. The persisted collector metadata records `scheduled_decision_credit_candidate=true`.
+
+Evidence binding independently checked from the existing Actions artifacts:
+
+```text
+decision timestamp                 2026-08-10T00:00:00Z
+observed_at                        2026-08-10T01:14:21Z
+workflow SHA                       405d2f75221ba97734973dd9bee2df04c9ecbcd2
+
+evidence artifact id              9047515515
+evidence artifact digest          sha256:35324a527eec2e10c44ad8ccd124c0074a3b23f64be4352651037b4209a811a3
+receipt artifact id               9047516114
+receipt artifact digest           sha256:f2299a0dca868c3fcedc4cafd561104930f8b8f52e8ba71d88e0f423d4461380
+
+evidence object digest            6e0f090101c37724c1b2eaccea77358028a4f3f72dd9e397e3526211145377d5
+input provenance digest           813ab7ed64b2c50504371c698c7f100e227851f40c28c0dde6e9415b6694307b
+shadow record digest              23b4eba438f66b38fdfb0af1661eddfe44d0139424d709a4e3ced3547dff1585
+
+shadow status                     SHADOW_COMPUTED_NO_AUTHORITY
+shadow alerts                     []
+target reference parity           PASS
+target gross absolute difference  0.0
+max target-weight abs difference  0.0
+offline reference L1 drift        0.0
+```
+
+The integrated shadow code fails closed and emits alerts for feature-reference mismatch, target-reference mismatch, incomplete data, instrument-identity mismatch, cost-model failure, unexplained state transition, and daily-schedule drift. The persisted observation contains no alerts and exact independent target parity. For this decision the accounting record therefore records zero observed critical reconciliation errors, zero unexplained target drift and zero schedule failures.
+
+Current Phase-6 progress:
+
+```text
+genuine scheduled decisions          1 / >=10
+emergency drills                     0 / >=1
+distinct credited decision dates     1
+critical reconciliation errors       0 observed
+unexplained target drift              0 observed
+schedule failures                     0 observed
+elapsed requirement                  NOT MET
+live acceptance                      MEASUREMENT_INCONCLUSIVE_TIME_DEPENDENT
+```
+
+The repository-side `research/governance/phase6_observation_ledger.json` is an accounting index only. It cannot create credit. The durable Actions evidence artifact plus separate receipt remain the evidence authority. Adding the 2026-08-10 index entry does not constitute historical backfill because the raw inputs, shadow record, evidence artifact and receipt already existed; no observation or missed timestamp is recreated. Manual dispatch, reruns, replay and duplicate timestamps remain non-crediting.
 
 ## BRRK Opportunity-Cost Audit 0042 — merged
 
@@ -279,6 +327,26 @@ The zero PRE21_0 onset count is binding negative evidence: captured events were 
 
 Canonical BRRK-0011, the winner lineage, Phase 6, signing, order submission and production authority remain unchanged.
 
+## BRRK-EXHAUSTION-PULSE-0046 — design only
+
+Issue #160 is architecture/literature synthesis only. It does not preregister, implement or run a result-bearing 0046 study.
+
+Current preferred primary family after statistical review:
+
+```text
+frozen exposed input family: CORE4 / S2 / S3 / S4
+causal latent-dynamics filter
+    -> latent level/slope and deterioration dynamics
+    -> one-sided multiscale sparse GLR
+    -> null-calibrated sequential threshold
+    -> recent deterioration changepoint age
+    -> temporary transition pulse
+```
+
+BOCPD is retained only as a candidate separately frozen secondary comparator. Supervised classifiers, label-tuned thresholds, favorable-scale selection after outcomes, same-ID 0045 rescue, S2-only rescue, dynamic-gross mapping and portfolio-economic optimization are not authorized under the design step.
+
+The design is **not yet exact enough for result-bearing preregistration**. Filter family/hyperparameters, detector statistic, multiscale aggregation, null generator and ARL/false-pulse target, pulse/reset/refractory semantics, secondary comparator parameters, episode/block inference and hard FAIL gates must be frozen first.
+
 ## Dashboard V5
 
 Public read-only dashboard remains:
@@ -303,19 +371,20 @@ order_submission_authorized      false
 first real short authority        NONE
 ```
 
-The BRRK-WINNER development and robustness PASS results do not change any of these fields.
+The BRRK-WINNER development and robustness PASS results, Phase-6 observation credit, and Issue #160 design work do not change any of these fields.
 
 ## Current drift assessment
 
 `DRIFT_0`.
 
-PR #159 closes a research-only trigger diagnostic with a binding FAIL. It adds immutable 0045 evidence and advances research lifecycle metadata only. No `execution/**`, canonical BRRK mathematics, Phase-6 observation, leverage/shorting, signing, order submission or production authority changes occur.
+The current working branch adds only Phase-6 evidence accounting and status documentation. It indexes a genuine already-persisted future-only scheduled observation and adds fail-closed anti-backfill/anti-manual/anti-duplicate/anti-authority validation. It does not change `execution/**`, canonical BRRK mathematics, the Phase-6 collector, the Phase-6 schedule, leverage/shorting, signing, order submission or production authority.
 
 ## Exact next task
 
-1. Merge PR #159 only after the temporary 0045 one-shot/finalizer workflows are removed and final governance/no-drift/P3.2/Phase-6/handoff CI is green.
-2. Preserve `BRRK-EXHAUSTION-TRIGGER-0045` as closed `FAIL_NO_DYNAMIC_GROSS_STAGE_ELIGIBILITY`; never rerun, retune or rescue it.
-3. Do **not** create or run `BRRK-DYNAMIC-GROSS-0046` from this lineage; 0045 did not earn eligibility.
-4. Preserve the distinction: 0044 confirms useful exhaustion-state discrimination, while 0045 shows this first absolute percentile/persistence/hysteresis trigger translation is inadequate.
-5. Any future alternative trigger architecture must be a new result-informed preregistration, explicitly acknowledging 0045's sensitivity failure, sticky WATCH/RISK occupancy and zero PRE21_0 onset evidence before evaluation.
-6. Continue Phase-6 future-only observation independently. All production, signing and order-submission authority remains false.
+1. Validate and merge the Phase-6 observation-ledger accounting change only if governance/no-drift tests remain green and the ledger cannot create credit or authority by itself.
+2. Continue the genuine future-only daily Phase-6 schedule unchanged; verify evidence + separate receipt before indexing each unique future decision.
+3. Preserve `BRRK-EXHAUSTION-TRIGGER-0045` as closed `FAIL_NO_DYNAMIC_GROSS_STAGE_ELIGIBILITY`; never rerun, retune or rescue it.
+4. Do **not** create or run a dynamic-gross stage from 0045; it did not earn eligibility.
+5. Continue Issue #160 only by freezing the exact 0046 statistical contract. Do not create a result-bearing preregistration or runner until all remaining degrees of freedom are closed prospectively.
+6. Continue Phase-6 and 0046 design as independent workstreams. No 0046 design decision may alter Phase-6 evidence, and Phase-6 progress may not be used as 0046 economic evidence.
+7. All production, signing and order-submission authority remains false.
