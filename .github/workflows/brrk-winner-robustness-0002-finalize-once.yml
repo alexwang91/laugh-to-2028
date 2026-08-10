@@ -1,0 +1,118 @@
+name: Temporary BRRK-WINNER-ROBUSTNESS-0002 finalize once
+
+on:
+  push:
+    branches:
+      - research/brrk-winner-robustness-0002-runonce
+    paths:
+      - research/brrk_winner_robustness_0002/POST_RESULT_FINALIZE.marker
+
+permissions:
+  contents: write
+
+jobs:
+  finalize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/brrk-winner-robustness-0002-runonce
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Register immutable result and exposure
+        run: |
+          python - <<'PY'
+          import hashlib
+          import json
+          from pathlib import Path
+
+          rid = 'BRRK-WINNER-ROBUSTNESS-0002'
+          result_path = Path('research/brrk_winner_robustness_0002/PRIMARY_RESULT.json')
+          expected_sha = 'cf149308df5aea1a0cc1315432a7effd0e163cda21e6df0b8f39cf0b6ce6fdf0'
+          actual_sha = hashlib.sha256(result_path.read_bytes()).hexdigest()
+          if actual_sha != expected_sha:
+              raise SystemExit(f'PRIMARY_RESULT hash mismatch: {actual_sha}')
+          result = json.loads(result_path.read_text(encoding='utf-8'))
+          if result.get('result_status') != 'PASS_FUTURE_ONLY_VALIDATION_STAGE_ELIGIBLE':
+              raise SystemExit('unexpected primary result classification')
+          if result.get('actual_variants_evaluated') != 1 or not result.get('all_hard_gates_pass'):
+              raise SystemExit('unexpected execution count or hard-gate state')
+
+          registry_path = Path('config/research_registry.json')
+          registry = json.loads(registry_path.read_text(encoding='utf-8'))
+          matches = [r for r in registry['records'] if r.get('research_id') == rid]
+          if len(matches) != 1:
+              raise SystemExit(f'expected exactly one registry record for {rid}')
+          record = matches[0]
+          if record['declared_variant_budget'] != 1:
+              raise SystemExit('declared variant budget drifted')
+          record['actual_variants_evaluated'] = 1
+          record['research_process_complexity']['actual_parameter_candidates_evaluated'] = [
+              'FROZEN_SINGLE_ALT_BTC_SHARE=0.40;FROZEN_SINGLE_ALT_WINNER_SHARE=0.60'
+          ]
+          record['result_status'] = 'PASS_FUTURE_ONLY_VALIDATION_STAGE_ELIGIBLE'
+          record['failure_reason'] = None
+          record['promotion_state'] = 'FUTURE_ONLY_VALIDATION_STAGE_ELIGIBLE_ONLY'
+          record['evidence_refs'] = [
+              'research/brrk_winner_robustness_0002/PRIMARY_RESULT.json',
+              'research/brrk_winner_robustness_0002/EXECUTION.json'
+          ]
+          record['decision_refs'] = [
+              'research/brrk_winner_robustness_0002/README.md',
+              'docs/CURRENT_STATE.md'
+          ]
+          record['production_authorized'] = False
+          outcome_notes = [
+              'Executed exactly once in GitHub Actions run 31374176442 attempt 1 from trigger SHA 346e26e3906df2416a21a40223e8791c3dfef86a after pre-result green baseline 561ecee69d30253aa398caf51d589cb03b5cfe47.',
+              'Primary 5 bps canonical and 40/60 metrics plus both target-frame hashes reproduced before robustness metrics were released.',
+              'Temporal gate passed exactly 2 of 3 fixed 444-session blocks: T1 and T3 candidate CAGR exceeded canonical; T2 candidate CAGR was lower by about 1.7365 percentage points and is retained as negative evidence.',
+              'Full-horizon cost-stress gates passed at both 10 bps and 20 bps; candidate CAGR and Calmar exceeded canonical at both costs while preregistered drawdown limits remained satisfied.',
+              'PASS only creates eligibility for a separately preregistered future-only validation stage; canonical BRRK-0011, Phase 6 and all production/security authority remain unchanged.',
+              'RUN_ONCE.marker is retained permanently and this research ID may not be rerun or rescued with another allocation split, temporal partition, cost stress or hard gate.'
+          ]
+          for note in outcome_notes:
+              if note not in record['notes']:
+                  record['notes'].append(note)
+          registry_path.write_text(json.dumps(registry, indent=2) + '\n', encoding='utf-8')
+
+          datasets_path = Path('config/dataset_exposure_registry.json')
+          datasets = json.loads(datasets_path.read_text(encoding='utf-8'))
+          slices = [s for s in datasets['dataset_slices'] if s.get('dataset_slice_id') == 'BRRK-WINNER-0001-CANONICAL-HIST-V1']
+          if len(slices) != 1:
+              raise SystemExit('expected exactly one reused development slice')
+          dataset_slice = slices[0]
+          if dataset_slice['data_budget'] != 'DEVELOPMENT' or not dataset_slice['consumed'] or not dataset_slice['researcher_exposed_history']:
+              raise SystemExit('reused dataset semantics drifted')
+          evidence_ref = 'research/brrk_winner_robustness_0002/PRIMARY_RESULT.json'
+          if evidence_ref not in dataset_slice['evidence_refs']:
+              dataset_slice['evidence_refs'].append(evidence_ref)
+          event = {
+              'exposure_id': 'BRRK-WINNER-ROBUSTNESS-0002-DEVELOPMENT-RUN-20260810T092255Z',
+              'research_id': rid,
+              'dataset_slice_ref': 'BRRK-WINNER-0001-CANONICAL-HIST-V1',
+              'timestamp': '2026-08-10T09:22:55Z',
+              'release_type': 'PRIMARY_RESULT',
+              'result_informed_followup': True,
+              'provenance_status': 'FACT',
+              'evidence_ref': evidence_ref
+          }
+          existing = [e for e in datasets['exposure_events'] if e.get('exposure_id') == event['exposure_id']]
+          if existing and existing != [event]:
+              raise SystemExit('exposure event exists with different content')
+          if not existing:
+              datasets['exposure_events'].append(event)
+          datasets_path.write_text(json.dumps(datasets, indent=2) + '\n', encoding='utf-8')
+          PY
+      - name: Commit result registration if changed
+        run: |
+          if git diff --quiet -- config/research_registry.json config/dataset_exposure_registry.json; then
+            echo 'registries already exact; nothing to commit'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add config/research_registry.json config/dataset_exposure_registry.json
+          git commit -m 'Research: register BRRK robustness PASS evidence'
+          git push origin HEAD:research/brrk-winner-robustness-0002-runonce
