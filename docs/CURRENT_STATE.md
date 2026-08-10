@@ -24,7 +24,7 @@ BRRK opportunity-cost audit 0042  COMPLETE DIAGNOSTIC / NO PROMOTION AUTHORITY
 BRRK-WINNER-0001                  ONE-SHOT PASS / CLOSED
 BRRK-WINNER-ROBUSTNESS-0002       ONE-SHOT PASS / FUTURE-ONLY VALIDATION ELIGIBLE / CLOSED
 BRRK exhaustion event study 0043 COMPLETE DIAGNOSTIC / 7-14D SIGNAL FEASIBLE / TRIGGER NOT READY
-BRRK exhaustion state 0044       IMPLEMENTED / NOT RUN / CONTRACT VALIDATION PENDING
+BRRK exhaustion state 0044       PASS / TRIGGER STAGE ELIGIBLE / CLOSED
 Program timeline dashboard        READ-ONLY V5 / PROFESSIONAL FUND TERMINAL
 Phase 7                           MONITOR_ONLY / LAUNCH BLOCKED
 Phase 8                           TRIGGER ABSENT / NOT RUN
@@ -202,32 +202,40 @@ Interpretation: a 7–14 day exhaustion-ranking signal appears feasible, especia
 
 Canonical BRRK-0011, Phase 6 and all production/security authority remain unchanged.
 
-## BRRK-EXHAUSTION-STATE-0044 — implemented, still not run
+## BRRK-EXHAUSTION-STATE-0044 — PASS, closed
 
-PR #156 froze the result-informed exhaustion-state research stage before any 0044 result existed. PR #157 now implements the frozen runner, run interface, source-reproduction guard, episode-aware metrics and permanent contract tests. No 0044 result has been executed or viewed; `PRIMARY_RESULT.json` and `RUN_ONCE.marker` do not exist. The formal PROGRAM_GOVERNED_V1 path remains `research/brrk_exhaustion_state_0044/`.
+PR #156 froze 0044 before result release. PR #157 implemented the frozen runner and released exactly one valid result after a fully green pre-result baseline. The historical evidence remains researcher-exposed DEVELOPMENT evidence, not independent OOS.
 
-Frozen design:
+Execution binding:
 
 ```text
-primary representation              CORE4 equal-weight
-S1                                  momentum deceleration
-S2                                  fast/slow trend disagreement
-S3                                  price-structure deterioration
-S4                                  volatility/downside asymmetry
-secondary only                      CORE5 = CORE4 + volume confirmation
-primary severity                    -15% competing barrier
-robustness severities               -10% / -20%
-primary warning window              PRE14_7
-history end                         2026-08-02
-macro dependence                    +2% recovery-defined episodes
-primary metric                      equal-episode-pair cross-episode AUC
-portfolio economics                 NOT RUN / FORBIDDEN UNDER 0044
-trigger threshold                   NOT DEFINED / FORBIDDEN UNDER 0044
+pre-result green SHA                 f6fd1fc3425fefdc6bd024fa032a065accab7c6e
+pre-result failed workflow run       31387906469 / NO DIAGNOSTIC / NO RESULT
+unique valid result workflow run     31388103016 / run number 2 / attempt 1
+trigger head SHA                     9affc7572dd0feefb14fe41e2aea7904c3a132ba
+artifact id                          9062525981
+artifact digest                      sha256:b109b610710b00904c924680a63305579f3f3c4c799d539906e0853629ddd378
+full result SHA256                   687ff49d8db8baf54a1cfafcf8863c848011800b6c74689ab0534796ac86ff29
+source taxonomy reproduction         MATCHED 0043 EXACTLY
 ```
 
-The historical PNL/OHLCV slice is explicitly `DEVELOPMENT / RESEARCHER_EXPOSED_HISTORY`. Diagnostic 0043 is the result-informed source; 0044 does not claim independent OOS evidence. A full 0044 PASS can only make a separately preregistered trigger-design stage eligible.
+Frozen CORE4 gate result:
 
-Canonical BRRK-0011, the frozen 40/60 winner lineage, Phase 6, signing, order submission and production authority remain unchanged.
+```text
+usable macro episodes                         7   PASS
+TRUE / CONTINUATION episode coverage        5 / 4 PASS
+15% PRE14_7 cross-episode AUC              0.750 PASS
+15% PRE14_7 event AUC                      0.778 PASS
+20% PRE14_7 cross-episode AUC              0.750 PASS
+LOEO minimum / median AUC                  0.654 / 0.739 PASS
+result_status                              PASS_TRIGGER_STAGE_ELIGIBLE
+```
+
+Result-informed component evidence is preserved without same-ID reweighting. S2 trend disagreement was strongest (`0.744` cross-episode AUC at PRE14_7, `0.893` at PRE7_0, `0.833` for severe PRE14_7). Secondary S5 volume confirmation was negative evidence: adding it reduced CORE4 cross-episode AUC from `0.750` to `0.676` at PRE14_7 and from `0.736` to `0.606` at PRE7_0; S5 alone was `0.500` at primary PRE14_7.
+
+0044 therefore establishes that a frozen low-dimensional exhaustion state retains useful advance discrimination after macro-episode dependence control. It **does not** define a trading trigger or gross-risk response. `RUN_ONCE.marker` is permanent and 0044 may not be rerun, reweighted, pruned, rescued or used for same-ID threshold/gross search.
+
+The only authorized research continuation is a new, separately preregistered trigger-stage ID. Canonical BRRK-0011, the 40/60 winner lineage, Phase 6 and all production/security authority remain unchanged.
 
 ## Dashboard V5
 
@@ -259,13 +267,12 @@ The BRRK-WINNER development and robustness PASS results do not change any of the
 
 `DRIFT_0`.
 
-PR #156 is pre-result research-governance work only. It registers and freezes 0044 but executes no 0044 result, trigger, portfolio counterfactual or economic change. No `execution/**`, canonical BRRK mathematics, Phase-6 collection or production authority changes occur.
+PR #157 closes a research-only state diagnostic. It adds immutable 0044 evidence and updates research lifecycle metadata only. No `execution/**`, canonical BRRK mathematics, Phase-6 observation, leverage/shorting, signing, order submission or production authority changes occur.
 
 ## Exact next task
 
-1. Keep PR #157 result-free until its frozen runner/interface/contract tests and all governance/no-drift/Phase-6/parity checks are green.
-2. Only after that pre-result implementation baseline is green may one temporary one-shot workflow execute 0044 exactly once.
-3. The execution must first reproduce the exact 0043 16-peak and fixed label counts; any mismatch is execution-invalid and produces no research PASS/FAIL.
-4. CORE4 alone controls pass/fail; CORE5 is secondary-only and cannot rescue a failure. No same-ID tuning or rerun is permitted.
-5. After a valid unique run, bind artifact/result hashes, create the permanent run-once marker, remove temporary workflow, update registry/handoff, and rerun final CI.
-6. Do not define trigger thresholds, WATCH/RISK persistence, recovery hysteresis or any gross map unless 0044 fully passes and a new research ID is preregistered. Phase 6 remains independent and all production/signing/order authority stays false.
+1. Merge PR #157 only after the temporary 0044 execution/finalizer workflows are removed and final governance/no-drift/P3.2/Phase-6/handoff CI is green.
+2. Preserve `BRRK-EXHAUSTION-STATE-0044` as closed `PASS_TRIGGER_STAGE_ELIGIBLE`; never rerun or retune it.
+3. If continuing, preregister a new `BRRK-EXHAUSTION-TRIGGER` research ID before defining HEALTHY/DECELERATION/WATCH/RISK/RECOVERY transitions, persistence, thresholds or asymmetric re-entry rules.
+4. Treat S2 strength and S5 negative volume evidence as result-informed DEVELOPMENT inputs only; do not retrospectively modify CORE4.
+5. Do not run dynamic-gross portfolio economics until a separately frozen trigger stage passes. Phase 6 continues independently and all production/signing/order-submission authority remains false.
