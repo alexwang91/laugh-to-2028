@@ -1,0 +1,36 @@
+{
+  "dataset_slice": {
+    "dataset_slice_id": "BRRK-BETA-HANDOFF-0047-EXPOSED-HIST-V1",
+    "dataset_id": "BINANCE-SPOT-BTC-ETH-SOL-UTC-DAILY-OHLCV-TRADES",
+    "dataset_version": "design-boundary-main-398b7ec3f78f602461787b1b45e8d5041729e126",
+    "source": "BINANCE_SPOT_UTC_DAILY_KLINES_BTCUSDT_ETHUSDT_SOLUSDT",
+    "assets": ["BTC", "ETH", "SOL"],
+    "fields": ["daily_open", "daily_high", "daily_low", "daily_close", "daily_volume", "daily_quote_volume", "daily_trades"],
+    "resolution": "1D",
+    "start": "2020-08-01T00:00:00Z",
+    "end": "2026-08-02T00:00:00Z",
+    "transformation": "COMMON_CONTIGUOUS_DAILY_INDEX_THEN_EXACT_CANONICAL_V1_FAST_SLOW_ABSOLUTE_AND_ETH_BTC_SOL_BTC_RELATIVE_TRENDS_PLUS_REL_ACCEL_BETA_BREADTH_TRADE_SURPRISE_STATE_AGE_WITH_SEPARATE_FROZEN_20_60_SESSION_REALIZED_DURABLE_HANDOFF_TARGET_AND_EPISODE_PRESERVING_TRANSMISSION_DIAGNOSTICS",
+    "pit_publication_semantics": "RESEARCHER_EXPOSED_DEVELOPMENT_HISTORY; causal anatomy at date t uses Binance information no later than completed UTC date t; forward 20/60 returns are hindsight labels only and are never causal predictors; t+60 unavailable is right-censored rather than negative; no observation after 2026-08-02 may enter 0047",
+    "data_budget": "DEVELOPMENT",
+    "contamination_state": "RESEARCHER_EXPOSED_HISTORY",
+    "consumed": true,
+    "researcher_exposed_history": true,
+    "provenance_status": "FACT",
+    "evidence_refs": [
+      "research/governance/BRRK_BETA_HANDOFF_EVENT_STUDY_0047_DESIGN_FREEZE_2026-08-11.md",
+      "research/core/crypto_rotation_backtest.py",
+      "research/brrk_winner_0001/PRIMARY_RESULT.json",
+      "research/brrk_winner_robustness_0002/PRIMARY_RESULT.json"
+    ]
+  },
+  "exposure_event": {
+    "exposure_id": "BRRK-BETA-HANDOFF-0047-DEVELOPMENT-DATA-REGISTRATION-20260810T232616Z",
+    "research_id": "BRRK-BETA-HANDOFF-EVENT-STUDY-0047",
+    "dataset_slice_ref": "BRRK-BETA-HANDOFF-0047-EXPOSED-HIST-V1",
+    "timestamp": "2026-08-10T23:26:16Z",
+    "release_type": "RAW_DATA",
+    "result_informed_followup": true,
+    "provenance_status": "FACT",
+    "evidence_ref": "research/governance/BRRK_BETA_HANDOFF_EVENT_STUDY_0047_DESIGN_FREEZE_2026-08-11.md"
+  }
+}
