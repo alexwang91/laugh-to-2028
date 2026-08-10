@@ -17,7 +17,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: research/brrk-winner-0001-runonce
-      - name: Update canonical research registry deterministically
+      - name: Update registry and handoff deterministically
         run: |
           python - <<'PY'
           import json
@@ -25,8 +25,7 @@ jobs:
           p=Path('config/research_registry.json')
           d=json.loads(p.read_text())
           r=next(x for x in d['records'] if x.get('research_id')=='BRRK-WINNER-0001')
-          if r.get('actual_variants_evaluated') not in (0,1):
-              raise SystemExit('unexpected actual_variants_evaluated')
+          if r.get('actual_variants_evaluated') not in (0,1): raise SystemExit('unexpected actual_variants_evaluated')
           r['actual_variants_evaluated']=1
           r['result_status']='PASS_ROBUSTNESS_STAGE_ELIGIBLE'
           r['failure_reason']=None
@@ -46,9 +45,28 @@ jobs:
           note='One frozen 40/60 candidate executed once in workflow run 31364706555; all preregistered hard gates passed. This creates robustness-stage eligibility only, not canonical or production authority.'
           if note not in r.setdefault('notes',[]): r['notes'].append(note)
           p.write_text(json.dumps(d,indent=2,ensure_ascii=False)+'\n')
+
+          q=Path('docs/CURRENT_STATE.md')
+          s=q.read_text()
+          s=s.replace('Handoff PR: **#150**','Handoff PR: **PENDING RESULT PR**')
+          s=s.replace('Handoff branch: `research/brrk-winner-0001-prereg`','Handoff branch: `research/brrk-winner-0001-runonce`')
+          s=s.replace('Authoritative baseline main at branch creation: `405d2f75221ba97734973dd9bee2df04c9ecbcd2`','Authoritative baseline main at branch creation: `da4bad159819b71c245ff5a6f9976edc7ab94dbc`')
+          s=s.replace('Latest merged research PR at branch creation: **#149**','Latest merged research PR at branch creation: **#150**')
+          s=s.replace('BRRK-WINNER-0001                  PREREGISTERED_NOT_RUN / FORMAL PATH CREATED','BRRK-WINNER-0001                  ONE-SHOT PASS / ROBUSTNESS STAGE ELIGIBLE')
+          marker='## BRRK-WINNER-0001 — formal preregistration assembled'
+          if marker in s:
+              head=s.split(marker)[0]
+              tail=s[s.index('## Dashboard V5'):]
+              section='''## BRRK-WINNER-0001 — one-shot development result\n\nThe preregistered 40/60 single-alt candidate executed exactly once in GitHub Actions run `31364706555` after canonical matched-P3.3 baseline reproduction passed. No nearby split was evaluated.\n\n```text\ncanonical CAGR                         65.3057%\ncandidate CAGR                         69.6917%\nCAGR delta                             +4.3860 pp\ncanonical max drawdown                 -33.5292%\ncandidate max drawdown                 -33.4499%\ncanonical Calmar                       1.9477\ncandidate Calmar                       2.0835\nbest-20 log-growth capture             103.5595%\nturnover ratio                         1.1229x\nsingle-alt decision rows changed       301 / 1333\nall frozen hard gates                  PASS\nresult_status                          PASS_ROBUSTNESS_STAGE_ELIGIBLE\n```\n\nThis is researcher-exposed DEVELOPMENT evidence only. It does not change canonical BRRK-0011, Phase 6, Phase 7, execution authority, leverage, shorts, signing or production authorization. A next robustness study requires a new preregistered research ID before any additional allocation variant is evaluated.\n\n'''
+              s=head+section+tail
+          s=s.replace('BRRK-WINNER-0001 preregistration changes none of these fields.','BRRK-WINNER-0001 development PASS changes none of these fields.')
+          s=s.replace('This branch freezes one research hypothesis, one variant and its dataset-exposure contract before any candidate economics are evaluated. It does not modify `execution/**`, `research/results/**`, BRRK-0011 mathematics, Phase-6 collection, immutable economic evidence or production authority.','This branch records exactly one preregistered development run and its immutable PASS result. It does not modify `execution/**`, `research/results/**`, BRRK-0011 mathematics, Phase-6 collection or production authority.')
+          if '## Exact next task' in s:
+              s=s.split('## Exact next task')[0]+'''## Exact next task\n\n1. Merge this one-shot result only after governance/no-drift/P3.2/Phase-6 safety CI is green.\n2. Do not evaluate any second BRRK-WINNER-0001 allocation split.\n3. If the owner wants to continue this mechanism, preregister a new robustness research ID before any additional economics.\n4. Continue Phase-6 future-only observation independently.\n'''
+          q.write_text(s)
           PY
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          git add config/research_registry.json
-          git commit -m 'Research: close BRRK-WINNER-0001 registry after one-shot PASS'
+          git add config/research_registry.json docs/CURRENT_STATE.md
+          git commit -m 'Research: close BRRK-WINNER-0001 after one-shot PASS'
           git push origin HEAD:research/brrk-winner-0001-runonce
