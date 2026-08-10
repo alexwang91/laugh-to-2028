@@ -21,7 +21,7 @@ GitHub Actions run `31346545269`, attempt 1:
 - create-only evidence artifact id `9047515515`
 - separate receipt artifact id `9047516114`
 - evidence and receipt artifacts both persisted before this accounting branch was created
-- receipt binds run id, attempt, workflow SHA, decision timestamp, evidence artifact id/digest, evidence-object digest, input-provenance digest and shadow-record digest
+- receipt binds run id, attempt, workflow SHA, decision timestamp, observed timestamp, evidence artifact id/digest, evidence-object digest, input-provenance digest and shadow-record digest
 - shadow status: `SHADOW_COMPUTED_NO_AUTHORITY`
 - shadow alerts: `[]`
 - target reference parity: passed with zero gross and max-weight absolute difference
@@ -54,6 +54,18 @@ Rejected. Empty alerts plus exact target-reference parity support the per-observ
 
 Rejected. The validator fails if production, signing or order-submission authority becomes true. Phase-6 live acceptance remains `MEASUREMENT_INCONCLUSIVE_TIME_DEPENDENT`.
 
+### H7 — Matching only the evidence digest is enough to prevent receipt substitution
+
+Rejected during self-review. The persisted receipt contains the frozen identity fields `github_run_id`, `github_run_attempt`, `workflow_sha`, `decision_timestamp`, `observed_at`, `shadow_record_digest`, `input_provenance_digest` and `evidence_object_digest`. The first draft ledger did not structurally repeat and cross-check every one of those fields. The branch was hardened before merge so the ledger now records them and the validator requires exact receipt-to-row identity equality. Tests deliberately mutate each identity and require fail-closed rejection.
+
+## CI falsification result and correction
+
+The first PR-head CI run produced a genuine failure in `PR handoff governance / continuity-contract`. Inspection showed that the failure was not a ledger/economic contradiction; it identified a repository governance omission in the PR description: the mandatory continuity sections were absent.
+
+The PR body was corrected to include exactly the required sections: Roadmap task, Baseline reviewed, What changed, What did not change, Evidence and tests, Project drift audit, Risks and unresolved items, Production authorization, CURRENT_STATE handoff, and Exact next step. A subsequent code/document commit intentionally retriggers CI rather than treating the earlier failure as ignorable.
+
+This distinction matters: the red check was accepted as evidence that the proposed change did not yet satisfy repository governance, even though its underlying Phase-6 observation accounting remained unchanged.
+
 ## Remaining uncertainty
 
 The repository validator cannot independently query GitHub Actions during offline CI to prove that an external artifact still exists. This is intentional: letting the static ledger self-prove its external evidence would be circular. Human/reviewer evidence verification remains required when adding each entry; the Actions artifacts and receipt are the evidence authority.
@@ -62,6 +74,6 @@ Artifact expiry before acceptance review remains governed by the frozen evidence
 
 ## Result
 
-The first observation may be indexed as scheduled decision #1, subject to PR CI and review, without changing its underlying evidence or creating retroactive observation credit.
+The first observation may be indexed as scheduled decision #1, subject to the corrected PR CI and review, without changing its underlying evidence or creating retroactive observation credit.
 
 Phase-6 live acceptance: **NOT PASSED / MEASUREMENT_INCONCLUSIVE_TIME_DEPENDENT**.
