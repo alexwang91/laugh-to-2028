@@ -61,6 +61,44 @@
         "research/brrk_winner_0001/PRIMARY_RESULT.json",
         "research/brrk_winner_robustness_0002/PRIMARY_RESULT.json"
       ]
+    },
+    {
+      "dataset_slice_id": "BRRK-EXHAUSTION-0044-EXPOSED-HIST-V1",
+      "dataset_id": "CANONICAL-BRRK-PNL-PLUS-BINANCE-SPOT-OHLCV",
+      "dataset_version": "0043-result-artifact-sha256-6df40bbe0112082f045cd4da7b461753382c6980a348609a35bed9967f1520c4",
+      "source": "PIT_DISP_0015_PLUS_BINANCE_SPOT_UTC_DAILY_KLINES_USED_BY_BRRK_EXHAUSTION_EVENT_STUDY_0043",
+      "assets": [
+        "BTC",
+        "ETH",
+        "SOL",
+        "BNB",
+        "XRP",
+        "BRRK0011_BASELINE"
+      ],
+      "fields": [
+        "daily_open",
+        "daily_high",
+        "daily_low",
+        "daily_close",
+        "daily_volume",
+        "canonical_brrk_nav",
+        "canonical_brrk_defensive_scale_proxy"
+      ],
+      "resolution": "1D",
+      "start": "2020-08-01T00:00:00Z",
+      "end": "2026-08-02T00:00:00Z",
+      "transformation": "RECOMPUTE_0043_CAUSAL_FEATURES_THEN_FIXED_0044_CORE4_AND_CORE5_STATE_AXES_ON_FROZEN_EVALUATION_WINDOW",
+      "pit_publication_semantics": "RESEARCHER_EXPOSED_DEVELOPMENT_HISTORY; predictor at date t uses market and canonical information no later than t; retrospective future information is permitted only for event labels and macro-episode dependence grouping; no observations after 2026-08-02 may enter 0044",
+      "data_budget": "DEVELOPMENT",
+      "contamination_state": "RESEARCHER_EXPOSED_HISTORY",
+      "consumed": true,
+      "researcher_exposed_history": true,
+      "provenance_status": "FACT",
+      "evidence_refs": [
+        "research/governance/BRRK_EXHAUSTION_EVENT_STUDY_0043.md",
+        "research/governance/BRRK_EXHAUSTION_EVENT_STUDY_0043_RESULT.md",
+        "research/governance/brrk_exhaustion_event_study.py"
+      ]
     }
   ],
   "exposure_events": [
@@ -93,6 +131,16 @@
       "result_informed_followup": true,
       "provenance_status": "FACT",
       "evidence_ref": "research/brrk_winner_robustness_0002/PRIMARY_RESULT.json"
+    },
+    {
+      "exposure_id": "BRRK-EXHAUSTION-STATE-0044-DEVELOPMENT-DATA-REGISTRATION-20260810T115400Z",
+      "research_id": "BRRK-EXHAUSTION-STATE-0044",
+      "dataset_slice_ref": "BRRK-EXHAUSTION-0044-EXPOSED-HIST-V1",
+      "timestamp": "2026-08-10T11:54:00Z",
+      "release_type": "RAW_DATA",
+      "result_informed_followup": true,
+      "provenance_status": "FACT",
+      "evidence_ref": "research/governance/BRRK_EXHAUSTION_EVENT_STUDY_0043_RESULT.md"
     }
   ]
 }

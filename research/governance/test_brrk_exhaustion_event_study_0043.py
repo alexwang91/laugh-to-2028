@@ -44,13 +44,13 @@ class BRRKExhaustionEventStudy0043Tests(unittest.TestCase):
         self.assertIn('scores["EXHAUSTION_SCORE"] = scores[list(families)].mean', source)
         self.assertNotIn("F8", source)
 
-    def test_current_state_handoff_binds_closed_diagnostic(self) -> None:
+    def test_current_state_preserves_closed_diagnostic(self) -> None:
         root = Path(__file__).resolve().parents[2]
         text = (root / "docs/CURRENT_STATE.md").read_text(encoding="utf-8")
-        self.assertIn("Handoff PR: **#155**", text)
         self.assertIn("BRRK-EXHAUSTION-EVENT-STUDY-0043 — complete diagnostic", text)
+        self.assertIn("workflow run                         31381953131 / attempt 1", text)
         self.assertIn("7–14 day exhaustion-ranking signal appears feasible", text)
-        self.assertIn("do not prune, reweight, retune thresholds", text)
+        self.assertIn("ID 0043 is closed against result-informed pruning, reweighting, threshold rescue", text)
 
 
 if __name__ == "__main__":

@@ -1,10 +1,10 @@
 # BRRK Current State
 
 Last updated: 2026-08-10  
-Handoff PR: **#155**
-Handoff branch: `research/brrk-exhaustion-event-study-0043`
-Authoritative baseline main at branch creation: `0db4f6e4ca6d8fe610e54fbb96c9240752229cfd`
-Latest merged research PR at branch creation: **#153**
+Handoff PR: **#156**
+Handoff branch: `research/brrk-exhaustion-state-0044-prereg`
+Authoritative baseline main at branch creation: `72765cc28d66204f7b5e01fee8cef31b7cf22841`
+Latest merged research PR at branch creation: **#155**
 
 Status: **authoritative current-state handoff candidate**
 
@@ -24,6 +24,7 @@ BRRK opportunity-cost audit 0042  COMPLETE DIAGNOSTIC / NO PROMOTION AUTHORITY
 BRRK-WINNER-0001                  ONE-SHOT PASS / CLOSED
 BRRK-WINNER-ROBUSTNESS-0002       ONE-SHOT PASS / FUTURE-ONLY VALIDATION ELIGIBLE / CLOSED
 BRRK exhaustion event study 0043 COMPLETE DIAGNOSTIC / 7-14D SIGNAL FEASIBLE / TRIGGER NOT READY
+BRRK exhaustion state 0044       PREREGISTERED / NOT RUN / NO TRIGGER AUTHORITY
 Program timeline dashboard        READ-ONLY V5 / PROFESSIONAL FUND TERMINAL
 Phase 7                           MONITOR_ONLY / LAUNCH BLOCKED
 Phase 8                           TRIGGER ABSENT / NOT RUN
@@ -201,6 +202,33 @@ Interpretation: a 7–14 day exhaustion-ranking signal appears feasible, especia
 
 Canonical BRRK-0011, Phase 6 and all production/security authority remain unchanged.
 
+## BRRK-EXHAUSTION-STATE-0044 — preregistered, not run
+
+PR #156 freezes the next result-informed exhaustion-state research stage before any 0044 result exists. The formal PROGRAM_GOVERNED_V1 path is `research/brrk_exhaustion_state_0044/`.
+
+Frozen design:
+
+```text
+primary representation              CORE4 equal-weight
+S1                                  momentum deceleration
+S2                                  fast/slow trend disagreement
+S3                                  price-structure deterioration
+S4                                  volatility/downside asymmetry
+secondary only                      CORE5 = CORE4 + volume confirmation
+primary severity                    -15% competing barrier
+robustness severities               -10% / -20%
+primary warning window              PRE14_7
+history end                         2026-08-02
+macro dependence                    +2% recovery-defined episodes
+primary metric                      equal-episode-pair cross-episode AUC
+portfolio economics                 NOT RUN / FORBIDDEN UNDER 0044
+trigger threshold                   NOT DEFINED / FORBIDDEN UNDER 0044
+```
+
+The historical PNL/OHLCV slice is explicitly `DEVELOPMENT / RESEARCHER_EXPOSED_HISTORY`. Diagnostic 0043 is the result-informed source; 0044 does not claim independent OOS evidence. A full 0044 PASS can only make a separately preregistered trigger-design stage eligible.
+
+Canonical BRRK-0011, the frozen 40/60 winner lineage, Phase 6, signing, order submission and production authority remain unchanged.
+
 ## Dashboard V5
 
 Public read-only dashboard remains:
@@ -231,12 +259,13 @@ The BRRK-WINNER development and robustness PASS results do not change any of the
 
 `DRIFT_0`.
 
-PR #155 is read-only research/governance diagnostic work. The final intended diff contains the frozen diagnostic design, implementation, permanent contract test, execution binding, compact result/summary and handoff evidence only. The temporary one-shot workflow is removed. No `execution/**`, no `research/results/**`, no canonical BRRK mathematics, no Phase-6 collection and no production authority are changed.
+PR #156 is pre-result research-governance work only. It registers and freezes 0044 but executes no 0044 result, trigger, portfolio counterfactual or economic change. No `execution/**`, canonical BRRK mathematics, Phase-6 collection or production authority changes occur.
 
 ## Exact next task
 
-1. Merge PR #155 only after final governance/no-drift/Phase-6/handoff CI is green and the final diff contains no temporary workflow, no `execution/**`, and no historical `research/results/**` mutation.
-2. Preserve `BRRK-EXHAUSTION-EVENT-STUDY-0043` as closed DEVELOPMENT diagnostic evidence; do not prune, reweight, retune thresholds or run dynamic-gross economics under this ID.
-3. If continuing the exhaustion line, create a new result-informed research ID before defining a deduplicated low-dimensional state model or trigger. Validation must be episode/block-aware because the 16 detected peaks are not fully independent macro regimes.
-4. Only after a separately frozen signal stage passes should a later research ID map exhaustion state to gross exposure and evaluate portfolio economics.
-5. Continue Phase-6 future-only observation independently. Production, signing and order-submission authority remain false.
+1. Merge PR #156 only after the final PROGRAM_GOVERNED_V1 registry, dataset-exposure, no-drift, Phase-6 and handoff checks are green.
+2. Preserve `BRRK-EXHAUSTION-STATE-0044` as `PREREGISTERED_NOT_RUN` on merge; no result-bearing file may exist in the preregistration PR.
+3. After merge only, create a separate implementation/execution branch from the new main and implement the frozen CORE4/CORE5 definitions exactly.
+4. Execute 0044 exactly once. CORE4 controls pass/fail; CORE5 is secondary-only and cannot rescue a failure.
+5. Do not define trigger thresholds, WATCH/RISK persistence, recovery hysteresis or any gross map unless 0044 fully passes and a new research ID is preregistered.
+6. Continue Phase-6 future-only observation independently. Production, signing and order-submission authority remain false.
