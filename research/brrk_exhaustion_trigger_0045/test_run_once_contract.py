@@ -49,6 +49,7 @@ class BRRKExhaustionTrigger0045RunOnceContractTests(unittest.TestCase):
             self.assertNotIn(forbidden, full)
         interface = json.loads((ROOT / "research/brrk_exhaustion_trigger_0045/RUN_INTERFACE.json").read_text())
         self.assertEqual(interface["status"], "READY_NOT_RUN")
+        self.assertEqual(interface["frozen_parent_merge_commit"], "c48577bb95c9fc78e5d0d78b86f30905b3636503")
         self.assertEqual(interface["candidate_count"], 1)
         self.assertFalse(interface["authority"]["gross_mapping_defined"])
         self.assertFalse(interface["authority"]["portfolio_economics_executed"])
