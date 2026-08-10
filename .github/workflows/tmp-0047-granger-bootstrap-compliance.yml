@@ -1,0 +1,230 @@
+name: Temporary 0047 Granger bootstrap compliance repair
+
+on:
+  push:
+    branches:
+      - research/brrk-beta-handoff-0047-implementation
+    paths:
+      - .github/workflows/tmp-0047-granger-bootstrap-compliance.yml
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/brrk-beta-handoff-0047-implementation
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Patch diagnostic fallback only
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          p = Path('research/brrk_beta_handoff_0047/engine.py')
+          s = p.read_text()
+
+          old = (
+              '                    "p_value": pvalue,\n'
+              '                }\n'
+          )
+          new = (
+              '                    "p_value": pvalue,\n'
+              '                    "lag_coefficients": [\n'
+              '                        {\n'
+              '                            "lag": lag + 1,\n'
+              '                            "coefficient": float(beta[lag * len(ASSETS) + source_idx, target_idx]),\n'
+              '                        }\n'
+              '                        for lag in range(VAR_LAGS)\n'
+              '                    ],\n'
+              '                }\n'
+          )
+          assert s.count(old) == 1
+          s = s.replace(old, new, 1)
+
+          old = (
+              '        eth_values: list[list[float]] = [[] for _ in range(IRF_MAX_HORIZON + 1)]\n'
+              '        sol_values: list[list[float]] = [[] for _ in range(IRF_MAX_HORIZON + 1)]\n'
+              '        valid = 0\n'
+          )
+          new = (
+              '        eth_values: list[list[float]] = [[] for _ in range(IRF_MAX_HORIZON + 1)]\n'
+              '        sol_values: list[list[float]] = [[] for _ in range(IRF_MAX_HORIZON + 1)]\n'
+              '        asset_to_idx = {asset: idx for idx, asset in enumerate(ASSETS)}\n'
+              '        coefficient_values = {\n'
+              '            (source, target_asset, lag): []\n'
+              '            for source in ASSETS\n'
+              '            for target_asset in ASSETS\n'
+              '            if source != target_asset\n'
+              '            for lag in range(1, VAR_LAGS + 1)\n'
+              '        }\n'
+              '        valid_coefficient_refits = 0\n'
+              '        valid = 0\n'
+          )
+          assert s.count(old) == 1
+          s = s.replace(old, new, 1)
+
+          old = (
+              '            df_resid = n - p - contributing_draws\n'
+              '            if df_resid <= 0:\n'
+              '                continue\n'
+              '            sigma = sse / float(df_resid)\n'
+          )
+          new = (
+              '            df_resid = n - p - contributing_draws\n'
+              '            if df_resid <= 0:\n'
+              '                continue\n'
+              '            valid_coefficient_refits += 1\n'
+              '            for source in ASSETS:\n'
+              '                source_idx = asset_to_idx[source]\n'
+              '                for target_asset in ASSETS:\n'
+              '                    if source == target_asset:\n'
+              '                        continue\n'
+              '                    target_idx = asset_to_idx[target_asset]\n'
+              '                    for lag in range(1, VAR_LAGS + 1):\n'
+              '                        coefficient_values[(source, target_asset, lag)].append(\n'
+              '                            float(beta[(lag - 1) * len(ASSETS) + source_idx, target_idx])\n'
+              '                        )\n'
+              '            sigma = sse / float(df_resid)\n'
+          )
+          assert s.count(old) == 1
+          s = s.replace(old, new, 1)
+
+          old = (
+              '        irf_ci = {\n'
+              '            "status": "OK" if valid else "NO_VALID_BOOTSTRAP_REFITS",\n'
+              '            "attempted_replicates": BOOTSTRAP_REPLICATES,\n'
+              '            "valid_replicates": valid,\n'
+              '            "rows": [\n'
+          )
+          new = (
+              '        coefficient_ci = {\n'
+              '            "status": "OK" if valid_coefficient_refits else "NO_VALID_BOOTSTRAP_REFITS",\n'
+              '            "attempted_replicates": BOOTSTRAP_REPLICATES,\n'
+              '            "valid_replicates": valid_coefficient_refits,\n'
+              '            "rows": [\n'
+              '                {\n'
+              '                    "source": source,\n'
+              '                    "target": target_asset,\n'
+              '                    "lag": lag,\n'
+              '                    **_percentile_summary(coefficient_values[(source, target_asset, lag)]),\n'
+              '                }\n'
+              '                for source in ASSETS\n'
+              '                for target_asset in ASSETS\n'
+              '                if source != target_asset\n'
+              '                for lag in range(1, VAR_LAGS + 1)\n'
+              '            ],\n'
+              '        }\n'
+              '        irf_ci = {\n'
+              '            "status": "OK" if valid else "NO_VALID_BOOTSTRAP_REFITS",\n'
+              '            "attempted_replicates": BOOTSTRAP_REPLICATES,\n'
+              '            "valid_replicates": valid,\n'
+              '            "rows": [\n'
+          )
+          assert s.count(old) == 1
+          s = s.replace(old, new, 1)
+
+          old = (
+              '    if not var_episode_ids:\n'
+              '        irf_ci = {"status": "INSUFFICIENT_VAR_ROWS", "valid_replicates": 0, "attempted_replicates": BOOTSTRAP_REPLICATES}\n'
+              '    else:\n'
+          )
+          new = (
+              '    if not var_episode_ids:\n'
+              '        coefficient_ci = {"status": "INSUFFICIENT_VAR_ROWS", "valid_replicates": 0, "attempted_replicates": BOOTSTRAP_REPLICATES, "rows": []}\n'
+              '        irf_ci = {"status": "INSUFFICIENT_VAR_ROWS", "valid_replicates": 0, "attempted_replicates": BOOTSTRAP_REPLICATES}\n'
+              '    else:\n'
+          )
+          assert s.count(old) == 1
+          s = s.replace(old, new, 1)
+
+          old = (
+              '        "cross_correlation": xcf_ci,\n'
+              '        "generalized_btc_irf": irf_ci,\n'
+          )
+          new = (
+              '        "cross_correlation": xcf_ci,\n'
+              '        "VAR_coefficient_bootstrap": coefficient_ci,\n'
+              '        "generalized_btc_irf": irf_ci,\n'
+          )
+          assert s.count(old) == 1
+          s = s.replace(old, new, 1)
+          p.write_text(s)
+
+          t = Path('research/governance/test_brrk_beta_handoff_0047_implementation.py')
+          ts = t.read_text()
+          old = '        self.assertEqual(len(fit["granger_wald"]), 6)\n        self.assertEqual(len(fit["generalized_btc_irf"]), 15)\n'
+          new = '        self.assertEqual(len(fit["granger_wald"]), 6)\n        self.assertTrue(all(len(row["lag_coefficients"]) == 7 for row in fit["granger_wald"]))\n        self.assertEqual(len(fit["generalized_btc_irf"]), 15)\n'
+          assert ts.count(old) == 1
+          t.write_text(ts.replace(old, new, 1))
+
+          ri = Path('research/brrk_beta_handoff_0047/RUN_INTERFACE.json')
+          interface = json.loads(ri.read_text())
+          interface['frozen_transmission']['Granger_Wald'] = 'ALL_SIX_DIRECTED_PAIRS_USING_EPISODE_CLUSTER_CR0_WHERE_NONSINGULAR; ALWAYS_REPORT_SEVEN_LAG_COEFFICIENTS; DESCRIPTIVE_NON_GATING'
+          interface['pre_result_implementation_clarifications']['Granger_cluster_covariance'] = 'CR0_WITHIN_EPISODE_FIXED_EFFECTS; EVERY_DIRECTION_ALWAYS_REPORTS_SEVEN_POINT_LAG_COEFFICIENTS; COMPLETE_EPISODE_BOOTSTRAP_REPORTS_2.5_50_97.5_COEFFICIENT_UNCERTAINTY; SINGULAR_SUBCOVARIANCE_RETURNS_NULL_P_VALUE_NOT_ALTERNATE_ESTIMATOR'
+          ri.write_text(json.dumps(interface, indent=2, ensure_ascii=False) + '\n')
+
+          readme = Path('research/brrk_beta_handoff_0047/README.md')
+          rs = readme.read_text()
+          old = '- all six directed Granger/Wald diagnostics using episode-cluster CR0 where nonsingular;\n'
+          new = '- all six directed Granger/Wald diagnostics using episode-cluster CR0 where nonsingular, always retaining the seven direction-specific lag coefficients plus complete-episode bootstrap coefficient uncertainty;\n'
+          assert rs.count(old) == 1
+          readme.write_text(rs.replace(old, new, 1))
+
+          state = Path('docs/CURRENT_STATE.md')
+          ss = state.read_text()
+          old = 'all six cluster-aware Granger/Wald diagnostics, generalized BTC IRF 0..14, complete-episode 10,000/470047 bootstrap'
+          new = 'all six cluster-aware Granger/Wald diagnostics with seven-lag coefficient sets and complete-episode coefficient uncertainty, generalized BTC IRF 0..14, complete-episode 10,000/470047 bootstrap'
+          assert ss.count(old) == 1
+          state.write_text(ss.replace(old, new, 1))
+          PY
+      - name: Compile and run zero-result 0047 synthetic contracts
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check numpy pandas requests scipy scikit-learn
+          python -m py_compile research/brrk_beta_handoff_0047/engine.py research/brrk_beta_handoff_0047/run_once.py research/governance/test_brrk_beta_handoff_0047_implementation.py
+          python -m unittest research.governance.test_brrk_beta_handoff_0047_prereg_contract research.governance.test_brrk_beta_handoff_0047_implementation
+      - name: Re-audit frozen science and zero-result boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          here = Path('research/brrk_beta_handoff_0047')
+          interface = json.loads((here / 'RUN_INTERFACE.json').read_text())
+          assert interface['frozen_causal_trend']['horizons'] == [20,60,120,240]
+          assert interface['frozen_realized_target']['forward_horizons'] == [20,60]
+          assert interface['frozen_transmission']['VAR'] == 'POOLED_EPISODE_PRESERVING_VAR7_WITH_EPISODE_FIXED_INTERCEPTS'
+          assert interface['frozen_uncertainty']['replicates'] == 10000
+          assert interface['frozen_uncertainty']['seed'] == 470047
+          assert interface['stage_gates']['target_eligible_episode_count_min'] == 5
+          assert interface['stage_gates']['primary_handoff_episode_count_min'] == 3
+          assert interface['stage_gates']['episode_level_durable_handoff_prevalence_min'] == 0.50
+          assert interface['stage_gates']['ETH_primary_cause_episode_count_min'] == 1
+          assert interface['stage_gates']['SOL_primary_cause_episode_count_min'] == 1
+          assert interface['actual_variants_evaluated'] == 0
+          forbidden = ['MARKET_EVIDENCE.json','PRIMARY_RESULT.json','EXECUTION.json','RUN_ONCE.marker','RESULT.md','handoff_model.py','hazard_model.py','bocpd.py','portfolio.py']
+          assert all(not (here / name).exists() for name in forbidden)
+          PY
+      - name: Remove temporary workflow and commit compliance repair
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm .github/workflows/tmp-0047-granger-bootstrap-compliance.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git diff --cached --check
+          test ! -e .github/workflows/tmp-0047-granger-bootstrap-compliance.yml
+          git commit -m 'research impl: complete frozen Granger coefficient uncertainty diagnostics'
+          git push origin HEAD:research/brrk-beta-handoff-0047-implementation
