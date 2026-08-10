@@ -77,7 +77,7 @@ All fixed cost-stress CAGR, Calmar and drawdown gates passed.
 
 The study reuses `BRRK-WINNER-0001-CANONICAL-HIST-V1`, which is already consumed and researcher-exposed DEVELOPMENT history. This is result-informed historical robustness evidence, not independent OOS evidence and not temporal novelty.
 
-The result is `PASS_FUTURE_ONLY_VALIDATION_STAGE_ELIGIBLE`. That means only a new, separately preregistered future-only validation stage is eligible. It does **not** modify canonical `BRRK-0011`, Phase 6 scheduled-decision credit, Phase 7, leverage, shorts, execution authority, signing, order submission or production authorization.
+The result is `PASS_FUTURE_ONLY_VALIDATION_STAGE_ELIGIBLE`. That means only a new, separately preregistered future-only validation stage is eligible. This PASS makes a future-only validation stage eligible; it does not authorize canonical or production promotion. It does **not** modify canonical `BRRK-0011`, Phase 6 scheduled-decision credit, Phase 7, leverage, shorts, execution authority, signing, order submission or production authorization.
 
 ```text
 production_authorized      false
