@@ -64,6 +64,12 @@
         "expires_at": "2026-11-08T01:13:41Z"
       },
       "receipt_binding": {
+        "github_run_id": "31346545269",
+        "github_run_attempt": "1",
+        "workflow_sha": "405d2f75221ba97734973dd9bee2df04c9ecbcd2",
+        "decision_timestamp": "2026-08-10T00:00:00Z",
+        "observed_at": "2026-08-10T01:14:21Z",
+        "scheduled_decision_credit_candidate": true,
         "evidence_artifact_id": "9047515515",
         "evidence_artifact_digest": "35324a527eec2e10c44ad8ccd124c0074a3b23f64be4352651037b4209a811a3",
         "evidence_object_digest": "6e0f090101c37724c1b2eaccea77358028a4f3f72dd9e397e3526211145377d5",
