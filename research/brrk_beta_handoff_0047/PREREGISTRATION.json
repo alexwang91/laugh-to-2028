@@ -1,0 +1,205 @@
+{
+  "research_id": "BRRK-BETA-HANDOFF-EVENT-STUDY-0047",
+  "research_family_id": "BRRK_BTC_BETA_HANDOFF",
+  "research_domain": "RELATIVE_VALUE",
+  "research_governance_version": 1,
+  "governance_mode": "PROGRAM_GOVERNED_V1",
+  "objective_type": "MECHANISM_TEST",
+  "created_at": "2026-08-10T23:26:16Z",
+  "created_before_result": true,
+  "question": "After the existing canonical BTC fast trend enters a positive episode, does exposed BTC/ETH/SOL history contain recurrent, duration-aware transitions in which ETH or SOL becomes the unique durable relative leader, with a repeatable causal anatomy beyond the coarse existing V1 absolute/relative-trend eligibility rule?",
+  "hypothesis": "BTC-positive phases contain recurrent Beta leadership handoffs, but the handoff is not a fixed N-day lag. Instead, state age plus fast-versus-slow ETH/BTC and SOL/BTC relative trend, relative acceleration, two-asset Beta breadth and participation should characterize a leader-to-follower-to-new-leader transition whose realized durable opportunity can be identified consistently across distinct BTC-positive episodes.",
+  "hypothesis_origin": "RESULT_INFORMED_BY_BRRK_OPPORTUNITY_COST_0042_AND_BRRK_WINNER_0001_0002_PLUS_EXTERNAL_INFORMATION_DIFFUSION_MOMENTUM_PRICE_TRANSMISSION_AND_DURATION_DEPENDENCE_LITERATURE",
+  "economic_mechanism": "The existing V1 already requires positive BTC trend plus positive alt absolute and relative trend, but prior BRRK evidence shows that once a single alt winner exists the portfolio may retain economically costly BTC weight. 0047 therefore does not retest whether positive relative trend exists; it studies whether leadership transfer has recurrent timing, duration, acceleration, breadth and participation anatomy. The study is diagnostic only. It does not fit a handoff model, choose a switch threshold, change BRRK weights, or test portfolio economics.",
+  "primary_target": "episode_level_recurrence_of_unique_durable_ETH_or_SOL_handoff_opportunities_inside_canonical_BTC_positive_episodes",
+  "primary_metric": "EPISODE_LEVEL_DURABLE_HANDOFF_PREVALENCE",
+  "secondary_metrics": [
+    "target_eligible_BTC_positive_episode_count",
+    "distinct_primary_handoff_episode_count",
+    "ETH_primary_handoff_episode_count",
+    "SOL_primary_handoff_episode_count",
+    "handoff_state_age_distribution",
+    "handoff_opportunity_spell_duration_distribution",
+    "first_absolute_and_relative_fast_positive_follow_lag_distributions",
+    "existing_V1_eligibility_follow_lag_distributions",
+    "event_time_causal_anatomy_minus60_to_plus20",
+    "episode_preserving_BTC_ETH_and_BTC_SOL_cross_correlation_minus14_to_plus14",
+    "pooled_episode_preserving_VAR7_stability_and_coefficients",
+    "six_direction_Granger_Wald_diagnostics",
+    "generalized_BTC_shock_IRF_ETH_SOL_horizons_0_to_14",
+    "one_switch_hindsight_oracle_episode_uplift_descriptive_only"
+  ],
+  "feature_families": [
+    "CANONICAL_V1_FAST_SLOW_ABSOLUTE_TREND",
+    "ETH_BTC_AND_SOL_BTC_FAST_SLOW_RELATIVE_TREND",
+    "FAST_MINUS_SLOW_RELATIVE_ACCELERATION",
+    "TWO_ASSET_BETA_BREADTH_DIFFUSION",
+    "TRADE_COUNT_PARTICIPATION_SURPRISE",
+    "BTC_POSITIVE_EPISODE_STATE_AGE",
+    "EXISTING_V1_ELIGIBILITY_BENCHMARK_ONLY"
+  ],
+  "horizon": "BINANCE_SPOT_UTC_DAILY_2020-08-01_THROUGH_2026-08-02_RESEARCHER_EXPOSED_DEVELOPMENT_HISTORY_WITH_CAUSAL_PREDICTORS_AND_SEPARATE_20_60_SESSION_HINDSIGHT_DURABLE_HANDOFF_TARGET",
+  "universe": [
+    "BTC",
+    "ETH",
+    "SOL"
+  ],
+  "development_dataset_refs": [
+    "BRRK-BETA-HANDOFF-0047-EXPOSED-HIST-V1"
+  ],
+  "validation_dataset_refs": [],
+  "sealed_dataset_refs": [],
+  "declared_variant_budget": 1,
+  "actual_variants_evaluated": 0,
+  "parameter_candidate_count": 1,
+  "stopping_rule": "After this preregistration is merged, implement exactly one frozen 0047 anatomy protocol on a separate pre-result branch and execute it exactly once after that implementation boundary is green. Any hard stage-gate failure or insufficiency closes 0047 under the frozen classification. No universe, BTC-positive episode rule, 20/60 realized target horizon, causal trend horizon/weight, acceleration definition, breadth definition, trade-participation definition, state-age definition, cross-correlation lag range, VAR lag order, Granger panel, IRF horizon, bootstrap unit/seed, oracle rule or hard gate may change after any 0047 output is observed. No hazard model, HMM, classifier, BOCPD rescue, fixed-delay rescue, portfolio allocation or portfolio economics may be evaluated under this ID.",
+  "success_criteria": [
+    "At least 5 distinct target-eligible canonical BTC-positive episodes exist.",
+    "At least 3 distinct target-eligible BTC-positive episodes contain a mechanically defined primary durable handoff.",
+    "Episode-level durable handoff prevalence is at least 0.50.",
+    "ETH is the primary durable handoff cause in at least 1 distinct episode.",
+    "SOL is the primary durable handoff cause in at least 1 distinct episode.",
+    "All episode boundaries, target availability, censoring, cause assignments and primary-event dates are produced mechanically from the frozen definitions with zero manual relabeling.",
+    "All complete-episode dependence and 10,000-replicate bootstrap semantics use the frozen seed 470047 where uncertainty is reported; no daily IID confidence claim is used as a promotion gate.",
+    "No causal feature, horizon, target, episode, universe, transmission diagnostic, oracle or stage-gate definition changes after any 0047 output is observed.",
+    "Canonical BRRK-0011, the winner lineage, exhaustion lineage, Phase 6, execution configuration, production authorization, signing and order-submission authority remain unchanged."
+  ],
+  "failure_criteria": [
+    "Fewer than 5 distinct target-eligible BTC-positive episodes produces INSUFFICIENT_EPISODE_DIVERSITY and closes 0047.",
+    "With sufficient episode diversity, fewer than 3 primary durable-handoff episodes or episode-level prevalence below 0.50 produces FAIL_NO_RECURRENT_DURABLE_HANDOFF_STRUCTURE and closes 0047.",
+    "If recurrence gates pass but only one of ETH or SOL is ever observed as the primary handoff cause, classify INSUFFICIENT_COMPETING_RISK_DIVERSITY for the intended later three-outcome architecture and close 0047 without same-ID scope expansion.",
+    "Any manual episode/event relabeling, observation after 2026-08-02, post-output definition change, alternate 20/60 target horizon, added BNB/alt universe, lag-order search, BOCPD/HMM/classifier rescue, fixed-delay search, portfolio allocation or portfolio economics invalidates the run rather than becoming a second 0047 result."
+  ],
+  "allowed_followup": [
+    "Only PASS_DURATION_AWARE_HANDOFF_MODEL_STAGE_ELIGIBLE may create a new separately preregistered duration-aware handoff-model research ID using the frozen 0047 information families and whole-episode validation.",
+    "A later model stage may preregister a discrete-time competing-risk duration-aware architecture with outcomes NO_HANDOFF, ETH_HANDOFF and SOL_HANDOFF, but 0047 itself may not fit it.",
+    "Only after a later handoff model independently passes its own gates may a separate portfolio-translation ID preregister winner concentration candidates and portfolio economics."
+  ],
+  "forbidden_followup": [
+    "No same-ID 40/60, 20/80, 0/100 or any other BTC/winner allocation test.",
+    "No same-ID CAGR, Sharpe, Sortino, Calmar, maximum-drawdown, turnover or transaction-cost optimization.",
+    "No same-ID hazard model, semi-Markov model fit, HMM, classifier, tree, boosting model, neural network or handoff-probability threshold.",
+    "No same-ID fixed N-day post-BTC switch delay selected from results and no alternate target horizon selected after output review.",
+    "No same-ID BOCPD rescue and no expansion from BTC/ETH/SOL to BNB or other alts after results.",
+    "No use of the hindsight one-switch oracle to choose labels, causal features, model form, switch timing or later allocation.",
+    "No canonical BRRK modification, Phase 6 modification, leverage, shorting, signing, order submission or production authorization."
+  ],
+  "researcher_decisions": [
+    "The exact scientific source is research/governance/BRRK_BETA_HANDOFF_EVENT_STUDY_0047_DESIGN_FREEZE_2026-08-11.md merged by PR #169 at 398b7ec3f78f602461787b1b45e8d5041729e126; this preregistration copies that design and does not reopen method selection.",
+    "Primary assets are exactly BTC, ETH and SOL. BNB is excluded from the 0047 competing-risk target even though earlier BRRK winner research included BNB; expanding the cause universe after results is forbidden.",
+    "Market data are Binance spot BTCUSDT, ETHUSDT and SOLUSDT UTC daily klines with open/high/low/close/volume/quote_volume/trades from 2020-08-01 through 2026-08-02 inclusive on one common contiguous daily index.",
+    "Canonical trend mathematics are reused exactly from frozen V1: horizons 20/60/120/240, FAST weights 0.15/0.25/0.30/0.30 and SLOW weights 0.10/0.20/0.30/0.40 over tanh-scaled log momentum components.",
+    "A BTC-positive episode is every maximal contiguous run with canonical BTC_TREND_FAST >=0. Negative or NaN ends the episode. There is no persistence filter, bridging, minimum-return condition or manual bull-market anchor.",
+    "STATE_AGE is the 1-based common-session count since the start of the current BTC-positive episode.",
+    "For ETH and SOL, causal features include ABS_FAST, ABS_SLOW, REL_FAST and REL_SLOW versus BTC; REL_ACCEL is exactly REL_FAST minus REL_SLOW and is not independently tuned.",
+    "BETA_BREADTH is exactly the mean of two participation indicators, where an asset participates only when its ABS_FAST>0 and REL_FAST>0. The only possible breadth values are 0.0, 0.5 and 1.0.",
+    "Participation confirmation is exactly log(1+daily trade count) minus its trailing 60-session median with minimum 60 observations. Quote volume is preserved in raw evidence but is not a second primary participation candidate.",
+    "Existing V1 ETH/SOL score and eligibility may be reconstructed only as a benchmark because positive absolute and relative trend are already frozen repository mechanics, not a new 0047 discovery.",
+    "The realized durable target is hindsight-separated from causal predictors. For h in {20,60}, F_h_x(t)=log(P_x[t+h]/P_x[t]). A Beta cause requires BTC forward return>0 at both horizons and the same Beta asset to strictly beat BTC and the other Beta asset at both horizons.",
+    "If t+60 is unavailable at the frozen dataset end, the target is right-censored/target-unavailable rather than negative.",
+    "The primary handoff event per BTC-positive episode is the earliest target-available durable handoff date. Later ETH-to-SOL or SOL-to-ETH switches are secondary descriptive observations only and do not create additional primary events.",
+    "The handoff opportunity spell is consecutive target-available sessions after the primary event during which the same primary cause continues to satisfy all frozen durable-target conditions.",
+    "Cross-correlation uses daily log returns and lags exactly -14 through +14, with each pair required to remain inside the same BTC-positive episode; episode boundaries are never concatenated as adjacent observations.",
+    "The transmission model is exactly one pooled common-coefficient VAR(7) over [BTC,ETH,SOL] daily log returns with episode fixed intercepts; a row is eligible only if t and all seven lags lie in the same BTC-positive episode. There is no lag-order search.",
+    "Granger/Wald diagnostics report all six directed pairs. They are descriptive and cannot create or rescue the primary stage classification. Where possible uncertainty is episode-cluster-aware; naive daily IID significance is not a promotion gate.",
+    "Generalized rather than Cholesky-ordered impulse responses are reported for a one-residual-standard-deviation BTC return shock at horizons 0 through 14, avoiding an arbitrary contemporaneous ordering assumption.",
+    "Dependence-aware uncertainty resamples complete BTC-positive episodes exactly 10,000 times with seed 470047. Daily rows and overlapping 20/60 forward targets are not treated as independent observations.",
+    "The one-switch oracle starts already 100% BTC at each episode start and permits no switch or exactly one BTC-to-ETH/SOL switch held through episode end. A full switch incurs L1 turnover 2.0 at 5 bps per absolute weight change, or 10 bps total switch cost. It is HINDSIGHT_OPPORTUNITY_BOUND / NOT_TRADABLE / NOT_OOS and is never a hard PASS gate.",
+    "BOCPD is excluded as a primary or rescue candidate under 0047 because a concrete implementation adds hazard/prior freedoms. Any later BOCPD study requires its own pre-result freeze.",
+    "0047 intentionally does not fit the planned duration-aware competing-risk model. If 0047 passes, that model belongs to a new research ID with whole-episode holdout/leave-one-episode-out evaluation and no random daily-row split.",
+    "0047 intentionally does not test winner concentration or portfolio economics. 60/80/100 percent winner concentration, net CAGR, cash credit and transaction-cost economics belong to a still later separately preregistered portfolio stage.",
+    "All 0047 history is researcher-exposed DEVELOPMENT. Even a full 0047 PASS proves only recurrence/modeling sufficiency on exposed history and creates no OOS, canonical, dynamic-gross or production authority."
+  ],
+  "research_process_complexity": {
+    "declared_parameter_candidates": [
+      "UNIVERSE=BTC_ETH_SOL",
+      "TREND_HORIZONS=20_60_120_240",
+      "FAST_WEIGHTS=0.15_0.25_0.30_0.30",
+      "SLOW_WEIGHTS=0.10_0.20_0.30_0.40",
+      "BTC_POSITIVE_EPISODE=MAX_CONTIGUOUS_BTC_FAST_GTE_0",
+      "RELATIVE_ACCEL=REL_FAST_MINUS_REL_SLOW",
+      "BETA_BREADTH=TWO_ASSET_ABSFAST_AND_RELFAST_POSITIVE_SHARE",
+      "PARTICIPATION=LOG_TRADES_MINUS_TRAILING60_MEDIAN",
+      "REALIZED_TARGET_HORIZONS=20_60",
+      "PRIMARY_EVENT=EARLIEST_DURABLE_HANDOFF_PER_EPISODE",
+      "CROSS_CORRELATION_LAGS=-14_TO_14",
+      "TRANSMISSION_MODEL=POOLED_EPISODE_PRESERVING_VAR7_WITH_EPISODE_INTERCEPTS",
+      "GRANGER_PANEL=ALL_SIX_DIRECTED_PAIRS",
+      "IRF=GENERALIZED_BTC_SHOCK_HORIZONS_0_TO_14",
+      "EPISODE_BOOTSTRAP=10000_SEED_470047",
+      "ORACLE=ONE_SWITCH_BTC_TO_ETH_OR_SOL_5BPS_PER_ABS_WEIGHT_CHANGE"
+    ],
+    "actual_parameter_candidates_evaluated": [],
+    "universes_evaluated": [
+      "BINANCE_SPOT_BTC_ETH_SOL"
+    ],
+    "horizons_evaluated": [
+      "CAUSAL_TREND_20_60_120_240",
+      "REALIZED_DURABLE_TARGET_20_60",
+      "EVENT_TIME_MINUS60_TO_PLUS20",
+      "CROSS_CORRELATION_MINUS14_TO_PLUS14",
+      "VAR_LAG7",
+      "IRF_0_TO_14"
+    ],
+    "rebalance_variants": [],
+    "feature_representations": [
+      "FROZEN_V1_FAST_SLOW_ABSOLUTE_RELATIVE_TREND_PLUS_ACCEL_BREADTH_TRADE_PARTICIPATION_STATE_AGE"
+    ],
+    "special_cases_introduced": [
+      "DUAL_HORIZON_UNIQUE_BETA_WINNER_WITH_POSITIVE_BTC_FUTURE",
+      "RIGHT_CENSOR_T_PLUS_60_UNAVAILABLE",
+      "FIRST_PRIMARY_HANDOFF_ONLY_PER_EPISODE",
+      "EPISODE_PRESERVING_TRANSMISSION_ROWS",
+      "HINDSIGHT_ONE_SWITCH_ORACLE_FIREWALLED_FROM_GATES"
+    ],
+    "validation_exposure_event_refs": [
+      "BRRK-BETA-HANDOFF-0047-DEVELOPMENT-DATA-REGISTRATION-20260810T232616Z"
+    ],
+    "related_family_trials": 1
+  },
+  "lineage_edges": [
+    {
+      "relation": "RESULT_INFORMED",
+      "ref_research_id": "BRRK-WINNER-0001",
+      "provenance_status": "FACT",
+      "evidence_ref": "research/brrk_winner_0001/PRIMARY_RESULT.json"
+    },
+    {
+      "relation": "RESULT_INFORMED",
+      "ref_research_id": "BRRK-WINNER-ROBUSTNESS-0002",
+      "provenance_status": "FACT",
+      "evidence_ref": "research/brrk_winner_robustness_0002/PRIMARY_RESULT.json"
+    }
+  ],
+  "result_status": "PREREGISTERED_NOT_RUN",
+  "failure_reason": null,
+  "promotion_state": "NONE",
+  "evidence_refs": [],
+  "decision_refs": [
+    "research/governance/BRRK_BETA_HANDOFF_EVENT_STUDY_0047_DESIGN_FREEZE_2026-08-11.md",
+    "research/brrk_beta_handoff_0047/README.md",
+    "docs/CURRENT_STATE.md"
+  ],
+  "production_relevance": "Research-only, result-informed and externally hypothesis-informed Stage-1 mechanism/anatomy test on researcher-exposed BTC/ETH/SOL history. A full PASS can only make a separately preregistered duration-aware handoff-model stage eligible; it cannot change BRRK targets, authorize portfolio concentration, modify Phase 6 or confer production authority.",
+  "production_authorized": false,
+  "provenance_status": "FACT",
+  "governed_path_prefixes": [
+    "research/brrk_beta_handoff_0047/"
+  ],
+  "notes": [
+    "Design boundary merged before formal preregistration at 398b7ec3f78f602461787b1b45e8d5041729e126.",
+    "Winner 0001/0002 are motivation that BTC retention may be costly after a single alt winner exists; they do not identify handoff timing and are not independent evidence for 0047.",
+    "External literature motivates information diffusion, fast/slow momentum, price transmission and duration dependence, but no paper is treated as evidence that the exact BTC-to-ETH/SOL handoff exists in this dataset.",
+    "The current V1 already has positive absolute/relative alt trend eligibility. 0047 therefore studies incremental timing, duration, acceleration, breadth and participation anatomy rather than relabeling the existing rule as new alpha.",
+    "VAR/Granger/IRF and the hindsight oracle are mandatory diagnostics but explicitly non-gating. A strong oracle or significant Granger test cannot rescue absent recurrent durable handoffs.",
+    "No portfolio allocation, CAGR optimization or dynamic gross is permitted under 0047."
+  ],
+  "evidence_scorecard": {
+    "temporal_novelty": "RESEARCHER_EXPOSED_DEVELOPMENT_HISTORY_THROUGH_2026-08-02_NOT_INDEPENDENT_OOS",
+    "statistical_sufficiency": "NOT_EVALUATED_PREREGISTERED_EPISODE_LEVEL_RECURRENCE_AND_CAUSE_DIVERSITY_GATES_FROZEN",
+    "governance_integrity": "HIGH_DESIGN_MERGED_BEFORE_PREREG_ONE_PROTOCOL_BUDGET1_ACTUAL0_NO_RUNNER_NO_RESULT",
+    "operational_realism": "DIAGNOSTIC_ONLY_DAILY_BINANCE_SPOT_CAUSAL_FEATURES_EPISODE_DEPENDENCE_AND_5BPS_ONE_SWITCH_ORACLE_BOUND_NO_PORTFOLIO_TRANSLATION",
+    "derived_confidence": "NOT_EVALUATED_PENDING_SINGLE_VALID_0047_EXECUTION",
+    "confidence_rule_ref": "research/brrk_beta_handoff_0047/PREREGISTRATION.json"
+  }
+}
