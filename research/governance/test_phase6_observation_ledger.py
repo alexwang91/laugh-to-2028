@@ -75,6 +75,30 @@ class Phase6ObservationLedgerTests(unittest.TestCase):
         with self.assertRaises(Phase6ObservationLedgerError):
             self.validate(bad)
 
+    def test_receipt_identity_cannot_be_substituted(self) -> None:
+        fields_and_bad_values = {
+            "github_run_id": "99999999999",
+            "github_run_attempt": "2",
+            "workflow_sha": "0" * 40,
+            "decision_timestamp": "2026-08-11T00:00:00Z",
+            "observed_at": "2026-08-10T01:15:21Z",
+        }
+        for field, value in fields_and_bad_values.items():
+            bad = copy.deepcopy(self.ledger)
+            bad["entries"][0]["receipt_binding"][field] = value
+            with self.assertRaises(Phase6ObservationLedgerError, msg=field):
+                self.validate(bad)
+
+        bad = copy.deepcopy(self.ledger)
+        del bad["entries"][0]["receipt_binding"]["shadow_record_digest"]
+        with self.assertRaises(Phase6ObservationLedgerError):
+            self.validate(bad)
+
+        bad = copy.deepcopy(self.ledger)
+        bad["entries"][0]["receipt_binding"]["scheduled_decision_credit_candidate"] = False
+        with self.assertRaises(Phase6ObservationLedgerError):
+            self.validate(bad)
+
     def test_clean_credit_rejects_shadow_alert_or_target_drift(self) -> None:
         bad = copy.deepcopy(self.ledger)
         bad["entries"][0]["observation_checks"]["shadow_alerts"] = ["TARGET_REFERENCE_MISMATCH"]
