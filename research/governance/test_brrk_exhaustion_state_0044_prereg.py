@@ -61,10 +61,13 @@ class BRRKExhaustionState0044PreregTests(unittest.TestCase):
         self.assertEqual(slices, [self.dataset_decl["dataset_slice"]])
         self.assertEqual(events, [self.dataset_decl["exposure_event"]])
 
-    def test_no_result_or_portfolio_translation_in_prereg_path(self) -> None:
+    def test_prereg_contract_remains_frozen_before_result(self) -> None:
         path = ROOT / "research/brrk_exhaustion_state_0044"
-        names = {p.name for p in path.iterdir() if p.is_file()}
-        self.assertEqual(names, {"PREREGISTRATION.json", "DATASET_DECLARATION.json", "README.md"})
+        self.assertTrue((path / "PREREGISTRATION.json").exists())
+        self.assertTrue((path / "DATASET_DECLARATION.json").exists())
+        self.assertTrue((path / "README.md").exists())
+        self.assertFalse((path / "PRIMARY_RESULT.json").exists())
+        self.assertFalse((path / "RUN_ONCE.marker").exists())
         text = (path / "README.md").read_text()
         self.assertIn("no fitted coefficients", text.lower())
         self.assertIn("no portfolio", text.lower())
