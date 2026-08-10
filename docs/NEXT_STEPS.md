@@ -20,7 +20,7 @@ schedule failures                    0 observed
 Phase 6 elapsed result               MEASUREMENT_INCONCLUSIVE_TIME_DEPENDENT
 Phase 7                              MONITOR_ONLY / LAUNCH BLOCKED
 production gross cap                 1.0
-production_authorized_components     []
+production_authorized_components = []
 production_authorized                false
 signature_authorized                 false
 order_submission_authorized          false
@@ -208,7 +208,7 @@ XRP                                 feature-only
 primary venue                       Hyperliquid
 decision boundary                   00:00 UTC
 production gross cap                1.0
-production_authorized_components    []
+production_authorized_components = []
 production_authorized               false
 signature_authorized                false
 order_submission_authorized         false
