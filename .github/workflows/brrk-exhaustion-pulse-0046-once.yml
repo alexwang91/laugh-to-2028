@@ -1,0 +1,210 @@
+name: BRRK exhaustion pulse 0046 once
+
+on:
+  push:
+    branches:
+      - research/brrk-exhaustion-pulse-0046-execute-once
+    paths:
+      - .github/workflows/brrk-exhaustion-pulse-0046-once.yml
+
+permissions:
+  contents: read
+
+env:
+  PYTHONHASHSEED: '0'
+  OMP_NUM_THREADS: '1'
+  OPENBLAS_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+  NUMEXPR_NUM_THREADS: '1'
+  PRE_RESULT_GREEN_SHA: 'f23d2aac6fa8699af12b784ca03489061e331865'
+
+jobs:
+  frozen-pulse-calibration-and-evaluation:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/brrk-exhaustion-pulse-0046-execute-once
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: execution/plan-b-bot/requirements-dev.txt
+
+      - name: Install pinned research runtime
+        run: pip install -r execution/plan-b-bot/requirements-dev.txt
+
+      - name: Prove only temporary workflow differs from green pre-result head
+        shell: bash
+        run: |
+          test "$(git merge-base "$PRE_RESULT_GREEN_SHA" HEAD)" = "$PRE_RESULT_GREEN_SHA"
+          mapfile -t changed < <(git diff --name-only "$PRE_RESULT_GREEN_SHA"..HEAD)
+          printf 'changed_since_green=%s\n' "${changed[*]}"
+          test "${#changed[@]}" -eq 1
+          test "${changed[0]}" = '.github/workflows/brrk-exhaustion-pulse-0046-once.yml'
+
+      - name: Reconfirm frozen preregistration implementation and zero-result contracts
+        run: |
+          python -m unittest research.governance.test_brrk_exhaustion_pulse_0046_implementation -v
+          python -m research.governance.validate
+          test ! -e research/brrk_exhaustion_pulse_0046/PREDICTOR_PATH.json
+          test ! -e research/brrk_exhaustion_pulse_0046/CALIBRATION_LOCK.json
+          test ! -e research/brrk_exhaustion_pulse_0046/PRIMARY_RESULT.json
+          test ! -e research/brrk_exhaustion_pulse_0046/EXECUTION.json
+          test ! -e research/brrk_exhaustion_pulse_0046/RUN_ONCE.marker
+          test ! -e research/brrk_exhaustion_pulse_0046/RESULT.md
+
+      - name: Reconfirm original no-drift on exact green pre-result head
+        shell: bash
+        run: |
+          git worktree add --detach /tmp/0046-pre-result "$PRE_RESULT_GREEN_SHA"
+          (
+            cd /tmp/0046-pre-result
+            python -m research.governance.no_drift
+          )
+          git worktree remove --force /tmp/0046-pre-result
+
+      - name: Materialize frozen predictor-only artifact
+        run: |
+          python -m research.brrk_exhaustion_pulse_0046.run_once prepare-predictors \
+            --predictor /tmp/BRRK_EXHAUSTION_PULSE_0046_PREDICTOR_PATH.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p = json.loads(Path('/tmp/BRRK_EXHAUSTION_PULSE_0046_PREDICTOR_PATH.json').read_text())
+          assert p['artifact_type'] == 'LABEL_BLIND_PREDICTOR_PATH'
+          assert p['contains_only_timestamps_and_s1_s4'] is True
+          assert p['label_data_accessed'] is False
+          assert p['event_taxonomy_loaded'] is False
+          assert p['primary_axes'] == [
+              'S1_MOMENTUM_DECELERATION',
+              'S2_TREND_DISAGREEMENT',
+              'S3_PRICE_STRUCTURE',
+              'S4_VOL_DOWNSIDE',
+          ]
+          assert all(isinstance(row, list) and len(row) == 5 for row in p['rows'])
+          assert p['end'] <= '2026-08-02'
+          print('PREDICTOR_FIREWALL_VERIFIED=true')
+          PY
+
+      - name: Run frozen label-blind calibration and create lock
+        run: |
+          python -m research.brrk_exhaustion_pulse_0046.run_once calibrate \
+            --predictor /tmp/BRRK_EXHAUSTION_PULSE_0046_PREDICTOR_PATH.json \
+            --lock /tmp/BRRK_EXHAUSTION_PULSE_0046_CALIBRATION_LOCK.json
+
+      - name: Validate calibration lock before any evaluation import
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from research.brrk_exhaustion_pulse_0046 import calibration
+          path = Path('/tmp/BRRK_EXHAUSTION_PULSE_0046_CALIBRATION_LOCK.json')
+          raw = json.loads(path.read_text())
+          print('CALIBRATION_STATUS=' + str(raw['calibration_status']))
+          print('VAR1_SPECTRAL_RADIUS=' + str(raw['var1']['spectral_radius']))
+          if raw['calibration_status'] == 'FAIL_NULL_MODEL_NONSTATIONARY':
+              assert raw['threshold'] is None
+              assert raw['label_data_accessed'] is False
+              assert raw['event_taxonomy_loaded'] is False
+              print('0046_NONSTATIONARY_STOP_BEFORE_LABELS=true')
+          else:
+              calibration.validate_lock(path, require_success=True)
+              assert raw['threshold']['arl0_trunc'] >= 365.0
+              assert raw['label_data_accessed'] is False
+              assert raw['event_taxonomy_loaded'] is False
+              print('0046_CALIBRATION_LOCK_VALID=true')
+          PY
+
+      - name: Execute frozen historical evaluation only if calibration unlocked labels
+        shell: bash
+        run: |
+          status="$(python - <<'PY'
+          import json
+          from pathlib import Path
+          print(json.loads(Path('/tmp/BRRK_EXHAUSTION_PULSE_0046_CALIBRATION_LOCK.json').read_text())['calibration_status'])
+          PY
+          )"
+          if [ "$status" = 'FAIL_NULL_MODEL_NONSTATIONARY' ]; then
+            echo 'Skipping event taxonomy and historical evaluation because frozen null-model gate failed.'
+            exit 0
+          fi
+          python -m research.brrk_exhaustion_pulse_0046.run_once evaluate \
+            --predictor /tmp/BRRK_EXHAUSTION_PULSE_0046_PREDICTOR_PATH.json \
+            --lock /tmp/BRRK_EXHAUSTION_PULSE_0046_CALIBRATION_LOCK.json \
+            --output /tmp/BRRK_EXHAUSTION_PULSE_0046_PRIMARY_RESULT.json
+
+      - name: Create compact immutable execution summary
+        env:
+          RUN_ID: ${{ github.run_id }}
+          RUN_NUMBER: ${{ github.run_number }}
+          RUN_ATTEMPT: ${{ github.run_attempt }}
+          HEAD_SHA: ${{ github.sha }}
+        run: |
+          python - <<'PY'
+          import hashlib
+          import json
+          import os
+          from pathlib import Path
+
+          def sha(path):
+              p = Path(path)
+              return hashlib.sha256(p.read_bytes()).hexdigest() if p.exists() else None
+
+          lock_path = Path('/tmp/BRRK_EXHAUSTION_PULSE_0046_CALIBRATION_LOCK.json')
+          result_path = Path('/tmp/BRRK_EXHAUSTION_PULSE_0046_PRIMARY_RESULT.json')
+          lock = json.loads(lock_path.read_text())
+          result = json.loads(result_path.read_text()) if result_path.exists() else None
+          summary = {
+              'research_id': 'BRRK-EXHAUSTION-PULSE-0046',
+              'pre_result_green_sha': 'f23d2aac6fa8699af12b784ca03489061e331865',
+              'workflow_head_sha': os.environ['HEAD_SHA'],
+              'workflow_run_id': int(os.environ['RUN_ID']),
+              'workflow_run_number': int(os.environ['RUN_NUMBER']),
+              'workflow_run_attempt': int(os.environ['RUN_ATTEMPT']),
+              'predictor_sha256': sha('/tmp/BRRK_EXHAUSTION_PULSE_0046_PREDICTOR_PATH.json'),
+              'calibration_lock_sha256': sha(str(lock_path)),
+              'primary_result_sha256': sha(str(result_path)),
+              'calibration_status': lock['calibration_status'],
+              'var1_spectral_radius': lock['var1']['spectral_radius'],
+              'threshold': lock['threshold'],
+              'label_data_accessed_during_calibration': lock['label_data_accessed'],
+              'event_taxonomy_loaded_during_calibration': lock['event_taxonomy_loaded'],
+              'result_status': result['result_status'] if result else lock['result_status'],
+              'point_metrics': result['point_metrics'] if result else None,
+              'alarm_path': ({k: v for k, v in result['alarm_path'].items() if k not in ('pulse_dates', 'spell_summary')} if result else None),
+              'spell_summary': ({k: v for k, v in result['alarm_path']['spell_summary'].items() if k != 'durations'} if result else None),
+              'gates': result['gates'] if result else None,
+              'authority': result['authority'] if result else {
+                  'researcher_exposed_development_only': True,
+                  'independent_oos': False,
+                  'future_only_pulse_validation_stage_eligible': False,
+                  'dynamic_gross_stage_eligible': False,
+                  'portfolio_economics_executed': False,
+                  'canonical_strategy_changed': False,
+                  'phase6_observation_changed': False,
+                  'production_authorized': False,
+                  'signature_authorized': False,
+                  'order_submission_authorized': False,
+              },
+          }
+          out = Path('/tmp/BRRK_EXHAUSTION_PULSE_0046_EXECUTION_SUMMARY.json')
+          out.write_text(json.dumps(summary, indent=2, sort_keys=True) + '\n')
+          print('BRRK_EXHAUSTION_PULSE_0046_SUMMARY=' + json.dumps(summary, sort_keys=True, separators=(',', ':')))
+          PY
+
+      - name: Upload unique 0046 calibration and result artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: brrk-exhaustion-pulse-0046
+          path: |
+            /tmp/BRRK_EXHAUSTION_PULSE_0046_PREDICTOR_PATH.json
+            /tmp/BRRK_EXHAUSTION_PULSE_0046_CALIBRATION_LOCK.json
+            /tmp/BRRK_EXHAUSTION_PULSE_0046_PRIMARY_RESULT.json
+            /tmp/BRRK_EXHAUSTION_PULSE_0046_EXECUTION_SUMMARY.json
+          if-no-files-found: warn
+          retention-days: 90
+          overwrite: false
