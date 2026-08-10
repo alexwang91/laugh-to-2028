@@ -8,8 +8,12 @@
       "dataset_id": "DEFILLAMA-STABLECOIN-ALL-CHARTS",
       "dataset_version": "capture-20260808T141719736297Z-sha256-7cffe6fb3a21e891082c06c60e91491edfbc78e9c01e2d549805815a646d9ffd",
       "source": "DEFILLAMA-STABLECOIN-ALL-CHARTS-V1",
-      "assets": ["AGGREGATE_USD_PEGGED_STABLECOINS"],
-      "fields": ["totalCirculatingUSD.peggedUSD"],
+      "assets": [
+        "AGGREGATE_USD_PEGGED_STABLECOINS"
+      ],
+      "fields": [
+        "totalCirculatingUSD.peggedUSD"
+      ],
       "resolution": "1D",
       "start": "2017-11-29T00:00:00Z",
       "end": "2026-08-08T00:00:00Z",
@@ -20,15 +24,27 @@
       "consumed": true,
       "researcher_exposed_history": true,
       "provenance_status": "FACT",
-      "evidence_refs": ["research/stablecoin_liquidity_0001/FIRST_CAPTURE_EVIDENCE.json"]
+      "evidence_refs": [
+        "research/stablecoin_liquidity_0001/FIRST_CAPTURE_EVIDENCE.json"
+      ]
     },
     {
       "dataset_slice_id": "BRRK-WINNER-0001-CANONICAL-HIST-V1",
       "dataset_id": "CANONICAL-BRRK-HISTORICAL-PRICE-TARGET-AUTHORITY",
       "dataset_version": "baseline-main-405d2f75221ba97734973dd9bee2df04c9ecbcd2",
       "source": "FROZEN_BRRK_RESEARCH_AUTHORITY_AND_PIT_DISP_0015",
-      "assets": ["BTC", "ETH", "SOL", "BNB"],
-      "fields": ["daily_close", "canonical_v1_target", "canonical_brrk_target", "canonical_after_cost_return"],
+      "assets": [
+        "BTC",
+        "ETH",
+        "SOL",
+        "BNB"
+      ],
+      "fields": [
+        "daily_close",
+        "canonical_v1_target",
+        "canonical_brrk_target",
+        "canonical_after_cost_return"
+      ],
       "resolution": "1D",
       "start": "2022-12-09T00:00:00Z",
       "end": "2026-08-02T00:00:00Z",
@@ -42,7 +58,8 @@
       "evidence_refs": [
         "research/governance/BRRK_OPPORTUNITY_COST_AUDIT_0042.md",
         "audit/brrk-signal-attribution-v1:research/governance/brrk_signal_attribution_result.json",
-        "research/brrk_winner_0001/PRIMARY_RESULT.json"
+        "research/brrk_winner_0001/PRIMARY_RESULT.json",
+        "research/brrk_winner_robustness_0002/PRIMARY_RESULT.json"
       ]
     }
   ],
@@ -66,6 +83,16 @@
       "result_informed_followup": false,
       "provenance_status": "FACT",
       "evidence_ref": "research/brrk_winner_0001/PRIMARY_RESULT.json"
+    },
+    {
+      "exposure_id": "BRRK-WINNER-ROBUSTNESS-0002-DEVELOPMENT-RUN-20260810T092255Z",
+      "research_id": "BRRK-WINNER-ROBUSTNESS-0002",
+      "dataset_slice_ref": "BRRK-WINNER-0001-CANONICAL-HIST-V1",
+      "timestamp": "2026-08-10T09:22:55Z",
+      "release_type": "PRIMARY_RESULT",
+      "result_informed_followup": true,
+      "provenance_status": "FACT",
+      "evidence_ref": "research/brrk_winner_robustness_0002/PRIMARY_RESULT.json"
     }
   ]
 }
