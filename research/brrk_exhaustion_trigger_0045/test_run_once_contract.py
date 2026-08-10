@@ -8,6 +8,7 @@ from pathlib import Path
 from research.brrk_exhaustion_trigger_0045 import run_once as runner
 
 ROOT = Path(__file__).resolve().parents[2]
+PATH = ROOT / "research/brrk_exhaustion_trigger_0045"
 
 
 class BRRKExhaustionTrigger0045RunOnceContractTests(unittest.TestCase):
@@ -47,17 +48,35 @@ class BRRKExhaustionTrigger0045RunOnceContractTests(unittest.TestCase):
         full = inspect.getsource(runner)
         for forbidden in ("create_order", "submit_order", "target_weights =", "gross_target =", "state_to_gross", "portfolio_return", "position_size"):
             self.assertNotIn(forbidden, full)
-        interface = json.loads((ROOT / "research/brrk_exhaustion_trigger_0045/RUN_INTERFACE.json").read_text())
-        self.assertEqual(interface["status"], "READY_NOT_RUN")
+        interface = json.loads((PATH / "RUN_INTERFACE.json").read_text())
+        result = json.loads((PATH / "PRIMARY_RESULT.json").read_text())
+        self.assertEqual(interface["status"], "CLOSED_RESULT_USED")
         self.assertEqual(interface["frozen_parent_merge_commit"], "c48577bb95c9fc78e5d0d78b86f30905b3636503")
         self.assertEqual(interface["candidate_count"], 1)
+        self.assertEqual(interface["valid_result_run"]["workflow_run_id"], 31391109057)
+        self.assertEqual(interface["valid_result_run"]["artifact_id"], 9063704951)
+        self.assertEqual(interface["valid_result_run"]["result_status"], "FAIL_NO_DYNAMIC_GROSS_STAGE_ELIGIBILITY")
+        self.assertFalse(interface["same_id_rerun_allowed"])
+        self.assertFalse(interface["same_id_retuning_allowed"])
+        self.assertFalse(interface["authority"]["dynamic_gross_stage_eligible"])
         self.assertFalse(interface["authority"]["gross_mapping_defined"])
         self.assertFalse(interface["authority"]["portfolio_economics_executed"])
+        self.assertFalse(interface["authority"]["production_authorized"])
+        self.assertEqual(result["result_status"], "FAIL_NO_DYNAMIC_GROSS_STAGE_ELIGIBILITY")
+        self.assertFalse(result["authority"]["dynamic_gross_stage_eligible"])
 
-    def test_no_result_exists_before_execution(self) -> None:
-        path = ROOT / "research/brrk_exhaustion_trigger_0045"
-        self.assertFalse((path / "PRIMARY_RESULT.json").exists())
-        self.assertFalse((path / "RUN_ONCE.marker").exists())
+    def test_permanent_result_and_marker_bind_unique_valid_run(self) -> None:
+        self.assertTrue((PATH / "PRIMARY_RESULT.json").exists())
+        self.assertTrue((PATH / "EXECUTION.json").exists())
+        self.assertTrue((PATH / "RUN_ONCE.marker").exists())
+        self.assertTrue((PATH / "RESULT.md").exists())
+        marker = (PATH / "RUN_ONCE.marker").read_text()
+        self.assertIn("STATUS=USED_CLOSED", marker)
+        self.assertIn("VALID_RESULT_WORKFLOW_RUN_ID=31391109057", marker)
+        self.assertIn("RESULT_STATUS=FAIL_NO_DYNAMIC_GROSS_STAGE_ELIGIBILITY", marker)
+        self.assertIn("DYNAMIC_GROSS_STAGE_ELIGIBLE=false", marker)
+        self.assertIn("SAME_ID_RERUN_ALLOWED=false", marker)
+        self.assertIn("PRE_RESULT_WORKFLOW_RUN_31390711467=FAILED_BEFORE_DIAGNOSTIC_NO_RESULT", marker)
 
 
 if __name__ == "__main__": unittest.main()
