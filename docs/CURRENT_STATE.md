@@ -1,7 +1,7 @@
 # BRRK Current State
 
 Last updated: 2026-08-10  
-Handoff PR: **PENDING RESULT PR**  
+Handoff PR: **#151**  
 Handoff branch: `research/brrk-winner-0001-runonce`  
 Authoritative baseline main at branch creation: `da4bad159819b71c245ff5a6f9976edc7ab94dbc`  
 Latest merged research PR at branch creation: **#150**
@@ -130,7 +130,7 @@ This branch records exactly one preregistered development run and its immutable 
 
 ## Exact next task
 
-1. Merge this one-shot result only after governance/no-drift/P3.2/Phase-6 safety CI is green.
+1. Merge PR #151 only after governance/no-drift/P3.2/Phase-6 safety CI is green.
 2. Do not evaluate any second BRRK-WINNER-0001 allocation split.
 3. If the owner wants to continue this mechanism, preregister a new robustness research ID before any additional economics.
 4. Continue Phase-6 future-only observation independently.
