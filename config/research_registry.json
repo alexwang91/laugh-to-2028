@@ -530,14 +530,7 @@
         "validation_exposure_event_refs": "UNKNOWN",
         "related_family_trials": "UNKNOWN"
       },
-      "lineage_edges": [
-        {
-          "relation": "SUPERSEDES",
-          "ref_research_id": "LEVERAGE-0039",
-          "provenance_status": "FACT",
-          "evidence_ref": "research/leverage_0040/LEVERAGE-0040.json"
-        }
-      ],
+      "lineage_edges": [],
       "result_status": "REJECTED_STOPPED_NO_PROMOTION",
       "failure_reason": "Caps above 1.0 failed the frozen final promotion rule; no research cap or operating drawdown budget was selected.",
       "promotion_state": "NO_PROMOTION",
@@ -604,8 +597,8 @@
       },
       "lineage_edges": [
         {
-          "relation": "RESULT_INFORMED",
-          "ref_research_id": "LEVERAGE-0040",
+          "relation": "SUPERSEDES",
+          "ref_research_id": "LEVERAGE-0039",
           "provenance_status": "FACT",
           "evidence_ref": "research/leverage_0041/LEVERAGE-0041.json"
         },
@@ -790,14 +783,7 @@
         "validation_exposure_event_refs": "UNKNOWN",
         "related_family_trials": "UNKNOWN"
       },
-      "lineage_edges": [
-        {
-          "relation": "RESULT_INFORMED",
-          "ref_research_id": "P5.2-FEATURE-FAMILIES-V1",
-          "provenance_status": "FACT",
-          "evidence_ref": "research/cycle_exit/p5_3_state_model_contract.json"
-        }
-      ],
+      "lineage_edges": [],
       "result_status": "COMPLETE_IMMUTABLE_NO_PROMOTION_ARCHITECTURE_FAIL",
       "failure_reason": "Immutable V1 state-path evaluation exposed an architecture failure later preserved explicitly by P5.3 V2.",
       "promotion_state": "NO_PROMOTION",
@@ -1218,6 +1204,9 @@
       "evidence_refs": [
         "research/stablecoin_liquidity_0001/STAGE1_PRIMARY_RESULT.json"
       ],
+      "decision_refs": [
+        "research/stablecoin_liquidity_0001/README.md"
+      ],
       "production_relevance": "Research-only Stage-1 external-information test. A PASS is eligible only for the next separately preregistered research stage and cannot change BRRK, phase authority or production authorization.",
       "production_authorized": false,
       "provenance_status": "FACT",
@@ -1433,7 +1422,7 @@
       "failure_criteria": [
         "Any hard success criterion failure produces FAIL_NO_FUTURE_VALIDATION_ELIGIBILITY for BRRK-WINNER-ROBUSTNESS-0002.",
         "Any failure to reproduce the original 5 bps canonical or 40/60 result within absolute tolerance 5e-10 invalidates the run before robustness metrics are released.",
-        "Any change to the frozen 40/60 allocation, the fixed temporal blocks, the fixed 10/20 bps stress assumptions, inherited safety thresholds, PIT/data semantics, P3.3 band, universe or variant budget invalidates the run rather than becoming a research result.",
+        "Any change to the frozen 40/60 allocation, the fixed temporal blocks, the fixed 10/20 bps stress assumptions, inherited safety thresholds, PIT/data semantics, P3.3 band, universe or variant budget invalidates the run rather than becoming an economic result.",
         "Any use of post-result tuning, selective block omission or selective cost-stress omission invalidates the run rather than becoming a research result."
       ],
       "allowed_followup": [
@@ -1883,6 +1872,195 @@
         "derived_confidence": "HIGH_CONFIDENCE_CURRENT_TRIGGER_CANDIDATE_IS_NOT_ELIGIBLE_FOR_DYNAMIC_GROSS_STAGE",
         "confidence_rule_ref": "research/brrk_exhaustion_trigger_0045/RUN_INTERFACE.json"
       }
+    },
+    {
+      "research_id": "BRRK-EXHAUSTION-PULSE-0046",
+      "research_family_id": "BRRK_EXHAUSTION_TRANSITION_PULSE",
+      "research_domain": "RISK_CONTROL",
+      "research_governance_version": 1,
+      "governance_mode": "PROGRAM_GOVERNED_V1",
+      "objective_type": "RISK_CONTROL",
+      "created_at": "2026-08-10T16:19:00Z",
+      "created_before_result": true,
+      "question": "Can one frozen label-blind multiscale slope-change detector over the exact 0044 S1-S4 state axes produce sparse causal deterioration-pulse onsets roughly 7-14 sessions before genuine BRRK exhaustion while controlling continuation false pulses and avoiding the sticky risk-state occupancy that invalidated 0045, without defining any portfolio gross mapping?",
+      "hypothesis": "After removing persistent state level as the operational object, a fixed one-sided multiscale slope GLR over the symmetric frozen S1/S2/S3/S4 axes, calibrated without event labels to a model-implied false-alarm budget, can detect a new deterioration transition early enough to improve true-exhaustion pulse timing while remaining materially sparser than the failed 0045 WATCH/RISK state machine.",
+      "hypothesis_origin": "RESULT_INFORMED_BY_BRRK_EXHAUSTION_STATE_0044_PASS_AND_BRRK_EXHAUSTION_TRIGGER_0045_FAIL",
+      "economic_mechanism": "0044 established that low-dimensional exhaustion state level is informative, while 0045 showed that an absolute percentile/persistence/hysteresis state machine is too insensitive and too sticky, with zero qualifying PRE21_0 new onsets and WATCH+RISK occupying about 34.38% of sessions. 0046 therefore detects positive slope departure relative to each axis's immediately preceding causal local trend and emits only threshold upcrossing pulses. It evaluates transition timing only; it does not translate pulses into portfolio weights or gross exposure.",
+      "primary_target": "sparse_causal_deterioration_transition_pulses_with_advance_warning_false_pulse_and_anti_stickiness_control",
+      "primary_metric": "primary_15pct_TRUE_EXHAUSTION_PRE14_7_transition_pulse_event_hit_rate",
+      "secondary_metrics": [
+        "primary_15pct_CONTINUATION_PRE14_0_transition_pulse_false_rate",
+        "primary_15pct_TRUE_episode_PRE14_7_transition_pulse_hit_rate",
+        "primary_15pct_CONTINUATION_episode_PRE14_0_transition_pulse_false_rate",
+        "severe_20pct_TRUE_EXHAUSTION_PRE14_7_transition_pulse_event_hit_rate",
+        "primary_TRUE_PRE21_0_transition_pulse_onset_count",
+        "primary_TRUE_qualifying_transition_pulse_onset_lead_distribution",
+        "raw_alarm_occupancy",
+        "raw_alarm_spell_duration_median_and_p90",
+        "total_transition_pulse_count_and_dates",
+        "selected_change_age_distribution",
+        "S1_S2_S3_S4_selected_axis_working_loglikelihood_contributions"
+      ],
+      "feature_families": [
+        "S1_MOMENTUM_DECELERATION_FIXED_FROM_0044",
+        "S2_TREND_DISAGREEMENT_FIXED_FROM_0044",
+        "S3_PRICE_STRUCTURE_FIXED_FROM_0044",
+        "S4_VOL_DOWNSIDE_FIXED_FROM_0044"
+      ],
+      "horizon": "DAILY_00UTC_RESEARCHER_EXPOSED_DEVELOPMENT_HISTORY_THROUGH_2026-08-02_WITH_LABEL_BLIND_NULL_CALIBRATION_LOCKED_BEFORE_FROZEN_0043_0044_EVENT_EVALUATION",
+      "universe": [
+        "BTC",
+        "ETH",
+        "SOL",
+        "BNB",
+        "XRP"
+      ],
+      "development_dataset_refs": [
+        "BRRK-EXHAUSTION-0046-EXPOSED-HIST-V1"
+      ],
+      "validation_dataset_refs": [],
+      "sealed_dataset_refs": [],
+      "declared_variant_budget": 1,
+      "actual_variants_evaluated": 0,
+      "parameter_candidate_count": 1,
+      "stopping_rule": "After this preregistration is merged, implement exactly one frozen 0046 detector and execute calibration/evaluation once under a separate result-bearing branch. Calibration must create and hash-lock CALIBRATION_LOCK before any frozen event taxonomy or macro-episode labels may be loaded. If the null VAR(1) is nonstationary, if calibration fails, or if any hard gate fails, close 0046 under its frozen failure classification. No detector, axis basis, baseline length, change-age range, subset mixture, null model, block length, seed, ARL target, threshold rule, pulse definition, evaluation window, hard gate, or uncertainty rule may change after any 0046 output is observed. No alternative model, BOCPD rescue, portfolio counterfactual, gross map, or transaction-cost economics may be evaluated under this ID.",
+      "success_criteria": [
+        "At least four usable primary-15% macro episodes exist, with TRUE_EXHAUSTION represented in at least two episodes and CONTINUATION_FALSE_TOP represented in at least two episodes; otherwise classify INSUFFICIENT_EPISODE_DIVERSITY and stop.",
+        "Primary -15% TRUE_EXHAUSTION event Transition Pulse hit rate during PRE14_7 is at least 0.50.",
+        "Primary -15% CONTINUATION_FALSE_TOP event Transition Pulse false rate during PRE14_0 is at most 0.34.",
+        "Primary -15% TRUE macro-episode Transition Pulse hit rate during PRE14_7 is at least 0.60.",
+        "Primary -15% CONTINUATION macro-episode Transition Pulse false rate during PRE14_0 is at most 0.50.",
+        "Severe -20% TRUE_EXHAUSTION event Transition Pulse hit rate during PRE14_7 is at least 0.57.",
+        "At least four primary TRUE_EXHAUSTION events have a causal Transition Pulse onset in PRE21_0.",
+        "Among primary TRUE_EXHAUSTION events with a qualifying PRE21_0 pulse onset, median onset lead is between 7 and 21 sessions inclusive.",
+        "Raw alarm occupancy over eligible evaluation sessions is at most 0.175.",
+        "Median consecutive raw-alarm spell duration is at most 7 sessions.",
+        "The 90th percentile consecutive raw-alarm spell duration is at most 14 sessions.",
+        "Label-blind calibration is hash-locked before event-label loading and truncated model-implied ARL0 is at least 365 sessions.",
+        "No threshold, change-age range, baseline length, axis role, null model, bootstrap rule, seed, hard gate, pulse definition or candidate architecture changes after any 0046 output is observed.",
+        "Canonical BRRK-0011, Phase 6, execution configuration, production authorization, signing and order-submission authority remain unchanged."
+      ],
+      "failure_criteria": [
+        "Any hard success criterion failure produces FAIL_NO_FUTURE_ONLY_PULSE_VALIDATION_ELIGIBILITY for BRRK-EXHAUSTION-PULSE-0046.",
+        "A fitted VAR(1) spectral radius greater than or equal to 1 produces FAIL_NULL_MODEL_NONSTATIONARY before event labels are loaded and closes the ID without outcome evaluation.",
+        "Failure of episode diversity produces INSUFFICIENT_EPISODE_DIVERSITY and closes the ID.",
+        "Any event-label or macro-episode access before CALIBRATION_LOCK, any observation after 2026-08-02, any post-result design modification, alternative detector/filter/null/seed/scale/subset prior, S2-only rescue, BOCPD/CUSUM rescue, cooldown/refractory rescue, portfolio counterfactual or gross mapping invalidates the run rather than becoming a research result."
+      ],
+      "allowed_followup": [
+        "Only a full PASS_FUTURE_ONLY_PULSE_VALIDATION_ELIGIBLE may create a new separately preregistered future-only validation research ID for the exact frozen 0046 detector and pulse semantics.",
+        "A future-only validation stage must use genuinely future decisions after its own preregistration boundary and remain separate from canonical BRRK-0011, Phase-6 scheduled-decision credit and production authority."
+      ],
+      "forbidden_followup": [
+        "No same-ID change to S1-S4 construction, axis basis, 64-session baseline, 3..32 change-age scan, one-sided slope GLR, equal 15-subset mixture, VAR(1) null, 7-vector residual block bootstrap, seeds, ARL target, pulse upcrossing rule, hard gates or uncertainty procedures.",
+        "No same-ID Kalman/state-space smoother, raw-difference CUSUM, BOCPD, HMM, supervised classifier, S2-only rule, CORE4 duplication, threshold grid, favorable-scale selection, cooldown, refractory period or hysteresis rescue.",
+        "No same-ID gross mapping, portfolio weights, transaction-cost optimization, canonical strategy modification, Phase 6 modification, leverage, shorting, signing, order submission or production authorization.",
+        "A 0046 PASS does not create dynamic-gross eligibility; dynamic-gross research remains forbidden until a separate future-only validation lineage independently earns any later stage."
+      ],
+      "researcher_decisions": [
+        "The exact design source is research/governance/BRRK_EXHAUSTION_PULSE_0046_DESIGN_FREEZE_2026-08-10.md as merged by PR #162 at b25faa350abf034af6abf961a9ec12e8834296fc; the preregistration copies that design rather than reopening design selection.",
+        "Primary detector coordinates are exactly the symmetric frozen 0044 axes S1/S2/S3/S4. CORE4 is benchmark-only because CORE4 already contains S1-S4 and using CORE4 plus S2/S3/S4 would duplicate exposed axis information in a sparse detector.",
+        "The exact frozen 0044 S1-S4 causal z-score construction is reused without modification: trailing 252 sessions, minimum 60 observations, clipping to [-3,+3], and all predictors at date t use information available no later than t.",
+        "No additional Kalman, local-linear state-space, EMA, L1 trend filter or raw differencing is applied before the primary detector.",
+        "At each current session t, candidate change ages are exactly tau=3..32 inclusive; candidate changepoint k=t-tau.",
+        "For each axis and candidate k, fit an OLS intercept/slope baseline on exactly the 64 sessions ending at k. Residual variance is max(RSS/62, 1e-8). Extrapolate this pre-change baseline into k+1..t.",
+        "Axis working statistic is U=sum(r*(S[k+r]-mu_hat[k+r]))/(sigma_hat*sqrt(sum(r^2))) for r=1..tau; axis log-likelihood contribution is 0.5*max(U,0)^2 so improving changes contribute zero deterioration evidence.",
+        "For every candidate k, aggregate all 15 non-empty subsets of the four axes with exactly equal 1/15 weight using log-mean-exp of summed axis contributions. No fitted sparsity probability, axis bonus or result-informed subset selection is permitted.",
+        "The multiscale score is the maximum over tau=3..32. Exact ties choose the smallest tau. Axis contributions at the selected age are descriptive only and receive no second threshold.",
+        "Threshold calibration is label-blind and must not access TRUE_EXHAUSTION/CONTINUATION/AMBIGUOUS labels, event dates, macro episodes, downside barrier dates or evaluation windows before CALIBRATION_LOCK.",
+        "Fit exactly one VAR(1) with intercept by OLS to the complete already-exposed S1-S4 DEVELOPMENT predictor path through 2026-08-02. This is explicitly label-blind but not claimed to be temporally unseen OOS calibration for earlier historical dates.",
+        "If VAR(1) spectral radius is >=1, stop FAIL_NULL_MODEL_NONSTATIONARY before labels. Otherwise center four-dimensional residual vectors, resample intact vectors with circular moving blocks of length 7, seed 460046, initialize at unconditional mean, use 256 burn-in sessions, and generate exactly 5,000 null paths of 1,460 post-burn-in sessions.",
+        "For threshold b, T_b is first score crossing; paths without crossing use 1461 only for the conservative truncated ARL calculation. Select the smallest threshold with mean(min(T_b,1461)) >=365 by deterministic 60-iteration bisection over [0,max_simulated_G+1].",
+        "CALIBRATION_LOCK must preserve threshold full precision, VAR coefficients, residual-data digest, seed, synthetic-score digest and code SHA before event taxonomy loading.",
+        "Raw alarm A_t is score>=threshold. Transition Pulse P_t is an upcrossing A_t=1 and A_{t-1}=0. The first valid detector session cannot emit a pulse.",
+        "There is no WATCH/RISK state, persistence vote, cooldown, refractory period, recovery threshold or hysteresis state machine. Persistent alarms produce one onset; stickiness remains visible through raw-alarm occupancy and spell duration.",
+        "Evaluation reuses the exact immutable 0043 taxonomy, 0044 macro episodes and 0045 PRE14_7/PRE14_0/PRE21_0 windows only after threshold lock. No observations after 2026-08-02 enter 0046 DEVELOPMENT results.",
+        "No daily IID p-values are permitted. Event uncertainty uses 10,000 macro-episode cluster bootstrap replicates with seed 460047. Occupancy/spell uncertainty uses 10,000 circular 21-session block bootstrap replicates with seed 460048. Confidence intervals are descriptive and cannot rescue failed point-estimate gates.",
+        "The raw alarm occupancy ceiling 0.175 is explicitly result-informed from failed 0045 WATCH+RISK occupancy about 34.38% and demands approximately a 50% reduction; it is not independent validation evidence.",
+        "BOCPD is methodologically plausible but excluded from 0046 to prevent a same-ID model tournament. Any BOCPD investigation requires a later new research ID and must preserve the immutable 0046 outcome.",
+        "All 0046 history is researcher-exposed DEVELOPMENT. Even a full PASS only authorizes a separately preregistered future-only validation stage and does not create dynamic-gross, canonical or production authority."
+      ],
+      "research_process_complexity": {
+        "declared_parameter_candidates": [
+          "PRIMARY_AXES=S1_S2_S3_S4_FIXED_FROM_0044",
+          "PRECHANGE_BASELINE=OLS_64",
+          "CHANGE_AGE_SCAN=3_TO_32_INCLUSIVE",
+          "AXIS_SCORE=ONE_SIDED_SLOPE_WORKING_GLR",
+          "SUBSET_AGGREGATION=ALL_15_NONEMPTY_SUBSETS_EQUAL_WEIGHT",
+          "NULL_MODEL=VAR1_OLS_INTERCEPT",
+          "NULL_RESIDUAL_BOOTSTRAP=CIRCULAR_MOVING_BLOCK_LENGTH_7",
+          "NULL_PATHS=5000",
+          "NULL_SEED=460046",
+          "NULL_BURN_IN=256",
+          "NULL_PATH_LENGTH=1460",
+          "ARL0_TRUNC_TARGET=365",
+          "THRESHOLD_BISECTION_ITERATIONS=60",
+          "PULSE=THRESHOLD_UPCROSSING_ONLY",
+          "EVENT_CLUSTER_BOOTSTRAP=10000_SEED_460047",
+          "DAILY_BLOCK_BOOTSTRAP=10000_BLOCK21_SEED_460048"
+        ],
+        "actual_parameter_candidates_evaluated": [],
+        "universes_evaluated": [
+          "0044_BINANCE_SPOT_BTC_ETH_SOL_BNB_XRP_PLUS_CANONICAL_BRRK_NAV"
+        ],
+        "horizons_evaluated": [
+          "PRE14_7",
+          "PRE14_0",
+          "PRE21_0",
+          "CHANGE_AGE_SCAN_3_TO_32"
+        ],
+        "rebalance_variants": [],
+        "feature_representations": [
+          "S1_S2_S3_S4_FIXED_FROM_0044"
+        ],
+        "special_cases_introduced": [
+          "LABEL_BLIND_CALIBRATION_LOCK_BEFORE_EVENT_TAXONOMY",
+          "SYMMETRIC_ALL_NONEMPTY_AXIS_SUBSET_MIXTURE",
+          "THRESHOLD_UPCROSSING_PULSE_WITHOUT_HYSTERESIS",
+          "ANTI_STICKINESS_OCCUPANCY_AND_SPELL_GATES"
+        ],
+        "validation_exposure_event_refs": [
+          "BRRK-EXHAUSTION-PULSE-0046-DEVELOPMENT-DATA-REGISTRATION-20260810T161900Z"
+        ],
+        "related_family_trials": 1
+      },
+      "lineage_edges": [
+        {
+          "relation": "RESULT_INFORMED",
+          "ref_research_id": "BRRK-EXHAUSTION-STATE-0044",
+          "provenance_status": "FACT",
+          "evidence_ref": "research/brrk_exhaustion_state_0044/PRIMARY_RESULT.json"
+        },
+        {
+          "relation": "RESULT_INFORMED",
+          "ref_research_id": "BRRK-EXHAUSTION-TRIGGER-0045",
+          "provenance_status": "FACT",
+          "evidence_ref": "research/brrk_exhaustion_trigger_0045/PRIMARY_RESULT.json"
+        }
+      ],
+      "result_status": "PREREGISTERED_NOT_RUN",
+      "failure_reason": null,
+      "promotion_state": "NONE",
+      "evidence_refs": [],
+      "decision_refs": [
+        "research/brrk_exhaustion_pulse_0046/README.md",
+        "research/brrk_exhaustion_pulse_0046/PREREGISTRATION.json",
+        "research/governance/BRRK_EXHAUSTION_PULSE_0046_DESIGN_FREEZE_2026-08-10.md"
+      ],
+      "production_relevance": "Research-only result-informed transition-pulse feasibility study on already exposed DEVELOPMENT history. A full PASS can only make a separately preregistered future-only pulse-validation stage eligible; it cannot create dynamic-gross eligibility, alter canonical BRRK, modify Phase 6 or confer production authority.",
+      "production_authorized": false,
+      "provenance_status": "FACT",
+      "governed_path_prefixes": [
+        "research/brrk_exhaustion_pulse_0046/"
+      ],
+      "notes": [
+        "0044 passed frozen low-dimensional state-discrimination gates and remains immutable.",
+        "0045 failed frozen trigger sensitivity/timing gates with zero qualifying PRE21_0 new onsets and remains immutable; dynamic-gross research is not eligible from 0045.",
+        "Issue #160 first reframed the problem from persistent state level to new deterioration transition. PR #162 then froze one exact architecture before formal 0046 preregistration.",
+        "The original Issue #160 sketch CORE4+S2+S3+S4 was rejected before preregistration because CORE4 already contains S1-S4 and would duplicate exposed S2/S3/S4 information in a coordinate-sparse detector.",
+        "An extra latent Kalman/local-linear smoother and BOCPD secondary candidate were also removed before preregistration to reduce researcher degrees of freedom and avoid same-ID rescue paths.",
+        "The complete S1-S4 predictor path is already researcher-exposed DEVELOPMENT and may be used for label-blind null calibration; this does not create temporally unseen OOS evidence for earlier historical dates.",
+        "Dynamic gross, portfolio economics, canonical BRRK changes, Phase-6 changes and all production/security authority remain explicitly out of scope."
+      ]
     }
   ],
   "research_governance_debt": [
@@ -2045,7 +2223,6 @@
         "P5.1-EVENT-TAXONOMY-V1",
         "P5.2-FEATURE-FAMILIES-V1",
         "P5.3-STATE-MODEL-STRUCTURE-V1",
-        "P5.3-MARKET-STATE-PERMISSION-SEPARATION-V2",
         "P5.4-FIXED-STATE-GROSS-BEHAVIOR-V1",
         "P5.5-JOINT-PROFILE-MAP-VALIDATION-V1",
         "BEAR-SHORT-0001"
