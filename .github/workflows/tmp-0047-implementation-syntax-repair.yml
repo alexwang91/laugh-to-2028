@@ -1,0 +1,51 @@
+name: Temporary 0047 implementation syntax repair
+
+on:
+  push:
+    branches:
+      - research/brrk-beta-handoff-0047-implementation
+    paths:
+      - .github/workflows/tmp-0047-implementation-syntax-repair.yml
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/brrk-beta-handoff-0047-implementation
+          fetch-depth: 0
+      - name: Apply implementation-only deterministic fixes
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('research/brrk_beta_handoff_0047/engine.py')
+          s = p.read_text()
+          replacements = {
+              'frame.loc[:, REQUIRED_FIELDS].to_numpy(dtype=float)': 'frame.loc[:, list(REQUIRED_FIELDS)].to_numpy(dtype=float)',
+              'frames[asset].loc[expected, REQUIRED_FIELDS].copy()': 'frames[asset].loc[expected, list(REQUIRED_FIELDS)].copy()',
+              'if bool(target.loc[dt, "TARGET_AVAILABLE"]) and target.loc[dt, "DURABLE_CAUSE"] == primary_cause:\n                    spell_length += 1': 'cause_value = target.loc[dt, "DURABLE_CAUSE"]\n                if bool(target.loc[dt, "TARGET_AVAILABLE"]) and pd.notna(cause_value) and str(cause_value) == primary_cause:\n                    spell_length += 1',
+              '"same_episode": bool(panel.loc[dt, "EPISODE_ID"] == episode["episode_id"]),': '"same_episode": bool(pd.notna(panel.loc[dt, "EPISODE_ID"]) and int(panel.loc[dt, "EPISODE_ID"]) == int(episode["episode_id"])),',
+          }
+          for old, new in replacements.items():
+              assert old in s, old
+              s = s.replace(old, new, 1)
+          p.write_text(s)
+          PY
+          python -m py_compile research/brrk_beta_handoff_0047/engine.py research/brrk_beta_handoff_0047/run_once.py
+      - name: Remove temporary workflow and commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm .github/workflows/tmp-0047-implementation-syntax-repair.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git diff --cached --check
+          git commit -m 'research impl: repair 0047 pandas and nullable-value handling'
+          git push origin HEAD:research/brrk-beta-handoff-0047-implementation
