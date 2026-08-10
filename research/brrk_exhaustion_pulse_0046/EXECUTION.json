@@ -43,7 +43,7 @@
     "label_data_accessed_during_calibration": false,
     "event_taxonomy_loaded_during_calibration": false,
     "artifact_id": 9074623455,
-    "artifact_digest": "sha256:2938e8c0a776255848b13990200cd77bec85ab15e143596a477fc08f3b63c2a0",
+    "artifact_digest": "sha256:2938e8c0a14d30a750503d7fc0710cfe72db2066a4a2ba058518b11019b3c2a0",
     "predictor_file_sha256": "a82d41513995888cf4c9d39e66e4a09fa72649ffe84528377a5040b08bae693c",
     "calibration_lock_file_sha256": "8ce129b1254e6cdb110486d3f1791851f6b4b9d18771b6dec2c39f7b5acade6f",
     "full_primary_result_file_sha256": "5c0e9aa4864b0044d5033573be78cdee3c0802db2d8b98d24fc0afcc21abbf8c",

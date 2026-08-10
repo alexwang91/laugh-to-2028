@@ -8,7 +8,7 @@
   "valid_result_run_attempt": 1,
   "valid_result_head_sha": "88f7c7e769352ea9d7b4cac881d2836678576b8e",
   "artifact_id": 9074623455,
-  "artifact_digest": "sha256:2938e8c0a776255848b13990200cd77bec85ab15e143596a477fc08f3b63c2a0",
+  "artifact_digest": "sha256:2938e8c0a14d30a750503d7fc0710cfe72db2066a4a2ba058518b11019b3c2a0",
   "primary_result_sha256": "5c0e9aa4864b0044d5033573be78cdee3c0802db2d8b98d24fc0afcc21abbf8c",
   "run1_lock_hash_reproduced": "cba7aa3406c58ec80e391c389ea076439912d6bc3abecdfb89911739be1f2445",
   "result_status": "FAIL_NO_FUTURE_ONLY_PULSE_VALIDATION_ELIGIBILITY",
