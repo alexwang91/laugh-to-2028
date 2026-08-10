@@ -1,10 +1,10 @@
 # BRRK Current State
 
 Last updated: 2026-08-10
-Handoff PR: **#157**
-Handoff branch: `research/brrk-exhaustion-state-0044-runonce`
-Authoritative baseline main at branch creation: `223d00202242d2d7e8eeffc489367e8078408604`
-Latest merged research PR at branch creation: **#156**
+Handoff PR: **#158**
+Handoff branch: `research/brrk-exhaustion-trigger-0045-prereg`
+Authoritative baseline main at branch creation: `23fd7a050cf8c543470fc48a2286cc75ff9fdafc`
+Latest merged research PR at branch creation: **#157**
 
 Status: **authoritative current-state handoff candidate**
 
@@ -25,6 +25,7 @@ BRRK-WINNER-0001                  ONE-SHOT PASS / CLOSED
 BRRK-WINNER-ROBUSTNESS-0002       ONE-SHOT PASS / FUTURE-ONLY VALIDATION ELIGIBLE / CLOSED
 BRRK exhaustion event study 0043 COMPLETE DIAGNOSTIC / 7-14D SIGNAL FEASIBLE / TRIGGER NOT READY
 BRRK exhaustion state 0044       PASS / TRIGGER STAGE ELIGIBLE / CLOSED
+BRRK exhaustion trigger 0045     PREREGISTERED / NOT RUN / NO GROSS AUTHORITY
 Program timeline dashboard        READ-ONLY V5 / PROFESSIONAL FUND TERMINAL
 Phase 7                           MONITOR_ONLY / LAUNCH BLOCKED
 Phase 8                           TRIGGER ABSENT / NOT RUN
@@ -237,6 +238,27 @@ Result-informed component evidence is preserved without same-ID reweighting. S2 
 
 The only authorized research continuation is a new, separately preregistered trigger-stage ID. Canonical BRRK-0011, the 40/60 winner lineage, Phase 6 and all production/security authority remain unchanged.
 
+## BRRK-EXHAUSTION-TRIGGER-0045 — preregistered, not run
+
+PR #158 freezes exactly one result-informed causal state machine before any 0045 result exists. It reuses immutable 0044 CORE4, uses S2 trend disagreement only as confirmation, and S3 price structure only for slow recovery confirmation. S5 volume/OBV is excluded because 0044 preserved negative evidence.
+
+```text
+states                         HEALTHY / DECELERATION / WATCH / RISK / RECOVERY
+percentiles                    trailing 252 prior sessions / current excluded / min 60
+DECELERATION entry             CORE4>=60p OR S2>=60p / 2-of-3
+WATCH entry                    CORE4>=65p AND S2>=65p / 2-of-3
+RISK entry                     CORE4>=75p AND S2>=80p / 2-of-3
+WATCH/RISK recovery entry      CORE4<=45p AND S2<=45p AND S3<=50p / 5 consecutive
+RECOVERY minimum hold          5 sessions
+HEALTHY repair confirmation    CORE4/S2/S3<=55p / 3-of-5 after hold
+history end                    2026-08-02
+portfolio gross mapping        FORBIDDEN UNDER 0045
+```
+
+The primary question is whether WATCH can appear 7–14 days before genuine exhaustion while continuation false alarms remain controlled, severe events escalate to RISK near the peak, and hysteresis avoids premature clearing. All evidence is researcher-exposed DEVELOPMENT history.
+
+Only a full 0045 PASS can make a separately preregistered dynamic-gross stage eligible. No canonical BRRK, Phase 6 or production/security authority changes occur.
+
 ## Dashboard V5
 
 Public read-only dashboard remains:
@@ -267,12 +289,12 @@ The BRRK-WINNER development and robustness PASS results do not change any of the
 
 `DRIFT_0`.
 
-PR #157 closes a research-only state diagnostic. It adds immutable 0044 evidence and updates research lifecycle metadata only. No `execution/**`, canonical BRRK mathematics, Phase-6 observation, leverage/shorting, signing, order submission or production authority changes occur.
+PR #158 is pre-result trigger research governance only. No 0045 result, gross mapping, portfolio economics, `execution/**`, canonical BRRK mathematics, Phase-6 observation or production authority changes occur.
 
 ## Exact next task
 
-1. Merge PR #157 only after the temporary 0044 execution/finalizer workflows are removed and final governance/no-drift/P3.2/Phase-6/handoff CI is green.
-2. Preserve `BRRK-EXHAUSTION-STATE-0044` as closed `PASS_TRIGGER_STAGE_ELIGIBLE`; never rerun or retune it.
-3. If continuing, preregister a new `BRRK-EXHAUSTION-TRIGGER` research ID before defining HEALTHY/DECELERATION/WATCH/RISK/RECOVERY transitions, persistence, thresholds or asymmetric re-entry rules.
-4. Treat S2 strength and S5 negative volume evidence as result-informed DEVELOPMENT inputs only; do not retrospectively modify CORE4.
-5. Do not run dynamic-gross portfolio economics until a separately frozen trigger stage passes. Phase 6 continues independently and all production/signing/order-submission authority remains false.
+1. Merge PR #158 only after its formal owner/data registration, atomic-history requirement, no-drift, P3.2, Phase-6 and handoff checks are green.
+2. Preserve 0045 as `PREREGISTERED_NOT_RUN`; no result-bearing file may exist in the preregistration PR.
+3. After merge only, implement the exact frozen percentile/state/persistence/hysteresis machine on a separate branch.
+4. Execute exactly one 0045 candidate. Any gate failure closes the ID; no threshold/persistence rescue is permitted.
+5. Do not map WATCH/RISK to gross exposure unless 0045 fully passes and a new dynamic-gross research ID is preregistered. Phase 6 and all production/signing/order authority remain unchanged.

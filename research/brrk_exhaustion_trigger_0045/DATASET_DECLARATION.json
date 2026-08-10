@@ -1,0 +1,31 @@
+{
+  "dataset_slice": {
+    "dataset_slice_id": "BRRK-EXHAUSTION-0045-EXPOSED-HIST-V1",
+    "dataset_id": "CANONICAL-BRRK-PNL-PLUS-BINANCE-SPOT-OHLCV",
+    "dataset_version": "0044-result-artifact-sha256-b109b610710b00904c924680a63305579f3f3c4c799d539906e0853629ddd378",
+    "source": "BRRK_EXHAUSTION_STATE_0044_FROZEN_HISTORY_AND_0043_BINANCE_SPOT_UTC_DAILY_KLINES",
+    "assets": ["BTC", "ETH", "SOL", "BNB", "XRP", "BRRK0011_BASELINE"],
+    "fields": ["daily_open", "daily_high", "daily_low", "daily_close", "daily_volume", "canonical_brrk_nav", "canonical_brrk_defensive_scale_proxy"],
+    "resolution": "1D",
+    "start": "2020-08-01T00:00:00Z",
+    "end": "2026-08-02T00:00:00Z",
+    "transformation": "RECOMPUTE_FROZEN_0044_CORE4_S2_S3_THEN_CAUSAL_TRAILING_PERCENTILES_AND_FIXED_0045_STATE_MACHINE",
+    "pit_publication_semantics": "RESEARCHER_EXPOSED_DEVELOPMENT_HISTORY; all state inputs and percentile ranks at date t use information no later than t; retrospective future information is permitted only for the already frozen event labels and macro-episode grouping; no observations after 2026-08-02 may enter 0045",
+    "data_budget": "DEVELOPMENT",
+    "contamination_state": "RESEARCHER_EXPOSED_HISTORY",
+    "consumed": true,
+    "researcher_exposed_history": true,
+    "provenance_status": "FACT",
+    "evidence_refs": ["research/brrk_exhaustion_state_0044/PRIMARY_RESULT.json", "research/brrk_exhaustion_state_0044/RESULT.md", "research/brrk_exhaustion_state_0044/run_once.py"]
+  },
+  "exposure_event": {
+    "exposure_id": "BRRK-EXHAUSTION-TRIGGER-0045-DEVELOPMENT-DATA-REGISTRATION-20260810T124300Z",
+    "research_id": "BRRK-EXHAUSTION-TRIGGER-0045",
+    "dataset_slice_ref": "BRRK-EXHAUSTION-0045-EXPOSED-HIST-V1",
+    "timestamp": "2026-08-10T12:43:00Z",
+    "release_type": "RAW_DATA",
+    "result_informed_followup": true,
+    "provenance_status": "FACT",
+    "evidence_ref": "research/brrk_exhaustion_state_0044/PRIMARY_RESULT.json"
+  }
+}
