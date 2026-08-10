@@ -1,0 +1,132 @@
+{
+  "research_id": "BRRK-EXHAUSTION-STATE-0044",
+  "result_status": "PASS_TRIGGER_STAGE_ELIGIBLE",
+  "window": {
+    "start": "2022-12-10",
+    "end": "2026-08-02",
+    "sessions": 1332
+  },
+  "execution_binding": {
+    "pre_result_green_sha": "f6fd1fc3425fefdc6bd024fa032a065accab7c6e",
+    "pre_result_infrastructure_failure": {
+      "workflow_run_id": 31387906469,
+      "workflow_run_number": 1,
+      "head_sha": "952e70d3c0765a370f3dda11c1353bfaac9bd04d",
+      "diagnostic_executed": false,
+      "artifact_created": false,
+      "reason": "temporary one-shot workflow path was correctly blocked by no_drift before diagnostic execution"
+    },
+    "valid_result_workflow_run_id": 31388103016,
+    "valid_result_workflow_run_attempt": 1,
+    "valid_result_workflow_run_number": 2,
+    "trigger_head_sha": "9affc7572dd0feefb14fe41e2aea7904c3a132ba",
+    "artifact_id": 9062525981,
+    "artifact_digest": "sha256:b109b610710b00904c924680a63305579f3f3c4c799d539906e0853629ddd378",
+    "full_result_sha256": "687ff49d8db8baf54a1cfafcf8863c848011800b6c74689ab0534796ac86ff29",
+    "artifact_summary_sha256": "96eeeb4627bc115c6b7752ddf903f290c34b62345512738a4030623e4c212ae0",
+    "result_payload_sha256_without_self_hash": "1b0c3a87737f0d4cf48b20694fa614fc38fcc24732212544fab4ea5350b563c7"
+  },
+  "source_reproduction": {
+    "status": "MATCHED_0043_FROZEN_TAXONOMY",
+    "candidate_peak_count": 16,
+    "panel_counts": {
+      "down_10pct": {"TRUE_EXHAUSTION": 12, "CONTINUATION_FALSE_TOP": 4, "AMBIGUOUS": 0},
+      "down_15pct": {"TRUE_EXHAUSTION": 9, "CONTINUATION_FALSE_TOP": 6, "AMBIGUOUS": 1},
+      "down_20pct": {"TRUE_EXHAUSTION": 7, "CONTINUATION_FALSE_TOP": 6, "AMBIGUOUS": 3}
+    },
+    "canonical_nav_sha256": "73d97a38e5595261915d513d2c63d4cd11c31414f820b82fd0431c7f0b895721",
+    "canonical_defensive_scale_sha256": "ccc6f3c3e42c745d401b58de00a689df8c2b1852e577ddd2bd8021bcdc4c71b3",
+    "market_ohlcv_sha256": {
+      "BTC": "336116d030227406b62bdac6bad8215b7044d6bf8aa60760a7b9911d6579bfeb",
+      "ETH": "84543642a46071a6277709d0a97940236bfb98fdada4240a1225d175230d961b",
+      "SOL": "aef5eb51161b15d1cfe916ef9108876443ceb05615c0929c9438afd520c32788",
+      "BNB": "89ec9927d9b71e8334c9e58f73003f6013ed1e03954dca0d98fba8d16163d94d",
+      "XRP": "db3b1d3b55eb6e8b75ad1693b7bdce542b8c3a7352cac9f27e2802c904e8a9d7"
+    },
+    "preregistration_sha256": "9e7ae18537c1b1b86d2c2012b9d23de0569c80cdd6825dc5fa1a9927c426c207"
+  },
+  "primary_metrics": {
+    "primary_15_PRE14_7_CORE4_cross_episode_auc": 0.75,
+    "primary_15_PRE14_7_CORE4_event_auc": 0.7777777777777778,
+    "primary_15_PRE7_0_CORE4_cross_episode_auc": 0.7361111111111112,
+    "severe_20_PRE14_7_CORE4_cross_episode_auc": 0.75,
+    "episode_diversity": {
+      "usable_episode_count": 7,
+      "true_episode_count": 5,
+      "continuation_episode_count": 4
+    },
+    "leave_one_episode_out": {
+      "valid_check_count": 8,
+      "min_auc": 0.6538461538461539,
+      "median_auc": 0.7386363636363636,
+      "max_auc": 0.8846153846153846,
+      "checks": [
+        {"excluded_episode_id": 0, "auc": 0.75},
+        {"excluded_episode_id": 1, "auc": 0.7857142857142857},
+        {"excluded_episode_id": 2, "auc": 0.6538461538461539},
+        {"excluded_episode_id": 3, "auc": 0.7857142857142857},
+        {"excluded_episode_id": 4, "auc": 0.7272727272727273},
+        {"excluded_episode_id": 5, "auc": 0.7272727272727273},
+        {"excluded_episode_id": 6, "auc": 0.8846153846153846},
+        {"excluded_episode_id": 7, "auc": 0.6785714285714286}
+      ]
+    }
+  },
+  "axis_evidence": {
+    "primary_15_PRE14_7_cross_episode_auc": {
+      "CORE4": 0.75,
+      "CORE5": 0.6759259259259259,
+      "S1_MOMENTUM_DECELERATION": 0.5648148148148148,
+      "S2_TREND_DISAGREEMENT": 0.744047619047619,
+      "S3_PRICE_STRUCTURE": 0.6759259259259259,
+      "S4_VOL_DOWNSIDE": 0.5833333333333334,
+      "S5_VOLUME_CONFIRMATION": 0.5
+    },
+    "primary_15_PRE7_0_cross_episode_auc": {
+      "CORE4": 0.7361111111111112,
+      "CORE5": 0.6064814814814814,
+      "S1_MOMENTUM_DECELERATION": 0.3472222222222222,
+      "S2_TREND_DISAGREEMENT": 0.8928571428571429,
+      "S3_PRICE_STRUCTURE": 0.6805555555555556,
+      "S4_VOL_DOWNSIDE": 0.5694444444444444,
+      "S5_VOLUME_CONFIRMATION": 0.5277777777777778
+    },
+    "severe_20_PRE14_7_cross_episode_auc": {
+      "CORE4": 0.75,
+      "CORE5": 0.7037037037037037,
+      "S1_MOMENTUM_DECELERATION": 0.5925925925925926,
+      "S2_TREND_DISAGREEMENT": 0.8333333333333333,
+      "S3_PRICE_STRUCTURE": 0.7314814814814814,
+      "S4_VOL_DOWNSIDE": 0.5833333333333334,
+      "S5_VOLUME_CONFIRMATION": 0.5
+    }
+  },
+  "negative_evidence": {
+    "CORE5_volume_confirmation_improved_CORE4": false,
+    "PRE14_7_CORE5_minus_CORE4_cross_episode_auc": -0.07407407407407407,
+    "PRE7_0_CORE5_minus_CORE4_cross_episode_auc": -0.12962962962962976,
+    "interpretation": "Volume confirmation did not add incremental discrimination in the frozen secondary representation and cannot be used to rescue or redefine CORE4 under this research ID."
+  },
+  "state_axis_effective_rank": 3.067945991579842,
+  "hard_gates": {
+    "episode_diversity": true,
+    "primary_cross_episode_auc_ge_0_70": true,
+    "primary_event_auc_ge_0_68": true,
+    "severe_cross_episode_auc_ge_0_75": true,
+    "loeo_min_ge_0_55": true,
+    "loeo_median_ge_0_68": true,
+    "construction_and_authority": true
+  },
+  "authority": {
+    "researcher_exposed_development_only": true,
+    "independent_oos": false,
+    "trigger_stage_eligible": true,
+    "trigger_defined": false,
+    "portfolio_economics_executed": false,
+    "canonical_strategy_changed": false,
+    "phase6_observation_changed": false,
+    "production_authorized": false,
+    "signature_authorized": false,
+    "order_submission_authorized": false
+  }
+}
