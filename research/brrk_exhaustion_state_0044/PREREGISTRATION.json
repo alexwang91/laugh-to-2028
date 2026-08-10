@@ -1,0 +1,148 @@
+{
+  "research_id": "BRRK-EXHAUSTION-STATE-0044",
+  "research_family_id": "BRRK_EXHAUSTION_STATE_CONTROL",
+  "research_domain": "RISK_CONTROL",
+  "research_governance_version": 1,
+  "governance_mode": "PROGRAM_GOVERNED_V1",
+  "objective_type": "RISK_CONTROL",
+  "created_at": "2026-08-10T11:54:00Z",
+  "created_before_result": true,
+  "question": "Can a frozen low-dimensional exhaustion-state representation, distilled from the already exposed BRRK-EXHAUSTION-EVENT-STUDY-0043 diagnostics, preserve useful 7-14 day discrimination between genuine BRRK exhaustion tops and continuation false tops when dependence is evaluated at the macro-episode level rather than by treating every local peak as independent?",
+  "hypothesis": "Most of the useful advance exhaustion information found in diagnostic 0043 is concentrated in four state axes: momentum deceleration, fast-versus-slow trend disagreement, price-structure deterioration, and volatility/downside asymmetry. A fixed equal-weight CORE4 state score should retain meaningful cross-episode discrimination before severe drawdowns without needing the redundant 48-feature vote, fitted weights, trigger search, or portfolio-economic tuning.",
+  "hypothesis_origin": "RESULT_INFORMED_BY_BRRK_EXHAUSTION_EVENT_STUDY_0043_RESEARCHER_EXPOSED_DIAGNOSTIC",
+  "economic_mechanism": "The canonical BRRK trend architecture can remain long-horizon positive while faster momentum, local price structure, and downside-risk geometry deteriorate. The candidate state representation measures those distinct deterioration dimensions directly and treats repeated failed rallies inside one unrecovered drawdown as dependent observations belonging to one macro episode. The study evaluates signal discrimination only; it does not alter BRRK targets or gross exposure.",
+  "primary_target": "episode_aware_advance_discrimination_of_true_exhaustion_vs_continuation_without_trigger_or_portfolio_translation",
+  "primary_metric": "cross_episode_pairwise_auc_primary_15pct_PRE14_7_CORE4_EQUAL",
+  "secondary_metrics": [
+    "event_level_auc_primary_15pct_PRE14_7_CORE4_EQUAL",
+    "cross_episode_pairwise_auc_severe_20pct_PRE14_7_CORE4_EQUAL",
+    "cross_episode_pairwise_auc_primary_15pct_PRE7_0_CORE4_EQUAL",
+    "leave_one_episode_out_cross_episode_auc_min_median_max_primary_15pct_PRE14_7_CORE4_EQUAL",
+    "CORE5_VOLUME_CONFIRMATION_incremental_auc_vs_CORE4_at_PRE14_7_and_PRE7_0",
+    "episode_count_and_class_episode_coverage",
+    "state_axis_pairwise_correlation_and_effective_rank"
+  ],
+  "feature_families": [
+    "S1_MOMENTUM_DECELERATION",
+    "S2_TREND_DISAGREEMENT",
+    "S3_PRICE_STRUCTURE",
+    "S4_VOL_DOWNSIDE",
+    "S5_VOLUME_CONFIRMATION_SECONDARY_ONLY"
+  ],
+  "horizon": "DAILY_00UTC_2022-12-10_THROUGH_2026-08-02_RESEARCHER_EXPOSED_DEVELOPMENT_HISTORY_WITH_0043_EVENT_TAXONOMY_AND_MACRO_EPISODE_DEPENDENCE_CONTROL",
+  "universe": [
+    "BTC",
+    "ETH",
+    "SOL",
+    "BNB",
+    "XRP"
+  ],
+  "development_dataset_refs": [
+    "BRRK-EXHAUSTION-0044-EXPOSED-HIST-V1"
+  ],
+  "validation_dataset_refs": [],
+  "sealed_dataset_refs": [],
+  "declared_variant_budget": 2,
+  "actual_variants_evaluated": 0,
+  "parameter_candidate_count": 2,
+  "stopping_rule": "After this preregistration is merged, execute exactly one complete diagnostic run evaluating the frozen CORE4 equal-weight state representation and the frozen CORE5-with-volume secondary diagnostic representation on the exact 0043 historical window and event taxonomy. CORE4 controls all pass/fail eligibility. CORE5 may only report incremental information and may not rescue a CORE4 failure. No state axis, representative feature, normalization rule, event rule, episode rule, severity panel, warning window, score weight, success gate, or variant may be changed after any 0044 result is observed. No trigger threshold and no portfolio economics may be evaluated under this ID.",
+  "success_criteria": [
+    "At least four mechanically defined macro episodes contain usable primary-15% TRUE_EXHAUSTION or CONTINUATION_FALSE_TOP events, with TRUE_EXHAUSTION represented in at least two episodes and CONTINUATION_FALSE_TOP represented in at least two episodes; otherwise classify INSUFFICIENT_EPISODE_DIVERSITY and stop.",
+    "Primary cross-episode pairwise AUC for CORE4 on PRE14_7 in the primary -15% panel is at least 0.70.",
+    "Primary event-level AUC for CORE4 on PRE14_7 in the primary -15% panel is at least 0.68.",
+    "Cross-episode pairwise AUC for CORE4 on PRE14_7 in the severe -20% panel is at least 0.75.",
+    "When each usable macro episode is removed in turn, the minimum recomputed primary PRE14_7 CORE4 cross-episode AUC across valid leave-one-episode-out influence checks is at least 0.55 and the median is at least 0.68.",
+    "CORE4 contains exactly four equal-weight state axes and no fitted label-dependent weights; every predictor at date t uses information available no later than t.",
+    "Canonical BRRK-0011, Phase 6, execution configuration, production authorization, signing and order-submission authority remain unchanged."
+  ],
+  "failure_criteria": [
+    "Any hard success criterion failure produces FAIL_NO_TRIGGER_STAGE_ELIGIBILITY for BRRK-EXHAUSTION-STATE-0044.",
+    "Failure of episode diversity produces INSUFFICIENT_EPISODE_DIVERSITY and closes the ID without trigger-stage eligibility.",
+    "Any use of post-peak information in a predictor, any data after 2026-08-02, any fitted feature weight, any post-result feature pruning/addition, any threshold search, or any portfolio counterfactual invalidates the run rather than becoming a research result.",
+    "CORE5 volume-confirmation results cannot replace the CORE4 primary metric or rescue a CORE4 failure."
+  ],
+  "allowed_followup": [
+    "Only a full CORE4 PASS may make a separately preregistered BRRK-EXHAUSTION-TRIGGER research stage eligible to define WATCH/RISK state transitions, persistence and asymmetric recovery rules.",
+    "CORE5 volume-confirmation evidence may inform a later new-ID trigger preregistration only as explicitly result-informed DEVELOPMENT evidence; it has no same-ID selection authority.",
+    "A later dynamic-gross portfolio translation requires its own research ID after a trigger-stage PASS."
+  ],
+  "forbidden_followup": [
+    "No same-ID reintroduction of breadth, correlation, alternative RSI/MACD variants, alternative trend horizons, PCA, tree models, neural models, alternative feature weights, alternative episode grouping, or alternative event barriers after observing 0044 results.",
+    "No same-ID trigger percentile, probability cutoff, persistence search, WATCH/RISK threshold, recovery threshold, hysteresis setting, or gross-risk mapping.",
+    "No use of observations after 2026-08-02 as development evidence under this ID.",
+    "No modification of canonical BRRK-0011, the frozen 40/60 winner lineage, Phase 6 scheduled-decision credit, Phase 7/8 authority, leverage, shorting, signing, order submission, or production authorization."
+  ],
+  "researcher_decisions": [
+    "Diagnostic 0043 is already researcher-exposed and found 48 oriented raw indicators but effective rank about 7.2046 with 14 |corr|>=0.85 pairs; 0044 is therefore explicitly result-informed structural simplification rather than independent validation.",
+    "The primary CORE4 state axes are frozen before 0044 result release: S1 momentum deceleration, S2 trend disagreement, S3 price structure, and S4 volatility/downside asymmetry.",
+    "S1 is the equal-weight mean of causal-z f1_trend_decay7 and f1_macd_hist_decay5. RSI14/RSI28 are excluded from CORE4 because 0043 showed redundant oscillator representations; this exclusion is result-informed and cannot later be reversed under 0044.",
+    "S2 is the equal-weight mean of causal-z f7_slow_fast_disagreement and f7_disagreement_persistence. The exactly duplicated f1_fast_below_slow representation is excluded.",
+    "S3 is the equal-weight mean of causal-z f2_prior_peak_shortfall, f2_days_since_high60, and f2_ma20_slope10 to represent failed-high geometry, time since high, and local trend-structure slope.",
+    "S4 is the equal-weight mean of causal-z f4_rv10_vs_rv30, f4_down_up_semivol, and f4_pnl_dd_duration_interaction to represent volatility acceleration, downside asymmetry, and strategy drawdown depth-duration stress.",
+    "CORE4 is the equal-weight mean of S1 through S4. No fitted weights, coefficient estimation, hyperparameter tuning, feature selection, or threshold selection are permitted.",
+    "The only secondary representation is CORE5, defined as the equal-weight mean of CORE4's four axes plus S5 volume confirmation, where S5 is the equal-weight mean of causal-z f3_down_up_volume_ratio and f3_price_obv_divergence20. CORE5 is diagnostic-only and cannot control pass/fail.",
+    "0043 F5 breadth and F6 correlation families are not part of 0044 candidate construction because their primary PRE14_7 family AUCs were weak and because the goal is dimensional simplification; they may not be re-added after results under this ID.",
+    "All raw-feature orientation and causal normalization reuse the exact 0043 trailing-252-session z-score with minimum 60 observations and clipping to [-3,+3].",
+    "Candidate peaks, the +2% fresh-high barrier, -10/-15/-20 downside panels, 60-session outcome window, and PRE14_7/PRE7_0 windows reuse the exact frozen 0043 definitions without change.",
+    "Macro episodes are formed mechanically from the sorted 0043 candidate peaks: the first candidate starts an episode; subsequent candidate peaks remain in that episode until canonical BRRK NAV first reaches at least +2% above that episode anchor peak NAV; the first candidate after that recovery starts a new episode. If recovery never occurs before the historical end, all later candidates remain in the same episode.",
+    "Cross-episode pairwise AUC compares TRUE_EXHAUSTION event scores against CONTINUATION_FALSE_TOP event scores only when the two events belong to different macro episodes. Pairwise concordance is averaged within each ordered TRUE-episode/CONTINUATION-episode pair and then equally across episode pairs, so one broad drawdown with multiple failed rallies cannot dominate by event count.",
+    "Leave-one-episode-out statistics are influence checks on the frozen score, not model refits or independent OOS claims: each episode is removed once and cross-episode AUC is recomputed on the remaining usable episodes.",
+    "All evidence remains researcher-exposed DEVELOPMENT history. A PASS only authorizes the next research stage, never canonical or production promotion."
+  ],
+  "research_process_complexity": {
+    "declared_parameter_candidates": [
+      "CORE4_EQUAL=S1_S2_S3_S4_FIXED_EQUAL_WEIGHT",
+      "CORE5_VOLUME_DIAGNOSTIC=S1_S2_S3_S4_S5_FIXED_EQUAL_WEIGHT_SECONDARY_ONLY"
+    ],
+    "actual_parameter_candidates_evaluated": [],
+    "universes_evaluated": [
+      "0043_BINANCE_SPOT_BTC_ETH_SOL_BNB_XRP_PLUS_CANONICAL_BRRK_NAV"
+    ],
+    "horizons_evaluated": [
+      "PRE14_7_PRIMARY_WARNING_WINDOW",
+      "PRE7_0_NEAR_PEAK_SECONDARY_WINDOW"
+    ],
+    "rebalance_variants": [],
+    "feature_representations": [
+      "CORE4_EQUAL_FIXED",
+      "CORE5_VOLUME_CONFIRMATION_SECONDARY_ONLY"
+    ],
+    "special_cases_introduced": [
+      "MACRO_EPISODE_GROUPING_BY_PLUS_2PCT_RECOVERY_ABOVE_EPISODE_ANCHOR",
+      "CROSS_EPISODE_EQUAL_EPISODE_PAIR_WEIGHTED_AUC",
+      "LEAVE_ONE_EPISODE_OUT_INFLUENCE_CHECK"
+    ],
+    "validation_exposure_event_refs": [
+      "BRRK-EXHAUSTION-STATE-0044-DEVELOPMENT-DATA-REGISTRATION-20260810T115400Z"
+    ],
+    "related_family_trials": 2
+  },
+  "lineage_edges": [
+    {
+      "relation": "RESULT_INFORMED",
+      "ref_research_id": "BRRK-0011",
+      "provenance_status": "FACT",
+      "evidence_ref": "research/governance/BRRK_EXHAUSTION_EVENT_STUDY_0043_RESULT.md"
+    }
+  ],
+  "result_status": "PREREGISTERED_NOT_RUN",
+  "failure_reason": null,
+  "promotion_state": "NONE",
+  "evidence_refs": [],
+  "decision_refs": [
+    "research/brrk_exhaustion_state_0044/README.md",
+    "research/brrk_exhaustion_state_0044/PREREGISTRATION.json"
+  ],
+  "production_relevance": "Research-only result-informed structural simplification of exhaustion diagnostics on researcher-exposed historical data. A full PASS can only make a separately preregistered trigger-design stage eligible; it cannot alter BRRK targets, Phase 6, or production authority.",
+  "production_authorized": false,
+  "provenance_status": "FACT",
+  "governed_path_prefixes": [
+    "research/brrk_exhaustion_state_0044/"
+  ],
+  "notes": [
+    "0043 found primary PRE14_7 total-score AUC 0.7333 and severe-20% PRE14_7 AUC 0.8571, with strongest early information in BRRK disagreement, volatility/downside, price structure and momentum decay.",
+    "0043's simple high-percentile absolute trigger was too insensitive; 0044 therefore does not design or test a trigger.",
+    "0044 deliberately reduces dimensionality and controls episode dependence before any state-transition or portfolio translation work.",
+    "The 0043 diagnostic itself was recorded under research/governance rather than as a formal PROGRAM_GOVERNED_V1 path; 0044 does not conceal this limitation and uses BRRK-0011 as the registered lineage anchor while citing the exact 0043 result as the result-informed evidence source."
+  ]
+}
