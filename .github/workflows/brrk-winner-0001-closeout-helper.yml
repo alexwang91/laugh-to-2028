@@ -1,0 +1,54 @@
+name: Temporary BRRK-WINNER-0001 registry closeout
+
+on:
+  push:
+    branches:
+      - research/brrk-winner-0001-runonce
+    paths:
+      - research/brrk_winner_0001/CLOSEOUT_REGISTRY.marker
+
+permissions:
+  contents: write
+
+jobs:
+  closeout:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/brrk-winner-0001-runonce
+      - name: Update canonical research registry deterministically
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('config/research_registry.json')
+          d=json.loads(p.read_text())
+          r=next(x for x in d['records'] if x.get('research_id')=='BRRK-WINNER-0001')
+          if r.get('actual_variants_evaluated') not in (0,1):
+              raise SystemExit('unexpected actual_variants_evaluated')
+          r['actual_variants_evaluated']=1
+          r['result_status']='PASS_ROBUSTNESS_STAGE_ELIGIBLE'
+          r['failure_reason']=None
+          r['promotion_state']='ROBUSTNESS_STAGE_ELIGIBLE_ONLY'
+          r['evidence_refs']=['research/brrk_winner_0001/PRIMARY_RESULT.json','research/brrk_winner_0001/EXECUTION.json']
+          rpc=r['research_process_complexity']
+          rpc['actual_parameter_candidates_evaluated']=['SINGLE_ALT_BTC_SHARE=0.40;SINGLE_ALT_WINNER_SHARE=0.60']
+          rpc['validation_exposure_event_refs']=['BRRK-WINNER-0001-DEVELOPMENT-RUN-20260810T071111Z']
+          r['evidence_scorecard']={
+            'temporal_novelty':'RESEARCHER_EXPOSED_DEVELOPMENT_HISTORY_NOT_TEMPORALLY_UNSEEN',
+            'statistical_sufficiency':'ONE_PREREGISTERED_VARIANT_FULL_1332_SESSION_WINDOW_ALL_FROZEN_HARD_GATES_PASS',
+            'governance_integrity':'HIGH_PREREGISTERED_ONE_SHOT_BASELINE_REPRODUCED_NO_RETUNING',
+            'operational_realism':'MATCHED_P3_3_5BPS_5PCT_L1_BAND_SIMULATOR_DEVELOPMENT_ONLY',
+            'derived_confidence':'MEDIUM_PENDING_SEPARATELY_PREREGISTERED_ROBUSTNESS',
+            'confidence_rule_ref':'research/brrk_winner_0001/RUN_INTERFACE.json'
+          }
+          note='One frozen 40/60 candidate executed once in workflow run 31364706555; all preregistered hard gates passed. This creates robustness-stage eligibility only, not canonical or production authority.'
+          if note not in r.setdefault('notes',[]): r['notes'].append(note)
+          p.write_text(json.dumps(d,indent=2,ensure_ascii=False)+'\n')
+          PY
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add config/research_registry.json
+          git commit -m 'Research: close BRRK-WINNER-0001 registry after one-shot PASS'
+          git push origin HEAD:research/brrk-winner-0001-runonce
