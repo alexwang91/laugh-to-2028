@@ -1,11 +1,10 @@
 # BRRK Current State
 
 Last updated: 2026-08-10
-Last merged research-governance PR: **#163**
-Current working branch: `research/brrk-exhaustion-pulse-0046-runonce`
-Authoritative baseline main at branch creation: `48a140a1d58cba859d537e7dee0ad399c541527a`
+Last merged governance PR: **#161**
+Current working branch: `research/brrk-exhaustion-pulse-0046-prereg`
+Authoritative baseline main at branch creation: `b25faa350abf034af6abf961a9ec12e8834296fc`
 Latest merged research execution PR: **#159**
-Current implementation PR: **#164**
 
 Status: **authoritative current-state update candidate**
 
@@ -29,7 +28,7 @@ BRRK-WINNER-ROBUSTNESS-0002       ONE-SHOT PASS / FUTURE-ONLY VALIDATION ELIGIBL
 BRRK exhaustion event study 0043 COMPLETE DIAGNOSTIC / 7-14D SIGNAL FEASIBLE / TRIGGER NOT READY
 BRRK exhaustion state 0044       PASS / TRIGGER STAGE ELIGIBLE / CLOSED
 BRRK exhaustion trigger 0045     FAIL / NO DYNAMIC-GROSS ELIGIBILITY / CLOSED
-BRRK exhaustion pulse 0046       IMPLEMENTED_PRE_RESULT_NOT_RUN / PR #164 CANDIDATE
+BRRK exhaustion pulse 0046       PREREGISTERED_NOT_RUN / PR #163 CANDIDATE / NO RESULT
 Program timeline dashboard        READ-ONLY V5 / PROFESSIONAL FUND TERMINAL
 Phase 7                           MONITOR_ONLY / LAUNCH BLOCKED
 Phase 8                           TRIGGER ABSENT / NOT RUN
@@ -38,7 +37,7 @@ Production                        NO_CHANGE
 
 ## Phase 6 remains frozen and independent
 
-The canonical BRRK-0011 strategy remains unchanged while future-only Phase-6 observation continues. Genuine scheduled credit requires a real `schedule` event plus create-only evidence and a separate hash-bound receipt. Pull-request runs, reruns, replay and manual dispatch do not create scheduled-decision credit.
+The canonical BRRK-0011 strategy remains unchanged while future-only Phase-6 observation continues. Genuine scheduled credit still requires a real `schedule` event plus create-only evidence and a separate hash-bound receipt. Pull-request runs, reruns, replay and manual dispatch do not create scheduled-decision credit.
 
 Frozen acceptance remains:
 
@@ -54,18 +53,26 @@ signature_authorized               false
 order_submission_authorized        false
 ```
 
-The first rule-eligible scheduled decision remains `2026-08-10T00:00:00Z`, GitHub Actions run `31346545269`, attempt 1.
+### First genuine future-only scheduled decision — credited existing durable evidence
+
+The first rule-eligible canonical decision after the ARM marker was `2026-08-10T00:00:00Z`. GitHub Actions run `31346545269`, attempt 1, was a real `event=schedule` run on `main` and completed successfully. The persisted collector metadata records `scheduled_decision_credit_candidate=true`.
+
+Evidence binding independently checked from the existing Actions artifacts:
 
 ```text
+decision timestamp                 2026-08-10T00:00:00Z
 observed_at                        2026-08-10T01:14:21Z
 workflow SHA                       405d2f75221ba97734973dd9bee2df04c9ecbcd2
+
 evidence artifact id              9047515515
 evidence artifact digest          sha256:35324a527eec2e10c44ad8ccd124c0074a3b23f64be4352651037b4209a811a3
 receipt artifact id               9047516114
 receipt artifact digest           sha256:f2299a0dca868c3fcedc4cafd561104930f8b8f52e8ba71d88e0f423d4461380
+
 evidence object digest            6e0f090101c37724c1b2eaccea77358028a4f3f72dd9e397e3526211145377d5
 input provenance digest           813ab7ed64b2c50504371c698c7f100e227851f40c28c0dde6e9415b6694307b
 shadow record digest              23b4eba438f66b38fdfb0af1661eddfe44d0139424d709a4e3ced3547dff1585
+
 shadow status                     SHADOW_COMPUTED_NO_AUTHORITY
 shadow alerts                     []
 target reference parity           PASS
@@ -73,6 +80,8 @@ target gross absolute difference  0.0
 max target-weight abs difference  0.0
 offline reference L1 drift        0.0
 ```
+
+The integrated shadow code fails closed and emits alerts for feature-reference mismatch, target-reference mismatch, incomplete data, instrument-identity mismatch, cost-model failure, unexplained state transition, and daily-schedule drift. The persisted observation contains no alerts and exact independent target parity. For this decision the accounting record therefore records zero observed critical reconciliation errors, zero unexplained target drift and zero schedule failures.
 
 Current Phase-6 progress:
 
@@ -87,11 +96,11 @@ elapsed requirement                  NOT MET
 live acceptance                      MEASUREMENT_INCONCLUSIVE_TIME_DEPENDENT
 ```
 
-PR #161 merged the fail-closed accounting index at `c1308fa20e85de69cfa0acf3decb56619d74df58`. `research/governance/phase6_observation_ledger.json` remains an accounting index only; the durable Actions evidence plus separate receipt remain the authority. Never backfill a missed timestamp or count replay/manual dispatch as scheduled credit.
+PR #161 merged the fail-closed accounting index and anti-backfill/anti-manual/anti-duplicate/receipt-binding validation at merge SHA `c1308fa20e85de69cfa0acf3decb56619d74df58`. The repository-side `research/governance/phase6_observation_ledger.json` remains an accounting index only. It cannot create credit. The durable Actions evidence artifact plus separate receipt remain the evidence authority. Manual dispatch, reruns, replay and duplicate timestamps remain non-crediting.
 
-## BRRK Opportunity-Cost Audit 0042 — immutable diagnostic
+## BRRK Opportunity-Cost Audit 0042 — merged
 
-PR #149 merged the deterministic audit at `405d2f75221ba97734973dd9bee2df04c9ecbcd2`.
+PR #149 merged deterministic diagnostic audit at `405d2f75221ba97734973dd9bee2df04c9ecbcd2`.
 
 ```text
 V1 CAGR                              61.3150%
@@ -108,11 +117,11 @@ BRRK target-change median gap        2 days
 BRRK maximum target-change gap       120 days
 ```
 
-The defensive scaler is not the first optimization target because it improved historical CAGR and MDD while preserving right-tail growth days. Portfolio construction remains the stronger observable rigidity.
+Interpretation remains frozen: the defensive scaler is not the first optimization target because it improved both historical CAGR and MDD while preserving V1 top-growth days. The strongest observable rigidity is portfolio construction: BTC remains at least half of gross on about 70% of alt-active days.
 
-## BRRK-WINNER lineage — closed development evidence
+## BRRK-WINNER-0001 — closed development PASS
 
-`BRRK-WINNER-0001` remains a closed one-shot development PASS:
+PR #151 merged the exactly-once 40/60 single-alt development candidate. It remains researcher-exposed DEVELOPMENT evidence and must not run again.
 
 ```text
 canonical CAGR                         65.3057%
@@ -124,29 +133,92 @@ canonical Calmar                       1.9477
 candidate Calmar                       2.0835
 best-20 log-growth capture             103.5595%
 turnover ratio                         1.1229x
+all frozen hard gates                  PASS
 result_status                          PASS_ROBUSTNESS_STAGE_ELIGIBLE
 ```
 
-`BRRK-WINNER-ROBUSTNESS-0002` also remains closed. The unique robustness run was Actions `31374176442`, attempt 1. T1 and T3 temporal CAGR gates passed; T2 was negative evidence with candidate CAGR delta about `-1.7365 pp`. Full-horizon 10 bps and 20 bps stress gates passed. Final classification remains:
+No canonical BRRK, Phase 6 or production authority changed.
+
+## BRRK-WINNER-ROBUSTNESS-0002 — closed robustness PASS
+
+PR #152 merged the preregistration. PR #153 executed the frozen robustness panel exactly once after the pre-result green baseline `561ecee69d30253aa398caf51d589cb03b5cfe47`. The unique economic run was GitHub Actions `31374176442`, attempt 1, from trigger SHA `346e26e3906df2416a21a40223e8791c3dfef86a`.
+
+Evidence binding:
+
+```text
+artifact id                        9057294415
+artifact digest                    sha256:8eb08d0080fae185953ae50a15b05bc9994d6c06da33761bd2125dc89037313c
+PRIMARY_RESULT SHA256              cf149308df5aea1a0cc1315432a7effd0e163cda21e6df0b8f39cf0b6ce6fdf0
+baseline reproduced before release true
+actual variants evaluated          1
+retuning performed                 false
+```
+
+Frozen 5 bps primary reproduction remained unchanged:
+
+```text
+canonical CAGR                     65.3057%
+candidate CAGR                     69.6917%
+canonical MDD                      -33.5292%
+candidate MDD                      -33.4499%
+canonical Calmar                   1.9477
+candidate Calmar                   2.0835
+right-tail capture                 103.5595%
+turnover ratio                     1.1229x
+```
+
+Temporal robustness at 5 bps:
+
+```text
+T1  candidate CAGR delta  +22.5832 pp   PASS
+    MDD deterioration       1.7459 pp   PASS
+T2  candidate CAGR delta   -1.7365 pp   NEGATIVE EVIDENCE / CAGR GATE FAIL
+    MDD deterioration       0.0000 pp   PASS
+T3  candidate CAGR delta   +2.3255 pp   PASS
+    MDD deterioration      ~0.0000 pp   PASS
+aggregate CAGR gate         2 / 3       PASS
+```
+
+T2 is retained as negative evidence. It may not be removed, relabeled or used to justify same-ID rescue tuning.
+
+Transaction-cost robustness on the full 1,332-session path:
+
+```text
+10 bps  canonical CAGR 63.2574%   candidate 67.3311%   +4.0737 pp
+        canonical Calmar 1.8583   candidate 1.9805     PASS
+20 bps  canonical CAGR 59.2440%   candidate 62.7142%   +3.4702 pp
+        canonical Calmar 1.6910   candidate 1.7888     PASS
+        MDD deterioration 0.0244 pp                         PASS
+```
+
+All preregistered temporal aggregate, drawdown, 10/20 bps CAGR/Calmar, right-tail, turnover, long-only and gross-cap gates passed. Final classification:
 
 ```text
 PASS_FUTURE_ONLY_VALIDATION_STAGE_ELIGIBLE
 ```
 
-This lineage remains researcher-exposed DEVELOPMENT evidence. It does not alter canonical BRRK or production authority.
+This result is still result-informed, researcher-exposed DEVELOPMENT robustness evidence. It is not independent OOS evidence and does not create temporal novelty.
+
+`RUN_ONCE.marker` is permanent. `BRRK-WINNER-ROBUSTNESS-0002` is closed and may not run again. No 45/55, 35/65, 30/70 or other rescue split, alternative temporal partition, transaction-cost grid or hard-gate change is permitted under this ID.
 
 ## BRRK-EXHAUSTION-EVENT-STUDY-0043 — complete diagnostic
 
-0043 remains closed read-only DEVELOPMENT evidence. The immutable execution binding remains:
+PR #155 is a read-only DEVELOPMENT diagnostic created after merged PR #153. It mechanically separates genuine local exhaustion tops from ordinary pullbacks / continuation false tops and measures causal 7–14 day deterioration signals. User-provided dates are sanity checks only and do not define labels, thresholds, or score weights.
+
+Unique execution and evidence binding:
 
 ```text
 workflow run                         31381953131 / attempt 1
 artifact id                          9060216534
+artifact digest                      sha256:6df40bbe0112082f045cd4da7b461753382c6980a348609a35bed9967f1520c4
+full result SHA256                   1ca030e544d6e3391143c9ec47e202f9585ce8a846e0e46be583c31258958b43
+source summary SHA256                82579688952e990809a01044378b40cd44ceba84142307686cfa8ae05158c278
+historical sessions                  1332
+mechanically detected peak candidates 16
+portfolio economics executed         false
 ```
 
-The 7–14 day exhaustion-ranking signal appears feasible, especially for severe drawdowns. ID 0043 is closed against result-informed pruning, reweighting, threshold rescue, dynamic-gross mapping, or portfolio-economic counterfactual.
-
-Primary `-15%` panel:
+Primary `-15%` competing-barrier panel:
 
 ```text
 TRUE_EXHAUSTION / CONTINUATION / AMBIGUOUS     9 / 6 / 1
@@ -155,28 +227,84 @@ PRE14_7 F7 BRRK disagreement AUC               0.7556
 PRE14_7 F4 volatility/downside AUC             0.7111
 PRE14_7 F1 momentum decay AUC                  0.6889
 PRE14_7 F2 price structure AUC                 0.6889
+PRE7_0 F4 volatility/downside AUC              0.8444
+PRE7_0 F7 BRRK disagreement AUC                0.8222
 ```
 
-Severe `-20%` PRE14_7 total-score AUC remained `0.8571`. The simple frozen absolute threshold caught only `2/9` primary true events despite `0/6` continuation false triggers. The 48 oriented features had effective rank about `7.2046`; redundancy remains binding negative evidence. No 0043 threshold rescue or portfolio translation is allowed.
+Severe `-20%` panel strengthens the one-to-two-week signal:
+
+```text
+TRUE_EXHAUSTION / CONTINUATION / AMBIGUOUS     7 / 6 / 3
+PRE14_7 total EXHAUSTION_SCORE AUC             0.8571
+PRE14_7 F7 BRRK disagreement AUC               0.8000
+PRE14_7 F2 price structure AUC                 0.7714
+PRE14_7 F4 volatility/downside AUC             0.7714
+```
+
+Important negative evidence remains binding: the frozen equal-weight absolute threshold is too insensitive. The 80th-percentile / 3-day rule catches only `2/9` primary true events, although it produces `0/6` continuation false triggers; those two hits lead by 10 and 21 days. No threshold is selected or rescued under ID 0043.
+
+The 48 oriented raw features collapse to about `7.2046` effective dimensions; 14 pairs have `|corr| >= 0.85`, including one exact duplicate between F1 and F7. Future work must deduplicate rather than count technical indicators as independent votes.
+
+Anchor sanity checks remain result-neutral: 2023-12-25 and 2024-03-31 are mechanically TRUE_EXHAUSTION; the January-2025 region maps to 2025-01-18 TRUE_EXHAUSTION; the October-2025 region maps to the nearby higher 2025-10-08 TRUE_EXHAUSTION. The 2024-11-24 region maps to 2024-11-22 and is AMBIGUOUS under the primary `-15% / 60-session` rule (`-11.77%` minimum), but TRUE_EXHAUSTION in the frozen `-10%` panel. The taxonomy is not altered to force the anchor to pass.
+
+Interpretation: a 7–14 day exhaustion-ranking signal appears feasible, especially for severe drawdowns, but the first equal-weight absolute trigger is not operationally ready. ID 0043 is closed against result-informed pruning, reweighting, threshold rescue, dynamic-gross mapping, or portfolio-economic counterfactual. Any continuation requires a new research ID with deduplicated state dimensions and episode/block-aware validation.
+
+Canonical BRRK-0011, Phase 6 and all production/security authority remain unchanged.
 
 ## BRRK-EXHAUSTION-STATE-0044 — PASS, closed
 
-0044 remains immutable `PASS_TRIGGER_STAGE_ELIGIBLE`. The unique valid result run was `31388103016`, artifact `9062525981`.
+PR #156 froze 0044 before result release. PR #157 implemented the frozen runner and released exactly one valid result after a fully green pre-result baseline. The historical evidence remains researcher-exposed DEVELOPMENT evidence, not independent OOS.
+
+Execution binding:
 
 ```text
-usable macro episodes                         7
-TRUE / CONTINUATION episode coverage        5 / 4
-15% PRE14_7 cross-episode AUC              0.750
-15% PRE14_7 event AUC                      0.778
-20% PRE14_7 cross-episode AUC              0.750
-LOEO minimum / median AUC                  0.654 / 0.739
+pre-result green SHA                 f6fd1fc3425fefdc6bd024fa032a065accab7c6e
+pre-result failed workflow run       31387906469 / NO DIAGNOSTIC / NO RESULT
+unique valid result workflow run     31388103016 / run number 2 / attempt 1
+trigger head SHA                     9affc7572dd0feefb14fe41e2aea7904c3a132ba
+artifact id                          9062525981
+artifact digest                      sha256:b109b610710b00904c924680a63305579f3f3c4c799d539906e0853629ddd378
+full result SHA256                   687ff49d8db8baf54a1cfafcf8863c848011800b6c74689ab0534796ac86ff29
+source taxonomy reproduction         MATCHED 0043 EXACTLY
 ```
 
-S2 trend disagreement remained the strongest exposed state axis. S5 volume confirmation remained negative evidence: adding it reduced CORE4 discrimination and S5 alone was approximately chance in primary PRE14_7. `RUN_ONCE.marker` is permanent. No 0044 rerun, reweighting, pruning, threshold search or gross mapping is allowed.
+Frozen CORE4 gate result:
+
+```text
+usable macro episodes                         7   PASS
+TRUE / CONTINUATION episode coverage        5 / 4 PASS
+15% PRE14_7 cross-episode AUC              0.750 PASS
+15% PRE14_7 event AUC                      0.778 PASS
+20% PRE14_7 cross-episode AUC              0.750 PASS
+LOEO minimum / median AUC                  0.654 / 0.739 PASS
+result_status                              PASS_TRIGGER_STAGE_ELIGIBLE
+```
+
+Result-informed component evidence is preserved without same-ID reweighting. S2 trend disagreement was strongest (`0.744` cross-episode AUC at PRE14_7, `0.893` at PRE7_0, `0.833` for severe PRE14_7). Secondary S5 volume confirmation was negative evidence: adding it reduced CORE4 cross-episode AUC from `0.750` to `0.676` at PRE14_7 and from `0.736` to `0.606` at PRE7_0; S5 alone was `0.500` at primary PRE14_7.
+
+0044 therefore establishes that a frozen low-dimensional exhaustion state retains useful advance discrimination after macro-episode dependence control. It **does not** define a trading trigger or gross-risk response. `RUN_ONCE.marker` is permanent and 0044 may not be rerun, reweighted, pruned, rescued or used for same-ID threshold/gross search.
+
+The only authorized research continuation is a new, separately preregistered trigger-stage ID. Canonical BRRK-0011, the 40/60 winner lineage, Phase 6 and all production/security authority remain unchanged.
 
 ## BRRK-EXHAUSTION-TRIGGER-0045 — FAIL, closed
 
-0045 remains immutable `FAIL_NO_DYNAMIC_GROSS_STAGE_ELIGIBILITY`. The unique valid result run was `31391109057`, artifact `9063704951`.
+PR #158 froze one trigger candidate before any result. PR #159 implemented it and released exactly one valid result after a fully green pre-result baseline. The historical evidence remains researcher-exposed DEVELOPMENT evidence, not independent OOS.
+
+Execution binding:
+
+```text
+pre-result green SHA                 669942a4bef3f32894f616b9b28e5001d81e82b9
+pre-result failed workflow run       31390711467 / NO DIAGNOSTIC / NO RESULT
+unique valid result workflow run     31391109057 / run number 2 / attempt 1
+trigger head SHA                     f9d4fba80bd07b8a5c67c5c3928f9081332809c7
+artifact id                          9063704951
+artifact digest                      sha256:0f8cd31ca3905d798194387622456fc8e59cb786376e57a6c135bdb2867c9c04
+full result SHA256                   06714848cbb8c812a655700c29362487fc9e77ef2638f57547c7340ee10a2682
+source taxonomy reproduction         MATCHED 0043 EXACTLY
+parent 0044                          PASS_TRIGGER_STAGE_ELIGIBLE
+```
+
+Frozen trigger result:
 
 ```text
 primary TRUE PRE14_7 WATCH/RISK            3 / 9 = 33.3% FAIL
@@ -185,50 +313,47 @@ primary TRUE episode hit                    2 / 5 = 40.0% FAIL
 primary CONT episode false                  0 / 5 = 0.0%  PASS
 severe TRUE PRE14_7 WATCH/RISK              3 / 7 = 42.9% FAIL
 severe TRUE PRE7_POST3 RISK                 2 / 7 = 28.6% FAIL
+primary CONT PRE14_POST3 RISK               0 / 6 = 0.0%  PASS
 qualifying TRUE PRE21_0 transition onsets             0    FAIL
-WATCH+RISK occupancy                       ~34.38%
+premature-clear gate                         no denominator FAIL
+result_status                       FAIL_NO_DYNAMIC_GROSS_STAGE_ELIGIBILITY
 ```
 
-The candidate was specific but too insensitive and too sticky. Zero PRE21_0 onsets are binding negative evidence. 0045 cannot be rescued with another threshold, persistence rule, S2-only variant, CORE4 weighting or hysteresis under the same ID. Dynamic gross is not eligible.
+The candidate is specific but too insensitive and too persistent for the requested one-to-two-week action trigger. WATCH plus RISK occupies about `34.38%` of the 1,332-session history, while non-HEALTHY states occupy about `52.70%`. The three primary TRUE PRE14_7 hits were `2024-06-05`, `2024-07-21`, and `2025-10-08`; important genuine exhaustion events `2023-12-25`, `2024-03-31`, and `2025-01-18` were missed. `2025-10-08` was WATCH/RISK in PRE14_7 but did not confirm RISK in PRE7_POST3.
 
-## BRRK-EXHAUSTION-PULSE-0046 — preregistered and implemented pre-result
+The zero PRE21_0 onset count is binding negative evidence: captured events were already in WATCH/RISK before the frozen lead window, so this machine acts more like a sticky risk regime than a precise 7–14 day transition trigger. No same-ID threshold, persistence, onset-window, S2-only, CORE4-weight or hysteresis rescue is allowed.
 
-### Formal boundaries already merged
+0045 is permanently closed and **does not authorize a dynamic-gross stage**. 0044's underlying state-discrimination PASS remains valid; what failed is this particular state-to-trigger translation. Any alternative trigger architecture requires a fresh result-informed research ID before evaluation.
 
-PR #162 merged the exact mathematical design at:
+Canonical BRRK-0011, the winner lineage, Phase 6, signing, order submission and production authority remain unchanged.
 
-```text
-b25faa350abf034af6abf961a9ec12e8834296fc
-```
+## BRRK-EXHAUSTION-PULSE-0046 — formal preregistration candidate, not run
 
-PR #163 then squash-merged the formal `PROGRAM_GOVERNED_V1` preregistration at:
+PR #163 is the preregistration-only continuation of the exact design frozen by PR #162. On this branch, `BRRK-EXHAUSTION-PULSE-0046` is registered as one `PROGRAM_GOVERNED_V1` candidate with the already exposed DEVELOPMENT slice through `2026-08-02`. No runner, calibration threshold, pulse date or historical outcome result exists.
 
-```text
-48a140a1d58cba859d537e7dee0ad399c541527a
-```
+The preregistration keeps the two design corrections that were made before formal registration:
 
-The preregistered DEVELOPMENT slice ends `2026-08-02`. There is exactly one declared candidate and zero evaluated variants.
+1. `CORE4 + S2 + S3 + S4` is rejected as the primary coordinate basis because CORE4 already contains S1–S4 and would implicitly duplicate S2/S3/S4. Primary coordinates remain exactly symmetric `S1/S2/S3/S4`; CORE4 is benchmark-only.
+2. No extra Kalman/local-linear latent-state smoother is used. The detector estimates a 64-session causal pre-change linear baseline directly for each axis and detects positive slope departure.
 
-### Frozen detector
+Frozen primary candidate:
 
 ```text
 S1 / S2 / S3 / S4 exactly from 0044
-    -> 64-session causal pre-change OLS baseline
-    -> one-sided positive slope working GLR per axis
-    -> equal mixture over all 15 non-empty subsets
-    -> maximum over change ages 3..32
-    -> label-blind VAR(1) null
-    -> intact 4D circular residual-vector bootstrap, block=7
-    -> 5,000 paths / seed 460046 / burn-in 256 / path 1,460
-    -> threshold for truncated ARL0 >=365
-    -> 60-iteration deterministic bisection
-    -> CALIBRATION_LOCK before taxonomy access
+    -> 64-session causal pre-change OLS baseline for each candidate changepoint
+    -> one-sided positive slope GLR per axis
+    -> equal mixture over all 15 non-empty subsets of the four axes
+    -> multiscale maximum over change ages 3..32 sessions
+    -> label-blind VAR(1) + 7-vector residual-block bootstrap null calibration
+    -> 5,000 null paths / seed 460046 / 256 burn-in / 1,460 evaluation sessions
+    -> threshold chosen prospectively for truncated model-implied ARL0 >=365
+    -> CALIBRATION_LOCK before any 0043/0044 event taxonomy may be loaded
     -> Transition Pulse = threshold upcrossing only
 ```
 
-`CORE4 + S2 + S3 + S4` remains rejected because CORE4 already contains all four axes. There is no extra Kalman/local-linear smoother. BOCPD, CUSUM, HMM, supervised classifier, S2-only rescue, cooldown, refractory period, persistence vote and hysteresis remain excluded.
+There is no WATCH/RISK state, persistence vote, cooldown, refractory period, recovery threshold or hysteresis machine. BOCPD remains excluded from 0046; any BOCPD study requires a later new research ID.
 
-### Frozen hard gates
+Frozen hard gates:
 
 ```text
 primary TRUE PRE14_7 event pulse hit          >=0.50
@@ -240,102 +365,35 @@ qualifying primary TRUE PRE21_0 onsets        >=4
 median qualifying onset lead                  7..21 sessions
 raw alarm occupancy                           <=0.175
 median raw-alarm spell                        <=7 sessions
-empirical-nearest-rank p90 alarm spell        <=14 sessions
+90th percentile raw-alarm spell               <=14 sessions
 label-blind truncated ARL0                    >=365
 ```
 
-A PASS can only create `PASS_FUTURE_ONLY_PULSE_VALIDATION_ELIGIBLE`. It does not create dynamic-gross eligibility.
+The occupancy ceiling is explicitly result-informed and demands roughly a 50% reduction from failed 0045 WATCH+RISK occupancy. It is not independent validation.
 
-### PR #164 implementation firewall
+A later 0046 PASS may at most produce `PASS_FUTURE_ONLY_PULSE_VALIDATION_ELIGIBLE`. It **does not** make dynamic gross eligible. Failure remains immutable and cannot be rescued under the same ID.
 
-PR #164 currently implements the frozen design without executing it. Runtime is split:
-
-```text
-prepare-predictors
-  raw causal inputs -> create-only PREDICTOR_PATH.json
-  only timestamp + frozen S1/S2/S3/S4 leave this stage
-
-calibrate
-  reads PREDICTOR_PATH only
-  calibration.py imports no raw market/NAV loader and no taxonomy/event/window code
-  -> create-only CALIBRATION_LOCK.json
-
-evaluate
-  validate lock payload hash + code SHA + predictor binding + ARL0 first
-  only then dynamically import evaluation/taxonomy code
-  -> exactly-once PRIMARY_RESULT
-```
-
-The following implementation semantics are frozen **before any calibration output**:
-
-1. null stopping time is 1-based from synthetic session 1; detector warm-up remains on the ARL clock;
-2. earliest PRE21_0 pulse controls onset lead if more than one pulse occurs;
-3. spell p90 uses empirical nearest rank `ceil(0.9*n)`;
-4. zero alarm spells imply median/p90 `0`;
-5. descriptive bootstrap intervals use 2.5% / 97.5% percentiles plus median and are never gating;
-6. daily block-bootstrap spell statistics use the concatenated circular resampled path;
-7. prefix-moment OLS and subset-product implementations must equal explicit reference calculations.
-
-### Pre-result falsification on PR #164
-
-The standing governance workflow originally did not discover tests under the formal 0046 path. Treating the initial green core as detector validation was therefore rejected. A test-only bridge was added at:
+Current lifecycle on PR #163 branch:
 
 ```text
-research/governance/test_brrk_exhaustion_pulse_0046_implementation.py
+0046 exact design                 FROZEN BY PR #162
+0046 formal PROGRAM_GOVERNED_V1  PREREGISTERED_NOT_RUN / MERGE PENDING
+0046 dataset/exposure row         REGISTERED ON PR BRANCH / DEVELOPMENT EXPOSED
+0046 declared variants            1
+0046 actual variants evaluated    0
+0046 runner                       NOT CREATED
+0046 RUN_INTERFACE                NOT CREATED
+0046 CALIBRATION_LOCK             NOT CREATED
+0046 calibration                  NOT RUN
+0046 threshold                    NONE
+0046 historical outcome result    NONE
+0046 portfolio economics          FORBIDDEN
+dynamic-gross eligibility         FALSE
+canonical BRRK change             NONE
+Phase-6 change                    NONE
 ```
 
-It changes no governance policy or workflow. It makes the existing immutable discovery command execute the 0046 synthetic suites.
-
-On PR #164 head `6c6c7ef54a661ceaf57a41b2d761c9479ac839da`, Actions run `31415282770` executed:
-
-```text
-python -m unittest discover -s research/governance -p 'test_*.py'
-Ran 162 tests in 0.534s
-OK
-```
-
-The 0046 bridge verified:
-
-- rolling prefix-moment OLS equals explicit 64-session `numpy.linalg.lstsq` reference fits;
-- fast equal-15-subset mixture equals explicit enumeration;
-- linear/no-acceleration score, positive deterioration, negative/improving one-sided behavior and smallest-age tie semantics;
-- first-valid-session cannot pulse and spell p90 nearest-rank semantics;
-- calibration source contains no raw market/NAV or event-taxonomy/window import path;
-- predictor materializer does not call event classification or macro-episode assignment;
-- S1-S4 feature names equal immutable 0044 constants;
-- `calibration.validate_lock` precedes dynamic evaluation-module import;
-- frozen calibration constants, deterministic bootstrap toy behavior and stopping-time clock;
-- zero-authority interface and absence of generated predictor/lock/result evidence.
-
-The same run also passed future research enforcement, final no-drift and Phase-6 live-observation safety. These checks establish implementation integrity only. They do **not** create historical 0046 evidence.
-
-Current 0046 lifecycle on PR #164 branch:
-
-```text
-exact design                         MERGED / IMMUTABLE / PR #162
-formal preregistration               MERGED / PR #163 / 48a140a...
-development exposure                 MERGED / RESEARCHER_EXPOSED / through 2026-08-02
-declared candidates                  1
-actual variants evaluated            0
-runner                               IMPLEMENTED PRE-RESULT
-RUN_INTERFACE                        IMPLEMENTED_PRE_RESULT_NOT_RUN
-PREDICTOR_PATH.json                  NOT CREATED
-historical VAR fit                   NOT RUN
-CALIBRATION_LOCK                     NOT CREATED
-calibration threshold                NONE
-event taxonomy loaded by 0046        FALSE
-PRIMARY_RESULT                       NONE
-EXECUTION                            NONE
-RUN_ONCE.marker                      NONE
-portfolio economics                  FORBIDDEN
-future-only pulse-validation eligible FALSE
-dynamic-gross eligibility            FALSE
-canonical BRRK change                NONE
-Phase-6 change                       NONE
-production authorization             NO_CHANGE / false
-```
-
-## Dashboard
+## Dashboard V5
 
 Public read-only dashboard remains:
 
@@ -359,29 +417,68 @@ order_submission_authorized      false
 first real short authority        NONE
 ```
 
-0046 design, preregistration and implementation do not change any of these fields.
+The BRRK-WINNER development and robustness PASS results, Phase-6 observation credit, and 0046 preregistration do not change any of these fields.
 
 ## Current drift assessment
 
 `DRIFT_0`.
 
-PR #164 changes only:
-
-- the governed `research/brrk_exhaustion_pulse_0046/**` implementation/interface/tests/README;
-- one `research/governance/**` test bridge that executes the formal 0046 synthetic suites through the standing CI command;
-- existing cross-chat status handoff files.
-
-It does not change `.github/workflows/**`, `execution/**`, the central research/dataset registries, formal 0046 preregistration mathematics, canonical BRRK, Phase-6 collector/schedule/evidence, leverage/shorting, signing, order submission or production authority. It contains no generated predictor artifact, calibration lock or result.
+The current working branch adds only the formal 0046 preregistration, its already exposed DEVELOPMENT dataset registration, fail-closed preregistration tests and this cross-chat handoff. It does not create a runner, calibration lock, threshold, pulse dates, outcome result or portfolio counterfactual. It does not change `execution/**`, canonical BRRK mathematics, the Phase-6 collector/schedule/evidence, leverage/shorting, signing, order submission or production authority.
 
 ## Exact next task
 
-1. Re-run PR #164 after this final handoff and require `Research governance core`, future-policy, final no-drift, P3.2 parity, Phase-0 baseline, Phase-6 shadow safety and PR handoff governance to remain green.
-2. Final-audit PR #164 for zero generated evidence: `PREDICTOR_PATH.json`, `CALIBRATION_LOCK*`, `PRIMARY_RESULT.json`, `EXECUTION.json`, `RUN_ONCE.marker` and `RESULT.md` must all remain absent.
-3. Merge PR #164 as **implementation-only** and immediately verify live `main` moved to the merge SHA.
-4. Treat the resulting merged fully green SHA as the 0046 pre-result code boundary. Do not change detector mathematics, null calibration, seeds, gates, pulse semantics or the implementation clarifications afterward.
-5. Create a separate controlled execution branch from that exact SHA.
-6. Materialize the create-only timestamp+S1-S4 predictor artifact and verify its payload/digest.
-7. Run label-blind calibration exactly once. If VAR spectral radius is `>=1`, close 0046 `FAIL_NULL_MODEL_NONSTATIONARY` before any label access. Otherwise write and hash-bind `CALIBRATION_LOCK` with threshold, code SHA and predictor/null provenance.
-8. Validate the lock before importing the evaluation module. Only then may the immutable 0043/0044 event taxonomy and macro episodes be loaded.
-9. Execute the frozen historical evaluation exactly once; retain PASS, FAIL or INSUFFICIENT without same-ID rescue.
-10. Do not map dynamic gross, evaluate portfolio economics, alter canonical BRRK, alter Phase 6, launch Phase 7, sign or submit orders, or confer production authority from 0046 DEVELOPMENT evidence.
+1. Require PR #163 final governance/no-drift/continuity/P3.2/Phase-6 checks to be green and retain all negative evidence.
+2. Squash-merge PR #163 only if the final diff remains preregistration-only, zero-result and zero-authority.
+3. Preserve Phase-6 automatic future-only observation independently at 00:00 UTC; 0046 must not alter Phase-6 evidence or credit.
+4. Preserve 0044 PASS and 0045 FAIL as immutable; never rerun, retune or rescue either ID.
+5. After PR #163 is merged, create a separate 0046 implementation branch from the new `main` and implement the frozen detector plus `RUN_INTERFACE` exactly.
+6. Establish a fully green pre-result implementation SHA before any calibration.
+7. Calibration must write and hash-bind `CALIBRATION_LOCK` before any event taxonomy or macro-episode labels may be loaded.
+8. Do not run outcome evaluation, map dynamic gross, evaluate portfolio economics, change canonical BRRK, alter Phase 6, or confer any production/security authority before the frozen lifecycle permits it.
+
+## PR #164 implementation handoff — supersedes the preregistration-stage handoff above
+
+The preceding PR #163 wording is retained as immutable cross-chat history. The live authoritative continuation is now: PR #163 actually squash-merged at `48a140a1d58cba859d537e7dee0ad399c541527a`; PR #164 implements the already-frozen 0046 candidate on branch `research/brrk-exhaustion-pulse-0046-runonce` and remains **pre-result**.
+
+```text
+0046 exact design                    MERGED / IMMUTABLE / PR #162
+0046 formal preregistration          MERGED / PR #163 / 48a140a1d58cba859d537e7dee0ad399c541527a
+0046 implementation                 IMPLEMENTED_PRE_RESULT_NOT_RUN / PR #164
+declared variants                   1
+actual variants evaluated           0
+PREDICTOR_PATH.json                 NOT CREATED
+historical VAR fit                  NOT RUN
+CALIBRATION_LOCK                    NOT CREATED
+threshold                           NONE
+event taxonomy loaded by 0046       FALSE
+PRIMARY_RESULT                      NONE
+EXECUTION                           NONE
+RUN_ONCE.marker                     NONE
+portfolio economics                 FORBIDDEN
+future-only pulse-validation eligible FALSE
+dynamic-gross eligibility           FALSE
+canonical BRRK change               NONE
+Phase-6 change                      NONE
+production gross cap                1.0
+production_authorized_components = []
+production_authorized               false
+signature_authorized                false
+order_submission_authorized         false
+```
+
+The implementation enforces a three-stage information firewall:
+
+```text
+prepare-predictors
+  raw causal inputs -> create-only timestamp + S1/S2/S3/S4 predictor artifact
+calibrate
+  reads predictor artifact only; no market/NAV or taxonomy/event/window imports
+  -> create-only hash/code-bound CALIBRATION_LOCK
+evaluate
+  validate lock payload hash + code SHA + predictor binding + ARL0 first
+  only then dynamically import evaluation/taxonomy code
+```
+
+Standing CI was explicitly extended through a test-only bridge under `research/governance/`; no workflow or policy was weakened. The immutable discovery command executed 162 tests including 0046 reference-equivalence, one-sided detector, pulse, firewall, frozen-constant and zero-authority suites. The implementation branch contains no generated predictor, lock or result evidence.
+
+The exact next task is to require the final PR #164 head to remain green across Research governance core, Phase 0-8 drift audit, PR handoff governance, P3.2 parity and Phase-6 integrated shadow safety; final-audit the diff for zero generated evidence; merge #164 as implementation-only; verify live `main` moved; then treat that merged SHA as the immutable pre-result code boundary. Only a separate controlled execution branch may materialize the predictor artifact and run label-blind calibration. If VAR spectral radius is `>=1`, close 0046 before labels. Otherwise write/hash-bind `CALIBRATION_LOCK`, validate it, and only then execute the frozen historical evaluation exactly once. Same-ID rescue, dynamic-gross mapping, portfolio economics, canonical BRRK changes, Phase-6 changes and production/security authority remain forbidden.
