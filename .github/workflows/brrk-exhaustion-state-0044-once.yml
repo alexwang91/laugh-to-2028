@@ -16,6 +16,7 @@ env:
   OPENBLAS_NUM_THREADS: '1'
   MKL_NUM_THREADS: '1'
   NUMEXPR_NUM_THREADS: '1'
+  PRE_RESULT_GREEN_SHA: 'f6fd1fc3425fefdc6bd024fa032a065accab7c6e'
 
 jobs:
   frozen-diagnostic:
@@ -33,12 +34,28 @@ jobs:
           cache-dependency-path: execution/plan-b-bot/requirements-dev.txt
       - name: Install pinned research runtime
         run: pip install -r execution/plan-b-bot/requirements-dev.txt
-      - name: Reconfirm frozen preregistration contract before result release
+      - name: Prove only temporary workflow differs from green pre-result head
+        shell: bash
+        run: |
+          test "$(git merge-base "$PRE_RESULT_GREEN_SHA" HEAD)" = "$PRE_RESULT_GREEN_SHA"
+          mapfile -t changed < <(git diff --name-only "$PRE_RESULT_GREEN_SHA"..HEAD)
+          printf 'changed_since_green=%s\n' "${changed[*]}"
+          test "${#changed[@]}" -eq 1
+          test "${changed[0]}" = '.github/workflows/brrk-exhaustion-state-0044-once.yml'
+      - name: Reconfirm frozen preregistration and runner contracts before result release
         run: |
           python -m unittest research.governance.test_brrk_exhaustion_state_0044_prereg -v
           python -m unittest research.brrk_exhaustion_state_0044.test_run_once_contract -v
           python -m research.governance.validate
-          python -m research.governance.no_drift
+      - name: Reconfirm original no-drift on exact green pre-result head
+        shell: bash
+        run: |
+          git worktree add --detach /tmp/0044-pre-result "$PRE_RESULT_GREEN_SHA"
+          (
+            cd /tmp/0044-pre-result
+            python -m research.governance.no_drift
+          )
+          git worktree remove --force /tmp/0044-pre-result
       - name: Execute frozen 0044 diagnostic exactly once
         run: |
           python -m research.brrk_exhaustion_state_0044.run_once \
