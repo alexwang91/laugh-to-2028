@@ -547,3 +547,69 @@ production_authorized = false
 signature_authorized = false
 order_submission_authorized = false
 ```
+
+## BRRK-BETA-HANDOFF-EVENT-STUDY-0047 — exact design freeze candidate
+
+PR #169 is the design-only candidate for the new BTC-to-Beta handoff anatomy study. The design file is `research/governance/BRRK_BETA_HANDOFF_EVENT_STUDY_0047_DESIGN_FREEZE_2026-08-11.md`.
+
+This stage is intentionally restricted to a `STAGE_1_INFORMATION_TEST / MECHANISM_TEST` question: after the canonical BTC fast trend enters a positive episode, does exposed history contain recurrent, duration-aware ETH/SOL durable leadership handoffs? It does not test portfolio weights or portfolio economics.
+
+Frozen scientific scope on the PR branch:
+
+```text
+primary universe                     BTC / ETH / SOL
+historical role                      DEVELOPMENT / RESEARCHER_EXPOSED_HISTORY
+history end                          2026-08-02
+BTC-positive episode                 maximal contiguous BTC_TREND_FAST >= 0
+causal trend horizons                20 / 60 / 120 / 240
+causal anatomy                       fast+slow absolute and relative trend
+relative acceleration                REL_FAST - REL_SLOW
+Beta breadth                         0 / 0.5 / 1 from ETH/SOL participation
+participation                        60-session trade-count surprise
+state age                            raw sessions since BTC-positive episode start
+realized durable target              same ETH/SOL uniquely beats BTC + other Beta at 20d and 60d while BTC > 0 at both horizons
+cross-correlation                    episode-preserving lags -14..+14
+VAR                                  pooled episode-preserving VAR(7)
+Granger/Wald                         all six directed pairs / descriptive only
+IRF                                  generalized BTC shock / horizons 0..14
+episode bootstrap                    10,000 / seed 470047
+oracle                               one-switch BTC->ETH/SOL hindsight bound only
+```
+
+Frozen stage gates for any later valid 0047 execution require at least 5 target-eligible BTC-positive episodes, at least 3 episodes with a primary durable handoff, episode-level prevalence >=0.50, and at least one ETH-cause plus one SOL-cause episode. These are modeling-sufficiency gates only; even a PASS would at most make a separately preregistered duration-aware handoff-model study eligible.
+
+Explicitly forbidden under 0047:
+
+```text
+40/60 / 20/80 / 0/100 or any portfolio allocation test
+CAGR / Sharpe / Calmar / MDD optimization
+hazard-model fitting under this ID
+HMM / classifier / boosting / neural-net candidate
+fixed N-day switch delay chosen from result
+BOCPD rescue
+adding BNB after result
+changing 20/60 target horizons after result
+Edge Registry admission from descriptive DEVELOPMENT evidence
+canonical BRRK / Phase-6 / production / signing / order changes
+```
+
+Current 0047 lifecycle:
+
+```text
+0047 exact design                    PR #169 / FROZEN DESIGN-ONLY CANDIDATE
+0047 formal PROGRAM_GOVERNED_V1     NOT REGISTERED
+0047 dataset/exposure row            NOT CREATED
+0047 runner                          NOT CREATED
+0047 historical result               NONE
+0047 actual variants evaluated       0
+0047 portfolio economics             FORBIDDEN
+canonical BRRK change                NONE
+Phase-6 change                       NONE
+production_authorized                false
+signature_authorized                 false
+order_submission_authorized          false
+```
+
+Method-compliance checkpoint at this handoff: leader→follower→new-leader framing, canonical BTC-positive episode, fast/slow relative structure, breadth, trade-count participation, state age, episode-preserving cross-correlation/VAR(7)/Granger/generalized IRF, complete-episode bootstrap and oracle isolation are all present in the frozen design. No portfolio translation has been introduced.
+
+Exact next step: require PR #169 final governance/no-drift/continuity checks to be green and verify the final diff contains only the design freeze plus this CURRENT_STATE handoff. If so, squash-merge #169. Only after the merged design boundary exists may a separate preregistration-only branch register 0047 and the exposed DEVELOPMENT dataset. No runner or result is allowed in that preregistration PR.
