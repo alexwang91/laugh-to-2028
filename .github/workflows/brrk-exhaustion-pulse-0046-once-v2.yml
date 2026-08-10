@@ -1,0 +1,211 @@
+name: BRRK exhaustion pulse 0046 once v2
+
+on:
+  push:
+    branches:
+      - research/brrk-exhaustion-pulse-0046-execute-once-v2
+    paths:
+      - .github/workflows/brrk-exhaustion-pulse-0046-once-v2.yml
+
+permissions:
+  contents: read
+
+env:
+  PYTHONHASHSEED: '0'
+  OMP_NUM_THREADS: '1'
+  OPENBLAS_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+  NUMEXPR_NUM_THREADS: '1'
+  REPAIRED_GREEN_SHA: 'aef20ae0e452fa8d737a64846ba433aebcb55628'
+  RUN1_CODE_SHA: 'd365c6d80bf198354fbaacd0e63bad6e0f4fe0c2'
+  RUN1_LOCK_HASH: 'cba7aa3406c58ec80e391c389ea076439912d6bc3abecdfb89911739be1f2445'
+
+jobs:
+  reproduce-lock-and-evaluate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/brrk-exhaustion-pulse-0046-execute-once-v2
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: execution/plan-b-bot/requirements-dev.txt
+
+      - name: Install pinned research runtime
+        run: pip install -r execution/plan-b-bot/requirements-dev.txt
+
+      - name: Prove only temporary workflow differs from repaired main
+        shell: bash
+        run: |
+          test "$(git merge-base "$REPAIRED_GREEN_SHA" HEAD)" = "$REPAIRED_GREEN_SHA"
+          mapfile -t changed < <(git diff --name-only "$REPAIRED_GREEN_SHA"..HEAD)
+          printf 'changed_since_repair=%s\n' "${changed[*]}"
+          test "${#changed[@]}" -eq 1
+          test "${changed[0]}" = '.github/workflows/brrk-exhaustion-pulse-0046-once-v2.yml'
+
+      - name: Reconfirm repaired frozen implementation and zero-result contracts
+        run: |
+          python -m unittest research.governance.test_brrk_exhaustion_pulse_0046_implementation -v
+          python -m unittest research.governance.test_brrk_exhaustion_pulse_0046_window_repair -v
+          python -m research.governance.validate
+          test ! -e research/brrk_exhaustion_pulse_0046/PREDICTOR_PATH.json
+          test ! -e research/brrk_exhaustion_pulse_0046/CALIBRATION_LOCK.json
+          test ! -e research/brrk_exhaustion_pulse_0046/PRIMARY_RESULT.json
+          test ! -e research/brrk_exhaustion_pulse_0046/EXECUTION.json
+          test ! -e research/brrk_exhaustion_pulse_0046/RUN_ONCE.marker
+          test ! -e research/brrk_exhaustion_pulse_0046/RESULT.md
+
+      - name: Reconfirm no-drift on exact repaired main
+        shell: bash
+        run: |
+          git worktree add --detach /tmp/0046-repaired "$REPAIRED_GREEN_SHA"
+          (
+            cd /tmp/0046-repaired
+            python -m research.governance.no_drift
+          )
+          git worktree remove --force /tmp/0046-repaired
+
+      - name: Materialize frozen predictor-only artifact
+        run: |
+          python -m research.brrk_exhaustion_pulse_0046.run_once prepare-predictors \
+            --predictor /tmp/BRRK_EXHAUSTION_PULSE_0046_PREDICTOR_PATH.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p = json.loads(Path('/tmp/BRRK_EXHAUSTION_PULSE_0046_PREDICTOR_PATH.json').read_text())
+          assert p['artifact_type'] == 'LABEL_BLIND_PREDICTOR_PATH'
+          assert p['contains_only_timestamps_and_s1_s4'] is True
+          assert p['label_data_accessed'] is False
+          assert p['event_taxonomy_loaded'] is False
+          assert p['start'] == '2023-08-07'
+          assert p['end'] == '2026-08-02'
+          assert p['sessions'] == 1092
+          assert p['predictor_digest'] == 'f25d93a39838b28a5bd9527db3b541c53b87a7e71c111b399a2997ed1202b9e4'
+          assert all(isinstance(row, list) and len(row) == 5 for row in p['rows'])
+          print('PREDICTOR_RUN1_REPRODUCED=true')
+          PY
+
+      - name: Re-run frozen label-blind calibration
+        run: |
+          python -m research.brrk_exhaustion_pulse_0046.run_once calibrate \
+            --predictor /tmp/BRRK_EXHAUSTION_PULSE_0046_PREDICTOR_PATH.json \
+            --lock /tmp/BRRK_EXHAUSTION_PULSE_0046_CALIBRATION_LOCK.json
+
+      - name: Prove complete run-1 calibration reproduction before labels
+        env:
+          EXPECTED_RUN1_CODE_SHA: ${{ env.RUN1_CODE_SHA }}
+          EXPECTED_RUN1_LOCK_HASH: ${{ env.RUN1_LOCK_HASH }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          from research.brrk_exhaustion_pulse_0046 import calibration
+
+          path = Path('/tmp/BRRK_EXHAUSTION_PULSE_0046_CALIBRATION_LOCK.json')
+          lock = json.loads(path.read_text())
+          calibration.validate_lock(path, require_success=True)
+
+          assert lock['calibration_status'] == 'CALIBRATION_LOCKED'
+          assert lock['result_status'] == 'CALIBRATION_PASS_LABEL_EVALUATION_ALLOWED'
+          assert lock['predictor_start'] == '2023-08-07'
+          assert lock['predictor_end'] == '2026-08-02'
+          assert lock['predictor_sessions'] == 1092
+          assert lock['predictor_digest'] == 'f25d93a39838b28a5bd9527db3b541c53b87a7e71c111b399a2997ed1202b9e4'
+          assert lock['var1']['spectral_radius'] == 0.9655669199981354
+          assert lock['threshold']['ieee754_float'] == 1125.89535644321
+          assert lock['threshold']['full_precision_decimal'] == '1125.8953564432099'
+          assert lock['threshold']['hex'] == '0x1.19794d851c766p+10'
+          assert lock['threshold']['arl0_trunc'] == 365.0472
+          assert lock['threshold']['max_simulated_G'] == 16420.651959614333
+          assert lock['label_data_accessed'] is False
+          assert lock['event_taxonomy_loaded'] is False
+
+          current_self_hash = lock.pop('lock_payload_sha256_without_self_hash')
+          assert calibration._json_sha(lock) == current_self_hash
+          current_code_sha = lock['code_sha']
+          lock['code_sha'] = os.environ['EXPECTED_RUN1_CODE_SHA']
+          reproduced_run1_hash = calibration._json_sha(lock)
+          assert reproduced_run1_hash == os.environ['EXPECTED_RUN1_LOCK_HASH'], (reproduced_run1_hash, os.environ['EXPECTED_RUN1_LOCK_HASH'])
+          lock['code_sha'] = current_code_sha
+
+          print('RUN1_FULL_CALIBRATION_REPRODUCED=true')
+          print('CURRENT_LOCK_HASH=' + current_self_hash)
+          print('RUN1_REPRODUCED_LOCK_HASH=' + reproduced_run1_hash)
+          PY
+
+      - name: Execute frozen historical evaluation only after run-1 calibration reproduction
+        run: |
+          python -m research.brrk_exhaustion_pulse_0046.run_once evaluate \
+            --predictor /tmp/BRRK_EXHAUSTION_PULSE_0046_PREDICTOR_PATH.json \
+            --lock /tmp/BRRK_EXHAUSTION_PULSE_0046_CALIBRATION_LOCK.json \
+            --output /tmp/BRRK_EXHAUSTION_PULSE_0046_PRIMARY_RESULT.json
+
+      - name: Create compact immutable execution summary
+        env:
+          RUN_ID: ${{ github.run_id }}
+          RUN_NUMBER: ${{ github.run_number }}
+          RUN_ATTEMPT: ${{ github.run_attempt }}
+          HEAD_SHA: ${{ github.sha }}
+        run: |
+          python - <<'PY'
+          import hashlib
+          import json
+          import os
+          from pathlib import Path
+
+          def sha(path):
+              return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+          predictor_path = '/tmp/BRRK_EXHAUSTION_PULSE_0046_PREDICTOR_PATH.json'
+          lock_path = '/tmp/BRRK_EXHAUSTION_PULSE_0046_CALIBRATION_LOCK.json'
+          result_path = '/tmp/BRRK_EXHAUSTION_PULSE_0046_PRIMARY_RESULT.json'
+          lock = json.loads(Path(lock_path).read_text())
+          result = json.loads(Path(result_path).read_text())
+          summary = {
+              'research_id': 'BRRK-EXHAUSTION-PULSE-0046',
+              'pre_result_implementation_sha': 'f23d2aac6fa8699af12b784ca03489061e331865',
+              'repair_merge_sha': 'aef20ae0e452fa8d737a64846ba433aebcb55628',
+              'run1_failed_execution_head': 'd365c6d80bf198354fbaacd0e63bad6e0f4fe0c2',
+              'run1_lock_hash_reproduced': 'cba7aa3406c58ec80e391c389ea076439912d6bc3abecdfb89911739be1f2445',
+              'workflow_head_sha': os.environ['HEAD_SHA'],
+              'workflow_run_id': int(os.environ['RUN_ID']),
+              'workflow_run_number': int(os.environ['RUN_NUMBER']),
+              'workflow_run_attempt': int(os.environ['RUN_ATTEMPT']),
+              'predictor_sha256': sha(predictor_path),
+              'calibration_lock_sha256': sha(lock_path),
+              'primary_result_sha256': sha(result_path),
+              'calibration_status': lock['calibration_status'],
+              'var1_spectral_radius': lock['var1']['spectral_radius'],
+              'threshold': lock['threshold'],
+              'label_data_accessed_during_calibration': lock['label_data_accessed'],
+              'event_taxonomy_loaded_during_calibration': lock['event_taxonomy_loaded'],
+              'result_status': result['result_status'],
+              'point_metrics': result['point_metrics'],
+              'alarm_path': {k: v for k, v in result['alarm_path'].items() if k not in ('pulse_dates', 'spell_summary')},
+              'spell_summary': {k: v for k, v in result['alarm_path']['spell_summary'].items() if k != 'durations'},
+              'gates': result['gates'],
+              'authority': result['authority'],
+          }
+          out = Path('/tmp/BRRK_EXHAUSTION_PULSE_0046_EXECUTION_SUMMARY.json')
+          out.write_text(json.dumps(summary, indent=2, sort_keys=True) + '\n')
+          print('BRRK_EXHAUSTION_PULSE_0046_SUMMARY=' + json.dumps(summary, sort_keys=True, separators=(',', ':')))
+          PY
+
+      - name: Upload unique repaired 0046 result artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: brrk-exhaustion-pulse-0046-v2
+          path: |
+            /tmp/BRRK_EXHAUSTION_PULSE_0046_PREDICTOR_PATH.json
+            /tmp/BRRK_EXHAUSTION_PULSE_0046_CALIBRATION_LOCK.json
+            /tmp/BRRK_EXHAUSTION_PULSE_0046_PRIMARY_RESULT.json
+            /tmp/BRRK_EXHAUSTION_PULSE_0046_EXECUTION_SUMMARY.json
+          if-no-files-found: error
+          retention-days: 90
+          overwrite: false
