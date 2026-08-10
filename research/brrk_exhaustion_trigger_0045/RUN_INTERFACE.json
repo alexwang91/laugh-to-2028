@@ -1,0 +1,14 @@
+{
+  "research_id": "BRRK-EXHAUSTION-TRIGGER-0045",
+  "status": "READY_NOT_RUN",
+  "runner": "python -m research.brrk_exhaustion_trigger_0045.run_once --output <path>",
+  "unique_execution_policy": "EXACTLY_ONCE_AFTER_PRE_RESULT_CONTRACT_TESTS_PASS",
+  "frozen_parent_merge_commit": "c48577bb95c9fc78e5d0d78b86f30905b3636503",
+  "frozen_history_end": "2026-08-02",
+  "candidate_count": 1,
+  "candidate": "TRIGGER_STATE_MACHINE_V1_FIXED_CORE4_S2_S3_HYSTERESIS",
+  "result_path_after_execution": "research/brrk_exhaustion_trigger_0045/PRIMARY_RESULT.json",
+  "run_once_marker_after_execution": "research/brrk_exhaustion_trigger_0045/RUN_ONCE.marker",
+  "forbidden_during_execution": ["threshold search", "persistence search", "alternative state machine", "S2-only rescue", "CORE4 reweighting", "S5 volume reintroduction", "data after 2026-08-02", "gross mapping", "portfolio counterfactual", "canonical or Phase 6 change"],
+  "authority": {"trigger_result_released": false, "gross_mapping_defined": false, "portfolio_economics_executed": false, "production_authorized": false, "signature_authorized": false, "order_submission_authorized": false}
+}
