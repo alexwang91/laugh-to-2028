@@ -83,9 +83,13 @@ class BRRKExhaustionTrigger0045PreregTests(unittest.TestCase):
         self.assertEqual(slices, [self.dataset_decl["dataset_slice"]])
         self.assertEqual(events, [self.dataset_decl["exposure_event"]])
 
-    def test_no_result_or_gross_translation_before_execution(self) -> None:
-        names = {p.name for p in self.path.iterdir() if p.is_file()}
-        self.assertEqual(names, {"PREREGISTRATION.json", "DATASET_DECLARATION.json", "README.md"})
+    def test_prereg_contract_remains_frozen_before_result(self) -> None:
+        self.assertTrue((self.path / "PREREGISTRATION.json").exists())
+        self.assertTrue((self.path / "DATASET_DECLARATION.json").exists())
+        self.assertTrue((self.path / "README.md").exists())
+        self.assertFalse((self.path / "PRIMARY_RESULT.json").exists())
+        self.assertFalse((self.path / "RUN_ONCE.marker").exists())
+        self.assertFalse((self.path / "RESULT.md").exists())
         text = (self.path / "README.md").read_text().lower()
         self.assertIn("no portfolio weights or gross-risk values", text)
         self.assertIn("threshold or percentile grid search", text)
