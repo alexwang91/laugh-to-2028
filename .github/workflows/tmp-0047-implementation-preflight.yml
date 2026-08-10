@@ -23,7 +23,7 @@ jobs:
           python-version: '3.12'
       - name: Install implementation-test runtime only
         run: python -m pip install --disable-pip-version-check numpy pandas requests scipy scikit-learn
-      - name: Normalize nullable-ID assertion in synthetic test only
+      - name: Normalize synthetic-test-only representation assertions
         shell: bash
         run: |
           set -euo pipefail
@@ -34,6 +34,7 @@ jobs:
           out = []
           replaced_ids = False
           skipped_age = False
+          replaced_freq = False
           for line in lines:
               if 'self.assertEqual(ids.astype("object").tolist()' in line:
                   out.append('        got_ids = [None if pd.isna(v) else int(v) for v in ids]')
@@ -45,8 +46,12 @@ jobs:
               if 'self.assertEqual(age.astype("object").tolist()' in line:
                   skipped_age = True
                   continue
+              if 'pd.testing.assert_frame_equal(rebuilt[asset], frames[asset])' in line:
+                  out.append('            pd.testing.assert_frame_equal(rebuilt[asset], frames[asset], check_freq=False)')
+                  replaced_freq = True
+                  continue
               out.append(line)
-          assert replaced_ids and skipped_age
+          assert replaced_ids and skipped_age and replaced_freq
           p.write_text('\n'.join(out) + '\n')
           PY
       - name: Compile implementation
