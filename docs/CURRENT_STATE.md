@@ -1,10 +1,10 @@
 # BRRK Current State
 
 Last updated: 2026-08-10
-Handoff PR: **#158**
-Handoff branch: `research/brrk-exhaustion-trigger-0045-prereg`
-Authoritative baseline main at branch creation: `23fd7a050cf8c543470fc48a2286cc75ff9fdafc`
-Latest merged research PR at branch creation: **#157**
+Handoff PR: **#159**
+Handoff branch: `research/brrk-exhaustion-trigger-0045-runonce`
+Authoritative baseline main at branch creation: `c48577bb95c9fc78e5d0d78b86f30905b3636503`
+Latest merged research PR at branch creation: **#158**
 
 Status: **authoritative current-state handoff candidate**
 
@@ -25,7 +25,7 @@ BRRK-WINNER-0001                  ONE-SHOT PASS / CLOSED
 BRRK-WINNER-ROBUSTNESS-0002       ONE-SHOT PASS / FUTURE-ONLY VALIDATION ELIGIBLE / CLOSED
 BRRK exhaustion event study 0043 COMPLETE DIAGNOSTIC / 7-14D SIGNAL FEASIBLE / TRIGGER NOT READY
 BRRK exhaustion state 0044       PASS / TRIGGER STAGE ELIGIBLE / CLOSED
-BRRK exhaustion trigger 0045     PREREGISTERED / NOT RUN / NO GROSS AUTHORITY
+BRRK exhaustion trigger 0045     IMPLEMENTED / NOT RUN / CONTRACT VALIDATION PENDING
 Program timeline dashboard        READ-ONLY V5 / PROFESSIONAL FUND TERMINAL
 Phase 7                           MONITOR_ONLY / LAUNCH BLOCKED
 Phase 8                           TRIGGER ABSENT / NOT RUN
@@ -238,9 +238,9 @@ Result-informed component evidence is preserved without same-ID reweighting. S2 
 
 The only authorized research continuation is a new, separately preregistered trigger-stage ID. Canonical BRRK-0011, the 40/60 winner lineage, Phase 6 and all production/security authority remain unchanged.
 
-## BRRK-EXHAUSTION-TRIGGER-0045 — preregistered, not run
+## BRRK-EXHAUSTION-TRIGGER-0045 — implemented, still not run
 
-PR #158 freezes exactly one result-informed causal state machine before any 0045 result exists. It reuses immutable 0044 CORE4, uses S2 trend disagreement only as confirmation, and S3 price structure only for slow recovery confirmation. S5 volume/OBV is excluded because 0044 preserved negative evidence.
+PR #158 froze exactly one result-informed causal state machine before any 0045 result existed. PR #159 now implements that frozen state machine, event/episode diagnostics, parent-result guards, run interface and permanent contract tests. No 0045 result has been executed or viewed; `PRIMARY_RESULT.json` and `RUN_ONCE.marker` do not exist. It reuses immutable 0044 CORE4, uses S2 trend disagreement only as confirmation, and S3 price structure only for slow recovery confirmation. S5 volume/OBV remains excluded.
 
 ```text
 states                         HEALTHY / DECELERATION / WATCH / RISK / RECOVERY
@@ -289,12 +289,12 @@ The BRRK-WINNER development and robustness PASS results do not change any of the
 
 `DRIFT_0`.
 
-PR #158 is pre-result trigger research governance only. No 0045 result, gross mapping, portfolio economics, `execution/**`, canonical BRRK mathematics, Phase-6 observation or production authority changes occur.
+PR #159 is pre-result governed trigger implementation only. No 0045 result, gross mapping, portfolio economics, canonical BRRK mathematics, Phase-6 observation, leverage/shorting or production/security authority changes occur.
 
 ## Exact next task
 
-1. Merge PR #158 only after its formal owner/data registration, atomic-history requirement, no-drift, P3.2, Phase-6 and handoff checks are green.
-2. Preserve 0045 as `PREREGISTERED_NOT_RUN`; no result-bearing file may exist in the preregistration PR.
-3. After merge only, implement the exact frozen percentile/state/persistence/hysteresis machine on a separate branch.
-4. Execute exactly one 0045 candidate. Any gate failure closes the ID; no threshold/persistence rescue is permitted.
-5. Do not map WATCH/RISK to gross exposure unless 0045 fully passes and a new dynamic-gross research ID is preregistered. Phase 6 and all production/signing/order authority remain unchanged.
+1. Keep PR #159 result-free until the frozen runner/interface/contract tests and final governance/no-drift/P3.2/Phase-6/handoff CI are green.
+2. Only after that fully green pre-result baseline may one temporary one-shot workflow execute 0045 exactly once.
+3. Preserve the first valid PASS or FAIL without threshold/persistence/state-machine rescue or rerun.
+4. After a valid result, bind artifact/result hashes, create the permanent run-once marker, remove temporary workflows and rerun final CI.
+5. Never map WATCH/RISK to portfolio gross under 0045. A dynamic-gross stage requires a new research ID and only becomes eligible after a full 0045 PASS. Phase 6 and all production/signing/order authority remain unchanged.
