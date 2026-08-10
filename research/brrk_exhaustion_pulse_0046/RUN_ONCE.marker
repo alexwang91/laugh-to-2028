@@ -1,0 +1,20 @@
+{
+  "research_id": "BRRK-EXHAUSTION-PULSE-0046",
+  "pre_result_implementation_sha": "f23d2aac6fa8699af12b784ca03489061e331865",
+  "repair_merge_sha": "aef20ae0e452fa8d737a64846ba433aebcb55628",
+  "pre_result_failure_run_id": 31417259266,
+  "pre_result_failure_classification": "POST_LOCK_EVALUATION_IMPLEMENTATION_FAILURE_NO_RESEARCH_RESULT",
+  "valid_result_run_id": 31419044159,
+  "valid_result_run_attempt": 1,
+  "valid_result_head_sha": "88f7c7e769352ea9d7b4cac881d2836678576b8e",
+  "artifact_id": 9074623455,
+  "artifact_digest": "sha256:2938e8c0a776255848b13990200cd77bec85ab15e143596a477fc08f3b63c2a0",
+  "primary_result_sha256": "5c0e9aa4864b0044d5033573be78cdee3c0802db2d8b98d24fc0afcc21abbf8c",
+  "run1_lock_hash_reproduced": "cba7aa3406c58ec80e391c389ea076439912d6bc3abecdfb89911739be1f2445",
+  "result_status": "FAIL_NO_FUTURE_ONLY_PULSE_VALIDATION_ELIGIBILITY",
+  "SAME_ID_RERUN_ALLOWED": false,
+  "SAME_ID_RESCUE_ALLOWED": false,
+  "production_authorized": false,
+  "signature_authorized": false,
+  "order_submission_authorized": false
+}

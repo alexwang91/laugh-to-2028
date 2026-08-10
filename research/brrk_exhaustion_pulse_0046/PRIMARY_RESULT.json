@@ -1,0 +1,202 @@
+{
+  "schema_version": 1,
+  "research_id": "BRRK-EXHAUSTION-PULSE-0046",
+  "result_status": "FAIL_NO_FUTURE_ONLY_PULSE_VALIDATION_ELIGIBILITY",
+  "development_history_only": true,
+  "independent_oos": false,
+  "pre_result_implementation_sha": "f23d2aac6fa8699af12b784ca03489061e331865",
+  "repair_merge_sha": "aef20ae0e452fa8d737a64846ba433aebcb55628",
+  "valid_result_workflow": {
+    "run_id": 31419044159,
+    "run_number": 1,
+    "run_attempt": 1,
+    "head_sha": "88f7c7e769352ea9d7b4cac881d2836678576b8e"
+  },
+  "run1_infrastructure_failure": {
+    "run_id": 31417259266,
+    "job_id": 93549100062,
+    "head_sha": "d365c6d80bf198354fbaacd0e63bad6e0f4fe0c2",
+    "research_result_released": false,
+    "artifact_count": 0,
+    "failure": "POST_LOCK_EVALUATION_IMPLEMENTATION_FAILURE_MISSING_EARLY_PEAK_IN_COMPLETE_S1_S4_INDEX",
+    "first_lock_payload_hash": "cba7aa3406c58ec80e391c389ea076439912d6bc3abecdfb89911739be1f2445"
+  },
+  "calibration_reproduction": {
+    "run1_full_calibration_reproduced_before_labels": true,
+    "predictor_start": "2023-08-07",
+    "predictor_end": "2026-08-02",
+    "predictor_sessions": 1092,
+    "predictor_digest": "f25d93a39838b28a5bd9527db3b541c53b87a7e71c111b399a2997ed1202b9e4",
+    "run1_lock_hash_reproduced": "cba7aa3406c58ec80e391c389ea076439912d6bc3abecdfb89911739be1f2445",
+    "var1_spectral_radius": 0.9655669199981354,
+    "threshold": {
+      "ieee754_float": 1125.89535644321,
+      "full_precision_decimal": "1125.8953564432099",
+      "hex": "0x1.19794d851c766p+10",
+      "arl0_trunc": 365.0472,
+      "max_simulated_G": 16420.651959614333
+    },
+    "label_data_accessed_during_calibration": false,
+    "event_taxonomy_loaded_during_calibration": false
+  },
+  "taxonomy_reproduction": {
+    "candidate_count": 16,
+    "panel_10_counts": {
+      "TRUE_EXHAUSTION": 10,
+      "CONTINUATION_FALSE_TOP": 6,
+      "AMBIGUOUS": 0
+    },
+    "panel_15_counts": {
+      "TRUE_EXHAUSTION": 9,
+      "CONTINUATION_FALSE_TOP": 6,
+      "AMBIGUOUS": 1
+    },
+    "panel_20_counts": {
+      "TRUE_EXHAUSTION": 7,
+      "CONTINUATION_FALSE_TOP": 6,
+      "AMBIGUOUS": 3
+    },
+    "macro_episode_count": 8,
+    "matched_frozen_0043_0044_taxonomy": true
+  },
+  "point_metrics": {
+    "primary_true_PRE14_7": {
+      "numerator": 0,
+      "denominator": 9,
+      "rate": 0.0,
+      "peaks": []
+    },
+    "primary_cont_PRE14_0": {
+      "numerator": 0,
+      "denominator": 6,
+      "rate": 0.0,
+      "peaks": []
+    },
+    "primary_true_episode_PRE14_7": {
+      "numerator": 0,
+      "denominator": 5,
+      "rate": 0.0,
+      "hit_episode_ids": []
+    },
+    "primary_cont_episode_PRE14_0": {
+      "numerator": 0,
+      "denominator": 5,
+      "rate": 0.0,
+      "hit_episode_ids": []
+    },
+    "severe_true_PRE14_7": {
+      "numerator": 0,
+      "denominator": 7,
+      "rate": 0.0,
+      "peaks": []
+    },
+    "primary_true_PRE21_0_onsets": {
+      "count": 0,
+      "leads": [],
+      "median": null,
+      "min": null,
+      "max": null
+    }
+  },
+  "alarm_path": {
+    "eligible_sessions": 1021,
+    "raw_alarm_sessions": 2,
+    "raw_alarm_occupancy": 0.0019588638589618022,
+    "spell_summary": {
+      "spell_count": 2,
+      "median": 1.0,
+      "p90_empirical_nearest_rank": 1.0
+    },
+    "total_pulse_count": 1,
+    "pulse_dates": [
+      "2025-11-22"
+    ]
+  },
+  "gates": {
+    "episode_diversity": {
+      "pass": true,
+      "usable": 8,
+      "true": 5,
+      "continuation": 5
+    },
+    "primary_true_event_PRE14_7_ge_0_50": {
+      "pass": false,
+      "value": 0.0
+    },
+    "primary_cont_event_PRE14_0_le_0_34": {
+      "pass": true,
+      "value": 0.0
+    },
+    "primary_true_episode_PRE14_7_ge_0_60": {
+      "pass": false,
+      "value": 0.0
+    },
+    "primary_cont_episode_PRE14_0_le_0_50": {
+      "pass": true,
+      "value": 0.0
+    },
+    "severe_true_event_PRE14_7_ge_0_57": {
+      "pass": false,
+      "value": 0.0
+    },
+    "primary_true_PRE21_0_onsets_ge_4": {
+      "pass": false,
+      "value": 0
+    },
+    "median_onset_lead_7_to_21": {
+      "pass": false,
+      "value": null
+    },
+    "raw_alarm_occupancy_le_0_175": {
+      "pass": true,
+      "value": 0.0019588638589618022
+    },
+    "median_alarm_spell_le_7": {
+      "pass": true,
+      "value": 1.0
+    },
+    "p90_alarm_spell_le_14": {
+      "pass": true,
+      "value": 1.0
+    },
+    "calibration_arl0_ge_365": {
+      "pass": true,
+      "value": 365.0472
+    },
+    "construction_and_authority": {
+      "pass": true,
+      "post_result_retuning": false,
+      "portfolio_economics_executed": false,
+      "dynamic_gross_stage_eligible": false,
+      "canonical_strategy_changed": false,
+      "phase6_observation_changed": false,
+      "production_authorized": false,
+      "signature_authorized": false,
+      "order_submission_authorized": false
+    }
+  },
+  "interpretation": "The frozen transition-pulse detector passed specificity, ARL0 and anti-stickiness gates but failed every preregistered TRUE_EXHAUSTION sensitivity/timing gate. It emitted only one pulse over 1021 eligible sessions and therefore solved 0045 stickiness by becoming too sparse rather than by recovering useful advance sensitivity.",
+  "full_artifact_binding": {
+    "artifact_id": 9074623455,
+    "artifact_digest": "sha256:2938e8c0a776255848b13990200cd77bec85ab15e143596a477fc08f3b63c2a0",
+    "predictor_file_sha256": "a82d41513995888cf4c9d39e66e4a09fa72649ffe84528377a5040b08bae693c",
+    "calibration_lock_file_sha256": "8ce129b1254e6cdb110486d3f1791851f6b4b9d18771b6dec2c39f7b5acade6f",
+    "full_primary_result_file_sha256": "5c0e9aa4864b0044d5033573be78cdee3c0802db2d8b98d24fc0afcc21abbf8c",
+    "execution_summary_file_sha256": "bc9a99481aa2b901987360606a4a5b589e5cbc92d763681579d8768ef3296e8b",
+    "full_primary_result_internal_payload_hash": "e70c712389569094bc671743236c2e3db0b481b66a817722331cdb152f7cf80d"
+  },
+  "authority": {
+    "researcher_exposed_development_only": true,
+    "independent_oos": false,
+    "future_only_pulse_validation_stage_eligible": false,
+    "dynamic_gross_stage_eligible": false,
+    "portfolio_economics_executed": false,
+    "canonical_strategy_changed": false,
+    "phase6_observation_changed": false,
+    "production_authorized": false,
+    "signature_authorized": false,
+    "order_submission_authorized": false
+  },
+  "same_id_rerun_allowed": false,
+  "same_id_rescue_allowed": false
+}

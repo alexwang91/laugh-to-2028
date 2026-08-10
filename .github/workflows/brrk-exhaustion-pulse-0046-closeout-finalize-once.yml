@@ -1,0 +1,213 @@
+name: BRRK exhaustion pulse 0046 closeout finalize once
+
+on:
+  push:
+    branches:
+      - research/brrk-exhaustion-pulse-0046-closeout
+    paths:
+      - .github/workflows/brrk-exhaustion-pulse-0046-closeout-finalize-once.yml
+
+permissions:
+  contents: write
+
+jobs:
+  finalize-closed-lifecycle:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/brrk-exhaustion-pulse-0046-closeout
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Require central closeout and permanent result chain
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          rid='BRRK-EXHAUSTION-PULSE-0046'
+          reg=json.load(open('config/research_registry.json'))
+          rec=[r for r in reg['records'] if r.get('research_id')==rid]
+          assert len(rec)==1
+          assert rec[0]['actual_variants_evaluated']==1
+          assert rec[0]['result_status']=='FAIL_NO_FUTURE_ONLY_PULSE_VALIDATION_ELIGIBILITY'
+          for name in ('PRIMARY_RESULT.json','EXECUTION.json','RUN_ONCE.marker','RESULT.md'):
+              assert (Path('research/brrk_exhaustion_pulse_0046')/name).exists()
+          PY
+
+      - name: Evolve 0046 lifecycle tests from pre-result to immutable closed result
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          def replace_function(path_str, name, new_text):
+              path=Path(path_str)
+              text=path.read_text()
+              start=text.index(f'def {name}(')
+              next_def=text.find('\ndef ', start+1)
+              end=len(text) if next_def<0 else next_def+1
+              text=text[:start]+new_text.rstrip()+"\n\n"+text[end:]
+              path.write_text(text)
+
+          replace_function(
+              'research/brrk_exhaustion_pulse_0046/test_firewall_contract.py',
+              'test_pre_result_branch_contains_no_generated_predictor_lock_or_result_evidence',
+              '''def test_pre_result_branch_contains_no_generated_predictor_lock_or_result_evidence() -> None:
+    marker = PATH / "RUN_ONCE.marker"
+    if marker.exists():
+        result = json.loads((PATH / "PRIMARY_RESULT.json").read_text(encoding="utf-8"))
+        execution = json.loads((PATH / "EXECUTION.json").read_text(encoding="utf-8"))
+        run_marker = json.loads(marker.read_text(encoding="utf-8"))
+        assert result["result_status"] == "FAIL_NO_FUTURE_ONLY_PULSE_VALIDATION_ELIGIBILITY"
+        assert execution["unique_valid_historical_result_count"] == 1
+        assert run_marker["SAME_ID_RERUN_ALLOWED"] is False
+        assert run_marker["SAME_ID_RESCUE_ALLOWED"] is False
+        assert (PATH / "RESULT.md").exists()
+        assert not (PATH / "PREDICTOR_PATH.json").exists()
+        assert not (PATH / "CALIBRATION_LOCK.json").exists()
+        return
+    forbidden = (
+        "PREDICTOR_PATH.json",
+        "CALIBRATION_LOCK",
+        "CALIBRATION_LOCK.json",
+        "PRIMARY_RESULT.json",
+        "EXECUTION.json",
+        "RUN_ONCE.marker",
+        "RESULT.md",
+    )
+    for name in forbidden:
+        assert not (PATH / name).exists()'''
+          )
+
+          replace_function(
+              'research/brrk_exhaustion_pulse_0046/test_preregistration_contract.py',
+              'test_formal_preregistration_matches_central_record_exactly',
+              '''def test_formal_preregistration_matches_central_record_exactly():
+    prereg = _load(HERE / "PREREGISTRATION.json")
+    central = _registry_record()
+    assert prereg["governance_mode"] == "PROGRAM_GOVERNED_V1"
+    assert prereg["created_before_result"] is True
+    assert prereg["result_status"] == "PREREGISTERED_NOT_RUN"
+    assert prereg["declared_variant_budget"] == 1
+    assert prereg["actual_variants_evaluated"] == 0
+    assert prereg["parameter_candidate_count"] == 1
+    assert prereg["production_authorized"] is False
+    assert prereg["governed_path_prefixes"] == ["research/brrk_exhaustion_pulse_0046/"]
+    immutable_fields = (
+        "research_id", "research_family_id", "research_domain", "research_governance_version",
+        "governance_mode", "objective_type", "created_at", "created_before_result", "question",
+        "hypothesis", "hypothesis_origin", "economic_mechanism", "primary_target", "primary_metric",
+        "secondary_metrics", "feature_families", "horizon", "universe", "development_dataset_refs",
+        "validation_dataset_refs", "sealed_dataset_refs", "declared_variant_budget", "parameter_candidate_count",
+        "stopping_rule", "success_criteria", "failure_criteria", "allowed_followup", "forbidden_followup",
+        "researcher_decisions", "lineage_edges", "production_relevance", "production_authorized",
+        "provenance_status", "governed_path_prefixes"
+    )
+    for field in immutable_fields:
+        assert central[field] == prereg[field]
+    assert central["actual_variants_evaluated"] == 1
+    assert central["result_status"] == "FAIL_NO_FUTURE_ONLY_PULSE_VALIDATION_ELIGIBILITY"
+    assert central["promotion_state"] == "NONE"'''
+          )
+
+          replace_function(
+              'research/brrk_exhaustion_pulse_0046/test_preregistration_contract.py',
+              'test_lifecycle_only_allows_pre_result_implementation_not_generated_evidence',
+              '''def test_lifecycle_only_allows_pre_result_implementation_not_generated_evidence():
+    interface_path = HERE / "RUN_INTERFACE.json"
+    runner_path = HERE / "run_once.py"
+    assert interface_path.exists() and runner_path.exists()
+    interface = _load(interface_path)
+    assert interface["status"] == "IMPLEMENTED_PRE_RESULT_NOT_RUN"
+    marker = HERE / "RUN_ONCE.marker"
+    if marker.exists():
+        result = _load(HERE / "PRIMARY_RESULT.json")
+        execution = _load(HERE / "EXECUTION.json")
+        m = _load(marker)
+        assert result["result_status"] == "FAIL_NO_FUTURE_ONLY_PULSE_VALIDATION_ELIGIBILITY"
+        assert execution["unique_valid_historical_result_count"] == 1
+        assert m["SAME_ID_RERUN_ALLOWED"] is False
+        assert m["SAME_ID_RESCUE_ALLOWED"] is False
+        assert (HERE / "RESULT.md").exists()
+        assert not (HERE / "PREDICTOR_PATH.json").exists()
+        assert not (HERE / "CALIBRATION_LOCK.json").exists()
+    else:
+        assert interface["actual_variants_evaluated"] == 0
+        assert interface["authority"]["calibration_executed"] is False
+        assert interface["authority"]["result_released"] is False
+        generated_forbidden = {
+            "PREDICTOR_PATH.json", "CALIBRATION_LOCK", "CALIBRATION_LOCK.json",
+            "PRIMARY_RESULT.json", "EXECUTION.json", "RUN_ONCE.marker", "RESULT.md",
+        }
+        existing = {p.name for p in HERE.iterdir() if p.is_file()}
+        assert generated_forbidden.isdisjoint(existing)'''
+          )
+          PY
+
+      - name: Mark README closed without altering frozen RUN_INTERFACE
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('research/brrk_exhaustion_pulse_0046/README.md')
+          text=p.read_text()
+          old='Status: **IMPLEMENTED_PRE_RESULT_NOT_RUN**'
+          new='Status: **FAIL_NO_FUTURE_ONLY_PULSE_VALIDATION_ELIGIBILITY / CLOSED**'
+          assert old in text
+          text=text.replace(old,new,1)
+          marker='## Immutable closeout\n'
+          if marker not in text:
+              text += '''\n## Immutable closeout\n\nThe only valid historical result is GitHub Actions run `31419044159`, attempt 1, artifact `9074623455`. It reproduced the first label-blind calibration before label access and then failed the frozen TRUE_EXHAUSTION sensitivity/timing gates. See `PRIMARY_RESULT.json`, `EXECUTION.json`, `RUN_ONCE.marker` and `RESULT.md`. The frozen pre-result `RUN_INTERFACE.json` remains preserved as the execution contract; it is not rewritten as post-result design evidence. Same-ID rerun/rescue is forbidden.\n'''
+          p.write_text(text)
+          PY
+
+      - name: Append immutable closeout handoffs only
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          current=Path('docs/CURRENT_STATE.md')
+          nxt=Path('docs/NEXT_STEPS.md')
+          cmark='## 0046 final valid result closeout — immutable FAIL'
+          nmark='## 0046 final closeout — no same-ID continuation'
+          if cmark not in current.read_text():
+              with current.open('a') as f:
+                  f.write('''\n\n## 0046 final valid result closeout — immutable FAIL\n\nThe repaired 0046 controlled execution completed successfully in GitHub Actions run `31419044159`, attempt 1, head `88f7c7e769352ea9d7b4cac881d2836678576b8e`, artifact `9074623455` (`sha256:2938e8c0a776255848b13990200cd77bec85ab15e143596a477fc08f3b63c2a0`). Before any label access the predictor and full run-1 calibration were reproduced, including threshold `1125.89535644321`, truncated ARL0 `365.0472`, and old-SHA-substituted lock hash `cba7aa3406c58ec80e391c389ea076439912d6bc3abecdfb89911739be1f2445`.\n\nFrozen result: `FAIL_NO_FUTURE_ONLY_PULSE_VALIDATION_ELIGIBILITY`. Primary TRUE PRE14_7 pulse hit `0/9`; TRUE episode hit `0/5`; severe TRUE PRE14_7 `0/7`; qualifying TRUE PRE21_0 onsets `0`. Continuation false pulses were `0/6`, raw-alarm occupancy about `0.196%`, median/p90 spells both one session, and only one Transition Pulse occurred (`2025-11-22`). The candidate solved 0045 stickiness only by becoming too sparse and failed all advance-sensitivity/timing gates.\n\nRun #1 (`31417259266`) remains preserved as a post-lock evaluation implementation failure with zero artifacts and no research result. PR #165 restored only frozen 0045-compatible window semantics and did not change detector/calibration/gates/denominators.\n\n```text\n0046 result_status                   FAIL_NO_FUTURE_ONLY_PULSE_VALIDATION_ELIGIBILITY\n0046 actual variants evaluated       1\n0046 unique valid historical result  1\n0046 same-ID rerun                    FORBIDDEN\n0046 same-ID rescue                   FORBIDDEN\nfuture-only pulse validation         NOT ELIGIBLE\ndynamic-gross eligibility            FALSE\nportfolio economics                  NOT RUN\ncanonical BRRK change                 NONE\nPhase-6 change                        NONE\nproduction gross cap                  1.0\nproduction_authorized_components = []\nproduction_authorized                 false\nsignature_authorized                  false\norder_submission_authorized           false\n```\n\nPermanent evidence is `research/brrk_exhaustion_pulse_0046/PRIMARY_RESULT.json`, `EXECUTION.json`, `RUN_ONCE.marker`, and `RESULT.md`; the full result remains bound to Actions artifact `9074623455`. No threshold/ARL/age/axis/model/pulse/event-filter rescue or dynamic-gross mapping is authorized under 0046.\n''')
+          if nmark not in nxt.read_text():
+              with nxt.open('a') as f:
+                  f.write('''\n\n## 0046 final closeout — no same-ID continuation\n\n`BRRK-EXHAUSTION-PULSE-0046` is closed `FAIL_NO_FUTURE_ONLY_PULSE_VALIDATION_ELIGIBILITY` after one valid historical result. The frozen detector produced zero primary TRUE PRE14_7 hits (`0/9`), zero TRUE episode hits (`0/5`), zero severe TRUE PRE14_7 hits (`0/7`), and zero qualifying PRE21_0 onsets. It produced one pulse in 1,021 eligible sessions, so specificity/anti-stickiness passed while useful advance sensitivity failed.\n\n```text\n0046 actual variants evaluated       1\n0046 same-ID rerun                    FORBIDDEN\n0046 same-ID rescue                   FORBIDDEN\nfuture-only pulse validation         NOT ELIGIBLE\ndynamic-gross eligibility            FALSE\nportfolio economics                  FORBIDDEN UNDER 0046\nPhase 6 ARM                           ACTIVE / INDEPENDENT\nproduction gross cap                  1.0\nproduction_authorized_components = []\nproduction_authorized                 false\nsignature_authorized                  false\norder_submission_authorized           false\n```\n\nDo not lower the 0046 threshold, relax ARL0, change the 3..32 age scan, privilege S2, add BOCPD/CUSUM/Kalman/classifier rescue, alter pulse semantics, filter early events or map the failed pulse into gross exposure. Any future exhaustion work must begin with a materially new mechanism and new research ID; it cannot claim 0046 as a PASS. Phase-6 scheduled observation continues independently under its existing acceptance requirements.\n''')
+          PY
+
+      - name: Remove every temporary 0046 closeout workflow including this one
+        run: |
+          rm -f .github/workflows/brrk-exhaustion-pulse-0046-closeout-metadata-once.yml
+          rm -f .github/workflows/brrk-exhaustion-pulse-0046-closeout-cleanup-once.yml
+          rm -f .github/workflows/brrk-exhaustion-pulse-0046-closeout-finalize-once.yml
+          git diff --check
+
+      - name: Validate final closeout before commit
+        run: |
+          python -m unittest discover -s research/governance -p 'test_*.py'
+          python -m research.governance.validate
+          python -m research.governance.no_drift
+          python - <<'PY'
+          from pathlib import Path
+          forbidden={
+            'brrk-exhaustion-pulse-0046-closeout-metadata-once.yml',
+            'brrk-exhaustion-pulse-0046-closeout-cleanup-once.yml',
+            'brrk-exhaustion-pulse-0046-closeout-finalize-once.yml',
+            'brrk-exhaustion-pulse-0046-once.yml',
+            'brrk-exhaustion-pulse-0046-once-v2.yml',
+          }
+          existing={p.name for p in Path('.github/workflows').iterdir() if p.is_file()}
+          assert forbidden.isdisjoint(existing)
+          PY
+
+      - name: Commit final lifecycle closeout and self-delete
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'governance: finalize BRRK exhaustion pulse 0046 closeout'
+          git push origin HEAD:research/brrk-exhaustion-pulse-0046-closeout
