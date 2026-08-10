@@ -6,6 +6,13 @@ text = text.replace('Handoff PR: **#153**', 'Handoff PR: **#155**')
 text = text.replace('Handoff branch: `research/brrk-winner-robustness-0002-runonce`', 'Handoff branch: `research/brrk-exhaustion-event-study-0043`')
 text = text.replace('Authoritative baseline main at branch creation: `11c7967e4d22766b3abee33d382ab2912c16f5cb`', 'Authoritative baseline main at branch creation: `0db4f6e4ca6d8fe610e54fbb96c9240752229cfd`')
 text = text.replace('Latest merged research PR at branch creation: **#152**', 'Latest merged research PR at branch creation: **#153**')
+for line in (
+    'Handoff PR: **#155**',
+    'Handoff branch: `research/brrk-exhaustion-event-study-0043`',
+    'Authoritative baseline main at branch creation: `0db4f6e4ca6d8fe610e54fbb96c9240752229cfd`',
+    'Latest merged research PR at branch creation: **#153**',
+):
+    text = text.replace(line + '  \n', line + '\n')
 old = 'BRRK-WINNER-ROBUSTNESS-0002       ONE-SHOT PASS / FUTURE-ONLY VALIDATION ELIGIBLE / CLOSED\n'
 new = old + 'BRRK exhaustion event study 0043 COMPLETE DIAGNOSTIC / 7-14D SIGNAL FEASIBLE / TRIGGER NOT READY\n'
 if 'BRRK exhaustion event study 0043 COMPLETE DIAGNOSTIC' not in text:
