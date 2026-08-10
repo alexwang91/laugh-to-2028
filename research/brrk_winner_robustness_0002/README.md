@@ -73,6 +73,20 @@ MDD deterioration at 20 bps: 0.0244 pp
 
 All fixed cost-stress CAGR, Calmar and drawdown gates passed.
 
+## Evidence scorecard
+
+The Research Registry records the post-result evidence quality explicitly:
+
+```text
+temporal novelty       researcher-exposed DEVELOPMENT history; no temporal novelty
+statistical sufficiency one frozen candidate; 1332 sessions; fixed thirds pass 2/3; 10/20 bps stresses pass; T2 negative evidence retained
+governance integrity   high: preregistered one-shot, reproduction before release, no retuning, no rerun
+operational realism     matched P3.3 5% L1 band with 5/10/20 bps costs; development-only, not production validation
+derived confidence      medium, pending genuine future-only validation
+```
+
+The scorecard is an evidence classification only. It does not alter any economic result or create authority.
+
 ## Evidence status and authority
 
 The study reuses `BRRK-WINNER-0001-CANONICAL-HIST-V1`, which is already consumed and researcher-exposed DEVELOPMENT history. This is result-informed historical robustness evidence, not independent OOS evidence and not temporal novelty.
