@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "research_id": "BRRK-WINNER-ROBUSTNESS-0002",
+  "run_interface_id": "BRRK-WINNER-ROBUSTNESS-0002-RUN-ONCE-V1",
+  "candidate_execution_count": 1,
+  "successful_workflow_run_id": 31374176442,
+  "successful_workflow_run_attempt": 1,
+  "workflow_head_sha": "346e26e3906df2416a21a40223e8791c3dfef86a",
+  "pre_result_green_head_sha": "561ecee69d30253aa398caf51d589cb03b5cfe47",
+  "artifact_id": 9057294415,
+  "artifact_name": "brrk-winner-robustness-0002-primary-31374176442-1",
+  "artifact_digest": "sha256:8eb08d0080fae185953ae50a15b05bc9994d6c06da33761bd2125dc89037313c",
+  "artifact_created_at": "2026-08-10T09:22:55Z",
+  "primary_result_runner_serialization_sha256": "cf149308df5aea1a0cc1315432a7effd0e163cda21e6df0b8f39cf0b6ce6fdf0",
+  "primary_result_committed_sha256": "cf149308df5aea1a0cc1315432a7effd0e163cda21e6df0b8f39cf0b6ce6fdf0",
+  "primary_result_hash_binding": {
+    "committed_representation": "SHA256_OVER_EXACT_UTF8_REPOSITORY_BYTES",
+    "runner_representation": "SHA256_OVER_EXACT_RUNNER_OUTPUT_FILE_BYTES",
+    "semantics": "The committed PRIMARY_RESULT.json is the exact UTF-8 result file extracted from the immutable GitHub Actions artifact; both hashes are identical."
+  },
+  "baseline_reproduction_passed_before_robustness_release": true,
+  "actual_variants_evaluated": 1,
+  "retuning_performed": false,
+  "second_candidate_run_permitted": false,
+  "result_status": "PASS_FUTURE_ONLY_VALIDATION_STAGE_ELIGIBLE",
+  "production_authorized": false,
+  "signature_authorized": false,
+  "order_submission_authorized": false
+}

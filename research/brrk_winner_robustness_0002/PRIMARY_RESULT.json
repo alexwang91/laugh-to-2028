@@ -1,0 +1,408 @@
+{
+  "actual_variants_evaluated": 1,
+  "all_hard_gates_pass": true,
+  "baseline_reproduced_before_robustness_release": true,
+  "candidate_definition": {
+    "other_decision_rows_unchanged": 1032,
+    "same_defensive_gross": true,
+    "single_alt_btc_share": 0.4,
+    "single_alt_decision_rows": 301,
+    "single_alt_winner_counts": {
+      "BNB": 33,
+      "ETH": 58,
+      "SOL": 210
+    },
+    "single_alt_winner_share": 0.6
+  },
+  "canonical_brrk_changed": false,
+  "cost_stress_panel": {
+    "aggregate_gates": {
+      "calmar_not_below_canonical_all_cost_stresses": {
+        "pass": true
+      },
+      "candidate_cagr_strictly_above_canonical_all_cost_stresses": {
+        "pass": true
+      },
+      "max_drawdown_deterioration_safe_all_cost_stresses": {
+        "pass": true
+      }
+    },
+    "rows": [
+      {
+        "baseline": {
+          "avg_gross_exposure": 0.7545183121405885,
+          "cagr": 0.6325739049090344,
+          "calmar": 1.8582958080468173,
+          "end_multiple": 5.974593784623341,
+          "max_drawdown": -0.34040538765133865,
+          "sharpe": 1.3275289166648867,
+          "turnover": 91.09986987896285
+        },
+        "candidate": {
+          "avg_gross_exposure": 0.7545743993117131,
+          "cagr": 0.6733110977042087,
+          "calmar": 1.9805425704547712,
+          "end_multiple": 6.536470936555105,
+          "max_drawdown": -0.3399629514399195,
+          "sharpe": 1.3534517161479338,
+          "turnover": 102.29642928056307
+        },
+        "cost_bps": 10.0,
+        "delta": {
+          "avg_gross_exposure": 5.6087171124596935e-05,
+          "cagr": 0.04073719279517429,
+          "calmar": 0.12224676240795396,
+          "end_multiple": 0.561877151931764,
+          "max_drawdown": 0.00044243621141915046,
+          "sharpe": 0.0259227994830471,
+          "turnover": 11.196559401600226
+        },
+        "gates": {
+          "calmar_not_below_canonical": {
+            "pass": true
+          },
+          "candidate_cagr_strictly_above_canonical": {
+            "pass": true
+          },
+          "max_drawdown_deterioration_pp_max_4": {
+            "pass": true,
+            "threshold": 4.0,
+            "value": 0.0
+          }
+        },
+        "sessions": 1332
+      },
+      {
+        "baseline": {
+          "avg_gross_exposure": 0.7548471861072852,
+          "cagr": 0.5924399629964738,
+          "calmar": 1.6909905168998307,
+          "end_multiple": 5.456159796386241,
+          "max_drawdown": -0.3503508488519621,
+          "sharpe": 1.2704504554057363,
+          "turnover": 91.130611192195
+        },
+        "candidate": {
+          "avg_gross_exposure": 0.7549597017523497,
+          "cagr": 0.6271416387654625,
+          "calmar": 1.788795207259157,
+          "end_multiple": 5.902413694281029,
+          "max_drawdown": -0.35059443150364134,
+          "sharpe": 1.291239992847176,
+          "turnover": 102.33655260395213
+        },
+        "cost_bps": 20.0,
+        "delta": {
+          "avg_gross_exposure": 0.00011251564506453704,
+          "cagr": 0.03470167576898864,
+          "calmar": 0.09780469035932637,
+          "end_multiple": 0.4462538978947883,
+          "max_drawdown": -0.00024358265167923054,
+          "sharpe": 0.020789537441439743,
+          "turnover": 11.205941411757124
+        },
+        "gates": {
+          "calmar_not_below_canonical": {
+            "pass": true
+          },
+          "candidate_cagr_strictly_above_canonical": {
+            "pass": true
+          },
+          "max_drawdown_deterioration_pp_max_4": {
+            "pass": true,
+            "threshold": 4.0,
+            "value": 0.024358265167923054
+          }
+        },
+        "sessions": 1332
+      }
+    ]
+  },
+  "evaluation": {
+    "cost_stress_bps": [
+      10.0,
+      20.0
+    ],
+    "cost_stress_semantics": "REPLAY_IDENTICAL_FULL_TARGET_PATH_FROM_INITIAL_ZERO_POSITION_WITH_ONLY_COST_BPS_CHANGED",
+    "p3_3_l1_band": 0.05,
+    "primary_cost_bps": 5.0,
+    "session_end": "2026-08-02",
+    "session_start": "2022-12-10",
+    "sessions": 1332,
+    "temporal_semantics": "SIMULATE_FULL_CONTINUOUS_5BPS_PATH_ONCE_THEN_SLICE_REALIZED_SESSION_RETURNS_WITHOUT_POSITION_RESET"
+  },
+  "execution_evidence": {
+    "github_run_attempt": "1",
+    "github_run_id": "31374176442",
+    "head_ref": "research/brrk-winner-robustness-0002-runonce",
+    "workflow_sha": "346e26e3906df2416a21a40223e8791c3dfef86a"
+  },
+  "inherited_gates": {
+    "canonical_best20_log_growth_capture_min_0_98": {
+      "pass": true,
+      "threshold": 0.98,
+      "value": 1.0355952436851439
+    },
+    "gross_max_1": {
+      "pass": true,
+      "threshold": 1.0,
+      "value": 1.0000000000000002
+    },
+    "long_only": {
+      "pass": true,
+      "threshold": 0.0,
+      "value": 0.0
+    },
+    "turnover_ratio_max_1_25": {
+      "pass": true,
+      "threshold": 1.25,
+      "value": 1.1228708040037683
+    }
+  },
+  "input_evidence": {
+    "candidate_target_frame_sha256": "6e0ae02475677d6b0453100c99a38b1f3e7129686f34d12e8b030ec0809311b5",
+    "canonical_brrk_target_frame_sha256": "bbb538ccfc0001e9458c5f7a4bed60eeed13a7c6d92a7f775a29af2affada5b8",
+    "defensive_scale_max": 1.0,
+    "defensive_scale_min": 1.0204821709880463e-07,
+    "development_dataset_ref": "BRRK-WINNER-0001-CANONICAL-HIST-V1",
+    "historical_role": "RESULT_INFORMED_RESEARCHER_EXPOSED_DEVELOPMENT_ROBUSTNESS",
+    "target_authority": {
+      "decision_count": 45,
+      "evaluation_start_session": "2022-12-10",
+      "feature_assets": [
+        "BTC",
+        "ETH",
+        "SOL",
+        "BNB",
+        "XRP"
+      ],
+      "feature_price_frame_sha256": "43325adedd7e588a5711c77842d4a054638ae916d939ca6f8c7e445947f00c1c",
+      "first_decision_date": "2022-12-09",
+      "last_decision": {
+        "date": "2026-07-21",
+        "final_scale": 0.009600519865636481,
+        "full_scale_cdar95_corrected": 0.16331279325293963,
+        "full_scale_cvar95": 0.13573137534843085,
+        "meta_scale": 0.0,
+        "riskoff_probability": 0.9903994801343635
+      },
+      "published_banded_weights_used_for_scale": false,
+      "target_assets": [
+        "BTC",
+        "ETH",
+        "SOL",
+        "BNB"
+      ]
+    }
+  },
+  "order_submission_authorized": false,
+  "phase6_observation_changed": false,
+  "production_authorized": false,
+  "promotion_authority": "FUTURE_ONLY_VALIDATION_STAGE_ELIGIBILITY_ONLY",
+  "reproduction": {
+    "absolute_tolerance": 5e-10,
+    "candidate_metrics": {
+      "avg_gross_exposure": 0.7543816308516481,
+      "cagr": 0.6969170994819343,
+      "calmar": 2.083464974694971,
+      "end_multiple": 6.8790795571724255,
+      "max_drawdown": -0.33449907147297553,
+      "sharpe": 1.3845994186251462,
+      "turnover": 102.27849378240246
+    },
+    "candidate_target_frame_sha256": "6e0ae02475677d6b0453100c99a38b1f3e7129686f34d12e8b030ec0809311b5",
+    "canonical_metrics": {
+      "avg_gross_exposure": 0.7543536295598086,
+      "cagr": 0.6530567772272524,
+      "calmar": 1.947723776506531,
+      "end_multiple": 6.252527441017219,
+      "max_drawdown": -0.335292296117361,
+      "sharpe": 1.35611613609405,
+      "turnover": 91.08660891147298
+    },
+    "canonical_target_frame_sha256": "bbb538ccfc0001e9458c5f7a4bed60eeed13a7c6d92a7f775a29af2affada5b8",
+    "passed": true,
+    "source_primary_result": "research/brrk_winner_0001/PRIMARY_RESULT.json"
+  },
+  "research_id": "BRRK-WINNER-ROBUSTNESS-0002",
+  "result_status": "PASS_FUTURE_ONLY_VALIDATION_STAGE_ELIGIBLE",
+  "retuning_performed": false,
+  "right_tail": {
+    "candidate_log_growth_on_same_dates": 1.738998666709741,
+    "canonical_best20_dates": [
+      "2023-11-10",
+      "2023-11-15",
+      "2024-03-20",
+      "2024-11-06",
+      "2023-10-23",
+      "2023-03-17",
+      "2025-03-02",
+      "2023-02-15",
+      "2024-03-13",
+      "2024-01-08",
+      "2024-11-11",
+      "2023-12-20",
+      "2023-11-22",
+      "2025-08-22",
+      "2023-03-13",
+      "2024-05-20",
+      "2023-03-12",
+      "2023-12-21",
+      "2025-10-12",
+      "2023-10-16"
+    ],
+    "canonical_best20_log_growth": 1.6792262008867005,
+    "capture_ratio": 1.0355952436851439
+  },
+  "robustness_metrics_released_after_reproduction": true,
+  "run_interface_id": "BRRK-WINNER-ROBUSTNESS-0002-RUN-ONCE-V1",
+  "schema_version": 1,
+  "signature_authorized": false,
+  "temporal_panel": {
+    "aggregate_gates": {
+      "candidate_cagr_not_below_canonical_block_count": {
+        "pass": true,
+        "threshold": 2,
+        "value": 2
+      },
+      "max_drawdown_deterioration_safe_in_every_block": {
+        "pass": true
+      }
+    },
+    "blocks": [
+      {
+        "baseline": {
+          "avg_gross_exposure": 0.8923441656319708,
+          "cagr": 2.133797892771762,
+          "calmar": 8.503840945697364,
+          "end_multiple": 4.008914006985843,
+          "max_drawdown": -0.2509216607410074,
+          "sharpe": 2.4880962017937636,
+          "turnover": 29.367674592401254
+        },
+        "block_id": "T1",
+        "candidate": {
+          "avg_gross_exposure": 0.8923833093665026,
+          "cagr": 2.3596297627677636,
+          "calmar": 8.792088210863838,
+          "end_multiple": 4.3627756049255995,
+          "max_drawdown": -0.26838103828987014,
+          "sharpe": 2.504306044495766,
+          "turnover": 33.38603715995771
+        },
+        "cost_bps": 5.0,
+        "delta": {
+          "avg_gross_exposure": 3.914373453173248e-05,
+          "cagr": 0.2258318699960018,
+          "calmar": 0.2882472651664738,
+          "end_multiple": 0.3538615979397566,
+          "max_drawdown": -0.01745937754886273,
+          "sharpe": 0.01620984270200232,
+          "turnover": 4.018362567556455
+        },
+        "gates": {
+          "candidate_cagr_not_below_canonical": {
+            "pass": true
+          },
+          "max_drawdown_deterioration_pp_max_4": {
+            "pass": true,
+            "threshold": 4.0,
+            "value": 1.7459377548862731
+          }
+        },
+        "session_end": "2024-02-26",
+        "session_start": "2022-12-10",
+        "sessions": 444
+      },
+      {
+        "baseline": {
+          "avg_gross_exposure": 0.8929219565575109,
+          "cagr": 0.36484757096814446,
+          "calmar": 1.0881477898330192,
+          "end_multiple": 1.4595167074368467,
+          "max_drawdown": -0.3352922961173609,
+          "sharpe": 0.8728678786701113,
+          "turnover": 43.9774674969801
+        },
+        "block_id": "T2",
+        "candidate": {
+          "avg_gross_exposure": 0.892953223156823,
+          "cagr": 0.34748238346413074,
+          "calmar": 1.0388141944131062,
+          "end_multiple": 1.4369743640123187,
+          "max_drawdown": -0.3344990714729752,
+          "sharpe": 0.844445402107554,
+          "turnover": 49.86821462224073
+        },
+        "cost_bps": 5.0,
+        "delta": {
+          "avg_gross_exposure": 3.1266599312074206e-05,
+          "cagr": -0.017365187504013724,
+          "calmar": -0.049333595419913,
+          "end_multiple": -0.02254234342452799,
+          "max_drawdown": 0.0007932246443856927,
+          "sharpe": -0.028422476562557253,
+          "turnover": 5.890747125260631
+        },
+        "gates": {
+          "candidate_cagr_not_below_canonical": {
+            "pass": false
+          },
+          "max_drawdown_deterioration_pp_max_4": {
+            "pass": true,
+            "threshold": 4.0,
+            "value": 0.0
+          }
+        },
+        "session_end": "2025-05-15",
+        "session_start": "2024-02-27",
+        "sessions": 444
+      },
+      {
+        "baseline": {
+          "avg_gross_exposure": 0.4777947664899439,
+          "cagr": 0.056107619680101806,
+          "calmar": 0.1746511046941634,
+          "end_multiple": 1.0686113806182351,
+          "max_drawdown": -0.321255452568442,
+          "sharpe": 0.33529860140913953,
+          "turnover": 17.741466822091645
+        },
+        "block_id": "T3",
+        "candidate": {
+          "avg_gross_exposure": 0.4778083600316189,
+          "cagr": 0.07936259063815965,
+          "calmar": 0.24703889071346322,
+          "end_multiple": 1.097282456767537,
+          "max_drawdown": -0.32125545256844257,
+          "sharpe": 0.4116648728254242,
+          "turnover": 19.024242000204023
+        },
+        "cost_bps": 5.0,
+        "delta": {
+          "avg_gross_exposure": 1.3593541675016585e-05,
+          "cagr": 0.02325497095805784,
+          "calmar": 0.07238778601929982,
+          "end_multiple": 0.028671076149301866,
+          "max_drawdown": -5.551115123125783e-16,
+          "sharpe": 0.07636627141628466,
+          "turnover": 1.2827751781123773
+        },
+        "gates": {
+          "candidate_cagr_not_below_canonical": {
+            "pass": true
+          },
+          "max_drawdown_deterioration_pp_max_4": {
+            "pass": true,
+            "threshold": 4.0,
+            "value": 5.551115123125783e-14
+          }
+        },
+        "session_end": "2026-08-02",
+        "session_start": "2025-05-16",
+        "sessions": 444
+      }
+    ]
+  },
+  "variant_budget": 1
+}

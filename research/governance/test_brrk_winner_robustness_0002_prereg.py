@@ -28,21 +28,39 @@ class BRRKWinnerRobustness0002PreregistrationTests(unittest.TestCase):
         self.assertEqual(len(matches), 1)
         return matches[0]
 
-    def test_registry_record_is_frozen_before_results(self) -> None:
+    def test_registry_preserves_frozen_contract_and_records_closed_result(self) -> None:
         record = self._record()
-        self.assertEqual(record, self.draft)
+        self.assertEqual(record["research_id"], self.draft["research_id"])
+        self.assertEqual(record["question"], self.draft["question"])
+        self.assertEqual(record["hypothesis"], self.draft["hypothesis"])
+        self.assertEqual(record["success_criteria"], self.draft["success_criteria"])
+        self.assertEqual(record["failure_criteria"], self.draft["failure_criteria"])
+        self.assertEqual(record["researcher_decisions"], self.draft["researcher_decisions"])
+        self.assertEqual(record["forbidden_followup"], self.draft["forbidden_followup"])
         self.assertEqual(record["governance_mode"], "PROGRAM_GOVERNED_V1")
         self.assertTrue(record["created_before_result"])
-        self.assertEqual(record["result_status"], "PREREGISTERED_NOT_RUN")
         self.assertEqual(record["declared_variant_budget"], 1)
-        self.assertEqual(record["actual_variants_evaluated"], 0)
+        self.assertEqual(record["actual_variants_evaluated"], 1)
         self.assertEqual(record["parameter_candidate_count"], 1)
-        self.assertEqual(record["promotion_state"], "NONE")
+        self.assertEqual(record["result_status"], "PASS_FUTURE_ONLY_VALIDATION_STAGE_ELIGIBLE")
+        self.assertEqual(record["promotion_state"], "FUTURE_ONLY_VALIDATION_STAGE_ELIGIBLE_ONLY")
+        self.assertEqual(
+            record["research_process_complexity"]["actual_parameter_candidates_evaluated"],
+            ["FROZEN_SINGLE_ALT_BTC_SHARE=0.40;FROZEN_SINGLE_ALT_WINNER_SHARE=0.60"],
+        )
         self.assertFalse(record["production_authorized"])
         self.assertEqual(
             record["governed_path_prefixes"],
             ["research/brrk_winner_robustness_0002/"],
         )
+
+    def test_original_preregistration_remains_immutable_pre_result_evidence(self) -> None:
+        self.assertEqual(self.formal["status"], "PREREGISTERED_NOT_RUN")
+        self.assertFalse(self.formal["economics_executed"])
+        self.assertEqual(self.formal["actual_variants_evaluated"], 0)
+        self.assertEqual(self.draft["result_status"], "PREREGISTERED_NOT_RUN")
+        self.assertEqual(self.draft["actual_variants_evaluated"], 0)
+        self.assertEqual(self.draft["promotion_state"], "NONE")
 
     def test_exact_40_60_construction_is_fixed_without_split_search(self) -> None:
         formal = self.formal
@@ -112,15 +130,21 @@ class BRRKWinnerRobustness0002PreregistrationTests(unittest.TestCase):
         self.assertEqual(self.formal["development_dataset_ref"], item["dataset_slice_id"])
         self.assertTrue(self.formal["development_evidence_is_researcher_exposed"])
         self.assertTrue(self.formal["development_dataset_already_consumed"])
+        events = [
+            e for e in self.datasets["exposure_events"]
+            if e.get("research_id") == "BRRK-WINNER-ROBUSTNESS-0002"
+        ]
+        self.assertEqual(len(events), 1)
+        self.assertEqual(events[0]["dataset_slice_ref"], item["dataset_slice_id"])
+        self.assertEqual(events[0]["release_type"], "PRIMARY_RESULT")
+        self.assertTrue(events[0]["result_informed_followup"])
 
-    def test_no_economics_or_authority_in_preregistration(self) -> None:
-        self.assertEqual(self.formal["status"], "PREREGISTERED_NOT_RUN")
-        self.assertFalse(self.formal["economics_executed"])
-        self.assertEqual(self.formal["actual_variants_evaluated"], 0)
+    def test_no_authority_change(self) -> None:
         self.assertFalse(self.formal["production_authorized"])
         self.assertFalse(self.formal["phase6_observation_changed"])
         self.assertFalse(self.formal["canonical_brrk_changed"])
         self.assertTrue(self.formal["same_id_rescue_tuning_forbidden"])
+        self.assertFalse(self._record()["production_authorized"])
 
     def test_readme_states_development_only_and_future_validation_gate(self) -> None:
         text = README.read_text(encoding="utf-8")

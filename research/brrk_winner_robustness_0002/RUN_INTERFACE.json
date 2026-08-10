@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "research_id": "BRRK-WINNER-ROBUSTNESS-0002",
+  "run_interface_id": "BRRK-WINNER-ROBUSTNESS-0002-RUN-ONCE-V1",
+  "status": "FROZEN_PRE_RESULT_RUN_INTERFACE",
+  "source_preregistration": "research/brrk_winner_robustness_0002/PREREGISTRATION.json",
+  "source_primary_result": "research/brrk_winner_0001/PRIMARY_RESULT.json",
+  "candidate_source": "research/brrk_winner_0001/run_once.py",
+  "variant_count": 1,
+  "candidate": {
+    "single_alt_btc_share": 0.4,
+    "single_alt_winner_share": 0.6,
+    "alternative_splits_permitted": false
+  },
+  "reproduction_gate": {
+    "cost_bps": 5.0,
+    "p3_3_l1_band": 0.05,
+    "absolute_tolerance": 5e-10,
+    "compare_full_metric_payloads": true,
+    "compare_target_frame_hashes": true,
+    "release_robustness_metrics_before_pass": false
+  },
+  "temporal_panel": {
+    "simulation_semantics": "SIMULATE_FULL_CONTINUOUS_5BPS_PATH_ONCE_THEN_SLICE_REALIZED_SESSION_RETURNS_WITHOUT_POSITION_RESET",
+    "subperiod_nav_semantics": "RENORMALIZE_EACH_SLICED_RETURN_SERIES_TO_1_FOR_SUBPERIOD_CAGR_AND_DRAWDOWN_ONLY",
+    "boundary_rebalance_or_position_reset": false,
+    "cost_bps": 5.0,
+    "p3_3_l1_band": 0.05,
+    "blocks": [
+      {"id": "T1", "start": "2022-12-10", "end": "2024-02-26", "sessions": 444},
+      {"id": "T2", "start": "2024-02-27", "end": "2025-05-15", "sessions": 444},
+      {"id": "T3", "start": "2025-05-16", "end": "2026-08-02", "sessions": 444}
+    ]
+  },
+  "cost_stress_panel": {
+    "simulation_semantics": "REPLAY_IDENTICAL_FULL_TARGET_PATH_FROM_INITIAL_ZERO_POSITION_WITH_ONLY_COST_BPS_CHANGED",
+    "full_horizon_start": "2022-12-10",
+    "full_horizon_end": "2026-08-02",
+    "sessions": 1332,
+    "cost_bps": [10.0, 20.0],
+    "p3_3_l1_band": 0.05,
+    "fill_fraction": 1.0,
+    "transaction_cost_multiplier": 1.0,
+    "funding_blocks": null
+  },
+  "right_tail": {
+    "date_selection": "TOP_20_DAILY_RETURNS_FROM_REPRODUCED_5BPS_CANONICAL_FULL_PATH",
+    "candidate_evaluation_dates": "EXACT_SAME_20_DATES",
+    "minimum_log_growth_capture_ratio": 0.98
+  },
+  "hard_gates": {
+    "temporal_candidate_cagr_not_below_canonical_min_blocks": 2,
+    "temporal_max_drawdown_deterioration_pp_max_each_block": 4.0,
+    "cost_stress_candidate_cagr_strictly_above_canonical_all": true,
+    "cost_stress_max_drawdown_deterioration_pp_max_each": 4.0,
+    "cost_stress_calmar_not_below_canonical_all": true,
+    "primary_right_tail_capture_min": 0.98,
+    "primary_turnover_ratio_max": 1.25,
+    "long_only": true,
+    "target_gross_max": 1.0
+  },
+  "failure_semantics": {
+    "reproduction_failure": "ABORT_WITHOUT_ROBUSTNESS_RESULT_FILE",
+    "hard_gate_failure": "FAIL_NO_FUTURE_VALIDATION_ELIGIBILITY",
+    "hard_gate_pass": "PASS_FUTURE_ONLY_VALIDATION_STAGE_ELIGIBLE"
+  },
+  "same_id_retuning_forbidden": true,
+  "second_run_permitted": false,
+  "production_authorized": false,
+  "signature_authorized": false,
+  "order_submission_authorized": false
+}

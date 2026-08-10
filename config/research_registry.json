@@ -1418,7 +1418,7 @@
       "validation_dataset_refs": [],
       "sealed_dataset_refs": [],
       "declared_variant_budget": 1,
-      "actual_variants_evaluated": 0,
+      "actual_variants_evaluated": 1,
       "parameter_candidate_count": 1,
       "stopping_rule": "Run exactly one frozen robustness panel for the already-selected 40/60 candidate after this preregistration is merged. First reproduce the 5 bps BRRK-WINNER-0001 canonical and candidate result within absolute tolerance 5e-10. If reproduction fails, invalidate and stop before robustness metrics release. Otherwise evaluate the three fixed 444-session chronological blocks at 5 bps and the full 1332-session horizon at exactly 10 bps and 20 bps once. Any hard gate failure produces FAIL_NO_FUTURE_VALIDATION_ELIGIBILITY and closes this research ID. No split, window, cost stress, threshold, signal, eligibility, cap, defensive scale, P3.3 band or universe may be changed after any robustness result is observed.",
       "success_criteria": [
@@ -1461,7 +1461,9 @@
         "declared_parameter_candidates": [
           "FROZEN_SINGLE_ALT_BTC_SHARE=0.40;FROZEN_SINGLE_ALT_WINNER_SHARE=0.60"
         ],
-        "actual_parameter_candidates_evaluated": [],
+        "actual_parameter_candidates_evaluated": [
+          "FROZEN_SINGLE_ALT_BTC_SHARE=0.40;FROZEN_SINGLE_ALT_WINNER_SHARE=0.60"
+        ],
         "universes_evaluated": [
           "CANONICAL_BRRK_BTC_ETH_SOL_BNB"
         ],
@@ -1492,11 +1494,17 @@
           "evidence_ref": "research/brrk_winner_0001/PRIMARY_RESULT.json"
         }
       ],
-      "result_status": "PREREGISTERED_NOT_RUN",
+      "result_status": "PASS_FUTURE_ONLY_VALIDATION_STAGE_ELIGIBLE",
       "failure_reason": null,
-      "promotion_state": "NONE",
-      "evidence_refs": [],
-      "decision_refs": [],
+      "promotion_state": "FUTURE_ONLY_VALIDATION_STAGE_ELIGIBLE_ONLY",
+      "evidence_refs": [
+        "research/brrk_winner_robustness_0002/PRIMARY_RESULT.json",
+        "research/brrk_winner_robustness_0002/EXECUTION.json"
+      ],
+      "decision_refs": [
+        "research/brrk_winner_robustness_0002/README.md",
+        "docs/CURRENT_STATE.md"
+      ],
       "production_relevance": "Research-only, result-informed robustness test of the already frozen 40/60 construction on researcher-exposed history. PASS can only make a separately preregistered future-only validation stage eligible; it cannot modify canonical BRRK or confer production authority.",
       "production_authorized": false,
       "provenance_status": "FACT",
@@ -1506,8 +1514,22 @@
       "notes": [
         "BRRK-WINNER-0001 passed its one-shot development gates with 40/60 fixed and no nearby split evaluation; this study therefore tests robustness of that exact construction rather than searching for a new split.",
         "The 10 bps and 20 bps stresses are fixed multiples of the original 5 bps assumption and are not selected from robustness outcomes.",
-        "Temporal thirds are equal observation-count partitions of the complete primary session window and are not market-regime labels selected after observing returns."
-      ]
+        "Temporal thirds are equal observation-count partitions of the complete primary session window and are not market-regime labels selected after observing returns.",
+        "Executed exactly once in GitHub Actions run 31374176442 attempt 1 from trigger SHA 346e26e3906df2416a21a40223e8791c3dfef86a after pre-result green baseline 561ecee69d30253aa398caf51d589cb03b5cfe47.",
+        "Primary 5 bps canonical and 40/60 metrics plus both target-frame hashes reproduced before robustness metrics were released.",
+        "Temporal gate passed exactly 2 of 3 fixed 444-session blocks: T1 and T3 candidate CAGR exceeded canonical; T2 candidate CAGR was lower by about 1.7365 percentage points and is retained as negative evidence.",
+        "Full-horizon cost-stress gates passed at both 10 bps and 20 bps; candidate CAGR and Calmar exceeded canonical at both costs while preregistered drawdown limits remained satisfied.",
+        "PASS only creates eligibility for a separately preregistered future-only validation stage; canonical BRRK-0011, Phase 6 and all production/security authority remain unchanged.",
+        "RUN_ONCE.marker is retained permanently and this research ID may not be rerun or rescued with another allocation split, temporal partition, cost stress or hard gate."
+      ],
+      "evidence_scorecard": {
+        "temporal_novelty": "RESEARCHER_EXPOSED_DEVELOPMENT_HISTORY_NOT_TEMPORALLY_UNSEEN_FIXED_TEMPORAL_ROBUSTNESS_ONLY",
+        "statistical_sufficiency": "ONE_FROZEN_CANDIDATE_1332_SESSIONS_THREE_FIXED_444_SESSION_BLOCKS_PASS_2_OF_3_PLUS_10_20BPS_COST_STRESS_PASS_WITH_T2_NEGATIVE_EVIDENCE_RETAINED",
+        "governance_integrity": "HIGH_PREREGISTERED_ONE_SHOT_REPRODUCTION_BEFORE_RELEASE_NO_RETUNING_NO_RERUN",
+        "operational_realism": "MATCHED_P3_3_5PCT_L1_BAND_WITH_5_10_20BPS_COST_STRESS_DEVELOPMENT_ONLY_NOT_PRODUCTION_VALIDATION",
+        "derived_confidence": "MEDIUM_ROBUSTNESS_PASS_PENDING_GENUINE_FUTURE_ONLY_VALIDATION",
+        "confidence_rule_ref": "research/brrk_winner_robustness_0002/RUN_INTERFACE.json"
+      }
     }
   ],
   "research_governance_debt": [
