@@ -1,0 +1,18 @@
+{
+  "audit_id": "BRRK-EXHAUSTION-EVENT-STUDY-0043",
+  "execution_count": 1,
+  "workflow_run_id": 31381953131,
+  "workflow_run_attempt": 1,
+  "workflow_head_sha": "1fdf8cd33729480c164bcb55fde96d0bee71cded",
+  "artifact_id": 9060216534,
+  "artifact_name": "brrk-exhaustion-event-study-0043",
+  "artifact_zip_digest": "sha256:6df40bbe0112082f045cd4da7b461753382c6980a348609a35bed9967f1520c4",
+  "full_result_sha256": "1ca030e544d6e3391143c9ec47e202f9585ce8a846e0e46be583c31258958b43",
+  "summary_sha256": "82579688952e990809a01044378b40cd44ceba84142307686cfa8ae05158c278",
+  "result_role": "RESEARCHER_EXPOSED_DEVELOPMENT_DIAGNOSTIC",
+  "portfolio_economics_executed": false,
+  "canonical_strategy_changed": false,
+  "production_authorized": false,
+  "signature_authorized": false,
+  "order_submission_authorized": false
+}
