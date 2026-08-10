@@ -58,13 +58,20 @@ Rejected. The validator fails if production, signing or order-submission authori
 
 Rejected during self-review. The persisted receipt contains the frozen identity fields `github_run_id`, `github_run_attempt`, `workflow_sha`, `decision_timestamp`, `observed_at`, `shadow_record_digest`, `input_provenance_digest` and `evidence_object_digest`. The first draft ledger did not structurally repeat and cross-check every one of those fields. The branch was hardened before merge so the ledger now records them and the validator requires exact receipt-to-row identity equality. Tests deliberately mutate each identity and require fail-closed rejection.
 
-## CI falsification result and correction
+### H8 — A new human-readable file under `docs/` is harmless governance documentation
 
-The first PR-head CI run produced a genuine failure in `PR handoff governance / continuity-contract`. Inspection showed that the failure was not a ledger/economic contradiction; it identified a repository governance omission in the PR description: the mandatory continuity sections were absent.
+Rejected by the repository-wide no-drift regression. `docs/PHASE6_OBSERVATION_LEDGER.md` was outside the frozen exact documentation allowlist. Expanding the allowlist merely to accommodate this accounting PR would weaken the governance boundary and was not justified. The new `docs/` file was therefore deleted. Human-readable falsification material remains under the already-authorized `research/governance/**` prefix, while cross-chat state is carried only by the already-authorized `docs/CURRENT_STATE.md` and `docs/NEXT_STEPS.md`.
 
-The PR body was corrected to include exactly the required sections: Roadmap task, Baseline reviewed, What changed, What did not change, Evidence and tests, Project drift audit, Risks and unresolved items, Production authorization, CURRENT_STATE handoff, and Exact next step. A subsequent code/document commit intentionally retriggers CI rather than treating the earlier failure as ignorable.
+## CI falsification results and corrections
 
-This distinction matters: the red check was accepted as evidence that the proposed change did not yet satisfy repository governance, even though its underlying Phase-6 observation accounting remained unchanged.
+The first PR-head CI run produced a failure in `PR handoff governance / continuity-contract`. Inspection showed that the failure identified a repository governance omission in the PR description: the mandatory continuity sections were absent. The PR body was corrected to include the required sections.
+
+The next PR-head CI run produced two distinct failures:
+
+1. `continuity-contract` required an explicit machine-readable production-authorization classification from the frozen set `NO_CHANGE | SHADOW_ONLY | CANDIDATE | LIVE_LIMITED | ACTIVE_RELEASE`. This accounting PR is explicitly `NO_CHANGE`.
+2. `governance-core` passed unit tests, Phase-6 gate validation, registry validation and future-research enforcement, then failed only at the final no-drift regression because the newly added human-readable `docs/PHASE6_OBSERVATION_LEDGER.md` was outside the frozen documentation allowlist. The file was removed rather than broadening governance permissions.
+
+These red checks are treated as falsification evidence, not as obstacles to tune around. Neither failure contradicted the underlying scheduled observation or its artifact/receipt binding, but both proved the proposed repository change was not yet governance-compliant and therefore could not be merged in that state.
 
 ## Remaining uncertainty
 
@@ -74,6 +81,6 @@ Artifact expiry before acceptance review remains governed by the frozen evidence
 
 ## Result
 
-The first observation may be indexed as scheduled decision #1, subject to the corrected PR CI and review, without changing its underlying evidence or creating retroactive observation credit.
+The first observation may be indexed as scheduled decision #1 only if the corrected PR passes the existing continuity, no-drift and governance checks. The accounting change does not alter its underlying evidence or create retroactive observation credit.
 
 Phase-6 live acceptance: **NOT PASSED / MEASUREMENT_INCONCLUSIVE_TIME_DEPENDENT**.
