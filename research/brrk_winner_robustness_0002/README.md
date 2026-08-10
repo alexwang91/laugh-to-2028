@@ -1,6 +1,7 @@
 # BRRK-WINNER-ROBUSTNESS-0002
 
 Status: **RUN_INTERFACE_FROZEN_NOT_RUN**  
+Formal preregistration state: **PREREGISTERED_NOT_RUN**  
 Pull request: **#153**  
 Merged preregistration: **PR #152 / `11c7967e4d22766b3abee33d382ab2912c16f5cb`**
 
