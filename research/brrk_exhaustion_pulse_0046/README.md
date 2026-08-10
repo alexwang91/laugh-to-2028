@@ -1,10 +1,10 @@
 # BRRK-EXHAUSTION-PULSE-0046
 
-Status: **IMPLEMENTED_PRE_RESULT_NOT_RUN**
+Status: **FAIL_NO_FUTURE_ONLY_PULSE_VALIDATION_ELIGIBILITY / CLOSED**
 
 PR #163 formally preregistered this single `PROGRAM_GOVERNED_V1` result-informed transition-pulse candidate at merge `48a140a1d58cba859d537e7dee0ad399c541527a`. The exact mathematical design remains the PR #162 freeze in `research/governance/BRRK_EXHAUSTION_PULSE_0046_DESIGN_FREEZE_2026-08-10.md`.
 
-This implementation branch does not reopen design selection and has not executed calibration or historical outcome evaluation.
+The frozen candidate was implemented without reopening design selection. One first execution reached a valid label-blind calibration lock but failed during historical evaluation before any research result or artifact was released. PR #165 repaired only the already-frozen 0045-compatible session-window semantics. The subsequent controlled execution produced the single valid 0046 historical result and permanently closed this ID.
 
 ## Frozen candidate
 
@@ -26,7 +26,7 @@ There is no Kalman/state-space smoother, raw-difference CUSUM, BOCPD, HMM, super
 
 ## Enforced information firewall
 
-The implementation is split into three runtime stages:
+The implementation was split into three runtime stages:
 
 ```text
 prepare-predictors
@@ -44,11 +44,11 @@ evaluate
     -> exactly-once PRIMARY_RESULT output
 ```
 
-`calibration.py` therefore receives only timestamps and the frozen S1-S4 predictor artifact. It cannot call candidate detection, event classification, macro-episode assignment or outcome windows. `run_once.evaluate()` validates the lock before the evaluation module import.
+`calibration.py` receives only timestamps and the frozen S1-S4 predictor artifact. It cannot call candidate detection, event classification, macro-episode assignment or outcome windows. `run_once.evaluate()` validates the lock before the evaluation module import.
 
-## Pre-result implementation clarifications frozen before any calibration
+## Pre-result implementation clarifications
 
-These implementation semantics are fixed now and cannot change after any 0046 output:
+These semantics were frozen before any 0046 calibration and remain immutable:
 
 - synthetic `T_b` is 1-based from synthetic path session 1; detector warm-up cannot cross but remains on the ARL clock;
 - if several pulses occur inside PRE21_0, the earliest pulse controls onset lead, matching 0045 scan direction;
@@ -59,7 +59,7 @@ These implementation semantics are fixed now and cannot change after any 0046 ou
 
 ## Frozen hard gates
 
-A later one-shot result can receive `PASS_FUTURE_ONLY_PULSE_VALIDATION_ELIGIBLE` only if every preregistered point-estimate gate passes:
+`PASS_FUTURE_ONLY_PULSE_VALIDATION_ELIGIBLE` required every preregistered point-estimate gate to pass:
 
 - primary TRUE PRE14_7 event pulse hit >= 0.50;
 - primary CONTINUATION PRE14_0 false pulse <= 0.34;
@@ -74,26 +74,46 @@ A later one-shot result can receive `PASS_FUTURE_ONLY_PULSE_VALIDATION_ELIGIBLE`
 - label-blind truncated ARL0 >= 365;
 - no post-output design, threshold, null, seed, scale, subset, gate or pulse-rule change.
 
-Failure is immutable. A PASS only permits a new separately preregistered future-only validation stage and does not create dynamic-gross eligibility.
+Failure is immutable. A PASS would only have permitted a new separately preregistered future-only validation stage and would not have created dynamic-gross eligibility.
 
-## Current lifecycle boundary
+## Immutable result
 
-Implementation source and `RUN_INTERFACE.json` may now exist. Generated execution evidence still must **not** exist on this pre-result branch:
+The single valid historical result is GitHub Actions run `31419044159`, attempt 1, artifact `9074623455`. The immutable artifact binds the result to:
 
 ```text
-PREDICTOR_PATH.json
-CALIBRATION_LOCK
-CALIBRATION_LOCK.json
+result status                  FAIL_NO_FUTURE_ONLY_PULSE_VALIDATION_ELIGIBILITY
+primary TRUE PRE14_7           0 / 9
+primary TRUE episode PRE14_7   0 / 5
+severe TRUE PRE14_7            0 / 7
+qualifying PRE21_0 onsets      0
+continuation false PRE14_0     0 / 6
+eligible detector sessions     1026
+raw-alarm sessions             19
+raw-alarm occupancy            1.8518519%
+raw-alarm spells               1
+spell duration                 19 sessions
+Transition Pulse               2026-06-03
+```
+
+The occupancy gate passed, but both preregistered spell-duration anti-stickiness gates failed because the single alarm spell lasted 19 sessions. The TRUE_EXHAUSTION sensitivity/timing gates also failed. The formal 0046 classification therefore remains FAIL.
+
+PR #166 correctly persisted the FAIL disposition but its hand-built compact closeout summary contained artifact-derived transcription errors. The authoritative artifact evidence is reconciled by the later evidence-correction PR; this is not a rerun, retune, rescue or reclassification.
+
+## Closed lifecycle boundary
+
+`RUN_INTERFACE.json` remains preserved as the frozen **pre-result execution contract**; its pre-result status fields are historical contract evidence and are not rewritten after observing the result. Permanent post-result evidence is held separately in:
+
+```text
 PRIMARY_RESULT.json
 EXECUTION.json
 RUN_ONCE.marker
 RESULT.md
 ```
 
-`actual_variants_evaluated` remains `0`. Threshold, pulse dates and historical outcome metrics remain nonexistent.
+Generated `PREDICTOR_PATH.json` and `CALIBRATION_LOCK.json` remain artifact evidence and are not committed as mutable repository runtime inputs.
+
+Same-ID rerun, retuning and rescue are forbidden. Any future use of the exhaustion information for portfolio economics requires a new research ID and fresh preregistration; it cannot alter or reinterpret the 0046 result.
 
 ## Authority
 
-This ID defines no portfolio response. Canonical BRRK-0011, Phase 6, leverage/short authority, signing, order submission and production authorization remain unchanged.
-
-The next boundary is a fully green pre-result implementation SHA. Only after that boundary is established may the frozen predictor-materialization and label-blind calibration stages execute. Event taxonomy remains unavailable until a successful `CALIBRATION_LOCK` exists and validates.
+0046 defines no portfolio response. Canonical BRRK-0011, Phase 6, leverage/short authority, signing, order submission and production authorization remain unchanged. `production_authorized=false`, `signature_authorized=false`, and `order_submission_authorized=false`.

@@ -55,9 +55,9 @@ primary CONT episode PRE14_0                0 / 5 = 0.0000   PASS
 severe TRUE PRE14_7 event pulse hit         0 / 7 = 0.0000   FAIL
 primary TRUE PRE21_0 qualifying onsets      0               FAIL
 median qualifying onset lead                null            FAIL
-raw alarm occupancy                         0.001958864      PASS
-median raw-alarm spell                      1               PASS
-p90 raw-alarm spell                         1               PASS
+raw alarm occupancy                         0.018518519      PASS
+median raw-alarm spell                      19              FAIL
+p90 raw-alarm spell                         19              FAIL
 label-blind truncated ARL0                  365.0472        PASS
 ```
 
@@ -65,13 +65,13 @@ Episode diversity passed: eight usable macro episodes, with five TRUE and five C
 
 ## Interpretation
 
-0046 resolved the operational stickiness exposed by 0045, but only by becoming far too sparse. Across 1,021 eligible detector sessions it produced two raw-alarm sessions and only one Transition Pulse, on:
+0046 resolved the operational stickiness exposed by 0045, but only by becoming far too sparse. Across 1,026 eligible detector sessions it produced 19 consecutive raw-alarm sessions in one spell and only one Transition Pulse, on:
 
 ```text
-2025-11-22
+2026-06-03
 ```
 
-That pulse did not land inside any preregistered TRUE_EXHAUSTION PRE14_7 or PRE21_0 window. The detector therefore failed all advance-sensitivity/timing gates while passing specificity and anti-stickiness gates.
+That pulse did not land inside any preregistered TRUE_EXHAUSTION PRE14_7 or PRE21_0 window. The detector therefore failed all advance-sensitivity/timing gates while passing continuation specificity and occupancy gates but failing both preregistered raw-alarm spell-duration anti-stickiness gates.
 
 This is binding negative evidence. The result may **not** be rescued under the same ID by lowering the threshold, relaxing ARL0, changing the 3..32 age scan, reweighting axes, privileging S2, adding BOCPD/CUSUM/Kalman/classifiers, changing pulse/reset rules, filtering early events, changing denominators, or adding a portfolio response.
 
@@ -81,7 +81,7 @@ This is binding negative evidence. The result may **not** be rescued under the s
 workflow run                         31419044159 / attempt 1
 workflow head                        88f7c7e769352ea9d7b4cac881d2836678576b8e
 artifact id                          9074623455
-artifact digest                      sha256:2938e8c0a776255848b13990200cd77bec85ab15e143596a477fc08f3b63c2a0
+artifact digest                      sha256:2938e8c0a14d30a750503d7fc0710cfe72db2066a4a2ba058518b11019b3c2a0
 predictor file SHA256                a82d41513995888cf4c9d39e66e4a09fa72649ffe84528377a5040b08bae693c
 calibration-lock file SHA256         8ce129b1254e6cdb110486d3f1791851f6b4b9d18771b6dec2c39f7b5acade6f
 full PRIMARY_RESULT SHA256           5c0e9aa4864b0044d5033573be78cdee3c0802db2d8b98d24fc0afcc21abbf8c

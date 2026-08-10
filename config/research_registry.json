@@ -2102,16 +2102,17 @@
         "Controlled run 31417259266 completed the first label-blind calibration but failed before PRIMARY_RESULT creation because the initial evaluator raised on a frozen peak preceding complete S1-S4 availability; zero artifacts were uploaded and this remains infrastructure-failure evidence, not a research result.",
         "PR #165 repaired only the exact already-frozen 0045 session-window compatibility and merged at aef20ae0e452fa8d737a64846ba433aebcb55628; detector/calibration/threshold/gates/denominators were unchanged.",
         "Valid result run 31419044159 attempt 1 from head 88f7c7e769352ea9d7b4cac881d2836678576b8e reproduced the run-1 predictor and full calibration lock before labels, then executed the frozen historical evaluation exactly once.",
-        "Valid artifact 9074623455 digest sha256:2938e8c0a776255848b13990200cd77bec85ab15e143596a477fc08f3b63c2a0; full PRIMARY_RESULT SHA256 5c0e9aa4864b0044d5033573be78cdee3c0802db2d8b98d24fc0afcc21abbf8c.",
-        "Binding negative result: zero of nine primary TRUE events pulsed in PRE14_7, zero of five TRUE episodes hit, zero of seven severe TRUE events hit, zero qualifying PRE21_0 onsets; only one pulse occurred across 1,021 eligible sessions.",
-        "Specificity/anti-stickiness passed: continuation false pulses 0/6, raw alarm occupancy about 0.196%, median and p90 alarm spells both one session, truncated ARL0 365.0472.",
-        "0046 is permanently closed to same-ID rerun, threshold/ARL/age/axis/model/pulse rescue, event filtering, dynamic-gross mapping and portfolio economics."
+        "0046 is permanently closed to same-ID rerun, threshold/ARL/age/axis/model/pulse rescue, event filtering, dynamic-gross mapping and portfolio economics.",
+        "Valid artifact 9074623455 digest sha256:2938e8c0a14d30a750503d7fc0710cfe72db2066a4a2ba058518b11019b3c2a0; full PRIMARY_RESULT SHA256 5c0e9aa4864b0044d5033573be78cdee3c0802db2d8b98d24fc0afcc21abbf8c.",
+        "Binding negative result: zero of nine primary TRUE events pulsed in PRE14_7, zero of five TRUE episodes hit, zero of seven severe TRUE events hit, zero qualifying PRE21_0 onsets; one pulse occurred across 1,026 eligible sessions.",
+        "Specificity and occupancy passed but anti-stickiness did not fully pass: continuation false pulses 0/6 and raw alarm occupancy 1.8519%, while the single raw-alarm spell lasted 19 sessions so both median<=7 and p90<=14 spell gates failed.",
+        "0046 closeout evidence correction: PR #166 compact closeout accidentally persisted a hand-built alarm-path summary and wrong artifact digest; this correction is derived mechanically from immutable Actions artifact 9074623455 and does not rerun, retune, rescue or reclassify 0046."
       ],
       "evidence_scorecard": {
         "temporal_novelty": "RESEARCHER_EXPOSED_DEVELOPMENT_HISTORY_2023-08-07_TO_2026-08-02_NOT_INDEPENDENT_OOS",
         "statistical_sufficiency": "EIGHT_MACRO_EPISODES_CALIBRATION_ARL0_PASS_BUT_PRIMARY_TRUE_0_OF_9_TRUE_EPISODE_0_OF_5_SEVERE_TRUE_0_OF_7_AND_ZERO_PRE21_0_ONSETS",
-        "governance_integrity": "HIGH_PREREGISTERED_SINGLE_CANDIDATE_PRE_RESULT_BOUNDARY_RUN1_FAILURE_PRESERVED_REPAIR_PARENT_SEMANTICS_ONLY_RUN1_LOCK_REPRODUCED_BEFORE_SINGLE_VALID_RESULT_NO_RETUNING",
-        "operational_realism": "TRANSITION_PULSE_DIAGNOSTIC_ONLY_EXTREMELY_SPARSE_ONE_PULSE_1021_ELIGIBLE_SESSIONS_NO_PORTFOLIO_TRANSLATION",
+        "governance_integrity": "HIGH_PREREGISTERED_SINGLE_CANDIDATE_PRE_RESULT_BOUNDARY_RUN1_FAILURE_PRESERVED_REPAIR_PARENT_SEMANTICS_ONLY_RUN1_LOCK_REPRODUCED_BEFORE_SINGLE_VALID_RESULT_NO_RETUNING_CLOSEOUT_SUMMARY_CORRECTED_TO_IMMUTABLE_ARTIFACT",
+        "operational_realism": "TRANSITION_PULSE_DIAGNOSTIC_ONLY_ONE_PULSE_1026_ELIGIBLE_SESSIONS_19_SESSION_SINGLE_ALARM_SPELL_NO_PORTFOLIO_TRANSLATION",
         "derived_confidence": "HIGH_CONFIDENCE_CURRENT_0046_PULSE_CANDIDATE_IS_NOT_ELIGIBLE_FOR_FUTURE_ONLY_PULSE_VALIDATION_OR_DYNAMIC_GROSS",
         "confidence_rule_ref": "research/brrk_exhaustion_pulse_0046/RUN_INTERFACE.json"
       }

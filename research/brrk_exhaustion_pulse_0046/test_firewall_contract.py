@@ -118,6 +118,19 @@ def test_run_interface_is_pre_result_zero_authority() -> None:
 
 
 def test_pre_result_branch_contains_no_generated_predictor_lock_or_result_evidence() -> None:
+    marker = PATH / "RUN_ONCE.marker"
+    if marker.exists():
+        result = json.loads((PATH / "PRIMARY_RESULT.json").read_text(encoding="utf-8"))
+        execution = json.loads((PATH / "EXECUTION.json").read_text(encoding="utf-8"))
+        run_marker = json.loads(marker.read_text(encoding="utf-8"))
+        assert result["result_status"] == "FAIL_NO_FUTURE_ONLY_PULSE_VALIDATION_ELIGIBILITY"
+        assert execution["unique_valid_historical_result_count"] == 1
+        assert run_marker["SAME_ID_RERUN_ALLOWED"] is False
+        assert run_marker["SAME_ID_RESCUE_ALLOWED"] is False
+        assert (PATH / "RESULT.md").exists()
+        assert not (PATH / "PREDICTOR_PATH.json").exists()
+        assert not (PATH / "CALIBRATION_LOCK.json").exists()
+        return
     forbidden = (
         "PREDICTOR_PATH.json",
         "CALIBRATION_LOCK",

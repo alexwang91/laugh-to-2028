@@ -284,3 +284,16 @@ Exact next steps now are:
 8. Validate the lock before importing evaluation. Only then may the immutable 0043/0044 taxonomy and macro episodes be loaded.
 9. Execute the frozen historical evaluation exactly once and preserve PASS, FAIL or INSUFFICIENT without same-ID rescue.
 10. Do not map dynamic gross, run portfolio economics, alter canonical BRRK, alter Phase 6, launch Phase 7, sign/submit orders or confer production authority from 0046 DEVELOPMENT evidence.
+
+
+## 0046 immutable artifact evidence correction — 2026-08-10
+
+PR #166 preserved the correct 0046 FAIL disposition but its hand-built compact closeout summary contained artifact-derived transcription errors. The immutable GitHub Actions artifact `9074623455` from run `31419044159` is authoritative. Correct facts: artifact digest `sha256:2938e8c0a14d30a750503d7fc0710cfe72db2066a4a2ba058518b11019b3c2a0`; `1,026` eligible sessions; `19` raw-alarm sessions; occupancy `1.8518519%`; one 19-session alarm spell; Transition Pulse `2026-06-03`; median-spell and p90-spell anti-stickiness gates both FAIL. Primary TRUE PRE14_7 remains `0/9`, TRUE episode `0/5`, severe TRUE `0/7`, PRE21_0 onset count `0`; therefore `FAIL_NO_FUTURE_ONLY_PULSE_VALIDATION_ELIGIBILITY` is unchanged. No 0046 rerun, retuning, rescue, threshold change, denominator change or portfolio economics occurred.
+
+```text
+production gross cap = 1.0
+production_authorized_components = []
+production_authorized = false
+signature_authorized = false
+order_submission_authorized = false
+```

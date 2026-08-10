@@ -34,10 +34,11 @@ def test_0046_permanent_result_execution_and_marker_bind_valid_run():
     assert result["valid_result_workflow"]["run_id"] == 31419044159
     assert result["valid_result_workflow"]["head_sha"] == "88f7c7e769352ea9d7b4cac881d2836678576b8e"
     assert result["full_artifact_binding"]["artifact_id"] == 9074623455
-    assert result["full_artifact_binding"]["artifact_digest"] == "sha256:2938e8c0a776255848b13990200cd77bec85ab15e143596a477fc08f3b63c2a0"
+    assert result["full_artifact_binding"]["artifact_digest"] == "sha256:2938e8c0a14d30a750503d7fc0710cfe72db2066a4a2ba058518b11019b3c2a0"
     assert result["full_artifact_binding"]["full_primary_result_file_sha256"] == "5c0e9aa4864b0044d5033573be78cdee3c0802db2d8b98d24fc0afcc21abbf8c"
     assert execution["unique_valid_historical_result_count"] == 1
-    assert execution["run_1"]["research_result_released"] is False
+    assert execution["run_1"]["primary_result_created"] is False
+    assert execution["run_1"]["artifact_count"] == 0
     assert execution["valid_result_run"]["run1_full_calibration_reproduced_before_labels"] is True
     assert marker["valid_result_run_id"] == 31419044159
     assert marker["result_status"] == FAIL
@@ -56,7 +57,13 @@ def test_0046_binding_negative_gates_are_preserved():
     assert metrics["severe_true_PRE14_7"]["denominator"] == 7
     assert metrics["primary_true_PRE21_0_onsets"]["count"] == 0
     assert result["alarm_path"]["total_pulse_count"] == 1
-    assert result["alarm_path"]["pulse_dates"] == ["2025-11-22"]
+    assert result["alarm_path"]["pulse_dates"] == ["2026-06-03"]
+    assert result["alarm_path"]["eligible_sessions"] == 1026
+    assert result["alarm_path"]["raw_alarm_sessions"] == 19
+    assert result["alarm_path"]["spell_summary"]["median"] == 19.0
+    assert result["alarm_path"]["spell_summary"]["p90_empirical_nearest_rank"] == 19.0
+    assert result["gates"]["median_alarm_spell_le_7"]["pass"] is False
+    assert result["gates"]["p90_alarm_spell_le_14"]["pass"] is False
     assert result["gates"]["primary_true_event_PRE14_7_ge_0_50"]["pass"] is False
     assert result["gates"]["primary_true_episode_PRE14_7_ge_0_60"]["pass"] is False
     assert result["gates"]["severe_true_event_PRE14_7_ge_0_57"]["pass"] is False
