@@ -1,0 +1,65 @@
+{
+  "research_id": "BRRK-WINNER-ROBUSTNESS-0002",
+  "status": "PREREGISTERED_NOT_RUN",
+  "governance_mode": "PROGRAM_GOVERNED_V1",
+  "created_before_result": true,
+  "economics_executed": false,
+  "actual_variants_evaluated": 0,
+  "declared_variant_budget": 1,
+  "candidate": {
+    "single_alt_btc_share": 0.40,
+    "single_alt_winner_share": 0.60,
+    "allocation_is_frozen_from_brrk_winner_0001": true,
+    "alternative_splits_permitted": false,
+    "signals_changed": false,
+    "eligibility_changed": false,
+    "multi_alt_allocation_changed": false,
+    "defensive_scale_changed": false,
+    "p3_3_l1_band": 0.05,
+    "gross_cap": 1.0,
+    "leverage": false,
+    "shorts": false,
+    "universe": ["BTC", "ETH", "SOL", "BNB"]
+  },
+  "reproduction": {
+    "source_result": "research/brrk_winner_0001/PRIMARY_RESULT.json",
+    "cost_bps": 5.0,
+    "absolute_tolerance": 5e-10,
+    "required_before_robustness_release": true
+  },
+  "temporal_panel": {
+    "cost_bps": 5.0,
+    "partition_rule": "THREE_EQUAL_CONTIGUOUS_BLOCKS_BY_SESSION_ORDER",
+    "session_count_total": 1332,
+    "blocks": [
+      {"id": "T1", "start": "2022-12-10", "end": "2024-02-26", "sessions": 444},
+      {"id": "T2", "start": "2024-02-27", "end": "2025-05-15", "sessions": 444},
+      {"id": "T3", "start": "2025-05-16", "end": "2026-08-02", "sessions": 444}
+    ]
+  },
+  "cost_stress_panel": {
+    "full_horizon_start": "2022-12-10",
+    "full_horizon_end": "2026-08-02",
+    "cost_bps": [10.0, 20.0],
+    "p3_3_l1_band": 0.05
+  },
+  "hard_success_gates": {
+    "temporal_blocks_candidate_cagr_not_below_canonical_min_count": 2,
+    "temporal_block_max_drawdown_deterioration_pp_max": 4.0,
+    "cost_stress_candidate_cagr_strictly_above_canonical_all": true,
+    "cost_stress_max_drawdown_deterioration_pp_max": 4.0,
+    "cost_stress_calmar_not_below_canonical_all": true,
+    "primary_canonical_top20_log_growth_capture_min": 0.98,
+    "total_turnover_ratio_max": 1.25,
+    "long_only": true,
+    "gross_never_above": 1.0
+  },
+  "development_dataset_ref": "BRRK-WINNER-0001-CANONICAL-HIST-V1",
+  "development_evidence_is_researcher_exposed": true,
+  "development_dataset_already_consumed": true,
+  "same_id_rescue_tuning_forbidden": true,
+  "production_authorized": false,
+  "phase6_observation_changed": false,
+  "canonical_brrk_changed": false,
+  "next_allowed_action": "MERGE_PREREGISTRATION_BEFORE_SINGLE_FROZEN_ROBUSTNESS_RUN"
+}

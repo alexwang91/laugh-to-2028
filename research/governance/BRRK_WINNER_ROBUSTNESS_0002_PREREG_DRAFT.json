@@ -1,0 +1,131 @@
+{
+  "research_id": "BRRK-WINNER-ROBUSTNESS-0002",
+  "research_family_id": "BRRK_WINNER_CONCENTRATION",
+  "research_domain": "PORTFOLIO_INTEGRATION",
+  "research_governance_version": 1,
+  "governance_mode": "PROGRAM_GOVERNED_V1",
+  "objective_type": "PORTFOLIO_INTEGRATION",
+  "created_at": "2026-08-10T08:51:00Z",
+  "created_before_result": true,
+  "question": "Does the exact frozen BRRK-WINNER-0001 40% BTC / 60% sole-eligible-alt construction remain directionally superior to canonical BRRK across mechanically defined chronological thirds and fixed higher transaction-cost stresses without any allocation, signal, eligibility, defensive-scale or execution-band retuning?",
+  "hypothesis": "The frozen 40/60 single-alt construction improvement is not confined to one chronological segment and remains economically directionally positive under transaction costs equal to two and four times the original 5 bps assumption while preserving the inherited drawdown, right-tail, turnover and long-only safety constraints.",
+  "hypothesis_origin": "RESULT_INFORMED_BY_BRRK_WINNER_0001_PASS",
+  "economic_mechanism": "This study does not search for another portfolio construction. It holds the BRRK-WINNER-0001 40/60 target rule fixed and evaluates the same target path under a preregistered temporal-stability panel and fixed 10 bps / 20 bps transaction-cost stresses. The canonical comparator is reconstructed under identical windows and cost assumptions, with the canonical P3.3 5% L1 execution band unchanged.",
+  "primary_target": "robustness_of_frozen_40_60_candidate_across_time_and_fixed_cost_stress",
+  "primary_metric": "joint_hard_gate_pass_across_three_fixed_temporal_blocks_and_10_20bps_full_horizon_cost_stresses",
+  "secondary_metrics": [
+    "after_cost_cagr_difference_percentage_points_candidate_minus_canonical_by_temporal_block",
+    "maximum_drawdown_difference_percentage_points_candidate_minus_canonical_by_temporal_block",
+    "after_cost_cagr_difference_percentage_points_candidate_minus_canonical_by_cost_stress",
+    "calmar_ratio_candidate_vs_canonical_by_cost_stress",
+    "maximum_drawdown_difference_percentage_points_candidate_minus_canonical_by_cost_stress",
+    "canonical_top20_session_log_growth_capture_ratio_at_primary_5bps",
+    "total_turnover_ratio_candidate_over_canonical"
+  ],
+  "feature_families": [
+    "FROZEN_BRRK_SINGLE_ALT_ELIGIBILITY"
+  ],
+  "horizon": "DAILY_00UTC_2022-12-10_THROUGH_2026-08-02_RESEARCHER_EXPOSED_HISTORY_WITH_FIXED_TEMPORAL_AND_COST_STRESS_PANEL",
+  "universe": [
+    "BTC",
+    "ETH",
+    "SOL",
+    "BNB"
+  ],
+  "development_dataset_refs": [
+    "BRRK-WINNER-0001-CANONICAL-HIST-V1"
+  ],
+  "validation_dataset_refs": [],
+  "sealed_dataset_refs": [],
+  "declared_variant_budget": 1,
+  "actual_variants_evaluated": 0,
+  "parameter_candidate_count": 1,
+  "stopping_rule": "Run exactly one frozen robustness panel for the already-selected 40/60 candidate after this preregistration is merged. First reproduce the 5 bps BRRK-WINNER-0001 canonical and candidate result within absolute tolerance 5e-10. If reproduction fails, invalidate and stop before robustness metrics release. Otherwise evaluate the three fixed 444-session chronological blocks at 5 bps and the full 1332-session horizon at exactly 10 bps and 20 bps once. Any hard gate failure produces FAIL_NO_FUTURE_VALIDATION_ELIGIBILITY and closes this research ID. No split, window, cost stress, threshold, signal, eligibility, cap, defensive scale, P3.3 band or universe may be changed after any robustness result is observed.",
+  "success_criteria": [
+    "The 5 bps full-horizon canonical and frozen 40/60 candidate metrics reproduce BRRK-WINNER-0001 within absolute tolerance 5e-10 before robustness metrics are released.",
+    "At 5 bps, candidate after-cost CAGR is greater than or equal to canonical after-cost CAGR in at least two of the three preregistered contiguous 444-session chronological blocks.",
+    "At 5 bps, candidate maximum drawdown is no more than 4.00 percentage points worse than canonical maximum drawdown in every one of the three preregistered chronological blocks.",
+    "At both 10 bps and 20 bps on the full 1332-session horizon, candidate after-cost CAGR is strictly greater than canonical after-cost CAGR.",
+    "At both 10 bps and 20 bps on the full horizon, candidate maximum drawdown is no more than 4.00 percentage points worse than canonical and candidate Calmar ratio is greater than or equal to canonical Calmar ratio.",
+    "At the reproduced 5 bps primary environment, candidate captures at least 98% of canonical BRRK log growth on the canonical best 20 daily return sessions and candidate total turnover is no more than 1.25 times canonical total turnover.",
+    "Candidate remains long-only, target gross never exceeds 1.0, target assets remain exactly BTC/ETH/SOL/BNB, the P3.3 L1 execution band remains exactly 5%, and no production authority changes occur."
+  ],
+  "failure_criteria": [
+    "Any hard success criterion failure produces FAIL_NO_FUTURE_VALIDATION_ELIGIBILITY for BRRK-WINNER-ROBUSTNESS-0002.",
+    "Any failure to reproduce the original 5 bps canonical or 40/60 result within absolute tolerance 5e-10 invalidates the run before robustness metrics are released.",
+    "Any change to the frozen 40/60 allocation, the fixed temporal blocks, the fixed 10/20 bps stress assumptions, inherited safety thresholds, PIT/data semantics, P3.3 band, universe or variant budget invalidates the run rather than becoming a research result.",
+    "Any use of post-result tuning, selective block omission or selective cost-stress omission invalidates the run rather than becoming a research result."
+  ],
+  "allowed_followup": [
+    "Only a full PASS may create a new separately preregistered future-only validation research ID for the exact same frozen 40/60 construction on decisions occurring after that future-only preregistration boundary.",
+    "A future-only validation may observe the frozen 40/60 candidate alongside canonical BRRK but must remain separate from canonical BRRK-0011, existing Phase-6 scheduled-decision credit and production authority."
+  ],
+  "forbidden_followup": [
+    "No evaluation of 45/55, 35/65, 30/70 or any other BTC/winner split under this research ID.",
+    "No post-result alteration of the three 444-session temporal blocks, 10 bps or 20 bps cost stresses, hard gates or result classification.",
+    "No modification of the frozen 20/60/120/240 signal horizons or weights, eligibility rules, multi-alt allocation, ETH/SOL/BNB multi-alt caps, BRRK defensive scaling, leverage, shorting, P3.3 execution band or universe under this ID.",
+    "No direct modification of BRRK-0011, Phase 6, Phase 7, execution authority, signing, order submission or production authorization from this robustness result.",
+    "No claim that this researcher-exposed historical robustness study is independent OOS or future-only evidence."
+  ],
+  "researcher_decisions": [
+    "The only portfolio construction evaluated is the exact BRRK-WINNER-0001 candidate: single-alt branch BTC/eligible-alt split 0.40/0.60 at unchanged gross; no alternative allocation candidate exists in this study.",
+    "The primary 1332 daily return sessions are fixed from 2022-12-10 through 2026-08-02 inclusive and are partitioned mechanically by observation order into three equal contiguous 444-session blocks: 2022-12-10..2024-02-26, 2024-02-27..2025-05-15, and 2025-05-16..2026-08-02.",
+    "The temporal panel uses the original 5 bps transaction-cost assumption and canonical P3.3 5% L1 band without modification.",
+    "The friction panel uses the full 1332-session horizon and exactly 10 bps and 20 bps transaction costs, chosen ex ante as 2x and 4x the original 5 bps assumption; the P3.3 5% L1 band and target paths remain unchanged.",
+    "Canonical and candidate are always evaluated on identical sessions and under identical transaction-cost assumptions within each panel cell.",
+    "The original canonical best-20 dates remain defined by the reproduced 5 bps canonical baseline and are not reselected by temporal block, candidate result or cost stress.",
+    "The reused historical dataset is already consumed and researcher-exposed by BRRK-WINNER-0001. This study is explicitly result-informed DEVELOPMENT robustness evidence and cannot provide temporal novelty.",
+    "A PASS is only an admission gate for a later separately preregistered future-only validation; it is not a canonical promotion or production decision."
+  ],
+  "research_process_complexity": {
+    "declared_parameter_candidates": [
+      "FROZEN_SINGLE_ALT_BTC_SHARE=0.40;FROZEN_SINGLE_ALT_WINNER_SHARE=0.60"
+    ],
+    "actual_parameter_candidates_evaluated": [],
+    "universes_evaluated": [
+      "CANONICAL_BRRK_BTC_ETH_SOL_BNB"
+    ],
+    "horizons_evaluated": [
+      "FULL_1332_SESSIONS_2022-12-10_TO_2026-08-02",
+      "TEMPORAL_BLOCK_1_444_SESSIONS_2022-12-10_TO_2024-02-26",
+      "TEMPORAL_BLOCK_2_444_SESSIONS_2024-02-27_TO_2025-05-15",
+      "TEMPORAL_BLOCK_3_444_SESSIONS_2025-05-16_TO_2026-08-02"
+    ],
+    "rebalance_variants": [
+      "CANONICAL_P3_3_5PCT_L1_BAND_WITH_COST_BPS_5_10_20"
+    ],
+    "feature_representations": [
+      "FROZEN_V1_SINGLE_ALT_BRANCH_STRUCTURE"
+    ],
+    "special_cases_introduced": [
+      "MECHANICAL_EQUAL_OBSERVATION_TEMPORAL_THIRDS",
+      "FIXED_TRANSACTION_COST_STRESS_2X_AND_4X_PRIMARY_COST"
+    ],
+    "validation_exposure_event_refs": [],
+    "related_family_trials": 2
+  },
+  "lineage_edges": [
+    {
+      "relation": "RESULT_INFORMED",
+      "ref_research_id": "BRRK-WINNER-0001",
+      "provenance_status": "FACT",
+      "evidence_ref": "research/brrk_winner_0001/PRIMARY_RESULT.json"
+    }
+  ],
+  "result_status": "PREREGISTERED_NOT_RUN",
+  "failure_reason": null,
+  "promotion_state": "NONE",
+  "evidence_refs": [],
+  "decision_refs": [],
+  "production_relevance": "Research-only, result-informed robustness test of the already frozen 40/60 construction on researcher-exposed history. PASS can only make a separately preregistered future-only validation stage eligible; it cannot modify canonical BRRK or confer production authority.",
+  "production_authorized": false,
+  "provenance_status": "FACT",
+  "governed_path_prefixes": [
+    "research/brrk_winner_robustness_0002/"
+  ],
+  "notes": [
+    "BRRK-WINNER-0001 passed its one-shot development gates with 40/60 fixed and no nearby split evaluation; this study therefore tests robustness of that exact construction rather than searching for a new split.",
+    "The 10 bps and 20 bps stresses are fixed multiples of the original 5 bps assumption and are not selected from robustness outcomes.",
+    "Temporal thirds are equal observation-count partitions of the complete primary session window and are not market-regime labels selected after observing returns."
+  ]
+}
