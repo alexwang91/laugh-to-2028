@@ -92,10 +92,18 @@ def test_parent_evidence_remains_immutable_and_0045_does_not_create_dynamic_gros
     assert "A 0046 PASS does not create dynamic-gross eligibility" in forbidden_text
 
 
-def test_preregistration_stage_has_no_runner_lock_or_result_files():
-    forbidden = {
-        "run_once.py",
-        "RUN_INTERFACE.json",
+def test_lifecycle_only_allows_pre_result_implementation_not_generated_evidence():
+    interface_path = HERE / "RUN_INTERFACE.json"
+    runner_path = HERE / "run_once.py"
+    if interface_path.exists() or runner_path.exists():
+        assert interface_path.exists() and runner_path.exists()
+        interface = _load(interface_path)
+        assert interface["status"] == "IMPLEMENTED_PRE_RESULT_NOT_RUN"
+        assert interface["actual_variants_evaluated"] == 0
+        assert interface["authority"]["calibration_executed"] is False
+        assert interface["authority"]["result_released"] is False
+    generated_forbidden = {
+        "PREDICTOR_PATH.json",
         "CALIBRATION_LOCK",
         "CALIBRATION_LOCK.json",
         "PRIMARY_RESULT.json",
@@ -104,7 +112,7 @@ def test_preregistration_stage_has_no_runner_lock_or_result_files():
         "RESULT.md",
     }
     existing = {p.name for p in HERE.iterdir() if p.is_file()}
-    assert forbidden.isdisjoint(existing)
+    assert generated_forbidden.isdisjoint(existing)
 
 
 def test_zero_authority_and_no_portfolio_translation():
