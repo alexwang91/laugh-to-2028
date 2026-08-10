@@ -482,3 +482,55 @@ evaluate
 Standing CI was explicitly extended through a test-only bridge under `research/governance/`; no workflow or policy was weakened. The immutable discovery command executed 162 tests including 0046 reference-equivalence, one-sided detector, pulse, firewall, frozen-constant and zero-authority suites. The implementation branch contains no generated predictor, lock or result evidence.
 
 The exact next task is to require the final PR #164 head to remain green across Research governance core, Phase 0-8 drift audit, PR handoff governance, P3.2 parity and Phase-6 integrated shadow safety; final-audit the diff for zero generated evidence; merge #164 as implementation-only; verify live `main` moved; then treat that merged SHA as the immutable pre-result code boundary. Only a separate controlled execution branch may materialize the predictor artifact and run label-blind calibration. If VAR spectral radius is `>=1`, close 0046 before labels. Otherwise write/hash-bind `CALIBRATION_LOCK`, validate it, and only then execute the frozen historical evaluation exactly once. Same-ID rescue, dynamic-gross mapping, portfolio economics, canonical BRRK changes, Phase-6 changes and production/security authority remain forbidden.
+
+## 0046 controlled run #1 + repair-only handoff — supersedes the implementation-stage next task above
+
+PR #164 actually squash-merged at `f23d2aac6fa8699af12b784ca03489061e331865`, which is the immutable pre-result implementation boundary. A separate controlled execution branch added only a temporary one-shot workflow and ran GitHub Actions `31417259266` / job `93549100062` from head `d365c6d80bf198354fbaacd0e63bad6e0f4fe0c2`.
+
+Execution-before-result proofs passed: the only diff from `f23d2aac...` was the temporary workflow; frozen 0046 implementation/governance/no-drift checks passed; the create-only predictor artifact contained only timestamp + S1/S2/S3/S4; and calibration read no labels/taxonomy.
+
+The first label-blind calibration completed and is now immutable evidence:
+
+```text
+predictor start                      2023-08-07
+predictor end                        2026-08-02
+predictor sessions                   1092
+predictor digest                     f25d93a39838b28a5bd9527db3b541c53b87a7e71c111b399a2997ed1202b9e4
+VAR(1) spectral radius               0.9655669199981354
+threshold float                      1125.89535644321
+threshold full precision decimal     1125.8953564432099
+threshold hex                        0x1.19794d851c766p+10
+truncated ARL0                       365.0472
+max simulated G                      16420.651959614333
+run-1 lock payload hash              cba7aa3406c58ec80e391c389ea076439912d6bc3abecdfb89911739be1f2445
+calibration label_data_accessed       false
+calibration event_taxonomy_loaded    false
+```
+
+The lock validated successfully before evaluation. Historical evaluation then failed before `PRIMARY_RESULT` creation on frozen peak `2023-02-03`, because that peak precedes the complete four-axis predictor index and the first implementation raised on an absent peak. Run #1 uploaded zero Actions artifacts and emitted no `BRRK_0046_RESULT=` line. This is therefore retained as a **post-lock evaluation implementation/infrastructure failure with no research result**, not a PASS/FAIL signal result.
+
+The repair question was checked against the frozen parent semantics before code change. 0046 preregistration explicitly reuses exact 0045 PRE14_7/PRE14_0/PRE21_0 session-window definitions. Immutable 0045 returns an empty window when a peak is absent and clips boundary windows; empty windows produce no hit/onset while the event remains in the original denominator. The 0046 raise was therefore an implementation deviation, not a new research rule.
+
+PR #165 is repair-only. It adds `window_compat.py`, binds evaluation to the exact 0045 window helpers **after CALIBRATION_LOCK validation and before `run_locked`**, and adds standing-CI tests that directly compare absent/normal/left-clipped/right-clipped 0046 windows with immutable 0045. It does not modify detector, calibration, predictor, threshold, null, seeds, gates, pulse semantics, event filtering, denominators, taxonomy, registry, portfolio logic or authority.
+
+Because run #1 calibration has been observed, every detector/null/threshold/gate/pulse parameter is permanently frozen. Before any corrected evaluation may read labels, a fresh deterministic calibration must reproduce run #1 in every non-code-SHA field. The fail-closed proof must replace the regenerated lock's code SHA with run #1 head `d365c6d80bf198354fbaacd0e63bad6e0f4fe0c2` and require the canonical payload hash to equal exactly `cba7aa3406c58ec80e391c389ea076439912d6bc3abecdfb89911739be1f2445`.
+
+Current state:
+
+```text
+0046 pre-result boundary               f23d2aac6fa8699af12b784ca03489061e331865
+0046 run #1 calibration                COMPLETE / IMMUTABLE
+0046 run #1 historical result          NONE / evaluation infrastructure failure
+0046 run #1 durable result artifact    NONE
+0046 repair                            PR #165 CANDIDATE / EXACT 0045 WINDOW COMPATIBILITY ONLY
+0046 detector/calibration retuning     FORBIDDEN
+0046 threshold                         FROZEN AT 1125.89535644321
+0046 dynamic-gross eligibility         FALSE
+production gross cap                   1.0
+production_authorized_components = []
+production_authorized                  false
+signature_authorized                   false
+order_submission_authorized            false
+```
+
+Exact next task: require PR #165 final governance/no-drift/P3.2/Phase-6/handoff checks green; final-audit that only the window compatibility repair, repair tests and this append-only handoff changed; merge repair-only PR; create a fresh controlled execution branch from the repaired merge SHA; reproduce the first calibration lock as specified before label access; then execute the frozen historical evaluation exactly once if and only if reproduction succeeds. Preserve the resulting PASS/FAIL/INSUFFICIENT without same-ID rescue. Dynamic gross, portfolio economics, canonical BRRK changes, Phase-6 changes and production/security authority remain forbidden.
