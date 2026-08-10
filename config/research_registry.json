@@ -1521,7 +1521,15 @@
         "Full-horizon cost-stress gates passed at both 10 bps and 20 bps; candidate CAGR and Calmar exceeded canonical at both costs while preregistered drawdown limits remained satisfied.",
         "PASS only creates eligibility for a separately preregistered future-only validation stage; canonical BRRK-0011, Phase 6 and all production/security authority remain unchanged.",
         "RUN_ONCE.marker is retained permanently and this research ID may not be rerun or rescued with another allocation split, temporal partition, cost stress or hard gate."
-      ]
+      ],
+      "evidence_scorecard": {
+        "temporal_novelty": "RESEARCHER_EXPOSED_DEVELOPMENT_HISTORY_NOT_TEMPORALLY_UNSEEN_FIXED_TEMPORAL_ROBUSTNESS_ONLY",
+        "statistical_sufficiency": "ONE_FROZEN_CANDIDATE_1332_SESSIONS_THREE_FIXED_444_SESSION_BLOCKS_PASS_2_OF_3_PLUS_10_20BPS_COST_STRESS_PASS_WITH_T2_NEGATIVE_EVIDENCE_RETAINED",
+        "governance_integrity": "HIGH_PREREGISTERED_ONE_SHOT_REPRODUCTION_BEFORE_RELEASE_NO_RETUNING_NO_RERUN",
+        "operational_realism": "MATCHED_P3_3_5PCT_L1_BAND_WITH_5_10_20BPS_COST_STRESS_DEVELOPMENT_ONLY_NOT_PRODUCTION_VALIDATION",
+        "derived_confidence": "MEDIUM_ROBUSTNESS_PASS_PENDING_GENUINE_FUTURE_ONLY_VALIDATION",
+        "confidence_rule_ref": "research/brrk_winner_robustness_0002/RUN_INTERFACE.json"
+      }
     }
   ],
   "research_governance_debt": [
