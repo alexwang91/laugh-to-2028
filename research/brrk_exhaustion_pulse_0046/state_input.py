@@ -1,23 +1,22 @@
 from __future__ import annotations
 
-"""Label-blind construction of the exact frozen 0044 S1-S4 predictor path."""
+"""Pre-calibration materialization of the exact frozen 0044 S1-S4 path.
 
-import hashlib
-import json
-from dataclasses import dataclass
+This module may read the raw causal inputs required to reconstruct S1-S4, but it
+never calls event detection/classification. Calibration does not import this
+module; it consumes only the serialized predictor artifact from predictor_io.
+"""
+
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
 
 from research.governance import brrk_exhaustion_event_study as e0043
 
+from .predictor_io import PRIMARY_AXES, write_predictor_artifact
+
 FROZEN_EVAL_END = pd.Timestamp("2026-08-02")
-PRIMARY_AXES = (
-    "S1_MOMENTUM_DECELERATION",
-    "S2_TREND_DISAGREEMENT",
-    "S3_PRICE_STRUCTURE",
-    "S4_VOL_DOWNSIDE",
-)
 AXIS_FEATURES = {
     "S1_MOMENTUM_DECELERATION": ("f1_trend_decay7", "f1_macd_hist_decay5"),
     "S2_TREND_DISAGREEMENT": ("f7_slow_fast_disagreement", "f7_disagreement_persistence"),
@@ -28,25 +27,6 @@ AXIS_FEATURES = {
 
 class StateInputInvalid(RuntimeError):
     pass
-
-
-@dataclass(frozen=True)
-class StateInput:
-    axes: pd.DataFrame
-    nav: pd.Series
-    predictor_digest: str
-
-
-def _json_sha(obj: object) -> str:
-    payload = json.dumps(obj, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
-    return hashlib.sha256(payload).hexdigest()
-
-
-def state_digest(state: pd.DataFrame) -> str:
-    rows = []
-    for idx, row in state[list(PRIMARY_AXES)].iterrows():
-        rows.append([str(pd.Timestamp(idx).date()), *[float(row[a]) for a in PRIMARY_AXES]])
-    return _json_sha(rows)
 
 
 def build_axes_from_0043_scores(scores_0043: pd.DataFrame) -> pd.DataFrame:
@@ -60,7 +40,7 @@ def build_axes_from_0043_scores(scores_0043: pd.DataFrame) -> pd.DataFrame:
         if missing:
             raise StateInputInvalid(f"missing frozen feature(s) for {axis}: {missing}")
         state[axis] = z[list(cols)].mean(axis=1, skipna=True)
-    return state
+    return state[list(PRIMARY_AXES)]
 
 
 def finite_contiguous_suffix(state: pd.DataFrame) -> pd.DataFrame:
@@ -76,8 +56,8 @@ def finite_contiguous_suffix(state: pd.DataFrame) -> pd.DataFrame:
     return state.iloc[first:].copy()
 
 
-def load_predictor_path() -> StateInput:
-    """Build predictors only. No event detection/classification function is called here."""
+def build_predictor_state() -> pd.DataFrame:
+    """Recompute only causal predictor state; no taxonomy function is invoked."""
     if e0043.EVAL_END != FROZEN_EVAL_END:
         raise StateInputInvalid(f"0043 EVAL_END drifted: {e0043.EVAL_END}")
     market = e0043.load_market()
@@ -85,8 +65,8 @@ def load_predictor_path() -> StateInput:
     nav = nav.loc[nav.index <= FROZEN_EVAL_END].sort_index()
     defensive_scale = defensive_scale.loc[defensive_scale.index <= FROZEN_EVAL_END].sort_index()
     scores, _ = e0043.build_features(market, nav, defensive_scale)
-    axes = finite_contiguous_suffix(build_axes_from_0043_scores(scores))
-    nav = nav.reindex(axes.index)
-    if nav.isna().any():
-        raise StateInputInvalid("canonical NAV missing on complete S1-S4 path")
-    return StateInput(axes=axes, nav=nav, predictor_digest=state_digest(axes))
+    return finite_contiguous_suffix(build_axes_from_0043_scores(scores))
+
+
+def materialize_predictor_artifact(path: Path) -> dict[str, object]:
+    return write_predictor_artifact(path, build_predictor_state())
