@@ -8,6 +8,7 @@ from pathlib import Path
 from research.brrk_exhaustion_state_0044 import run_once as runner
 
 ROOT = Path(__file__).resolve().parents[2]
+PATH = ROOT / "research/brrk_exhaustion_state_0044"
 
 
 class BRRKExhaustionState0044RunOnceContractTests(unittest.TestCase):
@@ -26,26 +27,11 @@ class BRRKExhaustionState0044RunOnceContractTests(unittest.TestCase):
                 "S4_VOL_DOWNSIDE",
             ),
         )
-        self.assertEqual(
-            runner.AXIS_FEATURES["S1_MOMENTUM_DECELERATION"],
-            ("f1_trend_decay7", "f1_macd_hist_decay5"),
-        )
-        self.assertEqual(
-            runner.AXIS_FEATURES["S2_TREND_DISAGREEMENT"],
-            ("f7_slow_fast_disagreement", "f7_disagreement_persistence"),
-        )
-        self.assertEqual(
-            runner.AXIS_FEATURES["S3_PRICE_STRUCTURE"],
-            ("f2_prior_peak_shortfall", "f2_days_since_high60", "f2_ma20_slope10"),
-        )
-        self.assertEqual(
-            runner.AXIS_FEATURES["S4_VOL_DOWNSIDE"],
-            ("f4_rv10_vs_rv30", "f4_down_up_semivol", "f4_pnl_dd_duration_interaction"),
-        )
-        self.assertEqual(
-            runner.AXIS_FEATURES["S5_VOLUME_CONFIRMATION"],
-            ("f3_down_up_volume_ratio", "f3_price_obv_divergence20"),
-        )
+        self.assertEqual(runner.AXIS_FEATURES["S1_MOMENTUM_DECELERATION"], ("f1_trend_decay7", "f1_macd_hist_decay5"))
+        self.assertEqual(runner.AXIS_FEATURES["S2_TREND_DISAGREEMENT"], ("f7_slow_fast_disagreement", "f7_disagreement_persistence"))
+        self.assertEqual(runner.AXIS_FEATURES["S3_PRICE_STRUCTURE"], ("f2_prior_peak_shortfall", "f2_days_since_high60", "f2_ma20_slope10"))
+        self.assertEqual(runner.AXIS_FEATURES["S4_VOL_DOWNSIDE"], ("f4_rv10_vs_rv30", "f4_down_up_semivol", "f4_pnl_dd_duration_interaction"))
+        self.assertEqual(runner.AXIS_FEATURES["S5_VOLUME_CONFIRMATION"], ("f3_down_up_volume_ratio", "f3_price_obv_divergence20"))
 
     def test_frozen_source_reproduction_guard(self) -> None:
         self.assertEqual(runner.EXPECTED_0043_CANDIDATE_COUNT, 16)
@@ -91,19 +77,36 @@ class BRRKExhaustionState0044RunOnceContractTests(unittest.TestCase):
         full = inspect.getsource(runner)
         for forbidden in ("create_order", "submit_order", "target_weights =", "gross_map", "portfolio_return", "position_size"):
             self.assertNotIn(forbidden, full)
-        interface = json.loads((ROOT / "research/brrk_exhaustion_state_0044/RUN_INTERFACE.json").read_text())
-        self.assertEqual(interface["status"], "READY_NOT_RUN")
+        interface = json.loads((PATH / "RUN_INTERFACE.json").read_text())
+        result = json.loads((PATH / "PRIMARY_RESULT.json").read_text())
+        self.assertEqual(interface["status"], "CLOSED_RESULT_USED")
         self.assertEqual(interface["frozen_parent_merge_commit"], "223d00202242d2d7e8eeffc489367e8078408604")
+        self.assertEqual(interface["valid_result_run"]["workflow_run_id"], 31388103016)
+        self.assertEqual(interface["valid_result_run"]["artifact_id"], 9062525981)
+        self.assertEqual(interface["valid_result_run"]["result_status"], "PASS_TRIGGER_STAGE_ELIGIBLE")
+        self.assertFalse(interface["same_id_rerun_allowed"])
+        self.assertFalse(interface["same_id_retuning_allowed"])
+        self.assertTrue(interface["authority"]["trigger_stage_eligible"])
         self.assertFalse(interface["authority"]["trigger_defined"])
         self.assertFalse(interface["authority"]["portfolio_economics_executed"])
         self.assertFalse(interface["authority"]["production_authorized"])
         self.assertFalse(interface["authority"]["signature_authorized"])
         self.assertFalse(interface["authority"]["order_submission_authorized"])
+        self.assertEqual(result["result_status"], "PASS_TRIGGER_STAGE_ELIGIBLE")
+        self.assertFalse(result["authority"]["trigger_defined"])
+        self.assertFalse(result["authority"]["portfolio_economics_executed"])
 
-    def test_no_result_or_marker_exists_before_execution(self) -> None:
-        path = ROOT / "research/brrk_exhaustion_state_0044"
-        self.assertFalse((path / "PRIMARY_RESULT.json").exists())
-        self.assertFalse((path / "RUN_ONCE.marker").exists())
+    def test_permanent_result_and_marker_bind_unique_valid_run(self) -> None:
+        self.assertTrue((PATH / "PRIMARY_RESULT.json").exists())
+        self.assertTrue((PATH / "EXECUTION.json").exists())
+        self.assertTrue((PATH / "RUN_ONCE.marker").exists())
+        self.assertTrue((PATH / "RESULT.md").exists())
+        marker = (PATH / "RUN_ONCE.marker").read_text()
+        self.assertIn("STATUS=USED_CLOSED", marker)
+        self.assertIn("VALID_RESULT_WORKFLOW_RUN_ID=31388103016", marker)
+        self.assertIn("RESULT_STATUS=PASS_TRIGGER_STAGE_ELIGIBLE", marker)
+        self.assertIn("SAME_ID_RERUN_ALLOWED=false", marker)
+        self.assertIn("PRE_RESULT_WORKFLOW_RUN_31387906469=FAILED_BEFORE_DIAGNOSTIC_NO_RESULT", marker)
 
 
 if __name__ == "__main__":
