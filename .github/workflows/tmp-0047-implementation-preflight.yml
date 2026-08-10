@@ -30,15 +30,24 @@ jobs:
           python - <<'PY'
           from pathlib import Path
           p = Path('research/governance/test_brrk_beta_handoff_0047_implementation.py')
-          s = p.read_text()
-          old = '''        self.assertEqual(ids.astype("object").tolist(), [pd.NA, 1, 1, pd.NA, 2, 2, pd.NA, 3, pd.NA])
-        self.assertEqual(age.astype("object").tolist(), [pd.NA, 1, 2, pd.NA, 1, 2, pd.NA, 1, pd.NA])'''
-          new = '''        got_ids = [None if pd.isna(v) else int(v) for v in ids]
-        got_age = [None if pd.isna(v) else int(v) for v in age]
-        self.assertEqual(got_ids, [None, 1, 1, None, 2, 2, None, 3, None])
-        self.assertEqual(got_age, [None, 1, 2, None, 1, 2, None, 1, None])'''
-          assert old in s
-          p.write_text(s.replace(old, new, 1))
+          lines = p.read_text().splitlines()
+          out = []
+          replaced_ids = False
+          skipped_age = False
+          for line in lines:
+              if 'self.assertEqual(ids.astype("object").tolist()' in line:
+                  out.append('        got_ids = [None if pd.isna(v) else int(v) for v in ids]')
+                  out.append('        got_age = [None if pd.isna(v) else int(v) for v in age]')
+                  out.append('        self.assertEqual(got_ids, [None, 1, 1, None, 2, 2, None, 3, None])')
+                  out.append('        self.assertEqual(got_age, [None, 1, 2, None, 1, 2, None, 1, None])')
+                  replaced_ids = True
+                  continue
+              if 'self.assertEqual(age.astype("object").tolist()' in line:
+                  skipped_age = True
+                  continue
+              out.append(line)
+          assert replaced_ids and skipped_age
+          p.write_text('\n'.join(out) + '\n')
           PY
       - name: Compile implementation
         run: python -m py_compile research/brrk_beta_handoff_0047/engine.py research/brrk_beta_handoff_0047/run_once.py research/governance/test_brrk_beta_handoff_0047_implementation.py
