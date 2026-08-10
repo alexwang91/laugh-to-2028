@@ -20,8 +20,7 @@ SUBSET_COUNT = 15
 
 _Q = np.arange(1.0, BASELINE_LENGTH + 1.0, dtype=np.float64)
 _Q_BAR = float(_Q.mean())
-_Q_CENTERED = _Q - _Q_BAR
-_Q_SXX = float(np.square(_Q_CENTERED).sum())
+_Q_SXX = float(np.square(_Q - _Q_BAR).sum())
 _LOG_SUBSET_COUNT = math.log(float(SUBSET_COUNT))
 
 
@@ -51,15 +50,39 @@ def _as_batch(values: np.ndarray) -> tuple[np.ndarray, bool]:
     return x, squeeze
 
 
-def _rolling_ols(values: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
-    """OLS intercept, slope and residual sigma for every 64-session window."""
-    windows = np.lib.stride_tricks.sliding_window_view(values, BASELINE_LENGTH, axis=1)
-    # numpy shape: (batch, window_end_count, axes, baseline_q)
-    ybar = windows.mean(axis=-1)
-    slope = np.tensordot(windows, _Q_CENTERED, axes=([-1], [0])) / _Q_SXX
+def _prefix_moments(values: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    batch, sessions, axes = values.shape
+    zeros = np.zeros((batch, 1, axes), dtype=np.float64)
+    i = np.arange(sessions, dtype=np.float64)
+    prefix_x = np.concatenate([zeros, np.cumsum(values, axis=1)], axis=1)
+    prefix_x2 = np.concatenate([zeros, np.cumsum(np.square(values), axis=1)], axis=1)
+    prefix_ix = np.concatenate([zeros, np.cumsum(values * i[None, :, None], axis=1)], axis=1)
+    return prefix_x, prefix_x2, prefix_ix
+
+
+def _rolling_ols_from_prefix(
+    prefix_x: np.ndarray,
+    prefix_x2: np.ndarray,
+    prefix_ix: np.ndarray,
+    sessions: int,
+) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """Exact OLS intercept/slope/residual sigma for every 64-session window.
+
+    The implementation uses algebraic rolling moments rather than materializing a
+    batch x time x axis x 64 residual tensor. It is the same q=1..64 OLS fit.
+    """
+    k = np.arange(BASELINE_LENGTH - 1, sessions, dtype=np.int64)
+    l = k - (BASELINE_LENGTH - 1)
+    sum_y = prefix_x[:, k + 1, :] - prefix_x[:, l, :]
+    sum_y2 = prefix_x2[:, k + 1, :] - prefix_x2[:, l, :]
+    sum_iy = prefix_ix[:, k + 1, :] - prefix_ix[:, l, :]
+    # Within each baseline q = i-l+1, so sum(q*y)=sum(i*y)+(1-l)*sum(y).
+    sum_qy = sum_iy + (1.0 - l[None, :, None]) * sum_y
+    ybar = sum_y / float(BASELINE_LENGTH)
+    slope = (sum_qy - _Q_BAR * sum_y) / _Q_SXX
     intercept = ybar - slope * _Q_BAR
-    fitted = intercept[..., None] + slope[..., None] * _Q[None, None, None, :]
-    rss = np.square(windows - fitted).sum(axis=-1)
+    sst = sum_y2 - float(BASELINE_LENGTH) * np.square(ybar)
+    rss = np.maximum(sst - np.square(slope) * _Q_SXX, 0.0)
     variance = np.maximum(rss / float(BASELINE_LENGTH - 2), VAR_FLOOR)
     sigma = np.sqrt(variance)
     return intercept, slope, sigma
@@ -68,9 +91,7 @@ def _rolling_ols(values: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.ndarray
 def subset_mixture_logscore(axis_ell: np.ndarray) -> np.ndarray:
     """Exact equal mixture over all 15 non-empty subsets, evaluated stably.
 
-    Algebra used:
-      sum_{A nonempty} exp(sum_{j in A} ell_j)
-        = prod_j (1 + exp(ell_j)) - 1.
+    sum_{A nonempty} exp(sum_{j in A} ell_j) = prod_j(1+exp(ell_j)) - 1.
     """
     ell = np.asarray(axis_ell, dtype=np.float64)
     if ell.shape[-1] != AXIS_COUNT:
@@ -85,7 +106,7 @@ def subset_mixture_logscore(axis_ell: np.ndarray) -> np.ndarray:
 
 
 def subset_mixture_logscore_explicit(axis_ell: np.ndarray) -> np.ndarray:
-    """Reference enumeration used by contract tests, not the production fast path."""
+    """Reference enumeration used by contract tests, not the fast path."""
     ell = np.asarray(axis_ell, dtype=np.float64)
     pieces = []
     for mask in range(1, 1 << AXIS_COUNT):
@@ -99,25 +120,13 @@ def subset_mixture_logscore_explicit(axis_ell: np.ndarray) -> np.ndarray:
 def compute_detector(values: np.ndarray, *, details: bool = True) -> DetectorOutput | np.ndarray:
     """Apply the frozen detector to one path or a batch of paths.
 
-    Change ages are visited in ascending order and replacement occurs only on a
-    strictly larger score. Exact ties therefore deterministically retain the
-    smallest tau, as preregistered.
+    Ages are visited ascending and replacement occurs only on a strictly larger
+    score, so an exact multiscale tie retains the smallest tau.
     """
     x, squeeze = _as_batch(values)
     batch, sessions, axes = x.shape
-    intercept, slope, sigma = _rolling_ols(x)
-
-    prefix_x = np.concatenate(
-        [np.zeros((batch, 1, axes), dtype=np.float64), np.cumsum(x, axis=1)], axis=1
-    )
-    time_index = np.arange(sessions, dtype=np.float64)
-    prefix_ix = np.concatenate(
-        [
-            np.zeros((batch, 1, axes), dtype=np.float64),
-            np.cumsum(x * time_index[None, :, None], axis=1),
-        ],
-        axis=1,
-    )
+    prefix_x, prefix_x2, prefix_ix = _prefix_moments(x)
+    intercept, slope, sigma = _rolling_ols_from_prefix(prefix_x, prefix_x2, prefix_ix, sessions)
 
     score = np.full((batch, sessions), np.nan, dtype=np.float64)
     if details:
@@ -125,7 +134,6 @@ def compute_detector(values: np.ndarray, *, details: bool = True) -> DetectorOut
         selected_ell = np.full((batch, sessions, axes), np.nan, dtype=np.float64)
 
     for tau in range(MIN_CHANGE_AGE, MAX_CHANGE_AGE + 1):
-        # k is the candidate changepoint/session index; baseline window ends at k.
         k = np.arange(BASELINE_LENGTH - 1, sessions - tau, dtype=np.int64)
         if not len(k):
             continue
@@ -153,19 +161,16 @@ def compute_detector(values: np.ndarray, *, details: bool = True) -> DetectorOut
         update = np.isnan(current) | (g > current)
         score[:, t] = np.where(update, g, current)
         if details:
-            age_current = selected_age[:, t]
-            selected_age[:, t] = np.where(update, tau, age_current)
-            ell_current = selected_ell[:, t, :]
-            selected_ell[:, t, :] = np.where(update[..., None], ell, ell_current)
+            selected_age[:, t] = np.where(update, tau, selected_age[:, t])
+            selected_ell[:, t, :] = np.where(update[..., None], ell, selected_ell[:, t, :])
 
     if not details:
         return score[0] if squeeze else score
-    out = DetectorOutput(
+    return DetectorOutput(
         score=score[0] if squeeze else score,
         selected_age=selected_age[0] if squeeze else selected_age,
         selected_axis_contributions=selected_ell[0] if squeeze else selected_ell,
     )
-    return out
 
 
 def raw_alarm_and_pulse(score: np.ndarray, threshold: float) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
@@ -179,7 +184,6 @@ def raw_alarm_and_pulse(score: np.ndarray, threshold: float) -> tuple[np.ndarray
     pulse = np.zeros(len(s), dtype=bool)
     valid_positions = np.flatnonzero(eligible)
     if len(valid_positions) > 1:
-        # First valid detector session is deliberately excluded from pulse emission.
         for pos in valid_positions[1:]:
             prev = pos - 1
             if eligible[prev] and alarm[pos] and not alarm[prev]:
