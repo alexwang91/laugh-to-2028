@@ -1,0 +1,42 @@
+{
+  "research_id": "BRRK-WINNER-0001",
+  "status": "PREREGISTERED_NOT_RUN",
+  "governance_mode": "PROGRAM_GOVERNED_V1",
+  "created_before_result": true,
+  "economics_executed": false,
+  "actual_variants_evaluated": 0,
+  "declared_variant_budget": 1,
+  "candidate": {
+    "single_alt_btc_share": 0.40,
+    "single_alt_winner_share": 0.60,
+    "canonical_single_alt_btc_share": 0.50,
+    "canonical_single_alt_winner_share": 0.50,
+    "signals_changed": false,
+    "eligibility_changed": false,
+    "multi_alt_allocation_changed": false,
+    "defensive_scale_changed": false,
+    "p3_3_semantics_changed": false,
+    "cost_bps": 5.0,
+    "gross_cap": 1.0,
+    "leverage": false,
+    "shorts": false,
+    "universe": ["BTC", "ETH", "SOL", "BNB"]
+  },
+  "hard_success_gates": {
+    "after_cost_cagr_delta_pp_min": 3.0,
+    "max_drawdown_deterioration_pp_max": 4.0,
+    "calmar_not_below_canonical": true,
+    "canonical_top20_log_growth_capture_min": 0.98,
+    "total_turnover_ratio_max": 1.25,
+    "long_only": true,
+    "gross_never_above": 1.0
+  },
+  "same_id_rescue_tuning_forbidden": true,
+  "forbidden_nearby_splits": ["45/55", "35/65", "30/70"],
+  "development_dataset_ref": "BRRK-WINNER-0001-CANONICAL-HIST-V1",
+  "development_evidence_is_researcher_exposed": true,
+  "production_authorized": false,
+  "phase6_observation_changed": false,
+  "canonical_brrk_changed": false,
+  "next_allowed_action": "MERGE_PREREGISTRATION_BEFORE_SINGLE_FROZEN_RESULT_RUN"
+}
