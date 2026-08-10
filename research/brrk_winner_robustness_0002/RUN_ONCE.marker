@@ -1,0 +1,9 @@
+{
+  "research_id": "BRRK-WINNER-ROBUSTNESS-0002",
+  "run_interface_id": "BRRK-WINNER-ROBUSTNESS-0002-RUN-ONCE-V1",
+  "trigger": "EXACTLY_ONCE_AFTER_PRE_RESULT_GREEN_BASELINE",
+  "pre_result_green_head_sha": "561ecee69d30253aa398caf51d589cb03b5cfe47",
+  "second_marker_permitted": false,
+  "same_id_retuning_forbidden": true,
+  "production_authorized": false
+}
