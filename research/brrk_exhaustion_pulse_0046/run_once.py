@@ -13,6 +13,7 @@ import os
 from pathlib import Path
 
 from . import calibration
+from . import window_compat
 
 RESEARCH_ID = "BRRK-EXHAUSTION-PULSE-0046"
 
@@ -56,6 +57,14 @@ def evaluate(predictor_path: Path, lock_path: Path, output_path: Path) -> dict[s
     # CRITICAL FIREWALL: validate lock before evaluation module import.
     lock = calibration.validate_lock(lock_path, require_success=True)
     evaluation = importlib.import_module("research.brrk_exhaustion_pulse_0046.evaluation")
+
+    # Post-lock infrastructure repair only: bind evaluation to the exact immutable
+    # 0045 session-window semantics already frozen by the 0046 preregistration.
+    # This does not filter events or change any denominator, detector, calibration,
+    # threshold, gate, seed, pulse rule, episode rule, or taxonomy.
+    evaluation._window_positions = window_compat.window_positions
+    evaluation._earliest_pulse = window_compat.earliest_pulse
+
     result = evaluation.run_locked(predictor_path, lock)
     _atomic_result(output_path, result)
     return result
