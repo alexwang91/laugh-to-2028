@@ -1279,7 +1279,7 @@
       "validation_dataset_refs": [],
       "sealed_dataset_refs": [],
       "declared_variant_budget": 1,
-      "actual_variants_evaluated": 0,
+      "actual_variants_evaluated": 1,
       "parameter_candidate_count": 1,
       "stopping_rule": "Execute exactly one frozen 40/60 single-alt candidate once against the canonical BRRK baseline. If any hard success criterion fails, classify FAIL_NO_PROMOTION and stop this research ID. Do not retune the split, signal horizons, eligibility, caps, defensive scale, cost, P3.3 band, universe, or success gates under this ID after any result is observed.",
       "success_criteria": [
@@ -1319,7 +1319,9 @@
           "SINGLE_ALT_BTC_SHARE=0.40",
           "SINGLE_ALT_WINNER_SHARE=0.60"
         ],
-        "actual_parameter_candidates_evaluated": [],
+        "actual_parameter_candidates_evaluated": [
+          "SINGLE_ALT_BTC_SHARE=0.40;SINGLE_ALT_WINNER_SHARE=0.60"
+        ],
         "universes_evaluated": [
           "CANONICAL_BRRK_BTC_ETH_SOL_BNB"
         ],
@@ -1335,7 +1337,9 @@
         "special_cases_introduced": [
           "ONLY_SINGLE_ELIGIBLE_ALT_ROWS_CHANGE_COMPOSITION"
         ],
-        "validation_exposure_event_refs": [],
+        "validation_exposure_event_refs": [
+          "BRRK-WINNER-0001-DEVELOPMENT-RUN-20260810T071111Z"
+        ],
         "related_family_trials": 1
       },
       "lineage_edges": [
@@ -1346,10 +1350,13 @@
           "evidence_ref": "research/governance/BRRK_OPPORTUNITY_COST_AUDIT_0042.md"
         }
       ],
-      "result_status": "PREREGISTERED_NOT_RUN",
+      "result_status": "PASS_ROBUSTNESS_STAGE_ELIGIBLE",
       "failure_reason": null,
-      "promotion_state": "NONE",
-      "evidence_refs": [],
+      "promotion_state": "ROBUSTNESS_STAGE_ELIGIBLE_ONLY",
+      "evidence_refs": [
+        "research/brrk_winner_0001/PRIMARY_RESULT.json",
+        "research/brrk_winner_0001/EXECUTION.json"
+      ],
       "decision_refs": [],
       "production_relevance": "Research-only portfolio-construction candidate on researcher-exposed history. PASS can only make a separately preregistered robustness stage eligible; it cannot modify canonical BRRK or confer production authority.",
       "production_authorized": false,
@@ -1359,8 +1366,17 @@
       ],
       "notes": [
         "Motivated by BRRK-OPPORTUNITY-COST-AUDIT-0042, which found the defensive scaler beneficial historically and found BTC >= 50% of gross on about 70.17% of alt-active V1 days.",
-        "The older BRRK signal-attribution audit showed right-tail dependence: canonical best 20 sessions account for about 91.61% of total log growth, motivating the explicit right-tail preservation gate."
-      ]
+        "The older BRRK signal-attribution audit showed right-tail dependence: canonical best 20 sessions account for about 91.61% of total log growth, motivating the explicit right-tail preservation gate.",
+        "One frozen 40/60 candidate executed once in workflow run 31364706555; all preregistered hard gates passed. This creates robustness-stage eligibility only, not canonical or production authority."
+      ],
+      "evidence_scorecard": {
+        "temporal_novelty": "RESEARCHER_EXPOSED_DEVELOPMENT_HISTORY_NOT_TEMPORALLY_UNSEEN",
+        "statistical_sufficiency": "ONE_PREREGISTERED_VARIANT_FULL_1332_SESSION_WINDOW_ALL_FROZEN_HARD_GATES_PASS",
+        "governance_integrity": "HIGH_PREREGISTERED_ONE_SHOT_BASELINE_REPRODUCED_NO_RETUNING",
+        "operational_realism": "MATCHED_P3_3_5BPS_5PCT_L1_BAND_SIMULATOR_DEVELOPMENT_ONLY",
+        "derived_confidence": "MEDIUM_PENDING_SEPARATELY_PREREGISTERED_ROBUSTNESS",
+        "confidence_rule_ref": "research/brrk_winner_0001/RUN_INTERFACE.json"
+      }
     }
   ],
   "research_governance_debt": [

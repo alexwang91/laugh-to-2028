@@ -36,12 +36,13 @@
       "pit_publication_semantics": "RESEARCHER_EXPOSED_HISTORICAL_RECONSTRUCTION; decision D uses completed D-1 UTC daily close; no claim of temporally unseen evidence",
       "data_budget": "DEVELOPMENT",
       "contamination_state": "RESEARCHER_EXPOSED_HISTORY",
-      "consumed": false,
+      "consumed": true,
       "researcher_exposed_history": true,
       "provenance_status": "FACT",
       "evidence_refs": [
         "research/governance/BRRK_OPPORTUNITY_COST_AUDIT_0042.md",
-        "audit/brrk-signal-attribution-v1:research/governance/brrk_signal_attribution_result.json"
+        "audit/brrk-signal-attribution-v1:research/governance/brrk_signal_attribution_result.json",
+        "research/brrk_winner_0001/PRIMARY_RESULT.json"
       ]
     }
   ],
@@ -55,6 +56,16 @@
       "result_informed_followup": false,
       "provenance_status": "FACT",
       "evidence_ref": "research/stablecoin_liquidity_0001/FIRST_CAPTURE_EVIDENCE.json"
+    },
+    {
+      "exposure_id": "BRRK-WINNER-0001-DEVELOPMENT-RUN-20260810T071111Z",
+      "research_id": "BRRK-WINNER-0001",
+      "dataset_slice_ref": "BRRK-WINNER-0001-CANONICAL-HIST-V1",
+      "timestamp": "2026-08-10T07:11:11Z",
+      "release_type": "PRIMARY_RESULT",
+      "result_informed_followup": false,
+      "provenance_status": "FACT",
+      "evidence_ref": "research/brrk_winner_0001/PRIMARY_RESULT.json"
     }
   ]
 }

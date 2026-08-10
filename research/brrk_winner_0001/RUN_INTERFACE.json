@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "research_id": "BRRK-WINNER-0001",
+  "run_interface_id": "BRRK-WINNER-0001-RUN-ONCE-V1",
+  "status": "AUTHORIZED_FOR_EXACTLY_ONE_FROZEN_DEVELOPMENT_RUN",
+  "preregistration_ref": "research/brrk_winner_0001/PREREGISTRATION.json",
+  "baseline_authority": "research/governance/run_dual_layer_fusion_sanity_once.py",
+  "target_authority": "research/leverage_0040/run_leverage_0040_once_r1.py::_load_frozen_targets_corrected",
+  "economic_simulator": "research/cycle_exit/study_core.py::simulate_p3_3_economic_path",
+  "evaluation": {
+    "decision_start": "2022-12-09",
+    "session_start": "2022-12-10",
+    "session_end": "2026-08-02",
+    "cost_bps": 5.0,
+    "p3_3_l1_band": 0.05,
+    "fill_fraction": 1.0,
+    "transaction_cost_multiplier": 1.0,
+    "funding_blocks_by_session": null
+  },
+  "candidate": {
+    "variant_count": 1,
+    "single_alt_btc_share": 0.40,
+    "single_alt_winner_share": 0.60,
+    "same_gross_as_canonical_brrk": true,
+    "all_other_target_rows_unchanged": true
+  },
+  "baseline_reproduction": {
+    "required_before_candidate_metrics_release": true,
+    "absolute_tolerance": 5e-10,
+    "expected_metrics_source": "research/governance/run_dual_layer_fusion_sanity_once.py::EXPECTED_BASELINE"
+  },
+  "hard_gates": {
+    "cagr_delta_pp_min": 3.0,
+    "max_drawdown_deterioration_pp_max": 4.0,
+    "calmar_ratio_min_vs_baseline": 1.0,
+    "canonical_best20_log_growth_capture_min": 0.98,
+    "turnover_ratio_max": 1.25,
+    "long_only": true,
+    "gross_max": 1.0
+  },
+  "result_release_rule": "If baseline reproduction fails, abort before computing or releasing candidate metrics. Otherwise run exactly one frozen 40/60 candidate and apply all hard gates mechanically.",
+  "same_id_retuning_forbidden": true,
+  "production_authorized": false,
+  "signature_authorized": false,
+  "order_submission_authorized": false
+}
