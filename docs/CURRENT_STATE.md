@@ -1,10 +1,10 @@
 # BRRK Current State
 
 Last updated: 2026-08-10  
-Handoff PR: **#150**  
-Handoff branch: `research/brrk-winner-0001-prereg`  
-Authoritative baseline main at branch creation: `405d2f75221ba97734973dd9bee2df04c9ecbcd2`  
-Latest merged research PR at branch creation: **#149**
+Handoff PR: **PENDING RESULT PR**  
+Handoff branch: `research/brrk-winner-0001-runonce`  
+Authoritative baseline main at branch creation: `da4bad159819b71c245ff5a6f9976edc7ab94dbc`  
+Latest merged research PR at branch creation: **#150**
 
 Status: **authoritative current-state handoff candidate**
 
@@ -21,7 +21,7 @@ Phase 6 ARM marker                cbd58adb05187651ca72d67900a0ccbbd3e83b1e
 Phase 6 daily schedule            00:00 UTC
 Phase 6 live elapsed evidence     MEASUREMENT_INCONCLUSIVE_TIME_DEPENDENT
 BRRK opportunity-cost audit 0042  COMPLETE DIAGNOSTIC / NO PROMOTION AUTHORITY
-BRRK-WINNER-0001                  PREREGISTERED_NOT_RUN / FORMAL PATH CREATED
+BRRK-WINNER-0001                  ONE-SHOT PASS / ROBUSTNESS STAGE ELIGIBLE
 Program timeline dashboard        READ-ONLY V5 / PROFESSIONAL FUND TERMINAL
 Phase 7                           MONITOR_ONLY / LAUNCH BLOCKED
 Phase 8                           TRIGGER ABSENT / NOT RUN
@@ -75,54 +75,26 @@ Interpretation frozen for follow-up: the defensive scaler is not the first optim
 
 The older non-promotable signal-attribution audit also established that canonical BRRK is right-tail dependent: the canonical best 20 sessions account for about 91.61% of total log growth. Any follow-up must explicitly preserve right-tail participation.
 
-## BRRK-WINNER-0001 — formal preregistration assembled
+## BRRK-WINNER-0001 — one-shot development result
 
-`BRRK-WINNER-0001` is now present in `config/research_registry.json` as `PROGRAM_GOVERNED_V1`, with `actual_variants_evaluated=0`, `result_status=PREREGISTERED_NOT_RUN`, and production authorization false. The governed path now exists at:
-
-```text
-research/brrk_winner_0001/
-```
-
-No economic runner, modified NAV, candidate return, pass/fail result or promotion decision exists on this preregistration branch.
-
-The single frozen candidate is:
+The preregistered 40/60 single-alt candidate executed exactly once in GitHub Actions run `31364706555` after canonical matched-P3.3 baseline reproduction passed. No nearby split was evaluated.
 
 ```text
-canonical single-alt branch: BTC 50% / sole eligible alt 50%
-candidate single-alt branch: BTC 40% / sole eligible alt 60%
-all signals                          UNCHANGED
-multi-alt allocation                 UNCHANGED
-defensive scale                      UNCHANGED
-P3.3 simulator / 5 bps cost          UNCHANGED
-universe                             BTC / ETH / SOL / BNB
-gross cap                            <= 1.0
-leverage / shorts                    NONE
+canonical CAGR                         65.3057%
+candidate CAGR                         69.6917%
+CAGR delta                             +4.3860 pp
+canonical max drawdown                 -33.5292%
+candidate max drawdown                 -33.4499%
+canonical Calmar                       1.9477
+candidate Calmar                       2.0835
+best-20 log-growth capture             103.5595%
+turnover ratio                         1.1229x
+single-alt decision rows changed       301 / 1333
+all frozen hard gates                  PASS
+result_status                          PASS_ROBUSTNESS_STAGE_ELIGIBLE
 ```
 
-Frozen hard success gates before any candidate economics are run:
-
-```text
-after-cost CAGR delta                 >= +3.00 pp vs canonical BRRK
-max drawdown deterioration            <= 4.00 pp
-Calmar                                >= canonical BRRK
-canonical best-20 log-growth capture  >= 98%
-turnover                              <= 1.25x canonical BRRK
-long-only gross                       <= 1.0 every day
-```
-
-Any hard-gate failure means `FAIL_NO_PROMOTION` for this research ID. No same-ID rescue split such as 45/55, 35/65 or 30/70 is allowed after results are observed.
-
-Formal frozen files:
-
-```text
-config/research_registry.json
-config/dataset_exposure_registry.json
-research/governance/BRRK_WINNER_0001_PREREG_DRAFT.json
-research/brrk_winner_0001/README.md
-research/brrk_winner_0001/PREREGISTRATION.json
-```
-
-The development dataset `BRRK-WINNER-0001-CANONICAL-HIST-V1` is explicitly `DEVELOPMENT / RESEARCHER_EXPOSED_HISTORY`; no sealed or unbiased OOS claim is made.
+This is researcher-exposed DEVELOPMENT evidence only. It does not change canonical BRRK-0011, Phase 6, Phase 7, execution authority, leverage, shorts, signing or production authorization. A next robustness study requires a new preregistered research ID before any additional allocation variant is evaluated.
 
 ## Dashboard V5
 
@@ -148,19 +120,17 @@ order_submission_authorized      false
 first real short authority        NONE
 ```
 
-BRRK-WINNER-0001 preregistration changes none of these fields.
+BRRK-WINNER-0001 development PASS changes none of these fields.
 
 ## Current drift assessment
 
 `DRIFT_0`.
 
-This branch freezes one research hypothesis, one variant and its dataset-exposure contract before any candidate economics are evaluated. It does not modify `execution/**`, `research/results/**`, BRRK-0011 mathematics, Phase-6 collection, immutable economic evidence or production authority.
+This branch records exactly one preregistered development run and its immutable PASS result. It does not modify `execution/**`, `research/results/**`, BRRK-0011 mathematics, Phase-6 collection or production authority.
 
 ## Exact next task
 
-1. Require final PR #150 governance/no-drift/P3.2/Phase-6 safety CI to pass with the registered research ID and formal governed path.
-2. Merge PR #150 only if the final diff remains preregistration/config/docs/tests only and no candidate economics are present.
-3. After merge, create a separate result-bearing branch from the merged preregistration baseline.
-4. Execute the one frozen 40/60 candidate exactly once, first requiring canonical baseline reproduction before candidate metrics are released.
-5. Apply the frozen hard gates without retuning or rescue variants.
-6. Continue Phase-6 future-only evidence accumulation independently.
+1. Merge this one-shot result only after governance/no-drift/P3.2/Phase-6 safety CI is green.
+2. Do not evaluate any second BRRK-WINNER-0001 allocation split.
+3. If the owner wants to continue this mechanism, preregister a new robustness research ID before any additional economics.
+4. Continue Phase-6 future-only observation independently.
