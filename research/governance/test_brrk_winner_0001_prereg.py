@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import json
 import unittest
 from pathlib import Path
@@ -10,6 +11,7 @@ REGISTRY = ROOT / "config/research_registry.json"
 DATASETS = ROOT / "config/dataset_exposure_registry.json"
 DRAFT = ROOT / "research/governance/BRRK_WINNER_0001_PREREG_DRAFT.json"
 FORMAL = ROOT / "research/brrk_winner_0001/PREREGISTRATION.json"
+README = ROOT / "research/brrk_winner_0001/README.md"
 RESULT = ROOT / "research/brrk_winner_0001/PRIMARY_RESULT.json"
 EXECUTION = ROOT / "research/brrk_winner_0001/EXECUTION.json"
 RUN_INTERFACE = ROOT / "research/brrk_winner_0001/RUN_INTERFACE.json"
@@ -88,6 +90,26 @@ class BRRKWinner0001ContractTests(unittest.TestCase):
         self.assertFalse(execution["second_candidate_run_permitted"])
         self.assertEqual(interface["candidate"]["variant_count"], 1)
         self.assertTrue(interface["same_id_retuning_forbidden"])
+
+    def test_committed_result_bytes_are_cryptographically_bound(self) -> None:
+        execution = json.loads(EXECUTION.read_text(encoding="utf-8"))
+        committed_sha256 = hashlib.sha256(RESULT.read_bytes()).hexdigest()
+        self.assertEqual(committed_sha256, execution["primary_result_committed_sha256"])
+        self.assertEqual(
+            execution["primary_result_hash_binding"]["committed_representation"],
+            "SHA256_OVER_EXACT_UTF8_REPOSITORY_BYTES",
+        )
+        self.assertNotEqual(
+            execution["primary_result_committed_sha256"],
+            execution["primary_result_runner_serialization_sha256"],
+        )
+
+    def test_governed_readme_reflects_closed_one_shot_lifecycle(self) -> None:
+        readme = README.read_text(encoding="utf-8")
+        self.assertIn("ONE-SHOT PASS / ROBUSTNESS STAGE ELIGIBLE ONLY", readme)
+        self.assertIn("Do not run `BRRK-WINNER-0001` again", readme)
+        self.assertIn("PRIMARY_RESULT.json", readme)
+        self.assertNotIn("Status: **PREREGISTERED_NOT_RUN**", readme)
 
     def test_no_authority_change(self) -> None:
         result = json.loads(RESULT.read_text(encoding="utf-8"))
