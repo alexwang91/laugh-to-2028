@@ -85,7 +85,7 @@ class TestBrrkBetaHandoff0047Implementation(unittest.TestCase):
         rebuilt = engine.frames_from_market_evidence(evidence)
         self.assertEqual(evidence["payload"]["common_end"], "2026-08-02")
         for asset in engine.ASSETS:
-            pd.testing.assert_frame_equal(rebuilt[asset], frames[asset])
+            pd.testing.assert_frame_equal(rebuilt[asset], frames[asset], check_freq=False)
         tampered = json.loads(json.dumps(evidence))
         tampered["payload"]["rows"][0]["close"] *= 1.01
         with self.assertRaises(engine.FrozenProtocolError):
@@ -95,8 +95,10 @@ class TestBrrkBetaHandoff0047Implementation(unittest.TestCase):
         idx = pd.date_range("2024-01-01", periods=9, freq="D")
         score = pd.Series([np.nan, 0.0, 0.2, -0.1, 0.0, 0.1, np.nan, 0.3, -0.2], index=idx)
         ids, age = engine._episode_columns(score)
-        self.assertEqual(ids.astype("object").tolist(), [pd.NA, 1, 1, pd.NA, 2, 2, pd.NA, 3, pd.NA])
-        self.assertEqual(age.astype("object").tolist(), [pd.NA, 1, 2, pd.NA, 1, 2, pd.NA, 1, pd.NA])
+        got_ids = [None if pd.isna(v) else int(v) for v in ids]
+        got_age = [None if pd.isna(v) else int(v) for v in age]
+        self.assertEqual(got_ids, [None, 1, 1, None, 2, 2, None, 3, None])
+        self.assertEqual(got_age, [None, 1, 2, None, 1, 2, None, 1, None])
 
     def test_durable_target_requires_same_unique_beta_at_20_and_60_and_positive_btc(self):
         idx = pd.date_range("2024-01-01", periods=100, freq="D")

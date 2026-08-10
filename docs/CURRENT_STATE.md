@@ -642,3 +642,30 @@ Frozen method checkpoint remains unchanged from the design merge: canonical BTC-
 The preregistration treats those components as **one frozen diagnostic protocol**, not a candidate tournament. `actual_variants_evaluated=0`. A future valid 0047 execution may only determine whether recurrent durable handoff structure is sufficient to justify a new, separately preregistered duration-aware model stage. It cannot establish predictability, CAGR improvement, portfolio concentration or production authority.
 
 Exact next task after this preregistration PR is fully green and merged: create a separate implementation-only branch from the merged preregistration boundary; encode the frozen anatomy with equivalence/fail-closed tests; keep result files absent; re-audit the full method checklist; merge only a zero-result implementation. Only after that boundary may one controlled historical 0047 execution occur. No 0047 allocation test, hazard-model fit, BOCPD rescue, exhaustion gross mapping, Phase-6 change or production/security change is permitted.
+
+## BRRK-BETA-HANDOFF-EVENT-STUDY-0047 — implementation candidate
+
+The exact 0047 design and formal preregistration are already merged at `398b7ec3f78f602461787b1b45e8d5041729e126` and `80c0d3cb7339012cac74e20563e07c7139ba3031`. The current branch implements that frozen Stage-1 anatomy only. It has not fetched 0047 historical market evidence and has released no 0047 scientific or economic result.
+
+```text
+0047 exact design                    MERGED / IMMUTABLE / 398b7ec3f78f602461787b1b45e8d5041729e126
+0047 formal preregistration          MERGED / IMMUTABLE / 80c0d3cb7339012cac74e20563e07c7139ba3031
+0047 implementation                 IMPLEMENTED_PRE_RESULT_NOT_RUN / PR CANDIDATE
+0047 declared variants               1
+0047 actual variants evaluated       0
+0047 MARKET_EVIDENCE                  NOT CREATED
+0047 historical result               NONE
+0047 duration-aware model            FORBIDDEN UNDER 0047
+0047 winner allocation/economics     FORBIDDEN UNDER 0047
+canonical BRRK change                NONE
+Phase-6 change                       NONE
+production_authorized                false
+signature_authorized                 false
+order_submission_authorized          false
+```
+
+Implementation checkpoint: canonical V1 20/60/120/240 fast/slow trend equivalence is test-bound; BTC-positive episodes remain maximal contiguous `BTC_TREND_FAST >= 0`; ETH/BTC and SOL/BTC fast/slow relative trend, fast-minus-slow acceleration, two-asset breadth, trailing-60 trade-count participation and state age are implemented; the same-cause +20/+60 durable target requires positive BTC at both horizons and right-censors unavailable +60; cross-episode return/VAR pairs are forbidden; XCF is -14..+14 with positive lag meaning BTC leads; pooled episode-fixed-effect VAR(7), all six cluster-aware Granger/Wald diagnostics, generalized BTC IRF 0..14, complete-episode 10,000/470047 bootstrap and the non-gating one-switch oracle are implemented. Stage classification reads only the frozen recurrence/cause-diversity gates.
+
+Pre-result engineering clarifications are frozen in `RUN_INTERFACE.json`: raw requests begin 2020-08-01 but the common index begins at the latest first available BTC/ETH/SOL date; all days from common start through 2026-08-02 must be present or fail closed; within-episode demeaning is the fixed-intercept VAR implementation; singular Granger cluster covariance returns a null descriptive p-value rather than a rescue estimator; market evidence is create-only and SHA256-bound before result metrics.
+
+Exact next task: require the implementation PR to pass standing governance/no-drift/P3.2/Phase-6/handoff CI, verify no temporary workflow or generated evidence remains, and merge only as a zero-result implementation boundary. Only after that merge may a separate controlled execution branch call `prepare-data` and then execute the frozen anatomy exactly once. No hazard model, BOCPD rescue, 60/80/100 allocation, portfolio economics, exhaustion gross mapping, Phase-6 change or production/security change is permitted under 0047.
