@@ -90,6 +90,7 @@ jobs:
 
           t=root/'research/governance/test_brrk_exhaustion_pulse_0046_closeout.py'; s=t.read_text()
           s=s.replace('sha256:2938e8c0a776255848b13990200cd77bec85ab15e143596a477fc08f3b63c2a0',meta['digest'])
+          s=s.replace('assert execution["run_1"]["research_result_released"] is False','assert execution["run_1"]["primary_result_created"] is False\n    assert execution["run_1"]["artifact_count"] == 0')
           old='assert result["alarm_path"]["pulse_dates"] == ["2025-11-22"]'
           new='''assert result["alarm_path"]["pulse_dates"] == ["2026-06-03"]\n    assert result["alarm_path"]["eligible_sessions"] == 1026\n    assert result["alarm_path"]["raw_alarm_sessions"] == 19\n    assert result["alarm_path"]["spell_summary"]["median"] == 19.0\n    assert result["alarm_path"]["spell_summary"]["p90_empirical_nearest_rank"] == 19.0\n    assert result["gates"]["median_alarm_spell_le_7"]["pass"] is False\n    assert result["gates"]["p90_alarm_spell_le_14"]["pass"] is False'''
           assert old in s; t.write_text(s.replace(old,new,1))
