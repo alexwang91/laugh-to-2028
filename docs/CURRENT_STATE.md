@@ -1,10 +1,10 @@
 # BRRK Current State
 
 Last updated: 2026-08-10  
-Handoff PR: **#151**  
-Handoff branch: `research/brrk-winner-0001-runonce`  
-Authoritative baseline main at branch creation: `da4bad159819b71c245ff5a6f9976edc7ab94dbc`  
-Latest merged research PR at branch creation: **#150**
+Handoff PR: **#152**  
+Handoff branch: `research/brrk-winner-robustness-0002-prereg`  
+Authoritative baseline main at branch creation: `8081d97afec7083da9aac3ffcbc3fdccac78fa94`  
+Latest merged research PR at branch creation: **#151**
 
 Status: **authoritative current-state handoff candidate**
 
@@ -22,6 +22,7 @@ Phase 6 daily schedule            00:00 UTC
 Phase 6 live elapsed evidence     MEASUREMENT_INCONCLUSIVE_TIME_DEPENDENT
 BRRK opportunity-cost audit 0042  COMPLETE DIAGNOSTIC / NO PROMOTION AUTHORITY
 BRRK-WINNER-0001                  ONE-SHOT PASS / ROBUSTNESS STAGE ELIGIBLE
+BRRK-WINNER-ROBUSTNESS-0002       PREREGISTERED / NOT RUN
 Program timeline dashboard        READ-ONLY V5 / PROFESSIONAL FUND TERMINAL
 Phase 7                           MONITOR_ONLY / LAUNCH BLOCKED
 Phase 8                           TRIGGER ABSENT / NOT RUN
@@ -75,9 +76,9 @@ Interpretation frozen for follow-up: the defensive scaler is not the first optim
 
 The older non-promotable signal-attribution audit also established that canonical BRRK is right-tail dependent: the canonical best 20 sessions account for about 91.61% of total log growth. Any follow-up must explicitly preserve right-tail participation.
 
-## BRRK-WINNER-0001 — one-shot development result
+## BRRK-WINNER-0001 — merged one-shot development result
 
-The preregistered 40/60 single-alt candidate executed exactly once in GitHub Actions run `31364706555` after canonical matched-P3.3 baseline reproduction passed. No nearby split was evaluated.
+PR #151 merged the preregistered 40/60 single-alt candidate after it executed exactly once in GitHub Actions run `31364706555` and canonical matched-P3.3 baseline reproduction passed. No nearby split was evaluated.
 
 ```text
 canonical CAGR                         65.3057%
@@ -94,7 +95,41 @@ all frozen hard gates                  PASS
 result_status                          PASS_ROBUSTNESS_STAGE_ELIGIBLE
 ```
 
-This is researcher-exposed DEVELOPMENT evidence only. It does not change canonical BRRK-0011, Phase 6, Phase 7, execution authority, leverage, shorts, signing or production authorization. A next robustness study requires a new preregistered research ID before any additional allocation variant is evaluated.
+This is researcher-exposed DEVELOPMENT evidence only. It does not change canonical BRRK-0011, Phase 6, Phase 7, execution authority, leverage, shorts, signing or production authorization. `BRRK-WINNER-0001` is closed and must not run again.
+
+## BRRK-WINNER-ROBUSTNESS-0002 — preregistration only
+
+PR #152 preregisters one result-informed robustness panel for the exact 40% BTC / 60% sole-eligible-alt construction selected by BRRK-WINNER-0001. No robustness economics have been executed on this branch.
+
+Frozen reproduction gate:
+
+```text
+source result                         BRRK-WINNER-0001 PRIMARY_RESULT
+primary cost                          5 bps
+absolute reproduction tolerance       5e-10
+robustness metrics before reproduction FORBIDDEN
+```
+
+Frozen temporal panel at 5 bps:
+
+```text
+T1  2022-12-10 .. 2024-02-26   444 sessions
+T2  2024-02-27 .. 2025-05-15   444 sessions
+T3  2025-05-16 .. 2026-08-02   444 sessions
+```
+
+Frozen transaction-cost stress panel on the complete 1,332-session horizon:
+
+```text
+10 bps
+20 bps
+```
+
+The 40/60 allocation, signals, eligibility, multi-alt allocation, caps, defensive gross scale, long-only BTC/ETH/SOL/BNB universe, gross cap and P3.3 5% L1 band remain fixed. No 45/55, 35/65, 30/70 or other rescue split is permitted.
+
+A robustness PASS requires the preregistered temporal, cost-stress, drawdown, Calmar, right-tail, turnover and authority gates. Even a full PASS only makes a new separately preregistered future-only validation stage eligible. It does not promote 40/60 into canonical BRRK and does not create production authority.
+
+The study reuses `BRRK-WINNER-0001-CANONICAL-HIST-V1`, which is already consumed and researcher-exposed DEVELOPMENT history. Therefore BRRK-WINNER-ROBUSTNESS-0002 cannot claim independent OOS evidence or temporal novelty.
 
 ## Dashboard V5
 
@@ -120,17 +155,17 @@ order_submission_authorized      false
 first real short authority        NONE
 ```
 
-BRRK-WINNER-0001 development PASS changes none of these fields.
+Neither BRRK-WINNER-0001 development PASS nor BRRK-WINNER-ROBUSTNESS-0002 preregistration changes any of these fields.
 
 ## Current drift assessment
 
 `DRIFT_0`.
 
-This branch records exactly one preregistered development run and its immutable PASS result. It does not modify `execution/**`, `research/results/**`, BRRK-0011 mathematics, Phase-6 collection or production authority.
+This branch only preregisters a new robustness research ID and its frozen panel. It does not execute robustness economics and does not modify `execution/**`, `research/results/**`, BRRK-0011 mathematics, Phase-6 collection or production authority.
 
 ## Exact next task
 
-1. Merge PR #151 only after governance/no-drift/P3.2/Phase-6 safety CI is green.
-2. Do not evaluate any second BRRK-WINNER-0001 allocation split.
-3. If the owner wants to continue this mechanism, preregister a new robustness research ID before any additional economics.
+1. Merge PR #152 only after governance/no-drift/P3.2/Phase-6 safety/handoff CI is green.
+2. Do not execute BRRK-WINNER-ROBUSTNESS-0002 economics before the preregistration is merged to `main`.
+3. After merge, create a separate run-once branch and execute exactly the frozen robustness panel once; no alternative split, block, stress cost or gate may be added after results are observed.
 4. Continue Phase-6 future-only observation independently.
