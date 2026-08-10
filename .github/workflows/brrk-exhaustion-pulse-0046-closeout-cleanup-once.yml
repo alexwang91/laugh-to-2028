@@ -1,0 +1,49 @@
+name: BRRK exhaustion pulse 0046 closeout cleanup once
+
+on:
+  push:
+    branches:
+      - research/brrk-exhaustion-pulse-0046-closeout
+    paths:
+      - .github/workflows/brrk-exhaustion-pulse-0046-closeout-cleanup-once.yml
+
+permissions:
+  contents: write
+
+jobs:
+  remove-temporary-closeout-workflows:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/brrk-exhaustion-pulse-0046-closeout
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Require central 0046 record already closed before cleanup
+        run: |
+          python - <<'PY'
+          import json
+          r = json.load(open('config/research_registry.json'))
+          m = [x for x in r['records'] if x.get('research_id') == 'BRRK-EXHAUSTION-PULSE-0046']
+          assert len(m) == 1
+          x = m[0]
+          assert x['actual_variants_evaluated'] == 1
+          assert x['result_status'] == 'FAIL_NO_FUTURE_ONLY_PULSE_VALIDATION_ELIGIBILITY'
+          assert x['production_authorized'] is False
+          print('CENTRAL_0046_CLOSEOUT_PRESENT=true')
+          PY
+
+      - name: Remove both temporary metadata workflows and commit
+        run: |
+          rm -f .github/workflows/brrk-exhaustion-pulse-0046-closeout-metadata-once.yml
+          rm -f .github/workflows/brrk-exhaustion-pulse-0046-closeout-cleanup-once.yml
+          git diff --check
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A .github/workflows
+          git commit -m 'governance: remove temporary 0046 closeout workflows'
+          git push origin HEAD:research/brrk-exhaustion-pulse-0046-closeout
