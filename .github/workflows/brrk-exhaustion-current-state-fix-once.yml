@@ -6,6 +6,7 @@ on:
       - research/brrk-exhaustion-event-study-0043
     paths:
       - .github/workflows/brrk-exhaustion-current-state-fix-once.yml
+      - research/governance/patch_current_state_0043_once.py
 
 permissions:
   contents: write
