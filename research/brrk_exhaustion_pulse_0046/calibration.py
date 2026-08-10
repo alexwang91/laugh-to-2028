@@ -2,9 +2,9 @@ from __future__ import annotations
 
 """Label-blind calibration for BRRK-EXHAUSTION-PULSE-0046.
 
-This module may consume only the frozen S1-S4 predictor path and timestamps. It
-contains no event-taxonomy, event-date, macro-episode, barrier, or outcome-window
-loader. Evaluation is a separate module imported only after lock validation.
+This module imports only predictor_io and frozen detector mathematics. It has no
+market/NAV loader and no event-taxonomy, event-date, macro-episode, barrier, or
+outcome-window loader. Evaluation is imported separately only after lock proof.
 """
 
 import hashlib
@@ -17,7 +17,7 @@ from pathlib import Path
 import numpy as np
 
 from . import detector
-from .state_input import PRIMARY_AXES, StateInput, load_predictor_path
+from .predictor_io import PRIMARY_AXES, PredictorArtifact, read_predictor_artifact
 
 RESEARCH_ID = "BRRK-EXHAUSTION-PULSE-0046"
 PREREG_MERGE_COMMIT = "48a140a1d58cba859d537e7dee0ad399c541527a"
@@ -60,10 +60,8 @@ def current_code_sha() -> str:
     if len(env_sha) == 40:
         return env_sha
     try:
-        return subprocess.check_output(
-            ["git", "rev-parse", "HEAD"], cwd=repo_root(), text=True
-        ).strip()
-    except Exception as exc:  # pragma: no cover - only unusual non-git execution
+        return subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=repo_root(), text=True).strip()
+    except Exception as exc:  # pragma: no cover
         raise CalibrationInvalid(f"cannot resolve code SHA: {exc}") from exc
 
 
@@ -105,9 +103,7 @@ def fit_var1(values: np.ndarray) -> dict[str, np.ndarray | float]:
     }
 
 
-def _bootstrap_residuals(
-    residuals: np.ndarray, rng: np.random.Generator, batch: int
-) -> np.ndarray:
+def _bootstrap_residuals(residuals: np.ndarray, rng: np.random.Generator, batch: int) -> np.ndarray:
     n_resid = len(residuals)
     blocks = int(math.ceil(TOTAL_SIM_STEPS / BLOCK_LENGTH))
     starts = rng.integers(0, n_resid, size=(batch, blocks), endpoint=False)
@@ -153,7 +149,8 @@ def stopping_times(scores: np.ndarray, threshold: float) -> np.ndarray:
     s = np.asarray(scores, dtype=np.float64)
     crossed = np.isfinite(s) & (s >= float(threshold))
     any_cross = crossed.any(axis=1)
-    first = np.argmax(crossed, axis=1) + 1  # 1-based from synthetic path session 1; warm-up remains on clock.
+    first = np.argmax(crossed, axis=1) + 1
+    # 1-based from synthetic session 1. Initial detector warm-up cannot cross but stays on the ARL clock.
     return np.where(any_cross, first, NO_CROSSING_CENSOR).astype(np.int64)
 
 
@@ -181,6 +178,8 @@ def select_threshold(scores: np.ndarray) -> tuple[float, float, float]:
 
 
 def _atomic_write_json(path: Path, payload: dict[str, object]) -> None:
+    if path.exists():
+        raise CalibrationInvalid(f"CALIBRATION_LOCK is create-only: {path}")
     path.parent.mkdir(parents=True, exist_ok=True)
     tmp = path.with_name(path.name + ".tmp")
     with tmp.open("w", encoding="utf-8") as handle:
@@ -191,10 +190,10 @@ def _atomic_write_json(path: Path, payload: dict[str, object]) -> None:
     os.replace(tmp, path)
 
 
-def calibration_lock_payload(state: StateInput) -> dict[str, object]:
+def calibration_lock_payload(predictor: PredictorArtifact) -> dict[str, object]:
     _validate_preregistration()
     code_sha = current_code_sha()
-    values = state.axes[list(PRIMARY_AXES)].to_numpy(dtype=np.float64)
+    values = predictor.axes[list(PRIMARY_AXES)].to_numpy(dtype=np.float64)
     var = fit_var1(values)
     spectral_radius = float(var["spectral_radius"])
     base: dict[str, object] = {
@@ -202,10 +201,11 @@ def calibration_lock_payload(state: StateInput) -> dict[str, object]:
         "research_id": RESEARCH_ID,
         "frozen_prereg_merge_commit": PREREG_MERGE_COMMIT,
         "code_sha": code_sha,
-        "predictor_start": str(state.axes.index.min().date()),
-        "predictor_end": str(state.axes.index.max().date()),
-        "predictor_sessions": int(len(state.axes)),
-        "predictor_digest": state.predictor_digest,
+        "predictor_artifact_payload_sha256": predictor.artifact_payload_sha256,
+        "predictor_start": str(predictor.axes.index.min().date()),
+        "predictor_end": str(predictor.axes.index.max().date()),
+        "predictor_sessions": int(len(predictor.axes)),
+        "predictor_digest": predictor.predictor_digest,
         "primary_axes": list(PRIMARY_AXES),
         "var1": {
             "intercept": np.asarray(var["intercept"]).tolist(),
@@ -257,12 +257,10 @@ def calibration_lock_payload(state: StateInput) -> dict[str, object]:
     return base
 
 
-def calibrate_to_lock(path: Path) -> dict[str, object]:
-    if path.exists():
-        raise CalibrationInvalid(f"CALIBRATION_LOCK is create-only: {path}")
-    state = load_predictor_path()
-    payload = calibration_lock_payload(state)
-    _atomic_write_json(path, payload)
+def calibrate_to_lock(predictor_path: Path, lock_path: Path) -> dict[str, object]:
+    predictor = read_predictor_artifact(predictor_path)
+    payload = calibration_lock_payload(predictor)
+    _atomic_write_json(lock_path, payload)
     return payload
 
 
