@@ -1,14 +1,54 @@
 {
   "research_id": "BRRK-EXHAUSTION-TRIGGER-0045",
-  "status": "READY_NOT_RUN",
+  "status": "CLOSED_RESULT_USED",
   "runner": "python -m research.brrk_exhaustion_trigger_0045.run_once --output <path>",
   "unique_execution_policy": "EXACTLY_ONCE_AFTER_PRE_RESULT_CONTRACT_TESTS_PASS",
   "frozen_parent_merge_commit": "c48577bb95c9fc78e5d0d78b86f30905b3636503",
   "frozen_history_end": "2026-08-02",
   "candidate_count": 1,
   "candidate": "TRIGGER_STATE_MACHINE_V1_FIXED_CORE4_S2_S3_HYSTERESIS",
-  "result_path_after_execution": "research/brrk_exhaustion_trigger_0045/PRIMARY_RESULT.json",
-  "run_once_marker_after_execution": "research/brrk_exhaustion_trigger_0045/RUN_ONCE.marker",
-  "forbidden_during_execution": ["threshold search", "persistence search", "alternative state machine", "S2-only rescue", "CORE4 reweighting", "S5 volume reintroduction", "data after 2026-08-02", "gross mapping", "portfolio counterfactual", "canonical or Phase 6 change"],
-  "authority": {"trigger_result_released": false, "gross_mapping_defined": false, "portfolio_economics_executed": false, "production_authorized": false, "signature_authorized": false, "order_submission_authorized": false}
+  "pre_result_green_sha": "669942a4bef3f32894f616b9b28e5001d81e82b9",
+  "valid_result_run": {
+    "workflow_run_id": 31391109057,
+    "workflow_run_number": 2,
+    "attempt": 1,
+    "trigger_head_sha": "f9d4fba80bd07b8a5c67c5c3928f9081332809c7",
+    "artifact_id": 9063704951,
+    "artifact_digest": "sha256:0f8cd31ca3905d798194387622456fc8e59cb786376e57a6c135bdb2867c9c04",
+    "full_result_sha256": "06714848cbb8c812a655700c29362487fc9e77ef2638f57547c7340ee10a2682",
+    "result_status": "FAIL_NO_DYNAMIC_GROSS_STAGE_ELIGIBILITY"
+  },
+  "pre_result_infrastructure_failure": {
+    "workflow_run_id": 31390711467,
+    "workflow_run_number": 1,
+    "head_sha": "ca59056fa8944ab413829507b4bf4a3397f68596",
+    "diagnostic_executed": false,
+    "artifact_created": false,
+    "classification": "PRE_RESULT_CONTRACT_FAILURE_NO_RESEARCH_RESULT"
+  },
+  "result_path": "research/brrk_exhaustion_trigger_0045/PRIMARY_RESULT.json",
+  "execution_path": "research/brrk_exhaustion_trigger_0045/EXECUTION.json",
+  "run_once_marker": "research/brrk_exhaustion_trigger_0045/RUN_ONCE.marker",
+  "same_id_rerun_allowed": false,
+  "same_id_retuning_allowed": false,
+  "next_stage": "DYNAMIC_GROSS_NOT_ELIGIBLE_FROM_0045",
+  "forbidden_after_result": [
+    "threshold or percentile changes under 0045",
+    "persistence or state-machine changes under 0045",
+    "S2-only rescue or CORE4 reweighting under 0045",
+    "S5 volume, breadth or correlation reintroduction under 0045",
+    "onset-window or recovery-hysteresis rescue under 0045",
+    "data after 2026-08-02 under 0045",
+    "gross mapping or portfolio economics under 0045",
+    "canonical or Phase 6 changes"
+  ],
+  "authority": {
+    "trigger_result_released": true,
+    "dynamic_gross_stage_eligible": false,
+    "gross_mapping_defined": false,
+    "portfolio_economics_executed": false,
+    "production_authorized": false,
+    "signature_authorized": false,
+    "order_submission_authorized": false
+  }
 }
