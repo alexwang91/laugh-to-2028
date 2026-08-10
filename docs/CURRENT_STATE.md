@@ -613,3 +613,32 @@ order_submission_authorized          false
 Method-compliance checkpoint at this handoff: leader→follower→new-leader framing, canonical BTC-positive episode, fast/slow relative structure, breadth, trade-count participation, state age, episode-preserving cross-correlation/VAR(7)/Granger/generalized IRF, complete-episode bootstrap and oracle isolation are all present in the frozen design. No portfolio translation has been introduced.
 
 Exact next step: require PR #169 final governance/no-drift/continuity checks to be green and verify the final diff contains only the design freeze plus this CURRENT_STATE handoff. If so, squash-merge #169. Only after the merged design boundary exists may a separate preregistration-only branch register 0047 and the exposed DEVELOPMENT dataset. No runner or result is allowed in that preregistration PR.
+
+## BRRK-BETA-HANDOFF-EVENT-STUDY-0047 — formal preregistration candidate
+
+The exact 0047 design is already merged and immutable at `398b7ec3f78f602461787b1b45e8d5041729e126`. The current preregistration branch mechanically registers that design under Program Governance v1 and registers the already exposed BTC/ETH/SOL DEVELOPMENT history through `2026-08-02`. No runner, model fit, market result or portfolio result exists on this branch.
+
+```text
+0047 exact design                    MERGED / IMMUTABLE / 398b7ec3f78f602461787b1b45e8d5041729e126
+0047 formal PROGRAM_GOVERNED_V1     PREREGISTERED_NOT_RUN / PR CANDIDATE
+0047 dataset slice                   BRRK-BETA-HANDOFF-0047-EXPOSED-HIST-V1
+0047 contamination                   RESEARCHER_EXPOSED_HISTORY / DEVELOPMENT
+0047 declared variants               1
+0047 actual variants evaluated       0
+0047 runner                          NOT CREATED
+0047 historical result               NONE
+0047 duration-aware model            FORBIDDEN UNDER 0047
+0047 60/80/100 winner allocation     FORBIDDEN UNDER 0047
+0047 portfolio economics             FORBIDDEN UNDER 0047
+canonical BRRK change                NONE
+Phase-6 change                       NONE
+production_authorized                false
+signature_authorized                 false
+order_submission_authorized          false
+```
+
+Frozen method checkpoint remains unchanged from the design merge: canonical BTC-positive episodes; exact V1 20/60/120/240 fast/slow trend math; ETH/BTC and SOL/BTC fast/slow relative structure; `REL_FAST-REL_SLOW` acceleration; two-asset Beta breadth; trailing-60 trade-count participation surprise; raw state age; separate unique same-cause +20/+60 durable realized target with positive BTC on both horizons; right censoring rather than false negatives; episode-preserving cross-correlation `-14..+14`; pooled episode-preserving VAR(7); all six directed Granger/Wald diagnostics; generalized BTC-shock IRF `0..14`; complete-episode bootstrap `10,000 / seed 470047`; and a one-switch hindsight oracle isolated as a non-gating opportunity bound.
+
+The preregistration treats those components as **one frozen diagnostic protocol**, not a candidate tournament. `actual_variants_evaluated=0`. A future valid 0047 execution may only determine whether recurrent durable handoff structure is sufficient to justify a new, separately preregistered duration-aware model stage. It cannot establish predictability, CAGR improvement, portfolio concentration or production authority.
+
+Exact next task after this preregistration PR is fully green and merged: create a separate implementation-only branch from the merged preregistration boundary; encode the frozen anatomy with equivalence/fail-closed tests; keep result files absent; re-audit the full method checklist; merge only a zero-result implementation. Only after that boundary may one controlled historical 0047 execution occur. No 0047 allocation test, hazard-model fit, BOCPD rescue, exhaustion gross mapping, Phase-6 change or production/security change is permitted.
