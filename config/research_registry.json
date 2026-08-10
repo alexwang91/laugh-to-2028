@@ -1938,7 +1938,7 @@
       "validation_dataset_refs": [],
       "sealed_dataset_refs": [],
       "declared_variant_budget": 1,
-      "actual_variants_evaluated": 0,
+      "actual_variants_evaluated": 1,
       "parameter_candidate_count": 1,
       "stopping_rule": "After this preregistration is merged, implement exactly one frozen 0046 detector and execute calibration/evaluation once under a separate result-bearing branch. Calibration must create and hash-lock CALIBRATION_LOCK before any frozen event taxonomy or macro-episode labels may be loaded. If the null VAR(1) is nonstationary, if calibration fails, or if any hard gate fails, close 0046 under its frozen failure classification. No detector, axis basis, baseline length, change-age range, subset mixture, null model, block length, seed, ARL target, threshold rule, pulse definition, evaluation window, hard gate, or uncertainty rule may change after any 0046 output is observed. No alternative model, BOCPD rescue, portfolio counterfactual, gross map, or transaction-cost economics may be evaluated under this ID.",
       "success_criteria": [
@@ -2015,7 +2015,24 @@
           "EVENT_CLUSTER_BOOTSTRAP=10000_SEED_460047",
           "DAILY_BLOCK_BOOTSTRAP=10000_BLOCK21_SEED_460048"
         ],
-        "actual_parameter_candidates_evaluated": [],
+        "actual_parameter_candidates_evaluated": [
+          "PRIMARY_AXES=S1_S2_S3_S4_FIXED_FROM_0044",
+          "PRECHANGE_BASELINE=OLS_64",
+          "CHANGE_AGE_SCAN=3_TO_32_INCLUSIVE",
+          "AXIS_SCORE=ONE_SIDED_SLOPE_WORKING_GLR",
+          "SUBSET_AGGREGATION=ALL_15_NONEMPTY_SUBSETS_EQUAL_WEIGHT",
+          "NULL_MODEL=VAR1_OLS_INTERCEPT",
+          "NULL_RESIDUAL_BOOTSTRAP=CIRCULAR_MOVING_BLOCK_LENGTH_7",
+          "NULL_PATHS=5000",
+          "NULL_SEED=460046",
+          "NULL_BURN_IN=256",
+          "NULL_PATH_LENGTH=1460",
+          "ARL0_TRUNC_TARGET=365",
+          "THRESHOLD_BISECTION_ITERATIONS=60",
+          "PULSE=THRESHOLD_UPCROSSING_ONLY",
+          "EVENT_CLUSTER_BOOTSTRAP=10000_SEED_460047",
+          "DAILY_BLOCK_BOOTSTRAP=10000_BLOCK21_SEED_460048"
+        ],
         "universes_evaluated": [
           "0044_BINANCE_SPOT_BTC_ETH_SOL_BNB_XRP_PLUS_CANONICAL_BRRK_NAV"
         ],
@@ -2054,14 +2071,18 @@
           "evidence_ref": "research/brrk_exhaustion_trigger_0045/PRIMARY_RESULT.json"
         }
       ],
-      "result_status": "PREREGISTERED_NOT_RUN",
-      "failure_reason": null,
+      "result_status": "FAIL_NO_FUTURE_ONLY_PULSE_VALIDATION_ELIGIBILITY",
+      "failure_reason": "Frozen Transition Pulse candidate passed specificity, anti-stickiness and ARL0 gates but failed all preregistered TRUE_EXHAUSTION sensitivity/timing gates: primary TRUE PRE14_7 0/9, TRUE episode PRE14_7 0/5, severe TRUE PRE14_7 0/7, and zero qualifying PRE21_0 onsets.",
       "promotion_state": "NONE",
-      "evidence_refs": [],
+      "evidence_refs": [
+        "research/brrk_exhaustion_pulse_0046/PRIMARY_RESULT.json",
+        "research/brrk_exhaustion_pulse_0046/EXECUTION.json",
+        "research/brrk_exhaustion_pulse_0046/RUN_ONCE.marker"
+      ],
       "decision_refs": [
+        "research/brrk_exhaustion_pulse_0046/RESULT.md",
         "research/brrk_exhaustion_pulse_0046/README.md",
-        "research/brrk_exhaustion_pulse_0046/PREREGISTRATION.json",
-        "research/governance/BRRK_EXHAUSTION_PULSE_0046_DESIGN_FREEZE_2026-08-10.md"
+        "docs/CURRENT_STATE.md"
       ],
       "production_relevance": "Research-only result-informed transition-pulse feasibility study on already exposed DEVELOPMENT history. A full PASS can only make a separately preregistered future-only pulse-validation stage eligible; it cannot create dynamic-gross eligibility, alter canonical BRRK, modify Phase 6 or confer production authority.",
       "production_authorized": false,
@@ -2076,8 +2097,24 @@
         "The original Issue #160 sketch CORE4+S2+S3+S4 was rejected before preregistration because CORE4 already contains S1-S4 and would duplicate exposed S2/S3/S4 information in a coordinate-sparse detector.",
         "An extra latent Kalman/local-linear smoother and BOCPD secondary candidate were also removed before preregistration to reduce researcher degrees of freedom and avoid same-ID rescue paths.",
         "The complete S1-S4 predictor path is already researcher-exposed DEVELOPMENT and may be used for label-blind null calibration; this does not create temporally unseen OOS evidence for earlier historical dates.",
-        "Dynamic gross, portfolio economics, canonical BRRK changes, Phase-6 changes and all production/security authority remain explicitly out of scope."
-      ]
+        "Dynamic gross, portfolio economics, canonical BRRK changes, Phase-6 changes and all production/security authority remain explicitly out of scope.",
+        "Pre-result implementation merged at f23d2aac6fa8699af12b784ca03489061e331865 after standing synthetic equivalence/firewall/no-drift checks.",
+        "Controlled run 31417259266 completed the first label-blind calibration but failed before PRIMARY_RESULT creation because the initial evaluator raised on a frozen peak preceding complete S1-S4 availability; zero artifacts were uploaded and this remains infrastructure-failure evidence, not a research result.",
+        "PR #165 repaired only the exact already-frozen 0045 session-window compatibility and merged at aef20ae0e452fa8d737a64846ba433aebcb55628; detector/calibration/threshold/gates/denominators were unchanged.",
+        "Valid result run 31419044159 attempt 1 from head 88f7c7e769352ea9d7b4cac881d2836678576b8e reproduced the run-1 predictor and full calibration lock before labels, then executed the frozen historical evaluation exactly once.",
+        "Valid artifact 9074623455 digest sha256:2938e8c0a776255848b13990200cd77bec85ab15e143596a477fc08f3b63c2a0; full PRIMARY_RESULT SHA256 5c0e9aa4864b0044d5033573be78cdee3c0802db2d8b98d24fc0afcc21abbf8c.",
+        "Binding negative result: zero of nine primary TRUE events pulsed in PRE14_7, zero of five TRUE episodes hit, zero of seven severe TRUE events hit, zero qualifying PRE21_0 onsets; only one pulse occurred across 1,021 eligible sessions.",
+        "Specificity/anti-stickiness passed: continuation false pulses 0/6, raw alarm occupancy about 0.196%, median and p90 alarm spells both one session, truncated ARL0 365.0472.",
+        "0046 is permanently closed to same-ID rerun, threshold/ARL/age/axis/model/pulse rescue, event filtering, dynamic-gross mapping and portfolio economics."
+      ],
+      "evidence_scorecard": {
+        "temporal_novelty": "RESEARCHER_EXPOSED_DEVELOPMENT_HISTORY_2023-08-07_TO_2026-08-02_NOT_INDEPENDENT_OOS",
+        "statistical_sufficiency": "EIGHT_MACRO_EPISODES_CALIBRATION_ARL0_PASS_BUT_PRIMARY_TRUE_0_OF_9_TRUE_EPISODE_0_OF_5_SEVERE_TRUE_0_OF_7_AND_ZERO_PRE21_0_ONSETS",
+        "governance_integrity": "HIGH_PREREGISTERED_SINGLE_CANDIDATE_PRE_RESULT_BOUNDARY_RUN1_FAILURE_PRESERVED_REPAIR_PARENT_SEMANTICS_ONLY_RUN1_LOCK_REPRODUCED_BEFORE_SINGLE_VALID_RESULT_NO_RETUNING",
+        "operational_realism": "TRANSITION_PULSE_DIAGNOSTIC_ONLY_EXTREMELY_SPARSE_ONE_PULSE_1021_ELIGIBLE_SESSIONS_NO_PORTFOLIO_TRANSLATION",
+        "derived_confidence": "HIGH_CONFIDENCE_CURRENT_0046_PULSE_CANDIDATE_IS_NOT_ELIGIBLE_FOR_FUTURE_ONLY_PULSE_VALIDATION_OR_DYNAMIC_GROSS",
+        "confidence_rule_ref": "research/brrk_exhaustion_pulse_0046/RUN_INTERFACE.json"
+      }
     }
   ],
   "research_governance_debt": [
