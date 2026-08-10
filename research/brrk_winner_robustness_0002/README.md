@@ -5,7 +5,7 @@ Formal preregistration state: **PREREGISTERED_NOT_RUN**
 Pull request: **#153**  
 Merged preregistration: **PR #152 / `11c7967e4d22766b3abee33d382ab2912c16f5cb`**
 
-This governed research path contains the merged preregistration and the frozen pre-result run interface for one robustness panel of the exact 40% BTC / 60% sole-eligible-alt construction selected by `BRRK-WINNER-0001`. `RUN_ONCE.marker` is absent, so no robustness economics have been executed on PR #153 yet.
+This governed research path contains the merged preregistration and the frozen pre-result run interface for one robustness panel of the exact 40% BTC / 60% sole-eligible-alt construction selected by `BRRK-WINNER-0001`. `RUN_ONCE.marker` is absent, so no robustness economics have been executed on PR #153 yet. No new allocation split is searched under this research ID.
 
 ## Frozen construction
 
