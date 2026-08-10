@@ -1,0 +1,6 @@
+BRRK-WINNER-0001-RUN-ONCE-V1
+candidate=single_alt_40_60
+variant_budget=1
+prior_workflow_startup_failure_run=31364596558
+prior_candidate_execution=false
+trigger_commit_purpose=execute_exactly_one_frozen_candidate
