@@ -23,7 +23,7 @@ def _registry_record():
 
 def test_formal_preregistration_matches_central_record_exactly():
     prereg = _load(HERE / "PREREGISTRATION.json")
-    assert prereg == _registry_record()
+    central = _registry_record()
     assert prereg["governance_mode"] == "PROGRAM_GOVERNED_V1"
     assert prereg["created_before_result"] is True
     assert prereg["result_status"] == "PREREGISTERED_NOT_RUN"
@@ -32,6 +32,21 @@ def test_formal_preregistration_matches_central_record_exactly():
     assert prereg["parameter_candidate_count"] == 1
     assert prereg["production_authorized"] is False
     assert prereg["governed_path_prefixes"] == ["research/brrk_exhaustion_pulse_0046/"]
+    immutable_fields = (
+        "research_id", "research_family_id", "research_domain", "research_governance_version",
+        "governance_mode", "objective_type", "created_at", "created_before_result", "question",
+        "hypothesis", "hypothesis_origin", "economic_mechanism", "primary_target", "primary_metric",
+        "secondary_metrics", "feature_families", "horizon", "universe", "development_dataset_refs",
+        "validation_dataset_refs", "sealed_dataset_refs", "declared_variant_budget", "parameter_candidate_count",
+        "stopping_rule", "success_criteria", "failure_criteria", "allowed_followup", "forbidden_followup",
+        "researcher_decisions", "lineage_edges", "production_relevance", "production_authorized",
+        "provenance_status", "governed_path_prefixes",
+    )
+    for field in immutable_fields:
+        assert central[field] == prereg[field]
+    assert central["actual_variants_evaluated"] == 1
+    assert central["result_status"] == "FAIL_NO_FUTURE_ONLY_PULSE_VALIDATION_ELIGIBILITY"
+    assert central["promotion_state"] == "NONE"
 
 
 def test_dataset_declaration_matches_central_exposure_registry_exactly():
@@ -95,24 +110,31 @@ def test_parent_evidence_remains_immutable_and_0045_does_not_create_dynamic_gros
 def test_lifecycle_only_allows_pre_result_implementation_not_generated_evidence():
     interface_path = HERE / "RUN_INTERFACE.json"
     runner_path = HERE / "run_once.py"
-    if interface_path.exists() or runner_path.exists():
-        assert interface_path.exists() and runner_path.exists()
-        interface = _load(interface_path)
-        assert interface["status"] == "IMPLEMENTED_PRE_RESULT_NOT_RUN"
+    assert interface_path.exists() and runner_path.exists()
+    interface = _load(interface_path)
+    assert interface["status"] == "IMPLEMENTED_PRE_RESULT_NOT_RUN"
+    marker = HERE / "RUN_ONCE.marker"
+    if marker.exists():
+        result = _load(HERE / "PRIMARY_RESULT.json")
+        execution = _load(HERE / "EXECUTION.json")
+        m = _load(marker)
+        assert result["result_status"] == "FAIL_NO_FUTURE_ONLY_PULSE_VALIDATION_ELIGIBILITY"
+        assert execution["unique_valid_historical_result_count"] == 1
+        assert m["SAME_ID_RERUN_ALLOWED"] is False
+        assert m["SAME_ID_RESCUE_ALLOWED"] is False
+        assert (HERE / "RESULT.md").exists()
+        assert not (HERE / "PREDICTOR_PATH.json").exists()
+        assert not (HERE / "CALIBRATION_LOCK.json").exists()
+    else:
         assert interface["actual_variants_evaluated"] == 0
         assert interface["authority"]["calibration_executed"] is False
         assert interface["authority"]["result_released"] is False
-    generated_forbidden = {
-        "PREDICTOR_PATH.json",
-        "CALIBRATION_LOCK",
-        "CALIBRATION_LOCK.json",
-        "PRIMARY_RESULT.json",
-        "EXECUTION.json",
-        "RUN_ONCE.marker",
-        "RESULT.md",
-    }
-    existing = {p.name for p in HERE.iterdir() if p.is_file()}
-    assert generated_forbidden.isdisjoint(existing)
+        generated_forbidden = {
+            "PREDICTOR_PATH.json", "CALIBRATION_LOCK", "CALIBRATION_LOCK.json",
+            "PRIMARY_RESULT.json", "EXECUTION.json", "RUN_ONCE.marker", "RESULT.md",
+        }
+        existing = {p.name for p in HERE.iterdir() if p.is_file()}
+        assert generated_forbidden.isdisjoint(existing)
 
 
 def test_zero_authority_and_no_portfolio_translation():
