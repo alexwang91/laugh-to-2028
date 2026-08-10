@@ -1,0 +1,60 @@
+{
+  "research_id": "BRRK-EXHAUSTION-TRIGGER-0045",
+  "execution_status": "VALID_RESULT_RELEASED_AND_CLOSED",
+  "pre_result_green_baseline": {
+    "sha": "669942a4bef3f32894f616b9b28e5001d81e82b9",
+    "research_governance_core": "SUCCESS",
+    "p3_2_target_research_live_parity": "SUCCESS",
+    "phase6_integrated_shadow_safety": "SUCCESS",
+    "phase6_live_observation_preflight": "SUCCESS",
+    "phase0_8_drift_audit": "SUCCESS",
+    "pr_handoff_governance": "SUCCESS"
+  },
+  "infrastructure_attempts": [
+    {
+      "workflow_run_id": 31390711467,
+      "workflow_run_number": 1,
+      "attempt": 1,
+      "head_sha": "ca59056fa8944ab413829507b4bf4a3397f68596",
+      "result_step_executed": false,
+      "artifact_created": false,
+      "classification": "PRE_RESULT_CONTRACT_FAILURE_NO_RESEARCH_RESULT",
+      "reason": "An over-broad static test treated the declaration key gross_mapping_defined as a gross-mapping implementation. The diagnostic step was skipped, the temporary workflow was removed, and only the test expression was corrected before a new fully green baseline was established."
+    },
+    {
+      "workflow_run_id": 31391109057,
+      "workflow_run_number": 2,
+      "attempt": 1,
+      "head_sha": "f9d4fba80bd07b8a5c67c5c3928f9081332809c7",
+      "result_step_executed": true,
+      "artifact_created": true,
+      "classification": "UNIQUE_VALID_RESULT_RELEASE",
+      "pre_result_delta_guard": "Only .github/workflows/brrk-exhaustion-trigger-0045-once.yml differed from 669942a4bef3f32894f616b9b28e5001d81e82b9",
+      "original_no_drift_reconfirmed_on_green_baseline": true,
+      "source_reproduction_status": "MATCHED_0043_FROZEN_TAXONOMY",
+      "parent_0044_status": "PASS_TRIGGER_STAGE_ELIGIBLE",
+      "result_status": "FAIL_NO_DYNAMIC_GROSS_STAGE_ELIGIBILITY"
+    }
+  ],
+  "artifact": {
+    "artifact_id": 9063704951,
+    "name": "brrk-exhaustion-trigger-0045",
+    "digest": "sha256:0f8cd31ca3905d798194387622456fc8e59cb786376e57a6c135bdb2867c9c04",
+    "full_result_sha256": "06714848cbb8c812a655700c29362487fc9e77ef2638f57547c7340ee10a2682",
+    "summary_sha256": "5530a4e922d2219a012e0914f43d1f328ee92ee45724a582189176d37d05ab59",
+    "result_payload_sha256_without_self_hash": "38d8a8d7cd2d7ff58d0c29354f384b04ed3d9860cd7b97da10fa62d293ca66c5"
+  },
+  "result_semantics": {
+    "actual_variants_evaluated": 1,
+    "candidate": "TRIGGER_STATE_MACHINE_V1_FIXED_CORE4_S2_S3_HYSTERESIS",
+    "result_status": "FAIL_NO_DYNAMIC_GROSS_STAGE_ELIGIBILITY",
+    "same_id_rerun_allowed": false,
+    "same_id_retuning_allowed": false,
+    "dynamic_gross_stage_eligible": false,
+    "gross_mapping_defined": false,
+    "portfolio_economics_executed": false,
+    "production_authorized": false,
+    "signature_authorized": false,
+    "order_submission_authorized": false
+  }
+}

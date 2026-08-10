@@ -1,0 +1,144 @@
+{
+  "research_id": "BRRK-EXHAUSTION-TRIGGER-0045",
+  "result_status": "FAIL_NO_DYNAMIC_GROSS_STAGE_ELIGIBILITY",
+  "window": {
+    "start": "2022-12-10",
+    "end": "2026-08-02",
+    "sessions": 1332
+  },
+  "execution_binding": {
+    "pre_result_green_sha": "669942a4bef3f32894f616b9b28e5001d81e82b9",
+    "pre_result_infrastructure_failure": {
+      "workflow_run_id": 31390711467,
+      "workflow_run_number": 1,
+      "head_sha": "ca59056fa8944ab413829507b4bf4a3397f68596",
+      "diagnostic_executed": false,
+      "artifact_created": false,
+      "reason": "pre-result contract test used an over-broad gross_map substring and failed before diagnostic execution; runner mathematics and frozen trigger parameters were unchanged"
+    },
+    "valid_result_workflow_run_id": 31391109057,
+    "valid_result_workflow_run_attempt": 1,
+    "valid_result_workflow_run_number": 2,
+    "trigger_head_sha": "f9d4fba80bd07b8a5c67c5c3928f9081332809c7",
+    "artifact_id": 9063704951,
+    "artifact_digest": "sha256:0f8cd31ca3905d798194387622456fc8e59cb786376e57a6c135bdb2867c9c04",
+    "full_result_sha256": "06714848cbb8c812a655700c29362487fc9e77ef2638f57547c7340ee10a2682",
+    "artifact_summary_sha256": "5530a4e922d2219a012e0914f43d1f328ee92ee45724a582189176d37d05ab59",
+    "result_payload_sha256_without_self_hash": "38d8a8d7cd2d7ff58d0c29354f384b04ed3d9860cd7b97da10fa62d293ca66c5"
+  },
+  "source_reproduction": {
+    "status": "MATCHED_0043_FROZEN_TAXONOMY",
+    "candidate_peak_count": 16,
+    "panel_counts": {
+      "down_10pct": {"TRUE_EXHAUSTION": 12, "CONTINUATION_FALSE_TOP": 4, "AMBIGUOUS": 0},
+      "down_15pct": {"TRUE_EXHAUSTION": 9, "CONTINUATION_FALSE_TOP": 6, "AMBIGUOUS": 1},
+      "down_20pct": {"TRUE_EXHAUSTION": 7, "CONTINUATION_FALSE_TOP": 6, "AMBIGUOUS": 3}
+    },
+    "parent_0044_result_status": "PASS_TRIGGER_STAGE_ELIGIBLE"
+  },
+  "primary_metrics": {
+    "primary_true_PRE14_7_watch_or_risk": {
+      "numerator": 3,
+      "denominator": 9,
+      "rate": 0.3333333333333333,
+      "peaks": ["2024-06-05", "2024-07-21", "2025-10-08"]
+    },
+    "primary_cont_PRE14_0_watch_or_risk_false": {
+      "numerator": 0,
+      "denominator": 6,
+      "rate": 0.0
+    },
+    "primary_true_episode_PRE14_7_watch_or_risk": {
+      "numerator": 2,
+      "denominator": 5,
+      "rate": 0.4,
+      "hit_episode_ids": [4, 7]
+    },
+    "primary_cont_episode_PRE14_0_watch_or_risk_false": {
+      "numerator": 0,
+      "denominator": 5,
+      "rate": 0.0
+    },
+    "severe_true_PRE14_7_watch_or_risk": {
+      "numerator": 3,
+      "denominator": 7,
+      "rate": 0.42857142857142855,
+      "peaks": ["2024-06-05", "2024-07-21", "2025-10-08"]
+    },
+    "severe_true_PRE7_POST3_risk": {
+      "numerator": 2,
+      "denominator": 7,
+      "rate": 0.2857142857142857,
+      "peaks": ["2024-06-05", "2024-07-21"]
+    },
+    "primary_cont_PRE14_POST3_risk_false": {
+      "numerator": 0,
+      "denominator": 6,
+      "rate": 0.0
+    },
+    "primary_true_onset_lead": {
+      "count": 0,
+      "leads": [],
+      "median": null
+    },
+    "primary_true_premature_clear": {
+      "numerator": 0,
+      "denominator": 0,
+      "rate": null
+    }
+  },
+  "anchor_evidence": {
+    "2023-12-25": "PRIMARY_TRUE_NOT_WATCH_OR_RISK_IN_PRE14_7",
+    "2024-03-31": "PRIMARY_TRUE_NOT_WATCH_OR_RISK_IN_PRE14_7",
+    "2025-01-18": "PRIMARY_TRUE_NOT_WATCH_OR_RISK_IN_PRE14_7",
+    "2025-10-08": "PRIMARY_TRUE_WATCH_OR_RISK_IN_PRE14_7_BUT_NOT_RISK_IN_PRE7_POST3"
+  },
+  "state_occupancy": {
+    "HEALTHY": {"sessions": 630, "fraction": 0.47297297297297297},
+    "DECELERATION": {"sessions": 228, "fraction": 0.17117117117117117},
+    "WATCH": {"sessions": 217, "fraction": 0.1629129129129129},
+    "RISK": {"sessions": 241, "fraction": 0.18093093093093093},
+    "RECOVERY": {"sessions": 16, "fraction": 0.012012012012012012},
+    "WATCH_OR_RISK_fraction": 0.34384384384384384,
+    "NON_HEALTHY_fraction": 0.527027027027027
+  },
+  "transitions": {
+    "HEALTHY_to_DECELERATION": 17,
+    "HEALTHY_to_WATCH": 1,
+    "DECELERATION_to_HEALTHY": 13,
+    "DECELERATION_to_WATCH": 4,
+    "WATCH_to_RISK": 3,
+    "WATCH_to_RECOVERY": 1,
+    "RISK_to_RECOVERY": 3,
+    "RECOVERY_to_HEALTHY": 4
+  },
+  "hard_gates": {
+    "episode_diversity": true,
+    "primary_true_PRE14_7_watch_hit_ge_0_50": false,
+    "primary_cont_PRE14_0_watch_false_le_0_34": true,
+    "primary_true_episode_watch_hit_ge_0_60": false,
+    "primary_cont_episode_watch_false_le_0_50": true,
+    "severe_true_PRE14_7_watch_hit_ge_0_57": false,
+    "severe_true_PRE7_POST3_risk_ge_0_57": false,
+    "primary_cont_PRE14_POST3_risk_false_le_0_17": true,
+    "true_onset_count_ge_4_and_median_7_to_21": false,
+    "premature_clear_le_0_25": false,
+    "construction_and_authority": true
+  },
+  "negative_evidence": {
+    "interpretation": "The frozen first state machine is highly specific at the event level but insufficiently sensitive and too persistent for the requested 7-14 day action trigger. It catches only 3 of 9 primary true events and 3 of 7 severe true events, confirms RISK for only 2 of 7 severe events, and produces zero qualifying PRE21_0 transition onsets because detected events were already in WATCH/RISK before that window. WATCH/RISK occupies about 34.4% of all sessions, so zero continuation-event false alarms must not be interpreted as a globally sparse risk state.",
+    "same_id_rescue_allowed": false
+  },
+  "authority": {
+    "researcher_exposed_development_only": true,
+    "independent_oos": false,
+    "dynamic_gross_stage_eligible": false,
+    "gross_mapping_defined": false,
+    "portfolio_economics_executed": false,
+    "canonical_strategy_changed": false,
+    "phase6_observation_changed": false,
+    "production_authorized": false,
+    "signature_authorized": false,
+    "order_submission_authorized": false
+  }
+}

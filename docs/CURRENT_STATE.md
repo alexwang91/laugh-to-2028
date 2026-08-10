@@ -1,10 +1,10 @@
 # BRRK Current State
 
 Last updated: 2026-08-10
-Handoff PR: **#158**
-Handoff branch: `research/brrk-exhaustion-trigger-0045-prereg`
-Authoritative baseline main at branch creation: `23fd7a050cf8c543470fc48a2286cc75ff9fdafc`
-Latest merged research PR at branch creation: **#157**
+Handoff PR: **#159**
+Handoff branch: `research/brrk-exhaustion-trigger-0045-runonce`
+Authoritative baseline main at branch creation: `c48577bb95c9fc78e5d0d78b86f30905b3636503`
+Latest merged research PR at branch creation: **#158**
 
 Status: **authoritative current-state handoff candidate**
 
@@ -25,7 +25,7 @@ BRRK-WINNER-0001                  ONE-SHOT PASS / CLOSED
 BRRK-WINNER-ROBUSTNESS-0002       ONE-SHOT PASS / FUTURE-ONLY VALIDATION ELIGIBLE / CLOSED
 BRRK exhaustion event study 0043 COMPLETE DIAGNOSTIC / 7-14D SIGNAL FEASIBLE / TRIGGER NOT READY
 BRRK exhaustion state 0044       PASS / TRIGGER STAGE ELIGIBLE / CLOSED
-BRRK exhaustion trigger 0045     PREREGISTERED / NOT RUN / NO GROSS AUTHORITY
+BRRK exhaustion trigger 0045     FAIL / NO DYNAMIC-GROSS ELIGIBILITY / CLOSED
 Program timeline dashboard        READ-ONLY V5 / PROFESSIONAL FUND TERMINAL
 Phase 7                           MONITOR_ONLY / LAUNCH BLOCKED
 Phase 8                           TRIGGER ABSENT / NOT RUN
@@ -238,26 +238,46 @@ Result-informed component evidence is preserved without same-ID reweighting. S2 
 
 The only authorized research continuation is a new, separately preregistered trigger-stage ID. Canonical BRRK-0011, the 40/60 winner lineage, Phase 6 and all production/security authority remain unchanged.
 
-## BRRK-EXHAUSTION-TRIGGER-0045 — preregistered, not run
+## BRRK-EXHAUSTION-TRIGGER-0045 — FAIL, closed
 
-PR #158 freezes exactly one result-informed causal state machine before any 0045 result exists. It reuses immutable 0044 CORE4, uses S2 trend disagreement only as confirmation, and S3 price structure only for slow recovery confirmation. S5 volume/OBV is excluded because 0044 preserved negative evidence.
+PR #158 froze one trigger candidate before any result. PR #159 implemented it and released exactly one valid result after a fully green pre-result baseline. The historical evidence remains researcher-exposed DEVELOPMENT evidence, not independent OOS.
+
+Execution binding:
 
 ```text
-states                         HEALTHY / DECELERATION / WATCH / RISK / RECOVERY
-percentiles                    trailing 252 prior sessions / current excluded / min 60
-DECELERATION entry             CORE4>=60p OR S2>=60p / 2-of-3
-WATCH entry                    CORE4>=65p AND S2>=65p / 2-of-3
-RISK entry                     CORE4>=75p AND S2>=80p / 2-of-3
-WATCH/RISK recovery entry      CORE4<=45p AND S2<=45p AND S3<=50p / 5 consecutive
-RECOVERY minimum hold          5 sessions
-HEALTHY repair confirmation    CORE4/S2/S3<=55p / 3-of-5 after hold
-history end                    2026-08-02
-portfolio gross mapping        FORBIDDEN UNDER 0045
+pre-result green SHA                 669942a4bef3f32894f616b9b28e5001d81e82b9
+pre-result failed workflow run       31390711467 / NO DIAGNOSTIC / NO RESULT
+unique valid result workflow run     31391109057 / run number 2 / attempt 1
+trigger head SHA                     f9d4fba80bd07b8a5c67c5c3928f9081332809c7
+artifact id                          9063704951
+artifact digest                      sha256:0f8cd31ca3905d798194387622456fc8e59cb786376e57a6c135bdb2867c9c04
+full result SHA256                   06714848cbb8c812a655700c29362487fc9e77ef2638f57547c7340ee10a2682
+source taxonomy reproduction         MATCHED 0043 EXACTLY
+parent 0044                          PASS_TRIGGER_STAGE_ELIGIBLE
 ```
 
-The primary question is whether WATCH can appear 7–14 days before genuine exhaustion while continuation false alarms remain controlled, severe events escalate to RISK near the peak, and hysteresis avoids premature clearing. All evidence is researcher-exposed DEVELOPMENT history.
+Frozen trigger result:
 
-Only a full 0045 PASS can make a separately preregistered dynamic-gross stage eligible. No canonical BRRK, Phase 6 or production/security authority changes occur.
+```text
+primary TRUE PRE14_7 WATCH/RISK            3 / 9 = 33.3% FAIL
+primary CONT PRE14_0 false WATCH/RISK       0 / 6 = 0.0%  PASS
+primary TRUE episode hit                    2 / 5 = 40.0% FAIL
+primary CONT episode false                  0 / 5 = 0.0%  PASS
+severe TRUE PRE14_7 WATCH/RISK              3 / 7 = 42.9% FAIL
+severe TRUE PRE7_POST3 RISK                 2 / 7 = 28.6% FAIL
+primary CONT PRE14_POST3 RISK               0 / 6 = 0.0%  PASS
+qualifying TRUE PRE21_0 transition onsets             0    FAIL
+premature-clear gate                         no denominator FAIL
+result_status                       FAIL_NO_DYNAMIC_GROSS_STAGE_ELIGIBILITY
+```
+
+The candidate is specific but too insensitive and too persistent for the requested one-to-two-week action trigger. WATCH plus RISK occupies about `34.38%` of the 1,332-session history, while non-HEALTHY states occupy about `52.70%`. The three primary TRUE PRE14_7 hits were `2024-06-05`, `2024-07-21`, and `2025-10-08`; important genuine exhaustion events `2023-12-25`, `2024-03-31`, and `2025-01-18` were missed. `2025-10-08` was WATCH/RISK in PRE14_7 but did not confirm RISK in PRE7_POST3.
+
+The zero PRE21_0 onset count is binding negative evidence: captured events were already in WATCH/RISK before the frozen lead window, so this machine acts more like a sticky risk regime than a precise 7–14 day transition trigger. No same-ID threshold, persistence, onset-window, S2-only, CORE4-weight or hysteresis rescue is allowed.
+
+0045 is permanently closed and **does not authorize a dynamic-gross stage**. 0044's underlying state-discrimination PASS remains valid; what failed is this particular state-to-trigger translation. Any alternative trigger architecture requires a fresh result-informed research ID before evaluation.
+
+Canonical BRRK-0011, the winner lineage, Phase 6, signing, order submission and production authority remain unchanged.
 
 ## Dashboard V5
 
@@ -289,12 +309,13 @@ The BRRK-WINNER development and robustness PASS results do not change any of the
 
 `DRIFT_0`.
 
-PR #158 is pre-result trigger research governance only. No 0045 result, gross mapping, portfolio economics, `execution/**`, canonical BRRK mathematics, Phase-6 observation or production authority changes occur.
+PR #159 closes a research-only trigger diagnostic with a binding FAIL. It adds immutable 0045 evidence and advances research lifecycle metadata only. No `execution/**`, canonical BRRK mathematics, Phase-6 observation, leverage/shorting, signing, order submission or production authority changes occur.
 
 ## Exact next task
 
-1. Merge PR #158 only after its formal owner/data registration, atomic-history requirement, no-drift, P3.2, Phase-6 and handoff checks are green.
-2. Preserve 0045 as `PREREGISTERED_NOT_RUN`; no result-bearing file may exist in the preregistration PR.
-3. After merge only, implement the exact frozen percentile/state/persistence/hysteresis machine on a separate branch.
-4. Execute exactly one 0045 candidate. Any gate failure closes the ID; no threshold/persistence rescue is permitted.
-5. Do not map WATCH/RISK to gross exposure unless 0045 fully passes and a new dynamic-gross research ID is preregistered. Phase 6 and all production/signing/order authority remain unchanged.
+1. Merge PR #159 only after the temporary 0045 one-shot/finalizer workflows are removed and final governance/no-drift/P3.2/Phase-6/handoff CI is green.
+2. Preserve `BRRK-EXHAUSTION-TRIGGER-0045` as closed `FAIL_NO_DYNAMIC_GROSS_STAGE_ELIGIBILITY`; never rerun, retune or rescue it.
+3. Do **not** create or run `BRRK-DYNAMIC-GROSS-0046` from this lineage; 0045 did not earn eligibility.
+4. Preserve the distinction: 0044 confirms useful exhaustion-state discrimination, while 0045 shows this first absolute percentile/persistence/hysteresis trigger translation is inadequate.
+5. Any future alternative trigger architecture must be a new result-informed preregistration, explicitly acknowledging 0045's sensitivity failure, sticky WATCH/RISK occupancy and zero PRE21_0 onset evidence before evaluation.
+6. Continue Phase-6 future-only observation independently. All production, signing and order-submission authority remains false.
