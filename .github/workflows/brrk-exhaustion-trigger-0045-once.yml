@@ -1,0 +1,94 @@
+name: BRRK exhaustion trigger 0045 once
+
+on:
+  push:
+    branches:
+      - research/brrk-exhaustion-trigger-0045-runonce
+    paths:
+      - .github/workflows/brrk-exhaustion-trigger-0045-once.yml
+
+permissions:
+  contents: read
+
+env:
+  PYTHONHASHSEED: '0'
+  OMP_NUM_THREADS: '1'
+  OPENBLAS_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+  NUMEXPR_NUM_THREADS: '1'
+  PRE_RESULT_GREEN_SHA: '92aed27be4a40ad0a452ccfe88a109bdf0dbc28e'
+
+jobs:
+  frozen-trigger-diagnostic:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/brrk-exhaustion-trigger-0045-runonce
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: execution/plan-b-bot/requirements-dev.txt
+      - name: Install pinned research runtime
+        run: pip install -r execution/plan-b-bot/requirements-dev.txt
+      - name: Prove only temporary workflow differs from green pre-result head
+        shell: bash
+        run: |
+          test "$(git merge-base "$PRE_RESULT_GREEN_SHA" HEAD)" = "$PRE_RESULT_GREEN_SHA"
+          mapfile -t changed < <(git diff --name-only "$PRE_RESULT_GREEN_SHA"..HEAD)
+          printf 'changed_since_green=%s\n' "${changed[*]}"
+          test "${#changed[@]}" -eq 1
+          test "${changed[0]}" = '.github/workflows/brrk-exhaustion-trigger-0045-once.yml'
+      - name: Reconfirm frozen preregistration and runner contracts
+        run: |
+          python -m unittest research.governance.test_brrk_exhaustion_trigger_0045_prereg -v
+          python -m unittest research.brrk_exhaustion_trigger_0045.test_run_once_contract -v
+          python -m research.governance.validate
+      - name: Reconfirm original no-drift on exact green pre-result head
+        shell: bash
+        run: |
+          git worktree add --detach /tmp/0045-pre-result "$PRE_RESULT_GREEN_SHA"
+          (
+            cd /tmp/0045-pre-result
+            python -m research.governance.no_drift
+          )
+          git worktree remove --force /tmp/0045-pre-result
+      - name: Execute frozen 0045 trigger diagnostic exactly once
+        run: |
+          python -m research.brrk_exhaustion_trigger_0045.run_once \
+            --output /tmp/BRRK_EXHAUSTION_TRIGGER_0045_PRIMARY_RESULT.json
+      - name: Create compact immutable result summary
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          result = json.loads(Path('/tmp/BRRK_EXHAUSTION_TRIGGER_0045_PRIMARY_RESULT.json').read_text())
+          summary = {
+              'research_id': result['research_id'],
+              'result_status': result['result_status'],
+              'window': result['window'],
+              'source_reproduction': result['source_integrity']['0043_taxonomy_reproduction'],
+              '0044_parent_result_status': result['source_integrity']['0044_parent_result_status'],
+              'metrics': result['metrics'],
+              'gates': result['gates'],
+              'authority': result['authority'],
+              'result_payload_sha256_without_self_hash': result['result_payload_sha256_without_self_hash'],
+          }
+          out = Path('/tmp/BRRK_EXHAUSTION_TRIGGER_0045_SUMMARY.json')
+          out.write_text(json.dumps(summary, indent=2, sort_keys=True) + '\n')
+          print('BRRK_EXHAUSTION_TRIGGER_0045_SUMMARY=' + json.dumps(summary, sort_keys=True, separators=(',', ':')))
+          PY
+      - name: Upload unique 0045 result artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: brrk-exhaustion-trigger-0045
+          path: |
+            /tmp/BRRK_EXHAUSTION_TRIGGER_0045_PRIMARY_RESULT.json
+            /tmp/BRRK_EXHAUSTION_TRIGGER_0045_SUMMARY.json
+          if-no-files-found: error
+          retention-days: 90
+          overwrite: false
