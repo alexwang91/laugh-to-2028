@@ -1,0 +1,84 @@
+{
+  "actual_variants_evaluated": 1,
+  "all_hard_gates_pass": true,
+  "baseline": {
+    "avg_gross_exposure": 0.7543536295598086,
+    "cagr": 0.6530567772272524,
+    "calmar": 1.947723776506531,
+    "end_multiple": 6.252527441017219,
+    "max_drawdown": -0.335292296117361,
+    "sharpe": 1.35611613609405,
+    "turnover": 91.08660891147298
+  },
+  "baseline_reproduced": true,
+  "candidate": {
+    "avg_gross_exposure": 0.7543816308516481,
+    "cagr": 0.6969170994819343,
+    "calmar": 2.083464974694971,
+    "end_multiple": 6.8790795571724255,
+    "max_drawdown": -0.33449907147297553,
+    "sharpe": 1.3845994186251462,
+    "turnover": 102.27849378240246
+  },
+  "candidate_definition": {
+    "other_decision_rows_unchanged": 1032,
+    "same_defensive_gross": true,
+    "single_alt_btc_share": 0.4,
+    "single_alt_decision_rows": 301,
+    "single_alt_winner_counts": {"BNB": 33, "ETH": 58, "SOL": 210},
+    "single_alt_winner_share": 0.6
+  },
+  "delta": {
+    "avg_gross_exposure": 0.000028001291839552245,
+    "cagr": 0.04386032225468184,
+    "calmar": 0.13574119818844022,
+    "end_multiple": 0.6265521161552066,
+    "max_drawdown": 0.0007932246443854707,
+    "sharpe": 0.028483282531096332,
+    "turnover": 11.191884870929485
+  },
+  "evaluation": {"cost_bps": 5.0, "p3_3_l1_band": 0.05, "session_end": "2026-08-02", "session_start": "2022-12-10"},
+  "execution_evidence": {"github_run_attempt": "1", "github_run_id": "31364706555", "head_ref": "research/brrk-winner-0001-runonce", "workflow_sha": "32e31e9d240cb65881f0210b5afb83fcfda13310"},
+  "hard_gates": {
+    "cagr_delta_pp_min_3": {"pass": true, "threshold": 3.0, "value": 4.386032225468184},
+    "calmar_not_below_baseline": {"pass": true, "threshold": 1.0, "value": 1.0696922221855851},
+    "canonical_best20_log_growth_capture_min_0_98": {"pass": true, "threshold": 0.98, "value": 1.0355952436851439},
+    "gross_max_1": {"pass": true, "threshold": 1.0, "value": 1.0000000000000002},
+    "long_only": {"pass": true, "threshold": 0.0, "value": 0.0},
+    "max_drawdown_deterioration_pp_max_4": {"pass": true, "threshold": 4.0, "value": 0.0},
+    "turnover_ratio_max_1_25": {"pass": true, "threshold": 1.25, "value": 1.1228708040037683}
+  },
+  "input_evidence": {
+    "candidate_target_frame_sha256": "6e0ae02475677d6b0453100c99a38b1f3e7129686f34d12e8b030ec0809311b5",
+    "canonical_brrk_target_frame_sha256": "bbb538ccfc0001e9458c5f7a4bed60eeed13a7c6d92a7f775a29af2affada5b8",
+    "defensive_scale_max": 1.0,
+    "defensive_scale_min": 1.0204821709880463e-07,
+    "historical_role": "RESEARCHER_EXPOSED_DEVELOPMENT",
+    "target_authority": {
+      "decision_count": 45,
+      "evaluation_start_session": "2022-12-10",
+      "feature_assets": ["BTC", "ETH", "SOL", "BNB", "XRP"],
+      "feature_price_frame_sha256": "43325adedd7e588a5711c77842d4a054638ae916d939ca6f8c7e445947f00c1c",
+      "first_decision_date": "2022-12-09",
+      "last_decision": {"date": "2026-07-21", "final_scale": 0.009600519865636481, "full_scale_cdar95_corrected": 0.16331279325293963, "full_scale_cvar95": 0.13573137534843085, "meta_scale": 0.0, "riskoff_probability": 0.9903994801343635},
+      "published_banded_weights_used_for_scale": false,
+      "target_assets": ["BTC", "ETH", "SOL", "BNB"]
+    }
+  },
+  "order_submission_authorized": false,
+  "production_authorized": false,
+  "promotion_authority": "ROBUSTNESS_STAGE_ELIGIBILITY_ONLY",
+  "research_id": "BRRK-WINNER-0001",
+  "result_status": "PASS_ROBUSTNESS_STAGE_ELIGIBLE",
+  "retuning_performed": false,
+  "right_tail": {
+    "candidate_log_growth_on_same_dates": 1.738998666709741,
+    "canonical_best20_dates": ["2023-11-10", "2023-11-15", "2024-03-20", "2024-11-06", "2023-10-23", "2023-03-17", "2025-03-02", "2023-02-15", "2024-03-13", "2024-01-08", "2024-11-11", "2023-12-20", "2023-11-22", "2025-08-22", "2023-03-13", "2024-05-20", "2023-03-12", "2023-12-21", "2025-10-12", "2023-10-16"],
+    "canonical_best20_log_growth": 1.6792262008867005,
+    "capture_ratio": 1.0355952436851439
+  },
+  "run_interface_id": "BRRK-WINNER-0001-RUN-ONCE-V1",
+  "schema_version": 1,
+  "signature_authorized": false,
+  "variant_budget": 1
+}
