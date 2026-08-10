@@ -1,0 +1,57 @@
+name: BRRK robustness scorecard fix once
+
+on:
+  push:
+    branches:
+      - research/brrk-winner-robustness-0002-runonce
+    paths:
+      - .github/workflows/brrk-robustness-scorecard-fix-once.yml
+
+permissions:
+  contents: write
+
+jobs:
+  finalize-scorecard:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/brrk-winner-robustness-0002-runonce
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Add required evidence scorecard and remove this workflow
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          path = Path('config/research_registry.json')
+          data = json.loads(path.read_text(encoding='utf-8'))
+          matches = [r for r in data['records'] if r.get('research_id') == 'BRRK-WINNER-ROBUSTNESS-0002']
+          if len(matches) != 1:
+              raise SystemExit(f'expected exactly one robustness record, found {len(matches)}')
+          record = matches[0]
+          if record.get('result_status') != 'PASS_FUTURE_ONLY_VALIDATION_STAGE_ELIGIBLE':
+              raise SystemExit('unexpected robustness result status')
+          if record.get('actual_variants_evaluated') != 1:
+              raise SystemExit('unexpected variant count')
+          record['evidence_scorecard'] = {
+              'temporal_novelty': 'RESEARCHER_EXPOSED_DEVELOPMENT_HISTORY_NOT_TEMPORALLY_UNSEEN_FIXED_TEMPORAL_ROBUSTNESS_ONLY',
+              'statistical_sufficiency': 'ONE_FROZEN_CANDIDATE_1332_SESSIONS_THREE_FIXED_444_SESSION_BLOCKS_PASS_2_OF_3_PLUS_10_20BPS_COST_STRESS_PASS_WITH_T2_NEGATIVE_EVIDENCE_RETAINED',
+              'governance_integrity': 'HIGH_PREREGISTERED_ONE_SHOT_REPRODUCTION_BEFORE_RELEASE_NO_RETUNING_NO_RERUN',
+              'operational_realism': 'MATCHED_P3_3_5PCT_L1_BAND_WITH_5_10_20BPS_COST_STRESS_DEVELOPMENT_ONLY_NOT_PRODUCTION_VALIDATION',
+              'derived_confidence': 'MEDIUM_ROBUSTNESS_PASS_PENDING_GENUINE_FUTURE_ONLY_VALIDATION',
+              'confidence_rule_ref': 'research/brrk_winner_robustness_0002/RUN_INTERFACE.json',
+          }
+          path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + '\n', encoding='utf-8')
+          PY
+          git rm .github/workflows/brrk-robustness-scorecard-fix-once.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add config/research_registry.json
+          git diff --cached --check
+          git commit -m 'governance: add robustness evidence scorecard'
+          git push origin HEAD:research/brrk-winner-robustness-0002-runonce
