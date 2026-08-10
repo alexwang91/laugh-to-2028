@@ -45,9 +45,10 @@ Machine-readable evidence:
 
 - `PREREGISTRATION.json`: immutable pre-result contract;
 - `RUN_INTERFACE.json`: exactly-once execution interface;
-- `RUN_ONCE.marker`: one-shot trigger record;
 - `PRIMARY_RESULT.json`: committed frozen economics and hard-gate result;
-- `EXECUTION.json`: workflow/artifact provenance and explicit hash bindings.
+- `EXECUTION.json`: workflow/artifact provenance, single-execution accounting, and explicit hash bindings.
+
+The temporary trigger marker and temporary workflow are intentionally absent after the successful one-shot execution; `EXECUTION.json` is the permanent provenance record.
 
 The development history is explicitly researcher-exposed. This PASS is not unbiased OOS confirmation and does not modify canonical BRRK-0011, Phase 6 observation, Phase 7 launch state, execution authority, signing, order submission, leverage, or shorting. It only makes a separately preregistered robustness research stage eligible.
 
