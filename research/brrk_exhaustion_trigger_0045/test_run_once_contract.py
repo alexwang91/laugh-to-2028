@@ -45,7 +45,7 @@ class BRRKExhaustionTrigger0045RunOnceContractTests(unittest.TestCase):
         self.assertEqual(runner.EXPECTED_0044_RESULT_STATUS, "PASS_TRIGGER_STAGE_ELIGIBLE")
         self.assertEqual(runner.EXPECTED_0044_ARTIFACT_DIGEST, "sha256:b109b610710b00904c924680a63305579f3f3c4c799d539906e0853629ddd378")
         full = inspect.getsource(runner)
-        for forbidden in ("create_order", "submit_order", "target_weights =", "gross_map", "portfolio_return", "position_size"):
+        for forbidden in ("create_order", "submit_order", "target_weights =", "gross_target =", "state_to_gross", "portfolio_return", "position_size"):
             self.assertNotIn(forbidden, full)
         interface = json.loads((ROOT / "research/brrk_exhaustion_trigger_0045/RUN_INTERFACE.json").read_text())
         self.assertEqual(interface["status"], "READY_NOT_RUN")
