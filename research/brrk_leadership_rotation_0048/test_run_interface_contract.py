@@ -47,9 +47,21 @@ class RunInterfaceContractTest(unittest.TestCase):
         self.assertFalse(authority["production_authorized"])
         self.assertFalse(authority["same_id_rerun_allowed"])
 
-    def test_runner_has_no_network_or_portfolio_surface(self):
+    def test_runner_has_no_network_or_portfolio_execution_surface(self):
         text = (HERE / "run_once.py").read_text(encoding="utf-8")
-        for forbidden in ("requests.get", "urlopen(", "fetch_daily_frame", "portfolio", "CAGR", "Sharpe", "MDD", "order_submission_authorized=True"):
+        for forbidden in (
+            "requests.get",
+            "urlopen(",
+            "fetch_daily_frame",
+            "def portfolio",
+            "portfolio_result.json",
+            "CAGR",
+            "Sharpe",
+            "MDD",
+            "submit_order",
+            "place_order",
+            "sign_transaction",
+        ):
             self.assertNotIn(forbidden, text)
 
     def test_attempt_marker_is_written_before_historical_computation(self):
