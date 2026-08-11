@@ -1,8 +1,8 @@
 # BRRK-LEADERSHIP-ROTATION-0048
 
-Status: **PREREGISTERED_NOT_RUN / PREREGISTRATION-ONLY CANDIDATE**
+Status: **PREREGISTERED_NOT_RUN / IMPLEMENTATION-ONLY ZERO-RESULT CANDIDATE**
 
-This directory formalizes the owner-approved revised 0048 architecture and numerical method after the architecture amendment merged at `09a676e0e704a360730b1df0a57e6010b5a15f00`.
+The revised architecture and numerical preregistration are frozen. This directory now contains a zero-result implementation of the frozen protocol, but no historical 0048 scientific execution has occurred.
 
 ## Scientific scope
 
@@ -37,9 +37,32 @@ BTC is an eligibility/defensive-anchor asset, not a competing 0048 winner. Cash 
 
 The candidate must beat all probabilistic causal baselines under the simultaneous NLL gate.
 
+## Zero-result implementation
+
+`engine.py` mechanically implements the preregistered mathematics without executing the frozen historical study.
+
+Key implementation properties:
+
+- historical input is accepted only through the immutable 0047 market-evidence wrapper and must match payload SHA256 `d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193`;
+- BTC eligibility reuses the already frozen 0047 `trend_score` implementation and FAST weights;
+- ETH/SOL feature exchange maps the seven-feature vector to its negative and model probabilities to complements;
+- 14/28/56 target code is tested against the literal preregistered path-integral formula;
+- training labels cannot enter before 56 calendar days have elapsed;
+- refitting is expanding and anchored every 28 calendar days;
+- calibration consumes only matured shadow-prequential predictions;
+- candidate and B2/B3 baselines use the same prevalence-offset/ridge/refit/calibration machinery;
+- bootstrap resamples aligned evaluation rows without retraining the walk-forward models;
+- the one-breakpoint segmented model uses a deterministic global SSE search over the frozen admissible family;
+- spline derivatives remain diagnostic only;
+- no allocation, CAGR, MDD, Beta-to-BTC or BTC-to-cash function exists.
+
+`test_engine_contract.py` uses deterministic **synthetic data only**. Synthetic unit-test fits verify mathematical and causal invariants and are not an evaluation of the registered historical candidate variant.
+
+`IMPLEMENTATION_BOUNDARY.json` records the zero-result boundary and explicitly leaves historical scientific execution unauthorized.
+
 ## Result hierarchy
 
-Possible formal outcomes include:
+Possible future formal outcomes remain:
 
 - `INVALID_EXECUTION`;
 - `MEASUREMENT_INCONCLUSIVE_INSUFFICIENT_SUPPORT`;
@@ -60,19 +83,24 @@ The study reuses the already researcher-exposed 0047 BTC/ETH/SOL Binance UTC dai
 
 This is DEVELOPMENT history, not independent OOS.
 
-## Registry synchronization
+## Registry status
 
-The preregistration object and dataset declaration are registered atomically in `config/research_registry.json` and `config/dataset_exposure_registry.json`. The temporary registration writer is deleted before merge and is not part of the frozen preregistration surface.
+The preregistration object and dataset declaration remain byte-for-byte registered in `config/research_registry.json` and `config/dataset_exposure_registry.json`.
 
-This synchronization records governance metadata only. It does not fit a model, inspect a 0048 result, or consume an additional candidate variant.
+Implementation does **not** change:
 
-The required `docs/CURRENT_STATE.md` preregistration handoff is synchronized separately as governance continuity metadata and does not change any frozen numerical method. The refreshed handoff preserves prior immutable research markers and the exact production-authorization invariants required by the repository governance suite.
+- `declared_variant_budget = 1`;
+- `actual_variants_evaluated = 0`;
+- `result_status = PREREGISTERED_NOT_RUN`;
+- the registered dataset exposure state;
+- canonical BRRK;
+- Phase 6;
+- production/signing/order authority.
 
-## Preregistration-only boundary
+## Implementation-only boundary
 
 At this stage the following files must **not** exist:
 
-- `engine.py`
 - `run_once.py`
 - `RUN_INTERFACE.json`
 - `PRIMARY_RESULT.json`
@@ -82,8 +110,8 @@ At this stage the following files must **not** exist:
 - `RESULT.md`
 - any portfolio runner or allocation output
 
-No model fit, calibration fit, historical candidate evaluation, CAGR/MDD test or portfolio allocation is authorized by this preregistration.
+No registered-history 0048 model fit, calibration fit, candidate evaluation, CAGR/MDD test or portfolio allocation is authorized by this implementation branch.
 
-The only permitted next step after this preregistration is merged is a separate implementation-only branch that mechanically implements the frozen protocol with equivalence, symmetry, maturity, prequential-calibration and fail-closed tests. Only after that implementation boundary is merged and green may exactly one historical 0048 DEVELOPMENT execution occur.
+The only permitted next step after this implementation is merged and all standing CI is green is a **separate controlled-execution stage** that adds a hash-bound run interface/run-once boundary and then performs exactly one historical DEVELOPMENT execution. Any valid scientific output closes 0048 to same-ID rerun, retuning and rescue.
 
 Canonical BRRK, Phase 6, production authorization, signing authorization and order-submission authorization remain unchanged.
