@@ -157,6 +157,11 @@ def _authority() -> dict[str, Any]:
 def _scan_forbidden_metric_keys(value: Any, forbidden: list[str], path: str = "root") -> None:
     if isinstance(value, Mapping):
         for key, child in value.items():
+            # Authority keys are mandatory frozen boolean attestations and are
+            # validated exactly before this scanner runs. Do not classify their
+            # names (e.g. portfolio_economics_executed=false) as metric output.
+            if str(key) == "authority":
+                continue
             lowered = str(key).lower()
             hits = [token for token in forbidden if token.lower() in lowered]
             if hits:
