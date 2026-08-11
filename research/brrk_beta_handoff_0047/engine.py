@@ -657,6 +657,13 @@ def fit_episode_var7(prepared: VarPrepared) -> dict[str, Any]:
                     "wald_chi2": wald,
                     "df": VAR_LAGS,
                     "p_value": pvalue,
+                    "lag_coefficients": [
+                        {
+                            "lag": lag + 1,
+                            "coefficient": float(beta[lag * len(ASSETS) + source_idx, target_idx]),
+                        }
+                        for lag in range(VAR_LAGS)
+                    ],
                 }
             )
     return {
@@ -755,6 +762,7 @@ def bootstrap_episode_uncertainty(
     irf_ci: dict[str, Any]
     var_episode_ids = prepared_var.episode_ids
     if not var_episode_ids:
+        coefficient_ci = {"status": "INSUFFICIENT_VAR_ROWS", "valid_replicates": 0, "attempted_replicates": BOOTSTRAP_REPLICATES, "rows": []}
         irf_ci = {"status": "INSUFFICIENT_VAR_ROWS", "valid_replicates": 0, "attempted_replicates": BOOTSTRAP_REPLICATES}
     else:
         k = len(ASSETS)
@@ -771,6 +779,15 @@ def bootstrap_episode_uncertainty(
             }
         eth_values: list[list[float]] = [[] for _ in range(IRF_MAX_HORIZON + 1)]
         sol_values: list[list[float]] = [[] for _ in range(IRF_MAX_HORIZON + 1)]
+        asset_to_idx = {asset: idx for idx, asset in enumerate(ASSETS)}
+        coefficient_values = {
+            (source, target_asset, lag): []
+            for source in ASSETS
+            for target_asset in ASSETS
+            if source != target_asset
+            for lag in range(1, VAR_LAGS + 1)
+        }
+        valid_coefficient_refits = 0
         valid = 0
         for draw in draws:
             counts: dict[int, int] = {}
@@ -798,6 +815,17 @@ def bootstrap_episode_uncertainty(
             df_resid = n - p - contributing_draws
             if df_resid <= 0:
                 continue
+            valid_coefficient_refits += 1
+            for source in ASSETS:
+                source_idx = asset_to_idx[source]
+                for target_asset in ASSETS:
+                    if source == target_asset:
+                        continue
+                    target_idx = asset_to_idx[target_asset]
+                    for lag in range(1, VAR_LAGS + 1):
+                        coefficient_values[(source, target_asset, lag)].append(
+                            float(beta[(lag - 1) * len(ASSETS) + source_idx, target_idx])
+                        )
             sigma = sse / float(df_resid)
             if not np.isfinite(sigma).all() or sigma[0, 0] <= 0.0:
                 continue
@@ -810,6 +838,23 @@ def bootstrap_episode_uncertainty(
             for h in range(IRF_MAX_HORIZON + 1):
                 eth_values[h].append(float(irf[h, 1]))
                 sol_values[h].append(float(irf[h, 2]))
+        coefficient_ci = {
+            "status": "OK" if valid_coefficient_refits else "NO_VALID_BOOTSTRAP_REFITS",
+            "attempted_replicates": BOOTSTRAP_REPLICATES,
+            "valid_replicates": valid_coefficient_refits,
+            "rows": [
+                {
+                    "source": source,
+                    "target": target_asset,
+                    "lag": lag,
+                    **_percentile_summary(coefficient_values[(source, target_asset, lag)]),
+                }
+                for source in ASSETS
+                for target_asset in ASSETS
+                if source != target_asset
+                for lag in range(1, VAR_LAGS + 1)
+            ],
+        }
         irf_ci = {
             "status": "OK" if valid else "NO_VALID_BOOTSTRAP_REFITS",
             "attempted_replicates": BOOTSTRAP_REPLICATES,
@@ -834,6 +879,7 @@ def bootstrap_episode_uncertainty(
         "handoff_state_age_median": _percentile_summary(age_medians),
         "handoff_spell_median": _percentile_summary(spell_medians),
         "cross_correlation": xcf_ci,
+        "VAR_coefficient_bootstrap": coefficient_ci,
         "generalized_btc_irf": irf_ci,
     }
 

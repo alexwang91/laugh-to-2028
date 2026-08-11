@@ -220,6 +220,7 @@ class TestBrrkBetaHandoff0047Implementation(unittest.TestCase):
         fit = engine.fit_episode_var7(prepared)
         self.assertEqual(fit["status"], "OK")
         self.assertEqual(len(fit["granger_wald"]), 6)
+        self.assertTrue(all(len(row["lag_coefficients"]) == 7 for row in fit["granger_wald"]))
         self.assertEqual(len(fit["generalized_btc_irf"]), 15)
 
         x = np.vstack([prepared.x_by_episode[eid] for eid in prepared.episode_ids])

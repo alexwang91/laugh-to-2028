@@ -49,7 +49,7 @@ After the canonical BTC fast trend becomes positive, does researcher-exposed BTC
 - event-time causal anatomy grid `-60..+20`;
 - episode-preserving BTC/ETH and BTC/SOL return cross-correlation at lags `-14..+14`;
 - pooled episode-preserving VAR(7) with episode fixed intercepts;
-- all six directed Granger/Wald diagnostics using episode-cluster CR0 where nonsingular;
+- all six directed Granger/Wald diagnostics using episode-cluster CR0 where nonsingular, always retaining the seven direction-specific lag coefficients plus complete-episode bootstrap coefficient uncertainty;
 - generalized one-residual-standard-deviation BTC-shock IRFs at horizons `0..14`;
 - complete-episode bootstrap with exactly 10,000 replicates and seed `470047`;
 - one-switch BTC→ETH/SOL hindsight oracle with a 10 bps full-switch cost, isolated as non-gating opportunity bound.
