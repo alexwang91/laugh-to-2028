@@ -2,8 +2,8 @@
 
 Last updated: **2026-08-11**  
 Authoritative repository: `alexwang91/laugh-to-2028`  
-Implementation base `main`: **`d907bd167f4cc51142f3cf9ff3b7eb4eeab7fab8`**  
-Current research branch: **`research/brrk-leadership-rotation-0048-implementation`**  
+Current `main` implementation merge: **`a60696d5fe23e5dd95c40f868ccca199f36a3c20`**  
+Current research branch: **`research/brrk-leadership-rotation-0048-controlled-run`**  
 Status of this document: **AUTHORITATIVE OPERATING SNAPSHOT**
 
 > GitHub `main`, immutable research artifacts and machine registries remain the sources of truth. This file is the compact human handoff, not a substitute for preregistration, execution, evidence, recovery or closeout artifacts.
@@ -35,7 +35,7 @@ BRRK exhaustion state 0044            PASS_TRIGGER_STAGE_ELIGIBLE / CLOSED
 BRRK exhaustion trigger 0045          FAIL_NO_DYNAMIC_GROSS_STAGE_ELIGIBILITY / CLOSED
 BRRK exhaustion pulse 0046            FAIL_NO_FUTURE_ONLY_PULSE_VALIDATION_ELIGIBILITY / CLOSED
 BRRK Beta handoff event study 0047    FAIL_NO_RECURRENT_DURABLE_HANDOFF_STRUCTURE / CLOSED
-BRRK leadership rotation 0048         PREREGISTERED_NOT_RUN / IMPLEMENTATION-ONLY ZERO-RESULT CANDIDATE
+BRRK leadership rotation 0048         PREREGISTERED_NOT_RUN / CONTROLLED-EXECUTION BOUNDARY / ZERO RESULT
 
 Canonical BRRK-0011                    NO CHANGE
 Phase 7                                MONITOR_ONLY / LAUNCH BLOCKED
@@ -58,11 +58,15 @@ The original 0048 qualitative architecture was amended before any numerical prer
 
 `09a676e0e704a360730b1df0a57e6010b5a15f00`
 
-The numerical preregistration and exposed DEVELOPMENT dataset provenance were then atomically frozen at merge:
+The numerical preregistration and exposed DEVELOPMENT dataset provenance were frozen at:
 
 `d907bd167f4cc51142f3cf9ff3b7eb4eeab7fab8`
 
-The binding hierarchy is:
+The zero-result implementation was merged at:
+
+`a60696d5fe23e5dd95c40f868ccca199f36a3c20`
+
+The binding hierarchy remains:
 
 ```text
 Cash
@@ -82,7 +86,7 @@ BTC does **not** receive a 0048 winner label. Beta->BTC continuation value belon
 
 ---
 
-## 3. 0048 preregistration and implementation state
+## 3. 0048 frozen state and current boundary
 
 ```text
 0048 research ID                      BRRK-LEADERSHIP-ROTATION-0048
@@ -90,21 +94,26 @@ BTC does **not** receive a 0048 winner label. Beta->BTC continuation value belon
 0048 architecture                     REVISED / MERGED / FROZEN
 0048 numerical prereg                 FROZEN / PREREGISTERED_NOT_RUN
 0048 prereg merge                     d907bd167f4cc51142f3cf9ff3b7eb4eeab7fab8
+0048 implementation merge             a60696d5fe23e5dd95c40f868ccca199f36a3c20
 0048 declared variants                1
 0048 actual variants evaluated        0
-0048 implementation                   CREATED ON SEPARATE ZERO-RESULT BRANCH
+0048 implementation                   MERGED / FROZEN / ZERO RESULT
+0048 controlled-run interface          CREATED ON SEPARATE ZERO-RESULT BRANCH
+0048 result schema                     FROZEN ON CURRENT BOUNDARY BRANCH
 0048 registered-history model fit      NONE
 0048 registered-history calibration    NONE
 0048 historical result                 NONE
 0048 portfolio result                  NONE / FORBIDDEN
-0048 RUN_INTERFACE                     ABSENT / FORBIDDEN AT IMPLEMENTATION STAGE
-0048 RUN_ONCE.marker                   ABSENT / FORBIDDEN AT IMPLEMENTATION STAGE
-0048 PRIMARY_RESULT                    ABSENT / FORBIDDEN AT IMPLEMENTATION STAGE
+0048 RUN_ATTEMPT.marker               ABSENT
+0048 RUN_ONCE.marker                  ABSENT
+0048 PRIMARY_RESULT                   ABSENT
+0048 RESULT_SUMMARY                   ABSENT
+0048 EXECUTION                        ABSENT
 ```
 
-The preregistration object remains registered exactly in `config/research_registry.json`; its governed path is `research/brrk_leadership_rotation_0048/`. Implementation does not alter the preregistration object, research registry, dataset declaration or dataset-exposure registry.
+The preregistration object remains exactly registered in `config/research_registry.json`; the dataset declaration remains exactly registered in `config/dataset_exposure_registry.json`. The controlled-run boundary does not alter either registry and does not alter `actual_variants_evaluated = 0` or `result_status = PREREGISTERED_NOT_RUN`.
 
-Synthetic unit-test fits are permitted only to verify frozen numerical invariants. They do not consume the registered historical candidate variant and do not change `actual_variants_evaluated = 0`.
+Synthetic unit-test fits and fault-injection tests are permitted only to verify frozen numerical and execution invariants. They do not consume the registered historical candidate variant.
 
 ---
 
@@ -117,25 +126,22 @@ dataset slice ID
 BRRK-LEADERSHIP-ROTATION-0048-EXPOSED-HIST-V1
 
 underlying assets                     BTC / ETH / SOL
-source                                 Binance Spot UTC daily klines
+source                                 immutable 0047 Binance Spot UTC daily evidence
 common history                         2020-08-11 through 2026-08-02
+market evidence git blob               64ebf5c6deaf3f34dbeac715378f196ff0f4fafe
 source market payload SHA256           d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193
 data budget                            DEVELOPMENT
 contamination                          RESEARCHER_EXPOSED_HISTORY
 independent OOS                        false
 ```
 
-No observation after `2026-08-02` may enter the frozen 0048 DEVELOPMENT result. The implementation contains no new 0048 network-fetch path; historical data must enter through the frozen 0047 evidence identity and fail closed on a payload-hash mismatch.
+No observation after `2026-08-02` may enter the frozen 0048 DEVELOPMENT result. The frozen implementation and controlled runner contain no new 0048 market network-fetch path. Historical data must enter only through the immutable 0047 evidence wrapper and fail closed on blob/payload mismatch.
 
 ---
 
 ## 5. Frozen 0048 target and state
 
-Formal prediction origins must satisfy:
-
-`BTC_TREND_FAST >= 0`
-
-using the canonical 20/60/120/240 trend family and FAST weights `0.15 / 0.25 / 0.30 / 0.30`. This is an eligibility filter only, not a BTC-leading handoff clock. The implementation reuses the existing 0047 canonical `trend_score` code rather than introducing a second formula.
+Formal prediction origins must satisfy `BTC_TREND_FAST >= 0`, using the canonical 20/60/120/240 trend family and FAST weights `0.15 / 0.25 / 0.30 / 0.30`. This is an eligibility filter only. The implementation reuses the existing 0047 canonical `trend_score` code.
 
 For `i in {ETH,SOL}` and `h in {14,28,56}`:
 
@@ -146,9 +152,9 @@ M_t      = L_SOL(t) - L_ETH(t)
 Y_t      = 1 if M_t > 0; 0 if M_t < 0
 ```
 
-Exact `M_t=0` is `TARGET_TIE`, excluded from supervised scoring but counted. Rank direction is the predictive target; continuous realized margin is retained separately for confidence/economic-strength validation.
+Exact `M_t=0` is `TARGET_TIE`, excluded from supervised scoring but counted. Continuous realized margin remains available for confidence-strength diagnostics.
 
-The sole candidate has exactly seven antisymmetric ETH/SOL relative features:
+The sole candidate has exactly seven antisymmetric relative features:
 
 ```text
 K1   relative momentum age block 1-20
@@ -156,11 +162,11 @@ K2   relative momentum age block 21-60
 K3   relative momentum age block 61-120
 K4   relative momentum age block 121-240
 Persistence60
-Position120        symmetric relative range position
-Participation      relative quote-volume activity, median20 vs median120
+Position120
+Participation
 ```
 
-No FAST/SLOW recompression, feature pruning, feature addition, CORE4, BTC Dominance, dispersion, funding/OI, macro, sentiment, HMM, tree, boosting or neural-network candidate may be introduced under 0048.
+No FAST/SLOW recompression, feature pruning/addition, CORE4, BTC Dominance, dispersion, funding/OI, macro, sentiment, HMM, tree, boosting or neural-network candidate may be introduced under 0048.
 
 ---
 
@@ -184,9 +190,7 @@ first shadow-model support            >=365 matured eligible origins
 refit cadence                         28 calendar days
 ```
 
-ETH/SOL exchange must map `X -> -X`, `pi -> 1-pi` and invert predicted leadership probability. The implementation contract tests this with deterministic synthetic data.
-
-Calibration is shadow-prequential. A raw forecast joins the calibration pool only after the full 56-day target matures. Formal calibrated evaluation begins only after at least 365 matured eligible shadow forecast/outcome pairs.
+Calibration is shadow-prequential:
 
 ```text
 p_cal = sigmoid(logit(pi) + gamma * eta)
@@ -194,7 +198,7 @@ eta   = beta'X
 gamma >= 0
 ```
 
-No finite stable calibration solution => `MEASUREMENT_INCONCLUSIVE_CALIBRATION_UNIDENTIFIABLE`. Beta calibration and isotonic remain diagnostics only; they are not primary replacement paths.
+A raw forecast may enter calibration only after its 56-day target matures. Formal calibrated evaluation begins only after at least 365 matured eligible shadow forecast/outcome pairs. No finite stable primary calibration solution maps to `MEASUREMENT_INCONCLUSIVE_CALIBRATION_UNIDENTIFIABLE`; no secondary calibrator may rescue the same ID.
 
 ---
 
@@ -207,7 +211,7 @@ B2  lagged equal-weight 14/28/56 past path leader
 B3  simple 60-day SOL/ETH relative momentum
 ```
 
-Primary metric is NLL. The simultaneous gate remains:
+Primary metric remains NLL with the simultaneous dependence-aware gate:
 
 ```text
 d_b,t       = loss_candidate - loss_baseline_b
@@ -224,9 +228,7 @@ seed                                  4292549012
 same sampled blocks                   candidate + all baselines
 ```
 
-Support requires >=12 complete 56-observation formal-evaluation blocks and each realized direction in >=3 distinct full blocks. Four contiguous temporal blocks require >=3/4 candidate wins. Causal episode robustness uses maximal eligible RREL60-sign runs with duration >=14.
-
-Subsampling remains nonselection only: `b=max(56,ceil(N^(2/3)))`; it has no rescue authority.
+Support requires >=12 complete 56-observation formal-evaluation blocks and each realized direction in >=3 distinct full blocks. Four contiguous temporal blocks require >=3/4 candidate wins. Causal episode robustness uses maximal eligible RREL60-sign runs with duration >=14. Subsampling is diagnostic only and has no rescue authority.
 
 ---
 
@@ -238,7 +240,7 @@ Z            = sign(p_cal - 0.5) * M
 G(c)         = E[Z | c]
 ```
 
-Shape diagnostic remains a natural cubic regression spline with boundaries 0/1 and internal knots `0.25 / 0.50 / 0.75`. `G'` and `G''` are diagnostics only; `argmax G''` has no threshold-selection authority.
+The frozen shape diagnostic is a natural cubic regression spline with boundaries 0/1 and internal knots `0.25 / 0.50 / 0.75`. `G'` and `G''` are diagnostics only; `argmax G''` has no threshold-selection authority.
 
 The sole HIGH mechanism is:
 
@@ -247,13 +249,11 @@ G(c) = alpha + beta*c + delta*(c-kappa)_+
 kappa in [0.20,0.80]
 ```
 
-The implementation finds the deterministic global SSE minimum over the frozen one-breakpoint family, checks all frozen side-support conditions, and uses the smaller kappa on an exact numerical tie. Each bootstrap replicate re-estimates its own spline and breakpoint; no original-sample threshold is held fixed inside bootstrap.
-
-G0-G6 establish robust leadership information. G7-G11 are separately required before 0049 concentration research becomes eligible.
+Each bootstrap replicate re-estimates its own spline and breakpoint. G0-G6 establish robust leadership information; G7-G11 are separately required before 0049 concentration research becomes eligible.
 
 ---
 
-## 9. 0048 result hierarchy
+## 9. Frozen result hierarchy
 
 ```text
 INVALID_EXECUTION
@@ -266,7 +266,7 @@ PASS_ONE_SIDED_LEADERSHIP_NO_FULL_ROUTER
 PASS_LEADERSHIP_INFORMATION_CONCENTRATION_HANDOFF_ELIGIBLE
 ```
 
-No result classification exists yet.
+No 0048 result classification exists yet.
 
 ---
 
@@ -276,13 +276,9 @@ No result classification exists yet.
 
 The exposed-development 40% BTC / 60% winner construction materially improved historical CAGR and passed cost robustness. It motivates later concentration research but does not identify an 80%-100% optimum and is not independent evidence for 0048.
 
-### BRRK-EXHAUSTION-EVENT-STUDY-0043 — complete diagnostic
+### BRRK-EXHAUSTION-EVENT-STUDY-0043
 
-```text
-workflow run                         31381953131 / attempt 1
-```
-
-The frozen 0043 interpretation remains: a **7–14 day exhaustion-ranking signal appears feasible**, but the first equal-weight absolute trigger was not operationally ready. **ID 0043 is closed against result-informed pruning, reweighting, threshold rescue**, dynamic-gross mapping or portfolio-economic counterfactual under the same ID.
+The frozen interpretation remains: a **7–14 day exhaustion-ranking signal appears feasible**, but the first equal-weight absolute trigger was not operationally ready. **ID 0043 is closed against result-informed pruning, reweighting, threshold rescue**, dynamic-gross mapping or portfolio-economic counterfactual under the same ID.
 
 ### 0044 / 0045 / 0046
 
@@ -319,25 +315,52 @@ Each later stage requires its own preregistration and predecessor gate. The long
 
 ---
 
-## 12. Current implementation boundary
+## 12. Current controlled-execution boundary
 
-Permitted on the current implementation branch:
+Permitted on the current boundary branch:
 
 ```text
-frozen protocol source code            YES
+frozen protocol source code            YES / UNCHANGED
+RUN_INTERFACE / result schema          YES / ZERO-RESULT CONTRACT ONLY
+run_once controlled runner              YES / NOT EXECUTED ON HISTORY
 synthetic mathematical unit tests      YES
 synthetic model/calibration fits        YES / TESTS ONLY
+fault-injection execution tests         YES / SYNTHETIC ONLY
 historical evidence identity checks     YES / HASH ONLY
+repeatable preflight implementation     YES / ZERO RESULT AUTHORITY
 ```
 
-Still forbidden:
+Controlled-run synthetic attestation:
+
+```text
+workflow run                           31503915414
+runner py_compile                      PASS
+zero-result artifact check             PASS
+prereg + engine + runner tests          27 / 27 PASS
+attempt-before-computation test         PASS
+marker-only recovery/no recomputation  PASS
+registered-history evaluation           NOT RUN
+```
+
+Exactly-once semantics are frozen as follows:
+
+1. `preflight` is repeatable and has no scientific-result authority;
+2. `evaluate` must bind to an explicit exact post-merge HEAD and all frozen upstream git blobs;
+3. `RUN_ATTEMPT.marker` is create-only and is written immediately before registered-history model computation;
+4. once `RUN_ATTEMPT.marker` exists, a second 0048 historical model computation is forbidden;
+5. `PRIMARY_RESULT.json`, `RESULT_SUMMARY.json` and `EXECUTION.json` are create-only;
+6. `RUN_ONCE.marker` is written last and commits the completed valid scientific execution;
+7. if a complete result/summary/execution bundle exists but the final marker is missing, `recover-marker` may validate hashes and create only the marker, without model recomputation;
+8. a partial/hash-inconsistent interrupted bundle has no automatic same-ID retry path.
+
+Still forbidden on this boundary PR:
 
 ```text
 registered-history 0048 model fit       FORBIDDEN
 registered-history calibration fit      FORBIDDEN
 0048 historical evaluation              FORBIDDEN
 0048 result release                     FORBIDDEN
-RUN_INTERFACE / run_once                FORBIDDEN
+RUN_ATTEMPT.marker creation              FORBIDDEN
 PRIMARY_RESULT / EXECUTION / marker      FORBIDDEN
 0048 portfolio allocation test          FORBIDDEN
 80/90/100 winner backtest               FORBIDDEN
@@ -353,16 +376,16 @@ production/signing/order authority      FORBIDDEN
 
 ## 13. Exact next step
 
-For the current implementation branch:
+For the current controlled-run boundary branch:
 
-1. keep the frozen `PREREGISTRATION.json`, research registry and dataset registry unchanged;
-2. require implementation code to be deterministic and fail closed;
-3. run only synthetic/equivalence/governance CI — no historical 0048 evaluation;
-4. require exact target-formula, exchange-symmetry, label-maturity, prequential-calibration, bootstrap-alignment and no-result-artifact tests;
-5. require all standing governance/no-drift/baseline/parity/Phase-6 checks to pass;
-6. merge only with expected-head protection and only while `actual_variants_evaluated = 0` and all result/run artifacts remain absent.
+1. keep frozen `PREREGISTRATION.json`, `DATASET_DECLARATION.json`, `IMPLEMENTATION_BOUNDARY.json`, `engine.py` and both central registries unchanged;
+2. keep `actual_variants_evaluated = 0` and all runtime result artifacts absent;
+3. require standing governance/no-drift/parity/Phase-6 CI to pass on the final owner-authored head;
+4. merge PR #179 only with expected-head protection;
+5. after merge, stop this boundary stage;
+6. in a **separate exact-head execution step**, bind to the controlled-run merge SHA, run `preflight`, confirm `PREFLIGHT_PASS_ZERO_RESULT`, then invoke `evaluate` exactly once.
 
-After that zero-result implementation merge, stop and create a **separate controlled-execution boundary**. That later stage may add a hash-bound run interface/run-once mechanism and may perform exactly **one** registered-history 0048 DEVELOPMENT execution. Any valid scientific output closes 0048 to same-ID rerun, retuning and rescue.
+Any completed valid scientific output — PASS, FAIL or INCONCLUSIVE — closes 0048 to same-ID rerun, retuning and rescue. An interrupted attempt after `RUN_ATTEMPT.marker` also cannot be silently recomputed.
 
 ---
 
@@ -374,12 +397,19 @@ research/governance/BRRK_LEADERSHIP_ROTATION_0048_ARCHITECTURE_AMENDMENT_2026-08
 research/brrk_leadership_rotation_0048/PREREGISTRATION.json
 research/brrk_leadership_rotation_0048/DATASET_DECLARATION.json
 research/brrk_leadership_rotation_0048/IMPLEMENTATION_BOUNDARY.json
+research/brrk_leadership_rotation_0048/CONTROLLED_EXECUTION_BOUNDARY.json
+research/brrk_leadership_rotation_0048/RUN_INTERFACE.json
+research/brrk_leadership_rotation_0048/RESULT_SCHEMA.json
 research/brrk_leadership_rotation_0048/engine.py
+research/brrk_leadership_rotation_0048/run_once.py
 research/brrk_leadership_rotation_0048/test_engine_contract.py
+research/brrk_leadership_rotation_0048/test_preregistration_contract.py
+research/brrk_leadership_rotation_0048/test_run_interface_contract.py
 research/brrk_leadership_rotation_0048/README.md
 config/research_registry.json
 config/dataset_exposure_registry.json
 research/brrk_beta_handoff_0047/CLOSEOUT.json
 research/brrk_beta_handoff_0047/EVIDENCE_RECOVERY.json
+research/brrk_beta_handoff_0047/evidence/MARKET_EVIDENCE.json
 research/governance/phase6_observation_ledger.json
 ```
