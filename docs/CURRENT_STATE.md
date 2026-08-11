@@ -2,8 +2,8 @@
 
 Last updated: **2026-08-11**  
 Authoritative repository: `alexwang91/laugh-to-2028`  
-Current `main` research merge: **`55c6869bacf2161df6b10ed4f82a423103952fe9`**  
-Current research branch: **`research/brrk-leadership-intraday-support-0053-controlled-run`**  
+Current `main` research merge: **`4de5b8b97075d5614b2dad121b6eb0d93b4def24`**  
+Current research branch: **`research/brrk-leadership-intraday-support-0053-result`**  
 Status of this document: **AUTHORITATIVE OPERATING SNAPSHOT**
 
 > GitHub `main`, immutable research artifacts and machine registries remain the sources of truth. This file is the compact human handoff, not a substitute for preregistration, execution, evidence, recovery or closeout artifacts.
@@ -36,7 +36,7 @@ BRRK exhaustion trigger 0045          FAIL_NO_DYNAMIC_GROSS_STAGE_ELIGIBILITY / 
 BRRK exhaustion pulse 0046            FAIL_NO_FUTURE_ONLY_PULSE_VALIDATION_ELIGIBILITY / CLOSED
 BRRK Beta handoff event study 0047    FAIL_NO_RECURRENT_DURABLE_HANDOFF_STRUCTURE / CLOSED
 BRRK leadership rotation 0048         MEASUREMENT_INCONCLUSIVE_INSUFFICIENT_SUPPORT / CLOSED
-BRRK intraday support 0053             CONTROLLED-RUN BOUNDARY / ZERO RESULT
+BRRK intraday support 0053             FAIL_4H_DOES_NOT_SOLVE_0048_SUPPORT_CONSTRAINT / CLOSED
 
 Canonical BRRK-0011                    NO CHANGE
 Phase 7                                MONITOR_ONLY / LAUNCH BLOCKED
@@ -141,23 +141,30 @@ Purpose:
 
 > Determine whether approximately six years of Binance Spot BTC/ETH/SOL **4h** history creates genuinely greater dependence-aware formal support for an ETH/SOL leadership study, or merely multiplies correlated rows.
 
-0053 is **label-blind support accounting only**. Numerical/data status: `PREREGISTERED_DATA_CAPTURED_NOT_MEASURED / SUPPORT-FUNNEL IMPLEMENTATION-ONLY`. At the current stage:
+0053 is **label-blind support accounting only** and is now permanently closed. Final status: `FAIL_4H_DOES_NOT_SOLVE_0048_SUPPORT_CONSTRAINT / CLOSED`.
 
 ```text
 4h data retrieval                      FIRST COMPLETE VALID CAPTURE / HASH FROZEN
 4h payload SHA256                      471b54991ae648b79433285f073ea7bc813663319b6e2389c1682dad1a319135
-capture infrastructure attempt 1        RUN 31511625959 / HTTP 451 / ZERO DATA ROWS
-capture endpoint                         https://data-api.binance.vision/api/v3/klines
-ETH/SOL winner labels                  NOT COMPUTED
-model fits                             0
-calibration fits                       0
-predictive metrics                     NONE
-portfolio runs                         0
-actual variants evaluated              0
-support-funnel implementation             MERGED / NOT YET EXECUTED ON FROZEN PAYLOAD
-support result                            ABSENT
-support execution marker                  ABSENT
-controlled support interface               PRESENT / NOT MERGED
+capture infrastructure attempt 1       RUN 31511625959 / HTTP 451 / ZERO DATA ROWS
+capture endpoint                        https://data-api.binance.vision/api/v3/klines
+unique support run                      31515648029 / attempt 1
+unique support job                      93859999438
+controlled execution HEAD               4de5b8b97075d5614b2dad121b6eb0d93b4def24
+actual variants evaluated               1
+Track A formal rows                     1468
+Track A complete 336-row blocks         4 / required 12
+Track B diagnostic complete blocks      98
+Track C diagnostic complete blocks      16
+ETH/SOL winner labels                   NOT COMPUTED
+model fits                              0
+calibration fits                        0
+predictive metrics                      NONE
+portfolio runs                          0
+final marker                            VALID_SUPPORT_MEASUREMENT_COMPLETE_CLOSED_TO_SAME_ID_RERUN
+same-ID rerun allowed                   false
+same-ID retuning allowed                false
+same-ID rescue allowed                  false
 ```
 
 The design freezes six 4h bars per day and calendar-equivalent translations:
@@ -216,6 +223,29 @@ DATA_INTEGRITY_INCONCLUSIVE
 
 0053 will not compute AUC, NLL, Brier, winner labels, realized margin, fitted calibration, confidence thresholds or portfolio economics.
 
+### 0053 immutable support result
+
+Primary Track A preserved the complete 0048 economic-time semantics: 2,190 eligible matured training origins, 2,190 matured shadow origins, a 168-bar refit grid, 336-bar target maturity and 336 ordered eligible formal rows per 56-day-equivalent dependence block. It produced 1,468 formal rows but only **4** complete blocks, below the frozen minimum 12.
+
+The critical comparison is:
+
+```text
+0048 daily formal rows                  245
+0053 Track A 4h formal rows             1468
+row ratio                               5.9918x
+0048 complete 56-day blocks             4
+0053 Track A complete 336-row blocks    4
+net effective-block gain                0
+```
+
+Thus four-hour sampling multiplied rows almost exactly by six but did not increase the frozen calendar-time support.
+
+Track B produced 98 blocks only because its diagnostic block length is 56 **4h** rows (~9.3 days); it is row-frequency inflation and has zero primary authority.
+
+Track C preserved the honest 336-row/56-day dependence block while using 365 4h origins for training and shadow support. It started formal support on 2022-02-15 and produced **16** complete blocks. This is strong diagnostic evidence that the two long 2,190-origin burn-ins are the dominant support bottleneck. Track C is not a rescue rule and cannot be promoted under 0053.
+
+0053 performed no ETH/SOL labels, predictive model, calibration, predictive metric or portfolio economics. Any continuation requires a new research ID. The exposed Track C=16 result cannot simply be chosen as the next burn-in because it is now result-informed evidence.
+
 ---
 
 ## 5. Binding prior evidence
@@ -267,7 +297,7 @@ The old conceptual roadmap was:
 
 0048 did **not** unlock 0049. 0053 is a new result-informed support-feasibility detour. It does not itself become 0049 or a portfolio stage.
 
-If and only if Track A proves 4h dependence-aware support feasible, a **separately preregistered new predictive research ID** may study 4h ETH/SOL leadership. If Track A fails, 4h does not solve the original support problem under calendar-equivalent semantics.
+Track A failed: strict 4h calendar-equivalent support does not solve the 0048 constraint. A direct 4h predictive-leadership stage is therefore not unlocked from Track A. Track C indicates that a separately preregistered **4h-native effective-sample / burn-in methodology** study is worth considering before any new predictive model; it must treat the observed 365/365/336 -> 16-block diagnostic as exposed evidence rather than a parameter to copy.
 
 ---
 
@@ -285,19 +315,15 @@ signature_authorized = false
 order_submission_authorized = false
 ```
 
-No complete 4h dataset has yet been captured under 0053. One infrastructure-only U.S. GitHub-runner attempt returned HTTP 451 before the first row and created no payload/hash/exposure. The pre-exposure capture contract now uses Binance's official market-data-only base `data-api.binance.vision` with the same `/api/v3/klines` resource. No 60/80/90/100 concentration backtest, CAGR/MDD portfolio test, Beta->BTC rule, BTC->cash rule, integrated router, leverage expansion, shorting, signing or order submission is authorized.
+The immutable 4h payload was successfully captured and measured once under 0053. The earlier U.S.-runner HTTP-451 event remains preserved as a zero-row infrastructure failure before data exposure. The final 0053 support result creates no predictive or production authority. No 60/80/90/100 concentration backtest, CAGR/MDD portfolio test, Beta->BTC rule, BTC->cash rule, integrated router, leverage expansion, shorting, signing or order submission is authorized.
 
 ---
 
 ## 8. Exact next step
 
-1. pass design PR handoff/governance/no-drift checks;
-2. merge `BRRK-LEADERSHIP-INTRADAY-SUPPORT-0053` design freeze with expected-head protection;
-3. create a separate data-integrity preregistration for Binance Spot BTC/ETH/SOL 4h bars covering the 0048 economic window where common history permits;
-4. only after that prereg merges, retrieve the 4h data once and freeze its payload SHA-256;
-5. implement a deterministic **support-funnel counter only**;
-6. execute one label-blind feasibility measurement;
-7. do not fit any predictive model under 0053.
+0053 is permanently closed; do not rerun, retune or rescue it. Do not start 0049 concentration research from 0048/0053.
+
+The recommended next scientific branch, if pursued, is a **new research ID** for 4h-native effective-sample / burn-in methodology. It must justify training/calibration support from statistical dependence and model dimensionality before fitting any ETH/SOL predictive model. It must treat all 0053 Track A/B/C counts as already exposed evidence and cannot simply adopt the diagnostic 365/365 choice because Track C produced 16 blocks.
 
 ---
 
@@ -314,11 +340,32 @@ research/governance/phase6_observation_ledger.json
 ```
 
 
-## 10. 0053 zero-result implementation boundary
+## 10. 0053 immutable execution identity and closure
 
-The frozen real 4h payload has not been passed to `measure_support_funnel()` on this implementation branch. `support_funnel.py` and synthetic contracts exist only to implement the preregistered support clocks. `SUPPORT_RESULT.json`, `EXECUTION.json` and `RUN_ONCE.marker` remain absent. A separate controlled exactly-once support measurement is required after implementation merge. No ETH/SOL labels, predictive model, calibration, AUC/NLL/Brier or portfolio economics are permitted.
+```text
+design merge                            195386b5610056d752a73d20c7e74a1557207c95
+prereg merge                            ed3c22f0e3f562498f483ce5f1bb634f8f9b9e4e
+capture-source amendment               0111d7c681593f34ea926443dbc13a9caa98f18d
+data-capture merge                      36a517ecde6bb908101c14edea3695012ec781e4
+implementation merge                    55c6869bacf2161df6b10ed4f82a423103952fe9
+controlled-run merge                    4de5b8b97075d5614b2dad121b6eb0d93b4def24
+execution run                           31515648029 / attempt 1
+execution job                           93859999438
+payload SHA256                          471b54991ae648b79433285f073ea7bc813663319b6e2389c1682dad1a319135
+support-result SHA256                   8228dfb88dc609289c53072a28dcb127b30d866b22d88704eb15c726eca841e5
+final status                            FAIL_4H_DOES_NOT_SOLVE_0048_SUPPORT_CONSTRAINT / CLOSED
+```
 
-
-## 11. 0053 controlled support-measurement boundary
-
-The implementation merge is `55c6869bacf2161df6b10ed4f82a423103952fe9`. `RUN_INTERFACE.json`, `RESULT_SCHEMA.json`, `run_once.py`, and `CONTROLLED_EXECUTION_BOUNDARY.json` now exist on the controlled-run branch, but the frozen payload has still not been passed to `measure_support_funnel()`. `RUN_ATTEMPT.marker`, `SUPPORT_RESULT.json`, `EXECUTION.json`, and `RUN_ONCE.marker` remain absent. After this boundary merges green, the only permitted next action is exact-head preflight followed by one label-blind support measurement. No ETH/SOL labels, model/calibration fits, predictive metrics or portfolio economics are authorized.
+```text
+predictive leadership established      false
+0049 concentration unlocked             false
+0048 rescue executed                    false
+canonical BRRK changed                  false
+Phase 6 changed                         false
+production_authorized                   false
+signature_authorized                    false
+order_submission_authorized             false
+same-ID rerun allowed                   false
+same-ID retuning allowed                false
+same-ID rescue allowed                  false
+```

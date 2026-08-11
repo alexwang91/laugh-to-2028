@@ -1,40 +1,88 @@
 # BRRK-LEADERSHIP-INTRADAY-SUPPORT-0053
 
-Status: **PREREGISTERED / 4H DATA HASH-FROZEN / SUPPORT COUNTER MERGED / CONTROLLED-RUN BOUNDARY / ZERO SUPPORT RESULT**.
+Status: **`FAIL_4H_DOES_NOT_SOLVE_0048_SUPPORT_CONSTRAINT / CLOSED`**.
 
-0053 is a label-blind 4h support-feasibility study created after the immutable 0048 insufficient-support closeout. It measures whether 4h resolution creates genuine dependence-aware support under calendar-equivalent semantics or merely more correlated rows.
+0053 was a label-blind 4h support-feasibility study created after the immutable 0048 insufficient-support closeout. It tested whether six years of Binance Spot BTC/ETH/SOL 4h data create genuinely more dependence-aware formal support under calendar-equivalent 0048 semantics, or merely more correlated rows.
 
-Governance objective type: **`DATA_QUALITY`**. Primary authority remains Track A only: 2190 eligible matured training origins, 2190 matured eligible shadow origins, 336-row dependence blocks, 12 complete blocks required. Track B (365/365/56) and Track C (365/365/336) remain diagnostics only.
+## Immutable result
 
-No ETH/SOL winner label, model fit, calibration fit, NLL/AUC/Brier, confidence threshold or portfolio economics is permitted under this ID.
+Unique support measurement:
 
-## Frozen data and implementation
+- GitHub Actions run `31515648029`, job `93859999438`, attempt 1
+- controlled execution HEAD `4de5b8b97075d5614b2dad121b6eb0d93b4def24`
+- payload SHA256 `471b54991ae648b79433285f073ea7bc813663319b6e2389c1682dad1a319135`
+- final marker `VALID_SUPPORT_MEASUREMENT_COMPLETE_CLOSED_TO_SAME_ID_RERUN`
 
-- payload common coverage: `2020-08-11T04:00:00Z` through `2026-08-02T20:00:00Z`
-- common bars: `13097`
-- payload SHA256: `471b54991ae648b79433285f073ea7bc813663319b6e2389c1682dad1a319135`
-- capture run/job: `31512578577 / 93849786583`
-- support implementation merge: `55c6869bacf2161df6b10ed4f82a423103952fe9`
-- synthetic implementation contract: run `31514184465` PASS
+### Track A — primary strict calendar-equivalent
 
-`support_funnel.py` implements only exact hash/index validation, calendar-equivalent BTC FAST eligibility, 336-bar maturity, Track A/B/C training/shadow clocks, the 168-bar refit grid, formal-row support and dependence-block counting. It contains no ETH/SOL target or predictive model.
+```text
+training support                   2190
+shadow support                     2190
+block length                       336 4h rows = 56 days equivalent
+required blocks                    12
+formal rows                        1468
+complete blocks                    4
+trailing rows                      124
+first formal                       2025-01-14T16:00:00Z
+last formal                        2025-11-05T16:00:00Z
+classification                    FAIL
+```
 
-## Controlled support-measurement boundary
+Track A is the only primary authority. Four-hour data therefore **did not solve** the 0048 dependence-aware support constraint.
 
-`RUN_INTERFACE.json`, `RESULT_SCHEMA.json`, `run_once.py`, and `CONTROLLED_EXECUTION_BOUNDARY.json` freeze the next stage before any real support count is released.
+### The important diagnostic
 
-The only valid sequence is:
+0048 daily formal rows were 245. Track A produced 1468 four-hour rows:
 
-1. checkout the eventual controlled-run merge SHA as exact detached HEAD;
-2. run repeatable preflight and require `PREFLIGHT_PASS_ZERO_RESULT`;
-3. durably create `RUN_ATTEMPT.marker` before calling the real-payload support counter;
-4. execute exactly one label-blind Track A/B/C support measurement;
-5. create `SUPPORT_RESULT.json` and `EXECUTION.json`;
-6. create `RUN_ONCE.marker` last;
-7. close 0053 to same-ID rerun/retuning/rescue.
+`1468 / 245 = 5.9918x`
 
-If execution is interrupted after the attempt marker, automatic remeasurement is forbidden. A complete result/execution bundle with a missing final marker permits marker-only hash validation and recovery without remeasurement.
+But the dependence block also changed from 56 daily rows to 336 4h rows. Therefore complete blocks stayed:
 
-Controlled-boundary synthetic/fault-injection run `31515115619` passed runner/support-counter compilation, all implementation contracts, attempt-marker-before-measurement, Track-A-only classification authority, marker-only recovery without remeasurement, and zero-result artifact enforcement. The temporary workflow was removed after validation.
+```text
+0048       4 blocks
+0053 A     4 blocks
+```
 
-The frozen real payload **has still not been passed to `measure_support_funnel()` on this boundary branch**. `SUPPORT_RESULT.json`, `EXECUTION.json`, `RUN_ATTEMPT.marker`, and `RUN_ONCE.marker` are absent. The Track A/B/C counts and the 0053 classification remain unknown.
+The extra rows were primarily finer sampling of the same calendar time, not more independent time support.
+
+Track B (365/365/56) produced 98 blocks, but a 56-bar 4h block is only ~9.3 days and therefore deliberately demonstrates row-frequency inflation.
+
+Track C (365/365/336) preserved the honest 56-day-equivalent dependence block and produced:
+
+```text
+formal rows                        5493
+complete blocks                    16
+first formal                       2022-02-15T20:00:00Z
+```
+
+Track C strongly indicates that the **two long 2190-origin burn-ins** are the dominant support bottleneck. However Track C was preregistered as diagnostic only and cannot rescue 0053 or 0048.
+
+## What 0053 did not test
+
+0053 computed no:
+
+- ETH/SOL winner label or realized margin;
+- predictive model or calibration fit;
+- NLL, Brier, AUC or balanced accuracy;
+- confidence curve or breakpoint;
+- predictive bootstrap inference;
+- portfolio allocation, CAGR or MDD.
+
+Therefore 0053 provides a support-design result only, not evidence for or against a 4h ETH/SOL leadership signal.
+
+## Governance closure
+
+```text
+same-ID rerun allowed              false
+same-ID retuning allowed           false
+same-ID rescue allowed             false
+0048 rescue executed               false
+0049 concentration unlocked        false
+canonical BRRK changed             false
+Phase 6 changed                    false
+production_authorized              false
+signature_authorized               false
+order_submission_authorized        false
+```
+
+Any continuation requires a new research ID. The scientifically justified next problem is to preregister a **4h-native effective-sample / burn-in methodology** before fitting any new predictive leadership model. The observed Track C=16-block result is now exposed evidence and may not simply be adopted as a new 365/365 rule without independent justification.

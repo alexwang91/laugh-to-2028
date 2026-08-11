@@ -1,0 +1,14 @@
+{
+  "research_id": "BRRK-LEADERSHIP-INTRADAY-SUPPORT-0053",
+  "status": "VALID_SUPPORT_MEASUREMENT_COMPLETE_CLOSED_TO_SAME_ID_RERUN",
+  "completed_at_utc": "2026-08-11T17:04:25Z",
+  "git_head_sha": "4de5b8b97075d5614b2dad121b6eb0d93b4def24",
+  "payload_sha256": "471b54991ae648b79433285f073ea7bc813663319b6e2389c1682dad1a319135",
+  "attempt_marker_sha256": "037fa7ca0aef037a7233b3811e91e9cdab37d7fbcb27a2b2f454fe7451859f54",
+  "support_result_sha256": "8228dfb88dc609289c53072a28dcb127b30d866b22d88704eb15c726eca841e5",
+  "execution_sha256": "ee73c7f57130ecc0e1365040da90d9596c03a1563a7f85d2a8a2e2c2fe5731db",
+  "classification": "FAIL_4H_DOES_NOT_SOLVE_0048_SUPPORT_CONSTRAINT",
+  "same_id_rerun_allowed": false,
+  "same_id_retuning_allowed": false,
+  "same_id_rescue_allowed": false
+}
