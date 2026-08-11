@@ -25,40 +25,8 @@ jobs:
       - name: Append 0048 architecture handoff
         shell: bash
         run: |
-          cat >> docs/CURRENT_STATE.md <<'EOF'
-
-## BRRK-LEADERSHIP-ROTATION-0048 — architecture-freeze candidate
-
-0047 is immutable `FAIL_NO_RECURRENT_DURABLE_HANDOFF_STRUCTURE / CLOSED` and is not being rescued. The new 0048 design replaces the blocked one-way `BTC -> Beta` handoff continuation with a two-dimensional dynamic router.
-
-```text
-0048 architecture                      PR #174 / FROZEN ARCHITECTURE CANDIDATE
-0048 numerical prereg                  NOT FROZEN
-0048 dataset registration              NOT CREATED
-0048 runner/model                      NOT CREATED
-0048 historical measurement            NONE
-0048 actual variants evaluated         0
-0048 portfolio economics               NOT RUN
-canonical BRRK change                  NONE
-Phase-6 change                         NONE
-production_authorized                  false
-signature_authorized                   false
-order_submission_authorized            false
-```
-
-Frozen architecture checkpoint:
-
-- `Leadership` selects the asset; `Exhaustion / market risk` controls tolerated Beta/gross.
-- Leadership states are `BTC_LEAD / ETH_LEAD / SOL_LEAD / NO_CLEAR_LEADER`.
-- BTC, ETH and SOL use symmetric pairwise relative leadership; ETH and SOL have independent clocks.
-- BTC Dominance is market-diffusion context only and cannot directly select the winner; no price proxy may be mislabeled as dominance.
-- High-confidence winner concentration in the `80%-100%` risk-budget region is a later portfolio hypothesis, not an 0048 backtest.
-- Two separate routes return a winner to BTC: leadership reversal and exhaustion compression.
-- BTC-to-cash gross reduction is a later, separate stage and must not be conflated with winner-to-BTC re-anchoring.
-- 0048 must defeat a static-Beta adversarial null; if one Beta asset is almost always superior, dynamic rotation has no incremental information value.
-
-The only permitted next research action after this architecture freeze is a no-result numerical-method design pass that freezes the forward leadership target, causal score/normalization, episode-block validation, static-Beta/always-BTC controls, numerical gates, model budget, and a reproducible BTC Dominance source or explicit exclusion. No historical sweep, allocation test, CORE4 threshold search, portfolio economics, canonical change or production/security authority is permitted.
-EOF
+          printf '\n' >> docs/CURRENT_STATE.md
+          echo 'CiMjIEJSUkstTEVBREVSU0hJUC1ST1RBVElPTi0wMDQ4IOKAlCBhcmNoaXRlY3R1cmUtZnJlZXplIGNhbmRpZGF0ZQoKMDA0NyBpcyBpbW11dGFibGUgYEZBSUxfTk9fUkVDVVJSRU5UX0RVUkFCTEVfSEFORE9GRl9TVFJVQ1RVUkUgLyBDTE9TRURgIGFuZCBpcyBub3QgYmVpbmcgcmVzY3VlZC4gVGhlIG5ldyAwMDQ4IGRlc2lnbiByZXBsYWNlcyB0aGUgYmxvY2tlZCBvbmUtd2F5IGBCVEMgLT4gQmV0YWAgaGFuZG9mZiBjb250aW51YXRpb24gd2l0aCBhIHR3by1kaW1lbnNpb25hbCBkeW5hbWljIHJvdXRlci4KCmBgYHRleHQKMDA0OCBhcmNoaXRlY3R1cmUgICAgICAgICAgICAgICAgICAgICAgUFIgIzE3NCAvIEZST1pFTiBBUkNISVRFQ1RVUkUgQ0FORElEQVRFCjAwNDggbnVtZXJpY2FsIHByZXJlZyAgICAgICAgICAgICAgICAgIE5PVCBGUk9aRU4KMDA0OCBkYXRhc2V0IHJlZ2lzdHJhdGlvbiAgICAgICAgICAgICAgTk9UIENSRUFURUQKMDA0OCBydW5uZXIvbW9kZWwgICAgICAgICAgICAgICAgICAgICAgTk9UIENSRUFURUQKMDA0OCBoaXN0b3JpY2FsIG1lYXN1cmVtZW50ICAgICAgICAgICAgTk9ORQowMDQ4IGFjdHVhbCB2YXJpYW50cyBldmFsdWF0ZWQgICAgICAgICAwCjAwNDggcG9ydGZvbGlvIGVjb25vbWljcyAgICAgICAgICAgICAgIE5PVCBSVU4KY2Fub25pY2FsIEJSUksgY2hhbmdlICAgICAgICAgICAgICAgICAgTk9ORQpQaGFzZS02IGNoYW5nZSAgICAgICAgICAgICAgICAgICAgICAgICBOT05FCnByb2R1Y3Rpb25fYXV0aG9yaXplZCAgICAgICAgICAgICAgICAgIGZhbHNlCnNpZ25hdHVyZV9hdXRob3JpemVkICAgICAgICAgICAgICAgICAgIGZhbHNlCm9yZGVyX3N1Ym1pc3Npb25fYXV0aG9yaXplZCAgICAgICAgICAgIGZhbHNlCmBgYAoKRnJvemVuIGFyY2hpdGVjdHVyZSBjaGVja3BvaW50OgoKLSBgTGVhZGVyc2hpcGAgc2VsZWN0cyB0aGUgYXNzZXQ7IGBFeGhhdXN0aW9uIC8gbWFya2V0IHJpc2tgIGNvbnRyb2xzIHRvbGVyYXRlZCBCZXRhL2dyb3NzLgotIExlYWRlcnNoaXAgc3RhdGVzIGFyZSBgQlRDX0xFQUQgLyBFVEhfTEVBRCAvIFNPTF9MRUFEIC8gTk9fQ0xFQVJfTEVBREVSYC4KLSBCVEMsIEVUSCBhbmQgU09MIHVzZSBzeW1tZXRyaWMgcGFpcndpc2UgcmVsYXRpdmUgbGVhZGVyc2hpcDsgRVRIIGFuZCBTT0wgaGF2ZSBpbmRlcGVuZGVudCBjbG9ja3MuCi0gQlRDIERvbWluYW5jZSBpcyBtYXJrZXQtZGlmZnVzaW9uIGNvbnRleHQgb25seSBhbmQgY2Fubm90IGRpcmVjdGx5IHNlbGVjdCB0aGUgd2lubmVyOyBubyBwcmljZSBwcm94eSBtYXkgYmUgbWlzbGFiZWxlZCBhcyBkb21pbmFuY2UuCi0gSGlnaC1jb25maWRlbmNlIHdpbm5lciBjb25jZW50cmF0aW9uIGluIHRoZSBgODAlLTEwMCVgIHJpc2stYnVkZ2V0IHJlZ2lvbiBpcyBhIGxhdGVyIHBvcnRmb2xpbyBoeXBvdGhlc2lzLCBub3QgYW4gMDA0OCBiYWNrdGVzdC4KLSBUd28gc2VwYXJhdGUgcm91dGVzIHJldHVybiBhIHdpbm5lciB0byBCVEM6IGxlYWRlcnNoaXAgcmV2ZXJzYWwgYW5kIGV4aGF1c3Rpb24gY29tcHJlc3Npb24uCi0gQlRDLXRvLWNhc2ggZ3Jvc3MgcmVkdWN0aW9uIGlzIGEgbGF0ZXIsIHNlcGFyYXRlIHN0YWdlIGFuZCBtdXN0IG5vdCBiZSBjb25mbGF0ZWQgd2l0aCB3aW5uZXItdG8tQlRDIHJlLWFuY2hvcmluZy4KLSAwMDQ4IG11c3QgZGVmZWF0IGEgc3RhdGljLUJldGEgYWR2ZXJzYXJpYWwgbnVsbDsgaWYgb25lIEJldGEgYXNzZXQgaXMgYWxtb3N0IGFsd2F5cyBzdXBlcmlvciwgZHluYW1pYyByb3RhdGlvbiBoYXMgbm8gaW5jcmVtZW50YWwgaW5mb3JtYXRpb24gdmFsdWUuCgpUaGUgb25seSBwZXJtaXR0ZWQgbmV4dCByZXNlYXJjaCBhY3Rpb24gYWZ0ZXIgdGhpcyBhcmNoaXRlY3R1cmUgZnJlZXplIGlzIGEgbm8tcmVzdWx0IG51bWVyaWNhbC1tZXRob2QgZGVzaWduIHBhc3MgdGhhdCBmcmVlemVzIHRoZSBmb3J3YXJkIGxlYWRlcnNoaXAgdGFyZ2V0LCBjYXVzYWwgc2NvcmUvbm9ybWFsaXphdGlvbiwgZXBpc29kZS1ibG9jayB2YWxpZGF0aW9uLCBzdGF0aWMtQmV0YS9hbHdheXMtQlRDIGNvbnRyb2xzLCBudW1lcmljYWwgZ2F0ZXMsIG1vZGVsIGJ1ZGdldCwgYW5kIGEgcmVwcm9kdWNpYmxlIEJUQyBEb21pbmFuY2Ugc291cmNlIG9yIGV4cGxpY2l0IGV4Y2x1c2lvbi4gTm8gaGlzdG9yaWNhbCBzd2VlcCwgYWxsb2NhdGlvbiB0ZXN0LCBDT1JFNCB0aHJlc2hvbGQgc2VhcmNoLCBwb3J0Zm9saW8gZWNvbm9taWNzLCBjYW5vbmljYWwgY2hhbmdlIG9yIHByb2R1Y3Rpb24vc2VjdXJpdHkgYXV0aG9yaXR5IGlzIHBlcm1pdHRlZC4K' | base64 -d >> docs/CURRENT_STATE.md
       - name: Remove temporary writer and commit handoff only
         shell: bash
         run: |
