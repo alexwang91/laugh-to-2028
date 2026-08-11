@@ -1,0 +1,132 @@
+{
+  "research_id": "BRRK-LEADERSHIP-INTRADAY-SUPPORT-0053",
+  "closeout_status": "FAIL_4H_DOES_NOT_SOLVE_0048_SUPPORT_CONSTRAINT / CLOSED",
+  "result_status": "FAIL_4H_DOES_NOT_SOLVE_0048_SUPPORT_CONSTRAINT",
+  "evidence_class": "RESEARCHER_EXPOSED_DEVELOPMENT_HISTORY_NOT_INDEPENDENT_OOS",
+  "design_merge_sha": "195386b5610056d752a73d20c7e74a1557207c95",
+  "preregistration_merge_sha": "ed3c22f0e3f562498f483ce5f1bb634f8f9b9e4e",
+  "capture_source_amendment_merge_sha": "0111d7c681593f34ea926443dbc13a9caa98f18d",
+  "data_capture_merge_sha": "36a517ecde6bb908101c14edea3695012ec781e4",
+  "implementation_merge_sha": "55c6869bacf2161df6b10ed4f82a423103952fe9",
+  "controlled_execution_boundary_merge_sha": "4de5b8b97075d5614b2dad121b6eb0d93b4def24",
+  "dataset_slice_id": "BRRK-LEADERSHIP-INTRADAY-SUPPORT-0053-BINANCE-4H-HIST-V1",
+  "market_payload_sha256": "471b54991ae648b79433285f073ea7bc813663319b6e2389c1682dad1a319135",
+  "market_common_start": "2020-08-11T04:00:00Z",
+  "market_common_end": "2026-08-02T20:00:00Z",
+  "market_common_bars": 13097,
+  "unique_support_measurement": {
+    "github_actions_run_id": 31515648029,
+    "github_actions_job_id": 93859999438,
+    "run_attempt": 1,
+    "workflow_carrier_head_sha": "7ec7d71c90d8fb3d39a282040f88f46b4c86b9ba",
+    "controlled_execution_head_sha": "4de5b8b97075d5614b2dad121b6eb0d93b4def24",
+    "preflight_status": "PREFLIGHT_PASS_ZERO_RESULT",
+    "measurement_step_completed_successfully": true,
+    "actual_variants_evaluated": 1,
+    "same_id_remeasurement_allowed": false
+  },
+  "official_execution_artifact": {
+    "artifact_id": 9110942765,
+    "name": "brrk-0053-support-measurement-bundle",
+    "digest": "sha256:feb45067a3defaa96f75c41d1cc8388c7a32707a9ada8562dc580e3b5610fa0c",
+    "source_run_id": 31515648029,
+    "size_bytes": 3084,
+    "expired": false
+  },
+  "hash_locked_result_identity": {
+    "attempt_marker_sha256": "037fa7ca0aef037a7233b3811e91e9cdab37d7fbcb27a2b2f454fe7451859f54",
+    "support_result_sha256": "8228dfb88dc609289c53072a28dcb127b30d866b22d88704eb15c726eca841e5",
+    "execution_sha256": "ee73c7f57130ecc0e1365040da90d9596c03a1563a7f85d2a8a2e2c2fe5731db",
+    "final_marker_status": "VALID_SUPPORT_MEASUREMENT_COMPLETE_CLOSED_TO_SAME_ID_RERUN"
+  },
+  "raw_support_funnel": {
+    "raw_common_4h_bars": 13097,
+    "feature_valid_bars_after_1440_bar_history": 11657,
+    "eligible_feature_valid_bars": 6605,
+    "pre_formal_eligibility_rate": 0.5666123359354894
+  },
+  "track_A_primary_calendar_equivalent": {
+    "training_support_required": 2190,
+    "shadow_support_required": 2190,
+    "block_length": 336,
+    "required_complete_blocks": 12,
+    "first_training_support_timestamp": "2023-08-29T16:00:00Z",
+    "first_shadow_support_satisfied_timestamp": "2024-12-28T08:00:00Z",
+    "calibration_activation_refit_timestamp": "2025-01-14T16:00:00Z",
+    "first_formal_origin_timestamp": "2025-01-14T16:00:00Z",
+    "last_formal_origin_timestamp": "2025-11-05T16:00:00Z",
+    "formal_rows": 1468,
+    "complete_blocks": 4,
+    "trailing_partial_rows": 124,
+    "formal_calendar_span_days": 295.0,
+    "formal_eligibility_rate": 0.8289102202145681,
+    "pass": false
+  },
+  "track_B_raw_row_diagnostic": {
+    "training_support_required": 365,
+    "shadow_support_required": 365,
+    "block_length": 56,
+    "first_formal_origin_timestamp": "2022-02-15T20:00:00Z",
+    "last_formal_origin_timestamp": "2025-11-05T16:00:00Z",
+    "formal_rows": 5493,
+    "complete_blocks": 98,
+    "trailing_partial_rows": 5,
+    "formal_calendar_span_days": 1358.8333333333333,
+    "authority": "DIAGNOSTIC_ONLY_ROW_FREQUENCY_INFLATION"
+  },
+  "track_C_hybrid_diagnostic": {
+    "training_support_required": 365,
+    "shadow_support_required": 365,
+    "block_length": 336,
+    "first_formal_origin_timestamp": "2022-02-15T20:00:00Z",
+    "last_formal_origin_timestamp": "2025-11-05T16:00:00Z",
+    "formal_rows": 5493,
+    "complete_blocks": 16,
+    "trailing_partial_rows": 117,
+    "formal_calendar_span_days": 1358.8333333333333,
+    "authority": "DIAGNOSTIC_ONLY_NEW_METHODOLOGY_MAY_BE_WORTH_STUDYING"
+  },
+  "comparison_with_0048": {
+    "0048_formal_rows": 245,
+    "0053_track_A_formal_rows": 1468,
+    "row_ratio": 5.9918367346938775,
+    "0048_complete_blocks": 4,
+    "0053_track_A_complete_blocks": 4,
+    "complete_block_gain": 0,
+    "interpretation": "Four-hour sampling multiplied formal row count almost exactly by six, but the calendar-equivalent dependence block also multiplied from 56 daily rows to 336 four-hour rows. Therefore strict dependence-aware support did not improve: 4 blocks remained 4 blocks."
+  },
+  "binding_conclusion": [
+    "Four-hour granularity alone does not solve the 0048 support constraint when the same calendar-equivalent training burn-in, shadow-calibration burn-in, target maturity and dependence scale are preserved.",
+    "The dominant support bottleneck is the pair of long calendar-equivalent burn-ins, not the raw bar frequency. Track A begins formal support at essentially the same calendar date as 0048 despite six times more raw bars.",
+    "Track B's 98 blocks are a deliberate demonstration of row-frequency inflation: a 56-bar 4h block is only about 9.3 calendar days and cannot represent the original 56-day dependence scale.",
+    "Track C preserves the 336-bar/56-day-equivalent dependence block yet produces 16 complete blocks when training and shadow support are 365 4h eligible origins each. This is evidence that a shorter 4h-native burn-in may be scientifically worth a new preregistered methodology study; it has no authority to rescue 0048 or 0053.",
+    "No predictive information was tested under 0053. The result says nothing about ETH/SOL leadership AUC, NLL, calibration, confidence or portfolio economics."
+  ],
+  "next_research_implication": {
+    "recommended": "Open a new research ID to justify a 4h-native effective-sample/burn-in rule before any 4h predictive leadership model is fit. The new design must treat Track C and all 0053 counts as already exposed evidence and must not simply adopt 365 because it passed diagnostically.",
+    "0048_rescue_allowed": false,
+    "0053_same_id_method_change_allowed": false,
+    "0049_concentration_unlocked": false
+  },
+  "authority": {
+    "four_hour_calendar_equivalent_support_feasible": false,
+    "predictive_leadership_information_established": false,
+    "winner_labels_executed": false,
+    "predictive_model_executed": false,
+    "calibration_model_executed": false,
+    "predictive_metrics_executed": false,
+    "portfolio_economics_executed": false,
+    "0048_rerun_or_rescue_executed": false,
+    "canonical_strategy_changed": false,
+    "phase6_changed": false,
+    "production_authorized": false,
+    "signature_authorized": false,
+    "order_submission_authorized": false
+  },
+  "closure": {
+    "same_id_rerun_allowed": false,
+    "same_id_retuning_allowed": false,
+    "same_id_rescue_allowed": false,
+    "result_informed_definition_change_requires_new_research_id": true
+  }
+}
