@@ -1,0 +1,56 @@
+{
+  "research_id": "BRRK-LEADERSHIP-4H-STRUCTURAL-READINESS-0055",
+  "status": "FAIL_4H_STRUCTURAL_3D_TRAINING_PRECISION_NOT_ESTABLISHED",
+  "closed": true,
+  "development_not_independent_oos": true,
+  "execution_head_sha": "bf486fcbebb54ebd84941ea78f825cdba3f58ede",
+  "payload_sha256": "471b54991ae648b79433285f073ea7bc813663319b6e2389c1682dad1a319135",
+  "runtime_hashes": {
+    "attempt_marker_sha256": "6532caff0944e87c81794a55e3c57cbcd1fca7e0113dd517c0321687d106ab2a",
+    "method_result_sha256": "413ceda045540a8fa55852109cd99d133654676bfe0771f1a28693582e93af01",
+    "execution_sha256": "84cf0bc5d8276320550be140ebd90456e1a8255053b5347b09d9f405ec6c3b62"
+  },
+  "binding_gate": "TRAINING_PRECISION",
+  "training_readiness_established": false,
+  "calibration_readiness_eligible": false,
+  "reserved_support_eligible": false,
+  "first_admissible_refit": {
+    "timestamp": "2021-11-18T04:00:00Z",
+    "matured_eligible_count": 681,
+    "p90_width": 0.7288994961117355,
+    "max_width": 0.8009876113657668,
+    "p90_gate": 0.1,
+    "max_gate": 0.2,
+    "hac_min_eigenvalue": 1.7661686434404282,
+    "hessian_min_eigenvalue": 2.033684992464731,
+    "passed": false
+  },
+  "best_exposed_descriptive_training_precision": {
+    "timestamp": "2021-12-16T04:00:00Z",
+    "matured_eligible_count": 849,
+    "p90_width": 0.6799756258898612,
+    "max_width": 0.6933014789670882,
+    "selection_authority": false
+  },
+  "latest_exposed_training_state": {
+    "matured_eligible_count": 1207,
+    "status": "PRECISION_TOO_WIDE",
+    "p90_width": 0.9216963694379456,
+    "max_width": 0.9772750555537174
+  },
+  "authority": {
+    "post_2022_target_values_read": false,
+    "predictive_performance_metrics_executed": false,
+    "portfolio_economics_executed": false,
+    "predictive_study_unlocked": false,
+    "canonical_strategy_changed": false,
+    "phase6_changed": false,
+    "production_authorized": false,
+    "signature_authorized": false,
+    "order_submission_authorized": false,
+    "same_id_rerun_allowed": false,
+    "same_id_retuning_allowed": false,
+    "same_id_rescue_allowed": false
+  },
+  "interpretation": "Prospectively fixed 7D-to-3D structural reduction did not establish the frozen training precision requirement under the inherited 0054 dependence-aware HAC framework. This does not constitute a predictive-performance test. Any further representation, threshold, HAC, burn-in, or model change requires a new research ID."
+}
