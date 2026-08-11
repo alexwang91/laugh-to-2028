@@ -17,7 +17,8 @@
   "temporary_workflow_removed_after_attestation": true,
   "post_attestation_changes": [
     "Added CLOSEOUT_CI.json itself as a non-scientific attestation artifact.",
-    "Added test_closeout_ci_contract.py, which only validates this attestation object and performs no model or historical-data computation."
+    "Added test_closeout_ci_contract.py, which only validates this attestation object and performs no model or historical-data computation.",
+    "Updated README.md to reference the completed closeout-only CI attestation."
   ],
   "authority": {
     "canonical_strategy_changed": false,
