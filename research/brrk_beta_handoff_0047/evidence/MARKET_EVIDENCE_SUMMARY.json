@@ -1,0 +1,23 @@
+{
+  "actual_variants_evaluated": 0,
+  "anatomy_metrics_computed": false,
+  "assets": [
+    "BTC",
+    "ETH",
+    "SOL"
+  ],
+  "common_daily_sessions": 2183,
+  "common_end": "2026-08-02",
+  "common_start": "2020-08-11",
+  "fields": [
+    "open",
+    "high",
+    "low",
+    "close",
+    "volume",
+    "quote_volume",
+    "trades"
+  ],
+  "payload_sha256": "d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193",
+  "serialized_rows": 6549
+}

@@ -1,0 +1,39 @@
+{
+  "research_id": "BRRK-BETA-HANDOFF-EVENT-STUDY-0047",
+  "recovery_type": "EVIDENCE_RECOVERY_NOT_NEW_RESEARCH_EXECUTION",
+  "new_research_execution": false,
+  "actual_variants_evaluated_before_recovery": 1,
+  "actual_variants_evaluated_after_recovery": 1,
+  "unique_original_run_id": "31444910921",
+  "unique_original_run_attempt": "1",
+  "unique_original_job_id": "93636897419",
+  "unique_original_head_sha": "7c79f62e657c492afcb98be6c637905b2156f244",
+  "unique_result_status_from_original_log": "FAIL_NO_RECURRENT_DURABLE_HANDOFF_STRUCTURE",
+  "known_primary_result_pre_serialization_object_sha256_from_original_log": "961ac99bd5a2d3d6556262b17411333bfbeead921616dccf120190ee1dd67c2a",
+  "known_execution_pre_serialization_object_sha256_from_original_log": "a87e37ae41e20d71e61dd52fb0b20009a5a6c6ffeeb6d0eb3d6faab568604665",
+  "market_payload_sha256": "d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193",
+  "recovered_primary_result_pre_serialization_object_sha256": "961ac99bd5a2d3d6556262b17411333bfbeead921616dccf120190ee1dd67c2a",
+  "recovered_primary_result_file_sha256": "6c354b054bde2dfce12dbb1efe3809d59d371df02beddc613befe9373a17807d",
+  "recovered_primary_result_reparsed_canonical_sha256": "35f0ee3934d45e19b5b652fa13b0cfa1f328aac51843ac9432e8cc94d20dd6b8",
+  "reconstructed_execution_pre_serialization_object_sha256": "a87e37ae41e20d71e61dd52fb0b20009a5a6c6ffeeb6d0eb3d6faab568604665",
+  "reconstructed_run_once_marker_object_sha256": "9487c61867e9c2862d1d0a57396440382768c113596a280eff5fd0142c7efcc6",
+  "recovery_hash_match": true,
+  "original_post_result_failure": {
+    "step": "Freeze post-evaluation invariants without changing the result",
+    "failed_assertion": "execution['primary_result_sha256'] == digest(json.loads(PRIMARY_RESULT.json))",
+    "root_cause": "PRIMARY_RESULT pre-serialization object contains integer episode_intercepts dictionary keys; JSON persistence coerces those keys to strings, so canonical hashing after json.loads is not equal to the pre-serialization object hash stored in EXECUTION.json.",
+    "scientific_classification_affected": false,
+    "stage_gate_logic_affected": false,
+    "market_data_affected": false
+  },
+  "governance": {
+    "same_id_rerun_allowed": false,
+    "same_id_retuning_allowed": false,
+    "same_id_rescue_allowed": false,
+    "0048_model_fit_performed": false,
+    "portfolio_economics_performed": false,
+    "production_authorized": false,
+    "signature_authorized": false,
+    "order_submission_authorized": false
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "research_id": "BRRK-BETA-HANDOFF-EVENT-STUDY-0047",
+  "status": "VALID_EXECUTION_COMPLETE_CLOSED_TO_SAME_ID_RERUN",
+  "git_head_sha": "7c79f62e657c492afcb98be6c637905b2156f244",
+  "market_payload_sha256": "d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193",
+  "primary_result_sha256": "961ac99bd5a2d3d6556262b17411333bfbeead921616dccf120190ee1dd67c2a",
+  "execution_sha256": "a87e37ae41e20d71e61dd52fb0b20009a5a6c6ffeeb6d0eb3d6faab568604665",
+  "result_status": "FAIL_NO_RECURRENT_DURABLE_HANDOFF_STRUCTURE",
+  "same_id_rerun_allowed": false,
+  "same_id_retuning_allowed": false,
+  "same_id_rescue_allowed": false
+}

@@ -1,0 +1,31 @@
+{
+  "research_id": "BRRK-BETA-HANDOFF-EVENT-STUDY-0047",
+  "evidence_class": "RESEARCHER_EXPOSED_DEVELOPMENT_HISTORY_NOT_INDEPENDENT_OOS",
+  "result_status": "FAIL_NO_RECURRENT_DURABLE_HANDOFF_STRUCTURE",
+  "market_payload_sha256": "d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193",
+  "unique_original_run_id": "31444910921",
+  "unique_original_job_id": "93636897419",
+  "unique_original_head_sha": "7c79f62e657c492afcb98be6c637905b2156f244",
+  "primary_result_pre_serialization_object_sha256": "961ac99bd5a2d3d6556262b17411333bfbeead921616dccf120190ee1dd67c2a",
+  "primary_result_recovered_file_sha256": "6c354b054bde2dfce12dbb1efe3809d59d371df02beddc613befe9373a17807d",
+  "primary_result_reparsed_canonical_sha256": "35f0ee3934d45e19b5b652fa13b0cfa1f328aac51843ac9432e8cc94d20dd6b8",
+  "execution_pre_serialization_object_sha256": "a87e37ae41e20d71e61dd52fb0b20009a5a6c6ffeeb6d0eb3d6faab568604665",
+  "run_once_marker_object_sha256": "9487c61867e9c2862d1d0a57396440382768c113596a280eff5fd0142c7efcc6",
+  "target_eligible_BTC_positive_episodes": 27,
+  "primary_handoff_episodes": 12,
+  "episode_level_durable_handoff_prevalence": 0.4444444444444444,
+  "ETH_primary_handoff_episodes": 3,
+  "SOL_primary_handoff_episodes": 9,
+  "gates": {
+    "target_eligible_episode_count_ge_5": true,
+    "handoff_episode_count_ge_3": true,
+    "episode_level_prevalence_ge_0_50": false,
+    "ETH_cause_episode_count_ge_1": true,
+    "SOL_cause_episode_count_ge_1": true
+  },
+  "actual_variants_evaluated": 1,
+  "duration_aware_handoff_model_fitted": false,
+  "portfolio_allocation_tested": false,
+  "portfolio_economics_executed": false,
+  "same_id_rerun_allowed": false
+}
