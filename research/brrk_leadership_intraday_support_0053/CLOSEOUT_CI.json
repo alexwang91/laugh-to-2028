@@ -1,0 +1,26 @@
+{
+  "research_id": "BRRK-LEADERSHIP-INTRADAY-SUPPORT-0053",
+  "attestation_type": "POST_RESULT_CLOSEOUT_CONTRACT_ONLY_NO_SUPPORT_REMEASUREMENT",
+  "workflow_run_id": 31516356652,
+  "workflow_job_id": 93862359778,
+  "result_classification": "FAIL_4H_DOES_NOT_SOLVE_0048_SUPPORT_CONSTRAINT",
+  "closeout_contract": "PASS",
+  "hash_binding": "PASS",
+  "track_A_binding_failure": "PASS",
+  "track_B_C_diagnostic_non_authority": "PASS",
+  "row_frequency_comparison": "PASS",
+  "no_predictive_or_portfolio_authority": "PASS",
+  "current_state_no_drift_literals": "PASS",
+  "support_remeasurement_performed": false,
+  "winner_labels_executed": false,
+  "predictive_model_executed": false,
+  "portfolio_economics_executed": false,
+  "temporary_workflow_removed_after_attestation": true,
+  "authority": {
+    "canonical_strategy_changed": false,
+    "phase6_changed": false,
+    "production_authorized": false,
+    "signature_authorized": false,
+    "order_submission_authorized": false
+  }
+}
