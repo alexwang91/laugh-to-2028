@@ -2,8 +2,8 @@
 
 Last updated: **2026-08-11**  
 Authoritative repository: `alexwang91/laugh-to-2028`  
-Current `main` research merge: **`36a517ecde6bb908101c14edea3695012ec781e4`**  
-Current research branch: **`research/brrk-leadership-intraday-support-0053-implementation`**  
+Current `main` research merge: **`55c6869bacf2161df6b10ed4f82a423103952fe9`**  
+Current research branch: **`research/brrk-leadership-intraday-support-0053-controlled-run`**  
 Status of this document: **AUTHORITATIVE OPERATING SNAPSHOT**
 
 > GitHub `main`, immutable research artifacts and machine registries remain the sources of truth. This file is the compact human handoff, not a substitute for preregistration, execution, evidence, recovery or closeout artifacts.
@@ -36,7 +36,7 @@ BRRK exhaustion trigger 0045          FAIL_NO_DYNAMIC_GROSS_STAGE_ELIGIBILITY / 
 BRRK exhaustion pulse 0046            FAIL_NO_FUTURE_ONLY_PULSE_VALIDATION_ELIGIBILITY / CLOSED
 BRRK Beta handoff event study 0047    FAIL_NO_RECURRENT_DURABLE_HANDOFF_STRUCTURE / CLOSED
 BRRK leadership rotation 0048         MEASUREMENT_INCONCLUSIVE_INSUFFICIENT_SUPPORT / CLOSED
-BRRK intraday support 0053             IMPLEMENTATION-ONLY / DATA FROZEN / NO RESULT
+BRRK intraday support 0053             CONTROLLED-RUN BOUNDARY / ZERO RESULT
 
 Canonical BRRK-0011                    NO CHANGE
 Phase 7                                MONITOR_ONLY / LAUNCH BLOCKED
@@ -154,9 +154,10 @@ calibration fits                       0
 predictive metrics                     NONE
 portfolio runs                         0
 actual variants evaluated              0
-support-funnel implementation             PRESENT / NOT EXECUTED ON FROZEN PAYLOAD
+support-funnel implementation             MERGED / NOT YET EXECUTED ON FROZEN PAYLOAD
 support result                            ABSENT
 support execution marker                  ABSENT
+controlled support interface               PRESENT / NOT MERGED
 ```
 
 The design freezes six 4h bars per day and calendar-equivalent translations:
@@ -316,3 +317,8 @@ research/governance/phase6_observation_ledger.json
 ## 10. 0053 zero-result implementation boundary
 
 The frozen real 4h payload has not been passed to `measure_support_funnel()` on this implementation branch. `support_funnel.py` and synthetic contracts exist only to implement the preregistered support clocks. `SUPPORT_RESULT.json`, `EXECUTION.json` and `RUN_ONCE.marker` remain absent. A separate controlled exactly-once support measurement is required after implementation merge. No ETH/SOL labels, predictive model, calibration, AUC/NLL/Brier or portfolio economics are permitted.
+
+
+## 11. 0053 controlled support-measurement boundary
+
+The implementation merge is `55c6869bacf2161df6b10ed4f82a423103952fe9`. `RUN_INTERFACE.json`, `RESULT_SCHEMA.json`, `run_once.py`, and `CONTROLLED_EXECUTION_BOUNDARY.json` now exist on the controlled-run branch, but the frozen payload has still not been passed to `measure_support_funnel()`. `RUN_ATTEMPT.marker`, `SUPPORT_RESULT.json`, `EXECUTION.json`, and `RUN_ONCE.marker` remain absent. After this boundary merges green, the only permitted next action is exact-head preflight followed by one label-blind support measurement. No ETH/SOL labels, model/calibration fits, predictive metrics or portfolio economics are authorized.
