@@ -669,3 +669,36 @@ Implementation checkpoint: canonical V1 20/60/120/240 fast/slow trend equivalenc
 Pre-result engineering clarifications are frozen in `RUN_INTERFACE.json`: raw requests begin 2020-08-01 but the common index begins at the latest first available BTC/ETH/SOL date; all days from common start through 2026-08-02 must be present or fail closed; within-episode demeaning is the fixed-intercept VAR implementation; singular Granger cluster covariance returns a null descriptive p-value rather than a rescue estimator; market evidence is create-only and SHA256-bound before result metrics.
 
 Exact next task: require the implementation PR to pass standing governance/no-drift/P3.2/Phase-6/handoff CI, verify no temporary workflow or generated evidence remains, and merge only as a zero-result implementation boundary. Only after that merge may a separate controlled execution branch call `prepare-data` and then execute the frozen anatomy exactly once. No hazard model, BOCPD rescue, 60/80/100 allocation, portfolio economics, exhaustion gross mapping, Phase-6 change or production/security change is permitted under 0047.
+
+
+## BRRK-LEADERSHIP-ROTATION-0048 — architecture-freeze candidate
+
+0047 is immutable `FAIL_NO_RECURRENT_DURABLE_HANDOFF_STRUCTURE / CLOSED` and is not being rescued. The new 0048 design replaces the blocked one-way `BTC -> Beta` handoff continuation with a two-dimensional dynamic router.
+
+```text
+0048 architecture                      PR #174 / FROZEN ARCHITECTURE CANDIDATE
+0048 numerical prereg                  NOT FROZEN
+0048 dataset registration              NOT CREATED
+0048 runner/model                      NOT CREATED
+0048 historical measurement            NONE
+0048 actual variants evaluated         0
+0048 portfolio economics               NOT RUN
+canonical BRRK change                  NONE
+Phase-6 change                         NONE
+production_authorized                  false
+signature_authorized                   false
+order_submission_authorized            false
+```
+
+Frozen architecture checkpoint:
+
+- `Leadership` selects the asset; `Exhaustion / market risk` controls tolerated Beta/gross.
+- Leadership states are `BTC_LEAD / ETH_LEAD / SOL_LEAD / NO_CLEAR_LEADER`.
+- BTC, ETH and SOL use symmetric pairwise relative leadership; ETH and SOL have independent clocks.
+- BTC Dominance is market-diffusion context only and cannot directly select the winner; no price proxy may be mislabeled as dominance.
+- High-confidence winner concentration in the `80%-100%` risk-budget region is a later portfolio hypothesis, not an 0048 backtest.
+- Two separate routes return a winner to BTC: leadership reversal and exhaustion compression.
+- BTC-to-cash gross reduction is a later, separate stage and must not be conflated with winner-to-BTC re-anchoring.
+- 0048 must defeat a static-Beta adversarial null; if one Beta asset is almost always superior, dynamic rotation has no incremental information value.
+
+The only permitted next research action after this architecture freeze is a no-result numerical-method design pass that freezes the forward leadership target, causal score/normalization, episode-block validation, static-Beta/always-BTC controls, numerical gates, model budget, and a reproducible BTC Dominance source or explicit exclusion. No historical sweep, allocation test, CORE4 threshold search, portfolio economics, canonical change or production/security authority is permitted.
