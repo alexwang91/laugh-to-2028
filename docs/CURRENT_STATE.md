@@ -36,7 +36,7 @@ BRRK exhaustion trigger 0045          FAIL_NO_DYNAMIC_GROSS_STAGE_ELIGIBILITY / 
 BRRK exhaustion pulse 0046            FAIL_NO_FUTURE_ONLY_PULSE_VALIDATION_ELIGIBILITY / CLOSED
 BRRK Beta handoff event study 0047    FAIL_NO_RECURRENT_DURABLE_HANDOFF_STRUCTURE / CLOSED
 BRRK leadership rotation 0048         MEASUREMENT_INCONCLUSIVE_INSUFFICIENT_SUPPORT / CLOSED
-BRRK intraday support 0053             PREREGISTERED / SOURCE AMENDMENT / DATA NOT CAPTURED
+BRRK intraday support 0053             PREREGISTERED / DATA CAPTURED / NOT MEASURED
 
 Canonical BRRK-0011                    NO CHANGE
 Phase 7                                MONITOR_ONLY / LAUNCH BLOCKED
@@ -144,8 +144,8 @@ Purpose:
 0053 is **label-blind support accounting only**. Numerical/data preregistration status: `PREREGISTERED_DATA_NOT_CAPTURED`. At the current stage:
 
 ```text
-4h data retrieval                      SOURCE AMENDED / NOT CAPTURED
-4h payload SHA256                      NOT FROZEN
+4h data retrieval                      FIRST COMPLETE VALID CAPTURE / HASH FROZEN
+4h payload SHA256                      471b54991ae648b79433285f073ea7bc813663319b6e2389c1682dad1a319135
 capture infrastructure attempt 1        RUN 31511625959 / HTTP 451 / ZERO DATA ROWS
 capture endpoint                         https://data-api.binance.vision/api/v3/klines
 ETH/SOL winner labels                  NOT COMPUTED

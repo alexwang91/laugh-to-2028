@@ -2606,7 +2606,9 @@
         "ETH",
         "SOL"
       ],
-      "development_dataset_refs": [],
+      "development_dataset_refs": [
+        "BRRK-LEADERSHIP-INTRADAY-SUPPORT-0053-BINANCE-4H-HIST-V1"
+      ],
       "validation_dataset_refs": [],
       "sealed_dataset_refs": [],
       "declared_variant_budget": 1,
@@ -2676,7 +2678,9 @@
         "special_cases_introduced": [
           "THREE_PREDECLARED_SUPPORT_CLOCKS_PRIMARY_AUTHORITY_TRACK_A_ONLY"
         ],
-        "validation_exposure_event_refs": [],
+        "validation_exposure_event_refs": [
+          "BRRK-LEADERSHIP-INTRADAY-SUPPORT-0053-RAW-DATA-20260811T162912817438Z"
+        ],
         "related_family_trials": 1
       },
       "lineage_edges": [
@@ -2687,7 +2691,7 @@
           "evidence_ref": "research/brrk_leadership_rotation_0048/CLOSEOUT.json"
         }
       ],
-      "result_status": "PREREGISTERED_DATA_NOT_CAPTURED",
+      "result_status": "PREREGISTERED_DATA_CAPTURED_NOT_MEASURED",
       "failure_reason": null,
       "promotion_state": "NONE",
       "evidence_refs": [
@@ -2707,7 +2711,8 @@
       "notes": [
         "0048 is permanently closed and cannot be rerun or rescued.",
         "Track B and C exist to diagnose raw-row inflation and burn-in sensitivity without model fitting; they never override Track A.",
-        "The exact 4h dataset slice is intentionally not registered until the first successful raw capture is hash-frozen."
+        "The exact 4h dataset slice is intentionally not registered until the first successful raw capture is hash-frozen.",
+        "First complete valid 4h payload captured and frozen before support measurement; market SHA256 471b54991ae648b79433285f073ea7bc813663319b6e2389c1682dad1a319135."
       ],
       "evidence_scorecard": {
         "temporal_novelty": "PLANNED_RESEARCHER_EXPOSED_4H_DEVELOPMENT_HISTORY_NOT_YET_CAPTURED",
