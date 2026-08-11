@@ -39,7 +39,7 @@ The payload is immutable researcher-exposed DEVELOPMENT history and cannot be re
 
 The implementation intentionally computes **no ETH/SOL target value or winner label** and contains no predictive model/calibration code.
 
-Synthetic implementation contracts must pass before merge. They test exact trend mathematics, maturity causality, refit activation, ineligible-row attrition, block counting, Track-A-only classification authority, hash fail-closed behavior and absence of result artifacts.
+Synthetic-only GitHub Actions run `31514184465` passed: support counter `py_compile`, exact trend-math contract, maturity/refit causality, ineligible-row attrition, block counting, Track-A-only classification authority, wrong-hash fail-closed behavior, and the zero-result artifact boundary. The temporary workflow was removed after validation.
 
 **The frozen real 4h payload has not yet been passed to `measure_support_funnel()` on this implementation branch.** Therefore Track A/B/C counts and the 0053 primary classification remain unknown.
 
