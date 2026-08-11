@@ -1,0 +1,36 @@
+{
+  "dataset_slice": {
+    "dataset_slice_id": "BRRK-LEADERSHIP-ROTATION-0048-EXPOSED-HIST-V1",
+    "dataset_id": "BINANCE-SPOT-BTC-ETH-SOL-UTC-DAILY-OHLCV-TRADES",
+    "dataset_version": "reuse-0047-market-payload-sha256-d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193",
+    "source": "IMMUTABLE_0047_MARKET_EVIDENCE_IDENTITY_FROM_BINANCE_SPOT_UTC_DAILY_KLINES_BTCUSDT_ETHUSDT_SOLUSDT",
+    "assets": ["BTC", "ETH", "SOL"],
+    "fields": ["daily_open", "daily_high", "daily_low", "daily_close", "daily_volume", "daily_quote_volume", "daily_trades"],
+    "resolution": "1D",
+    "start": "2020-08-11T00:00:00Z",
+    "end": "2026-08-02T00:00:00Z",
+    "transformation": "VERIFY_0047_MARKET_PAYLOAD_SHA256_D1CD28BC76F2CD8EE0486287FC50B49E5451355A3E75132A2DE5B30C15AF3193_THEN_REUSE_COMMON_BTC_ETH_SOL_DAILY_ROWS; 0048 DERIVES BTC_FAST_ELIGIBILITY, ETH_SOL_7F_ANTISYMMETRIC_CAUSAL_STATE, 14_28_56_PATH_TARGET, WALK_FORWARD_MODELS_AND_DEPENDENCE_AWARE_EVALUATION WITHOUT ADDING POST_2026_08_02_HISTORY",
+    "pit_publication_semantics": "RESEARCHER_EXPOSED_DEVELOPMENT_HISTORY; raw market rows were already exposed and hash-bound by 0047; 0048 causal feature at origin t uses completed UTC information no later than t; target uses only t+1..t+56 hindsight outcomes; an origin enters training/calibration only after its full 56-day target matures; no observation after 2026-08-02 may enter this 0048 DEVELOPMENT result; this dataset is not independent OOS.",
+    "data_budget": "DEVELOPMENT",
+    "contamination_state": "RESEARCHER_EXPOSED_HISTORY",
+    "consumed": true,
+    "researcher_exposed_history": true,
+    "provenance_status": "FACT",
+    "evidence_refs": [
+      "research/brrk_beta_handoff_0047/EVIDENCE_RECOVERY.json",
+      "research/brrk_beta_handoff_0047/CLOSEOUT.json",
+      "research/brrk_beta_handoff_0047/engine.py",
+      "research/governance/BRRK_LEADERSHIP_ROTATION_0048_ARCHITECTURE_AMENDMENT_2026-08-11.md"
+    ]
+  },
+  "exposure_event": {
+    "exposure_id": "BRRK-LEADERSHIP-ROTATION-0048-DEVELOPMENT-DATA-REGISTRATION-20260811T125700Z",
+    "research_id": "BRRK-LEADERSHIP-ROTATION-0048",
+    "dataset_slice_ref": "BRRK-LEADERSHIP-ROTATION-0048-EXPOSED-HIST-V1",
+    "timestamp": "2026-08-11T12:57:00Z",
+    "release_type": "RAW_DATA",
+    "result_informed_followup": true,
+    "provenance_status": "FACT",
+    "evidence_ref": "research/brrk_beta_handoff_0047/EVIDENCE_RECOVERY.json"
+  }
+}
