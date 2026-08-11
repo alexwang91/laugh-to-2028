@@ -1,0 +1,16 @@
+{
+  "research_id": "BRRK-LEADERSHIP-4H-NATIVE-READINESS-0054",
+  "status": "VALID_METHODOLOGY_MEASUREMENT_COMPLETE_PENDING_FINAL_MARKER",
+  "started_at_utc": "2026-08-11T19:59:20Z",
+  "completed_at_utc": "2026-08-11T19:59:26Z",
+  "git_head_sha": "ec6d5fa927398e0407b342d4996a1f2a8856306f",
+  "payload_sha256": "471b54991ae648b79433285f073ea7bc813663319b6e2389c1682dad1a319135",
+  "attempt_marker_sha256": "607daeac9658b2d7c5fffe49df9807347ba91cf675c01a533c6f77ffcb1130b1",
+  "method_result_sha256": "84d260e2dc1c260fb52b546ac5878485668a6397940a9e4da93070d7090edda7",
+  "classification": "FAIL_4H_NATIVE_TRAINING_PRECISION_NOT_ESTABLISHED",
+  "actual_variants_evaluated": 1,
+  "post_2022_target_values_read": false,
+  "predictive_performance_metrics_executed": false,
+  "portfolio_economics_executed": false,
+  "production_authorized": false
+}

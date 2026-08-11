@@ -1,0 +1,8 @@
+{
+  "research_id": "BRRK-LEADERSHIP-4H-NATIVE-READINESS-0054",
+  "status": "METHODOLOGY_MEASUREMENT_ATTEMPT_STARTED_CLOSED_TO_RECOMPUTATION",
+  "started_at_utc": "2026-08-11T19:59:20Z",
+  "git_head_sha": "ec6d5fa927398e0407b342d4996a1f2a8856306f",
+  "payload_sha256": "471b54991ae648b79433285f073ea7bc813663319b6e2389c1682dad1a319135",
+  "same_id_recomputation_allowed": false
+}
