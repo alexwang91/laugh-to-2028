@@ -1,10 +1,18 @@
 {
   "contract_id": "BRRK-LEADERSHIP-INTRADAY-SUPPORT-0053-BINANCE-4H-RETRIEVAL-V1",
   "research_id": "BRRK-LEADERSHIP-INTRADAY-SUPPORT-0053",
-  "status": "FROZEN_BEFORE_FIRST_4H_CAPTURE",
+  "status": "AMENDED_BEFORE_FIRST_COMPLETE_4H_CAPTURE",
+  "amendment_id": "BRRK-LEADERSHIP-INTRADAY-SUPPORT-0053-CAPTURE-SOURCE-AMENDMENT-1",
+  "amendment_reason": "The first infrastructure-only capture attempt produced zero data rows and no payload/evidence/exposure because the U.S. GitHub-hosted runner received HTTP 451 from api.binance.com. Before any 0053 data exposure, the public market-data base is changed prospectively to Binance's official data-api.binance.vision endpoint while preserving the exact /api/v3/klines path, symbols, interval, parameters, pagination, window, fields, canonical hashing and integrity rules.",
   "source": {
     "venue": "Binance Spot",
-    "rest_endpoint": "https://api.binance.com/api/v3/klines",
+    "rest_endpoint": "https://data-api.binance.vision/api/v3/klines",
+    "endpoint_class": "BINANCE_OFFICIAL_MARKET_DATA_ONLY_REST_BASE",
+    "official_documentation_refs": [
+      "https://developers.binance.com/en/docs/products/spot/rest-api",
+      "https://github.com/binance/binance-spot-api-docs/blob/master/rest-api.md"
+    ],
+    "superseded_unusable_capture_endpoint": "https://api.binance.com/api/v3/klines",
     "symbols": [
       "BTCUSDT",
       "ETHUSDT",
@@ -16,6 +24,20 @@
     "requested_start_inclusive": "2020-08-11T00:00:00Z",
     "requested_end_inclusive": "2026-08-02T20:00:00Z",
     "requested_end_exclusive": "2026-08-03T00:00:00Z"
+  },
+  "failed_pre_exposure_infrastructure_attempt": {
+    "github_actions_run_id": 31511625959,
+    "github_actions_job_id": 93846583481,
+    "runner_region": "southcentralus",
+    "failure": "HTTP_451_FROM_API_BINANCE_COM_BEFORE_FIRST_ROW",
+    "data_rows_returned": 0,
+    "market_payload_created": false,
+    "market_payload_sha256_exposed": false,
+    "dataset_declaration_created": false,
+    "dataset_exposure_event_created": false,
+    "support_funnel_computed": false,
+    "predictive_result_computed": false,
+    "scientific_dataset_attempt_count_incremented": false
   },
   "pagination": "For each symbol, request ascending klines from startTime. After each nonempty page advance next startTime to last returned openTime + 14400000 ms. Stop when next startTime >= requested_end_exclusive. Do not use current-time defaults.",
   "raw_fields": [
@@ -43,10 +65,11 @@
     "No cross-venue substitution, synthetic backfill, interpolation or forward fill is allowed."
   ],
   "capture_semantics": [
-    "Network/API retries are permitted only until one complete internally valid payload has been durably persisted; incomplete failed attempts are not scientific datasets.",
+    "Network/API retries are permitted only until one complete internally valid payload has been durably persisted; incomplete zero-row infrastructure failures are not scientific datasets.",
     "Once the first complete valid payload is durably persisted and its SHA256 exposed, no second historical capture may replace it under 0053.",
     "The successful capture becomes researcher-exposed DEVELOPMENT history and is not independent OOS.",
-    "Capture may report raw per-symbol bar counts, first/last timestamps, common start/end and integrity status, but it may not calculate Track A/B/C support funnels or any predictive label/metric."
+    "Capture may report raw per-symbol bar counts, first/last timestamps, common start/end and integrity status, but it may not calculate Track A/B/C support funnels or any predictive label/metric.",
+    "No further base-endpoint change is permitted after the first complete valid payload is exposed."
   ],
   "post_capture_required_artifacts": [
     "MARKET_4H_EVIDENCE.json containing retrieval timestamp, market_payload_sha256, per-symbol raw counts, first/last timestamps, common coverage and integrity results",
@@ -57,6 +80,7 @@
     "No 1h/2h/6h/8h/12h alternate interval",
     "No futures/perpetual data",
     "No alternate exchange",
+    "No unofficial data source",
     "No data after 2026-08-02 20:00 UTC",
     "No support-funnel or predictive computation during capture"
   ]

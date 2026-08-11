@@ -2,8 +2,8 @@
 
 Last updated: **2026-08-11**  
 Authoritative repository: `alexwang91/laugh-to-2028`  
-Current `main` closeout merge: **`62c0e2a4e1fb3ddfdc64c41adbd06b03012df895`**  
-Current research branch: **`research/brrk-leadership-intraday-0053-design`**  
+Current `main` research merge: **`ed3c22f0e3f562498f483ce5f1bb634f8f9b9e4e`**  
+Current research branch: **`research/brrk-leadership-intraday-support-0053-capture-source-amendment`**  
 Status of this document: **AUTHORITATIVE OPERATING SNAPSHOT**
 
 > GitHub `main`, immutable research artifacts and machine registries remain the sources of truth. This file is the compact human handoff, not a substitute for preregistration, execution, evidence, recovery or closeout artifacts.
@@ -36,7 +36,7 @@ BRRK exhaustion trigger 0045          FAIL_NO_DYNAMIC_GROSS_STAGE_ELIGIBILITY / 
 BRRK exhaustion pulse 0046            FAIL_NO_FUTURE_ONLY_PULSE_VALIDATION_ELIGIBILITY / CLOSED
 BRRK Beta handoff event study 0047    FAIL_NO_RECURRENT_DURABLE_HANDOFF_STRUCTURE / CLOSED
 BRRK leadership rotation 0048         MEASUREMENT_INCONCLUSIVE_INSUFFICIENT_SUPPORT / CLOSED
-BRRK intraday support 0053             PREREGISTERED / DATA NOT CAPTURED / NO MODEL FIT
+BRRK intraday support 0053             PREREGISTERED / SOURCE AMENDMENT / DATA NOT CAPTURED
 
 Canonical BRRK-0011                    NO CHANGE
 Phase 7                                MONITOR_ONLY / LAUNCH BLOCKED
@@ -144,8 +144,10 @@ Purpose:
 0053 is **label-blind support accounting only**. Numerical/data preregistration status: `PREREGISTERED_DATA_NOT_CAPTURED`. At the current stage:
 
 ```text
-4h data retrieval                      CONTRACT FROZEN / NOT STARTED
+4h data retrieval                      SOURCE AMENDED / NOT CAPTURED
 4h payload SHA256                      NOT FROZEN
+capture infrastructure attempt 1        RUN 31511625959 / HTTP 451 / ZERO DATA ROWS
+capture endpoint                         https://data-api.binance.vision/api/v3/klines
 ETH/SOL winner labels                  NOT COMPUTED
 model fits                             0
 calibration fits                       0
@@ -279,7 +281,7 @@ signature_authorized = false
 order_submission_authorized = false
 ```
 
-No 4h data have yet been fetched under 0053. No 60/80/90/100 concentration backtest, CAGR/MDD portfolio test, Beta->BTC rule, BTC->cash rule, integrated router, leverage expansion, shorting, signing or order submission is authorized.
+No complete 4h dataset has yet been captured under 0053. One infrastructure-only U.S. GitHub-runner attempt returned HTTP 451 before the first row and created no payload/hash/exposure. The pre-exposure capture contract now uses Binance's official market-data-only base `data-api.binance.vision` with the same `/api/v3/klines` resource. No 60/80/90/100 concentration backtest, CAGR/MDD portfolio test, Beta->BTC rule, BTC->cash rule, integrated router, leverage expansion, shorting, signing or order submission is authorized.
 
 ---
 
