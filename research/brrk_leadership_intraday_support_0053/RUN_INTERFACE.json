@@ -1,0 +1,66 @@
+{
+  "research_id": "BRRK-LEADERSHIP-INTRADAY-SUPPORT-0053",
+  "status": "CONTROLLED_SUPPORT_MEASUREMENT_INTERFACE_FROZEN_NOT_RUN",
+  "controlled_execution_base_main_sha": "55c6869bacf2161df6b10ed4f82a423103952fe9",
+  "candidate_count": 1,
+  "actual_variants_evaluated": 0,
+  "result_status": "PREREGISTERED_DATA_CAPTURED_NOT_MEASURED",
+  "frozen_payload": {
+    "path": "research/brrk_leadership_intraday_support_0053/MARKET_4H_PAYLOAD.json",
+    "sha256": "471b54991ae648b79433285f073ea7bc813663319b6e2389c1682dad1a319135",
+    "common_start": "2020-08-11T04:00:00Z",
+    "common_end": "2026-08-02T20:00:00Z",
+    "common_bars": 13097,
+    "development_not_independent_oos": true
+  },
+  "immutable_upstream_git_blobs": {
+    "research/brrk_leadership_intraday_support_0053/PREREGISTRATION.json": "5975ccbf7624a4f2d46d4cccd52c38be3254dbc8",
+    "research/brrk_leadership_intraday_support_0053/DATASET_DECLARATION.json": "939006d86cc02349036f3268aa62f5f0102b14b8",
+    "research/brrk_leadership_intraday_support_0053/IMPLEMENTATION_BOUNDARY.json": "8797f70dbd452409e0dcd73f7573fa35c7dd9a14",
+    "research/brrk_leadership_intraday_support_0053/support_funnel.py": "b11118ee7fa83494451e3d0379cbaf1ad44065ca"
+  },
+  "commands": {
+    "preflight": "python -m research.brrk_leadership_intraday_support_0053.run_once preflight --payload research/brrk_leadership_intraday_support_0053/MARKET_4H_PAYLOAD.json --result research/brrk_leadership_intraday_support_0053/SUPPORT_RESULT.json --execution research/brrk_leadership_intraday_support_0053/EXECUTION.json --attempt research/brrk_leadership_intraday_support_0053/RUN_ATTEMPT.marker --marker research/brrk_leadership_intraday_support_0053/RUN_ONCE.marker --expected-head-sha <CONTROLLED_RUN_MERGE_SHA>",
+    "evaluate": "python -m research.brrk_leadership_intraday_support_0053.run_once evaluate --payload research/brrk_leadership_intraday_support_0053/MARKET_4H_PAYLOAD.json --result research/brrk_leadership_intraday_support_0053/SUPPORT_RESULT.json --execution research/brrk_leadership_intraday_support_0053/EXECUTION.json --attempt research/brrk_leadership_intraday_support_0053/RUN_ATTEMPT.marker --marker research/brrk_leadership_intraday_support_0053/RUN_ONCE.marker --expected-head-sha <CONTROLLED_RUN_MERGE_SHA>",
+    "recover_marker_only": "python -m research.brrk_leadership_intraday_support_0053.run_once recover-marker --result research/brrk_leadership_intraday_support_0053/SUPPORT_RESULT.json --execution research/brrk_leadership_intraday_support_0053/EXECUTION.json --attempt research/brrk_leadership_intraday_support_0053/RUN_ATTEMPT.marker --marker research/brrk_leadership_intraday_support_0053/RUN_ONCE.marker --expected-head-sha <CONTROLLED_RUN_MERGE_SHA>"
+  },
+  "exactly_once_policy": {
+    "preflight_is_repeatable_zero_result": true,
+    "evaluate_requires_result_execution_attempt_and_marker_absent": true,
+    "attempt_marker_written_create_only_immediately_before_real_payload_support_measurement": true,
+    "attempt_marker_blocks_second_support_measurement_under_0053": true,
+    "support_result_execution_and_final_marker_are_create_only": true,
+    "final_marker_commits_the_unique_valid_support_measurement": true,
+    "same_id_rerun_allowed": false,
+    "same_id_retuning_allowed": false,
+    "same_id_rescue_allowed": false
+  },
+  "interruption_recovery_policy": {
+    "attempt_absent_and_no_result_artifacts": "NO_SUPPORT_MEASUREMENT_ATTEMPT_STARTED",
+    "attempt_present_and_result_or_execution_incomplete": "INTERRUPTED_UNCOMMITTED_MEASUREMENT; AUTOMATIC_RECOMPUTATION_FORBIDDEN",
+    "attempt_present_result_and_execution_complete_marker_absent": "RECOVER_MARKER_ONLY_AFTER_HASH_VALIDATION_WITHOUT_REMEASUREMENT",
+    "marker_present": "MEASUREMENT_COMMITTED_CLOSED_TO_SAME_ID_RERUN",
+    "hash_mismatch": "INVALID_PARTIAL_EXECUTION_NO_AUTOMATIC_RETRY"
+  },
+  "result_artifacts": {
+    "schema": "research/brrk_leadership_intraday_support_0053/RESULT_SCHEMA.json",
+    "support_result": "research/brrk_leadership_intraday_support_0053/SUPPORT_RESULT.json",
+    "execution": "research/brrk_leadership_intraday_support_0053/EXECUTION.json",
+    "attempt_marker": "research/brrk_leadership_intraday_support_0053/RUN_ATTEMPT.marker",
+    "final_marker": "research/brrk_leadership_intraday_support_0053/RUN_ONCE.marker"
+  },
+  "execution_authority": {
+    "historical_support_measurement_authorized_before_interface_merges_green": false,
+    "requires_exact_expected_head_sha": true,
+    "requires_upstream_blob_match": true,
+    "requires_payload_sha256_match": true,
+    "winner_labels_executed": false,
+    "predictive_model_executed": false,
+    "portfolio_economics_executed": false,
+    "canonical_strategy_changed": false,
+    "phase6_changed": false,
+    "production_authorized": false,
+    "signature_authorized": false,
+    "order_submission_authorized": false
+  }
+}
