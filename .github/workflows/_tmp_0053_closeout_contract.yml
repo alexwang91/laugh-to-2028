@@ -1,0 +1,44 @@
+name: 0053 immutable closeout contract temporary
+
+on:
+  push:
+    branches:
+      - research/brrk-leadership-intraday-support-0053-result
+
+permissions:
+  contents: read
+
+jobs:
+  closeout:
+    if: contains(github.event.head_commit.message, 'trigger 0053 immutable closeout contract')
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run immutable closeout contracts only
+        run: python -m unittest research.brrk_leadership_intraday_support_0053.test_closeout
+      - name: Enforce no predictive or portfolio closeout drift
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('research/brrk_leadership_intraday_support_0053')
+          forbidden=['PREDICTIVE_RESULT.json','PORTFOLIO_RESULT.json','WINNER_LABELS.json']
+          hit=[n for n in forbidden if (p/n).exists()]
+          if hit: raise SystemExit(f'forbidden artifacts {hit}')
+          state=Path('docs/CURRENT_STATE.md').read_text()
+          required=[
+            'FAIL_4H_DOES_NOT_SOLVE_0048_SUPPORT_CONSTRAINT / CLOSED',
+            'production_authorized_components = []',
+            'production_authorized = false',
+            'signature_authorized = false',
+            'order_submission_authorized = false',
+            'workflow run                         31381953131 / attempt 1',
+            'ID 0043 is closed against result-informed pruning, reweighting, threshold rescue',
+          ]
+          miss=[x for x in required if x not in state]
+          if miss: raise SystemExit(f'CURRENT_STATE missing invariants {miss}')
+          print('CLOSEOUT_READ_ONLY_PASS')
+          print('SUPPORT_REMEASUREMENT_PERFORMED=false')
+          PY
