@@ -35,4 +35,6 @@ The only valid sequence is:
 
 If execution is interrupted after the attempt marker, automatic remeasurement is forbidden. A complete result/execution bundle with a missing final marker permits marker-only hash validation and recovery without remeasurement.
 
+Controlled-boundary synthetic/fault-injection run `31515115619` passed runner/support-counter compilation, all implementation contracts, attempt-marker-before-measurement, Track-A-only classification authority, marker-only recovery without remeasurement, and zero-result artifact enforcement. The temporary workflow was removed after validation.
+
 The frozen real payload **has still not been passed to `measure_support_funnel()` on this boundary branch**. `SUPPORT_RESULT.json`, `EXECUTION.json`, `RUN_ATTEMPT.marker`, and `RUN_ONCE.marker` are absent. The Track A/B/C counts and the 0053 classification remain unknown.
