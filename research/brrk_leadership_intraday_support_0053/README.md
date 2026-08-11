@@ -11,3 +11,5 @@ Primary authority is Track A only: 2190 eligible matured training origins, 2190 
 No ETH/SOL winner label, model fit, calibration fit, NLL/AUC/Brier, confidence threshold or portfolio economics is permitted under this ID.
 
 Governance attestation: the first commit introducing this formal 0053 research path also introduced the identical owner record in `config/research_registry.json`; the temporary atomic writer was removed before review. No 4h market payload has been captured yet.
+
+Pre-capture contract attestation: temporary GitHub Actions run `31510769303` completed successfully. The local preregistration/central-registry exact-match contract passed, frozen Track A/B/C constants passed, the retrieval contract remained pre-capture, and `MARKET_4H_EVIDENCE.json`, `DATASET_DECLARATION.json`, result and execution artifacts were all absent. The temporary workflow and trigger were removed immediately after this read-only test.
