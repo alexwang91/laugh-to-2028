@@ -1,0 +1,127 @@
+name: 0054 unique controlled methodology measurement
+
+on:
+  push:
+    branches:
+      - research/brrk-leadership-4h-readiness-0054-execute-once
+
+permissions:
+  contents: write
+
+jobs:
+  measure-once:
+    if: contains(github.event.head_commit.message, 'trigger unique 0054 methodology measurement')
+    runs-on: ubuntu-24.04
+    env:
+      CONTROLLED_HEAD: ec6d5fa927398e0407b342d4996a1f2a8856306f
+      RESULT_BRANCH: research/brrk-leadership-4h-readiness-0054-result
+      RESULT_ROOT: /tmp/brrk-0054-result
+      RESULT_DIR: /tmp/brrk-0054-result/research/brrk_leadership_4h_native_readiness_0054
+      PAYLOAD: research/brrk_leadership_intraday_support_0053/MARKET_4H_PAYLOAD.json
+      PYTHONHASHSEED: '0'
+      OMP_NUM_THREADS: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      NUMEXPR_NUM_THREADS: '1'
+    steps:
+      - name: Checkout exact frozen controlled-run merge
+        uses: actions/checkout@v4
+        with:
+          ref: ec6d5fa927398e0407b342d4996a1f2a8856306f
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: execution/plan-b-bot/requirements-dev.txt
+      - name: Install pinned runtime
+        run: pip install -r execution/plan-b-bot/requirements-dev.txt
+      - name: Verify exact detached HEAD and zero-result preflight
+        run: |
+          test "$(git rev-parse HEAD)" = "$CONTROLLED_HEAD"
+          python -m research.brrk_leadership_4h_native_readiness_0054.run_once preflight \
+            --payload "$PAYLOAD" \
+            --result "$RESULT_DIR/METHOD_RESULT.json" \
+            --execution "$RESULT_DIR/EXECUTION.json" \
+            --attempt "$RESULT_DIR/RUN_ATTEMPT.marker" \
+            --marker "$RESULT_DIR/RUN_ONCE.marker" \
+            --expected-head-sha "$CONTROLLED_HEAD" | tee /tmp/0054_preflight.json
+          grep -q 'PREFLIGHT_PASS_ZERO_RESULT' /tmp/0054_preflight.json
+      - name: Prepare durable result worktree
+        run: |
+          git fetch origin "$RESULT_BRANCH:refs/remotes/origin/$RESULT_BRANCH"
+          git worktree add -b brrk-0054-result-work "$RESULT_ROOT" "origin/$RESULT_BRANCH"
+          mkdir -p "$RESULT_DIR"
+          for f in RUN_ATTEMPT.marker METHOD_RESULT.json EXECUTION.json RUN_ONCE.marker; do
+            test ! -e "$RESULT_DIR/$f" || { echo "runtime artifact already exists: $f"; exit 1; }
+          done
+          git -C "$RESULT_ROOT" config user.name 'Y_Wang'
+          git -C "$RESULT_ROOT" config user.email '40142450+alexwang91@users.noreply.github.com'
+      - name: Create and durably persist attempt marker before measurement
+        run: |
+          python -m research.brrk_leadership_4h_native_readiness_0054.run_once start-attempt \
+            --payload "$PAYLOAD" \
+            --result "$RESULT_DIR/METHOD_RESULT.json" \
+            --execution "$RESULT_DIR/EXECUTION.json" \
+            --attempt "$RESULT_DIR/RUN_ATTEMPT.marker" \
+            --marker "$RESULT_DIR/RUN_ONCE.marker" \
+            --expected-head-sha "$CONTROLLED_HEAD"
+          git -C "$RESULT_ROOT" add research/brrk_leadership_4h_native_readiness_0054/RUN_ATTEMPT.marker
+          git -C "$RESULT_ROOT" commit -m 'Research execution: persist 0054 attempt marker before methodology measurement'
+          git -C "$RESULT_ROOT" push origin HEAD:"$RESULT_BRANCH"
+          git fetch origin "$RESULT_BRANCH:refs/remotes/origin/$RESULT_BRANCH"
+          git show "origin/$RESULT_BRANCH:research/brrk_leadership_4h_native_readiness_0054/RUN_ATTEMPT.marker" >/tmp/0054_remote_attempt.marker
+          grep -q 'CLOSED_TO_RECOMPUTATION' /tmp/0054_remote_attempt.marker
+      - name: Execute unique real-payload methodology measurement
+        run: |
+          python -m research.brrk_leadership_4h_native_readiness_0054.run_once evaluate \
+            --payload "$PAYLOAD" \
+            --result "$RESULT_DIR/METHOD_RESULT.json" \
+            --execution "$RESULT_DIR/EXECUTION.json" \
+            --attempt "$RESULT_DIR/RUN_ATTEMPT.marker" \
+            --marker "$RESULT_DIR/RUN_ONCE.marker" \
+            --expected-head-sha "$CONTROLLED_HEAD" | tee /tmp/0054_method_result_stdout.json
+          test -f "$RESULT_DIR/METHOD_RESULT.json"
+          test -f "$RESULT_DIR/EXECUTION.json"
+          test ! -f "$RESULT_DIR/RUN_ONCE.marker"
+      - name: Durably persist method result and execution before final marker
+        run: |
+          git -C "$RESULT_ROOT" add \
+            research/brrk_leadership_4h_native_readiness_0054/METHOD_RESULT.json \
+            research/brrk_leadership_4h_native_readiness_0054/EXECUTION.json
+          git -C "$RESULT_ROOT" commit -m 'Research execution: persist unique 0054 methodology result and execution'
+          git -C "$RESULT_ROOT" push origin HEAD:"$RESULT_BRANCH"
+          git fetch origin "$RESULT_BRANCH:refs/remotes/origin/$RESULT_BRANCH"
+          git show "origin/$RESULT_BRANCH:research/brrk_leadership_4h_native_readiness_0054/METHOD_RESULT.json" >/tmp/0054_remote_method_result.json
+          git show "origin/$RESULT_BRANCH:research/brrk_leadership_4h_native_readiness_0054/EXECUTION.json" >/tmp/0054_remote_execution.json
+      - name: Finalize marker from persisted hashes without remeasurement
+        run: |
+          python -m research.brrk_leadership_4h_native_readiness_0054.run_once finalize \
+            --payload "$PAYLOAD" \
+            --result "$RESULT_DIR/METHOD_RESULT.json" \
+            --execution "$RESULT_DIR/EXECUTION.json" \
+            --attempt "$RESULT_DIR/RUN_ATTEMPT.marker" \
+            --marker "$RESULT_DIR/RUN_ONCE.marker" \
+            --expected-head-sha "$CONTROLLED_HEAD"
+          test -f "$RESULT_DIR/RUN_ONCE.marker"
+          git -C "$RESULT_ROOT" add research/brrk_leadership_4h_native_readiness_0054/RUN_ONCE.marker
+          git -C "$RESULT_ROOT" commit -m 'Research execution: finalize 0054 exactly-once marker without remeasurement'
+          git -C "$RESULT_ROOT" push origin HEAD:"$RESULT_BRANCH"
+      - name: Verify final persisted bundle
+        run: |
+          git fetch origin "$RESULT_BRANCH:refs/remotes/origin/$RESULT_BRANCH"
+          for f in RUN_ATTEMPT.marker METHOD_RESULT.json EXECUTION.json RUN_ONCE.marker; do
+            git show "origin/$RESULT_BRANCH:research/brrk_leadership_4h_native_readiness_0054/$f" >"/tmp/$f"
+          done
+          grep -q 'CLOSED_TO_SAME_ID_RERUN' /tmp/RUN_ONCE.marker
+          grep -q '"post_2022_target_values_read": false' /tmp/METHOD_RESULT.json
+      - name: Upload immutable execution bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: brrk-0054-methodology-measurement-bundle
+          path: |
+            /tmp/brrk-0054-result/research/brrk_leadership_4h_native_readiness_0054/RUN_ATTEMPT.marker
+            /tmp/brrk-0054-result/research/brrk_leadership_4h_native_readiness_0054/METHOD_RESULT.json
+            /tmp/brrk-0054-result/research/brrk_leadership_4h_native_readiness_0054/EXECUTION.json
+            /tmp/brrk-0054-result/research/brrk_leadership_4h_native_readiness_0054/RUN_ONCE.marker
+          if-no-files-found: error
