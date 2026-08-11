@@ -1,0 +1,70 @@
+name: 0053 closeout CURRENT_STATE update
+
+on:
+  push:
+    branches:
+      - research/brrk-leadership-intraday-support-0053-result
+
+permissions:
+  contents: write
+
+jobs:
+  update-state:
+    if: contains(github.event.head_commit.message, 'trigger 0053 closeout state')
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/brrk-leadership-intraday-support-0053-result
+          fetch-depth: 0
+      - name: Advance authoritative 0053 immutable closeout handoff
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('docs/CURRENT_STATE.md')
+          s=p.read_text()
+          s=s.replace('Current `main` research merge: **`55c6869bacf2161df6b10ed4f82a423103952fe9`**', 'Current `main` research merge: **`4de5b8b97075d5614b2dad121b6eb0d93b4def24`**')
+          s=s.replace('Current research branch: **`research/brrk-leadership-intraday-support-0053-controlled-run`**', 'Current research branch: **`research/brrk-leadership-intraday-support-0053-result`**')
+          s=s.replace('BRRK intraday support 0053             CONTROLLED-RUN BOUNDARY / ZERO RESULT', 'BRRK intraday support 0053             FAIL_4H_DOES_NOT_SOLVE_0048_SUPPORT_CONSTRAINT / CLOSED')
+
+          old='''0053 is **label-blind support accounting only**. Numerical/data status: `PREREGISTERED_DATA_CAPTURED_NOT_MEASURED / SUPPORT-FUNNEL IMPLEMENTATION-ONLY`. At the current stage:\n\n```text\n4h data retrieval                      FIRST COMPLETE VALID CAPTURE / HASH FROZEN\n4h payload SHA256                      471b54991ae648b79433285f073ea7bc813663319b6e2389c1682dad1a319135\ncapture infrastructure attempt 1        RUN 31511625959 / HTTP 451 / ZERO DATA ROWS\ncapture endpoint                         https://data-api.binance.vision/api/v3/klines\nETH/SOL winner labels                  NOT COMPUTED\nmodel fits                             0\ncalibration fits                       0\npredictive metrics                     NONE\nportfolio runs                         0\nactual variants evaluated              0\nsupport-funnel implementation             MERGED / NOT YET EXECUTED ON FROZEN PAYLOAD\nsupport result                            ABSENT\nsupport execution marker                  ABSENT\ncontrolled support interface               PRESENT / NOT MERGED\n```'''
+          new='''0053 is **label-blind support accounting only** and is now permanently closed. Final status: `FAIL_4H_DOES_NOT_SOLVE_0048_SUPPORT_CONSTRAINT / CLOSED`.\n\n```text\n4h data retrieval                      FIRST COMPLETE VALID CAPTURE / HASH FROZEN\n4h payload SHA256                      471b54991ae648b79433285f073ea7bc813663319b6e2389c1682dad1a319135\ncapture infrastructure attempt 1       RUN 31511625959 / HTTP 451 / ZERO DATA ROWS\ncapture endpoint                        https://data-api.binance.vision/api/v3/klines\nunique support run                      31515648029 / attempt 1\nunique support job                      93859999438\ncontrolled execution HEAD               4de5b8b97075d5614b2dad121b6eb0d93b4def24\nactual variants evaluated               1\nTrack A formal rows                     1468\nTrack A complete 336-row blocks         4 / required 12\nTrack B diagnostic complete blocks      98\nTrack C diagnostic complete blocks      16\nETH/SOL winner labels                   NOT COMPUTED\nmodel fits                              0\ncalibration fits                        0\npredictive metrics                      NONE\nportfolio runs                          0\nfinal marker                            VALID_SUPPORT_MEASUREMENT_COMPLETE_CLOSED_TO_SAME_ID_RERUN\nsame-ID rerun allowed                   false\nsame-ID retuning allowed                false\nsame-ID rescue allowed                  false\n```'''
+          if old not in s:
+              raise SystemExit('expected 0053 pre-result state block not found')
+          s=s.replace(old,new)
+
+          anchor='''0053 will not compute AUC, NLL, Brier, winner labels, realized margin, fitted calibration, confidence thresholds or portfolio economics.\n'''
+          result_section='''\n### 0053 immutable support result\n\nPrimary Track A preserved the complete 0048 economic-time semantics: 2,190 eligible matured training origins, 2,190 matured shadow origins, a 168-bar refit grid, 336-bar target maturity and 336 ordered eligible formal rows per 56-day-equivalent dependence block. It produced 1,468 formal rows but only **4** complete blocks, below the frozen minimum 12.\n\nThe critical comparison is:\n\n```text\n0048 daily formal rows                  245\n0053 Track A 4h formal rows             1468\nrow ratio                               5.9918x\n0048 complete 56-day blocks             4\n0053 Track A complete 336-row blocks    4\nnet effective-block gain                0\n```\n\nThus four-hour sampling multiplied rows almost exactly by six but did not increase the frozen calendar-time support.\n\nTrack B produced 98 blocks only because its diagnostic block length is 56 **4h** rows (~9.3 days); it is row-frequency inflation and has zero primary authority.\n\nTrack C preserved the honest 336-row/56-day dependence block while using 365 4h origins for training and shadow support. It started formal support on 2022-02-15 and produced **16** complete blocks. This is strong diagnostic evidence that the two long 2,190-origin burn-ins are the dominant support bottleneck. Track C is not a rescue rule and cannot be promoted under 0053.\n\n0053 performed no ETH/SOL labels, predictive model, calibration, predictive metric or portfolio economics. Any continuation requires a new research ID. The exposed Track C=16 result cannot simply be chosen as the next burn-in because it is now result-informed evidence.\n'''
+          if result_section.strip() not in s:
+              s=s.replace(anchor,anchor+result_section)
+
+          # Replace stale roadmap condition after measurement.
+          stale='''If and only if Track A proves 4h dependence-aware support feasible, a **separately preregistered new predictive research ID** may study 4h ETH/SOL leadership. If Track A fails, 4h does not solve the original support problem under calendar-equivalent semantics.'''
+          fresh='''Track A failed: strict 4h calendar-equivalent support does not solve the 0048 constraint. A direct 4h predictive-leadership stage is therefore not unlocked from Track A. Track C indicates that a separately preregistered **4h-native effective-sample / burn-in methodology** study is worth considering before any new predictive model; it must treat the observed 365/365/336 -> 16-block diagnostic as exposed evidence rather than a parameter to copy.'''
+          s=s.replace(stale,fresh)
+
+          # Replace stale no-data and next-step language.
+          s=s.replace("No complete 4h dataset has yet been captured under 0053. One infrastructure-only U.S. GitHub-runner attempt returned HTTP 451 before the first row and created no payload/hash/exposure. The pre-exposure capture contract now uses Binance's official market-data-only base `data-api.binance.vision` with the same `/api/v3/klines` resource.", "The immutable 4h payload was successfully captured and measured once under 0053. The earlier U.S.-runner HTTP-451 event remains preserved as a zero-row infrastructure failure before data exposure. The final 0053 support result creates no predictive or production authority.")
+
+          # Replace old exact-next-step list with closed-state next step.
+          start=s.find('## 8. Exact next step')
+          end=s.find('---\n\n## 9. Key authority files', start)
+          if start==-1 or end==-1:
+              raise SystemExit('CURRENT_STATE next-step section not found')
+          replacement='''## 8. Exact next step\n\n0053 is permanently closed; do not rerun, retune or rescue it. Do not start 0049 concentration research from 0048/0053.\n\nThe recommended next scientific branch, if pursued, is a **new research ID** for 4h-native effective-sample / burn-in methodology. It must justify training/calibration support from statistical dependence and model dimensionality before fitting any ETH/SOL predictive model. It must treat all 0053 Track A/B/C counts as already exposed evidence and cannot simply adopt the diagnostic 365/365 choice because Track C produced 16 blocks.\n\n'''
+          s=s[:start]+replacement+s[end:]
+
+          # Remove stale implementation/boundary appendices and replace with immutable closure.
+          idx=s.find('## 10. 0053 zero-result implementation boundary')
+          if idx!=-1:
+              s=s[:idx]
+          s += '''## 10. 0053 immutable execution identity and closure\n\n```text\ndesign merge                            195386b5610056d752a73d20c7e74a1557207c95\nprereg merge                            ed3c22f0e3f562498f483ce5f1bb634f8f9b9e4e\ncapture-source amendment               0111d7c681593f34ea926443dbc13a9caa98f18d\ndata-capture merge                      36a517ecde6bb908101c14edea3695012ec781e4\nimplementation merge                    55c6869bacf2161df6b10ed4f82a423103952fe9\ncontrolled-run merge                    4de5b8b97075d5614b2dad121b6eb0d93b4def24\nexecution run                           31515648029 / attempt 1\nexecution job                           93859999438\npayload SHA256                          471b54991ae648b79433285f073ea7bc813663319b6e2389c1682dad1a319135\nsupport-result SHA256                   8228dfb88dc609289c53072a28dcb127b30d866b22d88704eb15c726eca841e5\nfinal status                            FAIL_4H_DOES_NOT_SOLVE_0048_SUPPORT_CONSTRAINT / CLOSED\n```\n\n```text\npredictive leadership established      false\n0049 concentration unlocked             false\n0048 rescue executed                    false\ncanonical BRRK changed                  false\nPhase 6 changed                         false\nproduction_authorized                   false\nsignature_authorized                    false\norder_submission_authorized             false\nsame-ID rerun allowed                   false\nsame-ID retuning allowed                false\nsame-ID rescue allowed                  false\n```\n'''
+          p.write_text(s)
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs/CURRENT_STATE.md
+          git commit -m 'Docs [DRIFT_0]: close CURRENT_STATE on immutable 0053 support result'
+          git rm .github/workflows/_tmp_0053_closeout_state.yml .0053_closeout_state_trigger
+          git commit -m 'Governance tooling: remove temporary 0053 closeout-state writer'
+          git push origin HEAD:research/brrk-leadership-intraday-support-0053-result
