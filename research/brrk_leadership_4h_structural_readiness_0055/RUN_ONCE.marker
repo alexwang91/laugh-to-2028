@@ -1,0 +1,15 @@
+{
+  "research_id": "BRRK-LEADERSHIP-4H-STRUCTURAL-READINESS-0055",
+  "status": "VALID_METHODOLOGY_MEASUREMENT_COMPLETE_CLOSED_TO_SAME_ID_RERUN",
+  "completed_at_utc": "2026-08-11T21:17:50Z",
+  "git_head_sha": "bf486fcbebb54ebd84941ea78f825cdba3f58ede",
+  "payload_sha256": "471b54991ae648b79433285f073ea7bc813663319b6e2389c1682dad1a319135",
+  "attempt_marker_sha256": "6532caff0944e87c81794a55e3c57cbcd1fca7e0113dd517c0321687d106ab2a",
+  "method_result_sha256": "413ceda045540a8fa55852109cd99d133654676bfe0771f1a28693582e93af01",
+  "execution_sha256": "84cf0bc5d8276320550be140ebd90456e1a8255053b5347b09d9f405ec6c3b62",
+  "classification": "FAIL_4H_STRUCTURAL_3D_TRAINING_PRECISION_NOT_ESTABLISHED",
+  "same_id_rerun_allowed": false,
+  "same_id_retuning_allowed": false,
+  "same_id_rescue_allowed": false,
+  "finalized_without_remeasurement": true
+}
