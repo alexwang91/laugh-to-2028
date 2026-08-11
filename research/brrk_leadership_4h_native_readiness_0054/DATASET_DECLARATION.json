@@ -1,0 +1,32 @@
+{
+  "research_id": "BRRK-LEADERSHIP-4H-NATIVE-READINESS-0054",
+  "dataset_reuse": {
+    "dataset_slice_id": "BRRK-LEADERSHIP-INTRADAY-SUPPORT-0053-BINANCE-4H-HIST-V1",
+    "dataset_id": "BINANCE-SPOT-BTC-ETH-SOL-UTC-4H-OHLCV-TRADES",
+    "source_research_id": "BRRK-LEADERSHIP-INTRADAY-SUPPORT-0053",
+    "source_payload_path": "research/brrk_leadership_intraday_support_0053/MARKET_4H_PAYLOAD.json",
+    "source_payload_sha256": "471b54991ae648b79433285f073ea7bc813663319b6e2389c1682dad1a319135",
+    "start": "2020-08-11T04:00:00Z",
+    "end": "2026-08-02T20:00:00Z",
+    "resolution": "4H",
+    "network_fetch_allowed": false,
+    "replacement_allowed": false,
+    "researcher_exposed_history": true,
+    "independent_oos": false
+  },
+  "methodology_target_policy": {
+    "maximum_target_horizon_bars": 336,
+    "latest_allowed_target_path_end": "2022-12-31T20:00:00Z",
+    "reserved_target_suffix_start": "2023-01-01T00:00:00Z",
+    "post_2022_target_values_allowed": false,
+    "reserved_suffix_label_blind_fields_allowed": [
+      "timestamp",
+      "feature_valid",
+      "btc_fast_4h_eligible",
+      "full_336_bar_future_availability"
+    ],
+    "winner_label_or_margin_allowed_in_reserved_suffix": false
+  },
+  "predictive_performance_executed": false,
+  "portfolio_economics_executed": false
+}
