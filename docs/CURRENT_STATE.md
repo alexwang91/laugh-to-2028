@@ -2,8 +2,8 @@
 
 Last updated: **2026-08-11**  
 Authoritative repository: `alexwang91/laugh-to-2028`  
-Current `main` research merge: **`c3cfbbe53317c46c3caf6fc4a1ef0a07030b86e9`**  
-Current research branch: **`research/brrk-leadership-4h-structural-readiness-0055-controlled-run`**  
+Current `main` research merge: **`bf486fcbebb54ebd84941ea78f825cdba3f58ede`**  
+Current research branch: **`research/brrk-leadership-4h-structural-readiness-0055-result`**  
 Status of this document: **AUTHORITATIVE OPERATING SNAPSHOT**
 
 > GitHub `main`, immutable research artifacts and machine registries remain the sources of truth. This file is the compact human handoff, not a substitute for preregistration, execution, evidence, recovery or closeout artifacts.
@@ -38,7 +38,7 @@ BRRK Beta handoff event study 0047    FAIL_NO_RECURRENT_DURABLE_HANDOFF_STRUCTUR
 BRRK leadership rotation 0048         MEASUREMENT_INCONCLUSIVE_INSUFFICIENT_SUPPORT / CLOSED
 BRRK intraday support 0053             FAIL_4H_DOES_NOT_SOLVE_0048_SUPPORT_CONSTRAINT / CLOSED
 BRRK 4h-native readiness 0054          FAIL_4H_NATIVE_TRAINING_PRECISION_NOT_ESTABLISHED / CLOSED
-BRRK 4h structural readiness 0055     CONTROLLED-RUN BOUNDARY / ZERO RESULT / REAL MEASUREMENT NOT RUN
+BRRK 4h structural readiness 0055     FAIL_4H_STRUCTURAL_3D_TRAINING_PRECISION_NOT_ESTABLISHED / CLOSED
 
 Canonical BRRK-0011                    NO CHANGE
 Phase 7                                MONITOR_ONLY / LAUNCH BLOCKED
@@ -470,3 +470,28 @@ same-ID rerun / retune / rescue          false / false / false
 ```
 
 The binding failure is estimator precision, not inability to reach the 672 numerical floor and not HAC/Hessian numerical breakdown. The exact 7-feature 4h estimator is therefore **not eligible** for the preserved post-2022 predictive study under 0054. Descriptive post-result minimum interval widths are preserved in `CLOSEOUT.json` but have no threshold-selection authority. Any continuation requires a new preregistered methodology/mechanism ID; do not loosen 0054 thresholds or adopt a fixed burn-in as a same-ID rescue.
+
+## 12. 0055 immutable structural-readiness result and closure
+
+```text
+research id                              BRRK-LEADERSHIP-4H-STRUCTURAL-READINESS-0055
+execution HEAD                           bf486fcbebb54ebd84941ea78f825cdba3f58ede
+GitHub Actions run                       31537171602 / attempt 1
+classification                           FAIL_4H_STRUCTURAL_3D_TRAINING_PRECISION_NOT_ESTABLISHED
+first admissible matured eligible        681
+first admissible P90 / max width         0.7288994961 / 0.8009876114
+frozen P90 / max gates                   0.10 / 0.20
+best exposed descriptive P90 / max       0.6799756259 / 0.6933014790
+latest matured eligible                  1207
+latest P90 / max width                   0.9216963694 / 0.9772750556
+training readiness                       NOT ESTABLISHED
+calibration readiness                    NOT ELIGIBLE
+reserved support                         NOT ELIGIBLE
+post-2022 target values read             false
+predictive metrics executed              false
+portfolio economics executed             false
+same-ID rerun / retune / rescue          false / false / false
+```
+
+The prospectively fixed 7D-to-3D representation did not establish the unchanged 0054 training-precision gate. This is a methodology failure, not a predictive-performance test. No predictive study, concentration study, portfolio translation, canonical change or production authority is created. Any continuation requires a new research ID.
+
