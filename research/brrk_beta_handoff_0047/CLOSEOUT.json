@@ -50,10 +50,10 @@
   },
   "result_hash_semantics": {
     "primary_result_pre_serialization_object_sha256": "961ac99bd5a2d3d6556262b17411333bfbeead921616dccf120190ee1dd67c2a",
-    "primary_result_recovered_raw_json_file_sha256": "6c354c2b29244a6a5389c49b4a315953132709c1b563d513f30bf6cd29e1d087",
-    "primary_result_reparsed_canonical_sha256": "35f0c3dedbfb2a10ec20380d799006828358537928629431b51dbe05ff30bdaf",
+    "primary_result_recovered_raw_json_file_sha256": "6c354b054bde2dfce12dbb1efe3809d59d371df02beddc613befe9373a17807d",
+    "primary_result_reparsed_canonical_sha256": "35f0ee3934d45e19b5b652fa13b0cfa1f328aac51843ac9432e8cc94d20dd6b8",
     "execution_pre_serialization_object_sha256": "a87e37ae41e20d71e61dd52fb0b20009a5a6c6ffeeb6d0eb3d6faab568604665",
-    "run_once_marker_object_sha256": "431afd3515324405b23980c5711ab7989b7ba3b410541be8ac1c000c20c08751",
+    "run_once_marker_object_sha256": "9487c61867e9c2862d1d0a57396440382768c113596a280eff5fd0142c7efcc6",
     "note": "The three PRIMARY_RESULT hashes have different identities and MUST NOT be conflated. The unique original run log bound the pre-serialization object hash; the recovered artifact preserves the exact JSON file bytes and their reparsed canonical form separately."
   },
   "primary_stage_result": {

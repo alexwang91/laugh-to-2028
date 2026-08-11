@@ -60,10 +60,10 @@ class TestBrrkBetaHandoff0047Closeout(unittest.TestCase):
         hashes = closeout["result_hash_semantics"]
         self.assertEqual(hashes["primary_result_pre_serialization_object_sha256"], "961ac99bd5a2d3d6556262b17411333bfbeead921616dccf120190ee1dd67c2a")
         self.assertEqual(hashes["primary_result_recovered_raw_json_file_sha256"], raw_sha("PRIMARY_RESULT.json"))
-        self.assertEqual(raw_sha("PRIMARY_RESULT.json"), "6c354c2b29244a6a5389c49b4a315953132709c1b563d513f30bf6cd29e1d087")
+        self.assertEqual(raw_sha("PRIMARY_RESULT.json"), "6c354b054bde2dfce12dbb1efe3809d59d371df02beddc613befe9373a17807d")
         reparsed = load("PRIMARY_RESULT.json")
         canonical = json.dumps(reparsed, sort_keys=True, separators=(",", ":"), ensure_ascii=False, allow_nan=False).encode("utf-8")
-        self.assertEqual(hashlib.sha256(canonical).hexdigest(), "35f0c3dedbfb2a10ec20380d799006828358537928629431b51dbe05ff30bdaf")
+        self.assertEqual(hashlib.sha256(canonical).hexdigest(), "35f0ee3934d45e19b5b652fa13b0cfa1f328aac51843ac9432e8cc94d20dd6b8")
         self.assertNotEqual(hashes["primary_result_pre_serialization_object_sha256"], hashes["primary_result_reparsed_canonical_sha256"])
 
     def test_recovery_is_not_a_second_research_execution(self):

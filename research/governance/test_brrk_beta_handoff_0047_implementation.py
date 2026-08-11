@@ -279,6 +279,7 @@ class TestBrrkBetaHandoff0047Implementation(unittest.TestCase):
 
     def test_run_interface_freezes_zero_result_zero_model_zero_portfolio_authority(self):
         interface = json.loads((HERE / "RUN_INTERFACE.json").read_text())
+        # RUN_INTERFACE remains immutable pre-result evidence after closeout.
         self.assertEqual(interface["status"], "IMPLEMENTED_PRE_RESULT_NOT_RUN")
         self.assertEqual(interface["actual_variants_evaluated"], 0)
         self.assertEqual(interface["frozen_causal_trend"]["horizons"], [20, 60, 120, 240])
@@ -291,8 +292,25 @@ class TestBrrkBetaHandoff0047Implementation(unittest.TestCase):
         self.assertFalse(interface["authority"]["portfolio_allocation_tested"])
         self.assertFalse(interface["authority"]["portfolio_economics_executed"])
         self.assertFalse(interface["authority"]["production_authorized"])
-        for forbidden in ("PRIMARY_RESULT.json", "EXECUTION.json", "RUN_ONCE.marker", "RESULT.md"):
-            self.assertFalse((HERE / forbidden).exists())
+
+        if (HERE / "CLOSEOUT.json").exists():
+            for required in (
+                "PRIMARY_RESULT.json", "EXECUTION.json", "RUN_ONCE.marker", "RESULT_SUMMARY.json",
+                "EVIDENCE_RECOVERY.json", "CLOSEOUT.json", "RESULT.md",
+            ):
+                self.assertTrue((HERE / required).exists(), required)
+            closeout = json.loads((HERE / "CLOSEOUT.json").read_text())
+            self.assertEqual(closeout["result_status"], "FAIL_NO_RECURRENT_DURABLE_HANDOFF_STRUCTURE")
+            self.assertFalse(closeout["closure"]["same_id_rerun_allowed"])
+            self.assertFalse(closeout["closure"]["same_id_retuning_allowed"])
+            self.assertFalse(closeout["closure"]["same_id_rescue_allowed"])
+            self.assertFalse(closeout["authority"]["duration_aware_handoff_model_fitted"])
+            self.assertFalse(closeout["authority"]["portfolio_allocation_tested"])
+            self.assertFalse(closeout["authority"]["portfolio_economics_executed"])
+        else:
+            for forbidden in ("PRIMARY_RESULT.json", "EXECUTION.json", "RUN_ONCE.marker", "RESULT.md"):
+                self.assertFalse((HERE / forbidden).exists())
+
 
     def test_implementation_source_has_no_portfolio_or_hazard_model_translation(self):
         source = (HERE / "engine.py").read_text() + "\n" + (HERE / "run_once.py").read_text()
