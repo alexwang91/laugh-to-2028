@@ -1,0 +1,128 @@
+name: 0053 unique controlled support measurement
+
+on:
+  push:
+    branches:
+      - research/brrk-leadership-intraday-support-0053-execute-once
+
+permissions:
+  contents: write
+
+jobs:
+  measure-once:
+    if: contains(github.event.head_commit.message, 'trigger 0053 exactly once support measurement')
+    runs-on: ubuntu-24.04
+    env:
+      PYTHONHASHSEED: '0'
+      OMP_NUM_THREADS: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      NUMEXPR_NUM_THREADS: '1'
+      CONTROLLED_SHA: '4de5b8b97075d5614b2dad121b6eb0d93b4def24'
+      RESULT_BRANCH: 'research/brrk-leadership-intraday-support-0053-result'
+    steps:
+      - name: Checkout exact frozen controlled-run merge
+        uses: actions/checkout@v4
+        with:
+          ref: 4de5b8b97075d5614b2dad121b6eb0d93b4def24
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: execution/plan-b-bot/requirements-dev.txt
+      - name: Install pinned runtime
+        run: pip install -r execution/plan-b-bot/requirements-dev.txt
+      - name: Verify detached exact HEAD and zero-result preflight
+        run: |
+          test "$(git rev-parse HEAD)" = "$CONTROLLED_SHA"
+          python -m research.brrk_leadership_intraday_support_0053.run_once preflight \
+            --payload research/brrk_leadership_intraday_support_0053/MARKET_4H_PAYLOAD.json \
+            --result research/brrk_leadership_intraday_support_0053/SUPPORT_RESULT.json \
+            --execution research/brrk_leadership_intraday_support_0053/EXECUTION.json \
+            --attempt research/brrk_leadership_intraday_support_0053/RUN_ATTEMPT.marker \
+            --marker research/brrk_leadership_intraday_support_0053/RUN_ONCE.marker \
+            --expected-head-sha "$CONTROLLED_SHA"
+      - name: Prepare durable result worktree
+        run: |
+          git fetch origin "$RESULT_BRANCH"
+          git worktree add --detach /tmp/0053-result "origin/$RESULT_BRANCH"
+          git -C /tmp/0053-result config user.name 'github-actions[bot]'
+          git -C /tmp/0053-result config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+      - name: Execute unique label-blind support measurement with durable create-only persistence
+        env:
+          GITHUB_RESULT_BRANCH: ${{ env.RESULT_BRANCH }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          import shutil
+          import subprocess
+          from pathlib import Path
+
+          from research.brrk_leadership_intraday_support_0053 import run_once
+
+          result_root = Path('/tmp/0053-result')
+          original_write = run_once._write_create_only
+          artifact_names = {
+              'RUN_ATTEMPT.marker': 'attempt',
+              'SUPPORT_RESULT.json': 'support-result',
+              'EXECUTION.json': 'execution',
+              'RUN_ONCE.marker': 'final-marker',
+          }
+
+          def durable_write(path: Path, value):
+              original_write(path, value)
+              rel = path.resolve().relative_to(run_once.ROOT.resolve())
+              dest = result_root / rel
+              dest.parent.mkdir(parents=True, exist_ok=True)
+              if dest.exists():
+                  raise RuntimeError(f'result-branch create-only violation: {rel}')
+              shutil.copy2(path, dest)
+              subprocess.check_call(['git','-C',str(result_root),'add',str(rel)])
+              label = artifact_names.get(path.name, path.name)
+              subprocess.check_call(['git','-C',str(result_root),'commit','-m',f'Research measurement [DRIFT_0]: persist 0053 {label}'])
+              subprocess.check_call(['git','-C',str(result_root),'push','origin',f'HEAD:refs/heads/{os.environ["GITHUB_RESULT_BRANCH"]}'])
+              print(f'DURABLY_PERSISTED={rel}')
+
+          run_once._write_create_only = durable_write
+          base = Path('research/brrk_leadership_intraday_support_0053')
+          out = run_once.evaluate(
+              payload=base/'MARKET_4H_PAYLOAD.json',
+              result=base/'SUPPORT_RESULT.json',
+              execution=base/'EXECUTION.json',
+              attempt=base/'RUN_ATTEMPT.marker',
+              marker=base/'RUN_ONCE.marker',
+              expected_head_sha=os.environ['CONTROLLED_SHA'],
+          )
+          print('UNIQUE_0053_SUPPORT_RESULT='+json.dumps(out, sort_keys=True, separators=(',',':')))
+          PY
+      - name: Verify final local bundle
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('research/brrk_leadership_intraday_support_0053')
+          required=['RUN_ATTEMPT.marker','SUPPORT_RESULT.json','EXECUTION.json','RUN_ONCE.marker']
+          missing=[n for n in required if not (p/n).exists()]
+          if missing: raise SystemExit(f'missing final bundle: {missing}')
+          r=json.loads((p/'SUPPORT_RESULT.json').read_text())
+          print('CLASSIFICATION='+r['classification'])
+          for name in ['A','B','C']:
+              t=r['measurement']['tracks'][name]
+              print(f'TRACK_{name}_FORMAL_ROWS={t["formal_rows"]}')
+              print(f'TRACK_{name}_COMPLETE_BLOCKS={t["complete_blocks"]}')
+          print('WINNER_LABELS_EXECUTED='+str(r['authority']['winner_labels_executed']).lower())
+          print('PREDICTIVE_MODEL_EXECUTED='+str(r['authority']['predictive_model_executed']).lower())
+          PY
+      - name: Upload immutable execution bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: brrk-0053-support-measurement-bundle
+          path: |
+            research/brrk_leadership_intraday_support_0053/RUN_ATTEMPT.marker
+            research/brrk_leadership_intraday_support_0053/SUPPORT_RESULT.json
+            research/brrk_leadership_intraday_support_0053/EXECUTION.json
+            research/brrk_leadership_intraday_support_0053/RUN_ONCE.marker
+          if-no-files-found: error
+          retention-days: 90
