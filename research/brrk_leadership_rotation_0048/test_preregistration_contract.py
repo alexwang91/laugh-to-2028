@@ -78,9 +78,12 @@ class PreregistrationContractTest(unittest.TestCase):
         self.assertIn("No canonical BRRK modification", text)
         self.assertFalse(prereg["production_authorized"])
 
-    def test_preregistration_stage_has_no_implementation_or_result_files(self):
+    def test_implementation_stage_has_engine_but_still_no_run_or_result_files(self):
+        present = {p.name for p in HERE.iterdir() if p.is_file()}
+        self.assertIn("engine.py", present)
+        self.assertIn("test_engine_contract.py", present)
+        self.assertIn("IMPLEMENTATION_BOUNDARY.json", present)
         forbidden = {
-            "engine.py",
             "run_once.py",
             "RUN_INTERFACE.json",
             "PRIMARY_RESULT.json",
@@ -91,8 +94,13 @@ class PreregistrationContractTest(unittest.TestCase):
             "portfolio.py",
             "portfolio_result.json",
         }
-        present = {p.name for p in HERE.iterdir() if p.is_file()}
         self.assertTrue(forbidden.isdisjoint(present), sorted(forbidden & present))
+        boundary = load(HERE / "IMPLEMENTATION_BOUNDARY.json")
+        self.assertEqual(boundary["stage"], "IMPLEMENTATION_ONLY_ZERO_RESULT")
+        self.assertFalse(boundary["historical_scientific_execution_authorized"])
+        self.assertEqual(boundary["actual_variants_evaluated"], 0)
+        self.assertEqual(boundary["result_status"], "PREREGISTERED_NOT_RUN")
+        self.assertFalse(boundary["production_authorized"])
 
     def test_dataset_source_is_0047_hash_bound_not_new_oos(self):
         declaration = load(HERE / "DATASET_DECLARATION.json")
