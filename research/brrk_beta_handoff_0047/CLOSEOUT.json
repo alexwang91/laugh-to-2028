@@ -1,0 +1,152 @@
+{
+  "research_id": "BRRK-BETA-HANDOFF-EVENT-STUDY-0047",
+  "closeout_status": "FAIL_NO_RECURRENT_DURABLE_HANDOFF_STRUCTURE / CLOSED",
+  "result_status": "FAIL_NO_RECURRENT_DURABLE_HANDOFF_STRUCTURE",
+  "evidence_class": "RESEARCHER_EXPOSED_DEVELOPMENT_HISTORY_NOT_INDEPENDENT_OOS",
+  "design_merge_sha": "398b7ec3f78f602461787b1b45e8d5041729e126",
+  "preregistration_merge_sha": "80c0d3cb7339012cac74e20563e07c7139ba3031",
+  "immutable_pre_result_implementation_sha": "341e0b75595baef26823debe4f29a338eda63f5c",
+  "market_evidence_commit_sha": "6fee45aea85a2a6339b97269ef551d884b2dfa61",
+  "market_payload_sha256": "d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193",
+  "market_common_start": "2020-08-11",
+  "market_common_end": "2026-08-02",
+  "market_common_daily_sessions": 2183,
+  "unique_scientific_execution": {
+    "github_actions_run_id": 31444910921,
+    "github_actions_job_id": 93636897419,
+    "run_attempt": 1,
+    "controlled_head_sha": "7c79f62e657c492afcb98be6c637905b2156f244",
+    "evaluation_step": "Execute exactly one frozen 0047 anatomy evaluation",
+    "evaluation_step_completed_successfully": true,
+    "actual_variants_evaluated": 1,
+    "same_id_research_rerun_allowed": false
+  },
+  "post_result_persistence_failure": {
+    "occurred_after_successful_unique_evaluation": true,
+    "failed_step": "Freeze post-evaluation invariants without changing the result",
+    "root_cause": "The pre-serialization PRIMARY_RESULT object contains integer episode_intercepts dictionary keys. JSON persistence coerces object keys to strings, so canonical hashing after json.loads is not equal to the pre-serialization object hash stored in EXECUTION.json.",
+    "scientific_classification_affected": false,
+    "stage_gate_logic_affected": false,
+    "market_data_affected": false,
+    "same_id_rerun_performed": false
+  },
+  "hash_locked_evidence_recovery": {
+    "github_actions_run_id": 31445193701,
+    "github_actions_job_id": 93638056435,
+    "recovery_commit_sha": "8b813d7e25130ff47585e928e67c2c11a13205f2",
+    "recovery_type": "EVIDENCE_RECOVERY_NOT_NEW_RESEARCH_EXECUTION",
+    "new_research_execution": false,
+    "actual_variants_before_recovery": 1,
+    "actual_variants_after_recovery": 1,
+    "recovery_hash_match": true
+  },
+  "official_recovery_artifact": {
+    "artifact_id": 9084248250,
+    "name": "brrk-beta-handoff-0047-recovered-unique-result",
+    "digest": "sha256:b1992fa56b78a1a5807a156c8a483c0f035290669ff0e04095481d11000cde66",
+    "source_run_id": 31445193701,
+    "size_bytes": 487959,
+    "expired": false
+  },
+  "result_hash_semantics": {
+    "primary_result_pre_serialization_object_sha256": "961ac99bd5a2d3d6556262b17411333bfbeead921616dccf120190ee1dd67c2a",
+    "primary_result_recovered_raw_json_file_sha256": "6c354c2b29244a6a5389c49b4a315953132709c1b563d513f30bf6cd29e1d087",
+    "primary_result_reparsed_canonical_sha256": "35f0c3dedbfb2a10ec20380d799006828358537928629431b51dbe05ff30bdaf",
+    "execution_pre_serialization_object_sha256": "a87e37ae41e20d71e61dd52fb0b20009a5a6c6ffeeb6d0eb3d6faab568604665",
+    "run_once_marker_object_sha256": "431afd3515324405b23980c5711ab7989b7ba3b410541be8ac1c000c20c08751",
+    "note": "The three PRIMARY_RESULT hashes have different identities and MUST NOT be conflated. The unique original run log bound the pre-serialization object hash; the recovered artifact preserves the exact JSON file bytes and their reparsed canonical form separately."
+  },
+  "primary_stage_result": {
+    "total_BTC_positive_episodes": 27,
+    "target_eligible_BTC_positive_episodes": 27,
+    "primary_handoff_episodes": 12,
+    "episode_level_durable_handoff_prevalence": 0.4444444444444444,
+    "ETH_primary_handoff_episodes": 3,
+    "SOL_primary_handoff_episodes": 9,
+    "gates": {
+      "target_eligible_episode_count_ge_5": true,
+      "handoff_episode_count_ge_3": true,
+      "episode_level_prevalence_ge_0_50": false,
+      "ETH_cause_episode_count_ge_1": true,
+      "SOL_cause_episode_count_ge_1": true
+    },
+    "only_failed_hard_gate": "episode_level_prevalence_ge_0_50"
+  },
+  "dependence_aware_uncertainty": {
+    "resampling_unit": "COMPLETE_BTC_POSITIVE_EPISODE",
+    "replicates": 10000,
+    "seed": 470047,
+    "prevalence_bootstrap_p2_5": 0.25925925925925924,
+    "prevalence_bootstrap_median": 0.4444444444444444,
+    "prevalence_bootstrap_p97_5": 0.6296296296296297
+  },
+  "non_gating_diagnostics": {
+    "handoff_state_age": {
+      "n": 12,
+      "min": 1,
+      "q25": 1.0,
+      "median": 1.0,
+      "q75": 1.75,
+      "max": 66,
+      "events_at_state_age_1": 8
+    },
+    "handoff_opportunity_spell": {
+      "n": 12,
+      "min": 1,
+      "q25": 1.0,
+      "median": 2.5,
+      "q75": 4.25,
+      "max": 47
+    },
+    "pooled_cross_correlation": {
+      "BTC_ETH_peak_lag": 0,
+      "BTC_ETH_peak_correlation": 0.7689590616971782,
+      "BTC_SOL_peak_lag": 0,
+      "BTC_SOL_peak_correlation": 0.5425798452470024,
+      "lag_semantics": "corr(BTC_t, ALT_t_plus_lag); positive lag means BTC leads"
+    },
+    "VAR7": {
+      "status": "OK",
+      "rows": 1103,
+      "episode_count": 13,
+      "spectral_radius": 0.7206946901073571,
+      "stable_companion": true,
+      "six_direction_Granger_Wald_status": "ALL_SIX_OK_AND_DESCRIPTIVE_NON_GATING"
+    },
+    "one_switch_oracle": {
+      "episodes_with_positive_oracle_uplift": 17,
+      "total_episodes": 27,
+      "positive_oracle_uplift_without_frozen_durable_handoff": 7,
+      "role": "HINDSIGHT_OPPORTUNITY_BOUND_NOT_TRADABLE_NOT_OOS_NON_GATING"
+    }
+  },
+  "interpretation_boundary": [
+    "0047 FAIL means the exact frozen durable-handoff structure did not meet the preregistered recurrence threshold of 50 percent across canonical BTC-positive episodes.",
+    "0047 does NOT establish that BTC-to-Beta leadership rotation is absent or economically useless; 12 durable handoff episodes, both ETH and SOL causes, and positive one-switch oracle opportunity in 17 of 27 episodes remain descriptive evidence.",
+    "The preregistered 0048-style duration-aware competing-risk model stage is NOT eligible from this 0047 lineage because the required 0047 PASS did not occur.",
+    "Any alternative episode definition, target architecture, state clock, model, fixed-delay rule, BOCPD variant or portfolio allocation must use a new research ID and new preregistration."
+  ],
+  "immutable_negative_evidence": [
+    "The primary prevalence gate failed: 12/27 = 44.4444 percent, below the frozen 50 percent requirement.",
+    "Most durable handoffs occurred at state age 1, showing that the canonical BTC-positive episode clock often restarts after Beta leadership is already present rather than cleanly observing a later transition from an initial BTC-lead state.",
+    "Pooled daily BTC/ETH and BTC/SOL cross-correlation peaks were contemporaneous at lag 0, not at a fixed positive BTC-leading delay.",
+    "Seven episodes had positive one-switch oracle uplift despite no frozen durable-handoff label, so the dual-horizon target does not exhaust the descriptive economic opportunity set. This is diagnostic only and cannot rescue 0047."
+  ],
+  "authority": {
+    "duration_aware_handoff_model_stage_eligible": false,
+    "duration_aware_handoff_model_fitted": false,
+    "portfolio_allocation_tested": false,
+    "portfolio_economics_executed": false,
+    "canonical_strategy_changed": false,
+    "phase6_observation_changed": false,
+    "production_authorized": false,
+    "signature_authorized": false,
+    "order_submission_authorized": false
+  },
+  "closure": {
+    "same_id_rerun_allowed": false,
+    "same_id_retuning_allowed": false,
+    "same_id_rescue_allowed": false,
+    "result_informed_definition_change_requires_new_research_id": true
+  }
+}
