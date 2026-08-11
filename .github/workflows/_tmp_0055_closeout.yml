@@ -1,0 +1,94 @@
+name: 0055 read-only closeout
+
+on:
+  push:
+    branches:
+      - research/brrk-leadership-4h-structural-readiness-0055-result
+
+permissions:
+  contents: write
+
+jobs:
+  closeout:
+    if: contains(github.event.head_commit.message, 'trigger 0055 read-only closeout')
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/brrk-leadership-4h-structural-readiness-0055-result
+          fetch-depth: 0
+      - name: Verify immutable runtime and closeout without engine import
+        run: |
+          python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          d=Path('research/brrk_leadership_4h_structural_readiness_0055')
+          def load(n): return json.loads((d/n).read_text())
+          def h(n):
+              b=json.dumps(load(n),sort_keys=True,separators=(',',':'),ensure_ascii=False,allow_nan=False).encode()
+              return hashlib.sha256(b).hexdigest()
+          a,r,e,m,c=[load(n) for n in ['RUN_ATTEMPT.marker','METHOD_RESULT.json','EXECUTION.json','RUN_ONCE.marker','CLOSEOUT.json']]
+          assert r['classification']=='FAIL_4H_STRUCTURAL_3D_TRAINING_PRECISION_NOT_ESTABLISHED'
+          assert m['classification']==r['classification']
+          assert m['attempt_marker_sha256']==h('RUN_ATTEMPT.marker')
+          assert m['method_result_sha256']==h('METHOD_RESULT.json')
+          assert m['execution_sha256']==h('EXECUTION.json')
+          assert e['attempt_marker_sha256']==h('RUN_ATTEMPT.marker')
+          assert e['method_result_sha256']==h('METHOD_RESULT.json')
+          assert e['actual_variants_evaluated']==1
+          assert e['post_2022_target_values_read'] is False
+          assert e['predictive_performance_metrics_executed'] is False
+          assert e['portfolio_economics_executed'] is False
+          recs=r['measurement']['training_records']
+          first=next(x for x in recs if x['matured_eligible_count']>=672)
+          assert first['matured_eligible_count']==681
+          assert abs(first['p90_width']-0.7288994961117355)<1e-15
+          assert abs(first['max_width']-0.8009876113657668)<1e-15
+          assert r['measurement']['training_readiness'] is None
+          assert r['measurement']['calibration_readiness'] is None
+          assert r['measurement']['reserved_support'] is None
+          assert c['authority']['same_id_rerun_allowed'] is False
+          assert c['authority']['same_id_retuning_allowed'] is False
+          assert c['authority']['same_id_rescue_allowed'] is False
+          print('READ_ONLY_CLOSEOUT_CONTRACT=PASS')
+          print('ENGINE_IMPORTED=false')
+          print('REMEASUREMENT_EXECUTED=false')
+          PY
+      - name: Advance authoritative CURRENT_STATE and write closeout attestation
+        run: |
+          git show bf486fcbebb54ebd84941ea78f825cdba3f58ede:docs/CURRENT_STATE.md > /tmp/CURRENT_STATE.base.md
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('/tmp/CURRENT_STATE.base.md')
+          s=p.read_text()
+          pairs=[
+            ('Current `main` research merge: **`c3cfbbe53317c46c3caf6fc4a1ef0a07030b86e9`**','Current `main` research merge: **`bf486fcbebb54ebd84941ea78f825cdba3f58ede`**'),
+            ('Current research branch: **`research/brrk-leadership-4h-structural-readiness-0055-controlled-run`**','Current research branch: **`research/brrk-leadership-4h-structural-readiness-0055-result`**'),
+            ('BRRK 4h structural readiness 0055     CONTROLLED-RUN BOUNDARY / ZERO RESULT / REAL MEASUREMENT NOT RUN','BRRK 4h structural readiness 0055     FAIL_4H_STRUCTURAL_3D_TRAINING_PRECISION_NOT_ESTABLISHED / CLOSED')
+          ]
+          for old,new in pairs:
+              if old not in s: raise SystemExit(f'missing CURRENT_STATE token: {old}')
+              s=s.replace(old,new,1)
+          section='''\n\n## 12. 0055 immutable structural-readiness result and closure\n\n```text\nresearch id                              BRRK-LEADERSHIP-4H-STRUCTURAL-READINESS-0055\nexecution HEAD                           bf486fcbebb54ebd84941ea78f825cdba3f58ede\nGitHub Actions run                       31537171602 / attempt 1\nclassification                           FAIL_4H_STRUCTURAL_3D_TRAINING_PRECISION_NOT_ESTABLISHED\nfirst admissible matured eligible        681\nfirst admissible P90 / max width         0.7288994961 / 0.8009876114\nfrozen P90 / max gates                   0.10 / 0.20\nbest exposed descriptive P90 / max       0.6799756259 / 0.6933014790\nlatest matured eligible                  1207\nlatest P90 / max width                   0.9216963694 / 0.9772750556\ntraining readiness                       NOT ESTABLISHED\ncalibration readiness                    NOT ELIGIBLE\nreserved support                         NOT ELIGIBLE\npost-2022 target values read             false\npredictive metrics executed              false\nportfolio economics executed             false\nsame-ID rerun / retune / rescue          false / false / false\n```\n\nThe prospectively fixed 7D-to-3D representation did not establish the unchanged 0054 training-precision gate. This is a methodology failure, not a predictive-performance test. No predictive study, concentration study, portfolio translation, canonical change or production authority is created. Any continuation requires a new research ID.\n'''
+          s=s.rstrip()+section+'\n'
+          Path('docs/CURRENT_STATE.md').write_text(s)
+          att={
+            'research_id':'BRRK-LEADERSHIP-4H-STRUCTURAL-READINESS-0055',
+            'status':'READ_ONLY_CLOSEOUT_CONTRACT_PASS',
+            'engine_imported':False,
+            'remeasurement_executed':False,
+            'runtime_hash_chain_verified':True,
+            'classification_verified':'FAIL_4H_STRUCTURAL_3D_TRAINING_PRECISION_NOT_ESTABLISHED',
+            'post_2022_target_values_read':False,
+            'predictive_performance_metrics_executed':False,
+            'portfolio_economics_executed':False
+          }
+          Path('research/brrk_leadership_4h_structural_readiness_0055/CLOSEOUT_CI.json').write_text(json.dumps(att,indent=2)+'\n')
+          PY
+          rm -f .github/workflows/_tmp_0055_closeout.yml .0055_closeout_trigger
+          git config user.name 'Y_Wang'
+          git config user.email '40142450+alexwang91@users.noreply.github.com'
+          git add docs/CURRENT_STATE.md research/brrk_leadership_4h_structural_readiness_0055/CLOSEOUT_CI.json .github/workflows/_tmp_0055_closeout.yml .0055_closeout_trigger || true
+          git commit -m 'Research closeout [DRIFT_0]: seal read-only 0055 methodology closure'
+          git push origin HEAD:research/brrk-leadership-4h-structural-readiness-0055-result
