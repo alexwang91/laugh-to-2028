@@ -117,18 +117,8 @@ def test_pre_result_implementation_allows_runner_but_forbids_result_and_model_fi
     required = {"run_once.py", "engine.py", "RUN_INTERFACE.json"}
     existing = {p.name for p in HERE.iterdir() if p.is_file()}
     assert required <= existing
-    forbidden = {
-        "PRIMARY_RESULT.json",
-        "EXECUTION.json",
-        "RUN_ONCE.marker",
-        "RESULT.md",
-        "handoff_model.py",
-        "hazard_model.py",
-        "bocpd.py",
-        "portfolio.py",
-    }
-    assert forbidden.isdisjoint(existing)
     interface = _load(HERE / "RUN_INTERFACE.json")
+    # RUN_INTERFACE remains immutable pre-result evidence after closeout.
     assert interface["status"] == "IMPLEMENTED_PRE_RESULT_NOT_RUN"
     assert interface["actual_variants_evaluated"] == 0
     assert interface["frozen_design_merge_commit"] == "398b7ec3f78f602461787b1b45e8d5041729e126"
@@ -139,6 +129,28 @@ def test_pre_result_implementation_allows_runner_but_forbids_result_and_model_fi
     assert interface["authority"]["portfolio_economics_executed"] is False
     assert interface["authority"]["production_authorized"] is False
 
+    if (HERE / "CLOSEOUT.json").exists():
+        required_closed = {
+            "PRIMARY_RESULT.json", "EXECUTION.json", "RUN_ONCE.marker", "RESULT_SUMMARY.json",
+            "EVIDENCE_RECOVERY.json", "CLOSEOUT.json", "RESULT.md",
+        }
+        assert required_closed <= existing
+        closeout = _load(HERE / "CLOSEOUT.json")
+        assert closeout["result_status"] == "FAIL_NO_RECURRENT_DURABLE_HANDOFF_STRUCTURE"
+        assert closeout["closure"]["same_id_rerun_allowed"] is False
+        assert closeout["closure"]["same_id_retuning_allowed"] is False
+        assert closeout["closure"]["same_id_rescue_allowed"] is False
+        assert closeout["authority"]["duration_aware_handoff_model_fitted"] is False
+        assert closeout["authority"]["portfolio_allocation_tested"] is False
+        assert closeout["authority"]["portfolio_economics_executed"] is False
+        forbidden_models = {"handoff_model.py", "hazard_model.py", "bocpd.py", "portfolio.py"}
+        assert forbidden_models.isdisjoint(existing)
+    else:
+        forbidden = {
+            "PRIMARY_RESULT.json", "EXECUTION.json", "RUN_ONCE.marker", "RESULT.md",
+            "handoff_model.py", "hazard_model.py", "bocpd.py", "portfolio.py",
+        }
+        assert forbidden.isdisjoint(existing)
 
 def test_portfolio_translation_and_authority_remain_forbidden():
     prereg = _load(HERE / "PREREGISTRATION.json")

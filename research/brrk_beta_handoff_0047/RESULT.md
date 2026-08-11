@@ -64,8 +64,8 @@ Three hashes intentionally have different meanings and must not be conflated:
 
 ```text
 original pre-serialization object    961ac99bd5a2d3d6556262b17411333bfbeead921616dccf120190ee1dd67c2a
-recovered raw JSON file              6c354c2b29244a6a5389c49b4a315953132709c1b563d513f30bf6cd29e1d087
-reparsed canonical JSON object       35f0c3dedbfb2a10ec20380d799006828358537928629431b51dbe05ff30bdaf
+recovered raw JSON file              6c354b054bde2dfce12dbb1efe3809d59d371df02beddc613befe9373a17807d
+reparsed canonical JSON object       35f0ee3934d45e19b5b652fa13b0cfa1f328aac51843ac9432e8cc94d20dd6b8
 ```
 
 The original Actions log binds the first hash. The official recovery artifact preserves the latter two identities as durable serialization evidence.
