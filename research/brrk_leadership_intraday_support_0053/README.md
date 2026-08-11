@@ -1,6 +1,6 @@
 # BRRK-LEADERSHIP-INTRADAY-SUPPORT-0053
 
-Status: **PREREGISTERED / 4H DATA HASH-FROZEN / SUPPORT-FUNNEL IMPLEMENTATION-ONLY / NO SUPPORT RESULT / NO MODEL FIT / NO PREDICTIVE RESULT**.
+Status: **PREREGISTERED / 4H DATA HASH-FROZEN / SUPPORT COUNTER MERGED / CONTROLLED-RUN BOUNDARY / ZERO SUPPORT RESULT**.
 
 0053 is a label-blind 4h support-feasibility study created after the immutable 0048 insufficient-support closeout. It measures whether 4h resolution creates genuine dependence-aware support under calendar-equivalent semantics or merely more correlated rows.
 
@@ -8,39 +8,33 @@ Governance objective type: **`DATA_QUALITY`**. Primary authority remains Track A
 
 No ETH/SOL winner label, model fit, calibration fit, NLL/AUC/Brier, confidence threshold or portfolio economics is permitted under this ID.
 
-## Frozen data identity
+## Frozen data and implementation
 
-The first complete valid payload was captured in GitHub Actions run `31512578577`, job `93849786583` after a pre-exposure source-base amendment to Binance's official market-data-only REST base.
-
-- common coverage: `2020-08-11T04:00:00Z` through `2026-08-02T20:00:00Z`
+- payload common coverage: `2020-08-11T04:00:00Z` through `2026-08-02T20:00:00Z`
 - common bars: `13097`
-- BTC raw bars: `13098`
-- ETH raw bars: `13098`
-- SOL raw bars: `13097`
-- canonical payload SHA256: `471b54991ae648b79433285f073ea7bc813663319b6e2389c1682dad1a319135`
-- payload size: `7030655` bytes
-- internal 4h gaps: `0`
-- no synthetic fill / no alternate venue
+- payload SHA256: `471b54991ae648b79433285f073ea7bc813663319b6e2389c1682dad1a319135`
+- capture run/job: `31512578577 / 93849786583`
+- support implementation merge: `55c6869bacf2161df6b10ed4f82a423103952fe9`
+- synthetic implementation contract: run `31514184465` PASS
 
-The payload is immutable researcher-exposed DEVELOPMENT history and cannot be replaced under 0053.
+`support_funnel.py` implements only exact hash/index validation, calendar-equivalent BTC FAST eligibility, 336-bar maturity, Track A/B/C training/shadow clocks, the 168-bar refit grid, formal-row support and dependence-block counting. It contains no ETH/SOL target or predictive model.
 
-## Zero-result support implementation
+## Controlled support-measurement boundary
 
-`support_funnel.py` mechanically implements only:
+`RUN_INTERFACE.json`, `RESULT_SCHEMA.json`, `run_once.py`, and `CONTROLLED_EXECUTION_BOUNDARY.json` freeze the next stage before any real support count is released.
 
-1. exact payload SHA verification and common 4h index validation;
-2. calendar-equivalent BTC FAST trend over 120/360/720/1440 bars with weights 0.15/0.25/0.30/0.30;
-3. support eligibility `BTC_FAST_4H >= 0` after full 1440-bar feature history;
-4. 336-bar maturity before an eligible origin can count toward training support;
-5. track-specific training and shadow-support counters;
-6. 168-bar anchor-relative refit grid before formal support activates;
-7. full 336-bar future maturity for every formal origin;
-8. sequential ordered eligible-row dependence blocks for Tracks A/B/C.
+The only valid sequence is:
 
-The implementation intentionally computes **no ETH/SOL target value or winner label** and contains no predictive model/calibration code.
+1. checkout the eventual controlled-run merge SHA as exact detached HEAD;
+2. run repeatable preflight and require `PREFLIGHT_PASS_ZERO_RESULT`;
+3. durably create `RUN_ATTEMPT.marker` before calling the real-payload support counter;
+4. execute exactly one label-blind Track A/B/C support measurement;
+5. create `SUPPORT_RESULT.json` and `EXECUTION.json`;
+6. create `RUN_ONCE.marker` last;
+7. close 0053 to same-ID rerun/retuning/rescue.
 
-Synthetic-only GitHub Actions run `31514184465` passed: support counter `py_compile`, exact trend-math contract, maturity/refit causality, ineligible-row attrition, block counting, Track-A-only classification authority, wrong-hash fail-closed behavior, and the zero-result artifact boundary. The temporary workflow was removed after validation.
+If execution is interrupted after the attempt marker, automatic remeasurement is forbidden. A complete result/execution bundle with a missing final marker permits marker-only hash validation and recovery without remeasurement.
 
-**The frozen real 4h payload has not yet been passed to `measure_support_funnel()` on this implementation branch.** Therefore Track A/B/C counts and the 0053 primary classification remain unknown.
+Controlled-boundary synthetic/fault-injection run `31515115619` passed runner/support-counter compilation, all implementation contracts, attempt-marker-before-measurement, Track-A-only classification authority, marker-only recovery without remeasurement, and zero-result artifact enforcement. The temporary workflow was removed after validation.
 
-The next permitted stage after a fully green implementation merge is a separately controlled exactly-once support measurement against the frozen payload SHA. No predictive research is unlocked merely by merging this code.
+The frozen real payload **has still not been passed to `measure_support_funnel()` on this boundary branch**. `SUPPORT_RESULT.json`, `EXECUTION.json`, `RUN_ATTEMPT.marker`, and `RUN_ONCE.marker` are absent. The Track A/B/C counts and the 0053 classification remain unknown.

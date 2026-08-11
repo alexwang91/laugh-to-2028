@@ -1,0 +1,46 @@
+{
+  "research_id": "BRRK-LEADERSHIP-INTRADAY-SUPPORT-0053",
+  "stage": "CONTROLLED_SUPPORT_MEASUREMENT_ZERO_RESULT",
+  "base_implementation_merge_sha": "55c6869bacf2161df6b10ed4f82a423103952fe9",
+  "payload_sha256": "471b54991ae648b79433285f073ea7bc813663319b6e2389c1682dad1a319135",
+  "support_counter": "research/brrk_leadership_intraday_support_0053/support_funnel.py",
+  "runner": "research/brrk_leadership_intraday_support_0053/run_once.py",
+  "result_schema": "research/brrk_leadership_intraday_support_0053/RESULT_SCHEMA.json",
+  "status_before_merge": {
+    "support_measurement_executed": false,
+    "actual_variants_evaluated": 0,
+    "support_result_exists": false,
+    "attempt_marker_exists": false,
+    "final_marker_exists": false
+  },
+  "required_execution_order": [
+    "Checkout the exact controlled-run merge SHA as detached HEAD.",
+    "Run repeatable preflight and require PREFLIGHT_PASS_ZERO_RESULT.",
+    "Persist create-only RUN_ATTEMPT.marker before invoking measure_support_funnel on the real frozen payload.",
+    "Execute one and only one Track A/B/C support measurement.",
+    "Persist SUPPORT_RESULT.json and EXECUTION.json create-only.",
+    "Persist RUN_ONCE.marker last to commit the valid measurement.",
+    "Close 0053 to same-ID rerun, retuning and rescue regardless of PASS or FAIL."
+  ],
+  "interruption_rule": "Once RUN_ATTEMPT.marker exists, recomputation under 0053 is forbidden. If the complete result/execution bundle exists but the final marker is missing, marker-only recovery may validate existing hashes and create the final marker without remeasurement. Otherwise governance closeout is required.",
+  "measurement_scope": [
+    "RAW COMMON BAR COUNT",
+    "1440-BAR FEATURE-VALID COUNT",
+    "BTC_FAST_4H>=0 ELIGIBLE COUNT/RATE",
+    "TRACK A/B/C TRAINING-SUPPORT, SHADOW-SUPPORT AND FORMAL ACTIVATION DATES",
+    "TRACK A/B/C FORMAL ROWS, COMPLETE BLOCKS, TRAILING ROWS AND CALENDAR SPAN",
+    "MECHANICAL COMPARISON VERSUS IMMUTABLE 0048 SUPPORT COUNTS"
+  ],
+  "explicit_prohibitions": [
+    "NO ETH/SOL WINNER LABEL OR REALIZED MARGIN",
+    "NO PREDICTIVE MODEL OR CALIBRATION FIT",
+    "NO NLL/BRIER/AUC/BALANCED ACCURACY",
+    "NO PREDICTIVE BOOTSTRAP OR CONFIDENCE BREAKPOINT",
+    "NO PORTFOLIO/CAGR/MDD/CONCENTRATION ECONOMICS",
+    "NO 0048 RERUN OR RESCUE",
+    "NO CANONICAL BRRK OR PHASE6 CHANGE"
+  ],
+  "production_authorized": false,
+  "signature_authorized": false,
+  "order_submission_authorized": false
+}
