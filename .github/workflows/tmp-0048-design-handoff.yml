@@ -1,0 +1,71 @@
+name: tmp-0048-design-handoff
+
+on:
+  push:
+    branches:
+      - research/brrk-leadership-rotation-0048-design
+
+permissions:
+  contents: write
+
+jobs:
+  append-and-clean:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Verify design-only boundary before handoff
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f research/governance/BRRK_LEADERSHIP_ROTATION_0048_ARCHITECTURE_FREEZE_2026-08-11.md
+          ! find research -iname '*0048*RESULT*' -o -iname '*0048*EXECUTION*' -o -iname '*0048*RUN_ONCE*' | grep -q .
+      - name: Append 0048 architecture handoff
+        shell: bash
+        run: |
+          cat >> docs/CURRENT_STATE.md <<'EOF'
+
+## BRRK-LEADERSHIP-ROTATION-0048 — architecture-freeze candidate
+
+0047 is immutable `FAIL_NO_RECURRENT_DURABLE_HANDOFF_STRUCTURE / CLOSED` and is not being rescued. The new 0048 design replaces the blocked one-way `BTC -> Beta` handoff continuation with a two-dimensional dynamic router.
+
+```text
+0048 architecture                      PR #174 / FROZEN ARCHITECTURE CANDIDATE
+0048 numerical prereg                  NOT FROZEN
+0048 dataset registration              NOT CREATED
+0048 runner/model                      NOT CREATED
+0048 historical measurement            NONE
+0048 actual variants evaluated         0
+0048 portfolio economics               NOT RUN
+canonical BRRK change                  NONE
+Phase-6 change                         NONE
+production_authorized                  false
+signature_authorized                   false
+order_submission_authorized            false
+```
+
+Frozen architecture checkpoint:
+
+- `Leadership` selects the asset; `Exhaustion / market risk` controls tolerated Beta/gross.
+- Leadership states are `BTC_LEAD / ETH_LEAD / SOL_LEAD / NO_CLEAR_LEADER`.
+- BTC, ETH and SOL use symmetric pairwise relative leadership; ETH and SOL have independent clocks.
+- BTC Dominance is market-diffusion context only and cannot directly select the winner; no price proxy may be mislabeled as dominance.
+- High-confidence winner concentration in the `80%-100%` risk-budget region is a later portfolio hypothesis, not an 0048 backtest.
+- Two separate routes return a winner to BTC: leadership reversal and exhaustion compression.
+- BTC-to-cash gross reduction is a later, separate stage and must not be conflated with winner-to-BTC re-anchoring.
+- 0048 must defeat a static-Beta adversarial null; if one Beta asset is almost always superior, dynamic rotation has no incremental information value.
+
+The only permitted next research action after this architecture freeze is a no-result numerical-method design pass that freezes the forward leadership target, causal score/normalization, episode-block validation, static-Beta/always-BTC controls, numerical gates, model budget, and a reproducible BTC Dominance source or explicit exclusion. No historical sweep, allocation test, CORE4 threshold search, portfolio economics, canonical change or production/security authority is permitted.
+EOF
+      - name: Remove temporary writer and commit handoff only
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git rm .github/workflows/tmp-0048-design-handoff.yml
+          git add docs/CURRENT_STATE.md
+          git commit -m 'governance: append 0048 architecture handoff'
+          git push origin HEAD:research/brrk-leadership-rotation-0048-design
