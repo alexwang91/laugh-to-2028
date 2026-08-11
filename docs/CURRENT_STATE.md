@@ -36,7 +36,7 @@ BRRK exhaustion trigger 0045          FAIL_NO_DYNAMIC_GROSS_STAGE_ELIGIBILITY / 
 BRRK exhaustion pulse 0046            FAIL_NO_FUTURE_ONLY_PULSE_VALIDATION_ELIGIBILITY / CLOSED
 BRRK Beta handoff event study 0047    FAIL_NO_RECURRENT_DURABLE_HANDOFF_STRUCTURE / CLOSED
 BRRK leadership rotation 0048         MEASUREMENT_INCONCLUSIVE_INSUFFICIENT_SUPPORT / CLOSED
-BRRK intraday support 0053             DESIGN-ONLY / NO DATA RETRIEVAL / NO MODEL FIT
+BRRK intraday support 0053             PREREGISTERED / DATA NOT CAPTURED / NO MODEL FIT
 
 Canonical BRRK-0011                    NO CHANGE
 Phase 7                                MONITOR_ONLY / LAUNCH BLOCKED
@@ -141,10 +141,10 @@ Purpose:
 
 > Determine whether approximately six years of Binance Spot BTC/ETH/SOL **4h** history creates genuinely greater dependence-aware formal support for an ETH/SOL leadership study, or merely multiplies correlated rows.
 
-0053 is **label-blind support accounting only**. At the current stage:
+0053 is **label-blind support accounting only**. Numerical/data preregistration status: `PREREGISTERED_DATA_NOT_CAPTURED`. At the current stage:
 
 ```text
-4h data retrieval                      NOT STARTED
+4h data retrieval                      CONTRACT FROZEN / NOT STARTED
 4h payload SHA256                      NOT FROZEN
 ETH/SOL winner labels                  NOT COMPUTED
 model fits                             0
