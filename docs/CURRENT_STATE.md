@@ -636,3 +636,13 @@ order-submission authorization        false
 ```
 
 **Current program frontier: design the 0048 numerical method correctly before touching history.**
+
+
+---
+
+## 14. Machine-readable handoff compatibility anchors
+
+These lines are retained for standing drift-audit compatibility and do not grant authority:
+
+    production_authorized_components = []
+    handoff_compatibility_version = 1.0
