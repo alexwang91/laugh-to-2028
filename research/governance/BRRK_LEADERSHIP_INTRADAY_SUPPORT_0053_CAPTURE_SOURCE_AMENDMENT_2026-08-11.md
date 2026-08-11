@@ -70,6 +70,8 @@ This is not a result-informed scientific modification. It repairs an execution-e
 
 After this amendment merges, the next capture may retry until the **first complete internally valid payload** is durably persisted. Once that payload and SHA-256 are exposed, the source/base/window cannot be changed under 0053.
 
+`docs/CURRENT_STATE.md` was advanced on this branch to record the zero-row HTTP-451 infrastructure attempt and the prospective market-data-only base. The temporary state-update workflow and trigger were removed before review.
+
 ## 5. Authority
 
 This amendment creates no:
