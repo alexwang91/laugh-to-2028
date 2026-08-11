@@ -1,0 +1,66 @@
+{
+  "research_id": "BRRK-LEADERSHIP-4H-STRUCTURAL-READINESS-0055",
+  "stage": "METHODOLOGY_IMPLEMENTATION_ONLY",
+  "base_main_sha": "e00db4d77913d42296147da65101a1dd3149ed5e",
+  "status": "IMPLEMENTED_FOR_SYNTHETIC_CONTRACT_TESTING_ONLY_REAL_MEASUREMENT_FORBIDDEN",
+  "actual_variants_evaluated": 0,
+  "frozen_payload": {
+    "path": "research/brrk_leadership_intraday_support_0053/MARKET_4H_PAYLOAD.json",
+    "git_blob_sha": "0c67c4d7d8f39e2a4972045d94808744c6006e37",
+    "payload_sha256": "471b54991ae648b79433285f073ea7bc813663319b6e2389c1682dad1a319135",
+    "real_payload_measurement_allowed_on_this_stage": false,
+    "network_refetch_allowed": false,
+    "replacement_allowed": false
+  },
+  "immutable_upstream_git_blobs": {
+    "research/brrk_leadership_4h_structural_readiness_0055/PREREGISTRATION.json": "d0384d6d4bf931f49831ed1b44ba5954255ba098",
+    "research/brrk_leadership_4h_structural_readiness_0055/DATASET_DECLARATION.json": "9a837f23bc07c4ddb1b29c90bec296c08547575f",
+    "research/brrk_leadership_4h_native_readiness_0054/engine.py": "8a6237fa326789bf2539dc9ed7e79282f93b8a4a",
+    "research/brrk_leadership_intraday_support_0053/MARKET_4H_PAYLOAD.json": "0c67c4d7d8f39e2a4972045d94808744c6006e37"
+  },
+  "scientific_change_isolation": {
+    "upstream_raw_feature_target_firewall_semantics": "REUSED_FROM_IMMUTABLE_0054_ENGINE",
+    "sole_change": "FIXED_7D_TO_3D_STRUCTURAL_COMPRESSION_AND_CORRESPONDING_3D_PARAMETER_PRECISION",
+    "structural_features": ["TrendLevel", "TrendAge", "StateSupport"],
+    "trend_level_weights": [0.25, 0.25, 0.25, 0.25],
+    "trend_age_weights": [0.375, 0.125, -0.125, -0.375],
+    "state_support_weights": [0.3333333333333333, 0.3333333333333333, 0.3333333333333333]
+  },
+  "frozen_numerical_contract": {
+    "ridge_lambda": 1.0,
+    "refit_bars": 168,
+    "max_target_bars": 336,
+    "hac_kernel": "BARTLETT",
+    "hac_lag": 335,
+    "numerical_floor": 672,
+    "training_probe_count": 13,
+    "training_probe_library": "Q3={0} U {+/-0.5 e_j,+/-1.0 e_j,j=1..3}",
+    "p90_quantile": "HYNDMAN_FAN_TYPE_7_NUMPY_LINEAR",
+    "training_p90_width_max": 0.10,
+    "training_max_width_max": 0.20,
+    "calibration_probe_count": 8,
+    "calibration_max_width_max": 0.10,
+    "consecutive_refits_required": 3,
+    "method_target_end": "2022-12-31T20:00:00Z",
+    "reserved_suffix_start": "2023-01-01T00:00:00Z",
+    "reserved_block_length": 336,
+    "reserved_required_blocks": 12
+  },
+  "implementation_test_policy": {
+    "synthetic_only": true,
+    "real_0053_payload_may_be_loaded": false,
+    "measure_frozen_readiness_may_be_called_on_real_payload": false,
+    "result_artifacts_may_be_created": false,
+    "post_2022_target_values_may_be_read": false,
+    "predictive_metrics_may_be_computed": false,
+    "portfolio_economics_may_be_computed": false
+  },
+  "authority": {
+    "canonical_strategy_changed": false,
+    "phase6_changed": false,
+    "production_authorized": false,
+    "production_authorized_components": [],
+    "signature_authorized": false,
+    "order_submission_authorized": false
+  }
+}
