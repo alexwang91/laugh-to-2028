@@ -1,0 +1,74 @@
+{
+  "research_id": "BRRK-LEADERSHIP-4H-NATIVE-READINESS-0054",
+  "status": "CONTROLLED_EXECUTION_INTERFACE_FROZEN_NOT_RUN",
+  "controlled_execution_base_main_sha": "4b599be6c8f994878c81604feed51bd18136cea2",
+  "frozen_preregistration_merge_sha": "7bc88d3dc314d052fdddf0706369974621479e8f",
+  "candidate_count": 1,
+  "actual_variants_evaluated": 0,
+  "result_status": "PREREGISTERED_NOT_RUN",
+  "data_source_policy": "REUSE_IMMUTABLE_0053_4H_PAYLOAD_ONLY_NO_NETWORK_FETCH_NO_REPLACEMENT",
+  "frozen_market_payload": {
+    "path": "research/brrk_leadership_intraday_support_0053/MARKET_4H_PAYLOAD.json",
+    "git_blob_sha": "0c67c4d7d8f39e2a4972045d94808744c6006e37",
+    "payload_sha256": "471b54991ae648b79433285f073ea7bc813663319b6e2389c1682dad1a319135",
+    "history_start": "2020-08-11T04:00:00Z",
+    "history_end": "2026-08-02T20:00:00Z",
+    "independent_oos": false,
+    "research_budget": "DEVELOPMENT_RESEARCHER_EXPOSED_WITH_POST_2022_TARGET_FIREWALL"
+  },
+  "immutable_upstream_git_blobs": {
+    "research/brrk_leadership_4h_native_readiness_0054/PREREGISTRATION.json": "33151c65fd27021f9bb4eaaf1d102fddab34b893",
+    "research/brrk_leadership_4h_native_readiness_0054/DATASET_DECLARATION.json": "e7c3e4549b9caab8eb7fec10f8f796d3415fd730",
+    "research/brrk_leadership_4h_native_readiness_0054/IMPLEMENTATION_BOUNDARY.json": "5402938c2a6631ab387976accdd0b2efa9b0c8f3",
+    "research/brrk_leadership_4h_native_readiness_0054/engine.py": "8a6237fa326789bf2539dc9ed7e79282f93b8a4a",
+    "research/brrk_leadership_rotation_0048/engine.py": "70c9897715eeb7173a461aef1b6588488b205491",
+    "research/brrk_leadership_intraday_support_0053/MARKET_4H_PAYLOAD.json": "0c67c4d7d8f39e2a4972045d94808744c6006e37"
+  },
+  "commands": {
+    "preflight": "python -m research.brrk_leadership_4h_native_readiness_0054.run_once preflight --payload research/brrk_leadership_intraday_support_0053/MARKET_4H_PAYLOAD.json --result research/brrk_leadership_4h_native_readiness_0054/METHOD_RESULT.json --execution research/brrk_leadership_4h_native_readiness_0054/EXECUTION.json --attempt research/brrk_leadership_4h_native_readiness_0054/RUN_ATTEMPT.marker --marker research/brrk_leadership_4h_native_readiness_0054/RUN_ONCE.marker --expected-head-sha <CONTROLLED_RUN_MERGE_SHA>",
+    "start_attempt": "python -m research.brrk_leadership_4h_native_readiness_0054.run_once start-attempt --payload research/brrk_leadership_intraday_support_0053/MARKET_4H_PAYLOAD.json --result research/brrk_leadership_4h_native_readiness_0054/METHOD_RESULT.json --execution research/brrk_leadership_4h_native_readiness_0054/EXECUTION.json --attempt research/brrk_leadership_4h_native_readiness_0054/RUN_ATTEMPT.marker --marker research/brrk_leadership_4h_native_readiness_0054/RUN_ONCE.marker --expected-head-sha <CONTROLLED_RUN_MERGE_SHA>",
+    "evaluate": "python -m research.brrk_leadership_4h_native_readiness_0054.run_once evaluate --payload research/brrk_leadership_intraday_support_0053/MARKET_4H_PAYLOAD.json --result research/brrk_leadership_4h_native_readiness_0054/METHOD_RESULT.json --execution research/brrk_leadership_4h_native_readiness_0054/EXECUTION.json --attempt research/brrk_leadership_4h_native_readiness_0054/RUN_ATTEMPT.marker --marker research/brrk_leadership_4h_native_readiness_0054/RUN_ONCE.marker --expected-head-sha <CONTROLLED_RUN_MERGE_SHA>",
+    "finalize_or_recover_marker_only": "python -m research.brrk_leadership_4h_native_readiness_0054.run_once finalize --payload research/brrk_leadership_intraday_support_0053/MARKET_4H_PAYLOAD.json --result research/brrk_leadership_4h_native_readiness_0054/METHOD_RESULT.json --execution research/brrk_leadership_4h_native_readiness_0054/EXECUTION.json --attempt research/brrk_leadership_4h_native_readiness_0054/RUN_ATTEMPT.marker --marker research/brrk_leadership_4h_native_readiness_0054/RUN_ONCE.marker --expected-head-sha <CONTROLLED_RUN_MERGE_SHA>"
+  },
+  "exactly_once_policy": {
+    "preflight_is_repeatable_and_has_zero_scientific_result_authority": true,
+    "start_attempt_requires_all_result_runtime_artifacts_absent": true,
+    "attempt_marker_is_create_only_and_must_be_durably_persisted_before_evaluate": true,
+    "evaluate_requires_attempt_marker_present_and_result_execution_marker_absent": true,
+    "evaluate_may_call_real_methodology_engine_exactly_once": true,
+    "method_result_and_execution_are_create_only": true,
+    "finalize_requires_existing_attempt_result_execution_and_never_calls_methodology_engine": true,
+    "final_RUN_ONCE_marker_is_create_only_and_written_last": true,
+    "same_id_rerun_allowed": false,
+    "same_id_retuning_allowed": false,
+    "same_id_rescue_allowed": false
+  },
+  "interruption_recovery_policy": {
+    "attempt_absent_and_no_result_artifacts": "NO_SCIENTIFIC_ATTEMPT_STARTED; START_ATTEMPT_MAY_RUN_AFTER_GREEN_PREFLIGHT",
+    "attempt_present_and_no_complete_result_execution_bundle": "INTERRUPTED_UNCOMMITTED_EXECUTION; AUTOMATIC_REMEASUREMENT_FORBIDDEN; GOVERNANCE_CLOSEOUT_REQUIRED",
+    "attempt_present_result_execution_present_marker_absent": "FINALIZE_MAY_VALIDATE_EXISTING_HASHES_AND_CREATE_FINAL_MARKER_WITHOUT_REMEASUREMENT",
+    "marker_present": "EXECUTION_COMMITTED_CLOSED_TO_SAME_ID_RERUN",
+    "hash_mismatch_or_partial_bundle": "INVALID_PARTIAL_EXECUTION; NO_AUTOMATIC_SAME_ID_RETRY"
+  },
+  "result_artifacts": {
+    "schema": "research/brrk_leadership_4h_native_readiness_0054/RESULT_SCHEMA.json",
+    "method_result": "research/brrk_leadership_4h_native_readiness_0054/METHOD_RESULT.json",
+    "execution": "research/brrk_leadership_4h_native_readiness_0054/EXECUTION.json",
+    "attempt_marker": "research/brrk_leadership_4h_native_readiness_0054/RUN_ATTEMPT.marker",
+    "final_marker": "research/brrk_leadership_4h_native_readiness_0054/RUN_ONCE.marker"
+  },
+  "execution_authority": {
+    "historical_execution_authorized_before_this_interface_merges_green": false,
+    "execution_requires_exact_expected_head_sha": true,
+    "execution_requires_immutable_upstream_blob_match": true,
+    "execution_requires_frozen_payload_git_blob_and_sha256_match": true,
+    "post_2022_target_values_may_be_read": false,
+    "predictive_performance_metrics_executed": false,
+    "portfolio_economics_executed": false,
+    "canonical_strategy_changed": false,
+    "phase6_changed": false,
+    "production_authorized": false,
+    "signature_authorized": false,
+    "order_submission_authorized": false
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "research_id": "BRRK-LEADERSHIP-4H-NATIVE-READINESS-0054",
+  "stage": "CONTROLLED_METHODOLOGY_EXECUTION_BOUNDARY",
+  "base_main_sha": "4b599be6c8f994878c81604feed51bd18136cea2",
+  "status": "FROZEN_ZERO_RESULT_NOT_RUN",
+  "actual_variants_evaluated": 0,
+  "frozen_payload_sha256": "471b54991ae648b79433285f073ea7bc813663319b6e2389c1682dad1a319135",
+  "frozen_blobs": {
+    "PREREGISTRATION.json": "33151c65fd27021f9bb4eaaf1d102fddab34b893",
+    "DATASET_DECLARATION.json": "e7c3e4549b9caab8eb7fec10f8f796d3415fd730",
+    "IMPLEMENTATION_BOUNDARY.json": "5402938c2a6631ab387976accdd0b2efa9b0c8f3",
+    "engine.py": "8a6237fa326789bf2539dc9ed7e79282f93b8a4a",
+    "RUN_INTERFACE.json": "5043cb25fd47cef4ac7debeb8b239c5e3afe89f9",
+    "RESULT_SCHEMA.json": "17dc8eb3b19dce301e978f21b213e2f80d49ce41",
+    "run_once.py": "7cb173193dc7407bd558223f0610d3c8fc477d2d",
+    "test_run_interface.py": "c3f58fcbc3e5a2a0d0ccf0ad20c4dae4f69138c1",
+    "0053_MARKET_4H_PAYLOAD.json": "0c67c4d7d8f39e2a4972045d94808744c6006e37",
+    "0048_engine.py": "70c9897715eeb7173a461aef1b6588488b205491"
+  },
+  "execution_sequence": [
+    "PREFLIGHT_REPEATABLE_ZERO_RESULT",
+    "START_ATTEMPT_CREATE_ONLY",
+    "DURABLY_PERSIST_ATTEMPT_MARKER_TO_RESULT_BRANCH",
+    "EVALUATE_REAL_PAYLOAD_EXACTLY_ONCE",
+    "DURABLY_PERSIST_METHOD_RESULT_AND_EXECUTION",
+    "FINALIZE_MARKER_ONLY_WITHOUT_REMEASUREMENT",
+    "DURABLY_PERSIST_RUN_ONCE_MARKER_LAST"
+  ],
+  "fault_policy": {
+    "crash_before_attempt_persisted": "NO_SCIENTIFIC_ATTEMPT_STARTED",
+    "crash_after_attempt_before_complete_result_execution": "AUTOMATIC_REMEASUREMENT_FORBIDDEN_CLOSEOUT_REQUIRED",
+    "crash_after_complete_result_execution_before_final_marker": "FINALIZE_MARKER_ONLY_ALLOWED_NO_REMEASUREMENT",
+    "result_or_hash_tamper": "FAIL_CLOSED_NO_AUTOMATIC_RETRY"
+  },
+  "zero_result_boundary": {
+    "RUN_ATTEMPT.marker": "ABSENT",
+    "METHOD_RESULT.json": "ABSENT",
+    "EXECUTION.json": "ABSENT",
+    "RUN_ONCE.marker": "ABSENT",
+    "training_readiness_result": "UNKNOWN",
+    "calibration_readiness_result": "UNKNOWN",
+    "reserved_support_result": "UNKNOWN",
+    "classification": "UNKNOWN"
+  },
+  "authority_invariants": {
+    "post_2022_target_values_read": false,
+    "predictive_performance_metrics_executed": false,
+    "portfolio_economics_executed": false,
+    "0048_rerun_or_rescue_executed": false,
+    "0053_rerun_or_rescue_executed": false,
+    "canonical_strategy_changed": false,
+    "phase6_changed": false,
+    "production_authorized": false,
+    "signature_authorized": false,
+    "order_submission_authorized": false
+  },
+  "same_id_policy_after_valid_attempt": {
+    "rerun_allowed": false,
+    "retuning_allowed": false,
+    "rescue_allowed": false
+  }
+}
