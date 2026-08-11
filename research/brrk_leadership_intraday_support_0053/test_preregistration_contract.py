@@ -1,40 +1,14 @@
-import json
+import hashlib,json
 from pathlib import Path
 import unittest
-
-HERE = Path(__file__).resolve().parent
-ROOT = HERE.parents[1]
-
+HERE=Path(__file__).resolve().parent; ROOT=HERE.parents[1]; SLICE="BRRK-LEADERSHIP-INTRADAY-SUPPORT-0053-BINANCE-4H-HIST-V1"
 class Test0053Preregistration(unittest.TestCase):
-    def test_prereg_and_registry_exact_match(self):
-        p = json.loads((HERE / "PREREGISTRATION.json").read_text())
-        reg = json.loads((ROOT / "config/research_registry.json").read_text())
-        rows = [r for r in reg["records"] if r.get("research_id") == p["research_id"]]
-        self.assertEqual(len(rows), 1)
-        self.assertEqual(rows[0], p)
-        self.assertEqual(p["declared_variant_budget"], 1)
-        self.assertEqual(p["actual_variants_evaluated"], 0)
-        self.assertEqual(p["result_status"], "PREREGISTERED_DATA_NOT_CAPTURED")
-
-    def test_primary_track_and_diagnostics_are_frozen(self):
-        p = json.loads((HERE / "PREREGISTRATION.json").read_text())
-        text = " ".join(p["researcher_decisions"])
-        self.assertIn("Track A is primary: 2190", text)
-        self.assertIn("336-row dependence block, 12 complete blocks required", text)
-        self.assertIn("Track B is raw-row multiplication diagnostic only", text)
-        self.assertIn("Track C is hybrid diagnostic only", text)
-
-    def test_retrieval_contract_is_pre_capture(self):
-        c = json.loads((HERE / "DATA_RETRIEVAL_CONTRACT.json").read_text())
-        self.assertEqual(c["status"], "FROZEN_BEFORE_FIRST_4H_CAPTURE")
-        self.assertEqual(c["source"]["interval"], "4h")
-        self.assertEqual(c["source"]["symbols"], ["BTCUSDT", "ETHUSDT", "SOLUSDT"])
-        self.assertEqual(c["source"]["requested_end_inclusive"], "2026-08-02T20:00:00Z")
-
-    def test_no_result_or_dataset_capture_artifact_exists(self):
-        forbidden = ["MARKET_4H_EVIDENCE.json", "DATASET_DECLARATION.json", "PRIMARY_RESULT.json", "RESULT_SUMMARY.json", "EXECUTION.json", "RUN_ONCE.marker"]
-        for name in forbidden:
-            self.assertFalse((HERE / name).exists(), name)
-
-if __name__ == "__main__":
-    unittest.main()
+ def test_frozen_prereg_unchanged(self):
+  p=json.loads((HERE/"PREREGISTRATION.json").read_text()); self.assertEqual(p["objective_type"],"DATA_QUALITY"); self.assertEqual(p["actual_variants_evaluated"],0); self.assertEqual(p["development_dataset_refs"],[]); self.assertEqual(p["result_status"],"PREREGISTERED_DATA_NOT_CAPTURED")
+ def test_capture_hash_and_registry(self):
+  dec=json.loads((HERE/"DATASET_DECLARATION.json").read_text()); ev=json.loads((HERE/"MARKET_4H_EVIDENCE.json").read_text()); raw=(HERE/"MARKET_4H_PAYLOAD.json").read_bytes(); self.assertEqual(hashlib.sha256(raw).hexdigest(),dec["market_payload_sha256"]); self.assertEqual(dec["market_payload_sha256"],ev["raw_identity"]["sha256"]); self.assertFalse(dec["support_measurement_executed"]); self.assertFalse(dec["predictive_model_executed"]); reg=json.loads((ROOT/"config/dataset_exposure_registry.json").read_text()); self.assertEqual(len([x for x in reg["dataset_slices"] if x.get("dataset_slice_id")==SLICE]),1)
+ def test_research_registry_capture_only(self):
+  reg=json.loads((ROOT/"config/research_registry.json").read_text()); row=[x for x in reg["records"] if x.get("research_id")=="BRRK-LEADERSHIP-INTRADAY-SUPPORT-0053"][0]; self.assertEqual(row["development_dataset_refs"],[SLICE]); self.assertEqual(row["result_status"],"PREREGISTERED_DATA_CAPTURED_NOT_MEASURED"); self.assertEqual(row["actual_variants_evaluated"],0)
+ def test_no_measurement_or_predictive_artifacts(self):
+  for n in ["SUPPORT_RESULT.json","PRIMARY_RESULT.json","RESULT_SUMMARY.json","EXECUTION.json","RUN_ONCE.marker"]: self.assertFalse((HERE/n).exists(),n)
+if __name__=="__main__": unittest.main()

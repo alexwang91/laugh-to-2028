@@ -247,6 +247,40 @@
         "research/brrk_beta_handoff_0047/engine.py",
         "research/governance/BRRK_LEADERSHIP_ROTATION_0048_ARCHITECTURE_AMENDMENT_2026-08-11.md"
       ]
+    },
+    {
+      "dataset_slice_id": "BRRK-LEADERSHIP-INTRADAY-SUPPORT-0053-BINANCE-4H-HIST-V1",
+      "dataset_id": "BINANCE-SPOT-BTC-ETH-SOL-UTC-4H-OHLCV-TRADES",
+      "dataset_version": "first-complete-valid-capture-sha256-471b54991ae648b79433285f073ea7bc813663319b6e2389c1682dad1a319135",
+      "source": "BINANCE_OFFICIAL_MARKET_DATA_ONLY_API_V3_KLINES_BTCUSDT_ETHUSDT_SOLUSDT_4H",
+      "assets": [
+        "BTC",
+        "ETH",
+        "SOL"
+      ],
+      "fields": [
+        "4h_open",
+        "4h_high",
+        "4h_low",
+        "4h_close",
+        "4h_volume",
+        "4h_quote_volume",
+        "4h_trades"
+      ],
+      "resolution": "4H",
+      "start": "2020-08-11T04:00:00Z",
+      "end": "2026-08-02T20:00:00Z",
+      "transformation": "RAW_CANONICAL_BINANCE_4H_PAYLOAD_HASH_FROZEN_THEN_COMMON_CONTIGUOUS_BTC_ETH_SOL_INDEX; SUPPORT_FUNNEL_NOT_COMPUTED_DURING_CAPTURE",
+      "pit_publication_semantics": "RESEARCHER_EXPOSED_DEVELOPMENT_HISTORY; a 4h bar is usable only after its Binance close_time; capture releases raw history only; no bar after 2026-08-02T20:00:00Z enters 0053.",
+      "data_budget": "DEVELOPMENT",
+      "contamination_state": "RESEARCHER_EXPOSED_HISTORY",
+      "consumed": true,
+      "researcher_exposed_history": true,
+      "provenance_status": "FACT",
+      "evidence_refs": [
+        "research/brrk_leadership_intraday_support_0053/MARKET_4H_EVIDENCE.json",
+        "research/brrk_leadership_intraday_support_0053/MARKET_4H_PAYLOAD.json"
+      ]
     }
   ],
   "exposure_events": [
@@ -329,6 +363,16 @@
       "result_informed_followup": true,
       "provenance_status": "FACT",
       "evidence_ref": "research/brrk_beta_handoff_0047/EVIDENCE_RECOVERY.json"
+    },
+    {
+      "exposure_id": "BRRK-LEADERSHIP-INTRADAY-SUPPORT-0053-RAW-DATA-20260811T162912817438Z",
+      "research_id": "BRRK-LEADERSHIP-INTRADAY-SUPPORT-0053",
+      "dataset_slice_ref": "BRRK-LEADERSHIP-INTRADAY-SUPPORT-0053-BINANCE-4H-HIST-V1",
+      "timestamp": "2026-08-11T16:29:12.817438Z",
+      "release_type": "RAW_DATA",
+      "result_informed_followup": false,
+      "provenance_status": "FACT",
+      "evidence_ref": "research/brrk_leadership_intraday_support_0053/MARKET_4H_EVIDENCE.json"
     }
   ]
 }
