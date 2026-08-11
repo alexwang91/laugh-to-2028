@@ -21,26 +21,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          python - <<'PY'
-          from pathlib import Path
-          p = Path('docs/CURRENT_STATE.md')
-          text = p.read_text(encoding='utf-8')
-          anchor = '''
-
----
-
-## 14. Machine-readable handoff compatibility anchors
-
-These lines are retained for standing drift-audit compatibility and do not grant authority:
-
-```text
-production_authorized_components = []
-handoff_compatibility_version = 1.0
-```
-'''
-          if 'production_authorized_components = []' not in text:
-              p.write_text(text.rstrip() + anchor + '\n', encoding='utf-8')
-          PY
+          if ! grep -Fq 'production_authorized_components = []' docs/CURRENT_STATE.md; then
+            printf '\n\n---\n\n## 14. Machine-readable handoff compatibility anchors\n\nThese lines are retained for standing drift-audit compatibility and do not grant authority:\n\n    production_authorized_components = []\n    handoff_compatibility_version = 1.0\n' >> docs/CURRENT_STATE.md
+          fi
+          grep -F 'production_authorized_components = []' docs/CURRENT_STATE.md
+          grep -F 'handoff_compatibility_version = 1.0' docs/CURRENT_STATE.md
       - name: Remove temporary workflow and persist docs-only update
         shell: bash
         run: |
