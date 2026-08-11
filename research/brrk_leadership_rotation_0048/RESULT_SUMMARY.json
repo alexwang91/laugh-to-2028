@@ -1,0 +1,50 @@
+{
+  "research_id": "BRRK-LEADERSHIP-ROTATION-0048",
+  "dataset_slice_id": "BRRK-LEADERSHIP-ROTATION-0048-EXPOSED-HIST-V1",
+  "classification": "MEASUREMENT_INCONCLUSIVE_INSUFFICIENT_SUPPORT",
+  "gates": {
+    "G0": true,
+    "G1": false
+  },
+  "inference_fragile": null,
+  "evaluation_window": {
+    "first_formal_date": "2025-01-14",
+    "last_formal_date": "2026-05-10"
+  },
+  "counts": {
+    "formal_predictions": 245,
+    "formal_evaluation_rows": 245,
+    "eligible_feature_valid_origins": 1102,
+    "target_ties": 0
+  },
+  "candidate_nll": 0.7185986814752551,
+  "baseline_nll": {
+    "B0": 0.6931471805599453,
+    "B1": 0.7185986814752551,
+    "B2": 0.7185986814752551,
+    "B3": 0.7185986814752551
+  },
+  "candidate_brier": 0.2627024107232627,
+  "baseline_brier": {
+    "B0": 0.25,
+    "B1": 0.2627024107232627,
+    "B2": 0.2627024107232627,
+    "B3": 0.2627024107232627
+  },
+  "auc": 0.378946493851778,
+  "balanced_accuracy": 0.5508059155865737,
+  "market_payload_sha256": "d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193",
+  "execution_head_sha": "12f70c927df39b9e2ba799c8d4c597a7ae9b1726",
+  "authority": {
+    "development_not_independent_oos": true,
+    "portfolio_economics_executed": false,
+    "canonical_strategy_changed": false,
+    "phase6_changed": false,
+    "production_authorized": false,
+    "signature_authorized": false,
+    "order_submission_authorized": false,
+    "same_id_rerun_allowed": false,
+    "same_id_retuning_allowed": false,
+    "same_id_rescue_allowed": false
+  }
+}
