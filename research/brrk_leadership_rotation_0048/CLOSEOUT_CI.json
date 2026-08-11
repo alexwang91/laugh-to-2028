@@ -15,6 +15,10 @@
   "model_recomputation_performed": false,
   "historical_scientific_evaluation_performed": false,
   "temporary_workflow_removed_after_attestation": true,
+  "post_attestation_changes": [
+    "Added CLOSEOUT_CI.json itself as a non-scientific attestation artifact.",
+    "Added test_closeout_ci_contract.py, which only validates this attestation object and performs no model or historical-data computation."
+  ],
   "authority": {
     "canonical_strategy_changed": false,
     "phase6_changed": false,
