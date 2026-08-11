@@ -336,28 +336,65 @@ def fit_offset_ridge(X: Any, y: Any, prevalence: float) -> FittedOffsetModel:
     if not np.isin(y, [0.0, 1.0]).all():
         raise FrozenProtocolError("Offset-ridge labels must be binary")
     offset = float(logit_probability(np.asarray([prevalence]))[0])
+    beta = np.zeros(X.shape[1], dtype=float)
+    identity = np.eye(X.shape[1], dtype=float)
 
-    def objective(beta: np.ndarray) -> tuple[float, np.ndarray]:
-        logits = offset + X @ beta
-        loss = float(np.sum(np.logaddexp(0.0, logits) - y * logits) + 0.5 * RIDGE_LAMBDA * np.dot(beta, beta))
+    def loss_grad_hessian(value: np.ndarray) -> tuple[float, np.ndarray, np.ndarray]:
+        logits = offset + X @ value
         prob = sigmoid(logits)
-        grad = X.T @ (prob - y) + RIDGE_LAMBDA * beta
-        return loss, grad
+        loss = float(
+            np.sum(np.logaddexp(0.0, logits) - y * logits)
+            + 0.5 * RIDGE_LAMBDA * np.dot(value, value)
+        )
+        grad = X.T @ (prob - y) + RIDGE_LAMBDA * value
+        weights = prob * (1.0 - prob)
+        hessian = X.T @ (X * weights[:, None]) + RIDGE_LAMBDA * identity
+        return loss, np.asarray(grad, dtype=float), np.asarray(hessian, dtype=float)
 
-    result = minimize(
-        lambda b: objective(b)[0],
-        np.zeros(X.shape[1], dtype=float),
-        jac=lambda b: objective(b)[1],
-        method="L-BFGS-B",
-        options={"ftol": OPT_TOL, "gtol": OPT_TOL, "maxiter": 5000},
-    )
-    if not result.success or not np.isfinite(result.x).all():
-        raise FrozenProtocolError(f"Offset-ridge optimization failed: {result.message}")
-    grad_norm = float(np.max(np.abs(objective(result.x)[1])))
-    if grad_norm > 1e-7:
-        raise FrozenProtocolError(f"Offset-ridge gradient did not converge: {grad_norm}")
-    return FittedOffsetModel(beta=np.asarray(result.x, dtype=float), prevalence=float(prevalence))
+    for _ in range(100):
+        loss, grad, hessian = loss_grad_hessian(beta)
+        if float(np.max(np.abs(grad))) <= 1e-10:
+            break
+        try:
+            step = np.linalg.solve(hessian, grad)
+        except np.linalg.LinAlgError as exc:
+            raise FrozenProtocolError("Offset-ridge Newton Hessian solve failed") from exc
+        directional = float(np.dot(grad, step))
+        if not np.isfinite(directional) or directional <= 0.0:
+            raise FrozenProtocolError("Offset-ridge Newton direction is not a descent direction")
+        step_scale = 1.0
+        accepted = False
+        for _ in range(60):
+            trial = beta - step_scale * step
+            trial_loss, _, _ = loss_grad_hessian(trial)
+            if trial_loss <= loss - 1e-4 * step_scale * directional:
+                beta = trial
+                accepted = True
+                break
+            step_scale *= 0.5
+        if not accepted:
+            break
 
+    _, grad, _ = loss_grad_hessian(beta)
+    if float(np.max(np.abs(grad))) > 1e-10:
+        from scipy.optimize import root as scipy_root
+        polished = scipy_root(
+            lambda value: loss_grad_hessian(np.asarray(value, dtype=float))[1],
+            beta,
+            jac=lambda value: loss_grad_hessian(np.asarray(value, dtype=float))[2],
+            method="hybr",
+            options={"xtol": OPT_TOL, "maxfev": 5000},
+        )
+        if np.isfinite(polished.x).all():
+            beta = np.asarray(polished.x, dtype=float)
+
+    final_loss, final_grad, _ = loss_grad_hessian(beta)
+    if not np.isfinite(final_loss) or not np.isfinite(beta).all():
+        raise FrozenProtocolError("Offset-ridge produced non-finite solution")
+    grad_norm = float(np.max(np.abs(final_grad)))
+    if grad_norm > 1e-9:
+        raise FrozenProtocolError(f"Offset-ridge score equation did not converge: {grad_norm}")
+    return FittedOffsetModel(beta=np.asarray(beta, dtype=float), prevalence=float(prevalence))
 
 def raw_probability(model: FittedOffsetModel, X: Any) -> tuple[np.ndarray, np.ndarray]:
     X = _as_float_array(X)

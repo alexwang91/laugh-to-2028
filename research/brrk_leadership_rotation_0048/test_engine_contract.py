@@ -109,7 +109,7 @@ class EngineContractTest(unittest.TestCase):
     def test_temperature_is_prior_preserving_and_exchange_symmetric(self):
         priors = np.asarray([0.55, 0.58, 0.60, 0.57, 0.62, 0.59, 0.61, 0.56], dtype=float)
         etas = np.asarray([-1.1, 0.8, 1.4, -0.7, 0.9, -1.3, 1.7, -0.4], dtype=float)
-        y = np.asarray([0, 1, 1, 0, 1, 0, 1, 0], dtype=float)
+        y = np.asarray([0, 1, 1, 0, 0, 0, 1, 1], dtype=float)
         fit = engine.fit_temperature(priors, etas, y)
         self.assertTrue(fit.identified)
         self.assertIsNotNone(fit.gamma)
