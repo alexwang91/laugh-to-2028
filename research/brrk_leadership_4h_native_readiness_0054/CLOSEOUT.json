@@ -1,0 +1,128 @@
+{
+  "research_id": "BRRK-LEADERSHIP-4H-NATIVE-READINESS-0054",
+  "closeout_status": "FAIL_4H_NATIVE_TRAINING_PRECISION_NOT_ESTABLISHED / CLOSED",
+  "result_status": "FAIL_4H_NATIVE_TRAINING_PRECISION_NOT_ESTABLISHED",
+  "evidence_class": "RESEARCHER_EXPOSED_DEVELOPMENT_HISTORY_WITH_POST_2022_TARGET_FIREWALL_NOT_INDEPENDENT_OOS",
+  "design_merge_sha": "34a20658d26dd5440aa48139a83a15757ecf394c",
+  "preregistration_merge_sha": "7bc88d3dc314d052fdddf0706369974621479e8f",
+  "implementation_merge_sha": "4b599be6c8f994878c81604feed51bd18136cea2",
+  "controlled_execution_boundary_merge_sha": "ec6d5fa927398e0407b342d4996a1f2a8856306f",
+  "dataset_slice_id": "BRRK-LEADERSHIP-INTRADAY-SUPPORT-0053-BINANCE-4H-HIST-V1",
+  "market_payload_sha256": "471b54991ae648b79433285f073ea7bc813663319b6e2389c1682dad1a319135",
+  "methodology_target_firewall": {
+    "latest_allowed_target_path_end": "2022-12-31T20:00:00Z",
+    "reserved_suffix_start": "2023-01-01T00:00:00Z",
+    "post_2022_target_values_read": false
+  },
+  "unique_methodology_measurement": {
+    "github_actions_run_id": 31530579490,
+    "github_actions_job_id": 93909356498,
+    "run_attempt": 1,
+    "workflow_carrier_head_sha": "c5a87d9dbda5275d4a7b38577bbedd82c9347952",
+    "controlled_execution_head_sha": "ec6d5fa927398e0407b342d4996a1f2a8856306f",
+    "preflight_status": "PREFLIGHT_PASS_ZERO_RESULT",
+    "measurement_step_completed_successfully": true,
+    "actual_variants_evaluated": 1,
+    "same_id_remeasurement_allowed": false
+  },
+  "official_execution_artifact": {
+    "artifact_id": 9116707158,
+    "name": "brrk-0054-methodology-measurement-bundle",
+    "digest": "sha256:cf2f2f950f35fb250500f7679802ae5b8305d6f888dbf6445b6b61583ce01929",
+    "source_run_id": 31530579490,
+    "size_bytes": 5547,
+    "expired_at_closeout": false
+  },
+  "hash_locked_result_identity": {
+    "attempt_marker_sha256": "607daeac9658b2d7c5fffe49df9807347ba91cf675c01a533c6f77ffcb1130b1",
+    "method_result_sha256": "84d260e2dc1c260fb52b546ac5878485668a6397940a9e4da93070d7090edda7",
+    "execution_sha256": "a5b00a41d8942268d379d1382ac76108abf57c76559939bd8df0fcc54443081f",
+    "final_marker_status": "VALID_METHODOLOGY_MEASUREMENT_COMPLETE_CLOSED_TO_SAME_ID_RERUN"
+  },
+  "frozen_precision_rule": {
+    "hac_kernel": "BARTLETT",
+    "hac_lag": 335,
+    "numerical_floor": 672,
+    "training_p90_width_max": 0.1,
+    "training_max_width_max": 0.2,
+    "consecutive_refits_required": 3,
+    "calibration_max_width_max": 0.1
+  },
+  "training_precision_evidence": {
+    "first_hac_eligible_refit": {
+      "timestamp": "2021-11-18T04:00:00Z",
+      "matured_eligible_count": 681,
+      "p90_width": 0.7328211456431971,
+      "max_width": 0.7395819838531786,
+      "hac_min_eigenvalue": 0.023563793254175628,
+      "hessian_min_eigenvalue": 1.109119082903993
+    },
+    "maximum_matured_eligible_count": 1207,
+    "last_refit_record": {
+      "timestamp": "2026-07-23T04:00:00Z",
+      "matured_eligible_count": 1207,
+      "p90_width": 0.7911413942127266,
+      "max_width": 0.9904753029784961,
+      "hac_min_eigenvalue": 1.579002235564848,
+      "hessian_min_eigenvalue": 1.2740790181889712
+    },
+    "best_observed_p90_width_descriptive_only": {
+      "timestamp": "2022-05-05T04:00:00Z",
+      "matured_eligible_count": 1116,
+      "p90_width": 0.6543462452314497,
+      "max_width_at_same_refit": 0.9905219144556734
+    },
+    "best_observed_max_width_descriptive_only": {
+      "timestamp": "2021-11-18T04:00:00Z",
+      "matured_eligible_count": 681,
+      "max_width": 0.7395819838531786,
+      "p90_width_at_same_refit": 0.7328211456431971
+    },
+    "number_of_training_precision_pass_refits": 0,
+    "three_consecutive_training_passes_achieved": false,
+    "training_readiness": null
+  },
+  "downstream_gate_status": {
+    "calibration_stage_eligible": false,
+    "calibration_readiness": null,
+    "reserved_suffix_support_stage_eligible": false,
+    "reserved_support": null,
+    "new_predictive_study_unlocked_by_0054": false,
+    "0049_concentration_unlocked": false
+  },
+  "binding_conclusion": [
+    "The fixed 672-observation HAC admissibility floor was reached; the result is not a failure to accumulate enough rows to run the estimator-precision calculation.",
+    "The Bartlett-HAC covariance and penalized Hessian were numerically identified at eligible refits; the binding failure is that centered dynamic-probability uncertainty remained far wider than the prospectively frozen 0.10 P90 / 0.20 maximum tolerances.",
+    "No training refit passed the frozen precision gate, so three consecutive passes were impossible and training readiness was never established.",
+    "Because training readiness failed, calibration readiness and post-2022 reserved-support eligibility were correctly not evaluated under the preregistered hierarchy.",
+    "0054 read no post-2022 ETH/SOL target values and computed no predictive-performance or portfolio-economic metrics."
+  ],
+  "scientific_implication": {
+    "exact_7_feature_4h_estimator_eligible_for_post_2022_predictive_study": false,
+    "same_id_threshold_relaxation_allowed": false,
+    "same_id_hac_change_allowed": false,
+    "same_id_fixed_burnin_rescue_allowed": false,
+    "recommended_next_direction": "Any continuation requires a new preregistered methodology/mechanism ID. Prefer structurally lower effective dimensionality or a different preregistered inferential unit; do not merely loosen 0054 precision thresholds or select a fixed burn-in from exposed results.",
+    "post_2022_target_suffix_preserved_from_0054": true,
+    "independent_oos_claim_allowed": false
+  },
+  "authority": {
+    "development_not_independent_oos": true,
+    "post_2022_target_values_read": false,
+    "predictive_performance_metrics_executed": false,
+    "portfolio_economics_executed": false,
+    "0048_rerun_or_rescue_executed": false,
+    "0053_rerun_or_rescue_executed": false,
+    "canonical_strategy_changed": false,
+    "phase6_changed": false,
+    "production_authorized": false,
+    "signature_authorized": false,
+    "order_submission_authorized": false
+  },
+  "closure": {
+    "same_id_rerun_allowed": false,
+    "same_id_retuning_allowed": false,
+    "same_id_rescue_allowed": false,
+    "result_informed_definition_change_requires_new_research_id": true
+  }
+}

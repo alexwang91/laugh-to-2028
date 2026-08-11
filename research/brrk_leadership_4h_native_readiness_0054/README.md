@@ -1,6 +1,6 @@
 # BRRK-LEADERSHIP-4H-NATIVE-READINESS-0054
 
-Status: **PREREGISTERED / DATA HASH-BOUND / IMPLEMENTATION MERGED / CONTROLLED-RUN BOUNDARY / ZERO REAL RESULT**.
+Status: **FAIL_4H_NATIVE_TRAINING_PRECISION_NOT_ESTABLISHED / CLOSED / IMMUTABLE**.
 
 0054 is a methodology-only follow-up to immutable 0053. It replaces fixed calendar-equivalent burn-in counting with one frozen causal estimator-precision readiness rule. It may use ETH/SOL labels only when the full 336-bar target path ends by 2022-12-31 20:00 UTC. From 2023-01-01 onward, target outcomes are forbidden to 0054; only label-blind support accounting is allowed.
 
@@ -21,3 +21,7 @@ If execution stops after the attempt marker but before a complete result/executi
 No NLL, Brier, AUC, directional scoring, realized-margin analysis, confidence breakpoint or portfolio economics is permitted under 0054. A methodology PASS would only make a separately preregistered post-2022 predictive study eligible.
 
 **The immutable real 4h payload has still not been passed to `measure_frozen_readiness()` on this controlled-run branch. `RUN_ATTEMPT.marker`, `METHOD_RESULT.json`, `EXECUTION.json`, and `RUN_ONCE.marker` are absent. Training readiness, calibration readiness, reserved support and the 0054 classification remain unknown.**
+
+## Immutable closeout
+
+The unique 0054 methodology measurement is complete and permanently closed to same-ID rerun, retuning and rescue. Training precision readiness failed; calibration and reserved-support stages were not eligible. See `METHOD_RESULT.json`, `RUN_ONCE.marker`, `RESULT.md`, and `CLOSEOUT.json`. No predictive or portfolio authority was created.

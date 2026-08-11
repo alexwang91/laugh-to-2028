@@ -2,8 +2,8 @@
 
 Last updated: **2026-08-11**  
 Authoritative repository: `alexwang91/laugh-to-2028`  
-Current `main` research merge: **`4b599be6c8f994878c81604feed51bd18136cea2`**  
-Current research branch: **`research/brrk-leadership-4h-readiness-0054-controlled-run`**  
+Current `main` research merge: **`ec6d5fa927398e0407b342d4996a1f2a8856306f`**  
+Current research branch: **`research/brrk-leadership-4h-readiness-0054-result`**  
 Status of this document: **AUTHORITATIVE OPERATING SNAPSHOT**
 
 > GitHub `main`, immutable research artifacts and machine registries remain the sources of truth. This file is the compact human handoff, not a substitute for preregistration, execution, evidence, recovery or closeout artifacts.
@@ -37,7 +37,7 @@ BRRK exhaustion pulse 0046            FAIL_NO_FUTURE_ONLY_PULSE_VALIDATION_ELIGI
 BRRK Beta handoff event study 0047    FAIL_NO_RECURRENT_DURABLE_HANDOFF_STRUCTURE / CLOSED
 BRRK leadership rotation 0048         MEASUREMENT_INCONCLUSIVE_INSUFFICIENT_SUPPORT / CLOSED
 BRRK intraday support 0053             FAIL_4H_DOES_NOT_SOLVE_0048_SUPPORT_CONSTRAINT / CLOSED
-BRRK 4h-native readiness 0054          CONTROLLED-RUN BOUNDARY / ZERO RESULT
+BRRK 4h-native readiness 0054          FAIL_4H_NATIVE_TRAINING_PRECISION_NOT_ESTABLISHED / CLOSED
 
 Canonical BRRK-0011                    NO CHANGE
 Phase 7                                MONITOR_ONLY / LAUNCH BLOCKED
@@ -444,3 +444,28 @@ production authority                      NO CHANGE
 ```
 
 After this boundary merges fully green, the only permitted scientific action is the staged unique measurement: exact-head preflight -> durably persist attempt marker -> evaluate once -> durably persist method result/execution -> finalize marker without remeasurement. No execution is authorized before this boundary merges.
+
+
+## 15. 0054 immutable methodology result
+
+0054 unique execution HEAD: `ec6d5fa927398e0407b342d4996a1f2a8856306f`; GitHub Actions run/job `31530579490 / 93909356498`. Final classification: `FAIL_4H_NATIVE_TRAINING_PRECISION_NOT_ESTABLISHED`.
+
+```text
+first HAC-eligible refit                 2021-11-18T04:00:00Z
+first HAC-eligible matured count         681
+first P90 probability CI width           0.7328211456  > 0.10 gate
+first maximum probability CI width       0.7395819839  > 0.20 gate
+maximum methodology-prefix count         1207
+training precision pass refits           0
+three consecutive passes                 false
+training readiness                       NOT ESTABLISHED
+calibration stage                        NOT ELIGIBLE
+reserved-support stage                   NOT ELIGIBLE
+post-2022 target values read             false
+predictive metrics                       NONE / FORBIDDEN
+portfolio economics                      NONE / FORBIDDEN
+actual variants evaluated                1
+same-ID rerun / retune / rescue          false / false / false
+```
+
+The binding failure is estimator precision, not inability to reach the 672 numerical floor and not HAC/Hessian numerical breakdown. The exact 7-feature 4h estimator is therefore **not eligible** for the preserved post-2022 predictive study under 0054. Descriptive post-result minimum interval widths are preserved in `CLOSEOUT.json` but have no threshold-selection authority. Any continuation requires a new preregistered methodology/mechanism ID; do not loosen 0054 thresholds or adopt a fixed burn-in as a same-ID rescue.
