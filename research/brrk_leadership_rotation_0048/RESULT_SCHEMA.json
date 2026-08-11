@@ -1,0 +1,100 @@
+{
+  "schema_id": "BRRK-LEADERSHIP-ROTATION-0048-PRIMARY-RESULT-V1",
+  "schema_version": 1,
+  "purpose": "Frozen structural contract for the single valid historical DEVELOPMENT result. This schema has no authority to change the preregistered scientific gates.",
+  "required_top_level_keys": [
+    "schema_id",
+    "research_id",
+    "dataset_slice_id",
+    "market_payload_sha256",
+    "execution_head_sha",
+    "classification",
+    "classification_detail",
+    "evaluation_window",
+    "counts",
+    "proper_scores",
+    "discrimination",
+    "bootstrap",
+    "confidence_diagnostics",
+    "formal_evaluation_rows",
+    "formal_evaluation_rows_sha256",
+    "authority"
+  ],
+  "classification_enum": [
+    "INVALID_EXECUTION",
+    "MEASUREMENT_INCONCLUSIVE_INSUFFICIENT_SUPPORT",
+    "MEASUREMENT_INCONCLUSIVE_CALIBRATION_UNIDENTIFIABLE",
+    "FAIL_NO_INCREMENTAL_DYNAMIC_LEADERSHIP",
+    "FAIL_NO_ROBUST_DYNAMIC_LEADERSHIP",
+    "PASS_LEADERSHIP_INFORMATION_NO_CONCENTRATION_HANDOFF",
+    "PASS_ONE_SIDED_LEADERSHIP_NO_FULL_ROUTER",
+    "PASS_LEADERSHIP_INFORMATION_CONCENTRATION_HANDOFF_ELIGIBLE"
+  ],
+  "formal_evaluation_row_fields": [
+    "date",
+    "refit_date",
+    "training_size",
+    "calibration_pool_size",
+    "pi",
+    "gamma_candidate",
+    "gamma_B2",
+    "gamma_B3",
+    "Y",
+    "M",
+    "p_candidate",
+    "p_B0",
+    "p_B1",
+    "p_B2",
+    "p_B3",
+    "confidence",
+    "Z",
+    "loss_candidate",
+    "loss_B0",
+    "loss_B1",
+    "loss_B2",
+    "loss_B3",
+    "EPISODE_ID",
+    "EPISODE_STATE",
+    "EPISODE_DURATION"
+  ],
+  "required_proper_score_keys": [
+    "candidate_nll",
+    "baseline_nll",
+    "candidate_brier",
+    "baseline_brier"
+  ],
+  "required_discrimination_keys": [
+    "auc",
+    "balanced_accuracy",
+    "direction_metrics"
+  ],
+  "required_bootstrap_keys_when_G1_support_passes": [
+    "replicates",
+    "block_length",
+    "seed",
+    "statistics"
+  ],
+  "required_confidence_diagnostic_keys": [
+    "spearman_point",
+    "natural_cubic_spline",
+    "segmented_breakpoint",
+    "high_support",
+    "nonselection_calibration_diagnostics"
+  ],
+  "nonselection_calibration_diagnostics_contract": {
+    "beta_calibration": "REPORT_STATUS_ONLY_IF_NOT_AVAILABLE_FROM_FROZEN_ENGINE; ZERO_SELECTION_OR_RESCUE_AUTHORITY",
+    "isotonic_regression": "REPORT_STATUS_ONLY_IF_NOT_AVAILABLE_FROM_FROZEN_ENGINE; ZERO_SELECTION_OR_RESCUE_AUTHORITY"
+  },
+  "authority_invariants": {
+    "development_not_independent_oos": true,
+    "portfolio_economics_executed": false,
+    "canonical_strategy_changed": false,
+    "phase6_changed": false,
+    "production_authorized": false,
+    "signature_authorized": false,
+    "order_submission_authorized": false,
+    "same_id_rerun_allowed": false,
+    "same_id_retuning_allowed": false,
+    "same_id_rescue_allowed": false
+  }
+}

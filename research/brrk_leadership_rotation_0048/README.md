@@ -1,8 +1,8 @@
 # BRRK-LEADERSHIP-ROTATION-0048
 
-Status: **PREREGISTERED_NOT_RUN / IMPLEMENTATION-ONLY ZERO-RESULT CANDIDATE**
+Status: **PREREGISTERED_NOT_RUN / CONTROLLED-EXECUTION BOUNDARY / ZERO RESULT**
 
-The revised architecture and numerical preregistration are frozen. This directory now contains a zero-result implementation of the frozen protocol, but no historical 0048 scientific execution has occurred.
+The revised architecture, numerical preregistration and zero-result implementation are frozen. This directory now also contains the hash-bound controlled-execution interface, result schema and exactly-once runner. **No historical 0048 scientific execution has occurred.**
 
 ## Scientific scope
 
@@ -37,32 +37,75 @@ BTC is an eligibility/defensive-anchor asset, not a competing 0048 winner. Cash 
 
 The candidate must beat all probabilistic causal baselines under the simultaneous NLL gate.
 
-## Zero-result implementation
+## Frozen implementation
 
-`engine.py` mechanically implements the preregistered mathematics without executing the frozen historical study.
+`engine.py` mechanically implements the preregistered mathematics. It is unchanged by the controlled-run stage and remains bound by git blob SHA in `RUN_INTERFACE.json`.
 
-Key implementation properties:
+Historical input is accepted only through the immutable 0047 market-evidence wrapper and must match payload SHA256:
 
-- historical input is accepted only through the immutable 0047 market-evidence wrapper and must match payload SHA256 `d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193`;
-- BTC eligibility reuses the already frozen 0047 `trend_score` implementation and FAST weights;
-- ETH/SOL feature exchange maps the seven-feature vector to its negative and model probabilities to complements;
-- 14/28/56 target code is tested against the literal preregistered path-integral formula;
-- training labels cannot enter before 56 calendar days have elapsed;
-- refitting is expanding and anchored every 28 calendar days;
-- calibration consumes only matured shadow-prequential predictions;
-- candidate and B2/B3 baselines use the same prevalence-offset/ridge/refit/calibration machinery;
-- bootstrap resamples aligned evaluation rows without retraining the walk-forward models;
-- the one-breakpoint segmented model uses a deterministic global SSE search over the frozen admissible family;
-- spline derivatives remain diagnostic only;
-- no allocation, CAGR, MDD, Beta-to-BTC or BTC-to-cash function exists.
+`d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193`
 
-`test_engine_contract.py` uses deterministic **synthetic data only**. Synthetic unit-test fits verify mathematical and causal invariants and are not an evaluation of the registered historical candidate variant.
+The evidence itself is DEVELOPMENT history already exposed to the research program. It is not independent OOS.
 
-`IMPLEMENTATION_BOUNDARY.json` records the zero-result boundary and explicitly leaves historical scientific execution unauthorized.
+## Controlled-execution boundary
 
-## Result hierarchy
+The controlled-run stage adds only:
 
-Possible future formal outcomes remain:
+- `CONTROLLED_EXECUTION_BOUNDARY.json`;
+- `RUN_INTERFACE.json`;
+- `RESULT_SCHEMA.json`;
+- `run_once.py`;
+- `test_run_interface_contract.py`;
+- stage updates to the existing contract tests and operating documentation.
+
+It does **not** create or authorize a historical result on this branch.
+
+### Hash binding
+
+Execution requires an explicit `--expected-head-sha` and fails closed unless the current git HEAD matches exactly.
+
+The runner additionally verifies frozen git blob identities for:
+
+- `PREREGISTRATION.json`;
+- `DATASET_DECLARATION.json`;
+- `IMPLEMENTATION_BOUNDARY.json`;
+- `engine.py`;
+- the immutable 0047 `MARKET_EVIDENCE.json`.
+
+The market wrapper must also carry the exact frozen payload SHA256 above.
+
+### Exactly-once semantics
+
+`preflight` is repeatable and has zero scientific result authority. It verifies the exact execution head, immutable blobs, market evidence identity and absence of runtime artifacts without fitting the registered historical candidate.
+
+`evaluate` is different. Immediately before registered-history model evaluation begins it create-only writes:
+
+`RUN_ATTEMPT.marker`
+
+Once that marker exists, **a second historical model computation under 0048 is forbidden**, even if the process later crashes.
+
+On a successful valid execution, the runner create-only writes:
+
+1. `PRIMARY_RESULT.json`;
+2. `RESULT_SUMMARY.json`;
+3. `EXECUTION.json`;
+4. `RUN_ONCE.marker` last.
+
+`RUN_ONCE.marker` is the final commit authority for the completed scientific execution. A valid result then closes 0048 to same-ID rerun, retuning and rescue regardless of PASS, FAIL or INCONCLUSIVE classification.
+
+### Interruption recovery
+
+Recovery is deliberately narrow.
+
+If `RUN_ATTEMPT.marker` exists and the complete result + summary + execution bundle already exists but `RUN_ONCE.marker` is missing, `recover-marker` may verify all stored hashes and create the final marker **without calling the model again**.
+
+If the bundle is partial or hash-inconsistent, there is no automatic same-ID retry path. That state must be handled as an interrupted/invalid execution under governance; the runner cannot silently recompute.
+
+## Frozen result schema
+
+`RESULT_SCHEMA.json` freezes the allowed result classifications and required result structure before any 0048 historical output exists.
+
+Possible formal classifications remain:
 
 - `INVALID_EXECUTION`;
 - `MEASUREMENT_INCONCLUSIVE_INSUFFICIENT_SUPPORT`;
@@ -75,43 +118,46 @@ Possible future formal outcomes remain:
 
 A leadership-information PASS does not require the confidence breakpoint to pass. Failure of the HIGH translation does not erase valid continuous leadership information.
 
-## Dataset status
+The primary result stores the aligned formal evaluation rows and a canonical SHA256 digest of those rows so later closeout can audit exactly what observations entered the frozen gates.
 
-The study reuses the already researcher-exposed 0047 BTC/ETH/SOL Binance UTC daily market evidence through 2026-08-02. The source payload identity is frozen as:
+Beta-calibration and isotonic diagnostics have zero selection/rescue authority. The frozen engine does not expose a separate causal diagnostic implementation for them; the result schema therefore requires their availability status to be reported rather than permitting a post-hoc replacement implementation during execution.
 
-`sha256:d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193`
+## Pre-result artifact state
 
-This is DEVELOPMENT history, not independent OOS.
+Before the exactly-once historical execution, the following runtime files must remain absent:
 
-## Registry status
+- `PRIMARY_RESULT.json`;
+- `RESULT_SUMMARY.json`;
+- `EXECUTION.json`;
+- `RUN_ATTEMPT.marker`;
+- `RUN_ONCE.marker`;
+- `RESULT.md`;
+- any portfolio runner or portfolio result.
 
-The preregistration object and dataset declaration remain byte-for-byte registered in `config/research_registry.json` and `config/dataset_exposure_registry.json`.
+The controlled-run branch must merge with `actual_variants_evaluated = 0` and `result_status = PREREGISTERED_NOT_RUN` unchanged.
 
-Implementation does **not** change:
+## What remains forbidden
 
-- `declared_variant_budget = 1`;
-- `actual_variants_evaluated = 0`;
-- `result_status = PREREGISTERED_NOT_RUN`;
-- the registered dataset exposure state;
+0048 still cannot test or change:
+
+- 60/80/90/100 concentration weights;
+- CAGR, Sharpe, Calmar or MDD portfolio economics;
+- Beta-to-BTC shelter timing;
+- BTC-to-cash cycle exit;
+- CORE4 or broader state thresholds;
+- BNB/UNI/AAVE or any universe expansion;
 - canonical BRRK;
 - Phase 6;
-- production/signing/order authority.
+- leverage/shorting;
+- signing/order submission/production authority.
 
-## Implementation-only boundary
+## Exact next step after this boundary merges green
 
-At this stage the following files must **not** exist:
+On the exact merged controlled-run SHA:
 
-- `run_once.py`
-- `RUN_INTERFACE.json`
-- `PRIMARY_RESULT.json`
-- `RESULT_SUMMARY.json`
-- `EXECUTION.json`
-- `RUN_ONCE.marker`
-- `RESULT.md`
-- any portfolio runner or allocation output
+1. run `preflight`;
+2. verify it reports `PREFLIGHT_PASS_ZERO_RESULT`;
+3. run `evaluate` exactly once;
+4. preserve the resulting immutable artifacts and close out 0048 without same-ID rescue.
 
-No registered-history 0048 model fit, calibration fit, candidate evaluation, CAGR/MDD test or portfolio allocation is authorized by this implementation branch.
-
-The only permitted next step after this implementation is merged and all standing CI is green is a **separate controlled-execution stage** that adds a hash-bound run interface/run-once boundary and then performs exactly one historical DEVELOPMENT execution. Any valid scientific output closes 0048 to same-ID rerun, retuning and rescue.
-
-Canonical BRRK, Phase 6, production authorization, signing authorization and order-submission authorization remain unchanged.
+No historical 0048 evaluation is permitted on this boundary PR itself.

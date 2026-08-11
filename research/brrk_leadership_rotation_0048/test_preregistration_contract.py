@@ -78,23 +78,39 @@ class PreregistrationContractTest(unittest.TestCase):
         self.assertIn("No canonical BRRK modification", text)
         self.assertFalse(prereg["production_authorized"])
 
-    def test_implementation_stage_has_engine_but_still_no_run_or_result_files(self):
+    def test_controlled_execution_stage_has_runner_but_still_no_result_files(self):
         present = {p.name for p in HERE.iterdir() if p.is_file()}
-        self.assertIn("engine.py", present)
-        self.assertIn("test_engine_contract.py", present)
-        self.assertIn("IMPLEMENTATION_BOUNDARY.json", present)
-        forbidden = {
-            "run_once.py",
+        required = {
+            "engine.py",
+            "test_engine_contract.py",
+            "IMPLEMENTATION_BOUNDARY.json",
+            "CONTROLLED_EXECUTION_BOUNDARY.json",
             "RUN_INTERFACE.json",
+            "RESULT_SCHEMA.json",
+            "run_once.py",
+            "test_run_interface_contract.py",
+        }
+        self.assertTrue(required.issubset(present), sorted(required - present))
+        forbidden = {
             "PRIMARY_RESULT.json",
             "RESULT_SUMMARY.json",
             "EXECUTION.json",
+            "RUN_ATTEMPT.marker",
             "RUN_ONCE.marker",
             "RESULT.md",
             "portfolio.py",
             "portfolio_result.json",
         }
         self.assertTrue(forbidden.isdisjoint(present), sorted(forbidden & present))
+        boundary = load(HERE / "CONTROLLED_EXECUTION_BOUNDARY.json")
+        self.assertEqual(boundary["stage"], "CONTROLLED_EXECUTION_BOUNDARY_ZERO_RESULT")
+        self.assertFalse(boundary["historical_scientific_execution_started"])
+        self.assertFalse(boundary["historical_scientific_execution_authorized_before_merge_and_green_ci"])
+        self.assertEqual(boundary["actual_variants_evaluated"], 0)
+        self.assertEqual(boundary["result_status"], "PREREGISTERED_NOT_RUN")
+        self.assertFalse(boundary["production_authorized"])
+
+    def test_implementation_boundary_is_preserved_as_prior_stage_evidence(self):
         boundary = load(HERE / "IMPLEMENTATION_BOUNDARY.json")
         self.assertEqual(boundary["stage"], "IMPLEMENTATION_ONLY_ZERO_RESULT")
         self.assertFalse(boundary["historical_scientific_execution_authorized"])
