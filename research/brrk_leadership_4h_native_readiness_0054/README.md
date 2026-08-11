@@ -7,3 +7,5 @@ Status: **PREREGISTERED / DATA REUSE HASH-BOUND / NOT IMPLEMENTED / NOT RUN / NO
 Primary numerical design: fixed 7-feature 4h ridge dynamic component, lambda=1, Bartlett HAC lag 335, numerical floor 672, data-independent probability probes, training P90 95% width <=0.10 and max <=0.20, calibration max 95% width <=0.10, and three consecutive 168-bar refit passes for each readiness stage.
 
 No NLL, Brier, AUC, directional scoring, realized-margin analysis, confidence breakpoint or portfolio economics is permitted under 0054. A PASS would only make a separately preregistered post-2022 predictive study eligible.
+
+Governance attestation: before any 0054 numerical output, the 0048 lineage edge was frozen using the repository-valid `MECHANISM_FORK` relation; 0053 remains `RESULT_INFORMED`. The formal 0054 path first appears on the rewritten preregistration branch with those valid relations and an identical central registry owner.
