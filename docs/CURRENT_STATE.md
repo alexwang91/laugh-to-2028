@@ -276,9 +276,13 @@ No 0048 result classification exists yet.
 
 The exposed-development 40% BTC / 60% winner construction materially improved historical CAGR and passed cost robustness. It motivates later concentration research but does not identify an 80%-100% optimum and is not independent evidence for 0048.
 
-### BRRK-EXHAUSTION-EVENT-STUDY-0043
+### BRRK-EXHAUSTION-EVENT-STUDY-0043 — complete diagnostic
 
-The frozen interpretation remains: a **7–14 day exhaustion-ranking signal appears feasible**, but the first equal-weight absolute trigger was not operationally ready. **ID 0043 is closed against result-informed pruning, reweighting, threshold rescue**, dynamic-gross mapping or portfolio-economic counterfactual under the same ID.
+```text
+workflow run                         31381953131 / attempt 1
+```
+
+The frozen 0043 interpretation remains: a **7–14 day exhaustion-ranking signal appears feasible**, but the first equal-weight absolute trigger was not operationally ready. **ID 0043 is closed against result-informed pruning, reweighting, threshold rescue**, dynamic-gross mapping or portfolio-economic counterfactual under the same ID.
 
 ### 0044 / 0045 / 0046
 
