@@ -202,19 +202,20 @@ class EngineContractTest(unittest.TestCase):
             with self.assertRaises(engine.FrozenProtocolError):
                 engine.load_frozen_market_evidence(path)
 
-    def test_implementation_boundary_has_no_result_artifacts(self):
-        engine.assert_no_result_artifacts(HERE)
+    def test_controlled_run_boundary_has_no_scientific_result_artifacts(self):
         forbidden = {
-            "run_once.py",
-            "RUN_INTERFACE.json",
             "PRIMARY_RESULT.json",
             "RESULT_SUMMARY.json",
             "EXECUTION.json",
+            "RUN_ATTEMPT.marker",
             "RUN_ONCE.marker",
             "RESULT.md",
+            "portfolio.py",
+            "portfolio_result.json",
         }
         present = {p.name for p in HERE.iterdir() if p.is_file()}
         self.assertTrue(forbidden.isdisjoint(present))
+        self.assertTrue({"run_once.py", "RUN_INTERFACE.json", "RESULT_SCHEMA.json"}.issubset(present))
 
 
 if __name__ == "__main__":
