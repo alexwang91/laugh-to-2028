@@ -1,0 +1,49 @@
+name: 0053 implementation CURRENT_STATE update
+
+on:
+  push:
+    branches:
+      - research/brrk-leadership-intraday-support-0053-implementation
+
+permissions:
+  contents: write
+
+jobs:
+  update-state:
+    if: contains(github.event.head_commit.message, 'trigger 0053 implementation state')
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/brrk-leadership-intraday-support-0053-implementation
+          fetch-depth: 0
+      - name: Advance 0053 zero-result implementation handoff
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('docs/CURRENT_STATE.md')
+          s=p.read_text()
+          s=s.replace('Current `main` research merge: **`ed3c22f0e3f562498f483ce5f1bb634f8f9b9e4e`**', 'Current `main` research merge: **`36a517ecde6bb908101c14edea3695012ec781e4`**')
+          s=s.replace('Current research branch: **`research/brrk-leadership-intraday-support-0053-capture-source-amendment`**', 'Current research branch: **`research/brrk-leadership-intraday-support-0053-implementation`**')
+          s=s.replace('BRRK intraday support 0053             PREREGISTERED / DATA CAPTURED / NOT MEASURED', 'BRRK intraday support 0053             IMPLEMENTATION-ONLY / DATA FROZEN / NO RESULT')
+          s=s.replace('0053 is **label-blind support accounting only**. Numerical/data preregistration status: `PREREGISTERED_DATA_NOT_CAPTURED`. At the current stage:', '0053 is **label-blind support accounting only**. Numerical/data status: `PREREGISTERED_DATA_CAPTURED_NOT_MEASURED / SUPPORT-FUNNEL IMPLEMENTATION-ONLY`. At the current stage:')
+          marker='actual variants evaluated              0\n'
+          extra=(marker+
+            'support-funnel implementation             PRESENT / NOT EXECUTED ON FROZEN PAYLOAD\n'+
+            'support result                            ABSENT\n'+
+            'support execution marker                  ABSENT\n')
+          if 'support-funnel implementation' not in s:
+              s=s.replace(marker,extra,1)
+          s=s.replace('5. pass design PR handoff/governance/no-drift checks;', '5. preserve 0053 support implementation as zero-result until a separate controlled execution;')
+          # Exact next-step section may differ after capture; append explicit zero-result boundary if not already present.
+          if 'The frozen real 4h payload has not been passed to `measure_support_funnel()`' not in s:
+              s += '\n\n## 10. 0053 zero-result implementation boundary\n\nThe frozen real 4h payload has not been passed to `measure_support_funnel()` on this implementation branch. `support_funnel.py` and synthetic contracts exist only to implement the preregistered support clocks. `SUPPORT_RESULT.json`, `EXECUTION.json` and `RUN_ONCE.marker` remain absent. A separate controlled exactly-once support measurement is required after implementation merge. No ETH/SOL labels, predictive model, calibration, AUC/NLL/Brier or portfolio economics are permitted.\n'
+          p.write_text(s)
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs/CURRENT_STATE.md
+          git commit -m 'Docs [DRIFT_0]: advance CURRENT_STATE to 0053 zero-result implementation'
+          git rm .github/workflows/_tmp_0053_impl_state.yml .0053_impl_state_trigger
+          git commit -m 'Governance tooling: remove temporary 0053 implementation-state writer'
+          git push origin HEAD:research/brrk-leadership-intraday-support-0053-implementation
