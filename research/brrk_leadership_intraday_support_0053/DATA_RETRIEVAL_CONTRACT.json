@@ -1,0 +1,63 @@
+{
+  "contract_id": "BRRK-LEADERSHIP-INTRADAY-SUPPORT-0053-BINANCE-4H-RETRIEVAL-V1",
+  "research_id": "BRRK-LEADERSHIP-INTRADAY-SUPPORT-0053",
+  "status": "FROZEN_BEFORE_FIRST_4H_CAPTURE",
+  "source": {
+    "venue": "Binance Spot",
+    "rest_endpoint": "https://api.binance.com/api/v3/klines",
+    "symbols": [
+      "BTCUSDT",
+      "ETHUSDT",
+      "SOLUSDT"
+    ],
+    "interval": "4h",
+    "timezone": "UTC",
+    "limit_per_request": 1000,
+    "requested_start_inclusive": "2020-08-11T00:00:00Z",
+    "requested_end_inclusive": "2026-08-02T20:00:00Z",
+    "requested_end_exclusive": "2026-08-03T00:00:00Z"
+  },
+  "pagination": "For each symbol, request ascending klines from startTime. After each nonempty page advance next startTime to last returned openTime + 14400000 ms. Stop when next startTime >= requested_end_exclusive. Do not use current-time defaults.",
+  "raw_fields": [
+    "open_time",
+    "open",
+    "high",
+    "low",
+    "close",
+    "volume",
+    "close_time",
+    "quote_asset_volume",
+    "number_of_trades",
+    "taker_buy_base_volume",
+    "taker_buy_quote_volume",
+    "ignore"
+  ],
+  "canonical_market_payload": "Canonical UTF-8 JSON with sort_keys=true and separators=(',',':') over object {interval,start_ms,end_exclusive_ms,symbols:{BTCUSDT:[raw arrays],ETHUSDT:[raw arrays],SOLUSDT:[raw arrays]}}. SHA256 is computed over these exact bytes. Retrieval timestamp and HTTP metadata are stored outside the hashed market payload.",
+  "integrity_rules": [
+    "Each symbol is strictly ascending by open_time with no duplicates.",
+    "Consecutive retained bars for each symbol differ by exactly 14400000 ms; any internal missing bar is DATA_INTEGRITY_INCONCLUSIVE and no fill is allowed.",
+    "All retained open_time values are aligned to UTC multiples of four hours.",
+    "OHLC values are finite and strictly positive; volume and quote_asset_volume are finite and nonnegative; number_of_trades is nonnegative.",
+    "No bar with open_time >= 2026-08-03T00:00:00Z is retained.",
+    "The common analysis index is the exact intersection of the three contiguous symbol indices, starting at the maximum first available open_time and ending at the minimum last available open_time.",
+    "No cross-venue substitution, synthetic backfill, interpolation or forward fill is allowed."
+  ],
+  "capture_semantics": [
+    "Network/API retries are permitted only until one complete internally valid payload has been durably persisted; incomplete failed attempts are not scientific datasets.",
+    "Once the first complete valid payload is durably persisted and its SHA256 exposed, no second historical capture may replace it under 0053.",
+    "The successful capture becomes researcher-exposed DEVELOPMENT history and is not independent OOS.",
+    "Capture may report raw per-symbol bar counts, first/last timestamps, common start/end and integrity status, but it may not calculate Track A/B/C support funnels or any predictive label/metric."
+  ],
+  "post_capture_required_artifacts": [
+    "MARKET_4H_EVIDENCE.json containing retrieval timestamp, market_payload_sha256, per-symbol raw counts, first/last timestamps, common coverage and integrity results",
+    "DATASET_DECLARATION.json registering the immutable successful slice",
+    "atomic update to config/dataset_exposure_registry.json and the 0053 development_dataset_refs before support-funnel implementation"
+  ],
+  "forbidden": [
+    "No 1h/2h/6h/8h/12h alternate interval",
+    "No futures/perpetual data",
+    "No alternate exchange",
+    "No data after 2026-08-02 20:00 UTC",
+    "No support-funnel or predictive computation during capture"
+  ]
+}

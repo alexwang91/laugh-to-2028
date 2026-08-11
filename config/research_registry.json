@@ -2564,6 +2564,159 @@
         "derived_confidence": "UNKNOWN",
         "confidence_rule_ref": "research/brrk_leadership_rotation_0048/PREREGISTRATION.json"
       }
+    },
+    {
+      "research_id": "BRRK-LEADERSHIP-INTRADAY-SUPPORT-0053",
+      "research_family_id": "BRRK_DYNAMIC_LEADERSHIP_ROUTER",
+      "research_domain": "RELATIVE_VALUE",
+      "research_governance_version": 1,
+      "governance_mode": "PROGRAM_GOVERNED_V1",
+      "objective_type": "DATA_QUALITY",
+      "created_at": "2026-08-11T15:55:00Z",
+      "created_before_result": true,
+      "question": "Does approximately six years of Binance Spot BTC/ETH/SOL 4h history provide materially more dependence-aware formal support for an ETH/SOL leadership study under calendar-equivalent 0048 semantics, or does 4h mainly multiply highly correlated rows?",
+      "hypothesis": "Four-hour bars may increase state-resolution and raw row counts, but they solve the 0048 support constraint only if the strict calendar-equivalent pipeline retains at least 12 complete 336-eligible-row dependence blocks after 1440-bar feature history, BTC-uptrend eligibility, 2190 matured training-origin support, 2190 matured shadow-origin support and 336-bar target maturity.",
+      "hypothesis_origin": "RESULT_INFORMED_BY_IMMUTABLE_0048_MEASUREMENT_INCONCLUSIVE_INSUFFICIENT_SUPPORT_CLOSEOUT",
+      "economic_mechanism": "Intraday ETH/SOL leadership information may form at sub-daily frequency, but smaller bars are not automatically more independent evidence. 0053 separates genuine time-support improvement from raw-row multiplication before any new predictive model is allowed.",
+      "primary_target": "TRACK_A_COMPLETE_336_ORDERED_ELIGIBLE_FORMAL_ROW_DEPENDENCE_BLOCK_COUNT_AFTER_FROZEN_4H_SUPPORT_FUNNEL",
+      "primary_metric": "TRACK_A_COMPLETE_336_ROW_BLOCK_COUNT_WITH_THRESHOLD_12",
+      "secondary_metrics": [
+        "raw_common_4h_bar_count",
+        "feature_valid_4h_bar_count_after_1440_bar_history",
+        "BTC_FAST_4H_eligible_feature_valid_bar_count_and_rate",
+        "first_training_support_date_each_track",
+        "first_shadow_origin_each_track",
+        "first_formal_origin_each_track",
+        "last_formal_origin_with_336_bar_future_maturity",
+        "formal_evaluation_rows_each_track",
+        "complete_dependence_blocks_each_track",
+        "trailing_partial_block_rows_each_track",
+        "formal_calendar_span_days_each_track",
+        "attrition_by_funnel_stage",
+        "formal_row_ratio_and_block_difference_vs_0048"
+      ],
+      "feature_families": [
+        "SUPPORT_ACCOUNTING_ONLY_4H_CALENDAR_EQUIVALENT_LOOKBACK_VALIDITY",
+        "BTC_4H_CALENDAR_EQUIVALENT_FAST_TREND_ELIGIBILITY_ONLY",
+        "MATURITY_AND_PREQUENTIAL_SUPPORT_CLOCKS_ONLY"
+      ],
+      "horizon": "BINANCE_SPOT_UTC_4H_TARGET_WINDOW_2020-08-11T00:00Z_THROUGH_2026-08-02T20:00Z_WHERE_COMMON_HISTORY_PERMITS; MAX_FEATURE_HISTORY_1440_BARS; MAX_TARGET_MATURITY_336_BARS; NO_PREDICTIVE_LABELS",
+      "universe": [
+        "BTC",
+        "ETH",
+        "SOL"
+      ],
+      "development_dataset_refs": [],
+      "validation_dataset_refs": [],
+      "sealed_dataset_refs": [],
+      "declared_variant_budget": 1,
+      "actual_variants_evaluated": 0,
+      "parameter_candidate_count": 1,
+      "stopping_rule": "After this preregistration is merged, capture the exact frozen Binance Spot 4h dataset once under DATA_RETRIEVAL_CONTRACT.json, hash-freeze the successful payload, then implement one deterministic label-blind support-funnel counter and execute exactly one feasibility measurement. No ETH/SOL winner labels, model fits, calibration fits, predictive scores or portfolio economics may be computed under 0053. The Track-A classification closes 0053; Tracks B/C are diagnostics only and cannot rescue Track A.",
+      "success_criteria": [
+        "Data integrity and common 4h coverage are reproducibly hash-frozen with no synthetic fill or alternate venue substitution.",
+        "Primary Track A has at least 12 complete 336-ordered-eligible-formal-row dependence blocks after all frozen support clocks.",
+        "The measurement remains label-blind and performs zero predictive model/calibration fit.",
+        "Canonical BRRK, Phase 6, signing, order submission and production authority remain unchanged."
+      ],
+      "failure_criteria": [
+        "Track A with fewer than 12 complete 336-row blocks produces FAIL_4H_DOES_NOT_SOLVE_0048_SUPPORT_CONSTRAINT.",
+        "Unfreezable, materially incomplete or non-contiguous common 4h history produces DATA_INTEGRITY_INCONCLUSIVE.",
+        "Any ETH/SOL outcome-label, predictive-model, calibration, AUC/NLL/Brier, confidence-threshold or portfolio computation invalidates the 0053 execution rather than becoming a 0053 result."
+      ],
+      "allowed_followup": [
+        "Only PASS_4H_CALENDAR_EQUIVALENT_SUPPORT_FEASIBLE may motivate a separately preregistered 4h predictive-leadership research ID under the same calendar-equivalent support semantics.",
+        "If Track A fails but Track C shows adequate support, Track C may motivate a different new methodology research ID with separate statistical justification; it has no automatic predictive authority.",
+        "Future genuinely unseen data may be studied only under a separately registered protocol."
+      ],
+      "forbidden_followup": [
+        "No same-ID reduction of Track-A 2190 training support, 2190 shadow support, 336-row dependence block or 12-block threshold after counts are observed.",
+        "No same-ID switch to 1h, 2h, 6h, 8h, 12h, futures data or alternate venue.",
+        "No ETH/SOL winner labels, realized margins, model coefficients, calibration gamma, NLL, Brier, AUC, confidence breakpoint, bootstrap predictive superiority or portfolio economics under 0053.",
+        "No 0048 rerun/rescue and no direct 0049 concentration authority.",
+        "No canonical BRRK modification, Phase 6 modification, leverage expansion, signing, order submission or production authorization."
+      ],
+      "researcher_decisions": [
+        "Design authority is research/governance/BRRK_LEADERSHIP_INTRADAY_SUPPORT_0053_DESIGN_FREEZE_2026-08-11.md merged at main SHA 195386b5610056d752a73d20c7e74a1557207c95.",
+        "0053 is result-informed by the immutable 0048 closeout at main SHA 62c0e2a4e1fb3ddfdc64c41adbd06b03012df895 and does not alter or rerun 0048.",
+        "Primary venue/assets/resolution are Binance Spot BTCUSDT ETHUSDT SOLUSDT 4h UTC bars only.",
+        "Target retrieval window is 2020-08-11T00:00:00Z through 2026-08-02T20:00:00Z inclusive where common history permits; no post-2026-08-02 bar enters 0053.",
+        "Calendar-equivalent feature horizons are 120/360/720/1440 4h bars for 20/60/120/240 days; maximum feature history is 1440 bars.",
+        "Calendar-equivalent target-availability clocks are 84/168/336 bars for 14/28/56 days; 0053 uses maturity availability only and never computes the target value or winner label.",
+        "BTC eligibility uses the calendar-equivalent 4h 120/360/720/1440 trend family with FAST weights 0.15/0.25/0.30/0.30 and condition BTC_TREND_FAST_4H>=0; it is support accounting only.",
+        "Track A is primary: 2190 eligible matured training origins, 2190 matured eligible shadow origins, 336-row dependence block, 12 complete blocks required.",
+        "Track B is raw-row multiplication diagnostic only: 365 training, 365 shadow, 56-row dependence block, no authority to establish genuine dependence-aware support.",
+        "Track C is hybrid diagnostic only: 365 training, 365 shadow, 336-row dependence block; it may motivate a new future methodology ID but cannot rescue 0048 or become a predictive spec under 0053.",
+        "All blocks are sequential ordered eligible formal rows; trailing partial rows are counted but do not form a complete block.",
+        "No support clock is selected after observing counts; all three are reported, and primary classification is determined only by Track A.",
+        "More 4h rows are not interpreted as more independent support unless Track A passes the frozen 336-row block criterion.",
+        "0053 is DEVELOPMENT and any captured historical 4h data become researcher-exposed; no independent-OOS claim is allowed."
+      ],
+      "research_process_complexity": {
+        "declared_parameter_candidates": [
+          "RESOLUTION=4H",
+          "TRACK_A_TRAIN=2190_SHADOW=2190_BLOCK=336_REQUIRED_BLOCKS=12",
+          "TRACK_B_TRAIN=365_SHADOW=365_BLOCK=56_DIAGNOSTIC_ONLY",
+          "TRACK_C_TRAIN=365_SHADOW=365_BLOCK=336_DIAGNOSTIC_ONLY",
+          "FEATURE_MAX=1440_BARS",
+          "TARGET_MATURITY_MAX=336_BARS",
+          "BTC_FAST_4H_HORIZONS=120_360_720_1440_WEIGHTS=0.15_0.25_0.30_0.30"
+        ],
+        "actual_parameter_candidates_evaluated": [],
+        "universes_evaluated": [
+          "BINANCE_SPOT_BTC_ETH_SOL"
+        ],
+        "horizons_evaluated": [
+          "4H_SUPPORT_ONLY_CALENDAR_EQUIVALENT_20_60_120_240_AND_14_28_56"
+        ],
+        "rebalance_variants": [],
+        "feature_representations": [
+          "NO_PREDICTIVE_FEATURE_VECTOR_SUPPORT_ACCOUNTING_ONLY"
+        ],
+        "special_cases_introduced": [
+          "THREE_PREDECLARED_SUPPORT_CLOCKS_PRIMARY_AUTHORITY_TRACK_A_ONLY"
+        ],
+        "validation_exposure_event_refs": [],
+        "related_family_trials": 1
+      },
+      "lineage_edges": [
+        {
+          "relation": "RESULT_INFORMED",
+          "ref_research_id": "BRRK-LEADERSHIP-ROTATION-0048",
+          "provenance_status": "FACT",
+          "evidence_ref": "research/brrk_leadership_rotation_0048/CLOSEOUT.json"
+        }
+      ],
+      "result_status": "PREREGISTERED_DATA_NOT_CAPTURED",
+      "failure_reason": null,
+      "promotion_state": "NONE",
+      "evidence_refs": [
+        "research/governance/BRRK_LEADERSHIP_INTRADAY_SUPPORT_0053_DESIGN_FREEZE_2026-08-11.md",
+        "research/brrk_leadership_rotation_0048/CLOSEOUT.json"
+      ],
+      "decision_refs": [
+        "research/governance/BRRK_LEADERSHIP_INTRADAY_SUPPORT_0053_DESIGN_FREEZE_2026-08-11.md",
+        "docs/CURRENT_STATE.md"
+      ],
+      "production_relevance": "Research-only label-blind support feasibility. No predictive, portfolio, canonical, Phase-6 or production authority.",
+      "production_authorized": false,
+      "provenance_status": "FACT",
+      "governed_path_prefixes": [
+        "research/brrk_leadership_intraday_support_0053/"
+      ],
+      "notes": [
+        "0048 is permanently closed and cannot be rerun or rescued.",
+        "Track B and C exist to diagnose raw-row inflation and burn-in sensitivity without model fitting; they never override Track A.",
+        "The exact 4h dataset slice is intentionally not registered until the first successful raw capture is hash-frozen."
+      ],
+      "evidence_scorecard": {
+        "temporal_novelty": "PLANNED_RESEARCHER_EXPOSED_4H_DEVELOPMENT_HISTORY_NOT_YET_CAPTURED",
+        "statistical_sufficiency": "NOT_MEASURED_TRACK_A_REQUIRES_12_COMPLETE_336_ROW_BLOCKS",
+        "governance_integrity": "HIGH_DESIGN_MERGED_BEFORE_PREREG_NO_DATA_CAPTURE_NO_MODEL_FIT",
+        "operational_realism": "SUPPORT_FEASIBILITY_ONLY_NO_PREDICTIVE_OR_PORTFOLIO_TRANSLATION",
+        "derived_confidence": "NOT_EVALUATED",
+        "confidence_rule_ref": "research/brrk_leadership_intraday_support_0053/PREREGISTRATION.json"
+      }
     }
   ],
   "research_governance_debt": [
