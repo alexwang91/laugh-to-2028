@@ -1,0 +1,192 @@
+name: Temporary 0047 evaluate once
+
+on:
+  push:
+    branches:
+      - research/brrk-beta-handoff-0047-controlled-run
+    paths:
+      - .github/workflows/tmp-0047-evaluate-once.yml
+
+permissions:
+  contents: write
+
+jobs:
+  evaluate-once:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/brrk-beta-handoff-0047-controlled-run
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Prove immutable implementation and pre-bound market evidence before evaluation
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE=341e0b75595baef26823debe4f29a338eda63f5c
+          MARKET_HASH=d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193
+          git diff --exit-code "$BASE" -- \
+            research/brrk_beta_handoff_0047/engine.py \
+            research/brrk_beta_handoff_0047/run_once.py \
+            research/brrk_beta_handoff_0047/RUN_INTERFACE.json \
+            research/brrk_beta_handoff_0047/PREREGISTRATION.json \
+            research/brrk_beta_handoff_0047/DATASET_DECLARATION.json \
+            research/governance/BRRK_BETA_HANDOFF_EVENT_STUDY_0047_DESIGN_FREEZE_2026-08-11.md
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          expected = 'd1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193'
+          evidence = json.loads(Path('research/brrk_beta_handoff_0047/evidence/MARKET_EVIDENCE.json').read_text())
+          summary = json.loads(Path('research/brrk_beta_handoff_0047/evidence/MARKET_EVIDENCE_SUMMARY.json').read_text())
+          assert evidence['payload_sha256'] == expected
+          assert summary['payload_sha256'] == expected
+          assert summary['common_start'] == '2020-08-11'
+          assert summary['common_end'] == '2026-08-02'
+          assert summary['common_daily_sessions'] == 2183
+          assert summary['serialized_rows'] == 6549
+          assert summary['anatomy_metrics_computed'] is False
+          assert summary['actual_variants_evaluated'] == 0
+          for name in ('PRIMARY_RESULT.json','EXECUTION.json','RUN_ONCE.marker','RESULT.md'):
+              assert not Path('research/brrk_beta_handoff_0047', name).exists()
+          PY
+
+      - name: Install frozen evaluation runtime
+        run: python -m pip install --disable-pip-version-check numpy pandas requests scipy scikit-learn
+
+      - name: Re-run pre-result synthetic and governance contracts
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m unittest \
+            research.governance.test_brrk_beta_handoff_0047_prereg_contract \
+            research.governance.test_brrk_beta_handoff_0047_implementation
+
+      - name: Execute exactly one frozen 0047 anatomy evaluation
+        id: evaluation
+        shell: bash
+        env:
+          CONTROLLED_HEAD_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          python -m research.brrk_beta_handoff_0047.run_once evaluate \
+            --market research/brrk_beta_handoff_0047/evidence/MARKET_EVIDENCE.json \
+            --output research/brrk_beta_handoff_0047/PRIMARY_RESULT.json \
+            --execution research/brrk_beta_handoff_0047/EXECUTION.json \
+            --marker research/brrk_beta_handoff_0047/RUN_ONCE.marker \
+            --expected-head-sha "$CONTROLLED_HEAD_SHA"
+          test -s research/brrk_beta_handoff_0047/PRIMARY_RESULT.json
+          test -s research/brrk_beta_handoff_0047/EXECUTION.json
+          test -s research/brrk_beta_handoff_0047/RUN_ONCE.marker
+
+      - name: Freeze post-evaluation invariants without changing the result
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib
+          import json
+          from pathlib import Path
+
+          here = Path('research/brrk_beta_handoff_0047')
+          result = json.loads((here/'PRIMARY_RESULT.json').read_text())
+          execution = json.loads((here/'EXECUTION.json').read_text())
+          marker = json.loads((here/'RUN_ONCE.marker').read_text())
+          evidence = json.loads((here/'evidence/MARKET_EVIDENCE.json').read_text())
+
+          def digest(value):
+              raw = json.dumps(value, sort_keys=True, separators=(',', ':'), ensure_ascii=False, allow_nan=False).encode()
+              return hashlib.sha256(raw).hexdigest()
+
+          assert result['research_id'] == 'BRRK-BETA-HANDOFF-EVENT-STUDY-0047'
+          assert result['market_payload_sha256'] == 'd1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193'
+          assert result['actual_variants_evaluated'] == 1
+          assert execution['actual_variants_evaluated'] == 1
+          assert execution['market_payload_sha256'] == result['market_payload_sha256']
+          assert execution['primary_result_sha256'] == digest(result)
+          assert marker['primary_result_sha256'] == digest(result)
+          assert marker['same_id_rerun_allowed'] is False
+          assert marker['same_id_retuning_allowed'] is False
+          assert marker['same_id_rescue_allowed'] is False
+          assert marker['result_status'] == result['classification']['result_status']
+          assert result['authority']['duration_aware_handoff_model_fitted'] is False
+          assert result['authority']['portfolio_allocation_tested'] is False
+          assert result['authority']['portfolio_economics_executed'] is False
+          assert result['authority']['canonical_strategy_changed'] is False
+          assert result['authority']['phase6_observation_changed'] is False
+          assert result['authority']['production_authorized'] is False
+          assert result['authority']['signature_authorized'] is False
+          assert result['authority']['order_submission_authorized'] is False
+          expected_method_true = [
+              'leader_follower_new_leader_question_preserved',
+              'canonical_BTC_positive_episode_reused',
+              'fast_slow_absolute_trend_present',
+              'fast_slow_ETH_BTC_SOL_BTC_relative_trend_present',
+              'relative_fast_minus_slow_acceleration_present',
+              'beta_breadth_present',
+              'trade_count_participation_present',
+              'state_age_present',
+              'cross_correlation_minus14_plus14_present',
+              'pooled_episode_preserving_VAR7_present',
+              'six_direction_Granger_Wald_present',
+              'generalized_BTC_shock_IRF_0_14_present',
+              'complete_episode_bootstrap_10000_seed_470047_present',
+              'one_switch_oracle_is_hindsight_bound_only',
+              'BOCPD_not_used',
+              'portfolio_allocation_not_tested',
+              'portfolio_economics_not_tested',
+              'history_after_2026_08_02_not_used',
+          ]
+          assert all(result['method_compliance'][key] is True for key in expected_method_true)
+          summary = {
+              'result_status': result['classification']['result_status'],
+              'market_payload_sha256': result['market_payload_sha256'],
+              'primary_result_sha256': digest(result),
+              'target_eligible_BTC_positive_episodes': result['classification']['target_eligible_BTC_positive_episodes'],
+              'primary_handoff_episodes': result['classification']['primary_handoff_episodes'],
+              'episode_level_durable_handoff_prevalence': result['classification']['episode_level_durable_handoff_prevalence'],
+              'ETH_primary_handoff_episodes': result['classification']['ETH_primary_handoff_episodes'],
+              'SOL_primary_handoff_episodes': result['classification']['SOL_primary_handoff_episodes'],
+              'gates': result['classification']['gates'],
+              'portfolio_economics_executed': False,
+              'duration_aware_handoff_model_fitted': False,
+              'same_id_rerun_allowed': False,
+          }
+          (here/'RESULT_SUMMARY.json').write_text(json.dumps(summary, indent=2, sort_keys=True) + '\n')
+          print('BRRK_0047_FROZEN_RESULT_SUMMARY=' + json.dumps(summary, sort_keys=True))
+          PY
+
+      - name: Upload immutable controlled-run evidence bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: brrk-beta-handoff-0047-controlled-result
+          if-no-files-found: error
+          retention-days: 90
+          path: |
+            research/brrk_beta_handoff_0047/evidence/MARKET_EVIDENCE.json
+            research/brrk_beta_handoff_0047/evidence/MARKET_EVIDENCE_SUMMARY.json
+            research/brrk_beta_handoff_0047/PRIMARY_RESULT.json
+            research/brrk_beta_handoff_0047/EXECUTION.json
+            research/brrk_beta_handoff_0047/RUN_ONCE.marker
+            research/brrk_beta_handoff_0047/RESULT_SUMMARY.json
+
+      - name: Remove one-shot workflow and commit immutable result evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm .github/workflows/tmp-0047-evaluate-once.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add research/brrk_beta_handoff_0047/PRIMARY_RESULT.json \
+                  research/brrk_beta_handoff_0047/EXECUTION.json \
+                  research/brrk_beta_handoff_0047/RUN_ONCE.marker \
+                  research/brrk_beta_handoff_0047/RESULT_SUMMARY.json \
+                  .github/workflows/tmp-0047-evaluate-once.yml
+          git diff --cached --check
+          test ! -e .github/workflows/tmp-0047-evaluate-once.yml
+          git commit -m 'research result: bind unique 0047 handoff anatomy execution'
+          git push origin HEAD:research/brrk-beta-handoff-0047-controlled-run
