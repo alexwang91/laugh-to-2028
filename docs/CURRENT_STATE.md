@@ -2,8 +2,8 @@
 
 Last updated: **2026-08-11**  
 Authoritative repository: `alexwang91/laugh-to-2028`  
-Current `main` implementation merge: **`a60696d5fe23e5dd95c40f868ccca199f36a3c20`**  
-Current research branch: **`research/brrk-leadership-rotation-0048-controlled-run`**  
+Current `main` controlled-execution merge: **`12f70c927df39b9e2ba799c8d4c597a7ae9b1726`**  
+Current research branch: **`research/brrk-leadership-rotation-0048-execute-once`**  
 Status of this document: **AUTHORITATIVE OPERATING SNAPSHOT**
 
 > GitHub `main`, immutable research artifacts and machine registries remain the sources of truth. This file is the compact human handoff, not a substitute for preregistration, execution, evidence, recovery or closeout artifacts.
@@ -35,7 +35,7 @@ BRRK exhaustion state 0044            PASS_TRIGGER_STAGE_ELIGIBLE / CLOSED
 BRRK exhaustion trigger 0045          FAIL_NO_DYNAMIC_GROSS_STAGE_ELIGIBILITY / CLOSED
 BRRK exhaustion pulse 0046            FAIL_NO_FUTURE_ONLY_PULSE_VALIDATION_ELIGIBILITY / CLOSED
 BRRK Beta handoff event study 0047    FAIL_NO_RECURRENT_DURABLE_HANDOFF_STRUCTURE / CLOSED
-BRRK leadership rotation 0048         PREREGISTERED_NOT_RUN / CONTROLLED-EXECUTION BOUNDARY / ZERO RESULT
+BRRK leadership rotation 0048         MEASUREMENT_INCONCLUSIVE_INSUFFICIENT_SUPPORT / CLOSED
 
 Canonical BRRK-0011                    NO CHANGE
 Phase 7                                MONITOR_ONLY / LAUNCH BLOCKED
@@ -52,19 +52,11 @@ Phase-6 counts above are copied from the committed accounting index. That ledger
 
 ---
 
-## 2. Active research frontier — 0048
+## 2. 0048 immutable scientific result
 
-The original 0048 qualitative architecture was amended before any numerical preregistration or historical 0048 result. The amendment merged at:
+0048 asked only:
 
-`09a676e0e704a360730b1df0a57e6010b5a15f00`
-
-The numerical preregistration and exposed DEVELOPMENT dataset provenance were frozen at:
-
-`d907bd167f4cc51142f3cf9ff3b7eb4eeab7fab8`
-
-The zero-result implementation was merged at:
-
-`a60696d5fe23e5dd95c40f868ccca199f36a3c20`
+> Within a causally identified crypto-uptrend environment, can current ETH/SOL relative state predict which Beta asset will produce the stronger subsequent relative wealth path?
 
 The binding hierarchy remains:
 
@@ -78,203 +70,162 @@ Beta risk
   `- SOL
 ```
 
-0048 asks only:
+BTC was an eligibility/defensive-anchor asset, not a competing 0048 winner. Beta->BTC belongs to a separate later mechanism; BTC->cash belongs to another separate later mechanism.
 
-> Within a causally identified crypto-uptrend environment, can current ETH/SOL relative state predict which Beta asset will produce the stronger subsequent relative wealth path?
-
-BTC does **not** receive a 0048 winner label. Beta->BTC continuation value belongs to later 0050 research. BTC->cash belongs to later 0051 research.
-
----
-
-## 3. 0048 frozen state and current boundary
+The unique frozen DEVELOPMENT execution completed successfully but stopped at preregistered support gate G1:
 
 ```text
-0048 research ID                      BRRK-LEADERSHIP-ROTATION-0048
-0048 governance mode                  PROGRAM_GOVERNED_V1
-0048 architecture                     REVISED / MERGED / FROZEN
-0048 numerical prereg                 FROZEN / PREREGISTERED_NOT_RUN
-0048 prereg merge                     d907bd167f4cc51142f3cf9ff3b7eb4eeab7fab8
-0048 implementation merge             a60696d5fe23e5dd95c40f868ccca199f36a3c20
-0048 declared variants                1
-0048 actual variants evaluated        0
-0048 implementation                   MERGED / FROZEN / ZERO RESULT
-0048 controlled-run interface          CREATED ON SEPARATE ZERO-RESULT BRANCH
-0048 result schema                     FROZEN ON CURRENT BOUNDARY BRANCH
-0048 registered-history model fit      NONE
-0048 registered-history calibration    NONE
-0048 historical result                 NONE
-0048 portfolio result                  NONE / FORBIDDEN
-0048 RUN_ATTEMPT.marker               ABSENT
-0048 RUN_ONCE.marker                  ABSENT
-0048 PRIMARY_RESULT                   ABSENT
-0048 RESULT_SUMMARY                   ABSENT
-0048 EXECUTION                        ABSENT
+result status                         MEASUREMENT_INCONCLUSIVE_INSUFFICIENT_SUPPORT
+G0                                    PASS
+G1                                    FAIL
+required complete 56-row blocks       12
+observed complete 56-row blocks        4
+formal evaluation rows                245
+minimum rows implied by G1            672
+formal-row shortfall                  427
+ETH-leader full blocks                  4
+SOL-leader full blocks                  4
+bootstrap                             NOT RUN / NOT ELIGIBLE AFTER G1
+formal window                         2025-01-14 through 2026-05-10
 ```
 
-The preregistration object remains exactly registered in `config/research_registry.json`; the dataset declaration remains exactly registered in `config/dataset_exposure_registry.json`. The controlled-run boundary does not alter either registry and does not alter `actual_variants_evaluated = 0` or `result_status = PREREGISTERED_NOT_RUN`.
+The direction-diversity subcondition was satisfied. The binding failure was total dependence-aware support after the complete causal pipeline: feature validity, `BTC_TREND_FAST >= 0`, 365 matured training origins, shadow-prequential calibration burn-in and 56-day target maturity.
 
-Synthetic unit-test fits and fault-injection tests are permitted only to verify frozen numerical and execution invariants. They do not consume the registered historical candidate variant.
+Therefore 0048 is **INCONCLUSIVE, not PASS and not formal FAIL**. G2 and all later hard gates were not eligible to run.
 
 ---
 
-## 4. 0048 frozen dataset provenance
-
-0048 reuses the already researcher-exposed 0047 Binance BTC/ETH/SOL UTC daily market evidence rather than pretending that the same history is new OOS evidence.
+## 3. 0048 unique execution identity
 
 ```text
-dataset slice ID
-BRRK-LEADERSHIP-ROTATION-0048-EXPOSED-HIST-V1
+architecture amendment merge          09a676e0e704a360730b1df0a57e6010b5a15f00
+numerical prereg merge                 d907bd167f4cc51142f3cf9ff3b7eb4eeab7fab8
+implementation merge                   a60696d5fe23e5dd95c40f868ccca199f36a3c20
+controlled-run merge                   12f70c927df39b9e2ba799c8d4c597a7ae9b1726
+execution HEAD                         12f70c927df39b9e2ba799c8d4c597a7ae9b1726
+GitHub Actions run                     31505757608 / attempt 1
+job                                    93826791780
+actual variants evaluated              1
+preflight                              PREFLIGHT_PASS_ZERO_RESULT
+final marker                           VALID_EXECUTION_COMPLETE_CLOSED_TO_SAME_ID_RERUN
+```
 
-underlying assets                     BTC / ETH / SOL
-source                                 immutable 0047 Binance Spot UTC daily evidence
+`RUN_ATTEMPT.marker` was durably persisted before registered-history model computation. `RUN_ONCE.marker` was persisted last. No second 0048 historical computation occurred and none is allowed.
+
+Official artifact:
+
+```text
+name                                   brrk-0048-execution-bundle
+artifact ID                            9106961253
+digest                                 sha256:3ae658faee064add594b5494bd660dec3d3cee735a5a7cf517e3a01f408bfb32
+```
+
+Hash-locked runtime identities:
+
+```text
+attempt marker SHA256                  86138d7c700709475ce65083d58e0dda248a5300505e48829436d0efd4a594f4
+primary result SHA256                  c67d35848bce203a66f355e927c61abd8e5c846a075f38e089307223c283b419
+result summary SHA256                  08dcd468ead7e5f8530e018c8eb2d0bd12a62f280a95c33d8f08a48078a3d466
+execution SHA256                       76f54002ce8af411c700c33933a4e65dd347a901fef86c5d4269efcf788f539c
+```
+
+---
+
+## 4. Frozen 0048 provenance and method
+
+The result uses the already researcher-exposed 0047 Binance BTC/ETH/SOL UTC daily market evidence:
+
+```text
+dataset slice ID                       BRRK-LEADERSHIP-ROTATION-0048-EXPOSED-HIST-V1
 common history                         2020-08-11 through 2026-08-02
-market evidence git blob               64ebf5c6deaf3f34dbeac715378f196ff0f4fafe
-source market payload SHA256           d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193
+market payload SHA256                  d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193
 data budget                            DEVELOPMENT
 contamination                          RESEARCHER_EXPOSED_HISTORY
 independent OOS                        false
 ```
 
-No observation after `2026-08-02` may enter the frozen 0048 DEVELOPMENT result. The frozen implementation and controlled runner contain no new 0048 market network-fetch path. Historical data must enter only through the immutable 0047 evidence wrapper and fail closed on blob/payload mismatch.
-
----
-
-## 5. Frozen 0048 target and state
-
-Formal prediction origins must satisfy `BTC_TREND_FAST >= 0`, using the canonical 20/60/120/240 trend family and FAST weights `0.15 / 0.25 / 0.30 / 0.30`. This is an eligibility filter only. The implementation reuses the existing 0047 canonical `trend_score` code.
-
-For `i in {ETH,SOL}` and `h in {14,28,56}`:
+Frozen candidate remained exactly seven antisymmetric ETH/SOL relative features:
 
 ```text
-A_i,h(t) = 2/[h(h+1)] * sum_{u=1..h} log(P_i[t+u] / P_i[t])
-L_i(t)   = mean(A_i,14, A_i,28, A_i,56)
-M_t      = L_SOL(t) - L_ETH(t)
-Y_t      = 1 if M_t > 0; 0 if M_t < 0
-```
-
-Exact `M_t=0` is `TARGET_TIE`, excluded from supervised scoring but counted. Continuous realized margin remains available for confidence-strength diagnostics.
-
-The sole candidate has exactly seven antisymmetric relative features:
-
-```text
-K1   relative momentum age block 1-20
-K2   relative momentum age block 21-60
-K3   relative momentum age block 61-120
-K4   relative momentum age block 121-240
+K1 / K2 / K3 / K4
 Persistence60
 Position120
 Participation
 ```
 
-No FAST/SLOW recompression, feature pruning/addition, CORE4, BTC Dominance, dispersion, funding/OI, macro, sentiment, HMM, tree, boosting or neural-network candidate may be introduced under 0048.
-
----
-
-## 6. Frozen model, walk-forward and calibration
-
-At each refit:
+Model/calibration remained:
 
 ```text
 pi = (N_SOL + 1) / (N_SOL + N_ETH + 2)
 p_raw = sigmoid(logit(pi) + beta'X)
+ridge lambda = 1
+expanding training
+28-calendar-day refit
+56-calendar-day label maturity
+shadow-prequential prior-preserving calibration
+p_cal = sigmoid(logit(pi) + gamma*eta), gamma >= 0
 ```
 
-with:
-
-```text
-fitted intercept                      none
-ridge lambda                          1 fixed
-training window                       expanding
-maximum label maturity                56 calendar days
-first shadow-model support            >=365 matured eligible origins
-refit cadence                         28 calendar days
-```
-
-Calibration is shadow-prequential:
-
-```text
-p_cal = sigmoid(logit(pi) + gamma * eta)
-eta   = beta'X
-gamma >= 0
-```
-
-A raw forecast may enter calibration only after its 56-day target matures. Formal calibrated evaluation begins only after at least 365 matured eligible shadow forecast/outcome pairs. No finite stable primary calibration solution maps to `MEASUREMENT_INCONCLUSIVE_CALIBRATION_UNIDENTIFIABLE`; no secondary calibrator may rescue the same ID.
+No feature, target, calibration, baseline, gate or historical-window rescue occurred after the result became visible.
 
 ---
 
-## 7. Frozen baselines and inference
+## 5. Descriptive non-gating diagnostics
+
+The unique execution also produced the following point diagnostics. They are preserved as adverse evidence but cannot be promoted to a formal FAIL because G1 stopped the inferential hierarchy first:
 
 ```text
-B0  uniform p=0.5
-B1  expanding Laplace SOL-lead prevalence
-B2  lagged equal-weight 14/28/56 past path leader
-B3  simple 60-day SOL/ETH relative momentum
+candidate NLL                         0.7185986815
+B0 uniform NLL                        0.6931471806
+B1 prevalence NLL                     0.7185986815
+B2 lagged-leader NLL                  0.7185986815
+B3 relative-momentum NLL              0.7185986815
+
+candidate Brier                       0.2627024107
+B0 Brier                              0.2500000000
+B1/B2/B3 Brier                        0.2627024107
+
+AUC                                   0.3789464939
+balanced accuracy                     0.5508059156
+ETH recall                            0.1751412429
+ETH precision                         0.8611111111
+SOL recall                            0.9264705882
+SOL precision                         0.3014354067
+confidence-vs-realized-margin rho    -0.4111806894
 ```
 
-Primary metric remains NLL with the simultaneous dependence-aware gate:
-
-```text
-d_b,t       = loss_candidate - loss_baseline_b
-T*          = max_b(mean(d_b*) - mean(d_b))
-q95         = 95th percentile of T*
-UCL_b       = mean(d_b) + q95
-G2 pass     = max_b(UCL_b) < 0
-```
-
-```text
-moving-block bootstrap                10,000 replicates
-block length                          56 ordered eligible evaluation observations
-seed                                  4292549012
-same sampled blocks                   candidate + all baselines
-```
-
-Support requires >=12 complete 56-observation formal-evaluation blocks and each realized direction in >=3 distinct full blocks. Four contiguous temporal blocks require >=3/4 candidate wins. Causal episode robustness uses maximal eligible RREL60-sign runs with duration >=14. Subsampling is diagnostic only and has no rescue authority.
+At the first formal refit on 2025-01-14, `gamma_candidate = gamma_B2 = gamma_B3 = 0.0`, so the prior-preserving calibration suppressed fitted relative logits at that refit. Aggregate candidate/B1/B2/B3 NLL and Brier are exactly equal on the observed formal segment. This is descriptive only.
 
 ---
 
-## 8. Confidence / breakpoint implementation
+## 6. 0048 authority and closure
 
 ```text
-confidence c = 2 * abs(p_cal - 0.5)
-Z            = sign(p_cal - 0.5) * M
-G(c)         = E[Z | c]
+leadership information established     false
+0049 concentration eligible from 0048 false
+portfolio allocation tested            false
+portfolio economics executed           false
+Beta -> BTC tested                      false
+BTC -> cash tested                      false
+canonical BRRK changed                  false
+Phase 6 changed                         false
+production authorized                   false
+signature authorized                    false
+order submission authorized             false
+same-ID rerun allowed                   false
+same-ID retuning allowed                false
+same-ID rescue allowed                  false
 ```
 
-The frozen shape diagnostic is a natural cubic regression spline with boundaries 0/1 and internal knots `0.25 / 0.50 / 0.75`. `G'` and `G''` are diagnostics only; `argmax G''` has no threshold-selection authority.
-
-The sole HIGH mechanism is:
-
-```text
-G(c) = alpha + beta*c + delta*(c-kappa)_+
-kappa in [0.20,0.80]
-```
-
-Each bootstrap replicate re-estimates its own spline and breakpoint. G0-G6 establish robust leadership information; G7-G11 are separately required before 0049 concentration research becomes eligible.
+0048 is permanently closed. Reducing the 12-block requirement, changing burn-ins, eligibility, calibration, features, target, inference, or extending/altering the historical sample for the same mechanism requires a **new research ID and new preregistration**.
 
 ---
 
-## 9. Frozen result hierarchy
-
-```text
-INVALID_EXECUTION
-MEASUREMENT_INCONCLUSIVE_INSUFFICIENT_SUPPORT
-MEASUREMENT_INCONCLUSIVE_CALIBRATION_UNIDENTIFIABLE
-FAIL_NO_INCREMENTAL_DYNAMIC_LEADERSHIP
-FAIL_NO_ROBUST_DYNAMIC_LEADERSHIP
-PASS_LEADERSHIP_INFORMATION_NO_CONCENTRATION_HANDOFF
-PASS_ONE_SIDED_LEADERSHIP_NO_FULL_ROUTER
-PASS_LEADERSHIP_INFORMATION_CONCENTRATION_HANDOFF_ELIGIBLE
-```
-
-No 0048 result classification exists yet.
-
----
-
-## 10. Binding prior evidence
+## 7. Binding prior evidence
 
 ### Winner 0001 / robustness 0002
 
-The exposed-development 40% BTC / 60% winner construction materially improved historical CAGR and passed cost robustness. It motivates later concentration research but does not identify an 80%-100% optimum and is not independent evidence for 0048.
+The exposed-development 40% BTC / 60% winner construction materially improved historical CAGR and passed cost robustness. It motivates concentration as a general research question, but it is not independent evidence for 0048 and 0048 does not authorize 0049.
 
 ### BRRK-EXHAUSTION-EVENT-STUDY-0043 — complete diagnostic
 
@@ -286,7 +237,7 @@ The frozen 0043 interpretation remains: a **7–14 day exhaustion-ranking signal
 
 ### 0044 / 0045 / 0046
 
-0044 CORE4 retains useful continuous exhaustion/risk ranking evidence. 0045 and 0046 failed as discrete trigger translations. Their failures remain binding negative evidence. CORE4 is excluded from primary 0048 and may only motivate separately preregistered later Beta->BTC continuation-value work.
+0044 CORE4 retains useful continuous exhaustion/risk ranking evidence. 0045 and 0046 failed as discrete trigger translations. Their failures remain binding negative evidence. CORE4 remains excluded from 0048 and may only motivate separately preregistered future research.
 
 ### 0047
 
@@ -305,7 +256,9 @@ This rejects the exact frozen recurrent BTC-positive handoff-clock structure. It
 
 ---
 
-## 11. Program roadmap
+## 8. Program roadmap after 0048
+
+The old conceptual roadmap was:
 
 ```text
 0048  ETH/SOL Beta Leadership Information
@@ -315,85 +268,39 @@ This rejects the exact frozen recurrent BTC-positive handoff-clock structure. It
 0052  Integrated Hierarchical Router
 ```
 
-Each later stage requires its own preregistration and predecessor gate. The long-run portfolio objective for later economic stages is terminal compound wealth / net CAGR over a fixed causal evaluation interval after costs. Intermediate MDD is diagnostic rather than the primary objective; no leverage expansion is authorized by 0048.
+The 0048 lineage **does not unlock 0049** because leadership information was not established. Any future continuation must begin with a new, separately preregistered research ID whose design explicitly accounts for the observed support constraint and the already-exposed adverse diagnostics. It may not be presented as a same-ID rescue.
 
 ---
 
-## 12. Current controlled-execution boundary
+## 9. No-drift operating state
 
-Permitted on the current boundary branch:
-
-```text
-frozen protocol source code            YES / UNCHANGED
-RUN_INTERFACE / result schema          YES / ZERO-RESULT CONTRACT ONLY
-run_once controlled runner              YES / NOT EXECUTED ON HISTORY
-synthetic mathematical unit tests      YES
-synthetic model/calibration fits        YES / TESTS ONLY
-fault-injection execution tests         YES / SYNTHETIC ONLY
-historical evidence identity checks     YES / HASH ONLY
-repeatable preflight implementation     YES / ZERO RESULT AUTHORITY
-```
-
-Controlled-run synthetic attestation:
+Nothing in the 0048 execution or closeout changes the live/canonical program:
 
 ```text
-workflow run                           31503915414
-runner py_compile                      PASS
-zero-result artifact check             PASS
-prereg + engine + runner tests          27 / 27 PASS
-attempt-before-computation test         PASS
-marker-only recovery/no recomputation  PASS
-registered-history evaluation           NOT RUN
+Canonical BRRK-0011                    NO CHANGE
+Phase 6                                NO CHANGE
+production gross cap = 1.0
+production_authorized_components = []
+production_authorized = false
+signature_authorized = false
+order_submission_authorized = false
 ```
 
-Exactly-once semantics are frozen as follows:
-
-1. `preflight` is repeatable and has no scientific-result authority;
-2. `evaluate` must bind to an explicit exact post-merge HEAD and all frozen upstream git blobs;
-3. `RUN_ATTEMPT.marker` is create-only and is written immediately before registered-history model computation;
-4. once `RUN_ATTEMPT.marker` exists, a second 0048 historical model computation is forbidden;
-5. `PRIMARY_RESULT.json`, `RESULT_SUMMARY.json` and `EXECUTION.json` are create-only;
-6. `RUN_ONCE.marker` is written last and commits the completed valid scientific execution;
-7. if a complete result/summary/execution bundle exists but the final marker is missing, `recover-marker` may validate hashes and create only the marker, without model recomputation;
-8. a partial/hash-inconsistent interrupted bundle has no automatic same-ID retry path.
-
-Still forbidden on this boundary PR:
-
-```text
-registered-history 0048 model fit       FORBIDDEN
-registered-history calibration fit      FORBIDDEN
-0048 historical evaluation              FORBIDDEN
-0048 result release                     FORBIDDEN
-RUN_ATTEMPT.marker creation              FORBIDDEN
-PRIMARY_RESULT / EXECUTION / marker      FORBIDDEN
-0048 portfolio allocation test          FORBIDDEN
-80/90/100 winner backtest               FORBIDDEN
-Beta -> BTC rule                        FORBIDDEN
-BTC -> cash rule                        FORBIDDEN
-same-ID retuning/rescue after result    FORBIDDEN
-canonical BRRK change                   FORBIDDEN
-Phase-6 change                          FORBIDDEN
-production/signing/order authority      FORBIDDEN
-```
+No 60/80/90/100 concentration backtest, CAGR/MDD portfolio test, Beta->BTC rule, BTC->cash rule, integrated router, leverage expansion, shorting, signing or order submission was executed under 0048.
 
 ---
 
-## 13. Exact next step
+## 10. Exact next step
 
-For the current controlled-run boundary branch:
-
-1. keep frozen `PREREGISTRATION.json`, `DATASET_DECLARATION.json`, `IMPLEMENTATION_BOUNDARY.json`, `engine.py` and both central registries unchanged;
-2. keep `actual_variants_evaluated = 0` and all runtime result artifacts absent;
-3. require standing governance/no-drift/parity/Phase-6 CI to pass on the final owner-authored head;
-4. merge PR #179 only with expected-head protection;
-5. after merge, stop this boundary stage;
-6. in a **separate exact-head execution step**, bind to the controlled-run merge SHA, run `preflight`, confirm `PREFLIGHT_PASS_ZERO_RESULT`, then invoke `evaluate` exactly once.
-
-Any completed valid scientific output — PASS, FAIL or INCONCLUSIVE — closes 0048 to same-ID rerun, retuning and rescue. An interrupted attempt after `RUN_ATTEMPT.marker` also cannot be silently recomputed.
+1. preserve the unique runtime bundle, `RESULT.md` and `CLOSEOUT.json` unchanged;
+2. run closeout-only contract/governance/no-drift/parity/Phase-6 CI;
+3. merge the 0048 closeout with expected-head protection;
+4. do **not** rerun or retune 0048;
+5. before opening any successor study, design a new research ID around the now-known support constraint and treat the adverse 0048 point diagnostics as exposed evidence.
 
 ---
 
-## 14. Key authority files
+## 11. Key authority files
 
 ```text
 research/governance/BRRK_LEADERSHIP_ROTATION_0048_ARCHITECTURE_FREEZE_2026-08-11.md
@@ -406,14 +313,17 @@ research/brrk_leadership_rotation_0048/RUN_INTERFACE.json
 research/brrk_leadership_rotation_0048/RESULT_SCHEMA.json
 research/brrk_leadership_rotation_0048/engine.py
 research/brrk_leadership_rotation_0048/run_once.py
-research/brrk_leadership_rotation_0048/test_engine_contract.py
-research/brrk_leadership_rotation_0048/test_preregistration_contract.py
-research/brrk_leadership_rotation_0048/test_run_interface_contract.py
-research/brrk_leadership_rotation_0048/README.md
+research/brrk_leadership_rotation_0048/RUN_ATTEMPT.marker
+research/brrk_leadership_rotation_0048/PRIMARY_RESULT.json
+research/brrk_leadership_rotation_0048/RESULT_SUMMARY.json
+research/brrk_leadership_rotation_0048/EXECUTION.json
+research/brrk_leadership_rotation_0048/RUN_ONCE.marker
+research/brrk_leadership_rotation_0048/RESULT.md
+research/brrk_leadership_rotation_0048/CLOSEOUT.json
+research/brrk_leadership_rotation_0048/test_closeout_contract.py
 config/research_registry.json
 config/dataset_exposure_registry.json
 research/brrk_beta_handoff_0047/CLOSEOUT.json
 research/brrk_beta_handoff_0047/EVIDENCE_RECOVERY.json
-research/brrk_beta_handoff_0047/evidence/MARKET_EVIDENCE.json
 research/governance/phase6_observation_ledger.json
 ```

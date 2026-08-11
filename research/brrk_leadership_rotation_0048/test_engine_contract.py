@@ -202,20 +202,25 @@ class EngineContractTest(unittest.TestCase):
             with self.assertRaises(engine.FrozenProtocolError):
                 engine.load_frozen_market_evidence(path)
 
-    def test_controlled_run_boundary_has_no_scientific_result_artifacts(self):
-        forbidden = {
+    def test_closeout_has_result_artifacts_without_portfolio_translation(self):
+        required = {
+            "RUN_ATTEMPT.marker",
             "PRIMARY_RESULT.json",
             "RESULT_SUMMARY.json",
             "EXECUTION.json",
-            "RUN_ATTEMPT.marker",
             "RUN_ONCE.marker",
             "RESULT.md",
-            "portfolio.py",
-            "portfolio_result.json",
+            "CLOSEOUT.json",
         }
         present = {p.name for p in HERE.iterdir() if p.is_file()}
-        self.assertTrue(forbidden.isdisjoint(present))
-        self.assertTrue({"run_once.py", "RUN_INTERFACE.json", "RESULT_SCHEMA.json"}.issubset(present))
+        self.assertTrue(required.issubset(present), sorted(required - present))
+        self.assertNotIn("portfolio.py", present)
+        self.assertNotIn("portfolio_result.json", present)
+        summary = json.loads((HERE / "RESULT_SUMMARY.json").read_text(encoding="utf-8"))
+        self.assertEqual(summary["classification"], "MEASUREMENT_INCONCLUSIVE_INSUFFICIENT_SUPPORT")
+        self.assertEqual(summary["gates"], {"G0": True, "G1": False})
+        self.assertFalse(summary["authority"]["production_authorized"])
+        self.assertFalse(summary["authority"]["same_id_rerun_allowed"])
 
 
 if __name__ == "__main__":

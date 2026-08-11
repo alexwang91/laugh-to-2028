@@ -1,0 +1,10 @@
+{
+  "research_id": "BRRK-LEADERSHIP-ROTATION-0048",
+  "status": "HISTORICAL_COMPUTATION_ATTEMPT_STARTED_NO_RERUN",
+  "started_at_utc": "2026-08-11T15:13:00Z",
+  "git_head_sha": "12f70c927df39b9e2ba799c8d4c597a7ae9b1726",
+  "dataset_slice_id": "BRRK-LEADERSHIP-ROTATION-0048-EXPOSED-HIST-V1",
+  "market_payload_sha256": "d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193",
+  "actual_variants_evaluated_before_attempt": 0,
+  "same_id_recomputation_allowed_after_this_marker": false
+}

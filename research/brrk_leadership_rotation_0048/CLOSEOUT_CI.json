@@ -1,0 +1,30 @@
+{
+  "research_id": "BRRK-LEADERSHIP-ROTATION-0048",
+  "attestation_type": "POST_RESULT_CLOSEOUT_CONTRACT_ONLY_NO_RESEARCH_RECOMPUTATION",
+  "workflow_run_id": 31507035505,
+  "workflow_job_id": 93831137947,
+  "head_sha_tested": "486f6cdf3c73b3d531c334bd0a341dcaec2c0b11",
+  "tests_run": 33,
+  "tests_passed": 33,
+  "tests_failed": 0,
+  "engine_and_runner_py_compile": "PASS",
+  "immutable_bundle_presence": "PASS",
+  "no_portfolio_translation": "PASS",
+  "exact_hash_binding": "PASS",
+  "g1_stopping_rule": "PASS",
+  "model_recomputation_performed": false,
+  "historical_scientific_evaluation_performed": false,
+  "temporary_workflow_removed_after_attestation": true,
+  "post_attestation_changes": [
+    "Added CLOSEOUT_CI.json itself as a non-scientific attestation artifact.",
+    "Added test_closeout_ci_contract.py, which only validates this attestation object and performs no model or historical-data computation.",
+    "Updated README.md to reference the completed closeout-only CI attestation."
+  ],
+  "authority": {
+    "canonical_strategy_changed": false,
+    "phase6_changed": false,
+    "production_authorized": false,
+    "signature_authorized": false,
+    "order_submission_authorized": false
+  }
+}

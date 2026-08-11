@@ -157,26 +157,35 @@ class RunInterfaceContractTest(unittest.TestCase):
             self.assertTrue(recovered["recovered_without_model_recomputation"])
             self.assertEqual(recovered["result_status"], result["classification"])
 
-    def test_current_controlled_branch_contains_no_runtime_result_artifacts(self):
-        forbidden = {
+    def test_immutable_runtime_bundle_is_complete_and_closed(self):
+        required = {
             "PRIMARY_RESULT.json",
             "RESULT_SUMMARY.json",
             "EXECUTION.json",
             "RUN_ATTEMPT.marker",
             "RUN_ONCE.marker",
             "RESULT.md",
-            "portfolio.py",
-            "portfolio_result.json",
+            "CLOSEOUT.json",
         }
         present = {p.name for p in HERE.iterdir() if p.is_file()}
-        self.assertTrue(forbidden.isdisjoint(present))
-        self.assertTrue({"run_once.py", "RUN_INTERFACE.json", "RESULT_SCHEMA.json"}.issubset(present))
+        self.assertTrue(required.issubset(present), sorted(required - present))
+        self.assertNotIn("portfolio.py", present)
+        self.assertNotIn("portfolio_result.json", present)
+
+        marker = json.loads((HERE / "RUN_ONCE.marker").read_text(encoding="utf-8"))
+        summary = json.loads((HERE / "RESULT_SUMMARY.json").read_text(encoding="utf-8"))
+        closeout = json.loads((HERE / "CLOSEOUT.json").read_text(encoding="utf-8"))
+        self.assertEqual(marker["status"], "VALID_EXECUTION_COMPLETE_CLOSED_TO_SAME_ID_RERUN")
+        self.assertEqual(marker["result_status"], "MEASUREMENT_INCONCLUSIVE_INSUFFICIENT_SUPPORT")
+        self.assertEqual(summary["classification"], marker["result_status"])
+        self.assertEqual(closeout["result_status"], marker["result_status"])
+        self.assertFalse(marker["same_id_rerun_allowed"])
+        self.assertFalse(marker["same_id_retuning_allowed"])
+        self.assertFalse(marker["same_id_rescue_allowed"])
 
     def test_schema_validator_rejects_unfrozen_classification(self):
         schema = json.loads((HERE / "RESULT_SCHEMA.json").read_text(encoding="utf-8"))
-        result = {
-            key: None for key in schema["required_top_level_keys"]
-        }
+        result = {key: None for key in schema["required_top_level_keys"]}
         result.update(
             {
                 "schema_id": schema["schema_id"],

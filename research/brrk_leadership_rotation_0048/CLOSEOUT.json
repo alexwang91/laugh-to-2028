@@ -1,0 +1,132 @@
+{
+  "research_id": "BRRK-LEADERSHIP-ROTATION-0048",
+  "closeout_status": "MEASUREMENT_INCONCLUSIVE_INSUFFICIENT_SUPPORT / CLOSED",
+  "result_status": "MEASUREMENT_INCONCLUSIVE_INSUFFICIENT_SUPPORT",
+  "evidence_class": "RESEARCHER_EXPOSED_DEVELOPMENT_HISTORY_NOT_INDEPENDENT_OOS",
+  "architecture_amendment_merge_sha": "09a676e0e704a360730b1df0a57e6010b5a15f00",
+  "preregistration_merge_sha": "d907bd167f4cc51142f3cf9ff3b7eb4eeab7fab8",
+  "implementation_merge_sha": "a60696d5fe23e5dd95c40f868ccca199f36a3c20",
+  "controlled_execution_boundary_merge_sha": "12f70c927df39b9e2ba799c8d4c597a7ae9b1726",
+  "dataset_slice_id": "BRRK-LEADERSHIP-ROTATION-0048-EXPOSED-HIST-V1",
+  "market_payload_sha256": "d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193",
+  "market_common_start": "2020-08-11",
+  "market_common_end": "2026-08-02",
+  "unique_scientific_execution": {
+    "github_actions_run_id": 31505757608,
+    "github_actions_job_id": 93826791780,
+    "run_attempt": 1,
+    "workflow_carrier_commit_sha": "089f643fbcf2a47cfeec6e04516396ffcccc6bff",
+    "controlled_execution_head_sha": "12f70c927df39b9e2ba799c8d4c597a7ae9b1726",
+    "preflight_status": "PREFLIGHT_PASS_ZERO_RESULT",
+    "evaluation_step_completed_successfully": true,
+    "actual_variants_evaluated": 1,
+    "same_id_research_rerun_allowed": false,
+    "durable_create_commits": {
+      "RUN_ATTEMPT.marker": "0d982bdb47c2503880f7548017e19badffa18783",
+      "PRIMARY_RESULT.json": "0b2151ad4808fa497d4128537a889624ea7bbb7d",
+      "RESULT_SUMMARY.json": "e4560ead46433b8b07c7b50c7522668a118b02bf",
+      "EXECUTION.json": "b94f01e21cf74d026c52b1d9e0932f88da54a2a6",
+      "RUN_ONCE.marker": "9b23db5630f53c23d5c9b9fdad3123d6af33182a"
+    }
+  },
+  "official_execution_artifact": {
+    "artifact_id": 9106961253,
+    "name": "brrk-0048-execution-bundle",
+    "digest": "sha256:3ae658faee064add594b5494bd660dec3d3cee735a5a7cf517e3a01f408bfb32",
+    "source_run_id": 31505757608,
+    "size_bytes": 14650,
+    "expired": false
+  },
+  "hash_locked_result_identity": {
+    "attempt_marker_sha256": "86138d7c700709475ce65083d58e0dda248a5300505e48829436d0efd4a594f4",
+    "primary_result_sha256": "c67d35848bce203a66f355e927c61abd8e5c846a075f38e089307223c283b419",
+    "result_summary_sha256": "08dcd468ead7e5f8530e018c8eb2d0bd12a62f280a95c33d8f08a48078a3d466",
+    "execution_sha256": "76f54002ce8af411c700c33933a4e65dd347a901fef86c5d4269efcf788f539c",
+    "final_marker_status": "VALID_EXECUTION_COMPLETE_CLOSED_TO_SAME_ID_RERUN"
+  },
+  "support_gate_result": {
+    "gate": "G1",
+    "pass": false,
+    "required_complete_56_observation_blocks": 12,
+    "observed_complete_56_observation_blocks": 4,
+    "minimum_formal_rows_implied_by_block_requirement": 672,
+    "observed_formal_evaluation_rows": 245,
+    "formal_row_shortfall_vs_block_minimum": 427,
+    "eth_leader_full_blocks": 4,
+    "sol_leader_full_blocks": 4,
+    "direction_diversity_subcondition_satisfied": true,
+    "bootstrap_executed": false,
+    "reason": "The preregistered formal-evaluation support requirement was not met after all frozen feature validity, BTC-uptrend eligibility, training burn-in, shadow-prequential calibration burn-in and 56-day label-maturity constraints were applied."
+  },
+  "evaluation_window": {
+    "first_formal_date": "2025-01-14",
+    "last_formal_date": "2026-05-10",
+    "formal_predictions": 245,
+    "formal_evaluation_rows": 245,
+    "eligible_feature_valid_origins": 1102,
+    "target_ties": 0
+  },
+  "descriptive_non_gating_diagnostics": {
+    "candidate_nll": 0.7185986814752551,
+    "baseline_nll": {
+      "B0_uniform": 0.6931471805599453,
+      "B1_prevalence": 0.7185986814752551,
+      "B2_lagged_leader": 0.7185986814752551,
+      "B3_relative_momentum": 0.7185986814752551
+    },
+    "candidate_brier": 0.2627024107232627,
+    "baseline_brier": {
+      "B0_uniform": 0.25,
+      "B1_prevalence": 0.2627024107232627,
+      "B2_lagged_leader": 0.2627024107232627,
+      "B3_relative_momentum": 0.2627024107232627
+    },
+    "auc": 0.378946493851778,
+    "balanced_accuracy": 0.5508059155865737,
+    "direction_metrics": {
+      "ETH_recall": 0.1751412429378531,
+      "ETH_precision": 0.8611111111111112,
+      "SOL_recall": 0.9264705882352942,
+      "SOL_precision": 0.3014354066985646
+    },
+    "confidence_margin_spearman": -0.41118068940326613,
+    "first_formal_refit_calibration_example": {
+      "refit_date": "2025-01-14",
+      "gamma_candidate": 0.0,
+      "gamma_B2": 0.0,
+      "gamma_B3": 0.0,
+      "interpretation": "At the first formal refit the frozen prior-preserving calibration suppresses all fitted relative logits and emits the expanding prevalence prior. Aggregate candidate/B1/B2/B3 NLL and Brier are exactly equal over the observed formal window. This is descriptive only because G1 failed."
+    }
+  },
+  "interpretation_boundary": [
+    "0048 is INCONCLUSIVE, not PASS and not FAIL, because the preregistered minimum dependence-aware support was not available in the frozen historical window.",
+    "G2 and all later inferential gates were not eligible to run; no bootstrap superiority, temporal robustness or HIGH-confidence eligibility claim may be made.",
+    "The adverse descriptive point metrics must be preserved as immutable evidence but cannot be converted into a formal failure after the G1 stopping rule fired.",
+    "0048 does not authorize 0049 concentration research, portfolio weights, CAGR/MDD testing, Beta-to-BTC handoff logic, BTC-to-cash logic or integrated routing.",
+    "Any attempt to reduce the 12-block support requirement, shorten burn-in, alter BTC eligibility, modify calibration, expand the historical window with already-visible data, retune features or rerun the same mechanism requires a new research ID and new preregistration."
+  ],
+  "design_lessons_non_authorizing": [
+    "The preregistered support assumption was materially too optimistic once the complete causal pipeline and BTC-uptrend eligibility filter were applied: only four complete 56-observation formal blocks remained.",
+    "The frozen formal evaluation did contain both ETH-leading and SOL-leading outcomes across all four complete blocks, so the binding support failure was total block count rather than one-sided class absence.",
+    "The observed calibrated candidate and dynamic baselines did not show promising point-score evidence in this short formal segment; this is diagnostic only and cannot be used to rescue or retune 0048."
+  ],
+  "authority": {
+    "leadership_information_established": false,
+    "concentration_research_0049_eligible_from_0048": false,
+    "portfolio_allocation_tested": false,
+    "portfolio_economics_executed": false,
+    "beta_to_btc_handoff_tested": false,
+    "btc_to_cash_tested": false,
+    "canonical_strategy_changed": false,
+    "phase6_changed": false,
+    "production_authorized": false,
+    "signature_authorized": false,
+    "order_submission_authorized": false
+  },
+  "closure": {
+    "same_id_rerun_allowed": false,
+    "same_id_retuning_allowed": false,
+    "same_id_rescue_allowed": false,
+    "result_informed_definition_change_requires_new_research_id": true
+  }
+}

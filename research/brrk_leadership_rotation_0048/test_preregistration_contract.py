@@ -16,7 +16,7 @@ def load(path: Path):
 
 
 class PreregistrationContractTest(unittest.TestCase):
-    def test_preregistration_is_exactly_registered_and_not_run(self):
+    def test_preregistration_is_exactly_registered_and_preserved_pre_result(self):
         prereg = load(HERE / "PREREGISTRATION.json")
         registry = load(ROOT / "config" / "research_registry.json")
         matches = [r for r in registry["records"] if r.get("research_id") == RID]
@@ -78,7 +78,7 @@ class PreregistrationContractTest(unittest.TestCase):
         self.assertIn("No canonical BRRK modification", text)
         self.assertFalse(prereg["production_authorized"])
 
-    def test_controlled_execution_stage_has_runner_but_still_no_result_files(self):
+    def test_closeout_stage_preserves_prior_boundaries_and_has_immutable_result_bundle(self):
         present = {p.name for p in HERE.iterdir() if p.is_file()}
         required = {
             "engine.py",
@@ -89,26 +89,30 @@ class PreregistrationContractTest(unittest.TestCase):
             "RESULT_SCHEMA.json",
             "run_once.py",
             "test_run_interface_contract.py",
-        }
-        self.assertTrue(required.issubset(present), sorted(required - present))
-        forbidden = {
+            "RUN_ATTEMPT.marker",
             "PRIMARY_RESULT.json",
             "RESULT_SUMMARY.json",
             "EXECUTION.json",
-            "RUN_ATTEMPT.marker",
             "RUN_ONCE.marker",
             "RESULT.md",
-            "portfolio.py",
-            "portfolio_result.json",
+            "CLOSEOUT.json",
         }
-        self.assertTrue(forbidden.isdisjoint(present), sorted(forbidden & present))
+        self.assertTrue(required.issubset(present), sorted(required - present))
+        self.assertNotIn("portfolio.py", present)
+        self.assertNotIn("portfolio_result.json", present)
+
         boundary = load(HERE / "CONTROLLED_EXECUTION_BOUNDARY.json")
         self.assertEqual(boundary["stage"], "CONTROLLED_EXECUTION_BOUNDARY_ZERO_RESULT")
         self.assertFalse(boundary["historical_scientific_execution_started"])
-        self.assertFalse(boundary["historical_scientific_execution_authorized_before_merge_and_green_ci"])
         self.assertEqual(boundary["actual_variants_evaluated"], 0)
         self.assertEqual(boundary["result_status"], "PREREGISTERED_NOT_RUN")
-        self.assertFalse(boundary["production_authorized"])
+
+        closeout = load(HERE / "CLOSEOUT.json")
+        self.assertEqual(closeout["closeout_status"], "MEASUREMENT_INCONCLUSIVE_INSUFFICIENT_SUPPORT / CLOSED")
+        self.assertEqual(closeout["unique_scientific_execution"]["actual_variants_evaluated"], 1)
+        self.assertFalse(closeout["closure"]["same_id_rerun_allowed"])
+        self.assertFalse(closeout["authority"]["concentration_research_0049_eligible_from_0048"])
+        self.assertFalse(closeout["authority"]["production_authorized"])
 
     def test_implementation_boundary_is_preserved_as_prior_stage_evidence(self):
         boundary = load(HERE / "IMPLEMENTATION_BOUNDARY.json")

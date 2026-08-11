@@ -1,0 +1,15 @@
+{
+  "research_id": "BRRK-LEADERSHIP-ROTATION-0048",
+  "status": "VALID_EXECUTION_COMPLETE_CLOSED_TO_SAME_ID_RERUN",
+  "completed_at_utc": "2026-08-11T15:13:08Z",
+  "git_head_sha": "12f70c927df39b9e2ba799c8d4c597a7ae9b1726",
+  "market_payload_sha256": "d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193",
+  "attempt_marker_sha256": "86138d7c700709475ce65083d58e0dda248a5300505e48829436d0efd4a594f4",
+  "primary_result_sha256": "c67d35848bce203a66f355e927c61abd8e5c846a075f38e089307223c283b419",
+  "result_summary_sha256": "08dcd468ead7e5f8530e018c8eb2d0bd12a62f280a95c33d8f08a48078a3d466",
+  "execution_sha256": "76f54002ce8af411c700c33933a4e65dd347a901fef86c5d4269efcf788f539c",
+  "result_status": "MEASUREMENT_INCONCLUSIVE_INSUFFICIENT_SUPPORT",
+  "same_id_rerun_allowed": false,
+  "same_id_retuning_allowed": false,
+  "same_id_rescue_allowed": false
+}
