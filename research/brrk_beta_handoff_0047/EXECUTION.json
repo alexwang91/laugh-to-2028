@@ -1,0 +1,21 @@
+{
+  "research_id": "BRRK-BETA-HANDOFF-EVENT-STUDY-0047",
+  "dataset_slice_id": "BRRK-BETA-HANDOFF-0047-EXPOSED-HIST-V1",
+  "git_head_sha": "7c79f62e657c492afcb98be6c637905b2156f244",
+  "github_run_id": "31444910921",
+  "github_run_attempt": "1",
+  "market_evidence_path": "research/brrk_beta_handoff_0047/evidence/MARKET_EVIDENCE.json",
+  "market_payload_sha256": "d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193",
+  "primary_result_path": "research/brrk_beta_handoff_0047/PRIMARY_RESULT.json",
+  "primary_result_sha256": "961ac99bd5a2d3d6556262b17411333bfbeead921616dccf120190ee1dd67c2a",
+  "frozen_history_end": "2026-08-02",
+  "bootstrap_replicates": 10000,
+  "bootstrap_seed": 470047,
+  "actual_variants_evaluated": 1,
+  "result_status": "FAIL_NO_RECURRENT_DURABLE_HANDOFF_STRUCTURE",
+  "portfolio_economics_executed": false,
+  "duration_aware_handoff_model_fitted": false,
+  "production_authorized": false,
+  "signature_authorized": false,
+  "order_submission_authorized": false
+}
