@@ -101,6 +101,62 @@ class RunInterfaceContractTest(unittest.TestCase):
             self.assertEqual(record["status"], "HISTORICAL_COMPUTATION_ATTEMPT_STARTED_NO_RERUN")
             self.assertFalse(record["same_id_recomputation_allowed_after_this_marker"])
 
+    def test_marker_recovery_validates_existing_bundle_without_model_recomputation(self):
+        schema = json.loads((HERE / "RESULT_SCHEMA.json").read_text(encoding="utf-8"))
+        interface = {
+            "frozen_market_evidence": {"payload_sha256": engine.EXPECTED_0047_MARKET_PAYLOAD_SHA256},
+            "immutable_upstream_git_blobs": {},
+        }
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            output = root / "PRIMARY_RESULT.json"
+            summary = root / "RESULT_SUMMARY.json"
+            execution = root / "EXECUTION.json"
+            attempt = root / "RUN_ATTEMPT.marker"
+            marker = root / "RUN_ONCE.marker"
+            head = "abc123"
+            result = {
+                "schema_id": schema["schema_id"],
+                "research_id": engine.RESEARCH_ID,
+                "dataset_slice_id": engine.DATASET_SLICE_ID,
+                "market_payload_sha256": engine.EXPECTED_0047_MARKET_PAYLOAD_SHA256,
+                "execution_head_sha": head,
+                "classification": "MEASUREMENT_INCONCLUSIVE_INSUFFICIENT_SUPPORT",
+                "classification_detail": {"gates": {"G0": True, "G1": False}},
+                "evaluation_window": {"first_formal_date": None, "last_formal_date": None},
+                "counts": {"formal_predictions": 0, "formal_evaluation_rows": 0, "eligible_feature_valid_origins": 0, "target_ties": 0},
+                "proper_scores": {"candidate_nll": None, "baseline_nll": {"B0": None, "B1": None, "B2": None, "B3": None}, "candidate_brier": None, "baseline_brier": {"B0": None, "B1": None, "B2": None, "B3": None}},
+                "discrimination": {"auc": None, "balanced_accuracy": None, "direction_metrics": {}},
+                "bootstrap": None,
+                "confidence_diagnostics": {"spearman_point": None, "natural_cubic_spline": None, "segmented_breakpoint": None, "high_support": None, "nonselection_calibration_diagnostics": {}},
+                "formal_evaluation_rows": [],
+                "formal_evaluation_rows_sha256": run_once._sha256([]),
+                "authority": dict(schema["authority_invariants"]),
+            }
+            summary_record = {"research_id": engine.RESEARCH_ID, "classification": result["classification"]}
+            attempt_record = {"research_id": engine.RESEARCH_ID, "git_head_sha": head, "status": "HISTORICAL_COMPUTATION_ATTEMPT_STARTED_NO_RERUN"}
+            execution_record = {
+                "research_id": engine.RESEARCH_ID,
+                "git_head_sha": head,
+                "primary_result_sha256": run_once._sha256(result),
+                "result_summary_sha256": run_once._sha256(summary_record),
+                "attempt_marker_sha256": run_once._sha256(attempt_record),
+            }
+            for path, value in ((output, result), (summary, summary_record), (execution, execution_record), (attempt, attempt_record)):
+                path.write_text(json.dumps(value, indent=2) + "\n", encoding="utf-8")
+
+            with mock.patch.object(run_once, "_interface", return_value=interface), mock.patch.object(
+                run_once, "_schema", return_value=schema
+            ), mock.patch.object(run_once, "_verify_expected_head", return_value=head), mock.patch.object(
+                run_once, "_verify_upstream_blobs"
+            ), mock.patch.object(run_once, "_build_result", side_effect=AssertionError("model recomputation forbidden")) as build:
+                run_once.recover_marker(output, summary, execution, attempt, marker, head)
+            build.assert_not_called()
+            self.assertTrue(marker.exists())
+            recovered = json.loads(marker.read_text(encoding="utf-8"))
+            self.assertTrue(recovered["recovered_without_model_recomputation"])
+            self.assertEqual(recovered["result_status"], result["classification"])
+
     def test_current_controlled_branch_contains_no_runtime_result_artifacts(self):
         forbidden = {
             "PRIMARY_RESULT.json",
