@@ -1,163 +1,138 @@
 # BRRK-LEADERSHIP-ROTATION-0048
 
-Status: **PREREGISTERED_NOT_RUN / CONTROLLED-EXECUTION BOUNDARY / ZERO RESULT**
+Status: **MEASUREMENT_INCONCLUSIVE_INSUFFICIENT_SUPPORT / CLOSED**
 
-The revised architecture, numerical preregistration and zero-result implementation are frozen. This directory now also contains the hash-bound controlled-execution interface, result schema and exactly-once runner. **No historical 0048 scientific execution has occurred.**
+0048 was an ETH/SOL Beta-leadership information study inside the causal `BTC_TREND_FAST >= 0` state. The architecture, numerical preregistration, implementation and controlled-execution boundary were frozen before the unique DEVELOPMENT execution.
 
-## Scientific scope
+The unique historical execution has now completed. The result is **INCONCLUSIVE because preregistered support gate G1 failed**: only 4 complete 56-observation formal-evaluation blocks were available versus the required 12. This is neither a PASS nor a formal model FAIL.
 
-0048 is an ETH/SOL Beta-leadership information study inside the pre-existing causal BTC-fast-trend supportive state.
+## Frozen scientific question
 
-It asks whether a frozen seven-feature antisymmetric ETH/SOL relative-state model predicts the stronger 14/28/56-day path-integrated Beta leader beyond static prevalence, lagged leader persistence and simple 60-day relative momentum.
+Within a causally identified crypto-uptrend environment, can current ETH/SOL relative state predict which Beta asset will produce the stronger subsequent 14/28/56-day path-integrated relative wealth path?
 
-BTC is an eligibility/defensive-anchor asset, not a competing 0048 winner. Cash is outside 0048.
+BTC is a defensive anchor / eligibility asset, not a competing 0048 winner. Cash is outside 0048.
 
-## Frozen primary candidate
+## Frozen candidate
 
 - eligibility: canonical `BTC_TREND_FAST >= 0`;
-- forward target: equal-weight 14/28/56 path-integrated ETH/SOL leadership;
-- features: four non-overlapping relative-momentum age buckets + persistence60 + symmetric position120 + relative quote-volume participation20/120;
+- target: equal-weight 14/28/56 path-integrated ETH/SOL leadership;
+- features: K1/K2/K3/K4 non-overlapping relative-momentum age buckets, Persistence60, Position120, Participation20/120;
 - model: expanding Laplace-prevalence offset + no-intercept ridge logistic, lambda=1;
 - maximum label maturity: 56 calendar days;
+- first shadow-model support: 365 matured eligible origins;
 - refit cadence: 28 calendar days;
-- first shadow model support: 365 matured eligible origins;
 - calibration: shadow-prequential prior-preserving one-parameter dynamic-logit scaling;
-- first formal calibrated evaluation support: 365 matured eligible shadow predictions;
-- primary metric: simultaneous dependence-aware candidate-minus-baseline NLL upper confidence bound;
-- uncertainty: 10,000 moving-block bootstrap replicates, block length 56 eligible observations, seed 4292549012;
-- confidence-strength diagnostic: natural cubic spline with internal knots 0.25/0.50/0.75;
-- HIGH breakpoint: exactly one segmented-regression breakpoint in [0.20,0.80], subject to frozen admissibility/stability gates.
+- first formal evaluation support: 365 matured eligible shadow predictions;
+- primary metric: simultaneous dependence-aware candidate-minus-baseline NLL upper confidence bounds;
+- uncertainty plan: 10,000 moving-block bootstrap replicates, block length 56 eligible observations, seed 4292549012;
+- confidence-strength diagnostics: natural cubic spline and one frozen segmented breakpoint.
 
-## Frozen baselines
+## Baselines
 
-1. uniform 0.5;
-2. expanding Laplace historical SOL-lead prevalence;
-3. lagged 14/28/56 path leader;
-4. simple 60-day SOL/ETH relative momentum.
+1. B0 uniform 0.5;
+2. B1 expanding Laplace historical SOL-lead prevalence;
+3. B2 lagged 14/28/56 path leader;
+4. B3 simple 60-day SOL/ETH relative momentum.
 
-The candidate must beat all probabilistic causal baselines under the simultaneous NLL gate.
+## Dataset identity
 
-## Frozen implementation
+0048 reused the immutable 0047 Binance BTC/ETH/SOL UTC daily evidence through 2026-08-02.
 
-`engine.py` mechanically implements the preregistered mathematics. It is unchanged by the controlled-run stage and remains bound by git blob SHA in `RUN_INTERFACE.json`.
+```text
+payload SHA256
+d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193
 
-Historical input is accepted only through the immutable 0047 market-evidence wrapper and must match payload SHA256:
+data budget        DEVELOPMENT
+researcher exposed true
+independent OOS    false
+```
 
-`d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193`
+No new 0048 market fetch or data re-preparation occurred.
 
-The evidence itself is DEVELOPMENT history already exposed to the research program. It is not independent OOS.
+## Unique controlled execution
 
-## Controlled-execution boundary
+```text
+controlled HEAD                 12f70c927df39b9e2ba799c8d4c597a7ae9b1726
+GitHub Actions run              31505757608
+job                            93826791780
+run attempt                    1
+preflight                      PREFLIGHT_PASS_ZERO_RESULT
+final marker                   VALID_EXECUTION_COMPLETE_CLOSED_TO_SAME_ID_RERUN
+actual variants evaluated      1
+```
 
-The controlled-run stage adds only:
+`RUN_ATTEMPT.marker` was durably persisted before historical model computation. `RUN_ONCE.marker` was persisted last. No rerun occurred.
 
-- `CONTROLLED_EXECUTION_BOUNDARY.json`;
-- `RUN_INTERFACE.json`;
-- `RESULT_SCHEMA.json`;
-- `run_once.py`;
-- `test_run_interface_contract.py`;
-- stage updates to the existing contract tests and operating documentation.
+Official artifact:
 
-It does **not** create or authorize a historical result on this branch.
+```text
+name    brrk-0048-execution-bundle
+id      9106961253
+digest  sha256:3ae658faee064add594b5494bd660dec3d3cee735a5a7cf517e3a01f408bfb32
+```
 
-### Hash binding
+## Formal result
 
-Execution requires an explicit `--expected-head-sha` and fails closed unless the current git HEAD matches exactly.
+```text
+classification                    MEASUREMENT_INCONCLUSIVE_INSUFFICIENT_SUPPORT
+G0                                PASS
+G1                                FAIL
+required complete 56-row blocks   12
+observed complete 56-row blocks    4
+formal rows                       245
+minimum rows implied by G1        672
+formal window                     2025-01-14 through 2026-05-10
+ETH-leader full blocks              4
+SOL-leader full blocks              4
+bootstrap                         NOT RUN / NOT ELIGIBLE AFTER G1
+```
 
-The runner additionally verifies frozen git blob identities for:
+The binding failure was total support, not one-sided class absence. The frozen causal pipeline — feature validity, BTC-uptrend eligibility, training burn-in, shadow-prequential calibration burn-in and 56-day target maturity — left materially fewer formal rows than assumed at preregistration.
 
-- `PREREGISTRATION.json`;
-- `DATASET_DECLARATION.json`;
-- `IMPLEMENTATION_BOUNDARY.json`;
-- `engine.py`;
-- the immutable 0047 `MARKET_EVIDENCE.json`.
+## Descriptive non-gating evidence
 
-The market wrapper must also carry the exact frozen payload SHA256 above.
+These values are immutable outputs of the unique execution but cannot override the G1 stopping rule:
 
-### Exactly-once semantics
+```text
+candidate NLL            0.7185986815
+B0 NLL                   0.6931471806
+B1/B2/B3 NLL             0.7185986815
+candidate Brier          0.2627024107
+B0 Brier                 0.2500000000
+AUC                      0.3789464939
+balanced accuracy        0.5508059156
+confidence-margin rho   -0.4111806894
+```
 
-`preflight` is repeatable and has zero scientific result authority. It verifies the exact execution head, immutable blobs, market evidence identity and absence of runtime artifacts without fitting the registered historical candidate.
+At the first formal refit, `gamma_candidate = gamma_B2 = gamma_B3 = 0.0`; the prior-preserving calibration therefore emitted the expanding prevalence prior at that refit. Aggregate candidate/B1/B2/B3 NLL and Brier are exactly equal on the observed formal segment. This is adverse diagnostic evidence, not a post-hoc formal FAIL classification.
 
-`evaluate` is different. Immediately before registered-history model evaluation begins it create-only writes:
+## Interpretation boundary
 
-`RUN_ATTEMPT.marker`
+0048 does not establish incremental ETH/SOL leadership information, but it also does not formally reject it. The preregistered dependence-aware support floor was not met, so G2 and all later inferential gates were not eligible.
 
-Once that marker exists, **a second historical model computation under 0048 is forbidden**, even if the process later crashes.
+The result does **not** authorize:
 
-On a successful valid execution, the runner create-only writes:
-
-1. `PRIMARY_RESULT.json`;
-2. `RESULT_SUMMARY.json`;
-3. `EXECUTION.json`;
-4. `RUN_ONCE.marker` last.
-
-`RUN_ONCE.marker` is the final commit authority for the completed scientific execution. A valid result then closes 0048 to same-ID rerun, retuning and rescue regardless of PASS, FAIL or INCONCLUSIVE classification.
-
-### Interruption recovery
-
-Recovery is deliberately narrow.
-
-If `RUN_ATTEMPT.marker` exists and the complete result + summary + execution bundle already exists but `RUN_ONCE.marker` is missing, `recover-marker` may verify all stored hashes and create the final marker **without calling the model again**.
-
-If the bundle is partial or hash-inconsistent, there is no automatic same-ID retry path. That state must be handled as an interrupted/invalid execution under governance; the runner cannot silently recompute.
-
-## Frozen result schema
-
-`RESULT_SCHEMA.json` freezes the allowed result classifications and required result structure before any 0048 historical output exists.
-
-Possible formal classifications remain:
-
-- `INVALID_EXECUTION`;
-- `MEASUREMENT_INCONCLUSIVE_INSUFFICIENT_SUPPORT`;
-- `MEASUREMENT_INCONCLUSIVE_CALIBRATION_UNIDENTIFIABLE`;
-- `FAIL_NO_INCREMENTAL_DYNAMIC_LEADERSHIP`;
-- `FAIL_NO_ROBUST_DYNAMIC_LEADERSHIP`;
-- `PASS_LEADERSHIP_INFORMATION_NO_CONCENTRATION_HANDOFF`;
-- `PASS_ONE_SIDED_LEADERSHIP_NO_FULL_ROUTER`;
-- `PASS_LEADERSHIP_INFORMATION_CONCENTRATION_HANDOFF_ELIGIBLE`.
-
-A leadership-information PASS does not require the confidence breakpoint to pass. Failure of the HIGH translation does not erase valid continuous leadership information.
-
-The primary result stores the aligned formal evaluation rows and a canonical SHA256 digest of those rows so later closeout can audit exactly what observations entered the frozen gates.
-
-Beta-calibration and isotonic diagnostics have zero selection/rescue authority. The frozen engine does not expose a separate causal diagnostic implementation for them; the result schema therefore requires their availability status to be reported rather than permitting a post-hoc replacement implementation during execution.
-
-## Pre-result artifact state
-
-Before the exactly-once historical execution, the following runtime files must remain absent:
-
-- `PRIMARY_RESULT.json`;
-- `RESULT_SUMMARY.json`;
-- `EXECUTION.json`;
-- `RUN_ATTEMPT.marker`;
-- `RUN_ONCE.marker`;
-- `RESULT.md`;
-- any portfolio runner or portfolio result.
-
-The controlled-run branch must merge with `actual_variants_evaluated = 0` and `result_status = PREREGISTERED_NOT_RUN` unchanged.
-
-## What remains forbidden
-
-0048 still cannot test or change:
-
-- 60/80/90/100 concentration weights;
-- CAGR, Sharpe, Calmar or MDD portfolio economics;
+- 0049 concentration research from the 0048 lineage;
+- 60/80/90/100 winner-weight backtests;
+- portfolio CAGR/Sharpe/Calmar/MDD evaluation;
 - Beta-to-BTC shelter timing;
-- BTC-to-cash cycle exit;
-- CORE4 or broader state thresholds;
-- BNB/UNI/AAVE or any universe expansion;
-- canonical BRRK;
-- Phase 6;
+- BTC-to-cash exit;
+- integrated routing;
+- canonical BRRK modification;
+- Phase 6 changes;
 - leverage/shorting;
-- signing/order submission/production authority.
+- signing, order submission or production authority.
 
-## Exact next step after this boundary merges green
+## Closure
 
-On the exact merged controlled-run SHA:
+0048 is permanently closed to same-ID rerun, retuning and rescue. Any reduction of the support requirement, burn-in change, eligibility change, calibration change, feature/target change, historical-window extension or other result-informed modification requires a **new research ID and new preregistration**.
 
-1. run `preflight`;
-2. verify it reports `PREFLIGHT_PASS_ZERO_RESULT`;
-3. run `evaluate` exactly once;
-4. preserve the resulting immutable artifacts and close out 0048 without same-ID rescue.
+Authoritative closeout artifacts:
 
-No historical 0048 evaluation is permitted on this boundary PR itself.
+- `RUN_ATTEMPT.marker`
+- `PRIMARY_RESULT.json`
+- `RESULT_SUMMARY.json`
+- `EXECUTION.json`
+- `RUN_ONCE.marker`
+- `RESULT.md`
+- `CLOSEOUT.json`
