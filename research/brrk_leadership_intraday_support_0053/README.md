@@ -26,4 +26,6 @@ The first complete valid payload was then captured in GitHub Actions run `315125
 
 `MARKET_4H_PAYLOAD.json`, `MARKET_4H_EVIDENCE.json`, and `DATASET_DECLARATION.json` are now the immutable first-successful-capture evidence. The dataset is researcher-exposed DEVELOPMENT history.
 
+Post-capture read-only contract run `31512823261` passed the local capture contract, recomputed the exact payload SHA, verified common coverage/integrity, and confirmed that `SUPPORT_RESULT.json`, predictive result/execution artifacts and run markers remained absent. The temporary verification workflow was removed after the test.
+
 **No Track A/B/C support funnel was computed during capture.** No support classification exists yet. The next permitted stage is deterministic support-funnel implementation against this exact hash-frozen payload.
