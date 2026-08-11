@@ -2,8 +2,8 @@
 
 Last updated: **2026-08-11**  
 Authoritative repository: `alexwang91/laugh-to-2028`  
-Current `main` research merge: **`7bc88d3dc314d052fdddf0706369974621479e8f`**  
-Current research branch: **`research/brrk-leadership-4h-readiness-0054-implementation`**  
+Current `main` research merge: **`4b599be6c8f994878c81604feed51bd18136cea2`**  
+Current research branch: **`research/brrk-leadership-4h-readiness-0054-controlled-run`**  
 Status of this document: **AUTHORITATIVE OPERATING SNAPSHOT**
 
 > GitHub `main`, immutable research artifacts and machine registries remain the sources of truth. This file is the compact human handoff, not a substitute for preregistration, execution, evidence, recovery or closeout artifacts.
@@ -37,7 +37,7 @@ BRRK exhaustion pulse 0046            FAIL_NO_FUTURE_ONLY_PULSE_VALIDATION_ELIGI
 BRRK Beta handoff event study 0047    FAIL_NO_RECURRENT_DURABLE_HANDOFF_STRUCTURE / CLOSED
 BRRK leadership rotation 0048         MEASUREMENT_INCONCLUSIVE_INSUFFICIENT_SUPPORT / CLOSED
 BRRK intraday support 0053             FAIL_4H_DOES_NOT_SOLVE_0048_SUPPORT_CONSTRAINT / CLOSED
-BRRK 4h-native readiness 0054          IMPLEMENTATION-ONLY / DATA REUSED / NO RESULT
+BRRK 4h-native readiness 0054          CONTROLLED-RUN BOUNDARY / ZERO RESULT
 
 Canonical BRRK-0011                    NO CHANGE
 Phase 7                                MONITOR_ONLY / LAUNCH BLOCKED
@@ -381,7 +381,7 @@ New research ID: `BRRK-LEADERSHIP-4H-NATIVE-READINESS-0054`.
 0054 is a methodology-only result-informed follow-up to the immutable 0053 closeout. It does not promote Track C's observed 365/365 diagnostic into a predictive specification. Instead it freezes a model-specific causal readiness stopping rule based on estimator precision under serial dependence.
 
 ```text
-design status                           FROZEN / PREREGISTERED / IMPLEMENTATION-ONLY / NOT RUN
+design status                           FROZEN / PREREGISTERED / IMPLEMENTATION MERGED / CONTROLLED-RUN BOUNDARY / NOT RUN
 upstream 0053                           FAIL_4H_DOES_NOT_SOLVE_0048_SUPPORT_CONSTRAINT / CLOSED
 frozen 4h payload SHA256                471b54991ae648b79433285f073ea7bc813663319b6e2389c1682dad1a319135
 methodology target firewall             MAX 336-BAR TARGET PATH MUST END BY 2022-12-31 20:00 UTC
@@ -420,3 +420,27 @@ production authority                      NO CHANGE
 ```
 
 The implementation stage may run synthetic/unit/fault contracts only. A separate exact-head controlled-run boundary must merge before any unique real-payload 0054 measurement.
+
+
+## 14. 0054 controlled exactly-once methodology boundary
+
+The zero-result implementation merge is `4b599be6c8f994878c81604feed51bd18136cea2`. `RUN_INTERFACE.json`, `RESULT_SCHEMA.json`, staged `run_once.py`, `test_run_interface.py` and `CONTROLLED_EXECUTION_BOUNDARY.json` now exist on the controlled-run branch.
+
+```text
+preflight authority                       REPEATABLE / ZERO RESULT
+attempt marker                            ABSENT
+method result                              ABSENT
+execution artifact                        ABSENT
+final marker                              ABSENT
+training readiness                        UNKNOWN
+calibration readiness                     UNKNOWN
+reserved suffix support                   UNKNOWN
+0054 classification                       UNKNOWN
+actual variants evaluated                 0
+post-2022 target values read              false
+predictive metrics                        FORBIDDEN / NONE
+portfolio economics                       FORBIDDEN / NONE
+production authority                      NO CHANGE
+```
+
+After this boundary merges fully green, the only permitted scientific action is the staged unique measurement: exact-head preflight -> durably persist attempt marker -> evaluate once -> durably persist method result/execution -> finalize marker without remeasurement. No execution is authorized before this boundary merges.
