@@ -1,0 +1,31 @@
+name: 0053 controlled support-run contract temporary
+on:
+  push:
+    branches: [research/brrk-leadership-intraday-support-0053-controlled-run]
+permissions:
+  contents: read
+jobs:
+  contract:
+    if: contains(github.event.head_commit.message, 'trigger 0053 controlled contract')
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: execution/plan-b-bot/requirements-dev.txt
+      - run: pip install -r execution/plan-b-bot/requirements-dev.txt
+      - run: python -m py_compile research/brrk_leadership_intraday_support_0053/run_once.py research/brrk_leadership_intraday_support_0053/support_funnel.py
+      - name: Run controlled-run synthetic/fault contracts
+        run: |
+          python -m unittest research.brrk_leadership_intraday_support_0053.test_support_funnel research.brrk_leadership_intraday_support_0053.test_run_interface
+      - name: Enforce zero-result boundary
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('research/brrk_leadership_intraday_support_0053')
+          bad=[n for n in ['RUN_ATTEMPT.marker','SUPPORT_RESULT.json','EXECUTION.json','RUN_ONCE.marker'] if (p/n).exists()]
+          if bad: raise SystemExit(str(bad))
+          print('CONTROLLED_BOUNDARY_ZERO_RESULT_PASS')
+          PY
