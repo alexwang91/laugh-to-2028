@@ -1,0 +1,75 @@
+{
+  "research_id": "BRRK-LEADERSHIP-4H-NATIVE-READINESS-0054",
+  "stage": "METHODOLOGY_IMPLEMENTATION_ONLY",
+  "base_main_sha": "7bc88d3dc314d052fdddf0706369974621479e8f",
+  "status": "IMPLEMENTED_FOR_SYNTHETIC_CONTRACT_TESTING_ONLY_REAL_MEASUREMENT_FORBIDDEN",
+  "actual_variants_evaluated": 0,
+  "frozen_payload": {
+    "path": "research/brrk_leadership_intraday_support_0053/MARKET_4H_PAYLOAD.json",
+    "git_blob_sha": "0c67c4d7d8f39e2a4972045d94808744c6006e37",
+    "payload_sha256": "471b54991ae648b79433285f073ea7bc813663319b6e2389c1682dad1a319135",
+    "real_payload_measurement_allowed_on_this_stage": false,
+    "network_refetch_allowed": false,
+    "replacement_allowed": false
+  },
+  "immutable_upstream_git_blobs": {
+    "research/brrk_leadership_4h_native_readiness_0054/PREREGISTRATION.json": "33151c65fd27021f9bb4eaaf1d102fddab34b893",
+    "research/brrk_leadership_4h_native_readiness_0054/DATASET_DECLARATION.json": "e7c3e4549b9caab8eb7fec10f8f796d3415fd730",
+    "research/brrk_leadership_rotation_0048/engine.py": "70c9897715eeb7173a461aef1b6588488b205491",
+    "research/brrk_leadership_intraday_support_0053/support_funnel.py": "b11118ee7fa83494451e3d0379cbaf1ad44065ca",
+    "research/brrk_leadership_intraday_support_0053/MARKET_4H_PAYLOAD.json": "0c67c4d7d8f39e2a4972045d94808744c6006e37"
+  },
+  "implementation_git_blobs": {
+    "research/brrk_leadership_4h_native_readiness_0054/engine.py": "8a6237fa326789bf2539dc9ed7e79282f93b8a4a"
+  },
+  "frozen_methodology_constants": {
+    "feature_count": 7,
+    "ridge_lambda": 1.0,
+    "refit_bars": 168,
+    "max_target_bars": 336,
+    "hac_kernel": "BARTLETT",
+    "hac_lag": 335,
+    "numerical_floor": 672,
+    "training_probe_count": 29,
+    "training_p90_width_max": 0.10,
+    "training_max_width_max": 0.20,
+    "calibration_probe_count": 8,
+    "calibration_max_width_max": 0.10,
+    "consecutive_refits_required": 3,
+    "methodology_target_path_end_cutoff": "2022-12-31T20:00:00Z",
+    "reserved_suffix_start": "2023-01-01T00:00:00Z",
+    "reserved_block_length": 336,
+    "reserved_required_blocks": 12
+  },
+  "implementation_only_authority": {
+    "synthetic_unit_testing_allowed": true,
+    "synthetic_fault_injection_allowed": true,
+    "real_payload_hash_validation_allowed": false,
+    "real_payload_loading_allowed": false,
+    "real_methodology_measurement_allowed": false,
+    "methodology_result_artifact_creation_allowed": false,
+    "post_2022_target_value_read_allowed": false,
+    "predictive_performance_metrics_allowed": false,
+    "portfolio_economics_allowed": false
+  },
+  "forbidden_artifacts_before_controlled_run_boundary": [
+    "METHOD_RESULT.json",
+    "RESULT_SUMMARY.json",
+    "EXECUTION.json",
+    "RUN_ATTEMPT.marker",
+    "RUN_ONCE.marker",
+    "PREDICTIVE_RESULT.json",
+    "PORTFOLIO_RESULT.json",
+    "WINNER_LABELS.json"
+  ],
+  "authority_invariants": {
+    "0048_rerun_or_rescue": false,
+    "0053_rerun_or_rescue": false,
+    "canonical_strategy_changed": false,
+    "phase6_changed": false,
+    "production_authorized": false,
+    "signature_authorized": false,
+    "order_submission_authorized": false
+  },
+  "next_permitted_stage": "MERGE_SYNTHETICALLY_VERIFIED_ZERO_RESULT_IMPLEMENTATION_THEN_FREEZE_A_SEPARATE_EXACT_HEAD_CONTROLLED_RUN_INTERFACE_BEFORE_ANY_REAL_0054_MEASUREMENT"
+}
