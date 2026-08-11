@@ -62,7 +62,7 @@ These resolve engineering semantics without creating candidate freedom:
 2. Cross-correlation uses `corr(BTC_t, ALT_{t+lag})`; positive lag therefore means BTC leads.
 3. A transmission return on the first day of a BTC-positive episode is unavailable because its prior close lies outside that episode. Cross-episode return pairs and VAR lags are forbidden.
 4. Pooled VAR(7) episode intercepts are implemented with within-episode demeaning, algebraically equivalent to explicit episode-dummy-intercept OLS. There is no lag search.
-5. Granger/Wald uses episode-cluster CR0 covariance. A singular covariance produces a null descriptive p-value rather than a rescue estimator.
+5. Granger/Wald uses episode-cluster CR0 covariance. Every direction always reports its seven lag coefficients and complete-episode bootstrap coefficient uncertainty; if the CR0 sub-covariance is singular, the Wald p-value is null rather than switching to a result-selected rescue estimator.
 6. The generalized IRF avoids arbitrary contemporaneous Cholesky ordering.
 7. Oracle switches are evaluated at the candidate close. Exact ties retain `NO_SWITCH`, then ETH precedes SOL only as a deterministic non-gating tie order.
 8. The raw common market frame is canonically JSON-serialized and SHA256-bound before any result metric is emitted.
