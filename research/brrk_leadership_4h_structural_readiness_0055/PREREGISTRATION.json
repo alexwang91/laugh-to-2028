@@ -1,0 +1,171 @@
+{
+  "research_id": "BRRK-LEADERSHIP-4H-STRUCTURAL-READINESS-0055",
+  "research_family_id": "BRRK_DYNAMIC_LEADERSHIP_ROUTER",
+  "research_domain": "RELATIVE_VALUE",
+  "research_governance_version": 1,
+  "governance_mode": "PROGRAM_GOVERNED_V1",
+  "objective_type": "DATA_QUALITY",
+  "created_at": "2026-08-11T20:27:00Z",
+  "created_before_result": true,
+  "question": "Can one prospectively fixed three-dimensional economic compression of the frozen seven-feature 4h ETH/SOL relative-state representation satisfy the unchanged 0054 overlap-aware training/calibration precision rules while preserving post-2022 leadership targets against inspection?",
+  "hypothesis": "The 0054 precision failure is driven materially by effective dynamic dimensionality. Compressing the four momentum-age buckets into a fixed trend level plus fixed age contrast, and compressing persistence/position/participation into one fixed state-support composite, may reduce estimator variance enough to satisfy the same absolute probability-width readiness gates without changing the inferential rules.",
+  "hypothesis_origin": "RESULT_INFORMED_BY_IMMUTABLE_0054_TRAINING_PRECISION_FAILURE",
+  "economic_mechanism": "0055 is structural representation methodology for the Beta-selection program. It tests estimability/readiness of one fixed lower-dimensional dynamic state, not leadership alpha or portfolio economics.",
+  "primary_target": "CAUSAL_3D_STRUCTURAL_ESTIMATOR_TRAINING_AND_CALIBRATION_READINESS_UNDER_UNCHANGED_0054_HAC_PRECISION_GATES_PLUS_LABEL_BLIND_POST_2022_RESERVED_SUPPORT",
+  "primary_metric": "PASS_FAIL_3D_READINESS_CLASSIFICATION_WITH_RESERVED_SUFFIX_COMPLETE_336_ORDERED_ELIGIBLE_ROW_BLOCK_COUNT_THRESHOLD_12",
+  "secondary_metrics": [
+    "training_readiness_timestamp",
+    "matured_eligible_training_count_at_readiness",
+    "13_probe_training_probability_interval_widths",
+    "training_HAC_and_hessian_numerical_diagnostics",
+    "first_shadow_origin_timestamp",
+    "calibration_readiness_timestamp",
+    "matured_shadow_pair_count_at_readiness",
+    "calibration_probe_probability_interval_widths",
+    "gamma_HAC_and_curvature_numerical_diagnostics",
+    "reserved_suffix_label_blind_formal_rows",
+    "reserved_suffix_complete_336_row_blocks",
+    "reserved_suffix_trailing_partial_rows",
+    "descriptive_matched_refit_precision_comparison_vs_immutable_0054_zero_selection_authority"
+  ],
+  "feature_families": [
+    "BTC_4H_CALENDAR_EQUIVALENT_FAST_TREND_ELIGIBILITY_ONLY",
+    "ETH_SOL_4H_STRUCTURAL_TREND_LEVEL_FROM_K1_K4",
+    "ETH_SOL_4H_STRUCTURAL_ZERO_SUM_TREND_AGE_CONTRAST",
+    "ETH_SOL_4H_STRUCTURAL_STATE_SUPPORT_FROM_PERSISTENCE_POSITION_PARTICIPATION",
+    "HAC_PARAMETER_AND_PROBABILITY_PRECISION_READINESS_ONLY"
+  ],
+  "horizon": "REUSE_HASH_FROZEN_BINANCE_SPOT_UTC_4H_COMMON_HISTORY_2020-08-11T04:00Z_THROUGH_2026-08-02T20:00Z; METHODOLOGY_LABELS_ONLY_WHEN_MAX_336_BAR_TARGET_PATH_ENDS_BY_2022-12-31T20:00Z; 2023-01-01_ONWARD_TARGETS_FORBIDDEN_TO_0055_AND_LABEL_BLIND_SUPPORT_ONLY",
+  "universe": [
+    "BTC",
+    "ETH",
+    "SOL"
+  ],
+  "development_dataset_refs": [
+    "BRRK-LEADERSHIP-INTRADAY-SUPPORT-0053-BINANCE-4H-HIST-V1"
+  ],
+  "validation_dataset_refs": [],
+  "sealed_dataset_refs": [],
+  "declared_variant_budget": 1,
+  "actual_variants_evaluated": 0,
+  "parameter_candidate_count": 1,
+  "stopping_rule": "After this preregistration merges, implement exactly one 0055 methodology engine using the frozen 3D compression and unchanged 0054 inferential rules. Execute exactly one historical DEVELOPMENT methodology measurement. Any compression weight, representation dimension, threshold, HAC, probe, firewall, target/model or readiness-rule change after any 0055 numerical output requires a new research ID. No predictive-performance metric may be computed or used for selection under 0055.",
+  "success_criteria": [
+    "Training readiness is achieved using only labels whose complete 336-bar target path ends by 2022-12-31T20:00:00Z.",
+    "Calibration readiness is achieved using only matured shadow pairs whose complete 336-bar target path ends by 2022-12-31T20:00:00Z.",
+    "Post-2022 reserved target values are never read by the 0055 measurement path.",
+    "After frozen readiness activation, the label-blind reserved suffix contains at least 12 complete 336-ordered-eligible-row support blocks with full future maturity availability.",
+    "Canonical BRRK, Phase 6, signing, order submission and production authority remain unchanged."
+  ],
+  "failure_criteria": [
+    "If the methodology prefix never achieves three consecutive frozen 3D training-precision passes, classify FAIL_4H_STRUCTURAL_3D_TRAINING_PRECISION_NOT_ESTABLISHED.",
+    "If training readiness passes but the methodology prefix never achieves three consecutive frozen calibration-precision passes, classify FAIL_4H_STRUCTURAL_3D_CALIBRATION_PRECISION_NOT_ESTABLISHED.",
+    "If both readiness stages pass but the label-blind reserved suffix has fewer than 12 complete 336-row blocks, classify FAIL_4H_STRUCTURAL_3D_METHOD_READY_BUT_RESERVED_SUPPORT_INSUFFICIENT.",
+    "Any post-2022 ETH/SOL target inspection, forbidden predictive metric, numerical-integrity breach, hash mismatch or result-before-attempt persistence breach invalidates the execution rather than becoming a scientific result."
+  ],
+  "allowed_followup": [
+    "Only PASS_4H_STRUCTURAL_3D_READINESS_ELIGIBLE_FOR_NEW_PREDICTIVE_STUDY may authorize a separately preregistered post-2022 4h predictive-leadership research ID.",
+    "A later predictive study must freeze its own target/model/baselines/scoring/inference before reading reserved post-2022 ETH/SOL targets.",
+    "0055 PASS does not establish leadership predictability and does not authorize concentration."
+  ],
+  "forbidden_followup": [
+    "No same-ID 2D, 4D, PCA, Lasso, elastic-net, ablation or alternative compression candidate.",
+    "No same-ID change to TrendLevel weights [1,1,1,1]/4, TrendAge weights [3,1,-1,-3]/8 or StateSupport equal one-third weights after output exposure.",
+    "No same-ID change to Bartlett HAC lag 335, numerical floor 672, probe sets, probability-width tolerances, ridge lambda 1 or three-consecutive-refit rule.",
+    "No same-ID fixed burn-in substitution selected from observed widths.",
+    "No same-ID NLL, Brier, AUC, balanced accuracy, directional metrics, realized-margin correlation, confidence breakpoint or portfolio economics.",
+    "No post-2022 ETH/SOL target value may be read under 0055.",
+    "No 0048/0053/0054 rerun or rescue and no direct concentration authority.",
+    "No canonical BRRK modification, Phase 6 modification, leverage expansion, signing, order submission or production authorization."
+  ],
+  "researcher_decisions": [
+    "Design authority is research/governance/BRRK_LEADERSHIP_4H_STRUCTURAL_READINESS_0055_DESIGN_FREEZE_2026-08-11.md merged at main SHA 194b37fae9b9f1beefa8982813ad81f18ca8c223.",
+    "0055 is result-informed by immutable 0054 closeout at main SHA fcbb2182bfd01b5d04d6f652b7cdb1b49f11007b; 0054 remains permanently closed.",
+    "Raw data are reused only from immutable 0053 4h payload SHA256 471b54991ae648b79433285f073ea7bc813663319b6e2389c1682dad1a319135; no network fetch or replacement dataset is allowed.",
+    "Decision/refit clock is 168 4h bars. A target is training/calibration-eligible only after its full 336-bar future path has matured.",
+    "Methodology labels are permitted only when target path end <=2022-12-31T20:00:00Z. Origins from 2023-01-01T00:00:00Z onward are target-firewalled and may be used only for label-blind support accounting.",
+    "Inherited 4h features K1,K2,K3,K4,Persistence360,Position720,Participation are computed exactly as frozen in 0054, with no formula change.",
+    "TrendLevel=(K1+K2+K3+K4)/4.",
+    "TrendAge=(3*K1+K2-K3-3*K4)/8. The contrast coefficients sum to zero and have L1 norm one.",
+    "StateSupport=(Persistence360+Position720+Participation)/3.",
+    "The sole dynamic feature vector is X_struct=[TrendLevel,TrendAge,StateSupport]. No alternate representation is evaluated.",
+    "4h relative log price, sigma1440, K bucket indexing, Persistence360, Position720, Participation, target horizons {84,168,336}, path-integrated target L, target tie exclusion and BTC FAST eligibility are inherited byte-for-semantics from 0054.",
+    "Candidate model is p_raw=sigmoid(logit(pi)+beta_Xstruct), matured-label Laplace prevalence pi=(N_SOL+1)/(N_SOL+N_ETH+2), no fitted intercept, ridge lambda=1.",
+    "Training is expanding on the same frozen 168-bar refit grid. Model/HAC evaluation is inadmissible before 672 matured eligible methodology-prefix observations.",
+    "Training score vectors are g_i=Xstruct_i*(Y_i-p_i), centered by sample mean. Bartlett HAC uses L=335 and the same sum-scale formula frozen in 0054. H=X_T W X+I_3 and V_beta=H^{-1} Omega H^{-1}.",
+    "Canonical training probes are exactly Q3={0} union {+/-0.5 e_j,+/-1.0 e_j,j=1..3}, 13 points.",
+    "At q use centered dynamic probability sigmoid(beta_q) and delta-method two-sided 95% width with z=1.959963984540054 and V_beta.",
+    "P90 uses deterministic Hyndman-Fan Type 7 / NumPy method=linear quantile: sort n widths, h=(n-1)*0.9, interpolate linearly between floor(h) and ceil(h). For n=13 this is 0.2*w_(11)+0.8*w_(12) in one-based sorted order.",
+    "A training refit passes iff n>=672, all calculations are valid, P90 of 13 widths <=0.10 and max width <=0.20. Training readiness requires three consecutive passing 168-bar refits.",
+    "Shadow forecasts begin only after training readiness. Calibration is the same prior-preserving gamma>=0 temperature family as 0054, with the same eight eta probes, Bartlett lag 335, 672 shadow-pair floor, max width <=0.10 and three consecutive passing refits.",
+    "Reserved suffix support begins at 2023-01-01T00:00:00Z or later if required by frozen readiness activation. Count only feature-valid BTC-eligible origins with full 336-bar future availability. Sequential ordered eligible blocks have length 336; PASS requires at least 12 complete blocks.",
+    "0055 may report readiness counts/timestamps, uncertainty/numerical diagnostics and zero-authority descriptive comparison to immutable 0054 widths only; predictive-performance and economic metrics are forbidden."
+  ],
+  "research_process_complexity": {
+    "declared_parameter_candidates": [
+      "ONE_FIXED_3D_STRUCTURAL_REPRESENTATION_ONLY",
+      "TREND_LEVEL=[1,1,1,1]/4",
+      "TREND_AGE=[3,1,-1,-3]/8",
+      "STATE_SUPPORT=[1,1,1]/3",
+      "RIDGE_LAMBDA=1",
+      "HAC_KERNEL=BARTLETT_LAG=335",
+      "NUMERICAL_FLOOR=672",
+      "TRAIN_P90_WIDTH=0.10_MAX_WIDTH=0.20",
+      "CAL_MAX_WIDTH=0.10",
+      "THREE_CONSECUTIVE_REFITS",
+      "REFIT=168_BARS",
+      "TARGET_FIREWALL=2022-12-31T20:00Z",
+      "RESERVED_SUFFIX_START=2023-01-01T00:00Z",
+      "RESERVED_SUPPORT_BLOCK=336_REQUIRED=12"
+    ],
+    "actual_parameter_candidates_evaluated": [],
+    "universes_evaluated": [
+      "BINANCE_SPOT_BTC_ETH_SOL"
+    ],
+    "horizons_evaluated": [
+      "4H_FEATURES_20_60_120_240_DAY_EQUIVALENTS_AND_TARGETS_14_28_56_DAY_EQUIVALENTS"
+    ],
+    "rebalance_variants": [],
+    "feature_representations": [
+      "FIXED_3D_STRUCTURAL_COMPRESSION_ONLY"
+    ],
+    "special_cases_introduced": [
+      "POST_2022_TARGET_FIREWALL_AND_LABEL_BLIND_RESERVED_SUPPORT"
+    ],
+    "validation_exposure_event_refs": [],
+    "related_family_trials": 1
+  },
+  "lineage_edges": [
+    {
+      "relation": "RESULT_INFORMED",
+      "ref_research_id": "BRRK-LEADERSHIP-4H-NATIVE-READINESS-0054",
+      "provenance_status": "FACT",
+      "evidence_ref": "research/brrk_leadership_4h_native_readiness_0054/CLOSEOUT.json"
+    },
+    {
+      "relation": "MECHANISM_FORK",
+      "ref_research_id": "BRRK-LEADERSHIP-ROTATION-0048",
+      "provenance_status": "FACT",
+      "evidence_ref": "research/brrk_leadership_rotation_0048/PREREGISTRATION.json"
+    }
+  ],
+  "result_status": "PREREGISTERED_NOT_RUN",
+  "failure_reason": null,
+  "promotion_state": "NONE",
+  "evidence_refs": [],
+  "decision_refs": [
+    "research/governance/BRRK_LEADERSHIP_4H_STRUCTURAL_READINESS_0055_DESIGN_FREEZE_2026-08-11.md",
+    "docs/CURRENT_STATE.md"
+  ],
+  "production_relevance": "Methodology-only structural estimator-readiness research. No leadership-alpha, portfolio, canonical, Phase-6 or production authority.",
+  "production_authorized": false,
+  "provenance_status": "FACT",
+  "governed_path_prefixes": [
+    "research/brrk_leadership_4h_structural_readiness_0055/"
+  ],
+  "notes": [
+    "0054, 0053 and 0048 remain permanently closed and cannot be rerun or rescued.",
+    "0055 changes only the dynamic representation dimension/structure; 0054 inferential thresholds and target firewall are inherited unchanged.",
+    "Post-2022 ETH/SOL target outcomes remain unread by 0055 until a later separately preregistered predictive study is authorized by a valid 0055 PASS."
+  ]
+}
