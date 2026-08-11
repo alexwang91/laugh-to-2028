@@ -1,0 +1,41 @@
+name: 0054 design CURRENT_STATE update
+
+on:
+  push:
+    branches:
+      - research/brrk-leadership-4h-readiness-0054-design
+
+permissions:
+  contents: write
+
+jobs:
+  update-state:
+    if: contains(github.event.head_commit.message, 'trigger 0054 design state')
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/brrk-leadership-4h-readiness-0054-design
+      - name: Advance authoritative 0054 design handoff
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('docs/CURRENT_STATE.md')
+          s=p.read_text()
+          s=s.replace('Current `main` research merge: **`4de5b8b97075d5614b2dad121b6eb0d93b4def24`**', 'Current `main` research merge: **`dbd7b97b3dcb55b157ee8d524c5670fc4f942abb`**')
+          s=s.replace('Current research branch: **`research/brrk-leadership-intraday-support-0053-result`**', 'Current research branch: **`research/brrk-leadership-4h-readiness-0054-design`**')
+          needle='BRRK intraday support 0053             FAIL_4H_DOES_NOT_SOLVE_0048_SUPPORT_CONSTRAINT / CLOSED\n'
+          repl=needle+'BRRK 4h-native readiness 0054          DESIGN FROZEN / PREREG NOT YET FROZEN / NOT RUN\n'
+          if 'BRRK 4h-native readiness 0054' not in s:
+              if needle not in s: raise SystemExit('0053 executive anchor missing')
+              s=s.replace(needle,repl,1)
+          section='''\n\n---\n\n## 12. 0054 4h-native readiness methodology — active design\n\nNew research ID: `BRRK-LEADERSHIP-4H-NATIVE-READINESS-0054`.\n\n0054 is a methodology-only result-informed follow-up to the immutable 0053 closeout. It does not promote Track C's observed 365/365 diagnostic into a predictive specification. Instead it freezes a model-specific causal readiness stopping rule based on estimator precision under serial dependence.\n\n```text\ndesign status                           FROZEN / PREREG NOT YET FROZEN / NOT RUN\nupstream 0053                           FAIL_4H_DOES_NOT_SOLVE_0048_SUPPORT_CONSTRAINT / CLOSED\nfrozen 4h payload SHA256                471b54991ae648b79433285f073ea7bc813663319b6e2389c1682dad1a319135\nmethodology target firewall             MAX 336-BAR TARGET PATH MUST END BY 2022-12-31 20:00 UTC\nreserved target suffix                  2023-01-01 onward / TARGETS FORBIDDEN TO 0054\nprimary readiness basis                 HAC PARAMETER / PROBABILITY PRECISION, NOT PREDICTIVE PERFORMANCE\nHAC lag                                 335 eligible-origin steps\nnumerical admissibility floor           672 matured eligible observations\ntraining precision                      P90 95% width <=0.10 AND max <=0.20\ncalibration precision                   max 95% width <=0.10\nstability requirement                   3 consecutive 168-bar refits\nNLL/AUC/Brier scoring                    FORBIDDEN\nportfolio economics                     FORBIDDEN\nproduction authority                    NO CHANGE\n```\n\nA later 0054 numerical/data preregistration must atomically freeze the exact 4h feature/target translation, HAC implementation, target firewall, result schema and controlled-run policy before any 0054 methodology output. A 0054 PASS would authorize only a separately preregistered post-2022 predictive study; it would not establish ETH/SOL leadership information and would not authorize 0049 concentration.\n\nThe active design authority is `research/governance/BRRK_LEADERSHIP_4H_NATIVE_READINESS_0054_DESIGN_FREEZE_2026-08-11.md`. Any older next-step prose above that still refers to 0053 is historical and is superseded by this section.\n'''
+          if '## 12. 0054 4h-native readiness methodology — active design' not in s:
+              s += section
+          p.write_text(s)
+          PY
+          git config user.name 'Y_Wang'
+          git config user.email '40142450+alexwang91@users.noreply.github.com'
+          git add docs/CURRENT_STATE.md
+          git commit -m 'Research design handoff: activate 0054 methodology design'
+          git push origin HEAD:research/brrk-leadership-4h-readiness-0054-design
