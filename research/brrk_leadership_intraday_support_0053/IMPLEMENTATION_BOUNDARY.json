@@ -1,0 +1,62 @@
+{
+  "research_id": "BRRK-LEADERSHIP-INTRADAY-SUPPORT-0053",
+  "stage": "SUPPORT_FUNNEL_IMPLEMENTATION_ONLY",
+  "base_main_sha": "36a517ecde6bb908101c14edea3695012ec781e4",
+  "frozen_payload_sha256": "471b54991ae648b79433285f073ea7bc813663319b6e2389c1682dad1a319135",
+  "frozen_payload_path": "research/brrk_leadership_intraday_support_0053/MARKET_4H_PAYLOAD.json",
+  "implementation_path": "research/brrk_leadership_intraday_support_0053/support_funnel.py",
+  "primary_track": {
+    "name": "A",
+    "training_support": 2190,
+    "shadow_support": 2190,
+    "refit_bars": 168,
+    "target_maturity_bars": 336,
+    "block_length": 336,
+    "required_complete_blocks": 12
+  },
+  "diagnostic_tracks": {
+    "B": {
+      "training_support": 365,
+      "shadow_support": 365,
+      "block_length": 56,
+      "authority": "DIAGNOSTIC_ONLY"
+    },
+    "C": {
+      "training_support": 365,
+      "shadow_support": 365,
+      "block_length": 336,
+      "authority": "DIAGNOSTIC_ONLY"
+    }
+  },
+  "causal_support_semantics": [
+    "Feature validity requires the complete 1440-bar 4h calendar-equivalent BTC trend history.",
+    "An origin is support-eligible only when BTC_FAST_4H is finite and >= 0.",
+    "A historical eligible origin contributes to matured training support at current bar t only when origin_position + 336 <= t.",
+    "The first shadow origin is the first eligible bar whose matured eligible training-origin count reaches the track-specific training threshold.",
+    "Shadow origins are counted only after they themselves mature by 336 bars.",
+    "Formal activation occurs only at the first 168-bar refit point on the anchor-relative frozen refit grid where matured-shadow support reaches the track threshold.",
+    "Formal evaluation origins must be eligible and must retain a complete 336-bar future maturity window before the frozen dataset end.",
+    "Dependence blocks are formed from sequential ordered eligible formal origins, not raw calendar-contiguous bars; a trailing partial block is not complete."
+  ],
+  "explicit_prohibitions": [
+    "NO_REAL_PAYLOAD_SUPPORT_MEASUREMENT_DURING_IMPLEMENTATION_PR",
+    "NO_ETH_SOL_WINNER_LABELS",
+    "NO_MODEL_FIT",
+    "NO_CALIBRATION_FIT",
+    "NO_NLL_BRIER_AUC",
+    "NO_PREDICTIVE_BOOTSTRAP",
+    "NO_PORTFOLIO_ECONOMICS",
+    "NO_0048_RERUN_OR_RESCUE"
+  ],
+  "runtime_artifacts_required_absent_before_measurement": [
+    "SUPPORT_RESULT.json",
+    "EXECUTION.json",
+    "RUN_ONCE.marker"
+  ],
+  "actual_variants_evaluated": 0,
+  "support_measurement_executed": false,
+  "predictive_model_executed": false,
+  "production_authorized": false,
+  "signature_authorized": false,
+  "order_submission_authorized": false
+}

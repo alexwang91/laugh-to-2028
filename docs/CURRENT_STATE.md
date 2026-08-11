@@ -2,8 +2,8 @@
 
 Last updated: **2026-08-11**  
 Authoritative repository: `alexwang91/laugh-to-2028`  
-Current `main` research merge: **`ed3c22f0e3f562498f483ce5f1bb634f8f9b9e4e`**  
-Current research branch: **`research/brrk-leadership-intraday-support-0053-capture-source-amendment`**  
+Current `main` research merge: **`36a517ecde6bb908101c14edea3695012ec781e4`**  
+Current research branch: **`research/brrk-leadership-intraday-support-0053-implementation`**  
 Status of this document: **AUTHORITATIVE OPERATING SNAPSHOT**
 
 > GitHub `main`, immutable research artifacts and machine registries remain the sources of truth. This file is the compact human handoff, not a substitute for preregistration, execution, evidence, recovery or closeout artifacts.
@@ -36,7 +36,7 @@ BRRK exhaustion trigger 0045          FAIL_NO_DYNAMIC_GROSS_STAGE_ELIGIBILITY / 
 BRRK exhaustion pulse 0046            FAIL_NO_FUTURE_ONLY_PULSE_VALIDATION_ELIGIBILITY / CLOSED
 BRRK Beta handoff event study 0047    FAIL_NO_RECURRENT_DURABLE_HANDOFF_STRUCTURE / CLOSED
 BRRK leadership rotation 0048         MEASUREMENT_INCONCLUSIVE_INSUFFICIENT_SUPPORT / CLOSED
-BRRK intraday support 0053             PREREGISTERED / DATA CAPTURED / NOT MEASURED
+BRRK intraday support 0053             IMPLEMENTATION-ONLY / DATA FROZEN / NO RESULT
 
 Canonical BRRK-0011                    NO CHANGE
 Phase 7                                MONITOR_ONLY / LAUNCH BLOCKED
@@ -141,7 +141,7 @@ Purpose:
 
 > Determine whether approximately six years of Binance Spot BTC/ETH/SOL **4h** history creates genuinely greater dependence-aware formal support for an ETH/SOL leadership study, or merely multiplies correlated rows.
 
-0053 is **label-blind support accounting only**. Numerical/data preregistration status: `PREREGISTERED_DATA_NOT_CAPTURED`. At the current stage:
+0053 is **label-blind support accounting only**. Numerical/data status: `PREREGISTERED_DATA_CAPTURED_NOT_MEASURED / SUPPORT-FUNNEL IMPLEMENTATION-ONLY`. At the current stage:
 
 ```text
 4h data retrieval                      FIRST COMPLETE VALID CAPTURE / HASH FROZEN
@@ -154,6 +154,9 @@ calibration fits                       0
 predictive metrics                     NONE
 portfolio runs                         0
 actual variants evaluated              0
+support-funnel implementation             PRESENT / NOT EXECUTED ON FROZEN PAYLOAD
+support result                            ABSENT
+support execution marker                  ABSENT
 ```
 
 The design freezes six 4h bars per day and calendar-equivalent translations:
@@ -308,3 +311,8 @@ config/research_registry.json
 config/dataset_exposure_registry.json
 research/governance/phase6_observation_ledger.json
 ```
+
+
+## 10. 0053 zero-result implementation boundary
+
+The frozen real 4h payload has not been passed to `measure_support_funnel()` on this implementation branch. `support_funnel.py` and synthetic contracts exist only to implement the preregistered support clocks. `SUPPORT_RESULT.json`, `EXECUTION.json` and `RUN_ONCE.marker` remain absent. A separate controlled exactly-once support measurement is required after implementation merge. No ETH/SOL labels, predictive model, calibration, AUC/NLL/Brier or portfolio economics are permitted.
