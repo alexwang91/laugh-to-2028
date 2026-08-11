@@ -1,0 +1,61 @@
+{
+  "schema_id": "BRRK-LEADERSHIP-INTRADAY-SUPPORT-0053-RESULT-V1",
+  "research_id": "BRRK-LEADERSHIP-INTRADAY-SUPPORT-0053",
+  "classification_enum": [
+    "PASS_4H_CALENDAR_EQUIVALENT_SUPPORT_FEASIBLE",
+    "FAIL_4H_DOES_NOT_SOLVE_0048_SUPPORT_CONSTRAINT",
+    "DATA_INTEGRITY_INCONCLUSIVE"
+  ],
+  "required_top_level_keys": [
+    "schema_id",
+    "research_id",
+    "dataset_slice_id",
+    "payload_sha256",
+    "execution_head_sha",
+    "classification",
+    "measurement",
+    "comparison_vs_0048",
+    "authority"
+  ],
+  "required_track_keys": [
+    "name",
+    "authority",
+    "training_support_required",
+    "shadow_support_required",
+    "block_length",
+    "first_training_support_timestamp",
+    "first_shadow_origin_timestamp",
+    "first_shadow_support_satisfied_timestamp",
+    "calibration_activation_refit_timestamp",
+    "first_formal_origin_timestamp",
+    "last_formal_origin_timestamp",
+    "formal_rows",
+    "complete_blocks",
+    "trailing_partial_rows",
+    "formal_calendar_span_days",
+    "formal_eligibility_rate"
+  ],
+  "primary_rule": "classification is PASS iff Track A complete_blocks >= 12; otherwise FAIL, unless data-integrity preflight is invalid in which case DATA_INTEGRITY_INCONCLUSIVE applies before measurement",
+  "track_authority": {
+    "A": "PRIMARY_CALENDAR_EQUIVALENT",
+    "B": "DIAGNOSTIC_RAW_ROW_MULTIPLICATION_ONLY",
+    "C": "DIAGNOSTIC_HYBRID_EARLIER_BURNIN_ONLY"
+  },
+  "authority_invariants": {
+    "development_not_independent_oos": true,
+    "winner_labels_executed": false,
+    "predictive_model_executed": false,
+    "calibration_model_executed": false,
+    "predictive_metrics_executed": false,
+    "portfolio_economics_executed": false,
+    "0048_rerun_or_rescue_executed": false,
+    "canonical_strategy_changed": false,
+    "phase6_changed": false,
+    "production_authorized": false,
+    "signature_authorized": false,
+    "order_submission_authorized": false,
+    "same_id_rerun_allowed": false,
+    "same_id_retuning_allowed": false,
+    "same_id_rescue_allowed": false
+  }
+}
