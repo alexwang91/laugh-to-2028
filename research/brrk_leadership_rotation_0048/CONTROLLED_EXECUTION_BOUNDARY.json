@@ -1,0 +1,42 @@
+{
+  "research_id": "BRRK-LEADERSHIP-ROTATION-0048",
+  "stage": "CONTROLLED_EXECUTION_BOUNDARY_ZERO_RESULT",
+  "base_main_sha": "a60696d5fe23e5dd95c40f868ccca199f36a3c20",
+  "implementation_boundary_path": "research/brrk_leadership_rotation_0048/IMPLEMENTATION_BOUNDARY.json",
+  "run_interface_path": "research/brrk_leadership_rotation_0048/RUN_INTERFACE.json",
+  "result_schema_path": "research/brrk_leadership_rotation_0048/RESULT_SCHEMA.json",
+  "runner_path": "research/brrk_leadership_rotation_0048/run_once.py",
+  "actual_variants_evaluated": 0,
+  "result_status": "PREREGISTERED_NOT_RUN",
+  "historical_scientific_execution_started": false,
+  "historical_scientific_execution_authorized_before_merge_and_green_ci": false,
+  "runtime_artifacts_required_absent_pre_execution": [
+    "research/brrk_leadership_rotation_0048/PRIMARY_RESULT.json",
+    "research/brrk_leadership_rotation_0048/RESULT_SUMMARY.json",
+    "research/brrk_leadership_rotation_0048/EXECUTION.json",
+    "research/brrk_leadership_rotation_0048/RUN_ATTEMPT.marker",
+    "research/brrk_leadership_rotation_0048/RUN_ONCE.marker",
+    "research/brrk_leadership_rotation_0048/RESULT.md"
+  ],
+  "controlled_execution_invariants": [
+    "No market network fetch or data re-preparation exists in the 0048 controlled runner.",
+    "The only market input is the immutable 0047 evidence wrapper with payload SHA256 d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193.",
+    "Execution is refused unless git HEAD exactly equals an explicitly supplied post-merge controlled-run SHA.",
+    "Execution is refused unless preregistration, dataset declaration, implementation boundary, engine and market-evidence git blobs match their frozen identities.",
+    "Preflight is repeatable and cannot fit the registered historical model or create result authority.",
+    "Evaluate creates RUN_ATTEMPT.marker before registered-history model evaluation and no second historical model computation is permitted after that marker exists.",
+    "Primary result, result summary and execution records are create-only; RUN_ONCE.marker is written last and commits a valid completed scientific execution.",
+    "If the process stops after a complete result-summary-execution bundle but before RUN_ONCE.marker, recover-marker may only validate hashes and create the final marker without recomputation.",
+    "A partial or hash-inconsistent interrupted bundle has no automatic same-ID retry path.",
+    "No portfolio allocation, CAGR, MDD, Beta-to-BTC, BTC-to-cash, canonical, Phase-6, signing, order-submission or production action exists in this stage."
+  ],
+  "next_step_if_green": "MERGE_THIS_ZERO_RESULT_BOUNDARY; THEN ON A SEPARATE EXACT-HEAD EXECUTION STEP RUN PREFLIGHT AND EXACTLY_ONE_EVALUATE. DO NOT EXECUTE HISTORICAL 0048 ON THIS BOUNDARY PR.",
+  "same_id_rerun_allowed": false,
+  "same_id_retuning_allowed": false,
+  "same_id_rescue_allowed": false,
+  "canonical_brrk_changed": false,
+  "phase6_changed": false,
+  "production_authorized": false,
+  "signature_authorized": false,
+  "order_submission_authorized": false
+}
