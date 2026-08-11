@@ -1,0 +1,45 @@
+name: 0054 controlled-run fault contract
+
+on:
+  push:
+    branches:
+      - research/brrk-leadership-4h-readiness-0054-controlled-run
+
+permissions:
+  contents: read
+
+jobs:
+  controlled-contract:
+    if: contains(github.event.head_commit.message, 'trigger 0054 controlled contract')
+    runs-on: ubuntu-24.04
+    env:
+      PYTHONHASHSEED: '0'
+      OMP_NUM_THREADS: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      NUMEXPR_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: execution/plan-b-bot/requirements-dev.txt
+      - name: Install pinned runtime
+        run: pip install -r execution/plan-b-bot/requirements-dev.txt
+      - name: Compile controlled runner
+        run: python -m py_compile research/brrk_leadership_4h_native_readiness_0054/run_once.py research/brrk_leadership_4h_native_readiness_0054/test_run_interface.py
+      - name: Run implementation and controlled-run synthetic contracts
+        run: python -m unittest research.brrk_leadership_4h_native_readiness_0054.test_engine research.brrk_leadership_4h_native_readiness_0054.test_run_interface
+      - name: Enforce controlled boundary remains zero-result
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('research/brrk_leadership_4h_native_readiness_0054')
+          forbidden=['RUN_ATTEMPT.marker','METHOD_RESULT.json','EXECUTION.json','RUN_ONCE.marker','PREDICTIVE_RESULT.json','PORTFOLIO_RESULT.json','WINNER_LABELS.json']
+          hit=[x for x in forbidden if (p/x).exists()]
+          if hit: raise SystemExit(f'controlled boundary contains runtime result artifacts: {hit}')
+          print('CONTROLLED_BOUNDARY_ZERO_RESULT_PASS')
+          print('REAL_0054_MEASUREMENT_NOT_EXECUTED=true')
+          print('REAL_0053_PAYLOAD_NOT_LOADED_BY_CONTROLLED_TESTS=true')
+          PY
