@@ -1,0 +1,269 @@
+name: 0053 first frozen Binance 4h capture
+
+on:
+  push:
+    branches:
+      - research/brrk-leadership-intraday-support-0053-capture
+
+permissions:
+  contents: write
+
+jobs:
+  capture:
+    if: contains(github.event.head_commit.message, 'trigger 0053 first 4h capture')
+    runs-on: ubuntu-24.04
+    env:
+      PYTHONHASHSEED: '0'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/brrk-leadership-intraday-support-0053-capture
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Capture and hash-freeze first complete valid 4h payload
+        run: |
+          python - <<'PY'
+          from __future__ import annotations
+          import datetime as dt
+          import hashlib
+          import json
+          import math
+          import time
+          import urllib.parse
+          import urllib.request
+          from pathlib import Path
+
+          RID = 'BRRK-LEADERSHIP-INTRADAY-SUPPORT-0053'
+          SLICE = 'BRRK-LEADERSHIP-INTRADAY-SUPPORT-0053-BINANCE-4H-HIST-V1'
+          SYMBOLS = ['BTCUSDT','ETHUSDT','SOLUSDT']
+          INTERVAL_MS = 14_400_000
+          START = dt.datetime(2020,8,11,0,0,tzinfo=dt.timezone.utc)
+          END_EXCL = dt.datetime(2026,8,3,0,0,tzinfo=dt.timezone.utc)
+          START_MS = int(START.timestamp()*1000)
+          END_EXCL_MS = int(END_EXCL.timestamp()*1000)
+          END_INCL_MS = END_EXCL_MS - 1
+          API = 'https://api.binance.com/api/v3/klines'
+          HERE = Path('research/brrk_leadership_intraday_support_0053')
+          PAYLOAD_PATH = HERE/'MARKET_4H_PAYLOAD.json'
+          EVIDENCE_PATH = HERE/'MARKET_4H_EVIDENCE.json'
+          DECL_PATH = HERE/'DATASET_DECLARATION.json'
+
+          for p in [PAYLOAD_PATH,EVIDENCE_PATH,DECL_PATH]:
+              if p.exists():
+                  raise SystemExit(f'create-only capture violation: {p} already exists')
+
+          def iso_ms(ms:int)->str:
+              return dt.datetime.fromtimestamp(ms/1000, tz=dt.timezone.utc).isoformat().replace('+00:00','Z')
+
+          def request_page(symbol:str, start_ms:int):
+              params = urllib.parse.urlencode({
+                  'symbol': symbol,
+                  'interval': '4h',
+                  'startTime': start_ms,
+                  'endTime': END_INCL_MS,
+                  'limit': 1000,
+              })
+              url = API + '?' + params
+              last = None
+              for attempt in range(6):
+                  try:
+                      req = urllib.request.Request(url, headers={'User-Agent':'BRRK-0053-data-capture/1.0'})
+                      with urllib.request.urlopen(req, timeout=30) as r:
+                          body = r.read()
+                      data = json.loads(body)
+                      if not isinstance(data,list):
+                          raise RuntimeError(f'non-list Binance response: {data!r}')
+                      return data
+                  except Exception as exc:
+                      last = exc
+                      if attempt == 5:
+                          break
+                      time.sleep(min(2**attempt, 16))
+              raise RuntimeError(f'Binance capture failed for {symbol} start={start_ms}: {last!r}')
+
+          def finite_num(x):
+              try:
+                  v=float(x)
+                  return math.isfinite(v),v
+              except Exception:
+                  return False,float('nan')
+
+          all_rows = {}
+          per_symbol = {}
+          for symbol in SYMBOLS:
+              rows=[]
+              cursor=START_MS
+              while cursor < END_EXCL_MS:
+                  page=request_page(symbol,cursor)
+                  if not page:
+                      break
+                  page=[r for r in page if START_MS <= int(r[0]) < END_EXCL_MS]
+                  if not page:
+                      break
+                  rows.extend(page)
+                  nxt=int(page[-1][0])+INTERVAL_MS
+                  if nxt <= cursor:
+                      raise RuntimeError(f'non-advancing pagination {symbol}')
+                  cursor=nxt
+                  if len(page)<1000 and cursor>=END_EXCL_MS:
+                      break
+                  time.sleep(0.05)
+
+              if not rows:
+                  raise RuntimeError(f'no rows captured for {symbol}')
+              opens=[int(r[0]) for r in rows]
+              if opens != sorted(opens) or len(opens) != len(set(opens)):
+                  raise RuntimeError(f'non-monotone or duplicate bars for {symbol}')
+              for i,ot in enumerate(opens):
+                  if ot % INTERVAL_MS != 0:
+                      raise RuntimeError(f'UTC 4h alignment failure {symbol} {ot}')
+                  if i and ot-opens[i-1] != INTERVAL_MS:
+                      raise RuntimeError(f'internal missing 4h bar {symbol}: {opens[i-1]}->{ot}')
+                  r=rows[i]
+                  if len(r) < 12:
+                      raise RuntimeError(f'row field count <12 {symbol} {ot}')
+                  for j in [1,2,3,4]:
+                      ok,v=finite_num(r[j])
+                      if not ok or v<=0: raise RuntimeError(f'invalid OHLC {symbol} {ot} field {j}')
+                  for j in [5,7,9,10]:
+                      ok,v=finite_num(r[j])
+                      if not ok or v<0: raise RuntimeError(f'invalid volume {symbol} {ot} field {j}')
+                  if int(r[8]) < 0: raise RuntimeError(f'invalid trades {symbol} {ot}')
+              all_rows[symbol]=rows
+              per_symbol[symbol]={
+                  'raw_bar_count':len(rows),
+                  'first_open_time':iso_ms(opens[0]),
+                  'last_open_time':iso_ms(opens[-1]),
+                  'first_open_ms':opens[0],
+                  'last_open_ms':opens[-1],
+              }
+
+          sets=[set(int(r[0]) for r in all_rows[s]) for s in SYMBOLS]
+          common=sorted(set.intersection(*sets))
+          if not common:
+              raise RuntimeError('empty common BTC/ETH/SOL 4h index')
+          for i in range(1,len(common)):
+              if common[i]-common[i-1] != INTERVAL_MS:
+                  raise RuntimeError(f'common index internal gap {common[i-1]}->{common[i]}')
+          common_start,common_end=common[0],common[-1]
+
+          payload={
+              'interval':'4h',
+              'start_ms':START_MS,
+              'end_exclusive_ms':END_EXCL_MS,
+              'symbols':{s:all_rows[s] for s in SYMBOLS},
+          }
+          raw=json.dumps(payload,sort_keys=True,separators=(',',':'),ensure_ascii=False).encode('utf-8')
+          sha=hashlib.sha256(raw).hexdigest()
+          PAYLOAD_PATH.write_bytes(raw)
+          now=dt.datetime.now(dt.timezone.utc).isoformat().replace('+00:00','Z')
+          stamp=now.replace('-','').replace(':','').replace('.','').replace('Z','Z')
+          exposure=f'BRRK-LEADERSHIP-INTRADAY-SUPPORT-0053-RAW-DATA-{stamp}'
+
+          evidence={
+              'schema_version':1,
+              'evidence_id':'BRRK-LEADERSHIP-INTRADAY-SUPPORT-0053-FIRST-4H-CAPTURE-EVIDENCE-V1',
+              'research_id':RID,
+              'evidence_type':'DATASET_PROVENANCE_AND_EXPOSURE_ONLY',
+              'research_result_status':'NO_SUPPORT_MEASUREMENT_NO_PREDICTIVE_RESULT_CAPTURE_METADATA_ONLY',
+              'retrieved_at':now,
+              'source':{'endpoint':API,'venue':'Binance Spot','interval':'4h','symbols':SYMBOLS},
+              'requested_window':{'start_inclusive':'2020-08-11T00:00:00Z','end_inclusive':'2026-08-02T20:00:00Z','end_exclusive':'2026-08-03T00:00:00Z'},
+              'raw_identity':{'sha256':sha,'size_bytes':len(raw),'path':str(PAYLOAD_PATH),'canonical_json':'sort_keys=true,separators=(comma,colon),UTF-8'},
+              'per_symbol':per_symbol,
+              'common_coverage':{'start':iso_ms(common_start),'end':iso_ms(common_end),'bar_count':len(common),'interval_ms':INTERVAL_MS,'contiguous':True},
+              'integrity':{'strictly_ascending':True,'no_duplicates':True,'internal_4h_gaps':0,'utc_4h_aligned':True,'finite_positive_ohlc':True,'nonnegative_volume_quote_volume_trades':True,'no_synthetic_fill':True,'no_alternate_venue':True},
+              'explicit_non_claims':['NO_TRACK_A_B_C_SUPPORT_COUNTS','NO_ETH_SOL_WINNER_LABELS','NO_MODEL_FIT','NO_CALIBRATION_FIT','NO_NLL_BRIER_AUC','NO_PORTFOLIO_ECONOMICS','NO_0048_RERUN'],
+          }
+          EVIDENCE_PATH.write_text(json.dumps(evidence,indent=2)+'\n')
+
+          slice_obj={
+              'dataset_slice_id':SLICE,
+              'dataset_id':'BINANCE-SPOT-BTC-ETH-SOL-UTC-4H-OHLCV-TRADES',
+              'dataset_version':f'first-capture-sha256-{sha}',
+              'source':'BINANCE_SPOT_API_V3_KLINES_BTCUSDT_ETHUSDT_SOLUSDT_4H',
+              'assets':['BTC','ETH','SOL'],
+              'fields':['4h_open','4h_high','4h_low','4h_close','4h_volume','4h_quote_volume','4h_trades'],
+              'resolution':'4H',
+              'start':iso_ms(common_start),
+              'end':iso_ms(common_end),
+              'transformation':'RAW_CANONICAL_BINANCE_4H_PAYLOAD_HASH_FROZEN_THEN_COMMON_CONTIGUOUS_BTC_ETH_SOL_INDEX; SUPPORT_FUNNEL_NOT_COMPUTED_DURING_CAPTURE',
+              'pit_publication_semantics':'RESEARCHER_EXPOSED_DEVELOPMENT_HISTORY; a 4h bar is usable only after its Binance close_time; 0053 capture releases raw history only and computes no predictive label or support classification; no bar after 2026-08-02T20:00:00Z enters the frozen payload.',
+              'data_budget':'DEVELOPMENT',
+              'contamination_state':'RESEARCHER_EXPOSED_HISTORY',
+              'consumed':True,
+              'researcher_exposed_history':True,
+              'provenance_status':'FACT',
+              'evidence_refs':[str(EVIDENCE_PATH),str(PAYLOAD_PATH)],
+          }
+          declaration={
+              'research_id':RID,
+              'dataset_slice':slice_obj,
+              'market_payload_sha256':sha,
+              'capture_status':'FIRST_COMPLETE_VALID_CAPTURE_FROZEN',
+              'support_measurement_executed':False,
+              'predictive_model_executed':False,
+          }
+          DECL_PATH.write_text(json.dumps(declaration,indent=2)+'\n')
+
+          dreg_path=Path('config/dataset_exposure_registry.json')
+          dreg=json.loads(dreg_path.read_text())
+          if any(x.get('dataset_slice_id')==SLICE for x in dreg['dataset_slices']):
+              raise RuntimeError('0053 dataset slice already registered')
+          dreg['dataset_slices'].append(slice_obj)
+          dreg['exposure_events'].append({
+              'exposure_id':exposure,
+              'research_id':RID,
+              'dataset_slice_ref':SLICE,
+              'timestamp':now,
+              'release_type':'RAW_DATA',
+              'result_informed_followup':False,
+              'provenance_status':'FACT',
+              'evidence_ref':str(EVIDENCE_PATH),
+          })
+          dreg_path.write_text(json.dumps(dreg,indent=2)+'\n')
+
+          rreg_path=Path('config/research_registry.json')
+          rreg=json.loads(rreg_path.read_text())
+          rows=[x for x in rreg['records'] if x.get('research_id')==RID]
+          if len(rows)!=1: raise RuntimeError(f'expected one 0053 research record got {len(rows)}')
+          rr=rows[0]
+          rr['development_dataset_refs']=[SLICE]
+          rr['result_status']='PREREGISTERED_DATA_CAPTURED_NOT_MEASURED'
+          rpc=rr['research_process_complexity']
+          rpc['validation_exposure_event_refs']=[exposure]
+          rr.setdefault('notes',[]).append(f'First complete valid 4h payload captured and frozen before support measurement; market SHA256 {sha}.')
+          rreg_path.write_text(json.dumps(rreg,indent=2)+'\n')
+
+          # Advance prereg contract tests to post-capture registry semantics without altering the frozen prereg JSON.
+          test_path=HERE/'test_preregistration_contract.py'
+          test_path.write_text('''import json\nfrom pathlib import Path\nimport unittest\n\nHERE = Path(__file__).resolve().parent\nROOT = HERE.parents[1]\nSLICE = "BRRK-LEADERSHIP-INTRADAY-SUPPORT-0053-BINANCE-4H-HIST-V1"\n\nclass Test0053Preregistration(unittest.TestCase):\n    def test_frozen_prereg_remains_pre_result(self):\n        p=json.loads((HERE/"PREREGISTRATION.json").read_text())\n        self.assertEqual(p["objective_type"],"DATA_QUALITY")\n        self.assertEqual(p["actual_variants_evaluated"],0)\n        self.assertEqual(p["development_dataset_refs"],[])\n        self.assertEqual(p["result_status"],"PREREGISTERED_DATA_NOT_CAPTURED")\n    def test_registry_records_only_pre_authorized_capture_state(self):\n        p=json.loads((HERE/"PREREGISTRATION.json").read_text())\n        reg=json.loads((ROOT/"config/research_registry.json").read_text())\n        row=[r for r in reg["records"] if r.get("research_id")==p["research_id"]][0]\n        self.assertEqual(row["development_dataset_refs"],[SLICE])\n        self.assertEqual(row["result_status"],"PREREGISTERED_DATA_CAPTURED_NOT_MEASURED")\n        self.assertEqual(row["actual_variants_evaluated"],0)\n        for k,v in p.items():\n            if k in {"development_dataset_refs","result_status","research_process_complexity","notes"}: continue\n            self.assertEqual(row[k],v,k)\n        for k,v in p["research_process_complexity"].items():\n            if k=="validation_exposure_event_refs": continue\n            self.assertEqual(row["research_process_complexity"][k],v,k)\n    def test_capture_registered_and_hash_bound(self):\n        d=json.loads((HERE/"DATASET_DECLARATION.json").read_text())\n        e=json.loads((HERE/"MARKET_4H_EVIDENCE.json").read_text())\n        self.assertEqual(d["capture_status"],"FIRST_COMPLETE_VALID_CAPTURE_FROZEN")\n        self.assertEqual(d["market_payload_sha256"],e["raw_identity"]["sha256"])\n        self.assertFalse(d["support_measurement_executed"])\n        self.assertFalse(d["predictive_model_executed"])\n    def test_no_support_or_predictive_result_exists(self):\n        for name in ["PRIMARY_RESULT.json","RESULT_SUMMARY.json","EXECUTION.json","RUN_ONCE.marker","SUPPORT_RESULT.json"]:\n            self.assertFalse((HERE/name).exists(),name)\n\nif __name__ == "__main__": unittest.main()\n''')
+
+          cs_path=Path('docs/CURRENT_STATE.md')
+          cs=cs_path.read_text()
+          cs=cs.replace('BRRK intraday support 0053             PREREGISTERED / DATA NOT CAPTURED / NO MODEL FIT','BRRK intraday support 0053             PREREGISTERED / DATA CAPTURED / NOT MEASURED')
+          cs=cs.replace('4h data retrieval                      CONTRACT FROZEN / NOT STARTED','4h data retrieval                      FIRST COMPLETE VALID CAPTURE / HASH FROZEN')
+          cs=cs.replace('4h payload SHA256                      NOT FROZEN',f'4h payload SHA256                      {sha}')
+          # If prior snapshot does not contain a dedicated SHA line, add one next to retrieval state.
+          if sha not in cs:
+              cs=cs.replace('4h data retrieval                      FIRST COMPLETE VALID CAPTURE / HASH FROZEN', '4h data retrieval                      FIRST COMPLETE VALID CAPTURE / HASH FROZEN\n4h payload SHA256                      '+sha)
+          cs_path.write_text(cs)
+
+          print('CAPTURE_COMPLETE')
+          print('market_payload_sha256='+sha)
+          print('common_start='+iso_ms(common_start))
+          print('common_end='+iso_ms(common_end))
+          print('common_bar_count='+str(len(common)))
+          for s in SYMBOLS: print(s+'_raw_bar_count='+str(per_symbol[s]['raw_bar_count']))
+          print('SUPPORT_FUNNEL_NOT_COMPUTED=true')
+          PY
+
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add research/brrk_leadership_intraday_support_0053 config/research_registry.json config/dataset_exposure_registry.json docs/CURRENT_STATE.md
+          git commit -m 'Data capture [DRIFT_0]: freeze first 0053 Binance 4h payload and registration'
+          git rm .github/workflows/_tmp_0053_first_4h_capture.yml .0053_capture_trigger
+          git commit -m 'Governance tooling: remove temporary 0053 capture workflow'
+          git push origin HEAD:research/brrk-leadership-intraday-support-0053-capture
