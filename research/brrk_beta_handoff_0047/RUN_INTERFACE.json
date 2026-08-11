@@ -1,0 +1,181 @@
+{
+  "research_id": "BRRK-BETA-HANDOFF-EVENT-STUDY-0047",
+  "status": "IMPLEMENTED_PRE_RESULT_NOT_RUN",
+  "frozen_design_merge_commit": "398b7ec3f78f602461787b1b45e8d5041729e126",
+  "frozen_prereg_merge_commit": "80c0d3cb7339012cac74e20563e07c7139ba3031",
+  "frozen_history_start_request": "2020-08-01",
+  "frozen_history_end": "2026-08-02",
+  "candidate_count": 1,
+  "actual_variants_evaluated": 0,
+  "unique_execution_policy": "PREPARE_CREATE_ONLY_MARKET_EVIDENCE_THEN_EXACTLY_ONCE_EVALUATE_FROZEN_ANATOMY_AFTER_FULLY_GREEN_PRE_RESULT_IMPLEMENTATION_SHA",
+  "commands": {
+    "prepare_data": "python -m research.brrk_beta_handoff_0047.run_once prepare-data --output <MARKET_EVIDENCE.json>",
+    "evaluate": "python -m research.brrk_beta_handoff_0047.run_once evaluate --market <MARKET_EVIDENCE.json> --output <PRIMARY_RESULT.json> --execution <EXECUTION.json> --marker <RUN_ONCE.marker> --expected-head-sha <CONTROLLED_RUN_HEAD_SHA>"
+  },
+  "frozen_universe": [
+    "BTC",
+    "ETH",
+    "SOL"
+  ],
+  "frozen_causal_trend": {
+    "horizons": [
+      20,
+      60,
+      120,
+      240
+    ],
+    "fast_weights": [
+      0.15,
+      0.25,
+      0.3,
+      0.3
+    ],
+    "slow_weights": [
+      0.1,
+      0.2,
+      0.3,
+      0.4
+    ],
+    "BTC_positive_episode": "MAXIMAL_CONTIGUOUS_COMMON_DAILY_SESSIONS_WITH_BTC_FAST_TREND_GTE_0",
+    "relative_axes": [
+      "ETH/BTC",
+      "SOL/BTC"
+    ],
+    "relative_acceleration": "REL_FAST_MINUS_REL_SLOW",
+    "beta_breadth": "MEAN_OF_ETH_SOL_INDICATORS_ABS_FAST_GT_0_AND_REL_FAST_GT_0",
+    "participation": "LOG1P_DAILY_TRADE_COUNT_MINUS_TRAILING_60_SESSION_MEDIAN",
+    "state_age": "ONE_BASED_COMMON_DAILY_SESSIONS_SINCE_BTC_POSITIVE_EPISODE_START"
+  },
+  "frozen_realized_target": {
+    "forward_horizons": [
+      20,
+      60
+    ],
+    "BTC_must_be_positive_at_both_horizons": true,
+    "same_unique_beta_must_beat_BTC_and_other_beta_at_both_horizons": true,
+    "unavailable_t_plus_60": "RIGHT_CENSORED_NOT_NEGATIVE",
+    "primary_event": "EARLIEST_DURABLE_HANDOFF_PER_BTC_POSITIVE_EPISODE",
+    "later_ETH_SOL_switches": "SECONDARY_NON_GATING_ONLY"
+  },
+  "frozen_transmission": {
+    "cross_correlation_lags": [
+      -14,
+      -13,
+      -12,
+      -11,
+      -10,
+      -9,
+      -8,
+      -7,
+      -6,
+      -5,
+      -4,
+      -3,
+      -2,
+      -1,
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14
+    ],
+    "cross_correlation_sign_convention": "CORR_BTC_T_ALT_T_PLUS_LAG; POSITIVE_LAG_MEANS_BTC_LEADS",
+    "VAR": "POOLED_EPISODE_PRESERVING_VAR7_WITH_EPISODE_FIXED_INTERCEPTS",
+    "VAR_implementation": "WITHIN_EPISODE_DEMEANING_ALGEBRAICALLY_EQUIVALENT_TO_EPISODE_DUMMY_INTERCEPT_OLS",
+    "lag_order_search": false,
+    "Granger_Wald": "ALL_SIX_DIRECTED_PAIRS_USING_EPISODE_CLUSTER_CR0_WHERE_NONSINGULAR; ALWAYS_REPORT_SEVEN_LAG_COEFFICIENTS; DESCRIPTIVE_NON_GATING",
+    "IRF": "GENERALIZED_ONE_RESIDUAL_SD_BTC_SHOCK_HORIZONS_0_TO_14",
+    "VAR_instability": "REPORT_AS_NEGATIVE_DESCRIPTIVE_EVIDENCE_NO_LAG_RESCUE"
+  },
+  "frozen_uncertainty": {
+    "resampling_unit": "COMPLETE_BTC_POSITIVE_EPISODE",
+    "replicates": 10000,
+    "seed": 470047,
+    "daily_IID_promotion_claims": false,
+    "IRF_episode_bootstrap_required": true
+  },
+  "frozen_oracle": {
+    "role": "HINDSIGHT_OPPORTUNITY_BOUND_NOT_TRADABLE_NOT_OOS_NON_GATING",
+    "start": "ALREADY_100_PERCENT_BTC_AT_EPISODE_START",
+    "actions": [
+      "NO_SWITCH",
+      "ONE_SWITCH_BTC_TO_ETH",
+      "ONE_SWITCH_BTC_TO_SOL"
+    ],
+    "switch_timing_implementation": "SWITCH_AT_CANDIDATE_DATE_CLOSE; BTC_HELD_FROM_EPISODE_START_CLOSE_TO_SWITCH_CLOSE; BETA_HELD_SWITCH_CLOSE_TO_EPISODE_END_CLOSE",
+    "cost_bps_per_absolute_weight_change": 5.0,
+    "full_switch_L1": 2.0,
+    "full_switch_cost_bps": 10.0,
+    "tie_order": [
+      "NO_SWITCH",
+      "ETH",
+      "SOL"
+    ],
+    "may_select_science_or_allocation": false
+  },
+  "pre_result_implementation_clarifications": {
+    "common_history": "REQUEST_ALL_ASSETS_FROM_2020-08-01; COMMON_START_IS_LATEST_FIRST_AVAILABLE_DATE_ACROSS_BTC_ETH_SOL; EVERY_CALENDAR_DAY_FROM_COMMON_START_THROUGH_2026-08-02_MUST_EXIST_FOR_ALL_THREE_ASSETS_OR_FAIL_CLOSED",
+    "episode_first_return_for_transmission": "NAN_BECAUSE_ITS_PREVIOUS_DAILY_CLOSE_LIES_OUTSIDE_THE_SAME_BTC_POSITIVE_EPISODE",
+    "cross_episode_pairs": "FORBIDDEN",
+    "VAR_short_episodes": "EPISODES_WITH_NO_COMPLETE_T_PLUS_7_WITHIN_EPISODE_RETURN_ROW_CONTRIBUTE_NO_VAR_ROWS_BUT_REMAIN_IN_EPISODE_LEVEL_0047_COUNTS",
+    "VAR_rank_or_residual_df_failure": "REPORT_INSUFFICIENT_DIAGNOSTIC_STATUS; DOES_NOT_RESCUE_OR_OVERRIDE_PRIMARY_RECURRENCE_CLASSIFICATION",
+    "Granger_cluster_covariance": "CR0_WITHIN_EPISODE_FIXED_EFFECTS; EVERY_DIRECTION_ALWAYS_REPORTS_SEVEN_POINT_LAG_COEFFICIENTS; COMPLETE_EPISODE_BOOTSTRAP_REPORTS_2.5_50_97.5_COEFFICIENT_UNCERTAINTY; SINGULAR_SUBCOVARIANCE_RETURNS_NULL_P_VALUE_NOT_ALTERNATE_ESTIMATOR",
+    "event_time_grid": "REPORT_AVAILABLE_COMMON_DATES_MINUS60_TO_PLUS20_AND_INCLUDE_SAME_EPISODE_FLAG; DO_NOT_INVENT_MISSING_DATES",
+    "bootstrap_percentiles": "2.5_50_97.5_DESCRIPTIVE_ONLY",
+    "oracle_ties": "STRICT_IMPROVEMENT_ONLY_SO_NO_SWITCH_WINS_EXACT_TIES_THEN_ETH_PRECEDES_SOL",
+    "market_evidence": "RAW_COMMON_MARKET_FRAME_CANONICALLY_JSON_SERIALIZED_AND_SHA256_BOUND_BEFORE_ANY_0047_RESULT_METRIC_IS_EMITTED"
+  },
+  "stage_gates": {
+    "target_eligible_episode_count_min": 5,
+    "primary_handoff_episode_count_min": 3,
+    "episode_level_durable_handoff_prevalence_min": 0.5,
+    "ETH_primary_cause_episode_count_min": 1,
+    "SOL_primary_cause_episode_count_min": 1
+  },
+  "pre_result_green_sha": null,
+  "market_evidence_path": "NOT_CREATED_PRE_RESULT",
+  "result_path": "NOT_CREATED_PRE_RESULT",
+  "execution_path": "NOT_CREATED_PRE_RESULT",
+  "run_once_marker": "NOT_CREATED_PRE_RESULT",
+  "same_id_retuning_allowed": false,
+  "same_id_rescue_model_allowed": false,
+  "same_id_result_rerun_allowed": false,
+  "forbidden_after_any_0047_output": [
+    "universe expansion including BNB or other alts",
+    "BTC-positive episode definition or trend horizon/weight change",
+    "20/60 durable-target horizon or same-cause condition change",
+    "breadth, participation, relative-acceleration or state-age definition change",
+    "cross-correlation lag range/sign convention or VAR lag-order search",
+    "alternate Granger estimator selected because of output",
+    "IRF shock or horizon change",
+    "episode bootstrap unit, replicate count or seed change",
+    "oracle-informed label, feature, model or allocation selection",
+    "BOCPD, HMM, hazard, classifier, boosting or neural-net rescue",
+    "fixed N-day switch-delay search",
+    "40/60, 20/80, 0/100 or any portfolio allocation test",
+    "CAGR, Sharpe, Calmar, MDD, turnover or other portfolio economics",
+    "data after 2026-08-02",
+    "canonical BRRK, winner, exhaustion, Phase-6 or production/security changes"
+  ],
+  "authority": {
+    "historical_result_released": false,
+    "duration_aware_handoff_model_fitted": false,
+    "portfolio_allocation_tested": false,
+    "portfolio_economics_executed": false,
+    "canonical_strategy_changed": false,
+    "phase6_observation_changed": false,
+    "production_authorized": false,
+    "signature_authorized": false,
+    "order_submission_authorized": false
+  }
+}

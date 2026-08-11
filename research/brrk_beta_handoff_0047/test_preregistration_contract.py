@@ -26,7 +26,7 @@ def test_design_boundary_exists_and_formal_prereg_matches_central_record_exactly
     assert DESIGN.exists()
     design_text = DESIGN.read_text(encoding="utf-8")
     assert "DESIGN FROZEN / NOT PREREGISTERED / NOT RUN" in design_text
-    assert "398b7ec3f78f602461787b1b45e8d5041729e126" not in design_text  # design predates merge SHA
+    assert "398b7ec3f78f602461787b1b45e8d5041729e126" not in design_text
 
     prereg = _load(HERE / "PREREGISTRATION.json")
     assert prereg == _registry_record()
@@ -113,19 +113,31 @@ def test_oracle_is_firewalled_and_not_a_gate():
     assert "No use of the hindsight one-switch oracle to choose labels" in text
 
 
-def test_preregistration_stage_has_no_runner_model_or_result_files():
+def test_pre_result_implementation_allows_runner_but_forbids_result_and_model_files():
+    required = {"run_once.py", "engine.py", "RUN_INTERFACE.json"}
+    existing = {p.name for p in HERE.iterdir() if p.is_file()}
+    assert required <= existing
     forbidden = {
-        "run_once.py",
-        "RUN_INTERFACE.json",
         "PRIMARY_RESULT.json",
         "EXECUTION.json",
         "RUN_ONCE.marker",
         "RESULT.md",
         "handoff_model.py",
         "hazard_model.py",
+        "bocpd.py",
+        "portfolio.py",
     }
-    existing = {p.name for p in HERE.iterdir() if p.is_file()}
     assert forbidden.isdisjoint(existing)
+    interface = _load(HERE / "RUN_INTERFACE.json")
+    assert interface["status"] == "IMPLEMENTED_PRE_RESULT_NOT_RUN"
+    assert interface["actual_variants_evaluated"] == 0
+    assert interface["frozen_design_merge_commit"] == "398b7ec3f78f602461787b1b45e8d5041729e126"
+    assert interface["frozen_prereg_merge_commit"] == "80c0d3cb7339012cac74e20563e07c7139ba3031"
+    assert interface["authority"]["historical_result_released"] is False
+    assert interface["authority"]["duration_aware_handoff_model_fitted"] is False
+    assert interface["authority"]["portfolio_allocation_tested"] is False
+    assert interface["authority"]["portfolio_economics_executed"] is False
+    assert interface["authority"]["production_authorized"] is False
 
 
 def test_portfolio_translation_and_authority_remain_forbidden():

@@ -24,8 +24,8 @@ class TestBrrkBetaHandoff0047PreregContract(unittest.TestCase):
     def test_oracle_firewall(self):
         contract.test_oracle_is_firewalled_and_not_a_gate()
 
-    def test_no_runner_model_or_result(self):
-        contract.test_preregistration_stage_has_no_runner_model_or_result_files()
+    def test_pre_result_implementation_lifecycle(self):
+        contract.test_pre_result_implementation_allows_runner_but_forbids_result_and_model_files()
 
     def test_no_portfolio_or_authority(self):
         contract.test_portfolio_translation_and_authority_remain_forbidden()
