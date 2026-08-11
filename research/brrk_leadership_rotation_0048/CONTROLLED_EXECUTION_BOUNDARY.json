@@ -10,6 +10,19 @@
   "result_status": "PREREGISTERED_NOT_RUN",
   "historical_scientific_execution_started": false,
   "historical_scientific_execution_authorized_before_merge_and_green_ci": false,
+  "synthetic_controlled_boundary_attestation": {
+    "workflow_name": "0048 controlled-boundary synthetic contract",
+    "workflow_run_id": 31503915414,
+    "tests_run": 27,
+    "tests_passed": 27,
+    "runner_py_compile": "PASS",
+    "zero_result_artifact_check": "PASS",
+    "attempt_before_computation_fault_injection": "PASS",
+    "marker_only_recovery_without_model_recomputation": "PASS",
+    "registered_historical_0048_model_evaluation_performed": false,
+    "scientific_result_authority": false,
+    "temporary_workflow_persisted_in_final_diff": false
+  },
   "runtime_artifacts_required_absent_pre_execution": [
     "research/brrk_leadership_rotation_0048/PRIMARY_RESULT.json",
     "research/brrk_leadership_rotation_0048/RESULT_SUMMARY.json",
