@@ -2,8 +2,8 @@
 
 Last updated: **2026-08-11**  
 Authoritative repository: `alexwang91/laugh-to-2028`  
-Current `main` research merge: **`4de5b8b97075d5614b2dad121b6eb0d93b4def24`**  
-Current research branch: **`research/brrk-leadership-intraday-support-0053-result`**  
+Current `main` research merge: **`dbd7b97b3dcb55b157ee8d524c5670fc4f942abb`**  
+Current research branch: **`research/brrk-leadership-4h-readiness-0054-design`**  
 Status of this document: **AUTHORITATIVE OPERATING SNAPSHOT**
 
 > GitHub `main`, immutable research artifacts and machine registries remain the sources of truth. This file is the compact human handoff, not a substitute for preregistration, execution, evidence, recovery or closeout artifacts.
@@ -37,6 +37,7 @@ BRRK exhaustion pulse 0046            FAIL_NO_FUTURE_ONLY_PULSE_VALIDATION_ELIGI
 BRRK Beta handoff event study 0047    FAIL_NO_RECURRENT_DURABLE_HANDOFF_STRUCTURE / CLOSED
 BRRK leadership rotation 0048         MEASUREMENT_INCONCLUSIVE_INSUFFICIENT_SUPPORT / CLOSED
 BRRK intraday support 0053             FAIL_4H_DOES_NOT_SOLVE_0048_SUPPORT_CONSTRAINT / CLOSED
+BRRK 4h-native readiness 0054          DESIGN FROZEN / PREREG NOT YET FROZEN / NOT RUN
 
 Canonical BRRK-0011                    NO CHANGE
 Phase 7                                MONITOR_ONLY / LAUNCH BLOCKED
@@ -369,3 +370,33 @@ same-ID rerun allowed                   false
 same-ID retuning allowed                false
 same-ID rescue allowed                  false
 ```
+
+
+---
+
+## 12. 0054 4h-native readiness methodology — active design
+
+New research ID: `BRRK-LEADERSHIP-4H-NATIVE-READINESS-0054`.
+
+0054 is a methodology-only result-informed follow-up to the immutable 0053 closeout. It does not promote Track C's observed 365/365 diagnostic into a predictive specification. Instead it freezes a model-specific causal readiness stopping rule based on estimator precision under serial dependence.
+
+```text
+design status                           FROZEN / PREREG NOT YET FROZEN / NOT RUN
+upstream 0053                           FAIL_4H_DOES_NOT_SOLVE_0048_SUPPORT_CONSTRAINT / CLOSED
+frozen 4h payload SHA256                471b54991ae648b79433285f073ea7bc813663319b6e2389c1682dad1a319135
+methodology target firewall             MAX 336-BAR TARGET PATH MUST END BY 2022-12-31 20:00 UTC
+reserved target suffix                  2023-01-01 onward / TARGETS FORBIDDEN TO 0054
+primary readiness basis                 HAC PARAMETER / PROBABILITY PRECISION, NOT PREDICTIVE PERFORMANCE
+HAC lag                                 335 eligible-origin steps
+numerical admissibility floor           672 matured eligible observations
+training precision                      P90 95% width <=0.10 AND max <=0.20
+calibration precision                   max 95% width <=0.10
+stability requirement                   3 consecutive 168-bar refits
+NLL/AUC/Brier scoring                    FORBIDDEN
+portfolio economics                     FORBIDDEN
+production authority                    NO CHANGE
+```
+
+A later 0054 numerical/data preregistration must atomically freeze the exact 4h feature/target translation, HAC implementation, target firewall, result schema and controlled-run policy before any 0054 methodology output. A 0054 PASS would authorize only a separately preregistered post-2022 predictive study; it would not establish ETH/SOL leadership information and would not authorize 0049 concentration.
+
+The active design authority is `research/governance/BRRK_LEADERSHIP_4H_NATIVE_READINESS_0054_DESIGN_FREEZE_2026-08-11.md`. Any older next-step prose above that still refers to 0053 is historical and is superseded by this section.
