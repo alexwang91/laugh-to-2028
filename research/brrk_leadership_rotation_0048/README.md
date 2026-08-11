@@ -106,6 +106,10 @@ confidence-margin rho   -0.4111806894
 
 At the first formal refit, `gamma_candidate = gamma_B2 = gamma_B3 = 0.0`; the prior-preserving calibration therefore emitted the expanding prevalence prior at that refit. Aggregate candidate/B1/B2/B3 NLL and Brier are exactly equal on the observed formal segment. This is adverse diagnostic evidence, not a post-hoc formal FAIL classification.
 
+## Closeout contract attestation
+
+Post-result closeout-only CI run `31507035505` / job `93831137947` passed **33/33** contracts. It compiled the frozen engine/runner, verified the complete immutable bundle, canonical hash binding, G1 stopping semantics and absence of portfolio translation. It performed **no historical scientific evaluation and no model recomputation**. The temporary workflow used only to obtain this attestation was deleted before closeout PR creation. `CLOSEOUT_CI.json` records the attestation separately.
+
 ## Interpretation boundary
 
 0048 does not establish incremental ETH/SOL leadership information, but it also does not formally reject it. The preregistered dependence-aware support floor was not met, so G2 and all later inferential gates were not eligible.
@@ -136,3 +140,4 @@ Authoritative closeout artifacts:
 - `RUN_ONCE.marker`
 - `RESULT.md`
 - `CLOSEOUT.json`
+- `CLOSEOUT_CI.json`
