@@ -36,12 +36,14 @@ jobs:
         run: |
           python - <<'PY'
           from pathlib import Path
+          import textwrap
 
           engine_path = Path('research/brrk_leadership_rotation_0048/engine.py')
           text = engine_path.read_text(encoding='utf-8')
           start = text.index('def fit_offset_ridge(')
           end = text.index('\ndef raw_probability', start)
-          replacement = '''def fit_offset_ridge(X: Any, y: Any, prevalence: float) -> FittedOffsetModel:
+          replacement = textwrap.dedent('''
+          def fit_offset_ridge(X: Any, y: Any, prevalence: float) -> FittedOffsetModel:
               X = _as_float_array(X)
               y = _as_float_array(y)
               if X.ndim == 1:
@@ -66,11 +68,9 @@ jobs:
                   hessian = X.T @ (X * weights[:, None]) + RIDGE_LAMBDA * identity
                   return loss, np.asarray(grad, dtype=float), np.asarray(hessian, dtype=float)
 
-              converged = False
               for _ in range(100):
                   loss, grad, hessian = loss_grad_hessian(beta)
                   if float(np.max(np.abs(grad))) <= 1e-10:
-                      converged = True
                       break
                   try:
                       step = np.linalg.solve(hessian, grad)
@@ -90,18 +90,29 @@ jobs:
                           break
                       step_scale *= 0.5
                   if not accepted:
-                      raise FrozenProtocolError("Offset-ridge Newton line search failed")
+                      break
+
+              _, grad, _ = loss_grad_hessian(beta)
+              if float(np.max(np.abs(grad))) > 1e-10:
+                  from scipy.optimize import root as scipy_root
+                  polished = scipy_root(
+                      lambda value: loss_grad_hessian(np.asarray(value, dtype=float))[1],
+                      beta,
+                      jac=lambda value: loss_grad_hessian(np.asarray(value, dtype=float))[2],
+                      method="hybr",
+                      options={"xtol": OPT_TOL, "maxfev": 5000},
+                  )
+                  if np.isfinite(polished.x).all():
+                      beta = np.asarray(polished.x, dtype=float)
+
               final_loss, final_grad, _ = loss_grad_hessian(beta)
               if not np.isfinite(final_loss) or not np.isfinite(beta).all():
                   raise FrozenProtocolError("Offset-ridge produced non-finite solution")
               grad_norm = float(np.max(np.abs(final_grad)))
-              if not converged and grad_norm > 1e-8:
-                  raise FrozenProtocolError(f"Offset-ridge Newton solver did not converge: {grad_norm}")
+              if grad_norm > 1e-9:
+                  raise FrozenProtocolError(f"Offset-ridge score equation did not converge: {grad_norm}")
               return FittedOffsetModel(beta=np.asarray(beta, dtype=float), prevalence=float(prevalence))
-          '''
-          # Dedent the literal source while preserving the function body indentation.
-          import textwrap
-          replacement = textwrap.dedent(replacement)
+          ''').lstrip()
           engine_path.write_text(text[:start] + replacement + text[end:], encoding='utf-8')
 
           test_path = Path('research/brrk_leadership_rotation_0048/test_engine_contract.py')
