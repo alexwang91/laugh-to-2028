@@ -1,0 +1,217 @@
+name: Temporary 0047 closeout finalize
+
+on:
+  push:
+    branches:
+      - research/brrk-beta-handoff-0047-closeout
+    paths:
+      - .github/workflows/tmp-0047-closeout-finalize.yml
+
+permissions:
+  contents: write
+
+jobs:
+  finalize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/brrk-beta-handoff-0047-closeout
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Monotonically close central registry and lifecycle documents
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          root = Path('.')
+          rid = 'BRRK-BETA-HANDOFF-EVENT-STUDY-0047'
+          here = root / 'research/brrk_beta_handoff_0047'
+          prereg = json.loads((here/'PREREGISTRATION.json').read_text())
+          result = json.loads((here/'PRIMARY_RESULT.json').read_text())
+          summary = json.loads((here/'RESULT_SUMMARY.json').read_text())
+          closeout = json.loads((here/'CLOSEOUT.json').read_text())
+          recovery = json.loads((here/'EVIDENCE_RECOVERY.json').read_text())
+          marker = json.loads((here/'RUN_ONCE.marker').read_text())
+
+          assert prereg['research_id'] == rid
+          assert prereg['result_status'] == 'PREREGISTERED_NOT_RUN'
+          assert prereg['actual_variants_evaluated'] == 0
+          assert result['classification']['result_status'] == 'FAIL_NO_RECURRENT_DURABLE_HANDOFF_STRUCTURE'
+          assert summary['result_status'] == 'FAIL_NO_RECURRENT_DURABLE_HANDOFF_STRUCTURE'
+          assert summary['target_eligible_BTC_positive_episodes'] == 27
+          assert summary['primary_handoff_episodes'] == 12
+          assert summary['episode_level_durable_handoff_prevalence'] == 12/27
+          assert summary['ETH_primary_handoff_episodes'] == 3
+          assert summary['SOL_primary_handoff_episodes'] == 9
+          assert recovery['new_research_execution'] is False
+          assert recovery['actual_variants_evaluated_before_recovery'] == 1
+          assert recovery['actual_variants_evaluated_after_recovery'] == 1
+          assert recovery['recovery_hash_match'] is True
+          assert marker['same_id_rerun_allowed'] is False
+          assert closeout['official_recovery_artifact']['artifact_id'] == 9084248250
+          assert closeout['official_recovery_artifact']['digest'] == 'sha256:b1992fa56b78a1a5807a156c8a483c0f035290669ff0e04095481d11000cde66'
+
+          registry_path = root / 'config/research_registry.json'
+          registry = json.loads(registry_path.read_text())
+          matches = [i for i, rec in enumerate(registry['records']) if rec.get('research_id') == rid]
+          assert len(matches) == 1
+          idx = matches[0]
+          current = registry['records'][idx]
+          # Before closeout, central registry must still be exactly the result-free preregistration record.
+          assert current == prereg
+
+          updated = json.loads(json.dumps(prereg))
+          updated['actual_variants_evaluated'] = 1
+          updated['research_process_complexity']['actual_parameter_candidates_evaluated'] = list(
+              updated['research_process_complexity']['declared_parameter_candidates']
+          )
+          updated['result_status'] = 'FAIL_NO_RECURRENT_DURABLE_HANDOFF_STRUCTURE'
+          updated['failure_reason'] = (
+              'Frozen episode-level durable-handoff prevalence was 12/27 = 0.4444444444444444, '
+              'below the preregistered >=0.50 recurrence gate. Episode diversity, handoff-count, '
+              'ETH-cause and SOL-cause gates passed. Same-ID rescue is forbidden.'
+          )
+          updated['promotion_state'] = 'NONE'
+          updated['evidence_refs'] = [
+              'research/brrk_beta_handoff_0047/PRIMARY_RESULT.json',
+              'research/brrk_beta_handoff_0047/EXECUTION.json',
+              'research/brrk_beta_handoff_0047/RUN_ONCE.marker',
+              'research/brrk_beta_handoff_0047/RESULT_SUMMARY.json',
+              'research/brrk_beta_handoff_0047/EVIDENCE_RECOVERY.json',
+              'research/brrk_beta_handoff_0047/CLOSEOUT.json',
+              'research/brrk_beta_handoff_0047/RESULT.md',
+          ]
+          updated['decision_refs'] = list(dict.fromkeys(updated.get('decision_refs', []) + [
+              'research/brrk_beta_handoff_0047/CLOSEOUT.json',
+              'research/brrk_beta_handoff_0047/RESULT.md',
+              'docs/CURRENT_STATE.md',
+              'docs/NEXT_STEPS.md',
+          ]))
+          updated['notes'] = list(updated.get('notes', [])) + [
+              'Unique valid scientific evaluation: GitHub Actions run 31444910921 / job 93636897419 / attempt 1 / controlled head 7c79f62e657c492afcb98be6c637905b2156f244.',
+              'Immutable result: 27 target-eligible BTC-positive episodes, 12 primary durable handoffs, prevalence 0.4444444444444444, ETH causes 3, SOL causes 9. Only the >=0.50 prevalence gate failed.',
+              'Post-result persistence hash assertion failed after the valid evaluation because JSON serialized integer episode_intercepts keys as strings. This did not alter the result or gates and did not authorize a rerun.',
+              'Hash-locked evidence recovery run 31445193701 / job 93638056435 exactly reproduced original pre-serialization PRIMARY_RESULT object hash 961ac99bd5a2d3d6556262b17411333bfbeead921616dccf120190ee1dd67c2a and EXECUTION object hash a87e37ae41e20d71e61dd52fb0b20009a5a6c6ffeeb6d0eb3d6faab568604665 without creating a second research execution.',
+              'Official recovery artifact 9084248250 digest sha256:b1992fa56b78a1a5807a156c8a483c0f035290669ff0e04095481d11000cde66 is the durable bundle authority.',
+              'The preregistered duration-aware competing-risk model stage is not eligible from this 0047 lineage. Any alternate episode clock, target, model or portfolio translation requires a new research ID and preregistration.'
+          ]
+          updated['evidence_scorecard'] = {
+              'temporal_novelty': 'RESEARCHER_EXPOSED_DEVELOPMENT_HISTORY_THROUGH_2026-08-02_NOT_INDEPENDENT_OOS',
+              'statistical_sufficiency': 'FAIL_PRIMARY_RECURRENCE_GATE_12_OF_27_0.4444444444444444_BELOW_0.50_WITH_EPISODE_AND_CAUSE_DIVERSITY_SUFFICIENT',
+              'governance_integrity': 'HIGH_ONE_VALID_EXECUTION_HASH_LOCKED_RECOVERY_NOT_NEW_EXECUTION_CLOSED_NO_SAME_ID_RESCUE',
+              'operational_realism': 'DIAGNOSTIC_ONLY_NO_HANDOFF_MODEL_NO_PORTFOLIO_TRANSLATION_NO_AUTHORITY',
+              'derived_confidence': 'VALID_NEGATIVE_STAGE_RESULT_ON_RESEARCHER_EXPOSED_HISTORY',
+              'confidence_rule_ref': 'research/brrk_beta_handoff_0047/CLOSEOUT.json'
+          }
+          updated['production_authorized'] = False
+          registry['records'][idx] = updated
+          registry_path.write_text(json.dumps(registry, indent=2, ensure_ascii=False) + '\n')
+
+          # Evolve the original prereg contract monotonically: prereg remains immutable, but result files
+          # are now required when CLOSEOUT exists.
+          contract_path = here / 'test_preregistration_contract.py'
+          src = contract_path.read_text()
+          start = src.index('def test_pre_result_implementation_allows_runner_but_forbids_result_and_model_files():')
+          end = src.index('\ndef test_portfolio_translation_and_authority_remain_forbidden():', start)
+          replacement = '''def test_pre_result_implementation_allows_runner_but_forbids_result_and_model_files():
+    required = {"run_once.py", "engine.py", "RUN_INTERFACE.json"}
+    existing = {p.name for p in HERE.iterdir() if p.is_file()}
+    assert required <= existing
+    interface = _load(HERE / "RUN_INTERFACE.json")
+    # RUN_INTERFACE is the immutable pre-result execution contract and remains factually pre-result.
+    assert interface["status"] == "IMPLEMENTED_PRE_RESULT_NOT_RUN"
+    assert interface["actual_variants_evaluated"] == 0
+    assert interface["frozen_design_merge_commit"] == "398b7ec3f78f602461787b1b45e8d5041729e126"
+    assert interface["frozen_prereg_merge_commit"] == "80c0d3cb7339012cac74e20563e07c7139ba3031"
+    assert interface["authority"]["historical_result_released"] is False
+    assert interface["authority"]["duration_aware_handoff_model_fitted"] is False
+    assert interface["authority"]["portfolio_allocation_tested"] is False
+    assert interface["authority"]["portfolio_economics_executed"] is False
+    assert interface["authority"]["production_authorized"] is False
+
+    if (HERE / "CLOSEOUT.json").exists():
+        required_closed = {
+            "PRIMARY_RESULT.json", "EXECUTION.json", "RUN_ONCE.marker", "RESULT_SUMMARY.json",
+            "EVIDENCE_RECOVERY.json", "CLOSEOUT.json", "RESULT.md"
+        }
+        assert required_closed <= existing
+        closeout = _load(HERE / "CLOSEOUT.json")
+        assert closeout["result_status"] == "FAIL_NO_RECURRENT_DURABLE_HANDOFF_STRUCTURE"
+        assert closeout["closure"]["same_id_rerun_allowed"] is False
+        assert closeout["closure"]["same_id_retuning_allowed"] is False
+        assert closeout["closure"]["same_id_rescue_allowed"] is False
+        forbidden_models = {"handoff_model.py", "hazard_model.py", "bocpd.py", "portfolio.py"}
+        assert forbidden_models.isdisjoint(existing)
+    else:
+        forbidden = {
+            "PRIMARY_RESULT.json", "EXECUTION.json", "RUN_ONCE.marker", "RESULT.md",
+            "handoff_model.py", "hazard_model.py", "bocpd.py", "portfolio.py",
+        }
+        assert forbidden.isdisjoint(existing)
+
+'''
+          contract_path.write_text(src[:start] + replacement + src[end+1:])
+
+          state_path = root / 'docs/CURRENT_STATE.md'
+          state = state_path.read_text()
+          marker_text = '## BRRK-BETA-HANDOFF-EVENT-STUDY-0047 — immutable FAIL closeout'
+          assert marker_text not in state
+          state_append = f'''\n\n{marker_text}\n\n0047 is now permanently closed on one valid scientific execution. The strong frozen durable-handoff structure occurred in `12/27 = 44.4444%` of target-eligible canonical BTC-positive episodes, below the preregistered `>=50%` recurrence gate. All episode-diversity, handoff-count and ETH/SOL cause-diversity gates passed; prevalence was the only failed hard gate.\n\n```text\nunique scientific run                31444910921 / job 93636897419 / attempt 1\ncontrolled run head                  7c79f62e657c492afcb98be6c637905b2156f244\nmarket payload SHA256                d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193\nresult pre-serialization object SHA  961ac99bd5a2d3d6556262b17411333bfbeead921616dccf120190ee1dd67c2a\nevidence recovery run                31445193701 / job 93638056435\nofficial recovery artifact           9084248250\nofficial artifact digest             sha256:b1992fa56b78a1a5807a156c8a483c0f035290669ff0e04095481d11000cde66\ntarget-eligible episodes              27\nprimary durable handoffs              12\nprevalence                             44.4444%  FAIL (<50%)\nETH / SOL primary causes               3 / 9\nresult_status                         FAIL_NO_RECURRENT_DURABLE_HANDOFF_STRUCTURE\nactual variants evaluated              1\nsame-ID rerun / retune / rescue        false / false / false\n0048-style model stage eligible        false\nportfolio allocation/economics         NOT TESTED\ncanonical BRRK / Phase-6 change         NONE\nproduction/signing/order authority      FALSE\n```\n\nA post-result JSON hash-identity persistence assertion failed only after the valid evaluation; integer `episode_intercepts` keys became strings on JSON persistence. The scientific result was therefore recovered under the already-known original object hash and status. Recovery was explicitly `EVIDENCE_RECOVERY_NOT_NEW_RESEARCH_EXECUTION`; actual variants remained `1 -> 1`.\n\nImportant diagnostic negative evidence is preserved: 8/12 durable handoffs occur at state age 1; pooled BTC/ETH and BTC/SOL daily XCF peaks at lag 0; and a non-gating one-switch oracle had positive uplift in 17/27 episodes, including 7 episodes without a frozen durable-handoff label. These diagnostics may motivate a new research design but cannot rescue 0047.\n\nThe originally planned duration-aware competing-risk model stage is not eligible from this lineage because 0047 did not PASS. Any alternative episode definition, target architecture, state clock, model or portfolio rule requires a new research ID and a new preregistration before evaluation.\n'''
+          state_path.write_text(state.rstrip() + state_append + '\n')
+
+          next_path = root / 'docs/NEXT_STEPS.md'
+          nxt = next_path.read_text()
+          next_marker = '## Post-0047 exact next step — do not auto-launch the preregistered handoff model'
+          assert next_marker not in nxt
+          next_append = f'''\n\n{next_marker}\n\n1. Treat `BRRK-BETA-HANDOFF-EVENT-STUDY-0047` as immutable `FAIL_NO_RECURRENT_DURABLE_HANDOFF_STRUCTURE / CLOSED`; never rerun, retune or rescue it.\n2. Do **not** launch the previously envisioned duration-aware competing-risk handoff model as an automatic 0048 continuation; its Stage-1 eligibility gate was not met.\n3. Preserve the diagnostic facts without converting them into same-ID target changes: handoff prevalence `12/27=44.44%`; state-age median `1` with 8/12 events at age 1; pooled XCF peak lag `0`; positive one-switch oracle uplift in `17/27` episodes and in `7` episodes lacking a frozen durable label.\n4. If continuing the Beta-expansion research program, first create a **new result-informed design-only research ID** whose question explicitly tests why the canonical BTC-positive episode clock and dual-horizon durable target miss part of the descriptive opportunity set. Freeze that new diagnostic question and candidate budget before any new historical measurement.\n5. No new model fitting, fixed-delay search, BOCPD, winner-allocation test, CAGR economics, exhaustion-gross integration, Phase-6 change or production/security change is authorized by 0047.\n'''
+          next_path.write_text(nxt.rstrip() + next_append + '\n')
+          PY
+
+      - name: Verify closeout contracts and unchanged prereg science
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m unittest \
+            research.governance.test_brrk_beta_handoff_0047_prereg_contract \
+            research.governance.test_brrk_beta_handoff_0047_implementation \
+            research.governance.test_brrk_beta_handoff_0047_closeout
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          rid='BRRK-BETA-HANDOFF-EVENT-STUDY-0047'
+          prereg=json.loads(Path('research/brrk_beta_handoff_0047/PREREGISTRATION.json').read_text())
+          rr=json.loads(Path('config/research_registry.json').read_text())
+          rec=[x for x in rr['records'] if x.get('research_id')==rid]
+          assert len(rec)==1
+          closed=rec[0]
+          assert prereg['result_status']=='PREREGISTERED_NOT_RUN'
+          assert prereg['actual_variants_evaluated']==0
+          assert closed['result_status']=='FAIL_NO_RECURRENT_DURABLE_HANDOFF_STRUCTURE'
+          assert closed['actual_variants_evaluated']==1
+          assert closed['production_authorized'] is False
+          assert json.loads(Path('research/brrk_beta_handoff_0047/CLOSEOUT.json').read_text())['closure']['same_id_rerun_allowed'] is False
+          PY
+
+      - name: Remove temporary closeout workflow before durable commit
+        shell: bash
+        run: rm .github/workflows/tmp-0047-closeout-finalize.yml
+
+      - name: Commit immutable closeout state
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git diff --cached --check
+          test ! -e .github/workflows/tmp-0047-closeout-finalize.yml
+          git commit -m 'research closeout: freeze 0047 durable-handoff FAIL'
+          git push origin HEAD:research/brrk-beta-handoff-0047-closeout
