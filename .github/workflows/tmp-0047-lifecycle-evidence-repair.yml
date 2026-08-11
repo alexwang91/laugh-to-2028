@@ -24,12 +24,13 @@ jobs:
           cache-dependency-path: execution/plan-b-bot/requirements-dev.txt
       - name: Install pinned governance test runtime
         run: pip install -r execution/plan-b-bot/requirements-dev.txt
-      - name: Repair only immutable 0047 evidence identities and lifecycle tests
+      - name: Repair immutable 0047 evidence identities and closed lifecycle tests
         shell: bash
         run: |
           set -euo pipefail
           python - <<'PY'
           from pathlib import Path
+          import textwrap
 
           replacements = {
               '6c354c2b29244a6a5389c49b4a315953132709c1b563d513f30bf6cd29e1d087': '6c354b054bde2dfce12dbb1efe3809d59d371df02beddc613befe9373a17807d',
@@ -55,39 +56,15 @@ jobs:
 
           prereg_path = Path('research/brrk_beta_handoff_0047/test_preregistration_contract.py')
           src = prereg_path.read_text(encoding='utf-8')
-          old = '''def test_pre_result_implementation_allows_runner_but_forbids_result_and_model_files():
-              required = {"run_once.py", "engine.py", "RUN_INTERFACE.json"}
-              existing = {p.name for p in HERE.iterdir() if p.is_file()}
-              assert required <= existing
-              forbidden = {
-                  "PRIMARY_RESULT.json",
-                  "EXECUTION.json",
-                  "RUN_ONCE.marker",
-                  "RESULT.md",
-                  "handoff_model.py",
-                  "hazard_model.py",
-                  "bocpd.py",
-                  "portfolio.py",
-              }
-              assert forbidden.isdisjoint(existing)
-              interface = _load(HERE / "RUN_INTERFACE.json")
-              assert interface["status"] == "IMPLEMENTED_PRE_RESULT_NOT_RUN"
-              assert interface["actual_variants_evaluated"] == 0
-              assert interface["frozen_design_merge_commit"] == "398b7ec3f78f602461787b1b45e8d5041729e126"
-              assert interface["frozen_prereg_merge_commit"] == "80c0d3cb7339012cac74e20563e07c7139ba3031"
-              assert interface["authority"]["historical_result_released"] is False
-              assert interface["authority"]["duration_aware_handoff_model_fitted"] is False
-              assert interface["authority"]["portfolio_allocation_tested"] is False
-              assert interface["authority"]["portfolio_economics_executed"] is False
-              assert interface["authority"]["production_authorized"] is False
-          '''
-          old = '\n'.join(line[12:] if line.startswith('            ') else line for line in old.splitlines()) + '\n'
-          new = '''def test_pre_result_implementation_allows_runner_but_forbids_result_and_model_files():
+          start = src.index('def test_pre_result_implementation_allows_runner_but_forbids_result_and_model_files():')
+          end = src.index('\ndef test_portfolio_translation_and_authority_remain_forbidden():', start)
+          replacement = textwrap.dedent('''\
+          def test_pre_result_implementation_allows_runner_but_forbids_result_and_model_files():
               required = {"run_once.py", "engine.py", "RUN_INTERFACE.json"}
               existing = {p.name for p in HERE.iterdir() if p.is_file()}
               assert required <= existing
               interface = _load(HERE / "RUN_INTERFACE.json")
-              # RUN_INTERFACE remains the immutable pre-result execution contract even after closeout.
+              # RUN_INTERFACE remains immutable pre-result evidence after closeout.
               assert interface["status"] == "IMPLEMENTED_PRE_RESULT_NOT_RUN"
               assert interface["actual_variants_evaluated"] == 0
               assert interface["frozen_design_merge_commit"] == "398b7ec3f78f602461787b1b45e8d5041729e126"
@@ -101,7 +78,7 @@ jobs:
               if (HERE / "CLOSEOUT.json").exists():
                   required_closed = {
                       "PRIMARY_RESULT.json", "EXECUTION.json", "RUN_ONCE.marker", "RESULT_SUMMARY.json",
-                      "EVIDENCE_RECOVERY.json", "CLOSEOUT.json", "RESULT.md"
+                      "EVIDENCE_RECOVERY.json", "CLOSEOUT.json", "RESULT.md",
                   }
                   assert required_closed <= existing
                   closeout = _load(HERE / "CLOSEOUT.json")
@@ -109,6 +86,9 @@ jobs:
                   assert closeout["closure"]["same_id_rerun_allowed"] is False
                   assert closeout["closure"]["same_id_retuning_allowed"] is False
                   assert closeout["closure"]["same_id_rescue_allowed"] is False
+                  assert closeout["authority"]["duration_aware_handoff_model_fitted"] is False
+                  assert closeout["authority"]["portfolio_allocation_tested"] is False
+                  assert closeout["authority"]["portfolio_economics_executed"] is False
                   forbidden_models = {"handoff_model.py", "hazard_model.py", "bocpd.py", "portfolio.py"}
                   assert forbidden_models.isdisjoint(existing)
               else:
@@ -117,34 +97,18 @@ jobs:
                       "handoff_model.py", "hazard_model.py", "bocpd.py", "portfolio.py",
                   }
                   assert forbidden.isdisjoint(existing)
-          '''
-          new = '\n'.join(line[12:] if line.startswith('            ') else line for line in new.splitlines()) + '\n'
-          assert old in src, 'expected prereg lifecycle block not found'
-          prereg_path.write_text(src.replace(old, new, 1), encoding='utf-8')
+
+          ''')
+          prereg_path.write_text(src[:start] + replacement + src[end+1:], encoding='utf-8')
 
           impl_path = Path('research/governance/test_brrk_beta_handoff_0047_implementation.py')
           src = impl_path.read_text(encoding='utf-8')
-          old = '''    def test_run_interface_freezes_zero_result_zero_model_zero_portfolio_authority(self):
+          start = src.index('    def test_run_interface_freezes_zero_result_zero_model_zero_portfolio_authority(self):')
+          end = src.index('\n    def test_implementation_source_has_no_portfolio_or_hazard_model_translation(self):', start)
+          method = textwrap.dedent('''\
+          def test_run_interface_freezes_zero_result_zero_model_zero_portfolio_authority(self):
               interface = json.loads((HERE / "RUN_INTERFACE.json").read_text())
-              self.assertEqual(interface["status"], "IMPLEMENTED_PRE_RESULT_NOT_RUN")
-              self.assertEqual(interface["actual_variants_evaluated"], 0)
-              self.assertEqual(interface["frozen_causal_trend"]["horizons"], [20, 60, 120, 240])
-              self.assertEqual(interface["frozen_realized_target"]["forward_horizons"], [20, 60])
-              self.assertEqual(interface["frozen_transmission"]["VAR"], "POOLED_EPISODE_PRESERVING_VAR7_WITH_EPISODE_FIXED_INTERCEPTS")
-              self.assertEqual(interface["frozen_uncertainty"]["replicates"], 10000)
-              self.assertEqual(interface["frozen_uncertainty"]["seed"], 470047)
-              self.assertFalse(interface["authority"]["historical_result_released"])
-              self.assertFalse(interface["authority"]["duration_aware_handoff_model_fitted"])
-              self.assertFalse(interface["authority"]["portfolio_allocation_tested"])
-              self.assertFalse(interface["authority"]["portfolio_economics_executed"])
-              self.assertFalse(interface["authority"]["production_authorized"])
-              for forbidden in ("PRIMARY_RESULT.json", "EXECUTION.json", "RUN_ONCE.marker", "RESULT.md"):
-                  self.assertFalse((HERE / forbidden).exists())
-          '''
-          old = '\n'.join(line[12:] if line.startswith('            ') else line for line in old.splitlines()) + '\n'
-          new = '''    def test_run_interface_freezes_zero_result_zero_model_zero_portfolio_authority(self):
-              interface = json.loads((HERE / "RUN_INTERFACE.json").read_text())
-              # RUN_INTERFACE is immutable pre-result evidence and is not rewritten by closeout.
+              # RUN_INTERFACE remains immutable pre-result evidence after closeout.
               self.assertEqual(interface["status"], "IMPLEMENTED_PRE_RESULT_NOT_RUN")
               self.assertEqual(interface["actual_variants_evaluated"], 0)
               self.assertEqual(interface["frozen_causal_trend"]["horizons"], [20, 60, 120, 240])
@@ -167,16 +131,18 @@ jobs:
                   closeout = json.loads((HERE / "CLOSEOUT.json").read_text())
                   self.assertEqual(closeout["result_status"], "FAIL_NO_RECURRENT_DURABLE_HANDOFF_STRUCTURE")
                   self.assertFalse(closeout["closure"]["same_id_rerun_allowed"])
+                  self.assertFalse(closeout["closure"]["same_id_retuning_allowed"])
+                  self.assertFalse(closeout["closure"]["same_id_rescue_allowed"])
                   self.assertFalse(closeout["authority"]["duration_aware_handoff_model_fitted"])
                   self.assertFalse(closeout["authority"]["portfolio_allocation_tested"])
                   self.assertFalse(closeout["authority"]["portfolio_economics_executed"])
               else:
                   for forbidden in ("PRIMARY_RESULT.json", "EXECUTION.json", "RUN_ONCE.marker", "RESULT.md"):
                       self.assertFalse((HERE / forbidden).exists())
-          '''
-          new = '\n'.join(line[12:] if line.startswith('            ') else line for line in new.splitlines()) + '\n'
-          assert old in src, 'expected implementation lifecycle block not found'
-          impl_path.write_text(src.replace(old, new, 1), encoding='utf-8')
+
+          ''')
+          replacement = textwrap.indent(method, '    ')
+          impl_path.write_text(src[:start] + replacement + src[end:], encoding='utf-8')
           PY
 
       - name: Verify recovery identities and full governance unit suite
