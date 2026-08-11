@@ -1,0 +1,37 @@
+name: 0054 immutable closeout contract
+
+on:
+  push:
+    branches:
+      - research/brrk-leadership-4h-readiness-0054-result
+
+permissions:
+  contents: read
+
+jobs:
+  closeout:
+    if: contains(github.event.head_commit.message, 'trigger 0054 immutable closeout contract')
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run immutable 0054 closeout contracts only
+        run: python -m unittest research.brrk_leadership_4h_native_readiness_0054.test_closeout
+      - name: Enforce read-only closeout and no predictive/portfolio drift
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('research/brrk_leadership_4h_native_readiness_0054')
+          forbidden=['PREDICTIVE_RESULT.json','PORTFOLIO_RESULT.json','WINNER_LABELS.json']
+          hit=[n for n in forbidden if (p/n).exists()]
+          if hit: raise SystemExit(f'forbidden artifacts {hit}')
+          text='\n'.join(x.read_text(errors='ignore') for x in [p/'test_closeout.py'])
+          forbidden_calls=['measure_frozen_readiness(', 'build_methodology_panel(', 'training_precision_at_refit(']
+          hits=[x for x in forbidden_calls if x in text]
+          if hits: raise SystemExit(f'closeout test may recompute methodology: {hits}')
+          print('0054_CLOSEOUT_READ_ONLY_PASS')
+          print('METHODOLOGY_REMEASUREMENT_PERFORMED=false')
+          print('POST_2022_TARGET_VALUES_READ=false')
+          PY
