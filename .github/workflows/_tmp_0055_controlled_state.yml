@@ -1,0 +1,41 @@
+name: 0055 controlled-run CURRENT_STATE update
+
+on:
+  push:
+    branches:
+      - research/brrk-leadership-4h-structural-readiness-0055-controlled-run
+
+permissions:
+  contents: write
+
+jobs:
+  update-state:
+    if: contains(github.event.head_commit.message, 'trigger 0055 controlled state')
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/brrk-leadership-4h-structural-readiness-0055-controlled-run
+          fetch-depth: 0
+      - name: Advance full authoritative 0055 controlled-run handoff
+        run: |
+          git show c3cfbbe53317c46c3caf6fc4a1ef0a07030b86e9:docs/CURRENT_STATE.md > /tmp/CURRENT_STATE.base.md
+          python - <<'PY'
+          from pathlib import Path
+          s=Path('/tmp/CURRENT_STATE.base.md').read_text()
+          pairs=[
+            ('Current `main` research merge: **`e00db4d77913d42296147da65101a1dd3149ed5e`**','Current `main` research merge: **`c3cfbbe53317c46c3caf6fc4a1ef0a07030b86e9`**'),
+            ('Current research branch: **`research/brrk-leadership-4h-structural-readiness-0055-implementation`**','Current research branch: **`research/brrk-leadership-4h-structural-readiness-0055-controlled-run`**'),
+            ('BRRK 4h structural readiness 0055     IMPLEMENTATION-ONLY / DATA HASH-BOUND / REAL MEASUREMENT NOT RUN','BRRK 4h structural readiness 0055     CONTROLLED-RUN BOUNDARY / ZERO RESULT / REAL MEASUREMENT NOT RUN')
+          ]
+          for old,new in pairs:
+              if old not in s: raise SystemExit(f'missing token: {old}')
+              s=s.replace(old,new,1)
+          Path('docs/CURRENT_STATE.md').write_text(s)
+          PY
+          git config user.name 'Y_Wang'
+          git config user.email '40142450+alexwang91@users.noreply.github.com'
+          git add docs/CURRENT_STATE.md
+          git diff --cached --quiet && exit 0
+          git commit -m 'Research execution boundary [DRIFT_0]: hand off 0055 controlled-run state'
+          git push origin HEAD:research/brrk-leadership-4h-structural-readiness-0055-controlled-run
