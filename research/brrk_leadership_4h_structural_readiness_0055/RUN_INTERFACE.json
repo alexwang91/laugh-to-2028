@@ -1,0 +1,47 @@
+{
+  "research_id": "BRRK-LEADERSHIP-4H-STRUCTURAL-READINESS-0055",
+  "status": "CONTROLLED_EXECUTION_INTERFACE_FROZEN_NOT_RUN",
+  "controlled_execution_base_main_sha": "c3cfbbe53317c46c3caf6fc4a1ef0a07030b86e9",
+  "frozen_preregistration_merge_sha": "e00db4d77913d42296147da65101a1dd3149ed5e",
+  "immutable_upstream_git_blobs": {
+    "research/brrk_leadership_4h_structural_readiness_0055/PREREGISTRATION.json": "d0384d6d4bf931f49831ed1b44ba5954255ba098",
+    "research/brrk_leadership_4h_structural_readiness_0055/DATASET_DECLARATION.json": "9a837f23bc07c4ddb1b29c90bec296c08547575f",
+    "research/brrk_leadership_4h_structural_readiness_0055/IMPLEMENTATION_BOUNDARY.json": "4e04964da9ed7b9affbbe2c7ac88539edabf0082",
+    "research/brrk_leadership_4h_structural_readiness_0055/engine.py": "03d3e51d54d5d56591002378d252373362bf143f",
+    "research/brrk_leadership_4h_native_readiness_0054/engine.py": "8a6237fa326789bf2539dc9ed7e79282f93b8a4a",
+    "research/brrk_leadership_intraday_support_0053/MARKET_4H_PAYLOAD.json": "0c67c4d7d8f39e2a4972045d94808744c6006e37"
+  },
+  "frozen_market_payload": {
+    "path": "research/brrk_leadership_intraday_support_0053/MARKET_4H_PAYLOAD.json",
+    "git_blob_sha": "0c67c4d7d8f39e2a4972045d94808744c6006e37",
+    "payload_sha256": "471b54991ae648b79433285f073ea7bc813663319b6e2389c1682dad1a319135",
+    "network_fetch_allowed": false,
+    "replacement_allowed": false
+  },
+  "runtime_artifacts": {
+    "attempt": "RUN_ATTEMPT.marker",
+    "result": "METHOD_RESULT.json",
+    "execution": "EXECUTION.json",
+    "final_marker": "RUN_ONCE.marker"
+  },
+  "execution_sequence": [
+    "PREFLIGHT_ZERO_RESULT",
+    "DURABLY_PERSIST_RUN_ATTEMPT_MARKER",
+    "EVALUATE_REAL_PAYLOAD_EXACTLY_ONCE",
+    "DURABLY_PERSIST_METHOD_RESULT_AND_EXECUTION",
+    "FINALIZE_MARKER_FROM_EXISTING_HASHES_WITHOUT_REMEASUREMENT"
+  ],
+  "preflight_repeatable": true,
+  "attempt_start_repeatable": false,
+  "evaluate_repeatable": false,
+  "finalize_may_call_methodology_engine": false,
+  "same_id_rerun_after_attempt_allowed": false,
+  "same_id_retuning_after_attempt_allowed": false,
+  "same_id_rescue_after_attempt_allowed": false,
+  "post_2022_target_values_allowed": false,
+  "predictive_performance_metrics_allowed": false,
+  "portfolio_economics_allowed": false,
+  "production_authorized": false,
+  "signature_authorized": false,
+  "order_submission_authorized": false
+}

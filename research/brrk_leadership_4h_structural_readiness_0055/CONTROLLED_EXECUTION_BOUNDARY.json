@@ -1,0 +1,56 @@
+{
+  "research_id": "BRRK-LEADERSHIP-4H-STRUCTURAL-READINESS-0055",
+  "status": "CONTROLLED_EXECUTION_BOUNDARY_FROZEN_ZERO_RESULT",
+  "base_main_sha": "c3cfbbe53317c46c3caf6fc4a1ef0a07030b86e9",
+  "scientific_engine_git_blob_sha": "03d3e51d54d5d56591002378d252373362bf143f",
+  "payload_sha256": "471b54991ae648b79433285f073ea7bc813663319b6e2389c1682dad1a319135",
+  "runtime_artifacts": [
+    "RUN_ATTEMPT.marker",
+    "METHOD_RESULT.json",
+    "EXECUTION.json",
+    "RUN_ONCE.marker"
+  ],
+  "staged_protocol": {
+    "preflight": "repeatable and zero-result; verifies exact HEAD, immutable blobs, payload path/blob/SHA and absence of runtime artifacts",
+    "start_attempt": "create-only; attempt marker must be durably persisted remotely before real methodology measurement",
+    "evaluate": "requires existing attempt marker and absent result/execution/final marker; methodology engine may be called exactly once",
+    "persist_result_execution": "method result and execution hashes must be durable before final marker",
+    "finalize": "hash verification only; methodology engine call forbidden"
+  },
+  "fault_policy": {
+    "interruption_after_attempt_before_complete_result": "same-ID automatic remeasurement forbidden",
+    "complete_result_and_execution_but_missing_final_marker": "marker-only recovery/finalize permitted without remeasurement",
+    "hash_tamper": "fail_closed_without_remeasurement",
+    "second_start_or_evaluate": "create_only_blocked"
+  },
+  "methodology_output_scope": {
+    "training_precision_records": true,
+    "calibration_precision_records_if_eligible": true,
+    "label_blind_reserved_support_if_eligible": true,
+    "post_2022_target_values": false,
+    "predictive_performance_metrics": false,
+    "confidence_breakpoints": false,
+    "portfolio_economics": false
+  },
+  "valid_classifications": [
+    "PASS_4H_STRUCTURAL_3D_READINESS_ELIGIBLE_FOR_NEW_PREDICTIVE_STUDY",
+    "FAIL_4H_STRUCTURAL_3D_TRAINING_PRECISION_NOT_ESTABLISHED",
+    "FAIL_4H_STRUCTURAL_3D_CALIBRATION_PRECISION_NOT_ESTABLISHED",
+    "FAIL_4H_STRUCTURAL_3D_METHOD_READY_BUT_RESERVED_SUPPORT_INSUFFICIENT",
+    "INVALID_EXECUTION_PROTOCOL_OR_NUMERICAL_INTEGRITY"
+  ],
+  "closure": {
+    "same_id_rerun_allowed_after_attempt": false,
+    "same_id_retuning_allowed_after_attempt": false,
+    "same_id_rescue_allowed_after_attempt": false,
+    "result_informed_change_requires_new_research_id": true
+  },
+  "authority": {
+    "canonical_strategy_changed": false,
+    "phase6_changed": false,
+    "production_authorized": false,
+    "production_authorized_components": [],
+    "signature_authorized": false,
+    "order_submission_authorized": false
+  }
+}

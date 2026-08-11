@@ -1,0 +1,57 @@
+{
+  "schema_id": "BRRK-LEADERSHIP-4H-STRUCTURAL-READINESS-0055-METHOD-RESULT-V1",
+  "research_id": "BRRK-LEADERSHIP-4H-STRUCTURAL-READINESS-0055",
+  "dataset_slice_id": "BRRK-LEADERSHIP-INTRADAY-SUPPORT-0053-BINANCE-4H-HIST-V1",
+  "payload_sha256": "471b54991ae648b79433285f073ea7bc813663319b6e2389c1682dad1a319135",
+  "required_top_level_keys": [
+    "schema_id",
+    "research_id",
+    "dataset_slice_id",
+    "payload_sha256",
+    "execution_head_sha",
+    "classification",
+    "measurement",
+    "authority"
+  ],
+  "classification_enum": [
+    "PASS_4H_STRUCTURAL_3D_READINESS_ELIGIBLE_FOR_NEW_PREDICTIVE_STUDY",
+    "FAIL_4H_STRUCTURAL_3D_TRAINING_PRECISION_NOT_ESTABLISHED",
+    "FAIL_4H_STRUCTURAL_3D_CALIBRATION_PRECISION_NOT_ESTABLISHED",
+    "FAIL_4H_STRUCTURAL_3D_METHOD_READY_BUT_RESERVED_SUPPORT_INSUFFICIENT",
+    "INVALID_EXECUTION_PROTOCOL_OR_NUMERICAL_INTEGRITY"
+  ],
+  "authority_invariants": {
+    "development_not_independent_oos": true,
+    "post_2022_target_values_read": false,
+    "predictive_performance_metrics_executed": false,
+    "portfolio_economics_executed": false,
+    "0048_rerun_or_rescue_executed": false,
+    "0053_rerun_or_rescue_executed": false,
+    "0054_rerun_or_rescue_executed": false,
+    "canonical_strategy_changed": false,
+    "phase6_changed": false,
+    "production_authorized": false,
+    "signature_authorized": false,
+    "order_submission_authorized": false
+  },
+  "forbidden_metric_tokens": [
+    "nll",
+    "log_loss",
+    "brier",
+    "auc",
+    "balanced_accuracy",
+    "precision_recall",
+    "realized_margin",
+    "spearman",
+    "breakpoint",
+    "confidence_high",
+    "portfolio",
+    "cagr",
+    "drawdown",
+    "mdd",
+    "sharpe",
+    "sortino",
+    "calmar",
+    "terminal_wealth"
+  ]
+}
