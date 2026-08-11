@@ -1,0 +1,43 @@
+name: 0055 full CURRENT_STATE repair
+
+on:
+  push:
+    branches:
+      - research/brrk-leadership-4h-structural-readiness-0055-implementation
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    if: contains(github.event.head_commit.message, 'trigger full 0055 CURRENT_STATE repair')
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/brrk-leadership-4h-structural-readiness-0055-implementation
+          fetch-depth: 0
+      - name: Restore full prereg handoff and apply minimal implementation substitutions
+        run: |
+          git show e00db4d77913d42296147da65101a1dd3149ed5e:docs/CURRENT_STATE.md > /tmp/CURRENT_STATE.base.md
+          python - <<'PY'
+          from pathlib import Path
+          src=Path('/tmp/CURRENT_STATE.base.md').read_text()
+          old_main='Current `main` research merge: **`194b37fae9b9f1beefa8982813ad81f18ca8c223`**'
+          new_main='Current `main` research merge: **`e00db4d77913d42296147da65101a1dd3149ed5e`**'
+          old_branch='Current research branch: **`research/brrk-leadership-4h-structural-readiness-0055-prereg`**'
+          new_branch='Current research branch: **`research/brrk-leadership-4h-structural-readiness-0055-implementation`**'
+          old_row='BRRK 4h structural readiness 0055     PREREGISTERED / DATA HASH-BOUND / NOT IMPLEMENTED / NOT RUN'
+          new_row='BRRK 4h structural readiness 0055     IMPLEMENTATION-ONLY / DATA HASH-BOUND / REAL MEASUREMENT NOT RUN'
+          for old in (old_main,old_branch,old_row):
+              if old not in src:
+                  raise SystemExit(f'missing expected full-state token: {old}')
+          src=src.replace(old_main,new_main,1).replace(old_branch,new_branch,1).replace(old_row,new_row,1)
+          Path('docs/CURRENT_STATE.md').write_text(src)
+          PY
+          git config user.name 'Y_Wang'
+          git config user.email '40142450+alexwang91@users.noreply.github.com'
+          git add docs/CURRENT_STATE.md
+          git diff --cached --quiet && exit 0
+          git commit -m 'Research implementation [DRIFT_0]: restore full 0055 implementation handoff'
+          git push origin HEAD:research/brrk-leadership-4h-structural-readiness-0055-implementation
