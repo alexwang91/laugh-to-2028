@@ -1,0 +1,100 @@
+{
+  "research_id": "BRRK-BETA-BTC-CONTINUATION-PARAMETER-GEOMETRY-0058",
+  "status": "FAIL_NO_STABLE_PARAMETER_PLATEAU",
+  "closed": true,
+  "development_not_independent_oos": true,
+  "researcher_exposed_history": true,
+  "execution_head_sha": "989972a0e51ae54dc5224584ef9a0dd210a087f7",
+  "result_branch_head_sha": "6fc68bce4340b5577fef0f4ba5eddc7c98e6a055",
+  "payload_sha256": "d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193",
+  "execution_identity": {
+    "github_actions_run": 31644102517,
+    "runtime_artifact_id": 9160034209,
+    "runtime_artifact_name": "brrk-0058-parameter-geometry-runtime-bundle",
+    "runtime_artifact_digest": "sha256:edad4cfa1f196258a16c3479f0c436ba5dec174d87ec04941a708870b0fd718b",
+    "started_at_utc": "2026-08-12T21:47:42Z",
+    "completed_at_utc": "2026-08-12T21:47:46Z",
+    "finalized_at_utc": "2026-08-12T21:47:49Z"
+  },
+  "runtime_git_blobs": {
+    "RUN_ATTEMPT.marker": "843b0168ae941a525fc5e4bd9b57a0128f3f8efa",
+    "PRIMARY_RESULT.json": "5c4d5948bbfaed9a64a508c4f86ee03e618e5d79",
+    "EXECUTION.json": "8c4fa82e06a551c488e2828ba79e9f2bc8e036dd",
+    "RUN_ONCE.marker": "bcd423c76a360d50815de1103334c5f0808ccfe9"
+  },
+  "runtime_hashes": {
+    "attempt_marker_sha256": "6ebcb60c75b1f82b09da1bf122f8cb9f49705a930f04c13176dbb92f36d2524e",
+    "primary_result_sha256": "dde6b7918cc41750ee1024ae43610be9111ee67d019eda26c447b75024bc41d5",
+    "execution_sha256": "c6068d5308a1ca0549fdb9a39131238540686ec360c75dfcc2c8df892f180c42"
+  },
+  "gates": {
+    "G0_INTEGRITY": true,
+    "G1_PRIMARY_PLATEAU": false,
+    "G2_COST_ROBUSTNESS": false,
+    "G3_ECONOMIC_RELEVANCE": null,
+    "G4_TEMPORAL_ROBUSTNESS": null,
+    "G5_DEPENDENCE_AWARE_ROBUSTNESS": null
+  },
+  "parameter_geometry_result": {
+    "declared_parameter_cells": 108,
+    "actual_variants_evaluated": 108,
+    "surface_rows": 324,
+    "geometry_rows": 210,
+    "primary_5bps_admissible_components": 0,
+    "cost_coherent_admissible_components": 0,
+    "selected_representative": null,
+    "geometry_threshold_diagnostics_by_cost_bps": {
+      "5": {
+        "interior_cells": 70,
+        "gradient_threshold_qualified_cells": 2,
+        "hessian_threshold_qualified_cells": 0,
+        "stable_cells_meeting_both": 0
+      },
+      "10": {
+        "interior_cells": 70,
+        "gradient_threshold_qualified_cells": 1,
+        "hessian_threshold_qualified_cells": 0,
+        "stable_cells_meeting_both": 0
+      },
+      "20": {
+        "interior_cells": 70,
+        "gradient_threshold_qualified_cells": 2,
+        "hessian_threshold_qualified_cells": 0,
+        "stable_cells_meeting_both": 0
+      }
+    },
+    "best_static_by_cost_bps": {
+      "5": "B1_STATIC_BETA",
+      "10": "B1_STATIC_BETA",
+      "20": "B1_STATIC_BETA"
+    },
+    "historical_argmax_descriptive_only": {
+      "L": 120,
+      "kappa": 0.5,
+      "terminal_wealth": 8.299069650275614
+    },
+    "temporal_and_bootstrap_robustness_evaluated": false
+  },
+  "binding_failure": {
+    "gate": "G1_PRIMARY_PLATEAU",
+    "reason": "No 5 bps interior cell simultaneously satisfies the preregistered gradient and Hessian flatness thresholds. Zero of 70 eligible 5 bps interior cells meet the Hessian threshold and zero meet both criteria, so no admissible 5 bps plateau component exists. Classification closes at G1 before representative selection or later economic, temporal, and dependence gates become eligible."
+  },
+  "authority": {
+    "economic_conclusion_authorized": true,
+    "parameter_freeze_eligibility": false,
+    "historical_argmax_selection_authority": false,
+    "same_id_rerun_allowed": false,
+    "same_id_retuning_allowed": false,
+    "same_id_rescue_allowed": false,
+    "same_id_grid_refinement_allowed": false,
+    "same_id_local_zoom_allowed": false,
+    "same_id_threshold_relaxation_allowed": false,
+    "next_continuation_requires_new_research_id": true,
+    "canonical_strategy_changed": false,
+    "phase6_changed": false,
+    "production_authorized": false,
+    "signature_authorized": false,
+    "order_submission_authorized": false
+  },
+  "interpretation": "The exact preregistered 108-cell Beta-versus-BTC surface contains no 5 bps stable interior cell under the frozen joint gradient/Hessian definition, so there is no broad parameter plateau and no mechanically selectable representative. The descriptive historical maximum at L=120, kappa=0.5 has no selection or continuation authority. 0058 is a valid DEVELOPMENT FAIL_NO_STABLE_PARAMETER_PLATEAU and is permanently closed to same-ID zooming, threshold relaxation, grid repair, alternate normalization, representative substitution or other result-informed rescue. Any continuation requires a new research ID and must not treat the 0058 argmax or local surface shape as a frozen trading parameter."
+}
