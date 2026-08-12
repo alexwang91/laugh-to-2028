@@ -3570,6 +3570,8 @@
       "evidence_refs": [],
       "decision_refs": [
         "research/governance/BRRK_BETA_BTC_CONTINUATION_PARAMETER_GEOMETRY_0058_DESIGN_FREEZE_2026-08-12.md",
+        "research/brrk_beta_btc_continuation_parameter_geometry_0058/PREREGISTRATION.json",
+        "research/brrk_beta_btc_continuation_parameter_geometry_0058/DATASET_DECLARATION.json",
         "docs/CURRENT_STATE.md"
       ],
       "production_relevance": "Research-only DEVELOPMENT parameter calibration for a new Beta-to-BTC continuation mechanism. PASS can only freeze one parameter pair for a later new-ID fixed-rule study; it cannot modify canonical BRRK, Phase 6 or production authority.",

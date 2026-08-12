@@ -41,7 +41,7 @@ BRRK 4h-native readiness 0054          FAIL_4H_NATIVE_TRAINING_PRECISION_NOT_EST
 BRRK 4h structural readiness 0055     FAIL_4H_STRUCTURAL_3D_TRAINING_PRECISION_NOT_ESTABLISHED / CLOSED
 BRRK simple ETH/SOL Beta router 0056  INVALID_EXECUTION / CLOSED / NO ECONOMIC CONCLUSION
 BRRK Beta router interface replication 0057 FAIL_SIMPLE_BETA_ROUTER_COST_FRAGILE / CLOSED
-BRRK Beta->BTC parameter geometry 0058     PREREG STAGING / OWNER REGISTERED / FORMAL FILES NEXT / NOT RUN
+BRRK Beta->BTC parameter geometry 0058     NUMERICAL PREREG FROZEN ON BRANCH / NOT RUN
 
 Canonical BRRK-0011                    NO CHANGE
 Phase 7                                MONITOR_ONLY / LAUNCH BLOCKED
@@ -782,3 +782,47 @@ order_submission_authorized            false
 The central registry owner for `BRRK-BETA-BTC-CONTINUATION-PARAMETER-GEOMETRY-0058` is now durable **before** the formal `research/brrk_beta_btc_continuation_parameter_geometry_0058/` path exists. This is an owner-first staging state only; no 0058 market surface or portfolio economics has been run.
 
 Exact next step: materialize the frozen numerical/data preregistration, dataset declaration and README on the same prereg branch, then update this handoff to `NUMERICAL PREREG FROZEN ON BRANCH / NOT RUN`.
+
+---
+
+## 0058 numerical preregistration handoff
+
+`BRRK-BETA-BTC-CONTINUATION-PARAMETER-GEOMETRY-0058` now has a durable owner-first registry record and a frozen numerical/data preregistration on branch `research/0058-beta-btc-continuation-parameter-geometry-prereg`. **No 0058 market surface, NAV path or economic result has been run.**
+
+Frozen lattice and geometry:
+
+```text
+L                                      20..240 by 20 (12 levels)
+kappa                                  0.00..2.00 by 0.25 (9 levels)
+total cells                            108
+common origins                         2021-04-08..2026-08-01
+held periods                           1942
+primary cost                           5 bps per L1
+stress costs                           10 / 20 bps per L1
+gradient norm threshold                ln(1.05)
+Hessian spectral threshold             ln(1.10)
+plateau adjacency                      4-neighbor interior only
+minimum plateau support                9 cells, >=3 L levels, >=3 kappa levels
+component selection                    largest support; fixed lexicographic tie-break
+representative                         normalized-grid geometric medoid
+historical argmax                      DESCRIPTIVE ONLY / NO AUTHORITY
+```
+
+Cost coherence requires an admissible component in the intersection of the 5/10/20 bps stable masks. The selected medoid must strictly beat the best static benchmark at 10 and 20 bps, and at 5 bps must exceed the best static by more than 5% terminal wealth. Temporal robustness uses fixed 486/486/485/485 blocks with >=3/4 positive relative log-growth blocks. Dependence-aware robustness reuses aligned moving-block bootstrap length 60, 10,000 reps, seed 1844716895, Type-7 95% simultaneous one-sided LCBs; all three must be positive.
+
+Static benchmarks are 100% BTC buy-and-hold, initial 50/50 ETH/SOL drifting Beta, and initial 50% BTC + 25% ETH + 25% SOL drifting buy-and-hold. Beta entries in the candidate reset to 50/50 ETH/SOL after cost and then drift without periodic internal rebalance.
+
+Valid classification precedence is: `INVALID_EXECUTION` -> `FAIL_NO_STABLE_PARAMETER_PLATEAU` -> `FAIL_STABLE_PLATEAU_NOT_COST_ROBUST` -> `FAIL_STABLE_PLATEAU_NOT_ECONOMICALLY_RELEVANT` -> `FAIL_STABLE_PLATEAU_NOT_TEMPORALLY_OR_DEPENDENCE_ROBUST` -> `PASS_PARAMETER_FREEZE_ELIGIBLE`. A PASS only freezes one `(L*,kappa*)` for a later **new research ID**.
+
+The future unique execution must persist the complete surface and geometry tables plus selected representative and benchmark daily NAV/drawdown/state/turnover/cost paths. Closeout may not recompute economics to draw charts.
+
+```text
+Canonical BRRK-0011                    NO CHANGE
+Phase 6                                NO CHANGE
+production_authorized_components       []
+production_authorized                  false
+signature_authorized                   false
+order_submission_authorized            false
+```
+
+**Exact next step after prereg merge:** implementation-only with synthetic/unit contract tests. Real 0058 historical parameter-surface execution remains forbidden until a separately merged controlled-execution boundary exists.

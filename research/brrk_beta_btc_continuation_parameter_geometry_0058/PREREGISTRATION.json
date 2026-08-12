@@ -1,0 +1,465 @@
+{
+  "schema_version": 1,
+  "research_id": "BRRK-BETA-BTC-CONTINUATION-PARAMETER-GEOMETRY-0058",
+  "research_family_id": "BRRK_BETA_TO_BTC_CONTINUATION",
+  "research_domain": "PORTFOLIO_INTEGRATION",
+  "research_governance_version": 1,
+  "governance_mode": "PROGRAM_GOVERNED_V1",
+  "objective_type": "PORTFOLIO_INTEGRATION",
+  "created_before_result": true,
+  "stage": "NUMERICAL_PREREGISTRATION",
+  "result_status": "PREREGISTERED_NOT_RUN",
+  "actual_variants_evaluated": 0,
+  "evidence_refs": [],
+  "design_authority": {
+    "path": "research/governance/BRRK_BETA_BTC_CONTINUATION_PARAMETER_GEOMETRY_0058_DESIGN_FREEZE_2026-08-12.md",
+    "design_merge_sha": "72976595dc3ce5d00bdb3264fe4911d492bbb7a9",
+    "design_blob_sha": "eedf2998874ad1d5337bc49e9c162cbab66d3b4d",
+    "design_pr": 210,
+    "design_changed_after_merge": false
+  },
+  "question": "Does a simple two-parameter causal Beta-versus-BTC continuation rule exhibit a broad connected after-cost terminal-wealth plateau under frozen finite-difference sensitivity analysis, permitting one representative pair to be selected mechanically without using the historical wealth argmax?",
+  "economic_objective": "IDENTIFY_BROAD_LOCALLY_INSENSITIVE_AFTER_COST_TERMINAL_WEALTH_PLATEAU_AND_FREEZE_ONE_GEOMETRIC_REPRESENTATIVE_FOR_LATER_NEW_ID_STUDY",
+  "variant_budget": {
+    "parameter_surface_allowed": true,
+    "declared_lattice_cells": 108,
+    "actual_cells_evaluated_before_execution": 0,
+    "third_tuning_coordinate_allowed": false,
+    "adaptive_refinement_allowed": false,
+    "local_zoom_allowed": false,
+    "second_stage_search_allowed": false
+  },
+  "immutable_bindings": {
+    "0047_source_loader": {
+      "path": "research/brrk_beta_handoff_0047/engine.py",
+      "blob_sha": "059b55961e279dab41ba29b5b017de0922e4f33c"
+    },
+    "market_evidence": {
+      "path": "research/brrk_beta_handoff_0047/evidence/MARKET_EVIDENCE.json",
+      "blob_sha": "64ebf5c6deaf3f34dbeac715378f196ff0f4fafe",
+      "payload_sha256": "d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193"
+    },
+    "0057_closeout": {
+      "path": "research/brrk_simple_eth_sol_beta_router_interface_replication_0057/CLOSEOUT.json",
+      "blob_sha": "bd8dfb123327ee93a5d90a0a672c20d37831fd0b",
+      "status": "FAIL_SIMPLE_BETA_ROUTER_COST_FRAGILE_CLOSED"
+    }
+  },
+  "data_contract": {
+    "dataset_slice_ref": "BRRK-LEADERSHIP-ROTATION-0048-EXPOSED-HIST-V1",
+    "dataset_id": "BINANCE-SPOT-BTC-ETH-SOL-UTC-DAILY-OHLCV-TRADES",
+    "source_common_start": "2020-08-11T00:00:00Z",
+    "source_common_end": "2026-08-02T00:00:00Z",
+    "source_common_rows": 2183,
+    "assets_consumed": [
+      "BTC",
+      "ETH",
+      "SOL"
+    ],
+    "field_consumed": "daily_close",
+    "network_fetch_allowed": false,
+    "replacement_dataset_allowed": false,
+    "synthetic_fill_allowed": false,
+    "missing_row_interpolation_allowed": false,
+    "researcher_exposed_history": true,
+    "contamination_state": "RESEARCHER_EXPOSED_HISTORY",
+    "data_budget": "DEVELOPMENT",
+    "independent_oos": false
+  },
+  "source_interface_contract": {
+    "source_index_type": "pandas.DatetimeIndex",
+    "source_timezone_state": "TZ_NAIVE_UTC_NORMALIZED_DAILY_DATES",
+    "source_index_tz_must_be_none": true,
+    "source_indexes_identical_BTC_ETH_SOL": true,
+    "source_indexes_unique": true,
+    "source_indexes_strictly_increasing": true,
+    "source_indexes_midnight_normalized": true,
+    "semantic_timezone": "UTC",
+    "timezone_localization_required_by_0058_engine": false,
+    "tz_convert_allowed": false,
+    "time_shift_allowed": false,
+    "resampling_allowed": false,
+    "row_add_delete_allowed": false,
+    "fill_allowed": false,
+    "interpolation_allowed": false,
+    "refetch_allowed": false,
+    "provider_substitution_allowed": false,
+    "alternate_loader_allowed": false
+  },
+  "parameter_lattice": {
+    "L_values": [
+      20,
+      40,
+      60,
+      80,
+      100,
+      120,
+      140,
+      160,
+      180,
+      200,
+      220,
+      240
+    ],
+    "L_min": 20,
+    "L_max": 240,
+    "L_step": 20,
+    "L_count": 12,
+    "kappa_values": [
+      0.0,
+      0.25,
+      0.5,
+      0.75,
+      1.0,
+      1.25,
+      1.5,
+      1.75,
+      2.0
+    ],
+    "kappa_min": 0.0,
+    "kappa_max": 2.0,
+    "kappa_step": 0.25,
+    "kappa_count": 9,
+    "total_cells": 108,
+    "grid_order": "L_ASCENDING_THEN_KAPPA_ASCENDING",
+    "adaptive_refinement_allowed": false,
+    "justification": "L uses a uniform 20-session lattice spanning pre-existing 20/60/120/240 project trend scales; kappa is dimensionless standardized continuation evidence from 0 through the conventional 2.0-sigma scale. Neither domain is derived from 0058 economics."
+  },
+  "evaluation_window": {
+    "max_signal_lookback_days": 240,
+    "volatility_window_valid_d_observations": 240,
+    "first_signal_origin": "2021-04-08T00:00:00Z",
+    "last_signal_origin": "2026-08-01T00:00:00Z",
+    "terminal_close": "2026-08-02T00:00:00Z",
+    "evaluation_origin_count": 1942,
+    "held_period_count": 1942,
+    "calendar_span_days": 1942,
+    "all_cells_and_benchmarks_share_identical_window": true
+  },
+  "signal_rule": {
+    "relative_log_state": "z_t = 0.5*log(ETH_close_t/BTC_close_t) + 0.5*log(SOL_close_t/BTC_close_t)",
+    "daily_change": "d_t = z_t - z_(t-1)",
+    "volatility_scale": "sigma240_t = sample_std(ddof=1) of most recent 240 valid d observations through t",
+    "score": "S_t(L) = (z_t-z_(t-L))/((sigma240_t+1e-12)*sqrt(L))",
+    "beta_state": "S_t(L) > kappa",
+    "btc_state": "S_t(L) <= kappa",
+    "exact_equality_state": "BTC",
+    "probability_used": false,
+    "secondary_filter_used": false,
+    "state_hysteresis_used": false,
+    "minimum_hold_used": false
+  },
+  "causal_timing": {
+    "information_cutoff": "COMPLETED_UTC_DAILY_CLOSE_T",
+    "decision_time": "AFTER_COMPLETED_CLOSE_T",
+    "held_return": "T_TO_T_PLUS_1_CLOSE_TO_CLOSE",
+    "cost_debit_time": "AFTER_STATE_DECISION_BEFORE_T_TO_T_PLUS_1_RETURN",
+    "same_period_return_capture_allowed": false,
+    "intraday_information_allowed": false
+  },
+  "portfolio_contract": {
+    "starting_nav": 1.0,
+    "starting_state": "CASH_BEFORE_FIRST_ENTRY_ONLY",
+    "allowed_post_entry_states": [
+      "BTC",
+      "BETA"
+    ],
+    "btc_state_weights": {
+      "BTC": 1.0,
+      "ETH": 0.0,
+      "SOL": 0.0
+    },
+    "beta_entry_weights": {
+      "BTC": 0.0,
+      "ETH": 0.5,
+      "SOL": 0.5
+    },
+    "beta_while_state_persists": "DRIFT_COMPONENT_VALUES_WITH_NO_PERIODIC_INTERNAL_REBALANCE",
+    "beta_reentry": "RESET_POST_COST_BETA_VALUE_WEIGHTS_TO_50_50_ETH_SOL",
+    "signal_proxy_weights_do_not_drift": true,
+    "cash_after_initial_entry_allowed": false,
+    "leverage_allowed": false,
+    "shorting_allowed": false,
+    "btc_to_cash_allowed": false
+  },
+  "benchmark_contract": {
+    "B0_STATIC_BTC": "one initial 100% BTC entry then buy-and-hold",
+    "B1_STATIC_BETA": "one initial 50% ETH + 50% SOL entry then independent component drift with no rebalance",
+    "B2_STATIC_BTC_BETA": "one initial 50% BTC + 25% ETH + 25% SOL entry then all components drift with no rebalance",
+    "B2_initial_btc_weight": 0.5,
+    "B2_initial_beta_weight": 0.5,
+    "B2_beta_split_ETH_SOL": [
+      0.5,
+      0.5
+    ],
+    "periodic_rebalancing_allowed": false,
+    "all_benchmarks_pay_initial_entry_cost": true,
+    "best_static_tie_break": [
+      "B0_STATIC_BTC",
+      "B1_STATIC_BETA",
+      "B2_STATIC_BTC_BETA"
+    ]
+  },
+  "transaction_cost_contract": {
+    "cost_semantics": "EXECUTED_L1_TURNOVER_TIMES_BPS",
+    "primary_cost_bps_per_unit_l1": 5.0,
+    "stress_cost_bps_per_unit_l1": [
+      10.0,
+      20.0
+    ],
+    "cost_rate_formula": "cost_bps/10000",
+    "cost_formula": "cost_t = pre_trade_NAV_t * executed_L1_turnover_t * cost_rate",
+    "post_cost_nav_formula": "post_trade_NAV_t = pre_trade_NAV_t - cost_t",
+    "initial_any_full_investment_l1": 1.0,
+    "btc_to_beta_l1": 2.0,
+    "beta_to_btc_l1": 2.0,
+    "unchanged_btc_l1": 0.0,
+    "unchanged_beta_l1": 0.0,
+    "beta_internal_rebalance_l1": 0.0,
+    "cost_debit_order": "BEFORE_T_TO_T_PLUS_1_HELD_RETURN"
+  },
+  "wealth_accounting": {
+    "terminal_wealth": "W_T = NAV at 2026-08-02T00:00:00Z with W_0=1",
+    "surface_objective": "J_c(L,kappa)=log(W_c(L,kappa))",
+    "annualization_days": 365.25,
+    "net_cagr": "W_T^(365.25/1942)-1",
+    "numerical_dtype": "IEEE754_FLOAT64",
+    "strict_positive_tolerance": 1e-12,
+    "drawdown": "NAV_t/running_max(NAV_0..NAV_t)-1 with NAV_0=1 included",
+    "mdd": "minimum daily drawdown over complete path"
+  },
+  "finite_difference_geometry": {
+    "eligible_cells": "INTERIOR_ONLY_I=1..10_J=1..7_ZERO_BASED",
+    "edge_cells_plateau_eligible": false,
+    "nonfinite_any_cell_policy": "INVALID_EXECUTION",
+    "coordinate_normalization": "ONE_LATTICE_STEP_EQUALS_ONE_IN_EACH_AXIS",
+    "D_L": "(J[i+1,j]-J[i-1,j])/2",
+    "D_kappa": "(J[i,j+1]-J[i,j-1])/2",
+    "D_LL": "J[i+1,j]-2*J[i,j]+J[i-1,j]",
+    "D_kk": "J[i,j+1]-2*J[i,j]+J[i,j-1]",
+    "D_Lk": "(J[i+1,j+1]-J[i+1,j-1]-J[i-1,j+1]+J[i-1,j-1])/4",
+    "gradient_norm": "sqrt(D_L^2 + D_kappa^2)",
+    "hessian_matrix": "[[D_LL,D_Lk],[D_Lk,D_kk]]",
+    "hessian_norm": "max(abs(eigenvalues_of_symmetric_2x2_H))",
+    "gradient_threshold": 0.04879016416943205,
+    "gradient_threshold_semantics": "ln(1.05)",
+    "hessian_threshold": 0.09531017980432493,
+    "hessian_threshold_semantics": "ln(1.10)",
+    "stable_cell_rule": "gradient_norm <= ln(1.05) AND hessian_spectral_norm <= ln(1.10)"
+  },
+  "plateau_contract": {
+    "primary_surface_cost_bps": 5.0,
+    "adjacency": "FOUR_NEIGHBOR_AXIS_ALIGNED_INTERIOR_CELLS_ONLY",
+    "minimum_component_cells": 9,
+    "minimum_distinct_L_levels": 3,
+    "minimum_distinct_kappa_levels": 3,
+    "primary_plateau_definition": "connected component of 5bps stable-cell mask satisfying all minimum-support rules",
+    "cost_coherent_mask": "stable_5bps AND stable_10bps AND stable_20bps at identical interior cell",
+    "cost_coherent_component_definition": "connected component of cost-coherent mask satisfying identical minimum-support rules",
+    "boundary_only_component_allowed": false,
+    "single_cell_peak_allowed": false,
+    "ridge_without_3x3_span_allowed": false
+  },
+  "component_and_representative_selection": {
+    "candidate_components": "ADMISSIBLE_COST_COHERENT_COMPONENTS_ONLY",
+    "component_rank_1": "LARGEST_CELL_COUNT",
+    "component_exact_support_tie_break": "LEXICOGRAPHIC_ASCENDING_BY_MIN_L_INDEX_THEN_MIN_KAPPA_INDEX",
+    "representative": "MEDOID_MINIMIZING_SUM_OF_SQUARED_EUCLIDEAN_DISTANCES_IN_NORMALIZED_GRID_INDEX_COORDINATES_TO_ALL_COMPONENT_CELLS",
+    "medoid_tie_break": "LEXICOGRAPHIC_ASCENDING_BY_L_INDEX_THEN_KAPPA_INDEX",
+    "historical_argmax": "DESCRIPTIVE_ONLY_NO_SELECTION_OR_PROMOTION_AUTHORITY",
+    "historical_argmax_tie_break": "LEXICOGRAPHIC_ASCENDING_BY_L_INDEX_THEN_KAPPA_INDEX"
+  },
+  "economic_relevance": {
+    "primary_cost_bps": 5.0,
+    "best_static_definition": "largest terminal wealth among B0/B1/B2 at same cost",
+    "primary_margin_log_wealth": 0.04879016416943205,
+    "primary_margin_semantics": "selected representative log(W_rep/W_best_static) > ln(1.05)",
+    "stress_costs_bps": [
+      10.0,
+      20.0
+    ],
+    "stress_survival": "selected representative log(W_rep/W_best_static_at_same_cost) > 1e-12 at BOTH 10 and 20 bps"
+  },
+  "temporal_robustness": {
+    "block_sizes": [
+      486,
+      486,
+      485,
+      485
+    ],
+    "blocks": [
+      {
+        "block": 1,
+        "origin_start": "2021-04-08T00:00:00Z",
+        "origin_end": "2022-08-06T00:00:00Z",
+        "terminal_close": "2022-08-07T00:00:00Z",
+        "held_periods": 486
+      },
+      {
+        "block": 2,
+        "origin_start": "2022-08-07T00:00:00Z",
+        "origin_end": "2023-12-05T00:00:00Z",
+        "terminal_close": "2023-12-06T00:00:00Z",
+        "held_periods": 486
+      },
+      {
+        "block": 3,
+        "origin_start": "2023-12-06T00:00:00Z",
+        "origin_end": "2025-04-03T00:00:00Z",
+        "terminal_close": "2025-04-04T00:00:00Z",
+        "held_periods": 485
+      },
+      {
+        "block": 4,
+        "origin_start": "2025-04-04T00:00:00Z",
+        "origin_end": "2026-08-01T00:00:00Z",
+        "terminal_close": "2026-08-02T00:00:00Z",
+        "held_periods": 485
+      }
+    ],
+    "best_static_definition": "largest full-horizon terminal wealth among B0/B1/B2 at 5bps",
+    "global_no_reset_nav": true,
+    "block_relative_statistic": "log(block_growth_selected_rep/block_growth_B_STAR)",
+    "pass_rule": "strictly >1e-12 in at least 3 of 4 blocks",
+    "per_block_dynamic_best_static_oracle_allowed": false
+  },
+  "dependence_aware_inference": {
+    "scope": "SELECTED_REPRESENTATIVE_PRIMARY_5BPS_ONLY",
+    "interpretation": "DEVELOPMENT_SELECTION_CONDITIONAL_ROBUSTNESS_NOT_INDEPENDENT_OOS_INFERENCE",
+    "paired_series": "d_(b,t)=log(g_selected_rep_t)-log(g_b_t)",
+    "observed_statistic": "mu_b=mean_t d_(b,t)",
+    "bootstrap_type": "ORDINARY_MOVING_BLOCK_BOOTSTRAP_ALIGNED_ACROSS_ALL_THREE_BENCHMARK_DIFFERENTIAL_SERIES",
+    "block_length": 60,
+    "replicates": 10000,
+    "seed": 1844716895,
+    "eligible_start_indices_zero_based": "0..1882",
+    "blocks_per_replicate_before_truncation": 33,
+    "resampling_rule": "draw starts independently uniformly with replacement; concatenate 60-row blocks; truncate to 1942; use identical sampled row indices jointly across B0/B1/B2",
+    "replicate_statistic": "T_r = max_b(mu_b - mu_star_(r,b))",
+    "quantile": "ordinary Type-7 linear 0.95 quantile of T_r",
+    "lower_bound": "LCB_b = mu_b - q95",
+    "pass_rule": "all three LCB_b > 0",
+    "rng_implementation": "NUMPY_DEFAULT_RNG_PCG64_VIA_np.random.default_rng",
+    "selected_state_recomputed_inside_bootstrap": false,
+    "bootstrap_operates_on_realized_net_log_growth_differentials": true
+  },
+  "classification_precedence": [
+    "INVALID_EXECUTION",
+    "FAIL_NO_STABLE_PARAMETER_PLATEAU",
+    "FAIL_STABLE_PLATEAU_NOT_COST_ROBUST",
+    "FAIL_STABLE_PLATEAU_NOT_ECONOMICALLY_RELEVANT",
+    "FAIL_STABLE_PLATEAU_NOT_TEMPORALLY_OR_DEPENDENCE_ROBUST",
+    "PASS_PARAMETER_FREEZE_ELIGIBLE"
+  ],
+  "gates": {
+    "G0_INTEGRITY": "all immutable source/interface/calendar/value/lattice/timing/accounting/numerical/output-schema and exactly-once preconditions pass",
+    "G1_PRIMARY_PLATEAU": "at least one admissible 5bps plateau component exists",
+    "G2_COST_ROBUSTNESS": "at least one admissible cost-coherent component exists and selected representative strictly dominates best static at both 10bps and 20bps",
+    "G3_ECONOMIC_RELEVANCE": "selected representative 5bps log terminal-wealth uplift over best static > ln(1.05)",
+    "G4_TEMPORAL_ROBUSTNESS": "selected representative relative log growth vs full-horizon B_STAR positive in >=3/4 frozen blocks",
+    "G5_DEPENDENCE_AWARE_ROBUSTNESS": "all three simultaneous one-sided 95% MBB lower bounds >0"
+  },
+  "required_output_schema": {
+    "surface_table_every_cell_every_cost": [
+      "L",
+      "kappa",
+      "cost_bps",
+      "terminal_wealth",
+      "cagr",
+      "mdd",
+      "executed_l1_turnover",
+      "state_switch_count",
+      "beta_holding_fraction"
+    ],
+    "geometry_every_interior_cell_every_cost": [
+      "L",
+      "kappa",
+      "cost_bps",
+      "D_L",
+      "D_kappa",
+      "gradient_norm",
+      "D_LL",
+      "D_kk",
+      "D_Lk",
+      "hessian_spectral_norm",
+      "stable_cell"
+    ],
+    "plateau_trace": [
+      "primary_5bps_components",
+      "cost_coherent_components",
+      "selected_component_id",
+      "selected_component_cells",
+      "component_ranking_trace",
+      "selected_representative",
+      "medoid_distance_sum",
+      "historical_argmax_descriptive_only"
+    ],
+    "selected_representative_daily_path": [
+      "date",
+      "nav",
+      "drawdown",
+      "state",
+      "pre_trade_nav",
+      "executed_l1_turnover",
+      "transaction_cost",
+      "post_trade_nav",
+      "held_period_growth"
+    ],
+    "benchmark_daily_paths": [
+      "date",
+      "benchmark",
+      "nav",
+      "drawdown",
+      "held_period_growth"
+    ],
+    "robustness": [
+      "four_block_statistics",
+      "bootstrap_means",
+      "bootstrap_q95",
+      "bootstrap_lcbs"
+    ],
+    "hash_chain_required": true,
+    "lossless_surface_required": true,
+    "closeout_remeasurement_allowed": false
+  },
+  "mandatory_diagnostics": [
+    "selected_L",
+    "selected_kappa",
+    "selected_component_size",
+    "selected_component_L_span",
+    "selected_component_kappa_span",
+    "historical_argmax_L",
+    "historical_argmax_kappa",
+    "historical_argmax_terminal_wealth",
+    "selected_terminal_wealth_by_cost",
+    "selected_cagr_by_cost",
+    "selected_mdd_by_cost",
+    "selected_total_l1_turnover",
+    "selected_switch_count",
+    "selected_beta_holding_fraction",
+    "average_state_spell_days",
+    "median_state_spell_days",
+    "longest_underperformance_interval_vs_5bps_B_STAR",
+    "calendar_year_returns_2021_partial_through_2026_partial"
+  ],
+  "stop_rules": {
+    "same_id_grid_change_allowed_after_output": false,
+    "same_id_threshold_relaxation_allowed": false,
+    "same_id_plateau_rule_change_allowed": false,
+    "same_id_benchmark_change_allowed": false,
+    "same_id_cost_change_allowed": false,
+    "same_id_bootstrap_change_allowed": false,
+    "same_id_rescue_allowed": false,
+    "same_id_rerun_allowed_after_durable_attempt": false,
+    "pass_successor_requires_new_research_id": true,
+    "fail_continuation_requires_new_research_id": true
+  },
+  "production_and_canonical_isolation": {
+    "canonical_strategy_changed": false,
+    "phase6_changed": false,
+    "production_authorized_components": [],
+    "production_authorized": false,
+    "signature_authorized": false,
+    "order_submission_authorized": false
+  }
+}
