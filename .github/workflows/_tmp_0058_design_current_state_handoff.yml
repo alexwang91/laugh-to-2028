@@ -1,0 +1,63 @@
+name: Temporary 0058 design handoff
+
+on:
+  push:
+    branches:
+      - research/0058-beta-btc-continuation-parameter-geometry-design
+
+permissions:
+  contents: write
+
+jobs:
+  materialize:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/0058-beta-btc-continuation-parameter-geometry-design
+          fetch-depth: 0
+
+      - name: Update CURRENT_STATE only
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          p = Path('docs/CURRENT_STATE.md')
+          s = p.read_text()
+
+          old_branch = 'Current research branch: **`research/0057-simple-beta-router-interface-replication-closeout`**  '
+          new_branch = 'Current research branch: **`research/0058-beta-btc-continuation-parameter-geometry-design`**  '
+          if old_branch not in s and new_branch not in s:
+              raise SystemExit('expected CURRENT_STATE research-branch line not found')
+          s = s.replace(old_branch, new_branch, 1)
+
+          old_exec = 'BRRK Beta router interface replication 0057 FAIL_SIMPLE_BETA_ROUTER_COST_FRAGILE / CLOSED'
+          new_exec = old_exec + '\nBRRK Beta->BTC parameter geometry 0058     DESIGN FROZEN / NUMERICAL PREREG NOT YET FROZEN / NOT RUN'
+          if 'BRRK Beta->BTC parameter geometry 0058' not in s:
+              if old_exec not in s:
+                  raise SystemExit('expected 0057 executive-state line not found')
+              s = s.replace(old_exec, new_exec, 1)
+
+          marker = '## 0058 Beta-to-BTC parameter-geometry design handoff'
+          if marker not in s:
+              s = s.rstrip() + '''\n\n---\n\n## 0058 Beta-to-BTC parameter-geometry design handoff\n\n`BRRK-BETA-BTC-CONTINUATION-PARAMETER-GEOMETRY-0058` is now the active **DESIGN-ONLY** successor after immutable 0057 closure.\n\nDesign authority:\n\n```text\nresearch ID                            BRRK-BETA-BTC-CONTINUATION-PARAMETER-GEOMETRY-0058\nresearch family                        BRRK_BETA_TO_BTC_CONTINUATION\ndesign branch                          research/0058-beta-btc-continuation-parameter-geometry-design\ndesign authority commit                88192a370b07995b0753b8fa8531a5b05c34a001\ndesign freeze                           research/governance/BRRK_BETA_BTC_CONTINUATION_PARAMETER_GEOMETRY_0058_DESIGN_FREEZE_2026-08-12.md\nstage                                   DESIGN FROZEN / PREREG ABSENT / NOT IMPLEMENTED / NOT RUN\nparameter-surface economics             NOT RUN\nregistry owner                          ABSENT UNTIL NUMERICAL PREREGISTRATION\n```\n\nFrozen design architecture: BTC is the defensive anchor; Beta is a symmetric ETH/SOL tier and does **not** consume the failed 0057 ETH/SOL router. Signal state is `z_t = 0.5*log(ETH/BTC) + 0.5*log(SOL/BTC)`. The only future tunable coordinates are integer lookback `L` and non-negative standardized threshold `kappa`; no third tuning coordinate, adaptive search, ETH/SOL leader model, BTC-to-cash timing, leverage or shorting is opened.\n\n0058 is a governed DEVELOPMENT parameter-identification study. After a separately merged numerical preregistration freezes one finite `(L,kappa)` lattice, the intended analysis uses finite-difference gradient and Hessian/curvature diagnostics on after-cost log terminal wealth to identify a broad connected stable plateau. Parameter selection must use deterministic plateau support and geometric medoid/center logic; the historical terminal-wealth argmax has descriptive-only authority. If no admissible plateau exists, 0058 closes without selecting a sharp peak.\n\nA future unique 0058 result must persist the complete parameter surface plus daily NAV, drawdown, BTC/Beta state and turnover/cost paths for the mechanically selected representative and frozen static benchmarks so plots can be inspected later without portfolio recomputation.\n\nNo numerical lattice, gradient/curvature tolerance, plateau-size gate, static BTC/Beta benchmark weight, temporal partition, bootstrap setting or PASS/FAIL cutoff is frozen yet. Those belong only to the next numerical/data preregistration after this design merges and must be fixed before any 0058 market economics.\n\nAll history through 2026-08-02 remains researcher-exposed DEVELOPMENT. A 0058 PASS can only freeze one `(L*, kappa*)` for a later **new research ID**; it is not independent OOS, canonical, Phase-6 or production evidence.\n\n```text\nCanonical BRRK-0011                    NO CHANGE\nPhase 6                                NO CHANGE\nproduction_authorized_components       []\nproduction_authorized                  false\nsignature_authorized                   false\norder_submission_authorized            false\n```\n\n**Exact next step:** merge the 0058 design through the normal standing governance checks. Only after design merge may the separate numerical/data preregistration create the central 0058 registry owner and freeze the exact finite parameter lattice, derivative/curvature conventions, plateau gates, benchmark weights, cost/temporal/dependence contracts and immutable output schema. Do not run the 0058 historical parameter surface before that later controlled execution boundary merges.\n'''
+
+          p.write_text(s)
+          PY
+
+          rm -f .github/workflows/_tmp_0058_design_current_state_handoff.yml
+
+          test ! -e .github/workflows/_tmp_0058_design_current_state_handoff.yml
+          git diff --name-only | sort
+          test "$(git diff --name-only | sort)" = "docs/CURRENT_STATE.md"
+
+      - name: Commit handoff and self-delete
+        shell: bash
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add docs/CURRENT_STATE.md .github/workflows/_tmp_0058_design_current_state_handoff.yml
+          git commit -m "docs: hand off 0058 parameter-geometry design"
+          git push origin HEAD:research/0058-beta-btc-continuation-parameter-geometry-design
