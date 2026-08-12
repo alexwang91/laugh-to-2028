@@ -50,8 +50,10 @@ jobs:
           rm -f .github/workflows/_tmp_0058_design_current_state_handoff.yml
 
           test ! -e .github/workflows/_tmp_0058_design_current_state_handoff.yml
-          git diff --name-only | sort
-          test "$(git diff --name-only | sort)" = "docs/CURRENT_STATE.md"
+          actual="$(git diff --name-only | sort)"
+          printf '%s\n' "$actual"
+          expected="$(printf '%s\n%s' '.github/workflows/_tmp_0058_design_current_state_handoff.yml' 'docs/CURRENT_STATE.md')"
+          test "$actual" = "$expected"
 
       - name: Commit handoff and self-delete
         shell: bash
