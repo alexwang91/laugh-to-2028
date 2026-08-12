@@ -109,8 +109,10 @@ jobs:
 
           state = state_path.read_text(encoding="utf-8")
           replacements = {
-            "Current research branch:\n- `research/0056-simple-beta-router-design`":
-              "Current research branch:\n- `research/0056-simple-beta-router-prereg`",
+            "Current `main` research merge: **`4c6d801ca6d5db7545dcab460543c46b70d3927a`**":
+              "Current `main` research merge: **`16a23ce2115647beead7f7abdab68a6b4cb406fe`**",
+            "Current research branch: **`research/0056-simple-beta-router-design`**":
+              "Current research branch: **`research/0056-simple-beta-router-prereg`**",
             "## 16. 0056 simple ETH/SOL Beta-router design freeze":
               "## 16. 0056 simple ETH/SOL Beta-router numerical preregistration",
             "Intended reusable daily DEVELOPMENT dataset for the later numerical preregistration:":
@@ -129,7 +131,6 @@ jobs:
           PY
 
           git diff --check
-          git diff -- config/research_registry.json docs/CURRENT_STATE.md
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add config/research_registry.json docs/CURRENT_STATE.md
