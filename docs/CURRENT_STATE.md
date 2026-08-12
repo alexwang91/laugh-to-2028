@@ -2,8 +2,8 @@
 
 Last updated: **2026-08-12**  
 Authoritative repository: `alexwang91/laugh-to-2028`  
-Current `main` research merge: **`72976595dc3ce5d00bdb3264fe4911d492bbb7a9`**  
-Current research branch: **`research/0058-beta-btc-continuation-parameter-geometry-prereg`**  
+Current `main` research merge: **`e6d94b30c8bb4d126d6c234c30980d701a9ababc`**  
+Current research branch: **`research/0058-beta-btc-continuation-parameter-geometry-implementation`**  
 Status of this document: **AUTHORITATIVE OPERATING SNAPSHOT**
 
 > GitHub `main`, immutable research artifacts and machine registries remain the sources of truth. This file is the compact human handoff, not a substitute for preregistration, execution, evidence, recovery or closeout artifacts.
@@ -41,7 +41,7 @@ BRRK 4h-native readiness 0054          FAIL_4H_NATIVE_TRAINING_PRECISION_NOT_EST
 BRRK 4h structural readiness 0055     FAIL_4H_STRUCTURAL_3D_TRAINING_PRECISION_NOT_ESTABLISHED / CLOSED
 BRRK simple ETH/SOL Beta router 0056  INVALID_EXECUTION / CLOSED / NO ECONOMIC CONCLUSION
 BRRK Beta router interface replication 0057 FAIL_SIMPLE_BETA_ROUTER_COST_FRAGILE / CLOSED
-BRRK Beta->BTC parameter geometry 0058     NUMERICAL PREREG FROZEN ON BRANCH / NOT RUN
+BRRK Beta->BTC parameter geometry 0058     IMPLEMENTATION FROZEN ON BRANCH / SYNTHETIC ONLY / NOT RUN
 
 Canonical BRRK-0011                    NO CHANGE
 Phase 7                                MONITOR_ONLY / LAUNCH BLOCKED
@@ -826,3 +826,17 @@ order_submission_authorized            false
 ```
 
 **Exact next step after prereg merge:** implementation-only with synthetic/unit contract tests. Real 0058 historical parameter-surface execution remains forbidden until a separately merged controlled-execution boundary exists.
+
+---
+
+## 0058 implementation-only handoff
+
+0058 numerical preregistration merged at `e6d94b30c8bb4d126d6c234c30980d701a9ababc`. The implementation branch adds only the frozen parameter-geometry engine, 17 synthetic contract tests, `IMPLEMENTATION_BOUNDARY.json`, README and this CURRENT_STATE handoff.
+
+The engine is data-agnostic: it accepts caller-supplied BTC/ETH/SOL DataFrames but contains no 0047 market loader import, filesystem market reader, network request, `run_once.py`, execution interface, durable marker or result artifact. It implements the exact 108-cell lattice, 5/10/20 bps paths, 240-day score normalization, BTC/Beta accounting, static benchmarks, finite-difference gradient/Hessian geometry, connected plateau support, cost-coherent medoid selection, G1-G5 hierarchy, four fixed temporal blocks and the frozen aligned moving-block bootstrap.
+
+Synthetic Actions run `31640495960` passed 17/17 tests. A complete frozen-calendar flat-price synthetic fixture produced exactly 324 surface rows, 210 interior geometry rows, 1,942 candidate daily rows and 5,826 primary benchmark rows; the expected synthetic classification was `FAIL_STABLE_PLATEAU_NOT_COST_ROBUST` because the candidate tied static BTC at stress costs. This synthetic classification has **zero scientific authority**.
+
+Zero-result guard: `REAL_0058_HISTORICAL_PAYLOAD_NOT_LOADED=true`, `REAL_0058_PARAMETER_SURFACE_ECONOMICS_NOT_EXECUTED=true`, `ACTUAL_HISTORICAL_VARIANTS_EVALUATED=0`.
+
+No controlled-execution boundary exists. Next legal stage after implementation merge is a separate zero-result controlled-execution boundary; real historical 0058 surface execution remains forbidden until that later boundary merges.

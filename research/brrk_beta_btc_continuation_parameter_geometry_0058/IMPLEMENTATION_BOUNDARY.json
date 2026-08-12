@@ -1,0 +1,142 @@
+{
+  "research_id": "BRRK-BETA-BTC-CONTINUATION-PARAMETER-GEOMETRY-0058",
+  "stage": "PARAMETER_GEOMETRY_IMPLEMENTATION_ONLY",
+  "base_main_prereg_merge_sha": "e6d94b30c8bb4d126d6c234c30980d701a9ababc",
+  "status": "IMPLEMENTED_FOR_SYNTHETIC_CONTRACT_TESTING_ONLY_REAL_HISTORICAL_EVALUATION_FORBIDDEN",
+  "actual_variants_evaluated": 0,
+  "immutable_prereg_git_blobs": {
+    "research/brrk_beta_btc_continuation_parameter_geometry_0058/PREREGISTRATION.json": "c374ae680736168f0f77f89fe8bef9fad0aaae27",
+    "research/brrk_beta_btc_continuation_parameter_geometry_0058/DATASET_DECLARATION.json": "23dd077f30d23404aa0b2f29776e35845ab089e3"
+  },
+  "immutable_source_dependency": {
+    "source_loader_path": "research/brrk_beta_handoff_0047/engine.py",
+    "source_loader_git_blob_sha": "059b55961e279dab41ba29b5b017de0922e4f33c",
+    "market_evidence_path": "research/brrk_beta_handoff_0047/evidence/MARKET_EVIDENCE.json",
+    "market_evidence_git_blob_sha": "64ebf5c6deaf3f34dbeac715378f196ff0f4fafe",
+    "payload_sha256": "d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193",
+    "real_market_evidence_may_be_loaded_on_this_stage": false,
+    "network_refetch_allowed": false,
+    "replacement_dataset_allowed": false
+  },
+  "implementation_surface": {
+    "engine_path": "research/brrk_beta_btc_continuation_parameter_geometry_0058/engine.py",
+    "engine_git_blob_sha": "690e029588d6ff453eaabfa1e4ce5a7f3df2f139",
+    "synthetic_contract_tests_path": "research/brrk_beta_btc_continuation_parameter_geometry_0058/test_engine.py",
+    "synthetic_contract_tests_git_blob_sha": "76c3dc998d96bcf86359e4a41049c517f8dcaf7e",
+    "run_once_present": false,
+    "controlled_execution_interface_present": false,
+    "historical_result_path_present": false,
+    "historical_marker_present": false,
+    "market_loader_present": false
+  },
+  "frozen_scientific_contract": {
+    "assets": [
+      "BTC",
+      "ETH",
+      "SOL"
+    ],
+    "source_index_timezone_state": "TZ_NAIVE_UTC_NORMALIZED_DAILY_DATES",
+    "source_rows": 2183,
+    "origin_offset": 240,
+    "held_periods": 1942,
+    "L_values": [
+      20,
+      40,
+      60,
+      80,
+      100,
+      120,
+      140,
+      160,
+      180,
+      200,
+      220,
+      240
+    ],
+    "kappa_values": [
+      0.0,
+      0.25,
+      0.5,
+      0.75,
+      1.0,
+      1.25,
+      1.5,
+      1.75,
+      2.0
+    ],
+    "declared_parameter_cells": 108,
+    "cost_bps_per_l1": [
+      5.0,
+      10.0,
+      20.0
+    ],
+    "gradient_threshold": 0.04879016416943205,
+    "hessian_spectral_threshold": 0.09531017980432493,
+    "minimum_component_cells": 9,
+    "minimum_distinct_L_levels": 3,
+    "minimum_distinct_kappa_levels": 3,
+    "component_adjacency": "FOUR_NEIGHBOR_INTERIOR_ONLY",
+    "representative": "GEOMETRIC_MEDOID_OF_LARGEST_ADMISSIBLE_COST_COHERENT_COMPONENT",
+    "historical_argmax_authority": "DESCRIPTIVE_ONLY",
+    "temporal_block_sizes": [
+      486,
+      486,
+      485,
+      485
+    ],
+    "bootstrap_block_length": 60,
+    "bootstrap_replicates": 10000,
+    "bootstrap_seed": 1844716895,
+    "classification_precedence": [
+      "INVALID_EXECUTION",
+      "FAIL_NO_STABLE_PARAMETER_PLATEAU",
+      "FAIL_STABLE_PLATEAU_NOT_COST_ROBUST",
+      "FAIL_STABLE_PLATEAU_NOT_ECONOMICALLY_RELEVANT",
+      "FAIL_STABLE_PLATEAU_NOT_TEMPORALLY_OR_DEPENDENCE_ROBUST",
+      "PASS_PARAMETER_FREEZE_ELIGIBLE"
+    ]
+  },
+  "implementation_representation_semantics": {
+    "candidate_daily_path_date": "HELD_PERIOD_TERMINAL_CLOSE_SEMANTIC_UTC_Z_SUFFIX",
+    "candidate_trade_fields_reference": "DECISION_AFTER_IMMEDIATELY_PRECEDING_ORIGIN_CLOSE",
+    "beta_entry": "POST_COST_50_50_ETH_SOL",
+    "beta_persistence": "DRIFT_NO_PERIODIC_INTERNAL_REBALANCE",
+    "beta_reentry": "RESET_POST_COST_TO_50_50_ETH_SOL",
+    "btc_state": "100_PERCENT_BTC",
+    "initial_entry_l1": 1.0,
+    "btc_beta_switch_l1": 2.0,
+    "unchanged_state_l1": 0.0
+  },
+  "implementation_test_policy": {
+    "synthetic_only": true,
+    "synthetic_full_frozen_calendar_allowed": true,
+    "synthetic_output_has_scientific_authority": false,
+    "real_market_evidence_may_be_loaded": false,
+    "filesystem_market_loader_may_be_added": false,
+    "network_calls_may_be_added": false,
+    "real_0058_parameter_surface_may_be_computed": false,
+    "result_artifacts_may_be_created": false,
+    "actual_historical_variants_evaluated": 0
+  },
+  "synthetic_contract_evidence": {
+    "github_actions_run": 31640495960,
+    "0058_engine_tests_passed": 17,
+    "full_frozen_calendar_synthetic_surface_rows": 324,
+    "full_frozen_calendar_synthetic_geometry_rows": 210,
+    "full_frozen_calendar_synthetic_candidate_path_rows": 1942,
+    "zero_result_guard_passed": true,
+    "governance_validate_passed": true,
+    "no_drift_passed": true,
+    "real_0058_historical_payload_loaded": false,
+    "real_0058_parameter_surface_economics_executed": false,
+    "actual_historical_variants_evaluated": 0
+  },
+  "authority": {
+    "canonical_strategy_changed": false,
+    "phase6_changed": false,
+    "production_authorized_components": [],
+    "production_authorized": false,
+    "signature_authorized": false,
+    "order_submission_authorized": false
+  }
+}
