@@ -1,0 +1,36 @@
+name: Fix 0056 closeout whitespace check
+
+on:
+  push:
+    branches:
+      - research/0056-closeout-tooling-fix
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/0056-simple-beta-router-closeout-tooling
+          fetch-depth: 0
+      - name: Scope whitespace check to machine/result surfaces
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('.github/workflows/_tmp_0056_closeout_tooling.yml')
+          s=p.read_text()
+          old='          git diff --check\n'
+          new='          git diff --check -- config/research_registry.json research/brrk_simple_eth_sol_beta_router_0056\n'
+          assert s.count(old)==1
+          p.write_text(s.replace(old,new,1))
+          PY
+      - name: Commit fix to tooling branch
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add .github/workflows/_tmp_0056_closeout_tooling.yml
+          git commit -m 'Research closeout tooling [DRIFT_0]: exclude Markdown hard-breaks from whitespace gate'
+          git push origin HEAD:research/0056-simple-beta-router-closeout-tooling
