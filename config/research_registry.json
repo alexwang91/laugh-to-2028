@@ -3301,7 +3301,7 @@
       "validation_dataset_refs": [],
       "sealed_dataset_refs": [],
       "declared_variant_budget": 1,
-      "actual_variants_evaluated": 0,
+      "actual_variants_evaluated": 1,
       "parameter_candidate_count": 1,
       "stopping_rule": "After 0057 numerical preregistration, implementation-only and controlled-execution boundary each merge separately, execute exactly one DEVELOPMENT measurement. A valid result permanently closes 0057 to same-ID rerun, retuning, alternate adapter, threshold/lookback/model/benchmark/cost/partition/bootstrap changes or rescue. A durable attempt marker also closes automatic same-ID recomputation after any invalid execution.",
       "success_criteria": [
@@ -3355,7 +3355,9 @@
           "BOOTSTRAP=MOVING_BLOCK_60_X10000_SEED1844716895_SIMULTANEOUS_ONE_SIDED_95_LCB",
           "SOURCE_ADAPTER=TZ_NAIVE_TO_UTC_AWARE_BY_TZ_LOCALIZE_ONLY"
         ],
-        "actual_parameter_candidates_evaluated": [],
+        "actual_parameter_candidates_evaluated": [
+          "RM60_SIGN_ROUTER_WITH_FROZEN_TZ_LOCALIZE_UTC_ADAPTER"
+        ],
         "universes_evaluated": [
           "BINANCE_SPOT_ETH_SOL"
         ],
@@ -3393,14 +3395,22 @@
           "evidence_ref": "research/brrk_simple_eth_sol_beta_router_0056/PREREGISTRATION.json"
         }
       ],
-      "result_status": "PREREGISTERED_NOT_RUN",
-      "failure_reason": null,
-      "promotion_state": "NONE",
-      "evidence_refs": [],
+      "result_status": "FAIL_SIMPLE_BETA_ROUTER_COST_FRAGILE",
+      "failure_reason": "G2 cost survival failed: router terminal wealth beats all statics at 5 bps, but is below B1 static SOL at both 10 bps and 20 bps. G4 also fails with all simultaneous dependence-aware LCBs <= 0; frozen precedence classifies at G2.",
+      "promotion_state": "NO_PROMOTION",
+      "evidence_refs": [
+        "run:31618590484",
+        "artifact:brrk-0057-interface-replication-runtime-bundle",
+        "research/brrk_simple_eth_sol_beta_router_interface_replication_0057/PRIMARY_RESULT.json",
+        "research/brrk_simple_eth_sol_beta_router_interface_replication_0057/EXECUTION.json",
+        "research/brrk_simple_eth_sol_beta_router_interface_replication_0057/RUN_ONCE.marker",
+        "research/brrk_simple_eth_sol_beta_router_interface_replication_0057/CLOSEOUT.json"
+      ],
       "decision_refs": [
         "research/governance/BRRK_SIMPLE_ETH_SOL_BETA_ROUTER_INTERFACE_REPLICATION_0057_DESIGN_FREEZE_2026-08-12.md",
         "research/brrk_simple_eth_sol_beta_router_interface_replication_0057/PREREGISTRATION.json",
         "research/brrk_simple_eth_sol_beta_router_interface_replication_0057/DATASET_DECLARATION.json",
+        "research/brrk_simple_eth_sol_beta_router_interface_replication_0057/CLOSEOUT.json",
         "docs/CURRENT_STATE.md"
       ],
       "production_relevance": "Research-only interface-corrected replication of simple ETH/SOL Beta-routing economics on researcher-exposed DEVELOPMENT history. A PASS can only make a separately governed BTC-anchor plus routed-Beta study eligible; it cannot modify canonical BRRK, Phase 6 or production authority.",
@@ -3413,8 +3423,19 @@
         "0057 is DEVELOPMENT-only on researcher-exposed history and makes no independent-OOS claim.",
         "0056 remains immutable INVALID_EXECUTION_CLOSED and cannot be rerun or repaired.",
         "0057 changes only source representation compatibility through tz_localize(UTC) on validated copied tz-naive indexes; all 0056 scientific mechanics/gates are inherited unchanged.",
-        "No 0057 economic output is authorized before prereg merge, implementation-only merge and a separately merged controlled-execution boundary."
-      ]
+        "No 0057 economic output is authorized before prereg merge, implementation-only merge and a separately merged controlled-execution boundary.",
+        "Unique run 31618590484 validly classified FAIL_SIMPLE_BETA_ROUTER_COST_FRAGILE; G0/G1/G3 passed, G2/G4 failed.",
+        "At 5 bps router terminal wealth 31.7368 exceeded static SOL 30.6651, but at 10/20 bps router wealth 28.2984/22.4910 fell below static SOL 30.6498/30.6191.",
+        "The ETH/SOL micro-timing line is closed by the preregistered stopping rule; continuation requires a new-ID Beta-to-BTC continuation-value/full-cycle exit study."
+      ],
+      "evidence_scorecard": {
+        "temporal_novelty": "RESEARCHER_EXPOSED_DEVELOPMENT_NOT_INDEPENDENT_OOS",
+        "statistical_sufficiency": "G4_FAIL_ALL_SIMULTANEOUS_95PCT_DEPENDENCE_AWARE_LCBS_NONPOSITIVE",
+        "governance_integrity": "HIGH_EXACTLY_ONCE_HASH_BOUND_FINALIZED_WITHOUT_REMEASUREMENT",
+        "operational_realism": "CAUSAL_SPOT_FULL_CYCLE_ACCOUNTING_WITH_PREDECLARED_5_10_20_BPS_COST_PANEL",
+        "derived_confidence": "HIGH_FOR_FROZEN_DEVELOPMENT_DECISION",
+        "confidence_rule_ref": "research/brrk_simple_eth_sol_beta_router_interface_replication_0057/CLOSEOUT.json"
+      }
     }
   ],
   "research_governance_debt": [

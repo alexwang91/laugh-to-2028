@@ -1,0 +1,16 @@
+{
+  "research_id": "BRRK-SIMPLE-ETH-SOL-BETA-ROUTER-INTERFACE-REPLICATION-0057",
+  "dataset_slice_id": "BRRK-LEADERSHIP-ROTATION-0048-EXPOSED-HIST-V1",
+  "payload_sha256": "d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193",
+  "git_head_sha": "1d0b8fcf3ee49c180e90593afdb71047b34a28a7",
+  "finalized_at_utc": "2026-08-12T16:39:02Z",
+  "classification": "FAIL_SIMPLE_BETA_ROUTER_COST_FRAGILE",
+  "attempt_marker_sha256": "28e80c8135ff741aa3776f921ae4c92cc15d0ea8a29cb37e0a88b547429d938a",
+  "primary_result_sha256": "9920697ece45d5df73711dcf38045a8dc2f265759df4d88fee131b0cb64ece31",
+  "execution_sha256": "17079b7d45d9444736bbb1b5c7411596ba826fdd36f6a6506e386646c177543e",
+  "finalized_without_remeasurement": true,
+  "same_id_rerun_allowed": false,
+  "same_id_retuning_allowed": false,
+  "same_id_rescue_allowed": false,
+  "production_authorized": false
+}
