@@ -1,0 +1,44 @@
+name: Temporary 0056 owner-first rebuild
+
+on:
+  push:
+    branches:
+      - research/0056-simple-beta-router-prereg
+
+permissions:
+  contents: write
+
+jobs:
+  rebuild-owner-first:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/0056-simple-beta-router-prereg
+          fetch-depth: 0
+      - name: Restore registry owner before formal-path introduction
+        shell: bash
+        run: |
+          set -euo pipefail
+          test ! -e research/brrk_simple_eth_sol_beta_router_0056
+          git fetch origin research/0056-simple-beta-router-prereg-rebuild-source
+          git show origin/research/0056-simple-beta-router-prereg-rebuild-source:config/research_registry.json > config/research_registry.json
+          git show origin/research/0056-simple-beta-router-prereg-rebuild-source:docs/CURRENT_STATE.md > docs/CURRENT_STATE.md
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          rid = 'BRRK-SIMPLE-ETH-SOL-BETA-ROUTER-0056'
+          registry = json.loads(Path('config/research_registry.json').read_text())
+          matches = [r for r in registry['records'] if r.get('research_id') == rid]
+          assert len(matches) == 1
+          assert matches[0]['governed_path_prefixes'] == ['research/brrk_simple_eth_sol_beta_router_0056/']
+          assert matches[0]['result_status'] == 'PREREGISTERED_NOT_RUN'
+          assert matches[0]['actual_variants_evaluated'] == 0
+          assert not Path('research/brrk_simple_eth_sol_beta_router_0056').exists()
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add config/research_registry.json docs/CURRENT_STATE.md
+          git rm .github/workflows/_temp_0056_rebuild_owner_first.yml
+          git commit -m 'Research prereg governance [DRIFT_0]: register 0056 owner before path introduction'
+          git push origin HEAD:research/0056-simple-beta-router-prereg
