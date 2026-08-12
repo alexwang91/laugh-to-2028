@@ -1,6 +1,6 @@
 # BRRK-BETA-BTC-CONTINUATION-PARAMETER-GEOMETRY-0058
 
-Status: **IMPLEMENTATION FROZEN ON BRANCH / SYNTHETIC CONTRACT TESTS ONLY / NOT RUN**
+Status: **CONTROLLED EXECUTION BOUNDARY FROZEN ON BRANCH / ZERO RESULT / NOT RUN**
 
 This directory is the formal preregistration owner path for a DEVELOPMENT parameter-geometry study of a causal Beta-versus-BTC continuation mechanism.
 
@@ -32,3 +32,15 @@ Preregistration merged at `e6d94b30c8bb4d126d6c234c30980d701a9ababc`. This stage
 Synthetic Actions run `31640495960` passes 17 contract tests, including a complete 2,183-row frozen-calendar flat-price surface with 324 cell-cost summaries, 210 interior geometry rows and 1,942 selected-path rows. Synthetic output has zero scientific authority. Real 0058 market payload loading and historical parameter-surface economics remain forbidden.
 
 Next legal stage after implementation merge is a separate controlled-execution boundary.
+
+## Controlled-execution boundary handoff
+
+Implementation merged at `e2a0f2fd564274e53d099811d54bcdb06d77fb07`. The controlled boundary freezes `RUN_INTERFACE.json`, `RESULT_SCHEMA.json`, staged `run_once.py`, `test_run_interface.py` and `CONTROLLED_EXECUTION_BOUNDARY.json`. No historical result or runtime marker exists.
+
+The state machine is `preflight -> durable RUN_ATTEMPT.marker -> exactly one real 108-cell evaluation -> durable PRIMARY_RESULT.json + EXECUTION.json -> marker-only RUN_ONCE.marker`. Once the attempt marker is durable, same-ID recomputation, retuning and rescue are forbidden. Marker-only recovery is allowed only when attempt/result/execution already exist and verify while the final marker alone is missing.
+
+The result schema requires all 324 candidate/cost surface rows and all 210 interior geometry rows, verifies central-difference gradient/Hessian values directly against persisted terminal wealth, enforces the frozen plateau/representative/path schema and preserves historical argmax as descriptive-only.
+
+Synthetic/fault Actions run `31643240307` passed 17 immutable implementation contracts plus 13 controlled-run/schema contracts, governance validation, no-drift and the final zero-result guard. `REAL_0058_HISTORICAL_PAYLOAD_NOT_LOADED=true`, `REAL_0058_PARAMETER_SURFACE_ECONOMICS_NOT_EXECUTED=true`, `ACTUAL_HISTORICAL_VARIANTS_EVALUATED=0`.
+
+After this boundary merges through standing governance, 0058 becomes technically eligible for its unique staged DEVELOPMENT historical execution. That execution is a separate irreversible action and is not part of this boundary.
