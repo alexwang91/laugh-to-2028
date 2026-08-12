@@ -1,0 +1,61 @@
+{
+  "research_id": "BRRK-BETA-DETERIORATION-BTC-TAKEOVER-DIAGNOSTIC-0059",
+  "dataset_reuse": {
+    "dataset_slice_id": "BRRK-LEADERSHIP-ROTATION-0048-EXPOSED-HIST-V1",
+    "dataset_id": "BINANCE-SPOT-BTC-ETH-SOL-UTC-DAILY-OHLCV-TRADES",
+    "source_research_id": "BRRK-LEADERSHIP-ROTATION-0048",
+    "source_dataset_declaration_path": "research/brrk_leadership_rotation_0048/DATASET_DECLARATION.json",
+    "source_market_evidence_path": "research/brrk_beta_handoff_0047/evidence/MARKET_EVIDENCE.json",
+    "source_market_evidence_blob_sha": "64ebf5c6deaf3f34dbeac715378f196ff0f4fafe",
+    "source_loader_path": "research/brrk_beta_handoff_0047/engine.py",
+    "source_loader_blob_sha": "059b55961e279dab41ba29b5b017de0922e4f33c",
+    "source_payload_sha256": "d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193",
+    "source_common_rows": 2183,
+    "source_common_start": "2020-08-11T00:00:00Z",
+    "source_common_end": "2026-08-02T00:00:00Z",
+    "resolution": "1D",
+    "semantic_timezone": "UTC",
+    "source_index_representation": "UTC_NORMALIZED_TZ_NAIVE_DAILY_DATES",
+    "assets_consumed_by_0059": [
+      "BTC",
+      "ETH",
+      "SOL"
+    ],
+    "field_consumed_by_0059": "daily_close",
+    "network_fetch_allowed": false,
+    "replacement_allowed": false,
+    "synthetic_fill_allowed": false,
+    "researcher_exposed_history": true,
+    "contamination_state": "RESEARCHER_EXPOSED_HISTORY",
+    "data_budget": "DEVELOPMENT",
+    "independent_oos": false
+  },
+  "nominal_calendar_derivation": {
+    "max_trend_horizon_days": 240,
+    "causal_normalization_window_days": 252,
+    "causal_normalization_min_valid_raw_observations": 60,
+    "nominal_first_raw_trend_valid": "2021-04-08T00:00:00Z",
+    "nominal_first_joint_normalized_state_origin": "2021-06-06T00:00:00Z",
+    "max_forward_target_days": 240,
+    "nominal_last_shared_origin": "2025-12-05T00:00:00Z",
+    "nominal_shared_origin_count": 1644,
+    "derivation_uses_calendar_and_formulas_only": true,
+    "no_0059_target_value_or_association_read_for_derivation": true
+  },
+  "actual_evaluation_slice_policy": {
+    "shared_complete_case_origins_only": true,
+    "all_four_horizons_use_identical_origins": true,
+    "pairwise_or_horizon_specific_dropping_allowed": false,
+    "G1_min_shared_origins": 1440,
+    "actual_origin_count_and_dates_measured_only_at_unique_execution": true
+  },
+  "exposure_policy": {
+    "new_raw_data_release_created_by_0059_prereg": false,
+    "existing_exposed_history_reused": true,
+    "independent_oos_claim_allowed": false,
+    "production_evidence_claim_allowed": false,
+    "real_target_values_during_preregistration": false,
+    "real_association_metrics_during_preregistration": false,
+    "real_target_values_during_implementation_only": false
+  }
+}
