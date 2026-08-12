@@ -2,8 +2,8 @@
 
 Last updated: **2026-08-12**  
 Authoritative repository: `alexwang91/laugh-to-2028`  
-Current `main` research merge: **`16a23ce2115647beead7f7abdab68a6b4cb406fe`**  
-Current research branch: **`research/0056-simple-beta-router-prereg`**  
+Current `main` research merge: **`85bbc8583b625da670267cbb3db4928fbe1ade6f`**  
+Current research branch: **`research/0056-simple-beta-router-implementation`**  
 Status of this document: **AUTHORITATIVE OPERATING SNAPSHOT**
 
 > GitHub `main`, immutable research artifacts and machine registries remain the sources of truth. This file is the compact human handoff, not a substitute for preregistration, execution, evidence, recovery or closeout artifacts.
@@ -39,7 +39,7 @@ BRRK leadership rotation 0048         MEASUREMENT_INCONCLUSIVE_INSUFFICIENT_SUPP
 BRRK intraday support 0053             FAIL_4H_DOES_NOT_SOLVE_0048_SUPPORT_CONSTRAINT / CLOSED
 BRRK 4h-native readiness 0054          FAIL_4H_NATIVE_TRAINING_PRECISION_NOT_ESTABLISHED / CLOSED
 BRRK 4h structural readiness 0055     FAIL_4H_STRUCTURAL_3D_TRAINING_PRECISION_NOT_ESTABLISHED / CLOSED
-BRRK simple ETH/SOL Beta router 0056  DESIGN FROZEN / NUMERICAL PREREG NOT YET FROZEN / NOT IMPLEMENTED / NOT RUN
+BRRK simple ETH/SOL Beta router 0056  PREREG MERGED / IMPLEMENTATION-ONLY / REAL HISTORICAL RUN FORBIDDEN
 
 Canonical BRRK-0011                    NO CHANGE
 Phase 7                                MONITOR_ONLY / LAUNCH BLOCKED
@@ -549,10 +549,10 @@ Current 0056 authority after numerical preregistration freeze:
 
 ```text
 design                                  MERGED AT 16a23ce2115647beead7f7abdab68a6b4cb406fe
-numerical preregistration               FROZEN ON PREREG BRANCH
+numerical preregistration               MERGED AT 85bbc8583b625da670267cbb3db4928fbe1ade6f
 formal research path                    research/brrk_simple_eth_sol_beta_router_0056/
 registry owner                          BRRK-SIMPLE-ETH-SOL-BETA-ROUTER-0056
-implementation                          ABSENT
+implementation                          IMPLEMENTATION-ONLY ON BRANCH
 controlled execution boundary           ABSENT
 0056 historical execution               NOT RUN
 0056 result                              PREREGISTERED_NOT_RUN
@@ -564,8 +564,8 @@ signature_authorized                    false
 order_submission_authorized             false
 ```
 
-The numerical preregistration is now frozen before implementation or any 0056 economic output. It binds the immutable daily payload SHA256, 2122 common causal origins, NAV/cost and benchmark recursion, 5/10/20 bps L1 cost panel, 531/531/530/530 chronological blocks, 60-day moving-block bootstrap with 10,000 replicates and seed 1844716895, plus the complete G0-G4 classification hierarchy. After this preregistration merges, the only allowed continuation is a separate implementation-only branch that must not load or execute the real historical payload during implementation tests.
+The numerical preregistration merged at `85bbc8583b625da670267cbb3db4928fbe1ade6f`. The current implementation-only branch mechanically encodes the immutable 2122-origin RM60 router, NAV/cost and benchmark recursion, 5/10/20 bps L1 cost panel, 531/531/530/530 chronological blocks, 60-day moving-block bootstrap with 10,000 replicates and seed 1844716895, and G0-G4 result taxonomy. Its tests are synthetic-only; loading or evaluating the real historical payload remains forbidden until a separately merged controlled-execution boundary.
 
 If 0056 later fails its frozen economic decision, the ETH/SOL micro-timing line stops: no 30d/90d/MACD/ML or other same-line rescue study. Research budget then moves under a new ID to Beta-to-BTC continuation value. If 0056 later passes, any BTC-anchor plus routed-Beta integration also requires a new ID.
 
-The active design authority is `research/governance/BRRK_SIMPLE_ETH_SOL_BETA_ROUTER_0056_DESIGN_FREEZE_2026-08-12.md`; the active numerical contract is `research/brrk_simple_eth_sol_beta_router_0056/PREREGISTRATION.json` with `DATASET_DECLARATION.json`. No 0056 implementation, controlled-run workflow, historical result or run marker exists at this stage. Older next-step prose above is historical and is superseded by this section.
+The active design authority is `research/governance/BRRK_SIMPLE_ETH_SOL_BETA_ROUTER_0056_DESIGN_FREEZE_2026-08-12.md`; the active numerical contract is `research/brrk_simple_eth_sol_beta_router_0056/PREREGISTRATION.json` with `DATASET_DECLARATION.json`. 0056 implementation-only engine/tests now exist on the active branch; no controlled-run workflow, historical result or run marker exists at this stage. Older next-step prose above is historical and is superseded by this section.

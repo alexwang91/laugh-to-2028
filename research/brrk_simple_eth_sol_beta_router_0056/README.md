@@ -1,6 +1,6 @@
 # BRRK-SIMPLE-ETH-SOL-BETA-ROUTER-0056
 
-Status: **NUMERICAL PREREGISTRATION FROZEN ON BRANCH / NOT IMPLEMENTED / NOT RUN**
+Status: **NUMERICAL PREREGISTRATION MERGED / IMPLEMENTATION-ONLY ON BRANCH / REAL HISTORICAL RUN FORBIDDEN**
 
 0056 is a new direct portfolio-economics mechanism study. It is not a rerun or rescue of 0048, 0053, 0054 or 0055.
 
@@ -139,14 +139,23 @@ If 0056 fails, stop the ETH/SOL micro-timing line. Do not open a 30d/90d/MACD/EM
 
 If 0056 passes, any fixed BTC-anchor + routed-Beta integration also requires a new research ID. 0056 itself never changes BTC allocation or canonical BRRK.
 
+
+## Implementation-only boundary
+
+The implementation branch now contains a pure deterministic engine and synthetic-only contract tests. The engine has **no filesystem market loader, no network fetch, no `run_once.py`, no result writer and no controlled-execution authority**. It accepts already-materialized ETH/SOL close frames; the later controlled-run layer must independently verify the frozen 0047 market-evidence identity before calling it.
+
+Synthetic tests cover the exact RM60 sign/zero semantics, next-period timing, L1 cost debits, no-rebalance B2 accounting, 5/10/20 bps panel, fixed 531/531/530/530 global blocks, project-standard `np.random.default_rng` moving-block bootstrap, G0-G4 classification precedence and mandatory diagnostics. A full 2183-row **synthetic** UTC calendar is allowed only to test mechanics; any synthetic classification has zero scientific authority and is never persisted as a research result.
+
+Real `MARKET_EVIDENCE.json` loading and any historical 0056 evaluation remain forbidden until a separate controlled-execution boundary merges.
+
 ## Current authority
 
 ```text
-numerical preregistration     FROZEN ON PREREG BRANCH
-implementation                ABSENT
+numerical preregistration     MERGED AT 85bbc8583b625da670267cbb3db4928fbe1ade6f
+implementation                IMPLEMENTATION-ONLY ON BRANCH
 controlled execution boundary ABSENT
 historical execution          NOT RUN
-result                        ABSENT
+result                        PREREGISTERED_NOT_RUN
 actual variants evaluated     0
 canonical BRRK                NO CHANGE
 Phase 6                       NO CHANGE
@@ -155,4 +164,4 @@ signature_authorized          false
 order_submission_authorized   false
 ```
 
-After this preregistration merges, the only allowed next stage is an **implementation-only** branch with synthetic/contracts-only testing and no real 0056 historical result.
+After this implementation-only branch merges green, the only allowed next stage is a **separate controlled-execution boundary**. No real 0056 historical evaluation is authorized by the implementation merge itself.
