@@ -2,8 +2,8 @@
 
 Last updated: **2026-08-12**  
 Authoritative repository: `alexwang91/laugh-to-2028`  
-Current `main` research merge: **`bc61a6a2250d8deecf2f20d2fe2006b28ad4b819`**  
-Current research branch: **`research/0057-simple-beta-router-interface-replication-controlled-run`**  
+Current `main` research merge: **`9201560b7db4af0c6043533df49ae3ac5ae909e3`**  
+Current research branch: **`research/0057-simple-beta-router-interface-replication-closeout`**  
 Status of this document: **AUTHORITATIVE OPERATING SNAPSHOT**
 
 > GitHub `main`, immutable research artifacts and machine registries remain the sources of truth. This file is the compact human handoff, not a substitute for preregistration, execution, evidence, recovery or closeout artifacts.
