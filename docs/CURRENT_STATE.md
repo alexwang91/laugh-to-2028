@@ -2,7 +2,7 @@
 
 Last updated: **2026-08-12**  
 Authoritative repository: `alexwang91/laugh-to-2028`  
-Current `main` research merge: **`e2a0f2fd564274e53d099811d54bcdb06d77fb07`**  
+Current `main` research merge: **`269424763528927d829b4aa78b7c849729758f86`**  
 Current research branch: **`research/0058-beta-btc-continuation-parameter-geometry-closeout`**  
 Status of this document: **AUTHORITATIVE OPERATING SNAPSHOT**
 
