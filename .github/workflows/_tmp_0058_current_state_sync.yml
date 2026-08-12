@@ -1,0 +1,62 @@
+name: Temporary 0058 CURRENT_STATE sync
+
+on:
+  push:
+    branches:
+      - docs/0058-closeout-current-state-sync-tooling
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: docs/0058-closeout-current-state-sync
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: execution/plan-b-bot/requirements-dev.txt
+
+      - name: Install pinned governance runtime
+        run: pip install -r execution/plan-b-bot/requirements-dev.txt
+
+      - name: Sync only the current main research merge line
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('docs/CURRENT_STATE.md')
+          s=p.read_text()
+          old='Current `main` research merge: **`e2a0f2fd564274e53d099811d54bcdb06d77fb07`**'
+          new='Current `main` research merge: **`269424763528927d829b4aa78b7c849729758f86`**'
+          assert s.count(old)==1
+          s=s.replace(old,new)
+          p.write_text(s)
+          PY
+          git diff -- docs/CURRENT_STATE.md
+
+      - name: Validate docs-only sync
+        run: |
+          python -m research.governance.validate
+          python -m research.governance.no_drift
+          test "$(git diff --name-only)" = "docs/CURRENT_STATE.md"
+
+      - name: Commit docs-only sync
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs/CURRENT_STATE.md
+          git commit -m 'Docs: sync CURRENT_STATE to 0058 closeout merge'
+          git push origin HEAD:docs/0058-closeout-current-state-sync
+
+      - name: Final one-file audit
+        run: |
+          test "$(git diff --name-only 269424763528927d829b4aa78b7c849729758f86...HEAD)" = "docs/CURRENT_STATE.md"
+          python -m research.governance.validate
+          python -m research.governance.no_drift
