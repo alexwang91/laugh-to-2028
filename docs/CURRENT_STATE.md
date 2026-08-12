@@ -2,8 +2,8 @@
 
 Last updated: **2026-08-12**  
 Authoritative repository: `alexwang91/laugh-to-2028`  
-Current `main` research merge: **`186a7f7d57c957c98798ecd828533ffe20dedb83`**  
-Current research branch: **`research/0056-simple-beta-router-result`**  
+Current `main` research merge: **`dbf95e0b5179e5d58c4e2527aa1c841625f134b2`**  
+Current research branch: **`research/0057-simple-beta-router-interface-replication-design`**  
 Status of this document: **AUTHORITATIVE OPERATING SNAPSHOT**
 
 > GitHub `main`, immutable research artifacts and machine registries remain the sources of truth. This file is the compact human handoff, not a substitute for preregistration, execution, evidence, recovery or closeout artifacts.
@@ -40,6 +40,7 @@ BRRK intraday support 0053             FAIL_4H_DOES_NOT_SOLVE_0048_SUPPORT_CONST
 BRRK 4h-native readiness 0054          FAIL_4H_NATIVE_TRAINING_PRECISION_NOT_ESTABLISHED / CLOSED
 BRRK 4h structural readiness 0055     FAIL_4H_STRUCTURAL_3D_TRAINING_PRECISION_NOT_ESTABLISHED / CLOSED
 BRRK simple ETH/SOL Beta router 0056  INVALID_EXECUTION / CLOSED / NO ECONOMIC CONCLUSION
+BRRK Beta router interface replication 0057 DESIGN FROZEN / PREREG ABSENT / NOT RUN
 
 Canonical BRRK-0011                    NO CHANGE
 Phase 7                                MONITOR_ONLY / LAUNCH BLOCKED
@@ -625,3 +626,41 @@ production_authorized                  false
 signature_authorized                   false
 order_submission_authorized            false
 ```
+
+
+---
+
+## 19. 0057 interface-corrected Beta-router replication design
+
+New research ID: `BRRK-SIMPLE-ETH-SOL-BETA-ROUTER-INTERFACE-REPLICATION-0057`.
+
+0056 remains immutable `INVALID_EXECUTION / CLOSED`; it produced no terminal wealth, CAGR or G1-G4 economic result. 0057 is a new-ID measurement replication of the unresolved economic question, not a same-ID rerun or strategy rescue.
+
+The only permitted design change is a deterministic representation adapter for the already-identified interface mismatch:
+
+```text
+immutable 0047/0048 source frames      UTC-normalized tz-naive daily indexes
+adapter                                assert source contract, copy frames, index.tz_localize("UTC") only
+calendar labels / order / close values MUST remain identical
+scientific mechanics                   immutable 0056 engine blob b0fc1ac267a66593e7e2c4687aff81491bfcdf5a
+```
+
+No `tz_convert`, time shift, resampling, fill, row mutation, refetch or alternate loader is allowed. The RM60 candidate, causal timing, B0/B1/B2 benchmarks, 5/10/20 bps costs, 2,122-period window, 531/531/530/530 temporal partition, moving-block bootstrap and G0-G4 hierarchy are not reopened for selection. The next numerical preregistration must inherit them without relaxation.
+
+```text
+0057 numerical preregistration         ABSENT
+0057 central registry owner            ABSENT
+0057 implementation                    ABSENT
+0057 controlled execution boundary     ABSENT
+0057 historical execution              NOT RUN
+0057 result                            ABSENT
+0057 actual variants evaluated         0
+Canonical BRRK-0011                    NO CHANGE
+Phase 6                                NO CHANGE
+production_authorized_components       []
+production_authorized                  false
+signature_authorized                   false
+order_submission_authorized            false
+```
+
+Exact next step after design merge: a separate numerical/data preregistration that binds the immutable source identity, exact one-adapter contract and the unchanged 0056 economic specification before any 0057 implementation or historical output.
