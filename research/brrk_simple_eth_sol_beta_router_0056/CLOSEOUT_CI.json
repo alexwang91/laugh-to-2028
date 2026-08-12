@@ -1,0 +1,16 @@
+{
+  "research_id": "BRRK-SIMPLE-ETH-SOL-BETA-ROUTER-0056",
+  "status": "READ_ONLY_CLOSEOUT_CONTRACT_PASS",
+  "scientific_engine_imported": false,
+  "portfolio_remeasurement_executed": false,
+  "runtime_hash_chain_verified": true,
+  "classification_verified": "INVALID_EXECUTION",
+  "failure_stage": "G0_INTERFACE_INTEGRITY",
+  "source_loader_timezone_contract": "UTC_NORMALIZED_TZ_NAIVE_DAILY_DATES",
+  "0056_engine_timezone_contract": "TZ_AWARE_UTC_REQUIRED",
+  "interface_mismatch_verified_from_source_text": true,
+  "terminal_wealth_computed": false,
+  "cagr_computed": false,
+  "G1_G4_reached": false,
+  "same_id_rerun_allowed": false
+}

@@ -3114,7 +3114,7 @@
       "validation_dataset_refs": [],
       "sealed_dataset_refs": [],
       "declared_variant_budget": 1,
-      "actual_variants_evaluated": 0,
+      "actual_variants_evaluated": 1,
       "parameter_candidate_count": 1,
       "stopping_rule": "After this preregistration is merged, create a separate implementation-only branch that encodes exactly this one candidate, the three static benchmarks, wealth accounting, fixed cost panel, fixed temporal partition, fixed moving-block bootstrap and result taxonomy without loading the real historical payload during implementation tests. After that implementation merges and a separate controlled-execution boundary merges, execute exactly one valid 0056 historical DEVELOPMENT run. A valid result permanently closes 0056 to same-ID rerun, retuning, rescue, threshold relaxation, lookback change, model replacement, benchmark replacement, temporal repartition, bootstrap change or economic-gate change.",
       "success_criteria": [
@@ -3171,7 +3171,9 @@
           "TEMPORAL_BLOCKS=531_531_530_530_REQUIRE3OF4_VS_FULL_HORIZON_BEST_STATIC",
           "BOOTSTRAP=MOVING_BLOCK_60_X10000_SEED1844716895_SIMULTANEOUS_ONE_SIDED_95_LCB"
         ],
-        "actual_parameter_candidates_evaluated": [],
+        "actual_parameter_candidates_evaluated": [
+          "RM60_SIGN_ROUTER_ATTEMPT_TERMINATED_AT_G0_INTERFACE_VALIDATION"
+        ],
         "universes_evaluated": [
           "BINANCE_SPOT_ETH_SOL"
         ],
@@ -3220,14 +3222,29 @@
           "evidence_ref": "research/brrk_winner_robustness_0002/PRIMARY_RESULT.json"
         }
       ],
-      "result_status": "PREREGISTERED_NOT_RUN",
-      "failure_reason": null,
+      "result_status": "INVALID_EXECUTION_CLOSED",
+      "failure_reason": "G0 implementation/interface mismatch: immutable 0047/0048 loader emits UTC-normalized tz-naive daily indexes while frozen 0056 validate_price_frames requires timezone-aware UTC; no economic gate was reached.",
       "promotion_state": "NONE",
-      "evidence_refs": [],
+      "evidence_refs": [
+        "run:31604126017",
+        "artifact:brrk-0056-portfolio-economics-runtime-bundle",
+        "research/brrk_simple_eth_sol_beta_router_0056/PRIMARY_RESULT.json",
+        "research/brrk_simple_eth_sol_beta_router_0056/RUN_ONCE.marker",
+        "research/brrk_simple_eth_sol_beta_router_0056/CLOSEOUT.json"
+      ],
+      "evidence_scorecard": {
+        "temporal_novelty": "NOT_ESTABLISHED_INVALID_EXECUTION_BEFORE_ECONOMIC_PATH",
+        "statistical_sufficiency": "NOT_ESTABLISHED_G1_G4_NOT_REACHED",
+        "governance_integrity": "HIGH_EXACTLY_ONCE_HASH_BOUND_FAIL_CLOSED",
+        "operational_realism": "INVALID_INTERFACE_CONTRACT_SOURCE_TZ_NAIVE_VS_0056_TZ_AWARE_REQUIREMENT",
+        "derived_confidence": "HIGH",
+        "confidence_rule_ref": "research/brrk_simple_eth_sol_beta_router_0056/CLOSEOUT.json"
+      },
       "decision_refs": [
         "research/governance/BRRK_SIMPLE_ETH_SOL_BETA_ROUTER_0056_DESIGN_FREEZE_2026-08-12.md",
         "research/brrk_simple_eth_sol_beta_router_0056/PREREGISTRATION.json",
         "research/brrk_simple_eth_sol_beta_router_0056/DATASET_DECLARATION.json",
+        "research/brrk_simple_eth_sol_beta_router_0056/CLOSEOUT.json",
         "docs/CURRENT_STATE.md"
       ],
       "production_relevance": "Research-only simple ETH/SOL Beta routing economics on researcher-exposed DEVELOPMENT history. A PASS can only make a separately governed BTC-anchor plus routed-Beta study eligible; it cannot modify canonical BRRK, Phase 6 or production authority.",
@@ -3239,7 +3256,8 @@
       "notes": [
         "0056 is DEVELOPMENT-only on researcher-exposed history and makes no independent-OOS claim.",
         "No 0056 economic output is authorized before prereg merge, implementation-only merge and a separately merged controlled-execution boundary.",
-        "The sole 60-day router horizon predates 0054/0055 failure as 0048 baseline B3; no alternative lookback or same-line rescue is authorized."
+        "The sole 60-day router horizon predates 0054/0055 failure as 0048 baseline B3; no alternative lookback or same-line rescue is authorized.",
+        "Unique run 31604126017 closed INVALID_EXECUTION at G0 due frozen timezone-interface mismatch; no economic conclusion was produced and same-ID rerun is forbidden."
       ]
     }
   ],
