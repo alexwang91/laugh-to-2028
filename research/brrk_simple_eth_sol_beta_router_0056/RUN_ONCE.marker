@@ -1,0 +1,15 @@
+{
+  "research_id": "BRRK-SIMPLE-ETH-SOL-BETA-ROUTER-0056",
+  "status": "VALID_PORTFOLIO_ECONOMICS_EXECUTION_COMPLETE_CLOSED_TO_SAME_ID_RERUN",
+  "completed_at_utc": "2026-08-12T13:57:38Z",
+  "git_head_sha": "186a7f7d57c957c98798ecd828533ffe20dedb83",
+  "payload_sha256": "d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193",
+  "attempt_marker_sha256": "51306b68d5b18bcb0693e7e703793eeee45da63fb7c857b130ef3ad876122bb4",
+  "primary_result_sha256": "36e8787ac0d711e4936238c679dd7bc9383684d47eda66c2a76c7a784afb7748",
+  "execution_sha256": "4799acad948ce97f9ec5977f415f02eef05b6409f41fa20cf0c44cca5b0dee23",
+  "classification": "INVALID_EXECUTION",
+  "same_id_rerun_allowed": false,
+  "same_id_retuning_allowed": false,
+  "same_id_rescue_allowed": false,
+  "finalized_without_remeasurement": true
+}
