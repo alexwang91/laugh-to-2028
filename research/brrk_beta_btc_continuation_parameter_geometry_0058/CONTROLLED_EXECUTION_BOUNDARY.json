@@ -1,0 +1,118 @@
+{
+  "research_id": "BRRK-BETA-BTC-CONTINUATION-PARAMETER-GEOMETRY-0058",
+  "stage": "CONTROLLED_EXECUTION_BOUNDARY",
+  "status": "CONTROLLED_EXECUTION_BOUNDARY_FROZEN_ZERO_RESULT",
+  "base_main_implementation_merge_sha": "e2a0f2fd564274e53d099811d54bcdb06d77fb07",
+  "actual_variants_evaluated": 0,
+  "historical_execution_performed": false,
+  "runtime_artifacts_present": false,
+  "boundary_files": {
+    "RUN_INTERFACE.json": "e7b7f6663a3fbae5e67f5e7e04e20f9207cb8657",
+    "RESULT_SCHEMA.json": "cd3d894aa5f15f320263cdc37f840aad9c18e6e2",
+    "run_once.py": "f26e2acccd37e8465c1584d43b352273f019b360",
+    "test_run_interface.py": "3c530114a5a41bf080aa7d7274c11496d854ad21"
+  },
+  "immutable_scientific_bindings": {
+    "0058_preregistration_blob_sha": "c374ae680736168f0f77f89fe8bef9fad0aaae27",
+    "0058_dataset_declaration_blob_sha": "23dd077f30d23404aa0b2f29776e35845ab089e3",
+    "0058_implementation_boundary_blob_sha": "925ab1ec681c15c0c65ec13dad83b3556310e062",
+    "0058_engine_blob_sha": "690e029588d6ff453eaabfa1e4ce5a7f3df2f139",
+    "0058_test_engine_blob_sha": "76c3dc998d96bcf86359e4a41049c517f8dcaf7e",
+    "0047_source_engine_blob_sha": "059b55961e279dab41ba29b5b017de0922e4f33c",
+    "market_evidence_blob_sha": "64ebf5c6deaf3f34dbeac715378f196ff0f4fafe",
+    "market_payload_sha256": "d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193"
+  },
+  "source_to_science_path": [
+    "LOAD_IMMUTABLE_MARKET_WRAPPER_JSON",
+    "0047_FRAMES_FROM_MARKET_EVIDENCE_VERIFY_WRAPPER_PAYLOAD_DATASET_AND_TZ_NAIVE_FRAMES",
+    "SELECT_EXACT_BTC_ETH_SOL_SET",
+    "DELEGATE_ONCE_TO_IMMUTABLE_0058_ENGINE",
+    "VALIDATE_LOSSLESS_0058_RESULT_SCHEMA"
+  ],
+  "execution_sequence": [
+    "PREFLIGHT_ZERO_RESULT",
+    "DURABLY_PERSIST_RUN_ATTEMPT_MARKER",
+    "EVALUATE_REAL_PAYLOAD_EXACTLY_ONCE",
+    "DURABLY_PERSIST_PRIMARY_RESULT_AND_EXECUTION",
+    "FINALIZE_MARKER_FROM_EXISTING_HASHES_WITHOUT_REMEASUREMENT"
+  ],
+  "state_machine_contract": {
+    "preflight_repeatable": true,
+    "preflight_writes_result": false,
+    "preflight_calls_source_loader": false,
+    "preflight_calls_scientific_engine": false,
+    "start_attempt_requires_zero_runtime_artifacts": true,
+    "attempt_marker_create_only": true,
+    "attempt_marker_candidate_count": 108,
+    "attempt_marker_same_id_recomputation_allowed": false,
+    "evaluate_requires_durable_attempt_marker": true,
+    "evaluate_calls_source_loader_exactly_once": true,
+    "evaluate_calls_scientific_engine_exactly_once": true,
+    "evaluate_result_create_only": true,
+    "evaluate_execution_create_only": true,
+    "existing_partial_result_blocks_automatic_recompute": true,
+    "interrupted_partial_execution_requires_governance_closeout_or_authorized_marker_recovery": true,
+    "finalize_may_load_market": false,
+    "finalize_may_call_source_loader": false,
+    "finalize_may_call_scientific_engine": false,
+    "finalize_verifies_attempt_result_execution_hash_chain": true,
+    "final_marker_create_only": true,
+    "same_id_rerun_after_attempt_allowed": false,
+    "same_id_retuning_after_attempt_allowed": false,
+    "same_id_rescue_after_attempt_allowed": false
+  },
+  "marker_only_recovery": {
+    "allowed": true,
+    "condition": "RUN_ATTEMPT.marker, PRIMARY_RESULT.json and EXECUTION.json already exist and their frozen identities/hash chain verify; RUN_ONCE.marker alone is absent",
+    "parameter_surface_remeasurement_allowed": false,
+    "market_reload_allowed": false,
+    "source_loader_reexecution_allowed": false,
+    "scientific_engine_reexecution_allowed": false
+  },
+  "result_contract": {
+    "declared_parameter_cells": 108,
+    "expected_surface_rows": 324,
+    "expected_geometry_rows": 210,
+    "successful_result_persists_lossless_surface": true,
+    "successful_result_persists_lossless_geometry": true,
+    "successful_result_persists_plateau_trace": true,
+    "selected_path_required_when_representative_exists": true,
+    "benchmark_paths_required_when_representative_exists": true,
+    "no_representative_imputation_allowed": true,
+    "historical_argmax_selection_authority": false,
+    "G1_G5_classification_inherited_unchanged": true,
+    "probability_or_predictive_metrics_forbidden": true,
+    "adaptive_grid_or_local_zoom_forbidden": true,
+    "btc_cash_timing_forbidden": true,
+    "eth_sol_leader_router_forbidden": true,
+    "leverage_shorting_forbidden": true
+  },
+  "boundary_ci_policy": {
+    "real_market_evidence_may_be_loaded": false,
+    "real_historical_evaluation_may_run": false,
+    "runtime_artifact_may_be_created_in_repository": false,
+    "synthetic_or_mock_fault_contracts_only": true,
+    "full_frozen_calendar_synthetic_engine_test_allowed": true,
+    "actual_historical_variants_evaluated": 0
+  },
+  "authority": {
+    "canonical_strategy_changed": false,
+    "phase6_changed": false,
+    "production_authorized": false,
+    "production_authorized_components": [],
+    "signature_authorized": false,
+    "order_submission_authorized": false
+  },
+  "boundary_fault_contract_evidence": {
+    "status": "PENDING_SYNTHETIC_BOUNDARY_CI",
+    "successful_tooling_run": null,
+    "implementation_engine_contract_tests_expected": 17,
+    "controlled_run_fault_contract_tests_expected": 13,
+    "zero_result_guard_required": true,
+    "governance_validate_required": true,
+    "no_drift_required": true,
+    "real_0058_historical_payload_loaded": false,
+    "real_0058_parameter_surface_economics_executed": false,
+    "actual_historical_variants_evaluated": 0
+  }
+}
