@@ -2,8 +2,8 @@
 
 Last updated: **2026-08-12**  
 Authoritative repository: `alexwang91/laugh-to-2028`  
-Current `main` research merge: **`dbf95e0b5179e5d58c4e2527aa1c841625f134b2`**  
-Current research branch: **`research/0057-simple-beta-router-interface-replication-design`**  
+Current `main` research merge: **`21f758260ea80040bbb38aec26e2091814e37fd9`**  
+Current research branch: **`research/0057-simple-beta-router-interface-replication-prereg`**  
 Status of this document: **AUTHORITATIVE OPERATING SNAPSHOT**
 
 > GitHub `main`, immutable research artifacts and machine registries remain the sources of truth. This file is the compact human handoff, not a substitute for preregistration, execution, evidence, recovery or closeout artifacts.
@@ -40,7 +40,7 @@ BRRK intraday support 0053             FAIL_4H_DOES_NOT_SOLVE_0048_SUPPORT_CONST
 BRRK 4h-native readiness 0054          FAIL_4H_NATIVE_TRAINING_PRECISION_NOT_ESTABLISHED / CLOSED
 BRRK 4h structural readiness 0055     FAIL_4H_STRUCTURAL_3D_TRAINING_PRECISION_NOT_ESTABLISHED / CLOSED
 BRRK simple ETH/SOL Beta router 0056  INVALID_EXECUTION / CLOSED / NO ECONOMIC CONCLUSION
-BRRK Beta router interface replication 0057 DESIGN FROZEN / PREREG ABSENT / NOT RUN
+BRRK Beta router interface replication 0057 PREREG STAGING / OWNER REGISTERED / FORMAL FILES NEXT
 
 Canonical BRRK-0011                    NO CHANGE
 Phase 7                                MONITOR_ONLY / LAUNCH BLOCKED
