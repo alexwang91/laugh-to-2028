@@ -1,0 +1,139 @@
+name: Temporary 0056 prereg governance patch
+
+on:
+  push:
+    branches:
+      - research/0056-simple-beta-router-prereg
+
+permissions:
+  contents: write
+
+jobs:
+  patch-governance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/0056-simple-beta-router-prereg
+          fetch-depth: 0
+      - name: Append 0056 registry owner and advance CURRENT_STATE
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          import json, textwrap
+
+          rid = "BRRK-SIMPLE-ETH-SOL-BETA-ROUTER-0056"
+          prereg_path = Path("research/brrk_simple_eth_sol_beta_router_0056/PREREGISTRATION.json")
+          registry_path = Path("config/research_registry.json")
+          state_path = Path("docs/CURRENT_STATE.md")
+
+          pr = json.loads(prereg_path.read_text(encoding="utf-8"))
+          assert pr["research_id"] == rid
+          assert pr["result_status"] == "PREREGISTERED_NOT_RUN"
+          assert pr["actual_variants_evaluated"] == 0
+          assert pr["variant_budget"]["declared_variant_budget"] == 1
+          assert pr["data_contract"]["payload_sha256"] == "d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193"
+
+          raw = registry_path.read_text(encoding="utf-8")
+          registry = json.loads(raw)
+          assert registry["registry_id"] == "RESEARCH-REGISTRY-V1"
+          assert not any(r.get("research_id") == rid for r in registry["records"])
+          assert registry["records"][-1]["research_id"] == "BRRK-LEADERSHIP-4H-STRUCTURAL-READINESS-0055"
+
+          record = {
+            "research_id": rid,
+            "research_family_id": pr["research_family_id"],
+            "research_domain": pr["research_domain"],
+            "research_governance_version": pr["research_governance_version"],
+            "governance_mode": pr["governance_mode"],
+            "objective_type": pr["objective_type"],
+            "created_at": pr["created_at"],
+            "created_before_result": pr["created_before_result"],
+            "question": pr["question"],
+            "hypothesis": pr["hypothesis"],
+            "hypothesis_origin": pr["hypothesis_origin"],
+            "economic_mechanism": pr["economic_mechanism"],
+            "primary_target": "CAUSAL_AFTER_COST_FULL_CYCLE_ETH_SOL_BETA_ROUTER_ECONOMIC_ELIGIBILITY",
+            "primary_metric": "NET_TERMINAL_WEALTH_AND_NET_CAGR_WITH_FROZEN_G0_G4_CLASSIFICATION",
+            "secondary_metrics": pr["secondary_diagnostics"],
+            "feature_families": ["ETH_SOL_60D_RELATIVE_LOG_MOMENTUM_SIGN_ONLY"],
+            "horizon": "DAILY_UTC_CAUSAL_ORIGINS_2020-10-10_THROUGH_2026-08-01_WITH_TERMINAL_CLOSE_2026-08-02_N2122",
+            "universe": ["ETH", "SOL"],
+            "development_dataset_refs": [pr["data_contract"]["dataset_slice_ref"]],
+            "validation_dataset_refs": [],
+            "sealed_dataset_refs": [],
+            "declared_variant_budget": pr["variant_budget"]["declared_variant_budget"],
+            "actual_variants_evaluated": pr["actual_variants_evaluated"],
+            "parameter_candidate_count": pr["variant_budget"]["parameter_candidate_count"],
+            "stopping_rule": pr["stopping_rule"],
+            "success_criteria": pr["success_criteria"],
+            "failure_criteria": pr["failure_criteria"],
+            "allowed_followup": pr["allowed_followup"],
+            "forbidden_followup": pr["forbidden_followup"],
+            "researcher_decisions": pr["researcher_decisions"],
+            "research_process_complexity": pr["research_process_complexity"],
+            "lineage_edges": pr["lineage_edges"],
+            "result_status": pr["result_status"],
+            "failure_reason": None,
+            "promotion_state": "NONE",
+            "evidence_refs": [],
+            "decision_refs": [
+              pr["design_authority"]["path"],
+              "research/brrk_simple_eth_sol_beta_router_0056/PREREGISTRATION.json",
+              "research/brrk_simple_eth_sol_beta_router_0056/DATASET_DECLARATION.json",
+              "docs/CURRENT_STATE.md"
+            ],
+            "production_relevance": pr["production_relevance"],
+            "production_authorized": False,
+            "provenance_status": "FACT",
+            "governed_path_prefixes": ["research/brrk_simple_eth_sol_beta_router_0056/"],
+            "notes": [
+              "0056 is DEVELOPMENT-only on researcher-exposed history and makes no independent-OOS claim.",
+              "No 0056 economic output is authorized before prereg merge, implementation-only merge and a separately merged controlled-execution boundary.",
+              "The sole 60-day router horizon predates 0054/0055 failure as 0048 baseline B3; no alternative lookback or same-line rescue is authorized."
+            ]
+          }
+
+          marker = '\n  ],\n  "research_governance_debt": ['
+          assert raw.count(marker) == 1
+          rec_text = textwrap.indent(json.dumps(record, indent=2, ensure_ascii=False), "    ")
+          new_raw = raw.replace(marker, ",\n" + rec_text + marker, 1)
+          check = json.loads(new_raw)
+          assert len(check["records"]) == len(registry["records"]) + 1
+          assert check["records"][:-1] == registry["records"]
+          assert check["research_governance_debt"] == registry["research_governance_debt"]
+          assert check["records"][-1]["research_id"] == rid
+          registry_path.write_text(new_raw, encoding="utf-8")
+
+          state = state_path.read_text(encoding="utf-8")
+          replacements = {
+            "Current research branch:\n- `research/0056-simple-beta-router-design`":
+              "Current research branch:\n- `research/0056-simple-beta-router-prereg`",
+            "## 16. 0056 simple ETH/SOL Beta-router design freeze":
+              "## 16. 0056 simple ETH/SOL Beta-router numerical preregistration",
+            "Intended reusable daily DEVELOPMENT dataset for the later numerical preregistration:":
+              "Frozen daily DEVELOPMENT dataset binding for 0056:",
+            "Current 0056 authority is design-only:\n\n```text\ndesign                                  FROZEN ON DESIGN BRANCH\nnumerical preregistration               ABSENT\nimplementation                          ABSENT\ncontrolled execution boundary           ABSENT\n0056 historical execution               NOT RUN\n0056 result                              ABSENT\nactual variants evaluated               0":
+              "Current 0056 authority after numerical preregistration freeze:\n\n```text\ndesign                                  MERGED AT 16a23ce2115647beead7f7abdab68a6b4cb406fe\nnumerical preregistration               FROZEN ON PREREG BRANCH\nformal research path                    research/brrk_simple_eth_sol_beta_router_0056/\nregistry owner                          BRRK-SIMPLE-ETH-SOL-BETA-ROUTER-0056\nimplementation                          ABSENT\ncontrolled execution boundary           ABSENT\n0056 historical execution               NOT RUN\n0056 result                              PREREGISTERED_NOT_RUN\nactual variants evaluated               0",
+            "The only allowed continuation after this design merges is numerical/data preregistration. That preregistration must freeze exact dataset binding, common evaluation origins, NAV/cost accounting, benchmark recursion, CAGR/MDD conventions, chronological concentration rule, paired dependence-aware uncertainty method, block length, bootstrap repetitions/seed and all numerical PASS/FAIL gates **before** implementation or any 0056 economic output.":
+              "The numerical preregistration is now frozen before implementation or any 0056 economic output. It binds the immutable daily payload SHA256, 2122 common causal origins, NAV/cost and benchmark recursion, 5/10/20 bps L1 cost panel, 531/531/530/530 chronological blocks, 60-day moving-block bootstrap with 10,000 replicates and seed 1844716895, plus the complete G0-G4 classification hierarchy. After this preregistration merges, the only allowed continuation is a separate implementation-only branch that must not load or execute the real historical payload during implementation tests.",
+            "The active design authority is `research/governance/BRRK_SIMPLE_ETH_SOL_BETA_ROUTER_0056_DESIGN_FREEZE_2026-08-12.md`. Older next-step prose above is historical and is superseded by this section.":
+              "The active design authority is `research/governance/BRRK_SIMPLE_ETH_SOL_BETA_ROUTER_0056_DESIGN_FREEZE_2026-08-12.md`; the active numerical contract is `research/brrk_simple_eth_sol_beta_router_0056/PREREGISTRATION.json` with `DATASET_DECLARATION.json`. No 0056 implementation, controlled-run workflow, historical result or run marker exists at this stage. Older next-step prose above is historical and is superseded by this section."
+          }
+          for old, new in replacements.items():
+              assert state.count(old) == 1, old
+              state = state.replace(old, new, 1)
+          state_path.write_text(state, encoding="utf-8")
+          PY
+
+          git diff --check
+          git diff -- config/research_registry.json docs/CURRENT_STATE.md
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add config/research_registry.json docs/CURRENT_STATE.md
+          git rm .github/workflows/_temp_0056_prereg_governance_patch.yml
+          git diff --cached --check
+          git commit -m "Research prereg [DRIFT_0]: bind 0056 registry and handoff"
+          git push origin HEAD:research/0056-simple-beta-router-prereg
