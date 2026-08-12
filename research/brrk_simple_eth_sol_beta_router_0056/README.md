@@ -1,6 +1,6 @@
 # BRRK-SIMPLE-ETH-SOL-BETA-ROUTER-0056
 
-Status: **NUMERICAL PREREGISTRATION MERGED / IMPLEMENTATION-ONLY ON BRANCH / REAL HISTORICAL RUN FORBIDDEN**
+Status: **CONTROLLED-EXECUTION BOUNDARY ON BRANCH / ZERO RESULT / REAL HISTORICAL RUN NOT RUN**
 
 0056 is a new direct portfolio-economics mechanism study. It is not a rerun or rescue of 0048, 0053, 0054 or 0055.
 
@@ -148,12 +148,31 @@ Synthetic tests cover the exact RM60 sign/zero semantics, next-period timing, L1
 
 Real `MARKET_EVIDENCE.json` loading and any historical 0056 evaluation remain forbidden until a separate controlled-execution boundary merges.
 
+## Controlled-execution boundary
+
+The separate controlled-run layer is now frozen on this branch. It binds the merged preregistration, dataset declaration, implementation boundary, scientific engine, synthetic contract test, immutable 0048 source engine/declaration, and the exact 0047 `MARKET_EVIDENCE.json` git blob plus payload SHA256.
+
+Runtime state is staged and create-only:
+
+```text
+preflight       repeatable / zero result
+start-attempt   create RUN_ATTEMPT.marker and permanently close same-ID recomputation authority
+evaluate        requires durable attempt marker; load the frozen market evidence and call the frozen 0056 portfolio engine exactly once
+finalize        hash verification only; market loader and portfolio engine calls forbidden
+```
+
+Frozen runtime artifacts are `RUN_ATTEMPT.marker`, `PRIMARY_RESULT.json`, `EXECUTION.json`, and `RUN_ONCE.marker`. This boundary branch contains none of them. A complete result+execution bundle with only the final marker missing may use marker-only recovery; any interruption after the attempt marker but before a complete result/execution bundle forbids automatic same-ID remeasurement.
+
+The result schema permits only the preregistered 0056 portfolio-economic outputs and diagnostics. It rejects probability/predictive metrics, hindsight winner/oracle metrics, BTC/cash integration, CORE4, leverage and shorting. The classification must mechanically match frozen G0-G4 precedence.
+
+Synthetic/fault run `31602817149` passed the implementation contracts, controlled-run fault contracts and zero-result guard. It did not evaluate the real 0056 historical payload.
+
 ## Current authority
 
 ```text
 numerical preregistration     MERGED AT 85bbc8583b625da670267cbb3db4928fbe1ade6f
-implementation                IMPLEMENTATION-ONLY ON BRANCH
-controlled execution boundary ABSENT
+implementation                MERGED AT 9417bc3370613f1818d11aebf91bf733ac5ecbcc
+controlled execution boundary FROZEN ON BRANCH / ZERO RESULT
 historical execution          NOT RUN
 result                        PREREGISTERED_NOT_RUN
 actual variants evaluated     0
@@ -164,4 +183,4 @@ signature_authorized          false
 order_submission_authorized   false
 ```
 
-After this implementation-only branch merges green, the only allowed next stage is a **separate controlled-execution boundary**. No real 0056 historical evaluation is authorized by the implementation merge itself.
+After this controlled-execution boundary merges green, the only allowed next action is the unique staged DEVELOPMENT execution from the exact merged boundary HEAD: zero-result preflight, durable attempt marker, exactly one real evaluation, durable result/execution bundle, then marker-only finalization. No real 0056 historical evaluation is authorized while this boundary remains unmerged.
