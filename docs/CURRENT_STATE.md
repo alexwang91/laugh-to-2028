@@ -1,9 +1,9 @@
 # BRRK Current State
 
-Last updated: **2026-08-11**  
+Last updated: **2026-08-12**  
 Authoritative repository: `alexwang91/laugh-to-2028`  
-Current `main` research merge: **`bf486fcbebb54ebd84941ea78f825cdba3f58ede`**  
-Current research branch: **`research/brrk-leadership-4h-structural-readiness-0055-result`**  
+Current `main` research merge: **`4c6d801ca6d5db7545dcab460543c46b70d3927a`**  
+Current research branch: **`research/0056-simple-beta-router-design`**  
 Status of this document: **AUTHORITATIVE OPERATING SNAPSHOT**
 
 > GitHub `main`, immutable research artifacts and machine registries remain the sources of truth. This file is the compact human handoff, not a substitute for preregistration, execution, evidence, recovery or closeout artifacts.
@@ -39,6 +39,7 @@ BRRK leadership rotation 0048         MEASUREMENT_INCONCLUSIVE_INSUFFICIENT_SUPP
 BRRK intraday support 0053             FAIL_4H_DOES_NOT_SOLVE_0048_SUPPORT_CONSTRAINT / CLOSED
 BRRK 4h-native readiness 0054          FAIL_4H_NATIVE_TRAINING_PRECISION_NOT_ESTABLISHED / CLOSED
 BRRK 4h structural readiness 0055     FAIL_4H_STRUCTURAL_3D_TRAINING_PRECISION_NOT_ESTABLISHED / CLOSED
+BRRK simple ETH/SOL Beta router 0056  DESIGN FROZEN / NUMERICAL PREREG NOT YET FROZEN / NOT IMPLEMENTED / NOT RUN
 
 Canonical BRRK-0011                    NO CHANGE
 Phase 7                                MONITOR_ONLY / LAUNCH BLOCKED
@@ -495,3 +496,74 @@ same-ID rerun / retune / rescue          false / false / false
 
 The prospectively fixed 7D-to-3D representation did not establish the unchanged 0054 training-precision gate. This is a methodology failure, not a predictive-performance test. No predictive study, concentration study, portfolio translation, canonical change or production authority is created. Any continuation requires a new research ID.
 
+---
+
+## 16. 0056 simple ETH/SOL Beta-router design freeze
+
+New research ID: `BRRK-SIMPLE-ETH-SOL-BETA-ROUTER-0056`.
+
+0056 is a new direct portfolio-economics mechanism study. It is not a rerun or rescue of 0048/0053/0054/0055. The probability-readiness path remains closed under those IDs.
+
+The sole frozen candidate is:
+
+```text
+z_t                                     log(SOL_t / ETH_t)
+RM60_t                                  z_t - z_(t-60)
+RM60_t > 0                              target SOL
+RM60_t < 0                              target ETH
+RM60_t = 0                              retain prior holding
+initial exact-zero fallback             ETH
+signal observation                      completed UTC daily close t
+held return                             next close-to-close t -> t+1
+candidate variants                      1
+```
+
+The 60-day horizon is not selected from 0054/0055 outcomes; it already existed as 0048 baseline B3. No alternative lookback or model family is authorized under 0056.
+
+Frozen comparison family:
+
+```text
+B0                                      static 100% ETH buy-and-hold
+B1                                      static 100% SOL buy-and-hold
+B2                                      initial 50/50 ETH/SOL, then buy-and-hold; no rebalancing
+primary endpoints                       net terminal wealth / net CAGR
+primary 5 bps hurdle                    router must strictly beat all B0/B1/B2
+cost convention                         executed L1 turnover x bps
+primary / stress costs                  5 / 10 / 20 bps per unit L1 turnover
+BTC / cash timing / CORE4               excluded
+probability / calibration / HAC readiness excluded
+```
+
+Intended reusable daily DEVELOPMENT dataset for the later numerical preregistration:
+
+```text
+dataset id                              BINANCE_SPOT_BTC_ETH_SOL_1D_20200811_20260802
+common calendar                         2020-08-11 through 2026-08-02
+rows                                    2183
+payload SHA256                          d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193
+contamination                           RESEARCHER_EXPOSED_HISTORY
+independent OOS                         false
+```
+
+Current 0056 authority is design-only:
+
+```text
+design                                  FROZEN ON DESIGN BRANCH
+numerical preregistration               ABSENT
+implementation                          ABSENT
+controlled execution boundary           ABSENT
+0056 historical execution               NOT RUN
+0056 result                              ABSENT
+actual variants evaluated               0
+canonical BRRK changed                  false
+Phase 6 changed                         false
+production_authorized                   false
+signature_authorized                    false
+order_submission_authorized             false
+```
+
+The only allowed continuation after this design merges is numerical/data preregistration. That preregistration must freeze exact dataset binding, common evaluation origins, NAV/cost accounting, benchmark recursion, CAGR/MDD conventions, chronological concentration rule, paired dependence-aware uncertainty method, block length, bootstrap repetitions/seed and all numerical PASS/FAIL gates **before** implementation or any 0056 economic output.
+
+If 0056 later fails its frozen economic decision, the ETH/SOL micro-timing line stops: no 30d/90d/MACD/ML or other same-line rescue study. Research budget then moves under a new ID to Beta-to-BTC continuation value. If 0056 later passes, any BTC-anchor plus routed-Beta integration also requires a new ID.
+
+The active design authority is `research/governance/BRRK_SIMPLE_ETH_SOL_BETA_ROUTER_0056_DESIGN_FREEZE_2026-08-12.md`. Older next-step prose above is historical and is superseded by this section.
