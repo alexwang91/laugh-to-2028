@@ -1,0 +1,132 @@
+name: Temporary 0058 controlled-boundary materializer
+
+on:
+  push:
+    branches:
+      - research/0058-beta-btc-continuation-parameter-geometry-controlled-boundary-tooling
+
+permissions:
+  contents: write
+
+jobs:
+  materialize:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/0058-beta-btc-continuation-parameter-geometry-controlled-boundary
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: execution/plan-b-bot/requirements-dev.txt
+
+      - name: Install pinned governance runtime
+        run: pip install -r execution/plan-b-bot/requirements-dev.txt
+
+      - name: Seal boundary evidence and handoff
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          root = Path('research/brrk_beta_btc_continuation_parameter_geometry_0058')
+          boundary_path = root / 'CONTROLLED_EXECUTION_BOUNDARY.json'
+          boundary = json.loads(boundary_path.read_text())
+          boundary['boundary_fault_contract_evidence'] = {
+              'status': 'PASS_ZERO_RESULT_BOUNDARY_CONTRACTS',
+              'successful_tooling_run': 31643240307,
+              'implementation_engine_contract_tests_passed': 17,
+              'controlled_run_fault_contract_tests_passed': 13,
+              'total_boundary_tests_passed': 30,
+              'zero_result_guard_passed': True,
+              'governance_validate_passed': True,
+              'no_drift_passed': True,
+              'real_0058_historical_payload_loaded': False,
+              'real_0058_parameter_surface_economics_executed': False,
+              'actual_historical_variants_evaluated': 0
+          }
+          boundary_path.write_text(json.dumps(boundary, indent=2) + '\n')
+
+          readme_path = root / 'README.md'
+          readme = readme_path.read_text()
+          readme = readme.replace(
+              'Status: **IMPLEMENTATION FROZEN ON BRANCH / SYNTHETIC CONTRACT TESTS ONLY / NOT RUN**',
+              'Status: **CONTROLLED EXECUTION BOUNDARY FROZEN ON BRANCH / ZERO RESULT / NOT RUN**'
+          )
+          section = '\n## Controlled-execution boundary handoff\n'
+          if section not in readme:
+              readme += '''\n## Controlled-execution boundary handoff\n\nImplementation merged at `e2a0f2fd564274e53d099811d54bcdb06d77fb07`. The controlled boundary freezes `RUN_INTERFACE.json`, `RESULT_SCHEMA.json`, staged `run_once.py`, `test_run_interface.py` and `CONTROLLED_EXECUTION_BOUNDARY.json`. No historical result or runtime marker exists.\n\nThe state machine is `preflight -> durable RUN_ATTEMPT.marker -> exactly one real 108-cell evaluation -> durable PRIMARY_RESULT.json + EXECUTION.json -> marker-only RUN_ONCE.marker`. Once the attempt marker is durable, same-ID recomputation, retuning and rescue are forbidden. Marker-only recovery is allowed only when attempt/result/execution already exist and verify while the final marker alone is missing.\n\nThe result schema requires all 324 candidate/cost surface rows and all 210 interior geometry rows, verifies central-difference gradient/Hessian values directly against persisted terminal wealth, enforces the frozen plateau/representative/path schema and preserves historical argmax as descriptive-only.\n\nSynthetic/fault Actions run `31643240307` passed 17 immutable implementation contracts plus 13 controlled-run/schema contracts, governance validation, no-drift and the final zero-result guard. `REAL_0058_HISTORICAL_PAYLOAD_NOT_LOADED=true`, `REAL_0058_PARAMETER_SURFACE_ECONOMICS_NOT_EXECUTED=true`, `ACTUAL_HISTORICAL_VARIANTS_EVALUATED=0`.\n\nAfter this boundary merges through standing governance, 0058 becomes technically eligible for its unique staged DEVELOPMENT historical execution. That execution is a separate irreversible action and is not part of this boundary.\n'''
+          readme_path.write_text(readme)
+
+          state_path = Path('docs/CURRENT_STATE.md')
+          state = state_path.read_text()
+          state = state.replace(
+              'Current `main` research merge: **`e6d94b30c8bb4d126d6c234c30980d701a9ababc`**',
+              'Current `main` research merge: **`e2a0f2fd564274e53d099811d54bcdb06d77fb07`**'
+          )
+          state = state.replace(
+              'Current research branch: **`research/0058-beta-btc-continuation-parameter-geometry-implementation`**',
+              'Current research branch: **`research/0058-beta-btc-continuation-parameter-geometry-controlled-boundary`**'
+          )
+          state = state.replace(
+              'BRRK Beta->BTC parameter geometry 0058     IMPLEMENTATION FROZEN ON BRANCH / SYNTHETIC ONLY / NOT RUN',
+              'BRRK Beta->BTC parameter geometry 0058     CONTROLLED BOUNDARY FROZEN ON BRANCH / ZERO RESULT / NOT RUN'
+          )
+          section = '\n---\n\n## 0058 controlled-execution boundary handoff\n'
+          if section not in state:
+              state += '''\n---\n\n## 0058 controlled-execution boundary handoff\n\n0058 implementation merged at `e2a0f2fd564274e53d099811d54bcdb06d77fb07`. The active controlled-boundary branch adds only the execution safety layer around immutable engine blob `690e029588d6ff453eaabfa1e4ce5a7f3df2f139`; no historical parameter surface has been executed.\n\n```text\nresearch ID                              BRRK-BETA-BTC-CONTINUATION-PARAMETER-GEOMETRY-0058\nimplementation merge                     e2a0f2fd564274e53d099811d54bcdb06d77fb07\nimplementation engine blob               690e029588d6ff453eaabfa1e4ce5a7f3df2f139\nRUN_INTERFACE blob                        e7b7f6663a3fbae5e67f5e7e04e20f9207cb8657\nRESULT_SCHEMA blob                        cd3d894aa5f15f320263cdc37f840aad9c18e6e2\nrun_once blob                             f26e2acccd37e8465c1584d43b352273f019b360\ntest_run_interface blob                   3c530114a5a41bf080aa7d7274c11496d854ad21\nmarket evidence blob                      64ebf5c6deaf3f34dbeac715378f196ff0f4fafe\npayload SHA256                            d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193\ncontrolled execution boundary             FROZEN ON BRANCH / ZERO RESULT\nhistorical execution                      NOT RUN\nactual historical variants evaluated      0\nattempt marker                             ABSENT\nprimary result                             ABSENT\nexecution artifact                         ABSENT\nfinal marker                               ABSENT\n```\n\nThe staged state machine is `preflight -> durable RUN_ATTEMPT.marker -> exactly one evaluate -> durable PRIMARY_RESULT.json + EXECUTION.json -> marker-only RUN_ONCE.marker`. The durable attempt marker binds all 108 preregistered `(L,kappa)` cells and permanently removes same-ID recomputation/retuning/rescue authority. A partial result blocks automatic recomputation. Finalization may not reload market evidence, call the 0047 loader or call the 0058 engine.\n\nThe controlled result schema requires the complete 324-row 108-cell x 3-cost surface and 210-row interior geometry table. Geometry derivatives/Hessian norms are re-derived from persisted terminal wealth during validation; selected representative/path fields follow the preregistered conditional semantics, and historical argmax remains descriptive-only.\n\nSynthetic/fault Actions run `31643240307` passed all 17 immutable implementation contracts and 13 new controlled-run/schema contracts, plus governance validation, no-drift and the zero-result guard. No real market evidence was loaded and no 0058 historical portfolio economics was executed.\n\n```text\nCanonical BRRK-0011                    NO CHANGE\nPhase 6                                NO CHANGE\nproduction_authorized_components       []\nproduction_authorized                  false\nsignature_authorized                   false\norder_submission_authorized            false\n```\n\nExact next step: pass fresh PR handoff, research-governance/final-no-drift, Phase0-8, P3.2 parity/golden and Phase6 safety checks; merge this zero-result boundary with expected-head protection. Only after that merge may the exact merged boundary HEAD perform the unique staged 0058 DEVELOPMENT execution.\n'''
+          state_path.write_text(state)
+          PY
+
+      - name: Validate sealed target
+        run: |
+          python -m unittest research.brrk_beta_btc_continuation_parameter_geometry_0058.test_engine -v
+          python -m unittest research.brrk_beta_btc_continuation_parameter_geometry_0058.test_run_interface -v
+          python -m research.governance.validate
+          python -m research.governance.no_drift
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root = Path('research/brrk_beta_btc_continuation_parameter_geometry_0058')
+          b = json.loads((root / 'CONTROLLED_EXECUTION_BOUNDARY.json').read_text())
+          assert b['actual_variants_evaluated'] == 0
+          assert b['historical_execution_performed'] is False
+          assert b['boundary_fault_contract_evidence']['successful_tooling_run'] == 31643240307
+          for name in ('PRIMARY_RESULT.json','EXECUTION.json','RUN_ATTEMPT.marker','RUN_ONCE.marker'):
+              assert not (root / name).exists(), name
+          PY
+
+      - name: Commit sealed handoff to target branch
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add research/brrk_beta_btc_continuation_parameter_geometry_0058/CONTROLLED_EXECUTION_BOUNDARY.json \
+                  research/brrk_beta_btc_continuation_parameter_geometry_0058/README.md \
+                  docs/CURRENT_STATE.md
+          git commit -m 'Research controlled boundary [DRIFT_0]: seal 0058 zero-result boundary evidence'
+          git push origin HEAD:research/0058-beta-btc-continuation-parameter-geometry-controlled-boundary
+
+      - name: Final seven-file diff audit
+        run: |
+          python - <<'PY'
+          import subprocess
+          expected = {
+              'docs/CURRENT_STATE.md',
+              'research/brrk_beta_btc_continuation_parameter_geometry_0058/README.md',
+              'research/brrk_beta_btc_continuation_parameter_geometry_0058/RUN_INTERFACE.json',
+              'research/brrk_beta_btc_continuation_parameter_geometry_0058/RESULT_SCHEMA.json',
+              'research/brrk_beta_btc_continuation_parameter_geometry_0058/run_once.py',
+              'research/brrk_beta_btc_continuation_parameter_geometry_0058/test_run_interface.py',
+              'research/brrk_beta_btc_continuation_parameter_geometry_0058/CONTROLLED_EXECUTION_BOUNDARY.json',
+          }
+          changed = set(subprocess.check_output(['git','diff','--name-only','e2a0f2fd564274e53d099811d54bcdb06d77fb07...HEAD'], text=True).splitlines())
+          assert changed == expected, (changed, expected)
+          print('REAL_0058_HISTORICAL_PAYLOAD_NOT_LOADED=true')
+          print('REAL_0058_PARAMETER_SURFACE_ECONOMICS_NOT_EXECUTED=true')
+          print('ACTUAL_HISTORICAL_VARIANTS_EVALUATED=0')
+          PY
