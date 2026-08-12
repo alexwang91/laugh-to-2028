@@ -1,0 +1,50 @@
+name: Temporary 0057 controlled-boundary fault contracts
+
+on:
+  push:
+    branches:
+      - research/0057-controlled-boundary-tooling
+
+permissions:
+  contents: read
+
+jobs:
+  fault-contracts:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/0057-simple-beta-router-interface-replication-controlled-run
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install pinned test runtime
+        run: pip install 'numpy==2.4.2' 'pandas==3.0.0'
+      - name: Run 0057 adapter and controlled-run fault contracts
+        run: |
+          python -m unittest -v research.brrk_simple_eth_sol_beta_router_interface_replication_0057.test_adapter
+          python -m unittest -v research.brrk_simple_eth_sol_beta_router_interface_replication_0057.test_run_interface
+      - name: Zero-result boundary static guard
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          base=Path('research/brrk_simple_eth_sol_beta_router_interface_replication_0057')
+          run=(base/'run_once.py').read_text()
+          boundary=(base/'CONTROLLED_EXECUTION_BOUNDARY.json').read_text()
+          # Boundary code may name the frozen market path but boundary CI must not execute it.
+          for name in ('PRIMARY_RESULT.json','EXECUTION.json','RUN_ATTEMPT.marker','RUN_ONCE.marker'):
+              assert not (base/name).exists(), name
+          assert 'frames_from_market_evidence' in run
+          assert 'adapter.evaluate_frozen_contract' in run
+          assert 'source_engine.load_frozen_market_evidence' not in run
+          assert 'finalize_may_load_market": false' in boundary
+          assert 'actual_historical_variants_evaluated": 0' in boundary
+          print('REAL_0057_HISTORICAL_PAYLOAD_NOT_LOADED=true')
+          print('REAL_0057_PORTFOLIO_ECONOMICS_NOT_EXECUTED=true')
+          print('ACTUAL_HISTORICAL_VARIANTS_EVALUATED=0')
+          PY
+      - name: Validate governance and no drift
+        run: |
+          python -m research.governance.validate
+          python -m research.governance.no_drift
