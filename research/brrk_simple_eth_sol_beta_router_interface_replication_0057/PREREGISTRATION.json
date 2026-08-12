@@ -1,0 +1,248 @@
+{
+  "schema_version": 1,
+  "research_id": "BRRK-SIMPLE-ETH-SOL-BETA-ROUTER-INTERFACE-REPLICATION-0057",
+  "research_family_id": "BRRK_DYNAMIC_LEADERSHIP_ROUTER",
+  "research_domain": "PORTFOLIO_INTEGRATION",
+  "research_governance_version": 1,
+  "governance_mode": "PROGRAM_GOVERNED_V1",
+  "objective_type": "PORTFOLIO_INTEGRATION",
+  "created_before_result": true,
+  "stage": "NUMERICAL_PREREGISTRATION",
+  "result_status": "PREREGISTERED_NOT_RUN",
+  "actual_variants_evaluated": 0,
+  "evidence_refs": [],
+  "design_authority": {
+    "path": "research/governance/BRRK_SIMPLE_ETH_SOL_BETA_ROUTER_INTERFACE_REPLICATION_0057_DESIGN_FREEZE_2026-08-12.md",
+    "design_merge_sha": "21f758260ea80040bbb38aec26e2091814e37fd9",
+    "design_blob_sha": "51139af05c058a49e6acd2126d263ffbaefb7820",
+    "design_pr": 204,
+    "design_changed_after_merge": false
+  },
+  "replication_lineage": {
+    "parent_research_id": "BRRK-SIMPLE-ETH-SOL-BETA-ROUTER-0056",
+    "relation": "MEASUREMENT_FIX",
+    "parent_closeout_path": "research/brrk_simple_eth_sol_beta_router_0056/CLOSEOUT.json",
+    "parent_closeout_blob_sha": "ec80ef4201db7573698ed4b8a9ca6fb5e05b1ab8",
+    "parent_status": "INVALID_EXECUTION_CLOSED",
+    "parent_economic_output_exposed": false,
+    "same_id_rerun": false,
+    "new_scientific_variant": false,
+    "only_new_freedom": "SOURCE_INDEX_REPRESENTATION_ADAPTER_TZ_LOCALIZE_UTC_ONLY"
+  },
+  "question": "Does the exact frozen 0056 RM60 ETH/SOL Beta-router economic mechanism meet its inherited after-cost full-cycle wealth gates when the already-identified source/validator timezone representation mismatch is corrected by one deterministic tz_localize('UTC') adapter?",
+  "economic_objective": "MAXIMIZE_CAUSAL_NET_TERMINAL_WEALTH_AND_NET_CAGR",
+  "variant_budget": {
+    "declared_variant_budget": 1,
+    "parameter_candidate_count": 1,
+    "candidate_name": "RM60_SIGN_ROUTER_WITH_TZ_LOCALIZE_UTC_SOURCE_ADAPTER",
+    "alternative_adapters_allowed": false,
+    "alternative_lookbacks_allowed": false,
+    "alternative_thresholds_allowed": false,
+    "alternative_model_families_allowed": false,
+    "parameter_sweep_allowed": false
+  },
+  "immutable_bindings": {
+    "0056_preregistration": {
+      "path": "research/brrk_simple_eth_sol_beta_router_0056/PREREGISTRATION.json",
+      "blob_sha": "768c6d203f1d2bb0effc53ed81800d2ea871a151"
+    },
+    "0056_dataset_declaration": {
+      "path": "research/brrk_simple_eth_sol_beta_router_0056/DATASET_DECLARATION.json",
+      "blob_sha": "fa6a7de6807c3b8c878c2595380dcc8fd99c1a44"
+    },
+    "0056_engine": {
+      "path": "research/brrk_simple_eth_sol_beta_router_0056/engine.py",
+      "blob_sha": "b0fc1ac267a66593e7e2c4687aff81491bfcdf5a"
+    },
+    "0047_source_loader": {
+      "path": "research/brrk_beta_handoff_0047/engine.py",
+      "blob_sha": "059b55961e279dab41ba29b5b017de0922e4f33c"
+    },
+    "market_evidence": {
+      "path": "research/brrk_beta_handoff_0047/evidence/MARKET_EVIDENCE.json",
+      "blob_sha": "64ebf5c6deaf3f34dbeac715378f196ff0f4fafe",
+      "payload_sha256": "d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193"
+    }
+  },
+  "data_contract": {
+    "dataset_slice_ref": "BRRK-LEADERSHIP-ROTATION-0048-EXPOSED-HIST-V1",
+    "dataset_id": "BINANCE-SPOT-BTC-ETH-SOL-UTC-DAILY-OHLCV-TRADES",
+    "source_common_start": "2020-08-11T00:00:00Z",
+    "source_common_end": "2026-08-02T00:00:00Z",
+    "source_common_rows": 2183,
+    "assets_consumed": ["ETH", "SOL"],
+    "field_consumed": "daily_close",
+    "network_fetch_allowed": false,
+    "replacement_dataset_allowed": false,
+    "synthetic_fill_allowed": false,
+    "missing_row_interpolation_allowed": false,
+    "researcher_exposed_history": true,
+    "contamination_state": "RESEARCHER_EXPOSED_HISTORY",
+    "data_budget": "DEVELOPMENT",
+    "independent_oos": false
+  },
+  "source_interface_contract": {
+    "source_index_type": "pandas.DatetimeIndex",
+    "source_timezone_state": "TZ_NAIVE_UTC_NORMALIZED_DAILY_DATES",
+    "source_index_tz_must_be_none": true,
+    "source_indexes_identical_ETH_SOL": true,
+    "source_indexes_unique": true,
+    "source_indexes_strictly_increasing": true,
+    "source_indexes_midnight_normalized": true,
+    "adapter_operation_exact": "copied_frame.index = copied_frame.index.tz_localize('UTC')",
+    "adapter_may_mutate_source_frames": false,
+    "adapted_timezone": "UTC",
+    "adapted_index_tz_string": "UTC",
+    "post_adapter_tz_localize_none_must_equal_source_index": true,
+    "row_count_must_be_identical": true,
+    "calendar_labels_must_be_identical": true,
+    "row_order_must_be_identical": true,
+    "ETH_close_array_must_be_bitwise_equal": true,
+    "SOL_close_array_must_be_bitwise_equal": true,
+    "tz_convert_allowed": false,
+    "time_shift_allowed": false,
+    "resampling_allowed": false,
+    "row_add_delete_allowed": false,
+    "fill_allowed": false,
+    "interpolation_allowed": false,
+    "refetch_allowed": false,
+    "provider_substitution_allowed": false,
+    "alternate_loader_allowed": false,
+    "portfolio_engine_rewrite_allowed": false,
+    "adapted_frames_must_be_accepted_by_bound_0056_engine": true
+  },
+  "evaluation_window": {
+    "signal_lookback_days": 60,
+    "first_signal_origin": "2020-10-10T00:00:00Z",
+    "last_signal_origin": "2026-08-01T00:00:00Z",
+    "terminal_close": "2026-08-02T00:00:00Z",
+    "evaluation_origin_count": 2122,
+    "held_period_count": 2122,
+    "calendar_span_days": 2122,
+    "candidate_and_all_benchmarks_share_identical_window": true
+  },
+  "signal_rule": {
+    "relative_log_price": "z_t = log(SOL_close_t / ETH_close_t)",
+    "signal": "RM60_t = z_t - z_(t-60)",
+    "positive": "TARGET_SOL",
+    "negative": "TARGET_ETH",
+    "exact_zero": "RETAIN_PRIOR_ROUTER_HOLDING",
+    "initial_exact_zero_without_prior_holding": "TARGET_ETH",
+    "signal_magnitude_used": false,
+    "probability_used": false,
+    "secondary_filter_used": false
+  },
+  "causal_timing": {
+    "information_cutoff": "COMPLETED_UTC_DAILY_CLOSE_T",
+    "decision_time": "AFTER_COMPLETED_CLOSE_T",
+    "held_return": "P_(t+1)/P_t - 1",
+    "same_period_return_capture_allowed": false,
+    "same_close_hindsight_selection_allowed": false,
+    "intraday_information_allowed": false
+  },
+  "portfolio_contract": {
+    "starting_nav": 1.0,
+    "starting_state": "CASH_BEFORE_FIRST_ENTRY_ONLY",
+    "router_assets": ["ETH", "SOL"],
+    "router_target_gross": 1.0,
+    "router_holds_exactly_one_asset": true,
+    "cash_after_initial_entry_allowed": false,
+    "btc_allowed": false,
+    "leverage_allowed": false,
+    "shorting_allowed": false,
+    "switch_condition": "TARGET_ASSET_CHANGES_UNDER_RM60_SIGN_RULE_ONLY"
+  },
+  "benchmark_contract": {
+    "B0_STATIC_ETH": "one 100% ETH entry then buy-and-hold",
+    "B1_STATIC_SOL": "one 100% SOL entry then buy-and-hold",
+    "B2_STATIC_50_50": "initial 50% ETH + 50% SOL after entry cost, then independent drifting components with no periodic rebalancing",
+    "periodic_rebalancing_of_B2_allowed": false,
+    "all_benchmarks_pay_initial_entry_cost": true,
+    "pointwise_oracle_benchmark_allowed": false,
+    "hindsight_winner_recomputation_allowed": false,
+    "best_static_exact_tie_break": ["B0_STATIC_ETH", "B1_STATIC_SOL", "B2_STATIC_50_50"]
+  },
+  "transaction_cost_contract": {
+    "cost_semantics": "EXECUTED_L1_TURNOVER_TIMES_BPS",
+    "primary_cost_bps_per_unit_l1": 5.0,
+    "stress_cost_bps_per_unit_l1": [10.0, 20.0],
+    "cost_rate_formula": "cost_bps / 10000",
+    "cost_formula": "cost_t = pre_trade_NAV_t * executed_L1_turnover_t * cost_rate",
+    "post_cost_nav_formula": "post_trade_NAV_t = pre_trade_NAV_t - cost_t",
+    "initial_full_investment_l1": 1.0,
+    "full_ETH_SOL_switch_l1": 2.0,
+    "unchanged_router_holding_l1": 0.0,
+    "cost_debit_order": "BEFORE_T_TO_T_PLUS_1_HELD_RETURN"
+  },
+  "wealth_accounting": {
+    "terminal_wealth": "W_T = NAV at 2026-08-02T00:00:00Z with W_0=1",
+    "annualization_days": 365.25,
+    "net_cagr": "W_T^(365.25/2122)-1",
+    "numerical_dtype": "IEEE754_FLOAT64",
+    "technical_strict_positive_tolerance": 1e-12,
+    "strict_dominance_test": "log(W_router/W_benchmark) > 1e-12"
+  },
+  "temporal_robustness": {
+    "block_sizes": [531, 531, 530, 530],
+    "blocks": [
+      {"block": 1, "origin_start": "2020-10-10T00:00:00Z", "origin_end": "2022-03-24T00:00:00Z", "terminal_close": "2022-03-25T00:00:00Z", "held_periods": 531},
+      {"block": 2, "origin_start": "2022-03-25T00:00:00Z", "origin_end": "2023-09-06T00:00:00Z", "terminal_close": "2023-09-07T00:00:00Z", "held_periods": 531},
+      {"block": 3, "origin_start": "2023-09-07T00:00:00Z", "origin_end": "2025-02-17T00:00:00Z", "terminal_close": "2025-02-18T00:00:00Z", "held_periods": 530},
+      {"block": 4, "origin_start": "2025-02-18T00:00:00Z", "origin_end": "2026-08-01T00:00:00Z", "terminal_close": "2026-08-02T00:00:00Z", "held_periods": 530}
+    ],
+    "best_static_definition": "largest full-horizon terminal wealth among B0/B1/B2 at 5bps",
+    "global_no_reset_nav": true,
+    "block_relative_statistic": "log(block_growth_router/block_growth_B_STAR)",
+    "pass_rule": "strictly >1e-12 in at least 3 of 4 blocks",
+    "per_block_dynamic_best_static_oracle_allowed": false
+  },
+  "dependence_aware_inference": {
+    "scope": "PRIMARY_5BPS_ONLY",
+    "paired_series": "d_(b,t)=log(g_router_t)-log(g_b_t)",
+    "observed_statistic": "mu_b=mean_t d_(b,t)",
+    "bootstrap_type": "ORDINARY_MOVING_BLOCK_BOOTSTRAP_ALIGNED_ACROSS_ALL_THREE_BENCHMARK_DIFFERENTIAL_SERIES",
+    "block_length": 60,
+    "replicates": 10000,
+    "seed": 1844716895,
+    "eligible_start_indices_zero_based": "0..2062",
+    "blocks_per_replicate_before_truncation": 36,
+    "resampling_rule": "draw starts independently uniformly with replacement; concatenate 60-row blocks; truncate to 2122; use identical sampled row indices jointly across B0/B1/B2",
+    "replicate_statistic": "T_r = max_b(mu_b - mu_star_(r,b))",
+    "quantile": "ordinary Type-7 linear 0.95 quantile of T_r",
+    "lower_bound": "LCB_b = mu_b - q95",
+    "pass_rule": "all three LCB_b > 0"
+  },
+  "gates": {
+    "G0": "exact hashes/blobs/rows/calendar/source tz-naive contract/tz_localize-only adapter/value invariance/adapted UTC-aware contract/bound 0056 engine/candidate timing costs benchmarks variant budget; any breach INVALID_EXECUTION",
+    "G1": "at 5bps router log terminal advantage >1e-12 versus each B0/B1/B2",
+    "G2": "same strict dominance versus each B0/B1/B2 at both 10bps and 20bps",
+    "G3": "positive block relative log growth >1e-12 versus single full-horizon B_STAR in >=3/4 blocks",
+    "G4": "all three simultaneous moving-block-bootstrap LCBs >0"
+  },
+  "classification_precedence": [
+    {"if": "G0_FAIL", "classification": "INVALID_EXECUTION"},
+    {"if": "G1_FAIL", "classification": "FAIL_NO_SIMPLE_BETA_ROUTER_ECONOMIC_UPLIFT"},
+    {"if": "G2_FAIL", "classification": "FAIL_SIMPLE_BETA_ROUTER_COST_FRAGILE"},
+    {"if": "G3_FAIL", "classification": "FAIL_SIMPLE_BETA_ROUTER_TEMPORALLY_CONCENTRATED"},
+    {"if": "G4_FAIL", "classification": "FAIL_SIMPLE_BETA_ROUTER_ECONOMIC_UPLIFT_NOT_DEPENDENCE_ROBUST"},
+    {"if": "ALL_G0_G4_PASS", "classification": "PASS_SIMPLE_BETA_ROUTER_ECONOMIC_ELIGIBILITY"}
+  ],
+  "stop_and_followup": {
+    "same_id_rerun_after_valid_result": false,
+    "same_id_repair_after_durable_attempt": false,
+    "same_id_retune": false,
+    "same_id_rescue": false,
+    "valid_fail_closes_ETH_SOL_micro_timing_line": true,
+    "valid_pass_only_makes_new_ID_BTC_anchor_plus_routed_Beta_study_eligible": true,
+    "canonical_brrk_changed": false,
+    "phase6_changed": false,
+    "production_authorized": false,
+    "signature_authorized": false,
+    "order_submission_authorized": false
+  },
+  "execution_firewall": {
+    "real_historical_payload_may_be_evaluated_during_preregistration": false,
+    "implementation_before_prereg_merge_allowed": false,
+    "real_historical_evaluation_before_separate_implementation_merge_and_controlled_boundary_merge": false
+  }
+}
