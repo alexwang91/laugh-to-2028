@@ -1,0 +1,36 @@
+name: Temporary 0057 closeout registry inspection
+
+on:
+  push:
+    branches:
+      - research/0057-interface-replication-closeout-tooling
+
+permissions:
+  contents: read
+
+jobs:
+  inspect:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 1d0b8fcf3ee49c180e90593afdb71047b34a28a7
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Print governed registry records
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          reg=json.loads(Path('config/research_registry.json').read_text())
+          wanted={
+            'BRRK-SIMPLE-ETH-SOL-BETA-ROUTER-0056',
+            'BRRK-SIMPLE-ETH-SOL-BETA-ROUTER-INTERFACE-REPLICATION-0057',
+          }
+          for rec in reg['records']:
+              if rec.get('research_id') in wanted:
+                  print('RECORD_BEGIN='+rec['research_id'])
+                  print(json.dumps(rec,indent=2,sort_keys=True))
+                  print('RECORD_END='+rec['research_id'])
+          PY
