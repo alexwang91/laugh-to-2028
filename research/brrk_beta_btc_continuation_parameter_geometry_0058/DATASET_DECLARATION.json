@@ -1,0 +1,64 @@
+{
+  "research_id": "BRRK-BETA-BTC-CONTINUATION-PARAMETER-GEOMETRY-0058",
+  "dataset_reuse": {
+    "dataset_slice_id": "BRRK-LEADERSHIP-ROTATION-0048-EXPOSED-HIST-V1",
+    "dataset_id": "BINANCE-SPOT-BTC-ETH-SOL-UTC-DAILY-OHLCV-TRADES",
+    "source_research_id": "BRRK-LEADERSHIP-ROTATION-0048",
+    "source_dataset_declaration_path": "research/brrk_leadership_rotation_0048/DATASET_DECLARATION.json",
+    "source_market_evidence_path": "research/brrk_beta_handoff_0047/evidence/MARKET_EVIDENCE.json",
+    "source_market_evidence_blob_sha": "64ebf5c6deaf3f34dbeac715378f196ff0f4fafe",
+    "source_loader_path": "research/brrk_beta_handoff_0047/engine.py",
+    "source_loader_blob_sha": "059b55961e279dab41ba29b5b017de0922e4f33c",
+    "source_payload_sha256": "d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193",
+    "source_common_rows": 2183,
+    "source_common_start": "2020-08-11T00:00:00Z",
+    "source_common_end": "2026-08-02T00:00:00Z",
+    "resolution": "1D",
+    "semantic_timezone": "UTC",
+    "source_index_representation": "UTC_NORMALIZED_TZ_NAIVE_DAILY_DATES",
+    "assets_available": [
+      "BTC",
+      "ETH",
+      "SOL"
+    ],
+    "assets_consumed_by_0058": [
+      "BTC",
+      "ETH",
+      "SOL"
+    ],
+    "field_consumed_by_0058": "daily_close",
+    "network_fetch_allowed": false,
+    "replacement_allowed": false,
+    "synthetic_fill_allowed": false,
+    "interpolation_allowed": false,
+    "researcher_exposed_history": true,
+    "contamination_state": "RESEARCHER_EXPOSED_HISTORY",
+    "data_budget": "DEVELOPMENT",
+    "independent_oos": false
+  },
+  "evaluation_slice": {
+    "max_L_days": 240,
+    "volatility_window_days": 240,
+    "first_signal_origin": "2021-04-08T00:00:00Z",
+    "last_signal_origin": "2026-08-01T00:00:00Z",
+    "terminal_close": "2026-08-02T00:00:00Z",
+    "evaluation_origin_count": 1942,
+    "held_period_count": 1942,
+    "calendar_span_days": 1942,
+    "all_108_cells_and_benchmarks_share_identical_origins": true
+  },
+  "causal_use_policy": {
+    "signal_uses_completed_close_t_only": true,
+    "held_return_is_next_close_to_close": true,
+    "same_period_return_capture_allowed": false,
+    "future_close_in_signal_allowed": false,
+    "post_2026_08_02_history_allowed": false
+  },
+  "exposure_policy": {
+    "new_raw_data_release_created_by_0058_prereg": false,
+    "existing_exposed_history_reused": true,
+    "independent_oos_claim_allowed": false,
+    "production_evidence_claim_allowed": false,
+    "real_portfolio_economics_may_be_computed_during_preregistration": false
+  }
+}
