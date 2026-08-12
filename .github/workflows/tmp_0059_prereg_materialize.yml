@@ -1,0 +1,39 @@
+name: tmp-0059-prereg-materialize
+
+on:
+  push:
+    branches:
+      - research/0059-beta-deterioration-btc-takeover-diagnostic-prereg
+
+permissions:
+  contents: write
+
+jobs:
+  materialize:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/0059-beta-deterioration-btc-takeover-diagnostic-prereg
+          fetch-depth: 0
+      - name: Materialize frozen preregistration
+        run: python .github/tmp_0059_prereg_materialize.py
+      - name: Validate JSON syntax
+        shell: bash
+        run: |
+          python -m json.tool config/research_registry.json >/dev/null
+          python -m json.tool research/brrk_beta_deterioration_btc_takeover_diagnostic_0059/PREREGISTRATION.json >/dev/null
+          python -m json.tool research/brrk_beta_deterioration_btc_takeover_diagnostic_0059/DATASET_DECLARATION.json >/dev/null
+      - name: Commit atomic owner and preregistration, then self-clean
+        shell: bash
+        run: |
+          rm .github/tmp_0059_prereg_materialize.py
+          rm .github/workflows/tmp_0059_prereg_materialize.yml
+          rm -f .tmp_0059_prereg_trigger
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add config/research_registry.json docs/CURRENT_STATE.md research/brrk_beta_deterioration_btc_takeover_diagnostic_0059 .github
+          git add -u
+          git commit -m 'research: freeze 0059 numerical preregistration'
+          git push origin HEAD:research/0059-beta-deterioration-btc-takeover-diagnostic-prereg
