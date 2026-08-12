@@ -1,0 +1,86 @@
+name: Temporary 0057 prereg finalize tooling
+
+on:
+  push:
+    branches:
+      - research/0057-prereg-owner-tooling
+
+permissions:
+  contents: write
+
+jobs:
+  finalize:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/0057-simple-beta-router-interface-replication-prereg
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Finalize prereg metadata without historical evaluation
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          RID='BRRK-SIMPLE-ETH-SOL-BETA-ROUTER-INTERFACE-REPLICATION-0057'
+          BASE=Path('research/brrk_simple_eth_sol_beta_router_interface_replication_0057')
+          p=BASE/'PREREGISTRATION.json'
+          x=json.loads(p.read_text())
+          assert x['research_id']==RID and x['actual_variants_evaluated']==0
+          x['primary_endpoints']=['NET_TERMINAL_WEALTH','NET_CAGR']
+          x['secondary_diagnostics']=[
+            'MAXIMUM_DRAWDOWN',
+            'TOTAL_EXECUTED_L1_TURNOVER',
+            'TOTAL_ROUTER_SWITCH_COUNT',
+            'AVERAGE_HOLDING_DURATION_DAYS',
+            'MEDIAN_HOLDING_DURATION_DAYS',
+            'LONGEST_UNDERPERFORMANCE_INTERVAL_VS_FULL_HORIZON_BEST_STATIC_AT_5BPS',
+            'CALENDAR_YEAR_NET_RETURNS_2020_PARTIAL_THROUGH_2026_PARTIAL',
+            'FOUR_FIXED_CHRONOLOGICAL_BLOCK_RETURNS_AND_RELATIVE_LOG_GROWTH',
+            '10BPS_AND_20BPS_COST_SENSITIVITY',
+            'PAIRED_DEPENDENCE_AWARE_BOOTSTRAP_LOWER_BOUNDS'
+          ]
+          x['dependence_aware_inference']['rng_implementation']='NUMPY_DEFAULT_RNG_PCG64_VIA_np.random.default_rng'
+          x['dependence_aware_inference']['same_sampled_indices_jointly_across_all_three_benchmarks']=True
+          x['dependence_aware_inference']['router_states_recomputed_inside_bootstrap']=False
+          x['dependence_aware_inference']['bootstrap_operates_on_realized_net_log_growth_differentials']=True
+          p.write_text(json.dumps(x,indent=2,ensure_ascii=False)+'\n')
+
+          d=json.loads((BASE/'DATASET_DECLARATION.json').read_text())
+          assert d['research_id']==RID
+          assert d['dataset_reuse']['source_payload_sha256']=='d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193'
+          assert d['representation_adapter']['exact_pandas_operation']=="copied_frame.index = copied_frame.index.tz_localize('UTC')"
+
+          rp=Path('config/research_registry.json')
+          reg=json.loads(rp.read_text())
+          rec=next(r for r in reg['records'] if r.get('research_id')==RID)
+          assert rec['actual_variants_evaluated']==0 and rec['result_status']=='PREREGISTERED_NOT_RUN'
+          rec['decision_refs']=[
+            'research/governance/BRRK_SIMPLE_ETH_SOL_BETA_ROUTER_INTERFACE_REPLICATION_0057_DESIGN_FREEZE_2026-08-12.md',
+            'research/brrk_simple_eth_sol_beta_router_interface_replication_0057/PREREGISTRATION.json',
+            'research/brrk_simple_eth_sol_beta_router_interface_replication_0057/DATASET_DECLARATION.json',
+            'docs/CURRENT_STATE.md'
+          ]
+          rp.write_text(json.dumps(reg,indent=2,ensure_ascii=False)+'\n')
+
+          sp=Path('docs/CURRENT_STATE.md')
+          s=sp.read_text()
+          s=s.replace('BRRK Beta router interface replication 0057 PREREG STAGING / OWNER REGISTERED / FORMAL FILES NEXT','BRRK Beta router interface replication 0057 NUMERICAL PREREG FROZEN ON BRANCH / NOT RUN',1)
+          if '## 19. 0057 numerical preregistration handoff' not in s:
+              s += '''\n\n---\n\n## 19. 0057 numerical preregistration handoff\n\n0057 inherits the complete 0056 RM60 portfolio-economic mechanism and G0-G4 decision system without retuning. The only new-ID correction is a deterministic source representation adapter: validate the immutable 0047/0048 tz-naive UTC-normalized ETH/SOL daily indexes, copy the frames, apply `index.tz_localize("UTC")`, prove calendar/order/row-count/close-value invariance, then delegate all portfolio economics to immutable 0056 engine blob `b0fc1ac267a66593e7e2c4687aff81491bfcdf5a`.\n\nThe immutable market evidence remains blob `64ebf5c6deaf3f34dbeac715378f196ff0f4fafe`, payload SHA256 `d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193`, 2183 common daily rows, with exactly 2122 held periods. No historical portfolio result has been computed under 0057; actual variants evaluated remain 0.\n\nNext legal stage after prereg merge is implementation-only. Real historical evaluation remains forbidden until implementation and a separately merged controlled-execution boundary exist.\n'''
+          sp.write_text(s)
+          PY
+      - name: Validate prereg and formal ownership
+        run: |
+          python -m json.tool research/brrk_simple_eth_sol_beta_router_interface_replication_0057/PREREGISTRATION.json >/dev/null
+          python -m json.tool research/brrk_simple_eth_sol_beta_router_interface_replication_0057/DATASET_DECLARATION.json >/dev/null
+          python -m research.governance.validate
+          git diff --check -- config/research_registry.json research/brrk_simple_eth_sol_beta_router_interface_replication_0057
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add config/research_registry.json docs/CURRENT_STATE.md research/brrk_simple_eth_sol_beta_router_interface_replication_0057/PREREGISTRATION.json research/brrk_simple_eth_sol_beta_router_interface_replication_0057/DATASET_DECLARATION.json research/brrk_simple_eth_sol_beta_router_interface_replication_0057/README.md
+          git commit -m 'Research prereg [DRIFT_0]: finalize 0057 numerical contract'
+          python -m research.governance.no_drift
+          git push origin HEAD:research/0057-simple-beta-router-interface-replication-prereg
