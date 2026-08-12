@@ -1,0 +1,58 @@
+{
+  "research_id": "BRRK-SIMPLE-ETH-SOL-BETA-ROUTER-0056",
+  "dataset_reuse": {
+    "dataset_slice_id": "BRRK-LEADERSHIP-ROTATION-0048-EXPOSED-HIST-V1",
+    "dataset_id": "BINANCE-SPOT-BTC-ETH-SOL-UTC-DAILY-OHLCV-TRADES",
+    "source_research_id": "BRRK-LEADERSHIP-ROTATION-0048",
+    "source_dataset_declaration_path": "research/brrk_leadership_rotation_0048/DATASET_DECLARATION.json",
+    "source_evidence_path": "research/brrk_beta_handoff_0047/EVIDENCE_RECOVERY.json",
+    "source_payload_sha256": "d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193",
+    "source_common_rows": 2183,
+    "source_common_start": "2020-08-11T00:00:00Z",
+    "source_common_end": "2026-08-02T00:00:00Z",
+    "resolution": "1D",
+    "timezone": "UTC",
+    "assets_available": [
+      "BTC",
+      "ETH",
+      "SOL"
+    ],
+    "assets_consumed_by_0056": [
+      "ETH",
+      "SOL"
+    ],
+    "field_consumed_by_0056": "daily_close",
+    "network_fetch_allowed": false,
+    "replacement_allowed": false,
+    "synthetic_fill_allowed": false,
+    "interpolation_allowed": false,
+    "researcher_exposed_history": true,
+    "contamination_state": "RESEARCHER_EXPOSED_HISTORY",
+    "data_budget": "DEVELOPMENT",
+    "independent_oos": false
+  },
+  "evaluation_slice": {
+    "signal_lookback_days": 60,
+    "first_signal_origin": "2020-10-10T00:00:00Z",
+    "last_signal_origin": "2026-08-01T00:00:00Z",
+    "terminal_close": "2026-08-02T00:00:00Z",
+    "evaluation_origin_count": 2122,
+    "held_period_count": 2122,
+    "calendar_span_days": 2122,
+    "candidate_and_benchmarks_share_identical_origins": true
+  },
+  "causal_use_policy": {
+    "signal_uses_completed_close_t_only": true,
+    "held_return_is_next_close_to_close": true,
+    "same_period_return_capture_allowed": false,
+    "future_close_in_signal_allowed": false,
+    "btc_values_consumed_by_candidate_or_benchmarks": false,
+    "post_2026_08_02_history_allowed": false
+  },
+  "exposure_policy": {
+    "new_raw_data_release_created_by_0056_prereg": false,
+    "existing_exposed_history_reused": true,
+    "independent_oos_claim_allowed": false,
+    "production_evidence_claim_allowed": false
+  }
+}

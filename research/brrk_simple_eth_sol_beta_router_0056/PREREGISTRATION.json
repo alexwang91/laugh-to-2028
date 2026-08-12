@@ -1,0 +1,414 @@
+{
+  "schema_version": 1,
+  "research_id": "BRRK-SIMPLE-ETH-SOL-BETA-ROUTER-0056",
+  "research_family_id": "BRRK_DYNAMIC_LEADERSHIP_ROUTER",
+  "research_domain": "PORTFOLIO_INTEGRATION",
+  "research_governance_version": 1,
+  "governance_mode": "PROGRAM_GOVERNED_V1",
+  "objective_type": "PORTFOLIO_INTEGRATION",
+  "created_at": "2026-08-12T06:42:00Z",
+  "created_before_result": true,
+  "stage": "NUMERICAL_PREREGISTRATION",
+  "result_status": "PREREGISTERED_NOT_RUN",
+  "actual_variants_evaluated": 0,
+  "evidence_refs": [],
+  "design_authority": {
+    "path": "research/governance/BRRK_SIMPLE_ETH_SOL_BETA_ROUTER_0056_DESIGN_FREEZE_2026-08-12.md",
+    "design_merge_sha": "16a23ce2115647beead7f7abdab68a6b4cb406fe",
+    "design_pr": 198,
+    "design_changed_after_merge": false
+  },
+  "question": "Does one fixed simple causal 60-day SOL/ETH relative-trend router improve net terminal wealth and net CAGR versus static ETH/SOL Beta holdings after realistic switching costs, without a probability model, hindsight winner label, BTC allocation, cash timing, leverage or shorting?",
+  "hypothesis": "A single causal sign rule on 60-day SOL/ETH relative momentum can concentrate the fully invested Beta sleeve in the stronger relative trend often enough to produce higher after-cost full-cycle terminal wealth than static ETH, static SOL and static 50/50 ETH/SOL buy-and-hold, while surviving fixed higher-cost stresses, fixed chronological concentration checks and dependence-aware paired uncertainty.",
+  "hypothesis_origin": "MECHANISM_FORK_AFTER_IMMUTABLE_0048_0053_0054_0055_PROBABILITY_READINESS_LINE_CLOSED;_60_DAY_RELATIVE_MOMENTUM_PREEXISTED_AS_0048_BASELINE_B3;_WINNER_0001_0002_PROVIDE_EXPOSED_ECONOMIC_MOTIVATION_ONLY",
+  "economic_objective": "MAXIMIZE_CAUSAL_NET_TERMINAL_WEALTH_AND_NET_CAGR",
+  "economic_mechanism": "Within a fully invested ETH/SOL Beta sleeve, use only the sign of the already-precedented 60-day SOL/ETH relative trend to choose the next held asset. The study evaluates the causal portfolio rule directly rather than estimating winner probabilities. Transaction costs penalize each actual switch through executed L1 turnover. Static ETH, static SOL and static initial-50/50 buy-and-hold portfolios form the frozen comparison family.",
+  "variant_budget": {
+    "declared_variant_budget": 1,
+    "parameter_candidate_count": 1,
+    "candidate_name": "RM60_SIGN_ROUTER",
+    "alternative_lookbacks_allowed": false,
+    "alternative_thresholds_allowed": false,
+    "alternative_model_families_allowed": false,
+    "parameter_sweep_allowed": false
+  },
+  "data_contract": {
+    "dataset_slice_ref": "BRRK-LEADERSHIP-ROTATION-0048-EXPOSED-HIST-V1",
+    "dataset_id": "BINANCE-SPOT-BTC-ETH-SOL-UTC-DAILY-OHLCV-TRADES",
+    "source_research_id": "BRRK-LEADERSHIP-ROTATION-0048",
+    "source_dataset_declaration": "research/brrk_leadership_rotation_0048/DATASET_DECLARATION.json",
+    "source_evidence_ref": "research/brrk_beta_handoff_0047/EVIDENCE_RECOVERY.json",
+    "payload_sha256": "d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193",
+    "resolution": "1D",
+    "timezone": "UTC",
+    "source_common_start": "2020-08-11T00:00:00Z",
+    "source_common_end": "2026-08-02T00:00:00Z",
+    "source_common_rows": 2183,
+    "assets_consumed": [
+      "ETH",
+      "SOL"
+    ],
+    "field_consumed": "daily_close",
+    "network_fetch_allowed": false,
+    "replacement_dataset_allowed": false,
+    "synthetic_fill_allowed": false,
+    "missing_row_interpolation_allowed": false,
+    "researcher_exposed_history": true,
+    "contamination_state": "RESEARCHER_EXPOSED_HISTORY",
+    "data_budget": "DEVELOPMENT",
+    "independent_oos": false
+  },
+  "evaluation_window": {
+    "signal_lookback_days": 60,
+    "first_signal_origin": "2020-10-10T00:00:00Z",
+    "last_signal_origin": "2026-08-01T00:00:00Z",
+    "terminal_close": "2026-08-02T00:00:00Z",
+    "evaluation_origin_count": 2122,
+    "held_period_count": 2122,
+    "calendar_span_days": 2122,
+    "derivation": "2183 common daily rows minus 60 lookback rows minus 1 terminal-only row equals 2122 signal origins; first origin index is 60 and final origin index is 2181.",
+    "candidate_and_all_benchmarks_share_identical_window": true
+  },
+  "signal_rule": {
+    "relative_log_price": "z_t = log(SOL_close_t / ETH_close_t)",
+    "signal": "RM60_t = z_t - z_(t-60)",
+    "positive": "TARGET_SOL",
+    "negative": "TARGET_ETH",
+    "exact_zero": "RETAIN_PRIOR_ROUTER_HOLDING",
+    "initial_exact_zero_without_prior_holding": "TARGET_ETH",
+    "signal_magnitude_used": false,
+    "probability_used": false,
+    "confidence_used": false,
+    "secondary_filter_used": false
+  },
+  "causal_timing": {
+    "information_cutoff": "COMPLETED_UTC_DAILY_CLOSE_T",
+    "decision_time": "AFTER_COMPLETED_CLOSE_T",
+    "held_return": "P_(t+1)/P_t - 1",
+    "same_period_return_capture_allowed": false,
+    "same_close_hindsight_selection_allowed": false,
+    "intraday_information_allowed": false,
+    "rule": "At origin t, compute RM60 using closes no later than t, determine the frozen target, debit any transaction cost at that decision boundary, and apply the resulting holding only to the next close-to-close t-to-t+1 return."
+  },
+  "portfolio_contract": {
+    "starting_nav": 1.0,
+    "starting_state": "CASH_BEFORE_FIRST_ENTRY_ONLY",
+    "router_assets": [
+      "ETH",
+      "SOL"
+    ],
+    "router_target_gross": 1.0,
+    "router_holds_exactly_one_asset": true,
+    "cash_after_initial_entry_allowed": false,
+    "btc_allowed": false,
+    "leverage_allowed": false,
+    "shorting_allowed": false,
+    "rebalance_band": null,
+    "switch_condition": "TARGET_ASSET_CHANGES_UNDER_RM60_SIGN_RULE_ONLY"
+  },
+  "benchmark_contract": {
+    "B0_STATIC_ETH": "Starting from cash at the first evaluation origin, make one 100% ETH entry and then buy-and-hold with no further trades.",
+    "B1_STATIC_SOL": "Starting from cash at the first evaluation origin, make one 100% SOL entry and then buy-and-hold with no further trades.",
+    "B2_STATIC_50_50": "Starting from cash at the first evaluation origin, allocate 50% of post-cost capital to ETH and 50% to SOL; thereafter compound the two component sleeves independently with no periodic rebalancing and no further trades.",
+    "periodic_rebalancing_of_B2_allowed": false,
+    "all_benchmarks_pay_initial_entry_cost": true,
+    "pointwise_oracle_benchmark_allowed": false,
+    "hindsight_winner_recomputation_allowed": false,
+    "primary_hurdle_envelope": "MAX_FULL_HORIZON_TERMINAL_WEALTH_AMONG_B0_B1_B2_AT_MATCHED_COST",
+    "hurdle_envelope_is_executable_strategy": false
+  },
+  "transaction_cost_contract": {
+    "cost_semantics": "EXECUTED_L1_TURNOVER_TIMES_BPS",
+    "primary_cost_bps_per_unit_l1": 5.0,
+    "stress_cost_bps_per_unit_l1": [
+      10.0,
+      20.0
+    ],
+    "cost_rate_formula": "cost_rate = cost_bps / 10000",
+    "cost_formula": "transaction_cost_t = pre_trade_NAV_t * executed_L1_turnover_t * cost_rate",
+    "post_cost_nav_formula": "post_trade_NAV_t = pre_trade_NAV_t - transaction_cost_t",
+    "initial_full_investment_l1": 1.0,
+    "full_ETH_SOL_switch_l1": 2.0,
+    "unchanged_router_holding_l1": 0.0,
+    "static_benchmark_post_initial_turnover": 0.0,
+    "cost_debit_order": "DEBIT_COST_AT_ORIGIN_T_BEFORE_APPLYING_T_TO_T_PLUS_1_HELD_RETURN",
+    "slippage_or_impact_model_beyond_bps_proxy": false,
+    "cash_yield": 0.0
+  },
+  "wealth_accounting": {
+    "router_recursion": "NAV_(t+1) = (NAV_t - cost_t) * (P_target_(t+1) / P_target_t)",
+    "static_ETH_SOL_recursion": "After the one initial cost debit, NAV compounds only by the held asset close-to-close return with no further trades.",
+    "static_50_50_recursion": "After the one initial cost debit, initialize ETH_component = 0.5 * post_cost_NAV and SOL_component = 0.5 * post_cost_NAV; compound each component by its own close-to-close return; NAV is their sum; never reset weights to 50/50.",
+    "period_net_growth_factor": "g_t = NAV_(t+1) / NAV_t, including any origin-t transaction cost in that period factor.",
+    "terminal_wealth": "W_T = NAV at 2026-08-02T00:00:00Z with W_0 = 1.0.",
+    "annualization_years": "2122 / 365.25",
+    "net_cagr": "(W_T / 1.0)^(365.25 / 2122) - 1",
+    "log_terminal_advantage_vs_benchmark": "sum_t(log(g_router_t) - log(g_benchmark_t))",
+    "numerical_dtype": "IEEE754_FLOAT64",
+    "technical_strict_positive_tolerance": 1e-12,
+    "strict_dominance_test": "log(W_router / W_benchmark) > 1e-12"
+  },
+  "primary_endpoints": [
+    "NET_TERMINAL_WEALTH",
+    "NET_CAGR"
+  ],
+  "secondary_diagnostics": [
+    "MAXIMUM_DRAWDOWN",
+    "TOTAL_EXECUTED_L1_TURNOVER",
+    "TOTAL_ROUTER_SWITCH_COUNT",
+    "AVERAGE_HOLDING_DURATION_DAYS",
+    "MEDIAN_HOLDING_DURATION_DAYS",
+    "LONGEST_UNDERPERFORMANCE_INTERVAL_VS_FULL_HORIZON_BEST_STATIC_AT_5BPS",
+    "CALENDAR_YEAR_NET_RETURNS_2020_PARTIAL_THROUGH_2026_PARTIAL",
+    "FOUR_FIXED_CHRONOLOGICAL_BLOCK_RETURNS_AND_RELATIVE_LOG_GROWTH",
+    "10BPS_AND_20BPS_COST_SENSITIVITY",
+    "PAIRED_DEPENDENCE_AWARE_BOOTSTRAP_LOWER_BOUNDS"
+  ],
+  "drawdown_diagnostic": {
+    "nav_path": "Daily pre-next-decision close NAV sequence [W_0, W_1, ..., W_2122] generated by the frozen wealth recursion; transaction costs are embedded in the corresponding period factor.",
+    "drawdown": "NAV_t / max_(s<=t)(NAV_s) - 1",
+    "maximum_drawdown": "minimum drawdown over the path",
+    "hard_gate": false
+  },
+  "turnover_diagnostic": {
+    "total_executed_l1_turnover": "sum of executed L1 turnover over all decision origins including initial entry",
+    "switch_count": "number of post-initial origins where router target differs from prior holding",
+    "holding_spell": "maximal consecutive held-period run in one router asset",
+    "hard_turnover_cap": null,
+    "rationale": "Turnover is economically penalized by the frozen cost schedule and therefore remains diagnostic rather than a separate arbitrary optimization constraint."
+  },
+  "temporal_robustness": {
+    "partition_rule": "Mechanically split the 2122 ordered evaluation origins into four contiguous equal-count blocks, assigning remainder observations to earlier blocks.",
+    "blocks": [
+      {
+        "block": 1,
+        "origin_start": "2020-10-10T00:00:00Z",
+        "origin_end": "2022-03-24T00:00:00Z",
+        "terminal_close": "2022-03-25T00:00:00Z",
+        "held_periods": 531
+      },
+      {
+        "block": 2,
+        "origin_start": "2022-03-25T00:00:00Z",
+        "origin_end": "2023-09-06T00:00:00Z",
+        "terminal_close": "2023-09-07T00:00:00Z",
+        "held_periods": 531
+      },
+      {
+        "block": 3,
+        "origin_start": "2023-09-07T00:00:00Z",
+        "origin_end": "2025-02-17T00:00:00Z",
+        "terminal_close": "2025-02-18T00:00:00Z",
+        "held_periods": 530
+      },
+      {
+        "block": 4,
+        "origin_start": "2025-02-18T00:00:00Z",
+        "origin_end": "2026-08-01T00:00:00Z",
+        "terminal_close": "2026-08-02T00:00:00Z",
+        "held_periods": 530
+      }
+    ],
+    "best_static_definition": "At primary 5 bps, choose B_STAR as the one static benchmark with the largest full-horizon terminal wealth among B0, B1 and B2.",
+    "best_static_exact_tie_break": [
+      "B0_STATIC_ETH",
+      "B1_STATIC_SOL",
+      "B2_STATIC_50_50"
+    ],
+    "block_growth_semantics": "Use ratios of the global no-reset NAV paths across each block's exact origin span. Do not restart capital, reinitialize B2 weights or charge artificial block-entry costs.",
+    "block_relative_statistic": "log(block_growth_router / block_growth_B_STAR)",
+    "pass_rule": "At least 3 of 4 block-relative statistics are strictly greater than 1e-12.",
+    "per_block_dynamic_best_static_oracle_allowed": false
+  },
+  "dependence_aware_inference": {
+    "scope": "PRIMARY_5BPS_ONLY",
+    "paired_series": "For each benchmark b in B0/B1/B2 and each evaluation origin t, d_(b,t) = log(g_router_t) - log(g_b_t), using the already generated global causal NAV paths and period net growth factors.",
+    "observed_statistic": "mu_b = mean_t d_(b,t)",
+    "bootstrap_type": "ORDINARY_MOVING_BLOCK_BOOTSTRAP_ALIGNED_ACROSS_ALL_THREE_BENCHMARK_DIFFERENTIAL_SERIES",
+    "block_length_ordered_daily_periods": 60,
+    "block_length_rationale": "The sole candidate signal has a frozen 60-day lookback; 60 periods are fixed before any 0056 output as the dependence block and are not selected from results.",
+    "replicates": 10000,
+    "seed": 1844716895,
+    "seed_derivation": "Integer value of the first 8 hexadecimal digits 6df4255f of SHA256('BRRK-SIMPLE-ETH-SOL-BETA-ROUTER-0056').",
+    "eligible_block_start_indices_zero_based": "0 through N-L inclusive, where N=2122 and L=60; therefore 0 through 2062.",
+    "blocks_per_replicate_before_truncation": 36,
+    "resampling_rule": "For each replicate, draw 36 block starts independently and uniformly with replacement from 0..2062 using the fixed PRNG seed; concatenate each selected contiguous 60-row block in draw order; truncate the final concatenation to exactly 2122 rows. Use the same sampled row indices for d_B0, d_B1 and d_B2. Do not retrain, retune, recompute signals or alter transaction events inside a bootstrap replicate.",
+    "replicate_statistic": "mu_star_(b,r) = mean of resampled d_b rows.",
+    "simultaneous_centered_max_statistic": "T_r = max_b(mu_b - mu_star_(b,r)).",
+    "quantile_method": "Hyndman-Fan Type 7 / NumPy method='linear'",
+    "q95": "95th percentile of T_r over 10000 replicates.",
+    "simultaneous_lower_bound": "LCB_b = mu_b - q95.",
+    "pass_rule": "min_b LCB_b > 0.0.",
+    "daily_iid_inference_allowed": false,
+    "bootstrap_result_selection_allowed": false
+  },
+  "gate_hierarchy": {
+    "G0_INTEGRITY": [
+      "Exact source dataset identity and payload SHA256 match the frozen declaration.",
+      "Common daily row count is exactly 2183 from 2020-08-11 through 2026-08-02 inclusive with strictly increasing unique UTC dates and finite strictly positive ETH/SOL closes.",
+      "Evaluation origins are exactly the preregistered 2122 origins and all four arms use the same origins.",
+      "Signal, exact-zero rule, next-period timing, benchmark, cost and wealth semantics match this preregistration.",
+      "Exactly one candidate is evaluated; no alternate lookback, threshold, model or rescue is computed.",
+      "No BTC, cash timing, CORE4, leverage, shorting, oracle exit or probability model enters 0056.",
+      "No 0056 historical result was produced before the later controlled-execution boundary.",
+      "Canonical BRRK, Phase 6 and all production/security authority remain unchanged."
+    ],
+    "G1_PRIMARY_ECONOMIC_DOMINANCE_5BPS": "At primary 5 bps, log(W_router / W_b) > 1e-12 for each b in B0_STATIC_ETH, B1_STATIC_SOL and B2_STATIC_50_50. Net CAGR ordering must be consistent with the same terminal-wealth ordering.",
+    "G2_COST_SURVIVAL": "At each stress cost independently, 10 bps and 20 bps per unit L1, log(W_router / W_b) > 1e-12 for every static benchmark b in B0/B1/B2.",
+    "G3_TEMPORAL_ROBUSTNESS": "At primary 5 bps, router block relative log growth versus the single full-horizon B_STAR benchmark is >1e-12 in at least 3 of the 4 fixed contiguous blocks.",
+    "G4_DEPENDENCE_AWARE_ROBUSTNESS": "At primary 5 bps, the simultaneous one-sided 95% moving-block-bootstrap lower bound LCB_b is strictly above 0 for all three router-minus-static mean daily net log-growth differentials."
+  },
+  "classification_precedence": [
+    {
+      "condition": "Any G0 integrity violation",
+      "classification": "INVALID_EXECUTION"
+    },
+    {
+      "condition": "G0 passes and G1 fails",
+      "classification": "FAIL_NO_SIMPLE_BETA_ROUTER_ECONOMIC_UPLIFT"
+    },
+    {
+      "condition": "G0-G1 pass and G2 fails",
+      "classification": "FAIL_SIMPLE_BETA_ROUTER_COST_FRAGILE"
+    },
+    {
+      "condition": "G0-G2 pass and G3 fails",
+      "classification": "FAIL_SIMPLE_BETA_ROUTER_TEMPORALLY_CONCENTRATED"
+    },
+    {
+      "condition": "G0-G3 pass and G4 fails",
+      "classification": "FAIL_SIMPLE_BETA_ROUTER_ECONOMIC_UPLIFT_NOT_DEPENDENCE_ROBUST"
+    },
+    {
+      "condition": "G0-G4 all pass",
+      "classification": "PASS_SIMPLE_BETA_ROUTER_ECONOMIC_ELIGIBILITY"
+    }
+  ],
+  "reporting_contract": {
+    "compute_all_predeclared_gate_statistics_in_single_valid_run": true,
+    "preserve_all_gate_booleans_even_after_earlier_scientific_gate_failure": true,
+    "classification_uses_precedence_order": true,
+    "report_each_arm_terminal_wealth_and_cagr_at_costs_bps": [
+      5.0,
+      10.0,
+      20.0
+    ],
+    "report_all_three_5bps_log_wealth_differentials": true,
+    "report_four_temporal_block_differentials": true,
+    "report_bootstrap_q95_and_each_lcb": true,
+    "report_secondary_diagnostics": true,
+    "oracle_or_hindsight_winner_metrics": false,
+    "probability_or_predictive_metrics": false
+  },
+  "stopping_rule": "After this preregistration is merged, create a separate implementation-only branch that encodes exactly this one candidate, the three static benchmarks, wealth accounting, fixed cost panel, fixed temporal partition, fixed moving-block bootstrap and result taxonomy without loading the real historical payload during implementation tests. After that implementation merges and a separate controlled-execution boundary merges, execute exactly one valid 0056 historical DEVELOPMENT run. A valid result permanently closes 0056 to same-ID rerun, retuning, rescue, threshold relaxation, lookback change, model replacement, benchmark replacement, temporal repartition, bootstrap change or economic-gate change.",
+  "success_criteria": [
+    "G0 integrity passes.",
+    "G1 primary 5 bps router terminal wealth strictly dominates every frozen static benchmark using the 1e-12 log-ratio numerical tolerance.",
+    "G2 router terminal wealth strictly dominates every frozen static benchmark at both 10 bps and 20 bps stress costs.",
+    "G3 router relative log growth versus the full-horizon best static benchmark is positive in at least 3 of 4 frozen chronological blocks.",
+    "G4 all three simultaneous one-sided 95% moving-block-bootstrap lower bounds for router-minus-static mean daily net log growth are above zero.",
+    "Only all G0-G4 passing produces PASS_SIMPLE_BETA_ROUTER_ECONOMIC_ELIGIBILITY.",
+    "Canonical BRRK, Phase 6, leverage, signing, order submission and production authorization remain unchanged."
+  ],
+  "failure_criteria": [
+    "Any integrity/data/hash/timing/accounting/variant-budget breach is INVALID_EXECUTION rather than a scientific result.",
+    "Failure to beat all three static benchmarks at primary 5 bps produces FAIL_NO_SIMPLE_BETA_ROUTER_ECONOMIC_UPLIFT.",
+    "Primary dominance with failure to beat all three static benchmarks at either 10 or 20 bps produces FAIL_SIMPLE_BETA_ROUTER_COST_FRAGILE.",
+    "Primary and cost dominance with positive relative block growth in fewer than 3 of 4 frozen blocks produces FAIL_SIMPLE_BETA_ROUTER_TEMPORALLY_CONCENTRATED.",
+    "Primary, cost and temporal gates passing with any simultaneous dependence-aware lower bound <=0 produces FAIL_SIMPLE_BETA_ROUTER_ECONOMIC_UPLIFT_NOT_DEPENDENCE_ROBUST.",
+    "MDD, Sharpe-like diagnostics, turnover, a favorable subperiod or any descriptive statistic cannot rescue a failed wealth/robustness gate."
+  ],
+  "allowed_followup": [
+    "Only PASS_SIMPLE_BETA_ROUTER_ECONOMIC_ELIGIBILITY may motivate a new separately designed and preregistered research ID for a fixed BTC anchor plus causal routed Beta sleeve.",
+    "A later BTC-anchor integration study may consume the frozen 0056 router immutably but cannot retune RM60 under the new portfolio context.",
+    "A later genuine future-only validation of the exact frozen router requires a separate registered protocol and cannot be claimed from 0056 exposed history."
+  ],
+  "forbidden_followup": [
+    "No same-ID or same-line rescue sweep over 20d, 30d, 90d, 120d or any other lookback after 0056 output.",
+    "No same-ID magnitude threshold, hysteresis threshold, volatility filter, EMA, MACD, RSI, CORE4 overlay, BTC filter, supervised model, neural model or ensemble.",
+    "No same-ID periodic rebalancing change to B2, alternate benchmark family, alternative cost schedule, alternate temporal partition, alternate bootstrap block length, alternate bootstrap seed or relaxed PASS gate.",
+    "No same-ID BTC allocation, cash timing, dynamic gross, leverage, shorting or oracle/hindsight exit.",
+    "If 0056 fails its frozen decision, stop the ETH/SOL micro-timing research line and move any continuation to a new-ID Beta-to-BTC continuation-value problem rather than another ETH/SOL timing rescue.",
+    "No canonical BRRK modification, Phase 6 modification, signing, order submission or production authorization."
+  ],
+  "researcher_decisions": [
+    "0056 was opened only after immutable 0055 failure and after explicitly stopping probability-readiness repair; it is a new mechanism question, not a 0055 rescue.",
+    "The only signal horizon is 60 days because 60-day SOL/ETH relative momentum already existed prospectively as 0048 B3 before the 0054/0055 failures. No 0056 lookback comparison is allowed.",
+    "The study directly optimizes and evaluates full-cycle after-cost wealth/CAGR; no calibrated probability target is required.",
+    "Static 50/50 means initial 50/50 buy-and-hold with drifting weights, not daily/monthly rebalancing, to avoid introducing a hidden rebalance-frequency parameter.",
+    "The primary comparison requires beating every static arm at 5 bps; the full-horizon best-static envelope is a hurdle and never a hindsight-switching strategy.",
+    "Cost survival is deliberately strict: the same router must remain above every static arm at both 10 and 20 bps. No allowed degradation band is chosen after results.",
+    "The four-block temporal gate compares against one B_STAR selected only by the full-horizon static terminal-wealth ranking; it does not use a different hindsight-best static benchmark in each block.",
+    "The 60-day moving-block bootstrap is fixed from the only signal lookback and is not selected from autocorrelation output. Ten thousand replicates are frozen before any 0056 economic output.",
+    "Bootstrap resamples the realized paired daily net-log-growth differential path without retraining or recomputing router states; this conditions uncertainty on the single frozen causal decision path.",
+    "No hard MDD or turnover cap is imposed because the project's economic objective is terminal compounding; trading friction is already penalized directly at 5/10/20 bps. MDD and turnover remain mandatory diagnostics.",
+    "All data are researcher-exposed DEVELOPMENT history. A 0056 PASS is mechanism/economic eligibility only, not independent OOS or production evidence."
+  ],
+  "research_process_complexity": {
+    "declared_parameter_candidates": [
+      "ONE_CANDIDATE_ONLY=RM60_SIGN_ROUTER",
+      "RM60_LOOKBACK=60_DAILY_PERIODS",
+      "EXACT_ZERO=RETAIN_PRIOR_INITIAL_ETH",
+      "BENCHMARKS=STATIC_ETH_STATIC_SOL_STATIC_INITIAL50_50_NO_REBALANCE",
+      "COST_BPS_PER_L1=5_PRIMARY_10_20_STRESS",
+      "EVALUATION_ORIGINS=2020-10-10_TO_2026-08-01_N2122",
+      "TEMPORAL_BLOCKS=531_531_530_530_REQUIRE3OF4_VS_FULL_HORIZON_BEST_STATIC",
+      "BOOTSTRAP=MOVING_BLOCK_60_X10000_SEED1844716895_SIMULTANEOUS_ONE_SIDED_95_LCB"
+    ],
+    "actual_parameter_candidates_evaluated": [],
+    "universes_evaluated": [
+      "BINANCE_SPOT_ETH_SOL"
+    ],
+    "horizons_evaluated": [
+      "CAUSAL_RELATIVE_MOMENTUM_60D_ONLY",
+      "FULL_HELD_PERIOD_WINDOW_2122_DAYS"
+    ],
+    "rebalance_variants": [
+      "ROUTER_SWITCH_ON_SIGN_TARGET_CHANGE_ONLY",
+      "STATIC_50_50_INITIAL_ALLOCATION_NO_REBALANCING"
+    ],
+    "feature_representations": [
+      "RAW_SIGN_OF_60D_LOG_SOL_ETH_RELATIVE_MOMENTUM"
+    ],
+    "special_cases_introduced": [
+      "EXACT_ZERO_RETAIN_PRIOR_WITH_INITIAL_ETH_FALLBACK",
+      "BEST_STATIC_FULL_HORIZON_TIE_BREAK_B0_B1_B2",
+      "L1_FULL_SWITCH_EQUALS_2"
+    ],
+    "validation_exposure_event_refs": [],
+    "related_family_trials": 1
+  },
+  "lineage_edges": [
+    {
+      "relation": "MECHANISM_FORK",
+      "ref_research_id": "BRRK-LEADERSHIP-ROTATION-0048",
+      "provenance_status": "FACT",
+      "evidence_ref": "research/brrk_leadership_rotation_0048/PREREGISTRATION.json"
+    },
+    {
+      "relation": "RESULT_INFORMED",
+      "ref_research_id": "BRRK-LEADERSHIP-4H-STRUCTURAL-READINESS-0055",
+      "provenance_status": "FACT",
+      "evidence_ref": "research/brrk_leadership_4h_structural_readiness_0055/CLOSEOUT.json"
+    },
+    {
+      "relation": "RESULT_INFORMED",
+      "ref_research_id": "BRRK-WINNER-0001",
+      "provenance_status": "FACT",
+      "evidence_ref": "research/brrk_winner_0001/PRIMARY_RESULT.json"
+    },
+    {
+      "relation": "RESULT_INFORMED",
+      "ref_research_id": "BRRK-WINNER-ROBUSTNESS-0002",
+      "provenance_status": "FACT",
+      "evidence_ref": "research/brrk_winner_robustness_0002/PRIMARY_RESULT.json"
+    }
+  ],
+  "production_relevance": "Research-only simple ETH/SOL Beta routing economics on researcher-exposed DEVELOPMENT history. A PASS can only make a separately governed BTC-anchor plus routed-Beta study eligible; it cannot modify canonical BRRK, Phase 6 or production authority.",
+  "production_authorized_components": [],
+  "production_authorized": false,
+  "signature_authorized": false,
+  "order_submission_authorized": false,
+  "canonical_brrk_changed": false,
+  "phase6_changed": false
+}
