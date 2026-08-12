@@ -1,0 +1,65 @@
+{
+  "research_id": "BRRK-SIMPLE-ETH-SOL-BETA-ROUTER-0056",
+  "status": "CONTROLLED_EXECUTION_BOUNDARY_FROZEN_ZERO_RESULT",
+  "base_main_sha": "9417bc3370613f1818d11aebf91bf733ac5ecbcc",
+  "scientific_engine_git_blob_sha": "b0fc1ac267a66593e7e2c4687aff81491bfcdf5a",
+  "implementation_boundary_git_blob_sha": "f04cc9cba9a038b2fd770aec3d47825226c24977",
+  "payload_git_blob_sha": "64ebf5c6deaf3f34dbeac715378f196ff0f4fafe",
+  "payload_sha256": "d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193",
+  "runtime_artifacts": [
+    "RUN_ATTEMPT.marker",
+    "PRIMARY_RESULT.json",
+    "EXECUTION.json",
+    "RUN_ONCE.marker"
+  ],
+  "staged_protocol": {
+    "preflight": "repeatable and zero-result; verifies exact HEAD, immutable blobs, market-evidence path/blob/payload identity and absence of runtime artifacts",
+    "start_attempt": "create-only; RUN_ATTEMPT.marker must be durably persisted remotely before any real 0056 portfolio evaluation",
+    "evaluate": "requires existing bound attempt marker and absent result/execution/final marker; frozen portfolio engine may be called exactly once",
+    "persist_result_execution": "PRIMARY_RESULT.json and EXECUTION.json hashes must be durable before final marker",
+    "finalize": "hash verification only; frozen portfolio engine and market-frame loader calls are forbidden"
+  },
+  "fault_policy": {
+    "interruption_after_attempt_before_complete_result": "same-ID automatic remeasurement forbidden",
+    "result_present_but_execution_missing": "same-ID automatic remeasurement forbidden; governance closeout required",
+    "complete_result_and_execution_but_missing_final_marker": "marker-only recovery/finalize permitted without remeasurement",
+    "hash_tamper": "fail_closed_without_remeasurement",
+    "second_start_or_evaluate": "create_only_blocked"
+  },
+  "scientific_output_scope": {
+    "net_terminal_wealth_and_cagr": true,
+    "mdd_turnover_switch_holding_diagnostics": true,
+    "calendar_year_and_fixed_block_attribution": true,
+    "cost_sensitivity_5_10_20_bps": true,
+    "paired_dependence_aware_bootstrap": true,
+    "probability_or_predictive_metrics": false,
+    "oracle_or_hindsight_winner_metrics": false,
+    "btc_or_cash_allocation": false,
+    "core4_overlay": false,
+    "leverage_or_shorting": false
+  },
+  "valid_classifications": [
+    "INVALID_EXECUTION",
+    "FAIL_NO_SIMPLE_BETA_ROUTER_ECONOMIC_UPLIFT",
+    "FAIL_SIMPLE_BETA_ROUTER_COST_FRAGILE",
+    "FAIL_SIMPLE_BETA_ROUTER_TEMPORALLY_CONCENTRATED",
+    "FAIL_SIMPLE_BETA_ROUTER_ECONOMIC_UPLIFT_NOT_DEPENDENCE_ROBUST",
+    "PASS_SIMPLE_BETA_ROUTER_ECONOMIC_ELIGIBILITY"
+  ],
+  "closure": {
+    "same_id_rerun_allowed_after_attempt": false,
+    "same_id_retuning_allowed_after_attempt": false,
+    "same_id_rescue_allowed_after_attempt": false,
+    "result_informed_change_requires_new_research_id": true,
+    "fail_closes_eth_sol_micro_timing_line": true,
+    "pass_integration_requires_new_research_id": true
+  },
+  "authority": {
+    "canonical_strategy_changed": false,
+    "phase6_changed": false,
+    "production_authorized": false,
+    "production_authorized_components": [],
+    "signature_authorized": false,
+    "order_submission_authorized": false
+  }
+}

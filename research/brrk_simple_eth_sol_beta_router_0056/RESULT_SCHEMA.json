@@ -1,0 +1,142 @@
+{
+  "schema_id": "BRRK-SIMPLE-ETH-SOL-BETA-ROUTER-0056-PRIMARY-RESULT-V1",
+  "schema_version": 1,
+  "research_id": "BRRK-SIMPLE-ETH-SOL-BETA-ROUTER-0056",
+  "dataset_slice_id": "BRRK-LEADERSHIP-ROTATION-0048-EXPOSED-HIST-V1",
+  "payload_sha256": "d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193",
+  "purpose": "Frozen structural contract for the single valid 0056 historical DEVELOPMENT portfolio-economics result. It has no authority to change the preregistered scientific gates.",
+  "required_top_level_keys": [
+    "schema_id",
+    "research_id",
+    "dataset_slice_id",
+    "payload_sha256",
+    "execution_head_sha",
+    "classification",
+    "measurement",
+    "authority"
+  ],
+  "classification_enum": [
+    "INVALID_EXECUTION",
+    "FAIL_NO_SIMPLE_BETA_ROUTER_ECONOMIC_UPLIFT",
+    "FAIL_SIMPLE_BETA_ROUTER_COST_FRAGILE",
+    "FAIL_SIMPLE_BETA_ROUTER_TEMPORALLY_CONCENTRATED",
+    "FAIL_SIMPLE_BETA_ROUTER_ECONOMIC_UPLIFT_NOT_DEPENDENCE_ROBUST",
+    "PASS_SIMPLE_BETA_ROUTER_ECONOMIC_ELIGIBILITY"
+  ],
+  "successful_measurement_required_keys": [
+    "research_id",
+    "classification",
+    "gates",
+    "rm60_origin_count",
+    "target_count",
+    "targets",
+    "metrics_by_cost_bps",
+    "log_terminal_advantage_by_cost_bps",
+    "best_static_5bps",
+    "temporal_block_relative_log_growth_vs_best_static_5bps",
+    "temporal_positive_block_count",
+    "bootstrap_5bps",
+    "diagnostics",
+    "actual_variants_evaluated",
+    "authority"
+  ],
+  "invalid_measurement_required_keys": [
+    "research_id",
+    "classification",
+    "error_type",
+    "error",
+    "actual_variants_evaluated",
+    "authority"
+  ],
+  "required_gate_keys": [
+    "G0_INTEGRITY",
+    "G1_PRIMARY_ECONOMIC_DOMINANCE_5BPS",
+    "G2_COST_SURVIVAL",
+    "G3_TEMPORAL_ROBUSTNESS",
+    "G4_DEPENDENCE_AWARE_ROBUSTNESS"
+  ],
+  "required_cost_keys": ["5", "10", "20"],
+  "required_arm_keys": [
+    "ROUTER",
+    "B0_STATIC_ETH",
+    "B1_STATIC_SOL",
+    "B2_STATIC_50_50"
+  ],
+  "required_benchmark_keys": [
+    "B0_STATIC_ETH",
+    "B1_STATIC_SOL",
+    "B2_STATIC_50_50"
+  ],
+  "required_arm_metric_keys": [
+    "terminal_wealth",
+    "cagr",
+    "maximum_drawdown",
+    "total_executed_l1_turnover"
+  ],
+  "required_diagnostic_keys": [
+    "maximum_drawdown_5bps",
+    "router_total_executed_l1_turnover_5bps",
+    "router_switch_count",
+    "router_average_holding_duration_days",
+    "router_median_holding_duration_days",
+    "router_holding_spell_count",
+    "longest_underperformance_interval_days_vs_b_star_5bps",
+    "calendar_year_returns_5bps"
+  ],
+  "frozen_counts": {
+    "rm60_origin_count": 2122,
+    "target_count": 2122,
+    "temporal_block_count": 4,
+    "bootstrap_replicates": 10000,
+    "bootstrap_block_length": 60,
+    "bootstrap_blocks_per_replicate_before_truncation": 36,
+    "bootstrap_seed": 1844716895
+  },
+  "measurement_authority_invariants": {
+    "canonical_strategy_changed": false,
+    "phase6_changed": false,
+    "production_authorized": false,
+    "production_authorized_components": [],
+    "signature_authorized": false,
+    "order_submission_authorized": false
+  },
+  "authority_invariants": {
+    "development_not_independent_oos": true,
+    "researcher_exposed_history": true,
+    "portfolio_economics_executed": true,
+    "probability_or_predictive_metrics_executed": false,
+    "btc_values_consumed_by_candidate_or_benchmarks": false,
+    "oracle_or_hindsight_winner_metrics_executed": false,
+    "actual_variants_evaluated": 1,
+    "canonical_strategy_changed": false,
+    "phase6_changed": false,
+    "production_authorized": false,
+    "production_authorized_components": [],
+    "signature_authorized": false,
+    "order_submission_authorized": false,
+    "same_id_rerun_allowed": false,
+    "same_id_retuning_allowed": false,
+    "same_id_rescue_allowed": false
+  },
+  "forbidden_metric_tokens": [
+    "nll",
+    "log_loss",
+    "brier",
+    "auc",
+    "balanced_accuracy",
+    "precision_recall",
+    "probability",
+    "calibration",
+    "confidence",
+    "realized_margin",
+    "leader_label",
+    "prediction",
+    "model_fit",
+    "coefficient",
+    "sharpe",
+    "sortino",
+    "calmar",
+    "value_at_risk",
+    "cvar"
+  ]
+}

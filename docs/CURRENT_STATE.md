@@ -2,8 +2,8 @@
 
 Last updated: **2026-08-12**  
 Authoritative repository: `alexwang91/laugh-to-2028`  
-Current `main` research merge: **`85bbc8583b625da670267cbb3db4928fbe1ade6f`**  
-Current research branch: **`research/0056-simple-beta-router-implementation`**  
+Current `main` research merge: **`9417bc3370613f1818d11aebf91bf733ac5ecbcc`**  
+Current research branch: **`research/0056-simple-beta-router-controlled-run`**  
 Status of this document: **AUTHORITATIVE OPERATING SNAPSHOT**
 
 > GitHub `main`, immutable research artifacts and machine registries remain the sources of truth. This file is the compact human handoff, not a substitute for preregistration, execution, evidence, recovery or closeout artifacts.
@@ -39,7 +39,7 @@ BRRK leadership rotation 0048         MEASUREMENT_INCONCLUSIVE_INSUFFICIENT_SUPP
 BRRK intraday support 0053             FAIL_4H_DOES_NOT_SOLVE_0048_SUPPORT_CONSTRAINT / CLOSED
 BRRK 4h-native readiness 0054          FAIL_4H_NATIVE_TRAINING_PRECISION_NOT_ESTABLISHED / CLOSED
 BRRK 4h structural readiness 0055     FAIL_4H_STRUCTURAL_3D_TRAINING_PRECISION_NOT_ESTABLISHED / CLOSED
-BRRK simple ETH/SOL Beta router 0056  PREREG MERGED / IMPLEMENTATION-ONLY / REAL HISTORICAL RUN FORBIDDEN
+BRRK simple ETH/SOL Beta router 0056  CONTROLLED-RUN BOUNDARY / ZERO RESULT / REAL HISTORICAL RUN NOT RUN
 
 Canonical BRRK-0011                    NO CHANGE
 Phase 7                                MONITOR_ONLY / LAUNCH BLOCKED
@@ -569,3 +569,41 @@ The numerical preregistration merged at `85bbc8583b625da670267cbb3db4928fbe1ade6
 If 0056 later fails its frozen economic decision, the ETH/SOL micro-timing line stops: no 30d/90d/MACD/ML or other same-line rescue study. Research budget then moves under a new ID to Beta-to-BTC continuation value. If 0056 later passes, any BTC-anchor plus routed-Beta integration also requires a new ID.
 
 The active design authority is `research/governance/BRRK_SIMPLE_ETH_SOL_BETA_ROUTER_0056_DESIGN_FREEZE_2026-08-12.md`; the active numerical contract is `research/brrk_simple_eth_sol_beta_router_0056/PREREGISTRATION.json` with `DATASET_DECLARATION.json`. 0056 implementation-only engine/tests now exist on the active branch; no controlled-run workflow, historical result or run marker exists at this stage. Older next-step prose above is historical and is superseded by this section.
+
+
+---
+
+## 17. 0056 controlled-execution boundary — zero-result
+
+The 0056 implementation merged at `9417bc3370613f1818d11aebf91bf733ac5ecbcc`. The active branch now adds only the separate exactly-once execution safety layer around that frozen engine. Older 0056 implementation-stage next-step prose above is historical and is superseded by this section.
+
+```text
+research ID                           BRRK-SIMPLE-ETH-SOL-BETA-ROUTER-0056
+prereg merge                          85bbc8583b625da670267cbb3db4928fbe1ade6f
+implementation merge                  9417bc3370613f1818d11aebf91bf733ac5ecbcc
+implementation engine blob            b0fc1ac267a66593e7e2c4687aff81491bfcdf5a
+implementation boundary blob          f04cc9cba9a038b2fd770aec3d47825226c24977
+market evidence blob                  64ebf5c6deaf3f34dbeac715378f196ff0f4fafe
+payload SHA256                        d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193
+controlled execution boundary         FROZEN ON BRANCH / ZERO RESULT
+historical execution                  NOT RUN
+result                                PREREGISTERED_NOT_RUN
+actual historical variants evaluated  0
+```
+
+The staged protocol is `preflight -> durable RUN_ATTEMPT.marker -> exactly one evaluate -> durable PRIMARY_RESULT.json + EXECUTION.json -> marker-only RUN_ONCE.marker finalize`. Once the attempt marker is durable, same-ID automatic recomputation, retuning and rescue are forbidden. Only a complete result/execution bundle with a missing final marker may use marker-only recovery without remeasurement.
+
+The controlled result schema freezes the existing G0-G4 taxonomy and allows only preregistered terminal wealth/CAGR, MDD, turnover/switch/holding diagnostics, calendar-year and fixed-block attribution, 5/10/20 bps cost sensitivity and the paired 60-row moving-block bootstrap. Probability/predictive metrics, hindsight winner/oracle metrics, BTC/cash integration, CORE4, leverage and shorting remain forbidden.
+
+Synthetic/fault Actions run `31602817149` passed implementation contracts, controlled state-machine tests, hash-tamper rejection, exactly-once call checks, marker-only finalization checks and the zero-result guard. No real 0056 historical payload was evaluated.
+
+```text
+Canonical BRRK-0011                    NO CHANGE
+Phase 6                                NO CHANGE
+production_authorized_components       []
+production_authorized                  false
+signature_authorized                   false
+order_submission_authorized            false
+```
+
+Exact next step: pass standing handoff, research-governance/no-drift, Phase0-8, P3.2 parity and Phase6 safety checks; merge this boundary with expected-head protection. Only after that merge may the exact merged controlled-boundary HEAD perform the unique staged 0056 DEVELOPMENT execution.
