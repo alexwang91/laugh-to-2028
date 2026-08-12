@@ -1,0 +1,30 @@
+{
+  "research_id": "BRRK-SIMPLE-ETH-SOL-BETA-ROUTER-INTERFACE-REPLICATION-0057",
+  "status": "READ_ONLY_CLOSEOUT_CONTRACT_PASS",
+  "scientific_engine_imported": false,
+  "source_loader_imported": false,
+  "interface_adapter_imported": false,
+  "portfolio_remeasurement_executed": false,
+  "runtime_git_blob_identity_verified": true,
+  "runtime_hash_chain_verified": true,
+  "result_branch_head_verified": "bc54b904e7ee6f6392adca849e9bf21b66673b5f",
+  "classification_verified": "FAIL_SIMPLE_BETA_ROUTER_COST_FRAGILE",
+  "gates_verified": {
+    "G0_INTEGRITY": true,
+    "G1_PRIMARY_ECONOMIC_DOMINANCE_5BPS": true,
+    "G2_COST_SURVIVAL": false,
+    "G3_TEMPORAL_ROBUSTNESS": true,
+    "G4_DEPENDENCE_AWARE_ROBUSTNESS": false
+  },
+  "adapter_provenance_verified": true,
+  "delegated_0056_engine_provenance_verified": true,
+  "artifact_identity": {
+    "run": 31618590484,
+    "artifact_id": 9150295821,
+    "name": "brrk-0057-interface-replication-runtime-bundle",
+    "digest": "sha256:b1acb281f148270e2fdda92f99e6a84b17eddb014a6a76bf79a08c975877427d"
+  },
+  "actual_variants_evaluated": 1,
+  "same_id_rerun_allowed": false,
+  "production_authorized": false
+}

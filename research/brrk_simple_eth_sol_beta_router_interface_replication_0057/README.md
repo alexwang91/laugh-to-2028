@@ -66,3 +66,8 @@ order_submission_authorized    false
 ```
 
 Synthetic run `31611937198` passed 15 immutable 0056 engine tests plus 7 new 0057 adapter tests and a zero-result guard. No real market payload was loaded; actual historical variants remain 0. Real historical portfolio evaluation is still forbidden until this implementation stage merges and a separate controlled-execution boundary merges. Controlled-boundary run `31613546954` additionally passed 7 adapter tests plus 10 exactly-once/fault-contract tests and a second zero-result guard. The first boundary tooling run `31613437898` failed only because the test environment omitted `requests`; it produced no research output. Historical evaluation remains forbidden until this boundary is merged and an explicit unique execution is separately triggered.
+
+
+## Immutable closeout
+
+Unique DEVELOPMENT run `31618590484` completed exactly once with classification `FAIL_SIMPLE_BETA_ROUTER_COST_FRAGILE`. G0/G1/G3 passed; G2/G4 failed. The router is not eligible for promotion, same-ID recomputation is permanently forbidden, and the ETH/SOL micro-timing line is closed. See `PRIMARY_RESULT.json`, `EXECUTION.json`, `RUN_ONCE.marker`, `RESULT.md`, and `CLOSEOUT.json`.

@@ -40,7 +40,7 @@ BRRK intraday support 0053             FAIL_4H_DOES_NOT_SOLVE_0048_SUPPORT_CONST
 BRRK 4h-native readiness 0054          FAIL_4H_NATIVE_TRAINING_PRECISION_NOT_ESTABLISHED / CLOSED
 BRRK 4h structural readiness 0055     FAIL_4H_STRUCTURAL_3D_TRAINING_PRECISION_NOT_ESTABLISHED / CLOSED
 BRRK simple ETH/SOL Beta router 0056  INVALID_EXECUTION / CLOSED / NO ECONOMIC CONCLUSION
-BRRK Beta router interface replication 0057 CONTROLLED-RUN BOUNDARY / ZERO RESULT / REAL HISTORICAL RUN NOT RUN
+BRRK Beta router interface replication 0057 FAIL_SIMPLE_BETA_ROUTER_COST_FRAGILE / CLOSED
 
 Canonical BRRK-0011                    NO CHANGE
 Phase 7                                MONITOR_ONLY / LAUNCH BLOCKED
@@ -703,3 +703,33 @@ Real-data path is frozen as immutable market wrapper → 0047 `frames_from_marke
 Boundary Actions run `31613546954` passed 7 adapter contracts plus 10 exactly-once/fault contracts, the zero-result static guard, governance validation and no-drift. It explicitly confirmed `REAL_0057_HISTORICAL_PAYLOAD_NOT_LOADED=true`, `REAL_0057_PORTFOLIO_ECONOMICS_NOT_EXECUTED=true`, and `ACTUAL_HISTORICAL_VARIANTS_EVALUATED=0`. Earlier run `31613437898` failed only at test import because `requests` was missing and produced no historical output.
 
 After this boundary merges, 0057 will be technically eligible for exactly one DEVELOPMENT historical execution. That execution is irreversible once the durable attempt marker is pushed; it is not part of this boundary PR.
+
+
+---
+
+## 22. 0057 immutable economic result and closure
+
+`BRRK-SIMPLE-ETH-SOL-BETA-ROUTER-INTERFACE-REPLICATION-0057` completed its unique exactly-once DEVELOPMENT execution in Actions run `31618590484` on frozen scientific HEAD `1d0b8fcf3ee49c180e90593afdb71047b34a28a7`. Final classification: **`FAIL_SIMPLE_BETA_ROUTER_COST_FRAGILE`**.
+
+```text
+G0 integrity                           PASS
+G1 5bps dominance                     PASS
+G2 10/20bps cost survival             FAIL
+G3 temporal robustness                PASS / 3 of 4 blocks
+G4 dependence-aware robustness        FAIL
+router terminal wealth 5bps           31.7367789346
+static SOL terminal wealth 5bps       30.6651047960
+router terminal wealth 10bps          28.2983807412
+static SOL terminal wealth 10bps      30.6497645735
+router terminal wealth 20bps          22.4910386620
+static SOL terminal wealth 20bps      30.6190841285
+router switches                       114
+router executed L1 turnover           229.0
+bootstrap LCBs                        [-0.00054859, -0.00139527, -0.00114094]
+actual variants evaluated             1
+same-ID rerun/retune/rescue           false / false / false
+```
+
+0057 is a valid economic FAIL, not an invalid execution. The interface correction worked, but the router's low-cost edge over static SOL did not survive the frozen higher-cost stresses and was not dependence-robust. Per preregistration, **stop the ETH/SOL micro-timing line**. The next legal scientific continuation is a new-ID **Beta→BTC continuation-value / full-cycle exit** problem, not another router rescue.
+
+Canonical BRRK-0011, Phase 6, signing, order submission and production authorization remain unchanged.

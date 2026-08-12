@@ -1,0 +1,237 @@
+{
+  "research_id": "BRRK-SIMPLE-ETH-SOL-BETA-ROUTER-INTERFACE-REPLICATION-0057",
+  "status": "FAIL_SIMPLE_BETA_ROUTER_COST_FRAGILE",
+  "closed": true,
+  "development_not_independent_oos": true,
+  "researcher_exposed_history": true,
+  "execution_head_sha": "1d0b8fcf3ee49c180e90593afdb71047b34a28a7",
+  "result_branch_head_sha": "bc54b904e7ee6f6392adca849e9bf21b66673b5f",
+  "payload_sha256": "d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193",
+  "execution_identity": {
+    "github_actions_run": 31618590484,
+    "runtime_artifact_id": 9150295821,
+    "runtime_artifact_name": "brrk-0057-interface-replication-runtime-bundle",
+    "runtime_artifact_digest": "sha256:b1acb281f148270e2fdda92f99e6a84b17eddb014a6a76bf79a08c975877427d",
+    "started_at_utc": "2026-08-12T16:38:51Z",
+    "completed_at_utc": "2026-08-12T16:38:59Z"
+  },
+  "runtime_git_blobs": {
+    "RUN_ATTEMPT.marker": "613d2fbeb57a1421b1b6f551ccf2243174d2333b",
+    "PRIMARY_RESULT.json": "2452b7fa7ea337f441d2d86ea0b41cd6de86048a",
+    "EXECUTION.json": "1a02e841e9e28987768210b7e9b04989377b5f38",
+    "RUN_ONCE.marker": "aad9087e798b4673365472c9c2a72bf1119d53c9"
+  },
+  "runtime_hashes": {
+    "attempt_marker_sha256": "28e80c8135ff741aa3776f921ae4c92cc15d0ea8a29cb37e0a88b547429d938a",
+    "primary_result_sha256": "9920697ece45d5df73711dcf38045a8dc2f265759df4d88fee131b0cb64ece31",
+    "execution_sha256": "17079b7d45d9444736bbb1b5c7411596ba826fdd36f6a6506e386646c177543e"
+  },
+  "gates": {
+    "G0_INTEGRITY": true,
+    "G1_PRIMARY_ECONOMIC_DOMINANCE_5BPS": true,
+    "G2_COST_SURVIVAL": false,
+    "G3_TEMPORAL_ROBUSTNESS": true,
+    "G4_DEPENDENCE_AWARE_ROBUSTNESS": false
+  },
+  "economic_result": {
+    "best_static_5bps": "B1_STATIC_SOL",
+    "metrics_by_cost_bps": {
+      "5": {
+        "ROUTER": {
+          "terminal_wealth": 31.736778934550063,
+          "cagr": 0.8132472843700436,
+          "maximum_drawdown": -0.9222073014277494,
+          "total_executed_l1_turnover": 229.0
+        },
+        "B0_STATIC_ETH": {
+          "terminal_wealth": 5.085872071683038,
+          "cagr": 0.32307175933357146,
+          "maximum_drawdown": -0.7930253453633336,
+          "total_executed_l1_turnover": 1.0
+        },
+        "B1_STATIC_SOL": {
+          "terminal_wealth": 30.665104796033276,
+          "cagr": 0.8025578101373394,
+          "maximum_drawdown": -0.9626992725584275,
+          "total_executed_l1_turnover": 1.0
+        },
+        "B2_STATIC_50_50": {
+          "terminal_wealth": 17.87548843385816,
+          "cagr": 0.6426511294546189,
+          "maximum_drawdown": -0.9394664862606814,
+          "total_executed_l1_turnover": 1.0
+        }
+      },
+      "10": {
+        "ROUTER": {
+          "terminal_wealth": 28.298380741150353,
+          "cagr": 0.7778084906425193,
+          "maximum_drawdown": -0.925411638726557,
+          "total_executed_l1_turnover": 229.0
+        },
+        "B0_STATIC_ETH": {
+          "terminal_wealth": 5.0833278635431105,
+          "cagr": 0.322957811676742,
+          "maximum_drawdown": -0.7930253453633339,
+          "total_executed_l1_turnover": 1.0
+        },
+        "B1_STATIC_SOL": {
+          "terminal_wealth": 30.649764573523747,
+          "cagr": 0.8024025674323856,
+          "maximum_drawdown": -0.9626992725584275,
+          "total_executed_l1_turnover": 1.0
+        },
+        "B2_STATIC_50_50": {
+          "terminal_wealth": 17.86654621853343,
+          "cagr": 0.6425096584830932,
+          "maximum_drawdown": -0.9394664862606814,
+          "total_executed_l1_turnover": 1.0
+        }
+      },
+      "20": {
+        "ROUTER": {
+          "terminal_wealth": 22.491038661976667,
+          "cagr": 0.7088939613325678,
+          "maximum_drawdown": -0.9314384629279777,
+          "total_executed_l1_turnover": 229.0
+        },
+        "B0_STATIC_ETH": {
+          "terminal_wealth": 5.078239447263302,
+          "cagr": 0.3227297746472866,
+          "maximum_drawdown": -0.7930253453633336,
+          "total_executed_l1_turnover": 1.0
+        },
+        "B1_STATIC_SOL": {
+          "terminal_wealth": 30.61908412850534,
+          "cagr": 0.8020918889483615,
+          "maximum_drawdown": -0.9626992725584275,
+          "total_executed_l1_turnover": 1.0
+        },
+        "B2_STATIC_50_50": {
+          "terminal_wealth": 17.84866178788432,
+          "cagr": 0.6422265405937198,
+          "maximum_drawdown": -0.9394664862606813,
+          "total_executed_l1_turnover": 1.0
+        }
+      }
+    },
+    "log_terminal_advantage_by_cost_bps": {
+      "5": {
+        "B0_STATIC_ETH": 1.8310097134527872,
+        "B1_STATIC_SOL": 0.03435087058532448,
+        "B2_STATIC_50_50": 0.5740458139272806
+      },
+      "10": {
+        "B0_STATIC_ETH": 1.7168384470245792,
+        "B1_STATIC_SOL": -0.07982039584287837,
+        "B2_STATIC_50_50": 0.45987454749907714
+      },
+      "20": {
+        "B0_STATIC_ETH": 1.4881523121618914,
+        "B1_STATIC_SOL": -0.3085065307055679,
+        "B2_STATIC_50_50": 0.23118841263638773
+      }
+    },
+    "temporal_block_relative_log_growth_vs_best_static_5bps": [
+      0.2563906080958581,
+      0.27789231676509474,
+      -0.6155792869421772,
+      0.11564723266654918
+    ],
+    "temporal_positive_block_count": 3,
+    "bootstrap_5bps": {
+      "means": [
+        0.000862869798988117,
+        1.6187969173102584e-05,
+        0.00027052111872162164
+      ],
+      "q95": 0.0014114585676343412,
+      "lcbs": [
+        -0.0005485887686462242,
+        -0.0013952705984612386,
+        -0.0011409374489127196
+      ],
+      "benchmarks": [
+        "B0_STATIC_ETH",
+        "B1_STATIC_SOL",
+        "B2_STATIC_50_50"
+      ],
+      "replicates": 10000,
+      "block_length": 60,
+      "blocks_per_replicate_before_truncation": 36,
+      "seed": 1844716895
+    },
+    "diagnostics": {
+      "maximum_drawdown_5bps": {
+        "ROUTER": -0.9222073014277494,
+        "B0_STATIC_ETH": -0.7930253453633336,
+        "B1_STATIC_SOL": -0.9626992725584275,
+        "B2_STATIC_50_50": -0.9394664862606814
+      },
+      "router_total_executed_l1_turnover_5bps": 229.0,
+      "router_switch_count": 114,
+      "router_average_holding_duration_days": 18.452173913043477,
+      "router_median_holding_duration_days": 4.0,
+      "router_holding_spell_count": 115,
+      "longest_underperformance_interval_days_vs_b_star_5bps": 178,
+      "calendar_year_returns_5bps": {
+        "ROUTER": {
+          "2020": 0.9662785949476422,
+          "2021": 31.759435846291147,
+          "2022": -0.8480616408831132,
+          "2023": 5.523657700540513,
+          "2024": 0.7276417861032101,
+          "2025": -0.4718851104934024,
+          "2026": -0.4551955174146074
+        },
+        "B0_STATIC_ETH": {
+          "2020": 0.9662785949476422,
+          "2021": 4.165987570481955,
+          "2022": -0.6812303149083534,
+          "2023": 0.9594781478581078,
+          "2024": 0.4287086954303443,
+          "2025": -0.10599694082216904,
+          "2026": -0.37242318228873617
+        },
+        "B1_STATIC_SOL": {
+          "2020": -0.23281013792241267,
+          "2021": 96.20427772650794,
+          "2022": -0.9442086451468782,
+          "2023": 10.002002002001975,
+          "2024": 0.7676280593212621,
+          "2025": -0.3468190240889436,
+          "2026": -0.4197793538219067
+        },
+        "B2_STATIC_50_50": {
+          "2020": 0.36673422851261406,
+          "2021": 29.99794584648951,
+          "2022": -0.9126824623045396,
+          "2023": 6.044541193718416,
+          "2024": 0.7263697855166471,
+          "2025": -0.3225573456969646,
+          "2026": -0.4134833122863678
+        }
+      }
+    }
+  },
+  "binding_failure": {
+    "gate": "G2_COST_SURVIVAL",
+    "reason": "Router beats all frozen static benchmarks at 5 bps but falls below static SOL at both 10 bps and 20 bps; classification precedence therefore closes at cost fragility. G4 also independently fails because all simultaneous dependence-aware LCBs are nonpositive."
+  },
+  "authority": {
+    "economic_conclusion_authorized": true,
+    "simple_beta_router_economic_eligibility": false,
+    "eth_sol_micro_timing_line_closed": true,
+    "same_id_rerun_allowed": false,
+    "same_id_retuning_allowed": false,
+    "same_id_rescue_allowed": false,
+    "next_continuation_requires_new_research_id": true,
+    "next_problem_family": "BETA_TO_BTC_CONTINUATION_VALUE_FULL_CYCLE_EXIT",
+    "canonical_strategy_changed": false,
+    "phase6_changed": false,
+    "production_authorized": false,
+    "signature_authorized": false,
+    "order_submission_authorized": false
+  },
+  "interpretation": "The exact frozen RM60 ETH/SOL router is economically positive at the 5 bps primary cost assumption but does not survive the prospectively frozen 10/20 bps cost stresses and also lacks positive simultaneous dependence-aware bootstrap lower bounds. The valid preregistered decision is therefore FAIL_SIMPLE_BETA_ROUTER_COST_FRAGILE. The ETH/SOL micro-timing line is closed; any continuation must be a new-ID Beta-to-BTC continuation-value/full-cycle exit problem rather than a router rescue."
+}
