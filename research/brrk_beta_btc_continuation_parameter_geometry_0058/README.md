@@ -1,6 +1,6 @@
 # BRRK-BETA-BTC-CONTINUATION-PARAMETER-GEOMETRY-0058
 
-Status: **NUMERICAL PREREGISTRATION FROZEN / NOT IMPLEMENTED / NOT RUN**
+Status: **IMPLEMENTATION FROZEN ON BRANCH / SYNTHETIC CONTRACT TESTS ONLY / NOT RUN**
 
 This directory is the formal preregistration owner path for a DEVELOPMENT parameter-geometry study of a causal Beta-versus-BTC continuation mechanism.
 
@@ -24,3 +24,11 @@ Frozen before any 0058 economic output:
 No 0058 parameter surface or portfolio economics has been run. Implementation-only is the next legal stage after this preregistration merges.
 
 Canonical BRRK, Phase 6, production authorization, signing and order submission are unchanged.
+
+## Implementation-only handoff
+
+Preregistration merged at `e6d94b30c8bb4d126d6c234c30980d701a9ababc`. This stage adds a data-agnostic `engine.py` plus synthetic contract tests only. The engine accepts caller-supplied BTC/ETH/SOL DataFrames and contains no market loader, filesystem payload reader, network request or controlled-run entrypoint.
+
+Synthetic Actions run `31640495960` passes 17 contract tests, including a complete 2,183-row frozen-calendar flat-price surface with 324 cell-cost summaries, 210 interior geometry rows and 1,942 selected-path rows. Synthetic output has zero scientific authority. Real 0058 market payload loading and historical parameter-surface economics remain forbidden.
+
+Next legal stage after implementation merge is a separate controlled-execution boundary.
