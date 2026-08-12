@@ -1,0 +1,297 @@
+name: Temporary 0058 immutable closeout materializer
+
+on:
+  push:
+    branches:
+      - research/0058-beta-btc-continuation-parameter-geometry-closeout-tooling
+
+permissions:
+  contents: write
+
+jobs:
+  materialize:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    env:
+      BASE_MAIN: 989972a0e51ae54dc5224584ef9a0dd210a087f7
+      TARGET_BRANCH: research/0058-beta-btc-continuation-parameter-geometry-closeout
+      RESULT_BRANCH: research/0058-beta-btc-continuation-parameter-geometry-result
+      RESULT_HEAD: 6fc68bce4340b5577fef0f4ba5eddc7c98e6a055
+      SCI_DIR: research/brrk_beta_btc_continuation_parameter_geometry_0058
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/0058-beta-btc-continuation-parameter-geometry-closeout
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: execution/plan-b-bot/requirements-dev.txt
+
+      - name: Install pinned governance runtime
+        run: pip install -r execution/plan-b-bot/requirements-dev.txt
+
+      - name: Verify base and import immutable runtime artifacts without remeasurement
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$BASE_MAIN"
+          git fetch origin "$RESULT_BRANCH"
+          test "$(git rev-parse origin/$RESULT_BRANCH)" = "$RESULT_HEAD"
+          mkdir -p "$SCI_DIR"
+          for f in RUN_ATTEMPT.marker PRIMARY_RESULT.json EXECUTION.json RUN_ONCE.marker; do
+            git show "origin/$RESULT_BRANCH:$SCI_DIR/$f" > "$SCI_DIR/$f"
+          done
+          test "$(git hash-object "$SCI_DIR/RUN_ATTEMPT.marker")" = "843b0168ae941a525fc5e4bd9b57a0128f3f8efa"
+          test "$(git hash-object "$SCI_DIR/PRIMARY_RESULT.json")" = "5c4d5948bbfaed9a64a508c4f86ee03e618e5d79"
+          test "$(git hash-object "$SCI_DIR/EXECUTION.json")" = "8c4fa82e06a551c488e2828ba79e9f2bc8e036dd"
+          test "$(git hash-object "$SCI_DIR/RUN_ONCE.marker")" = "bcd423c76a360d50815de1103334c5f0808ccfe9"
+          echo "IMMUTABLE_RUNTIME_IMPORTED=true"
+          echo "REMEASUREMENT_PERFORMED=false"
+
+      - name: Materialize closeout, registry and handoff from persisted result only
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          rid = 'BRRK-BETA-BTC-CONTINUATION-PARAMETER-GEOMETRY-0058'
+          root = Path('research/brrk_beta_btc_continuation_parameter_geometry_0058')
+          result = json.loads((root / 'PRIMARY_RESULT.json').read_text())
+          execution = json.loads((root / 'EXECUTION.json').read_text())
+          attempt = json.loads((root / 'RUN_ATTEMPT.marker').read_text())
+          marker = json.loads((root / 'RUN_ONCE.marker').read_text())
+          m = result['measurement']
+
+          assert result['research_id'] == rid
+          assert result['classification'] == 'FAIL_NO_STABLE_PARAMETER_PLATEAU'
+          assert result['execution_head_sha'] == '989972a0e51ae54dc5224584ef9a0dd210a087f7'
+          assert m['actual_variants_evaluated'] == 108
+          assert len(m['surface_table_every_cell_every_cost']) == 324
+          assert len(m['geometry_every_interior_cell_every_cost']) == 210
+          assert m['gates'] == {
+              'G0_INTEGRITY': True,
+              'G1_PRIMARY_PLATEAU': False,
+              'G2_COST_ROBUSTNESS': False,
+              'G3_ECONOMIC_RELEVANCE': None,
+              'G4_TEMPORAL_ROBUSTNESS': None,
+              'G5_DEPENDENCE_AWARE_ROBUSTNESS': None,
+          }
+          trace = m['plateau_trace']
+          assert trace['primary_5bps_components'] == []
+          assert trace['cost_coherent_components'] == []
+          assert trace['selected_representative'] is None
+          assert m['selected_representative_daily_path'] == []
+          assert m['benchmark_daily_paths'] == []
+          assert trace['historical_argmax_descriptive_only'] == {
+              'L': 120, 'kappa': 0.5, 'terminal_wealth': 8.299069650275614
+          }
+          assert m['best_static_by_cost_bps'] == {
+              '5': 'B1_STATIC_BETA', '10': 'B1_STATIC_BETA', '20': 'B1_STATIC_BETA'
+          }
+          assert m['robustness'] == {
+              'four_block_statistics': None,
+              'bootstrap_means': None,
+              'bootstrap_q95': None,
+              'bootstrap_lcbs': None,
+          }
+          gthr = 0.04879016416943205
+          hthr = 0.09531017980432493
+          geometry_diag = {}
+          for cost in (5.0, 10.0, 20.0):
+              rows = [r for r in m['geometry_every_interior_cell_every_cost'] if r['cost_bps'] == cost]
+              assert len(rows) == 70
+              geometry_diag[str(int(cost))] = {
+                  'interior_cells': len(rows),
+                  'gradient_threshold_qualified_cells': sum(r['gradient_norm'] <= gthr + 1e-15 for r in rows),
+                  'hessian_threshold_qualified_cells': sum(r['hessian_spectral_norm'] <= hthr + 1e-15 for r in rows),
+                  'stable_cells_meeting_both': sum(bool(r['stable_cell']) for r in rows),
+              }
+          assert geometry_diag == {
+              '5': {'interior_cells':70,'gradient_threshold_qualified_cells':2,'hessian_threshold_qualified_cells':0,'stable_cells_meeting_both':0},
+              '10': {'interior_cells':70,'gradient_threshold_qualified_cells':1,'hessian_threshold_qualified_cells':0,'stable_cells_meeting_both':0},
+              '20': {'interior_cells':70,'gradient_threshold_qualified_cells':2,'hessian_threshold_qualified_cells':0,'stable_cells_meeting_both':0},
+          }
+          assert execution['classification'] == result['classification']
+          assert execution['actual_variants_evaluated'] == 108
+          assert marker['finalized_without_remeasurement'] is True
+          assert marker['same_id_rerun_allowed'] is False
+          assert marker['same_id_retuning_allowed'] is False
+          assert marker['same_id_rescue_allowed'] is False
+
+          closeout = {
+              'research_id': rid,
+              'status': 'FAIL_NO_STABLE_PARAMETER_PLATEAU',
+              'closed': True,
+              'development_not_independent_oos': True,
+              'researcher_exposed_history': True,
+              'execution_head_sha': '989972a0e51ae54dc5224584ef9a0dd210a087f7',
+              'result_branch_head_sha': '6fc68bce4340b5577fef0f4ba5eddc7c98e6a055',
+              'payload_sha256': result['payload_sha256'],
+              'execution_identity': {
+                  'github_actions_run': 31644102517,
+                  'runtime_artifact_id': 9160034209,
+                  'runtime_artifact_name': 'brrk-0058-parameter-geometry-runtime-bundle',
+                  'runtime_artifact_digest': 'sha256:edad4cfa1f196258a16c3479f0c436ba5dec174d87ec04941a708870b0fd718b',
+                  'started_at_utc': execution['started_at_utc'],
+                  'completed_at_utc': execution['completed_at_utc'],
+                  'finalized_at_utc': marker['finalized_at_utc'],
+              },
+              'runtime_git_blobs': {
+                  'RUN_ATTEMPT.marker': '843b0168ae941a525fc5e4bd9b57a0128f3f8efa',
+                  'PRIMARY_RESULT.json': '5c4d5948bbfaed9a64a508c4f86ee03e618e5d79',
+                  'EXECUTION.json': '8c4fa82e06a551c488e2828ba79e9f2bc8e036dd',
+                  'RUN_ONCE.marker': 'bcd423c76a360d50815de1103334c5f0808ccfe9',
+              },
+              'runtime_hashes': {
+                  'attempt_marker_sha256': execution['attempt_marker_sha256'],
+                  'primary_result_sha256': execution['primary_result_sha256'],
+                  'execution_sha256': marker['execution_sha256'],
+              },
+              'gates': m['gates'],
+              'parameter_geometry_result': {
+                  'declared_parameter_cells': 108,
+                  'actual_variants_evaluated': 108,
+                  'surface_rows': 324,
+                  'geometry_rows': 210,
+                  'primary_5bps_admissible_components': 0,
+                  'cost_coherent_admissible_components': 0,
+                  'selected_representative': None,
+                  'geometry_threshold_diagnostics_by_cost_bps': geometry_diag,
+                  'best_static_by_cost_bps': m['best_static_by_cost_bps'],
+                  'historical_argmax_descriptive_only': trace['historical_argmax_descriptive_only'],
+                  'temporal_and_bootstrap_robustness_evaluated': False,
+              },
+              'binding_failure': {
+                  'gate': 'G1_PRIMARY_PLATEAU',
+                  'reason': 'No 5 bps interior cell simultaneously satisfies the preregistered gradient and Hessian flatness thresholds; therefore no admissible 5 bps plateau component exists. In fact, zero of 70 interior cells at 5 bps meet the Hessian threshold and zero meet both criteria. Classification closes at G1 before representative selection or later economic/temporal/dependence gates become eligible.'
+              },
+              'authority': {
+                  'economic_conclusion_authorized': True,
+                  'parameter_freeze_eligibility': False,
+                  'historical_argmax_selection_authority': False,
+                  'same_id_rerun_allowed': False,
+                  'same_id_retuning_allowed': False,
+                  'same_id_rescue_allowed': False,
+                  'same_id_grid_refinement_allowed': False,
+                  'same_id_local_zoom_allowed': False,
+                  'same_id_threshold_relaxation_allowed': False,
+                  'next_continuation_requires_new_research_id': True,
+                  'canonical_strategy_changed': False,
+                  'phase6_changed': False,
+                  'production_authorized': False,
+                  'signature_authorized': False,
+                  'order_submission_authorized': False,
+              },
+              'interpretation': 'The exact preregistered 108-cell Beta-versus-BTC surface does not exhibit even one 5 bps stable interior cell under the frozen joint gradient/Hessian definition, so there is no broad parameter plateau and no mechanically selectable representative. The descriptive historical maximum at L=120, kappa=0.5 has no selection or continuation authority. 0058 is therefore a valid DEVELOPMENT FAIL_NO_STABLE_PARAMETER_PLATEAU and is permanently closed to same-ID zooming, threshold relaxation, grid repair, alternate normalization, representative substitution or other result-informed rescue. Any continuation requires a new research ID and must not treat the 0058 argmax or local surface shape as a frozen trading parameter.'
+          }
+          (root / 'CLOSEOUT.json').write_text(json.dumps(closeout, indent=2) + '\n')
+
+          reg_path = Path('config/research_registry.json')
+          reg = json.loads(reg_path.read_text())
+          entry = next(x for x in reg['research_studies'] if x['research_id'] == rid)
+          entry['actual_variants_evaluated'] = 108
+          entry['research_process_complexity']['actual_parameter_candidates_evaluated'] = [
+              f'L={L}_KAPPA={k:.2f}'
+              for L in range(20, 241, 20)
+              for k in [0.0,0.25,0.5,0.75,1.0,1.25,1.5,1.75,2.0]
+          ]
+          entry['result_status'] = 'FAIL_NO_STABLE_PARAMETER_PLATEAU'
+          entry['failure_reason'] = 'G1 primary plateau failed: among the 70 eligible 5 bps interior cells, zero satisfy the frozen Hessian threshold and zero satisfy both gradient and Hessian flatness conditions, so no admissible connected plateau component exists.'
+          entry['promotion_state'] = 'NO_PROMOTION'
+          entry['evidence_refs'] = [
+              'run:31644102517',
+              'artifact:brrk-0058-parameter-geometry-runtime-bundle',
+              f'{root}/RUN_ATTEMPT.marker',
+              f'{root}/PRIMARY_RESULT.json',
+              f'{root}/EXECUTION.json',
+              f'{root}/RUN_ONCE.marker',
+              f'{root}/CLOSEOUT.json',
+          ]
+          closeout_ref = f'{root}/CLOSEOUT.json'
+          if closeout_ref not in entry['decision_refs']:
+              entry['decision_refs'].append(closeout_ref)
+          entry['notes'].extend([
+              'Unique run 31644102517 validly classified FAIL_NO_STABLE_PARAMETER_PLATEAU; G0 passed and G1 failed before any representative was selectable.',
+              'All 70 eligible 5 bps interior cells failed the joint frozen flatness test; 2 met the gradient threshold, 0 met the Hessian threshold and 0 met both. No 5 bps admissible component exists.',
+              'Historical argmax L=120, kappa=0.50 with 5 bps terminal wealth 8.299069650275614 is descriptive-only and has no parameter-selection, zoom or rescue authority.',
+              '0058 is closed to same-ID rerun, retuning, adaptive grid refinement, local zoom, threshold relaxation, alternate normalization or representative substitution. Any continuation requires a new research ID.'
+          ])
+          entry['evidence_scorecard'] = {
+              'temporal_novelty': 'RESEARCHER_EXPOSED_DEVELOPMENT_NOT_INDEPENDENT_OOS',
+              'statistical_sufficiency': 'G1_FAIL_ZERO_JOINTLY_STABLE_5BPS_INTERIOR_CELLS_NO_PLATEAU',
+              'governance_integrity': 'HIGH_EXACTLY_ONCE_HASH_BOUND_FINALIZED_WITHOUT_REMEASUREMENT',
+              'operational_realism': 'CAUSAL_SPOT_BTC_VS_SYMMETRIC_BETA_WITH_PREDECLARED_5_10_20_BPS_COST_SURFACES',
+              'derived_confidence': 'HIGH_FOR_FROZEN_DEVELOPMENT_G1_FAILURE',
+              'confidence_rule_ref': closeout_ref,
+          }
+          reg_path.write_text(json.dumps(reg, indent=2) + '\n')
+
+          readme_path = root / 'README.md'
+          readme = readme_path.read_text()
+          readme = readme.replace(
+              'Status: **CONTROLLED EXECUTION BOUNDARY FROZEN ON BRANCH / ZERO RESULT / NOT RUN**',
+              'Status: **FAIL_NO_STABLE_PARAMETER_PLATEAU / IMMUTABLE DEVELOPMENT CLOSURE**'
+          )
+          section = '\n## Immutable 0058 result and closure\n'
+          if section not in readme:
+              readme += '''\n## Immutable 0058 result and closure\n\nUnique exactly-once DEVELOPMENT run `31644102517` executed the full frozen 108-cell lattice on scientific HEAD `989972a0e51ae54dc5224584ef9a0dd210a087f7` and finalized without remeasurement. Final classification: **`FAIL_NO_STABLE_PARAMETER_PLATEAU`**.\n\nG0 integrity passed. G1 failed because no admissible 5 bps stable plateau exists: among 70 eligible interior cells, 2 meet the gradient threshold, 0 meet the Hessian threshold, and therefore 0 meet both. `primary_5bps_components=[]`, no cost-coherent component exists, and no representative is selectable. G2 is false by frozen precedence; G3-G5 are not eligible and remain null.\n\nThe descriptive historical maximum is `(L=120, kappa=0.50)` with 5 bps terminal wealth `8.299069650275614`, but preregistration gives this argmax **no selection authority**. It cannot be adopted, zoomed around, or used to relax the grid/geometry. Same-ID rerun, retuning, rescue, grid refinement, local zoom and threshold relaxation are permanently false. Any continuation requires a new research ID.\n\nCanonical BRRK, Phase 6, signing, order submission and production authorization remain unchanged.\n'''
+          readme_path.write_text(readme)
+
+          state_path = Path('docs/CURRENT_STATE.md')
+          state = state_path.read_text()
+          state = state.replace(
+              'Current research branch: **`research/0058-beta-btc-continuation-parameter-geometry-controlled-boundary`**',
+              'Current research branch: **`research/0058-beta-btc-continuation-parameter-geometry-closeout`**'
+          )
+          state = state.replace(
+              'BRRK Beta->BTC parameter geometry 0058     CONTROLLED BOUNDARY FROZEN ON BRANCH / ZERO RESULT / NOT RUN',
+              'BRRK Beta->BTC parameter geometry 0058     FAIL_NO_STABLE_PARAMETER_PLATEAU / CLOSED'
+          )
+          marker_text = '\n---\n\n## 0058 immutable parameter-geometry result and closure\n'
+          if marker_text not in state:
+              state += '''\n---\n\n## 0058 immutable parameter-geometry result and closure\n\n`BRRK-BETA-BTC-CONTINUATION-PARAMETER-GEOMETRY-0058` completed its unique exactly-once DEVELOPMENT execution in Actions run `31644102517` on scientific HEAD `989972a0e51ae54dc5224584ef9a0dd210a087f7`. Final classification: **`FAIL_NO_STABLE_PARAMETER_PLATEAU`**.\n\n```text\nG0 integrity                           PASS\nG1 primary 5bps plateau               FAIL\nG2 cost robustness                    FALSE / no selected component\nG3 economic relevance                 NOT ELIGIBLE / null\nG4 temporal robustness                NOT ELIGIBLE / null\nG5 dependence robustness              NOT ELIGIBLE / null\ndeclared / actual parameter cells     108 / 108\nsurface rows                          324\ngeometry rows                         210\n5bps eligible interior cells          70\n5bps gradient-qualified cells         2\n5bps Hessian-qualified cells          0\n5bps jointly stable cells             0\n5bps admissible components            0\nselected representative               NONE\ndescriptive argmax                    L=120, kappa=0.50\ndescriptive argmax wealth 5bps        8.299069650275614\nbest static at 5/10/20bps             B1_STATIC_BETA / B1_STATIC_BETA / B1_STATIC_BETA\nactual variants evaluated             108\nsame-ID rerun/retune/rescue           false / false / false\n```\n\nThis is a valid structural failure, not an invalid execution. The frozen Beta→BTC parameter surface does not contain a broad stable region under the prospectively fixed geometry; the historical argmax is descriptive only and cannot be promoted. Do not perform same-ID adaptive refinement, local zoom, threshold relaxation, alternate normalization, representative substitution or other surface-informed rescue. Any continuation requires a new research ID and must not treat `(120,0.50)` as a frozen trading parameter.\n\nCanonical BRRK-0011, Phase 6, signing, order submission and production authorization remain unchanged.\n'''
+          state_path.write_text(state)
+          PY
+
+      - name: Validate immutable closeout governance
+        run: |
+          python -m research.governance.validate
+          python -m research.governance.no_drift
+
+      - name: Commit closeout to target branch
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add config/research_registry.json docs/CURRENT_STATE.md \
+            "$SCI_DIR/README.md" "$SCI_DIR/CLOSEOUT.json" \
+            "$SCI_DIR/RUN_ATTEMPT.marker" "$SCI_DIR/PRIMARY_RESULT.json" \
+            "$SCI_DIR/EXECUTION.json" "$SCI_DIR/RUN_ONCE.marker"
+          git commit -m 'Research closeout [DRIFT_0]: seal immutable 0058 no-plateau failure'
+          git push origin "HEAD:$TARGET_BRANCH"
+
+      - name: Final exact-diff and no-remeasurement audit
+        run: |
+          set -euo pipefail
+          python -m research.governance.validate
+          python -m research.governance.no_drift
+          python - <<'PY'
+          import subprocess
+          expected = {
+              'config/research_registry.json',
+              'docs/CURRENT_STATE.md',
+              'research/brrk_beta_btc_continuation_parameter_geometry_0058/README.md',
+              'research/brrk_beta_btc_continuation_parameter_geometry_0058/CLOSEOUT.json',
+              'research/brrk_beta_btc_continuation_parameter_geometry_0058/RUN_ATTEMPT.marker',
+              'research/brrk_beta_btc_continuation_parameter_geometry_0058/PRIMARY_RESULT.json',
+              'research/brrk_beta_btc_continuation_parameter_geometry_0058/EXECUTION.json',
+              'research/brrk_beta_btc_continuation_parameter_geometry_0058/RUN_ONCE.marker',
+          }
+          changed = set(subprocess.check_output(['git','diff','--name-only','989972a0e51ae54dc5224584ef9a0dd210a087f7...HEAD'], text=True).splitlines())
+          assert changed == expected, (changed, expected)
+          print('EXACT_CLOSEOUT_DIFF=true')
+          print('SCIENTIFIC_REMEASUREMENT=false')
+          print('SAME_ID_RECOMPUTATION_AUTHORITY=false')
+          PY
