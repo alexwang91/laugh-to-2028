@@ -1,0 +1,98 @@
+{
+  "research_id": "BRRK-SIMPLE-ETH-SOL-BETA-ROUTER-INTERFACE-REPLICATION-0057",
+  "stage": "CONTROLLED_EXECUTION_BOUNDARY",
+  "status": "CONTROLLED_EXECUTION_BOUNDARY_FROZEN_ZERO_RESULT",
+  "base_main_implementation_merge_sha": "6ea85e0b55566cc1aeed705eae35ad81f165e56d",
+  "actual_variants_evaluated": 0,
+  "historical_execution_performed": false,
+  "runtime_artifacts_present": false,
+  "boundary_files": {
+    "RUN_INTERFACE.json": "c87c20756068d27f87a27a18f7e232908174312d",
+    "RESULT_SCHEMA.json": "c2da5b9a6a01afe654e996daf7380a84084b7b53",
+    "run_once.py": "7a6788eb748aa5d05e29a330590d17c1d9662120",
+    "test_run_interface.py": "e40f10653d326787aa3c472884ee3c98ab7f637c"
+  },
+  "immutable_scientific_bindings": {
+    "0057_preregistration_blob_sha": "3dc6a937b805d37b3894bc67ce8df30459372145",
+    "0057_dataset_declaration_blob_sha": "30ccef655a659e020a5de756a7953c561456ac34",
+    "0057_implementation_boundary_blob_sha": "e6d1e90631849930612c30589aee6767b288131c",
+    "0057_adapter_blob_sha": "c37c354d6b7d086eeebbe6b9791e67d51856408d",
+    "0057_test_adapter_blob_sha": "8556500fff69b444b8eda3ff86c1e5af21ebf795",
+    "0056_engine_blob_sha": "b0fc1ac267a66593e7e2c4687aff81491bfcdf5a",
+    "0047_source_engine_blob_sha": "059b55961e279dab41ba29b5b017de0922e4f33c",
+    "market_evidence_blob_sha": "64ebf5c6deaf3f34dbeac715378f196ff0f4fafe",
+    "market_payload_sha256": "d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193"
+  },
+  "source_to_science_path": [
+    "LOAD_IMMUTABLE_MARKET_WRAPPER_JSON",
+    "0047_FRAMES_FROM_MARKET_EVIDENCE_VERIFY_WRAPPER_PAYLOAD_DATASET_AND_TZ_NAIVE_FRAMES",
+    "SELECT_ETH_SOL",
+    "0057_ADAPTER_VALIDATE_COPY_AND_TZ_LOCALIZE_UTC_ONLY",
+    "DELEGATE_TO_IMMUTABLE_0056_ENGINE",
+    "VALIDATE_FROZEN_0057_RESULT_SCHEMA"
+  ],
+  "execution_sequence": [
+    "PREFLIGHT_ZERO_RESULT",
+    "DURABLY_PERSIST_RUN_ATTEMPT_MARKER",
+    "EVALUATE_REAL_PAYLOAD_EXACTLY_ONCE",
+    "DURABLY_PERSIST_PRIMARY_RESULT_AND_EXECUTION",
+    "FINALIZE_MARKER_FROM_EXISTING_HASHES_WITHOUT_REMEASUREMENT"
+  ],
+  "state_machine_contract": {
+    "preflight_repeatable": true,
+    "preflight_writes_result": false,
+    "preflight_calls_portfolio_engine": false,
+    "start_attempt_requires_zero_runtime_artifacts": true,
+    "attempt_marker_create_only": true,
+    "attempt_marker_same_id_recomputation_allowed": false,
+    "evaluate_requires_durable_attempt_marker": true,
+    "evaluate_calls_adapter_exactly_once": true,
+    "evaluate_calls_delegated_scientific_engine_through_adapter_only": true,
+    "evaluate_result_create_only": true,
+    "evaluate_execution_create_only": true,
+    "existing_partial_result_blocks_automatic_recompute": true,
+    "interrupted_partial_execution_requires_governance_closeout_or_authorized_marker_recovery": true,
+    "finalize_may_load_market": false,
+    "finalize_may_call_source_loader": false,
+    "finalize_may_call_adapter": false,
+    "finalize_may_call_scientific_engine": false,
+    "finalize_verifies_attempt_result_execution_hash_chain": true,
+    "final_marker_create_only": true,
+    "same_id_rerun_after_attempt_allowed": false,
+    "same_id_retuning_after_attempt_allowed": false,
+    "same_id_rescue_after_attempt_allowed": false
+  },
+  "marker_only_recovery": {
+    "allowed": true,
+    "condition": "RUN_ATTEMPT.marker, PRIMARY_RESULT.json and EXECUTION.json already exist and their frozen identities/hash chain verify; RUN_ONCE.marker alone is absent",
+    "portfolio_remeasurement_allowed": false,
+    "market_reload_allowed": false,
+    "adapter_reexecution_allowed": false,
+    "scientific_engine_reexecution_allowed": false
+  },
+  "result_contract": {
+    "successful_result_includes_net_terminal_wealth_and_net_cagr": true,
+    "G0_G4_classification_inherited_unchanged": true,
+    "adapter_provenance_required": true,
+    "delegated_0056_engine_provenance_required": true,
+    "predictive_probability_metrics_forbidden": true,
+    "oracle_hindsight_metrics_forbidden": true,
+    "btc_cash_timing_forbidden": true,
+    "leverage_shorting_forbidden": true
+  },
+  "boundary_ci_policy": {
+    "real_market_evidence_may_be_loaded": false,
+    "real_historical_evaluation_may_run": false,
+    "runtime_artifact_may_be_created_in_repository": false,
+    "synthetic_or_mock_fault_contracts_only": true,
+    "actual_historical_variants_evaluated": 0
+  },
+  "authority": {
+    "canonical_strategy_changed": false,
+    "phase6_changed": false,
+    "production_authorized": false,
+    "production_authorized_components": [],
+    "signature_authorized": false,
+    "order_submission_authorized": false
+  }
+}
