@@ -1,6 +1,6 @@
 # BRRK-SIMPLE-ETH-SOL-BETA-ROUTER-0056
 
-Status: **CONTROLLED-EXECUTION BOUNDARY ON BRANCH / ZERO RESULT / REAL HISTORICAL RUN NOT RUN**
+Status: **INVALID_EXECUTION / CLOSED / NO ECONOMIC CONCLUSION**
 
 0056 is a new direct portfolio-economics mechanism study. It is not a rerun or rescue of 0048, 0053, 0054 or 0055.
 
@@ -167,15 +167,19 @@ The result schema permits only the preregistered 0056 portfolio-economic outputs
 
 Synthetic/fault run `31602817149` passed the implementation contracts, controlled-run fault contracts and zero-result guard. It did not evaluate the real 0056 historical payload.
 
+## Immutable 0056 closeout
+
+Unique run `31604126017` at scientific HEAD `186a7f7d57c957c98798ecd828533ffe20dedb83` closed **`INVALID_EXECUTION`** at G0 because the source loader is tz-naive while the frozen 0056 validator requires tz-aware UTC. No terminal wealth, CAGR or G1-G4 result exists. 0056 cannot be repaired or rerun; corrected evaluation requires a new research ID.
+
 ## Current authority
 
 ```text
 numerical preregistration     MERGED AT 85bbc8583b625da670267cbb3db4928fbe1ade6f
 implementation                MERGED AT 9417bc3370613f1818d11aebf91bf733ac5ecbcc
-controlled execution boundary FROZEN ON BRANCH / ZERO RESULT
-historical execution          NOT RUN
-result                        PREREGISTERED_NOT_RUN
-actual variants evaluated     0
+controlled execution boundary MERGED AT 186a7f7d57c957c98798ecd828533ffe20dedb83
+historical execution          UNIQUE RUN 31604126017 / COMPLETE
+result                        INVALID_EXECUTION / CLOSED
+actual variants evaluated     1
 canonical BRRK                NO CHANGE
 Phase 6                       NO CHANGE
 production_authorized         false

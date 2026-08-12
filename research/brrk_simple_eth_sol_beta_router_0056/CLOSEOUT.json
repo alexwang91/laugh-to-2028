@@ -1,0 +1,56 @@
+{
+  "research_id": "BRRK-SIMPLE-ETH-SOL-BETA-ROUTER-0056",
+  "status": "INVALID_EXECUTION_CLOSED",
+  "closed": true,
+  "development_not_independent_oos": true,
+  "researcher_exposed_history": true,
+  "execution_head_sha": "186a7f7d57c957c98798ecd828533ffe20dedb83",
+  "payload_sha256": "d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193",
+  "execution_identity": {
+    "github_actions_run": 31604126017,
+    "runtime_artifact_id": 9144363833,
+    "runtime_artifact_name": "brrk-0056-portfolio-economics-runtime-bundle",
+    "runtime_artifact_digest": "sha256:f3617a29d19e322a8c1a376c37d4eb3fde6b40314aaabf160d18df1502df7384",
+    "started_at_utc": "2026-08-12T13:57:35Z",
+    "completed_at_utc": "2026-08-12T13:57:38Z"
+  },
+  "runtime_hashes": {
+    "attempt_marker_sha256": "51306b68d5b18bcb0693e7e703793eeee45da63fb7c857b130ef3ad876122bb4",
+    "primary_result_sha256": "36e8787ac0d711e4936238c679dd7bc9383684d47eda66c2a76c7a784afb7748",
+    "execution_sha256": "4799acad948ce97f9ec5977f415f02eef05b6409f41fa20cf0c44cca5b0dee23"
+  },
+  "binding_failure": {
+    "stage": "G0_INTERFACE_INTEGRITY",
+    "error_type": "RouterProtocolError",
+    "error": "price index timezone must be UTC",
+    "source_loader_contract": "0047/0048 frozen loader emits UTC-normalized tz-naive daily DatetimeIndex values",
+    "0056_implementation_contract": "0056 validate_price_frames requires timezone-aware DatetimeIndex with tz string UTC",
+    "diagnosis": "IMPLEMENTATION_INTERFACE_INCOMPATIBILITY_NOT_DATA_CORRUPTION_AND_NOT_ECONOMIC_STRATEGY_FAILURE"
+  },
+  "economic_result": {
+    "terminal_wealth_available": false,
+    "net_cagr_available": false,
+    "maximum_drawdown_available": false,
+    "G1_primary_economic_dominance_reached": false,
+    "G2_cost_survival_reached": false,
+    "G3_temporal_robustness_reached": false,
+    "G4_dependence_robustness_reached": false,
+    "rm60_economic_efficacy_established": false,
+    "rm60_economic_efficacy_rejected": false
+  },
+  "authority": {
+    "portfolio_economics_execution_attempted": true,
+    "economic_conclusion_authorized": false,
+    "corrected_interface_rerun_under_0056_allowed": false,
+    "same_id_rerun_allowed": false,
+    "same_id_retuning_allowed": false,
+    "same_id_rescue_allowed": false,
+    "result_informed_continuation_requires_new_research_id": true,
+    "canonical_strategy_changed": false,
+    "phase6_changed": false,
+    "production_authorized": false,
+    "signature_authorized": false,
+    "order_submission_authorized": false
+  },
+  "interpretation": "0056 closed INVALID_EXECUTION because immutable upstream loader and frozen 0056 validator use incompatible timezone representations. No terminal wealth, CAGR, G1-G4 economic statistic, or evidence about RM60 portfolio efficacy was produced. Any corrected execution requires a new research ID."
+}
