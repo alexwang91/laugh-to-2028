@@ -3,7 +3,7 @@
 Last updated: **2026-08-12**  
 Authoritative repository: `alexwang91/laugh-to-2028`  
 Current `main` research merge: **`9201560b7db4af0c6043533df49ae3ac5ae909e3`**  
-Current research branch: **`research/0057-simple-beta-router-interface-replication-closeout`**  
+Current research branch: **`research/0058-beta-btc-continuation-parameter-geometry-design`**  
 Status of this document: **AUTHORITATIVE OPERATING SNAPSHOT**
 
 > GitHub `main`, immutable research artifacts and machine registries remain the sources of truth. This file is the compact human handoff, not a substitute for preregistration, execution, evidence, recovery or closeout artifacts.
@@ -41,6 +41,7 @@ BRRK 4h-native readiness 0054          FAIL_4H_NATIVE_TRAINING_PRECISION_NOT_EST
 BRRK 4h structural readiness 0055     FAIL_4H_STRUCTURAL_3D_TRAINING_PRECISION_NOT_ESTABLISHED / CLOSED
 BRRK simple ETH/SOL Beta router 0056  INVALID_EXECUTION / CLOSED / NO ECONOMIC CONCLUSION
 BRRK Beta router interface replication 0057 FAIL_SIMPLE_BETA_ROUTER_COST_FRAGILE / CLOSED
+BRRK Beta->BTC parameter geometry 0058     DESIGN FROZEN / NUMERICAL PREREG NOT YET FROZEN / NOT RUN
 
 Canonical BRRK-0011                    NO CHANGE
 Phase 7                                MONITOR_ONLY / LAUNCH BLOCKED
@@ -733,3 +734,43 @@ same-ID rerun/retune/rescue           false / false / false
 0057 is a valid economic FAIL, not an invalid execution. The interface correction worked, but the router's low-cost edge over static SOL did not survive the frozen higher-cost stresses and was not dependence-robust. Per preregistration, **stop the ETH/SOL micro-timing line**. The next legal scientific continuation is a new-ID **Beta→BTC continuation-value / full-cycle exit** problem, not another router rescue.
 
 Canonical BRRK-0011, Phase 6, signing, order submission and production authorization remain unchanged.
+
+---
+
+## 0058 Beta-to-BTC parameter-geometry design handoff
+
+`BRRK-BETA-BTC-CONTINUATION-PARAMETER-GEOMETRY-0058` is now the active **DESIGN-ONLY** successor after immutable 0057 closure.
+
+Design authority:
+
+```text
+research ID                            BRRK-BETA-BTC-CONTINUATION-PARAMETER-GEOMETRY-0058
+research family                        BRRK_BETA_TO_BTC_CONTINUATION
+design branch                          research/0058-beta-btc-continuation-parameter-geometry-design
+design authority commit                88192a370b07995b0753b8fa8531a5b05c34a001
+design freeze                           research/governance/BRRK_BETA_BTC_CONTINUATION_PARAMETER_GEOMETRY_0058_DESIGN_FREEZE_2026-08-12.md
+stage                                   DESIGN FROZEN / PREREG ABSENT / NOT IMPLEMENTED / NOT RUN
+parameter-surface economics             NOT RUN
+registry owner                          ABSENT UNTIL NUMERICAL PREREGISTRATION
+```
+
+Frozen design architecture: BTC is the defensive anchor; Beta is a symmetric ETH/SOL tier and does **not** consume the failed 0057 ETH/SOL router. Signal state is `z_t = 0.5*log(ETH/BTC) + 0.5*log(SOL/BTC)`. The only future tunable coordinates are integer lookback `L` and non-negative standardized threshold `kappa`; no third tuning coordinate, adaptive search, ETH/SOL leader model, BTC-to-cash timing, leverage or shorting is opened.
+
+0058 is a governed DEVELOPMENT parameter-identification study. After a separately merged numerical preregistration freezes one finite `(L,kappa)` lattice, the intended analysis uses finite-difference gradient and Hessian/curvature diagnostics on after-cost log terminal wealth to identify a broad connected stable plateau. Parameter selection must use deterministic plateau support and geometric medoid/center logic; the historical terminal-wealth argmax has descriptive-only authority. If no admissible plateau exists, 0058 closes without selecting a sharp peak.
+
+A future unique 0058 result must persist the complete parameter surface plus daily NAV, drawdown, BTC/Beta state and turnover/cost paths for the mechanically selected representative and frozen static benchmarks so plots can be inspected later without portfolio recomputation.
+
+No numerical lattice, gradient/curvature tolerance, plateau-size gate, static BTC/Beta benchmark weight, temporal partition, bootstrap setting or PASS/FAIL cutoff is frozen yet. Those belong only to the next numerical/data preregistration after this design merges and must be fixed before any 0058 market economics.
+
+All history through 2026-08-02 remains researcher-exposed DEVELOPMENT. A 0058 PASS can only freeze one `(L*, kappa*)` for a later **new research ID**; it is not independent OOS, canonical, Phase-6 or production evidence.
+
+```text
+Canonical BRRK-0011                    NO CHANGE
+Phase 6                                NO CHANGE
+production_authorized_components       []
+production_authorized                  false
+signature_authorized                   false
+order_submission_authorized            false
+```
+
+**Exact next step:** merge the 0058 design through the normal standing governance checks. Only after design merge may the separate numerical/data preregistration create the central 0058 registry owner and freeze the exact finite parameter lattice, derivative/curvature conventions, plateau gates, benchmark weights, cost/temporal/dependence contracts and immutable output schema. Do not run the 0058 historical parameter surface before that later controlled execution boundary merges.
