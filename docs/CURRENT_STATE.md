@@ -2,8 +2,8 @@
 
 Last updated: **2026-08-12**  
 Authoritative repository: `alexwang91/laugh-to-2028`  
-Current `main` research merge: **`4c6d801ca6d5db7545dcab460543c46b70d3927a`**  
-Current research branch: **`research/0056-simple-beta-router-design`**  
+Current `main` research merge: **`16a23ce2115647beead7f7abdab68a6b4cb406fe`**  
+Current research branch: **`research/0056-simple-beta-router-prereg`**  
 Status of this document: **AUTHORITATIVE OPERATING SNAPSHOT**
 
 > GitHub `main`, immutable research artifacts and machine registries remain the sources of truth. This file is the compact human handoff, not a substitute for preregistration, execution, evidence, recovery or closeout artifacts.
@@ -498,7 +498,7 @@ The prospectively fixed 7D-to-3D representation did not establish the unchanged 
 
 ---
 
-## 16. 0056 simple ETH/SOL Beta-router design freeze
+## 16. 0056 simple ETH/SOL Beta-router numerical preregistration
 
 New research ID: `BRRK-SIMPLE-ETH-SOL-BETA-ROUTER-0056`.
 
@@ -534,7 +534,7 @@ BTC / cash timing / CORE4               excluded
 probability / calibration / HAC readiness excluded
 ```
 
-Intended reusable daily DEVELOPMENT dataset for the later numerical preregistration:
+Frozen daily DEVELOPMENT dataset binding for 0056:
 
 ```text
 dataset id                              BINANCE_SPOT_BTC_ETH_SOL_1D_20200811_20260802
@@ -545,15 +545,17 @@ contamination                           RESEARCHER_EXPOSED_HISTORY
 independent OOS                         false
 ```
 
-Current 0056 authority is design-only:
+Current 0056 authority after numerical preregistration freeze:
 
 ```text
-design                                  FROZEN ON DESIGN BRANCH
-numerical preregistration               ABSENT
+design                                  MERGED AT 16a23ce2115647beead7f7abdab68a6b4cb406fe
+numerical preregistration               FROZEN ON PREREG BRANCH
+formal research path                    research/brrk_simple_eth_sol_beta_router_0056/
+registry owner                          BRRK-SIMPLE-ETH-SOL-BETA-ROUTER-0056
 implementation                          ABSENT
 controlled execution boundary           ABSENT
 0056 historical execution               NOT RUN
-0056 result                              ABSENT
+0056 result                              PREREGISTERED_NOT_RUN
 actual variants evaluated               0
 canonical BRRK changed                  false
 Phase 6 changed                         false
@@ -562,8 +564,8 @@ signature_authorized                    false
 order_submission_authorized             false
 ```
 
-The only allowed continuation after this design merges is numerical/data preregistration. That preregistration must freeze exact dataset binding, common evaluation origins, NAV/cost accounting, benchmark recursion, CAGR/MDD conventions, chronological concentration rule, paired dependence-aware uncertainty method, block length, bootstrap repetitions/seed and all numerical PASS/FAIL gates **before** implementation or any 0056 economic output.
+The numerical preregistration is now frozen before implementation or any 0056 economic output. It binds the immutable daily payload SHA256, 2122 common causal origins, NAV/cost and benchmark recursion, 5/10/20 bps L1 cost panel, 531/531/530/530 chronological blocks, 60-day moving-block bootstrap with 10,000 replicates and seed 1844716895, plus the complete G0-G4 classification hierarchy. After this preregistration merges, the only allowed continuation is a separate implementation-only branch that must not load or execute the real historical payload during implementation tests.
 
 If 0056 later fails its frozen economic decision, the ETH/SOL micro-timing line stops: no 30d/90d/MACD/ML or other same-line rescue study. Research budget then moves under a new ID to Beta-to-BTC continuation value. If 0056 later passes, any BTC-anchor plus routed-Beta integration also requires a new ID.
 
-The active design authority is `research/governance/BRRK_SIMPLE_ETH_SOL_BETA_ROUTER_0056_DESIGN_FREEZE_2026-08-12.md`. Older next-step prose above is historical and is superseded by this section.
+The active design authority is `research/governance/BRRK_SIMPLE_ETH_SOL_BETA_ROUTER_0056_DESIGN_FREEZE_2026-08-12.md`; the active numerical contract is `research/brrk_simple_eth_sol_beta_router_0056/PREREGISTRATION.json` with `DATASET_DECLARATION.json`. No 0056 implementation, controlled-run workflow, historical result or run marker exists at this stage. Older next-step prose above is historical and is superseded by this section.
