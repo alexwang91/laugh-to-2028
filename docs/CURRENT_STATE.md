@@ -2,8 +2,8 @@
 
 Last updated: **2026-08-12**  
 Authoritative repository: `alexwang91/laugh-to-2028`  
-Current `main` research merge: **`21f758260ea80040bbb38aec26e2091814e37fd9`**  
-Current research branch: **`research/0057-simple-beta-router-interface-replication-prereg`**  
+Current `main` research merge: **`bc61a6a2250d8deecf2f20d2fe2006b28ad4b819`**  
+Current research branch: **`research/0057-simple-beta-router-interface-replication-implementation`**  
 Status of this document: **AUTHORITATIVE OPERATING SNAPSHOT**
 
 > GitHub `main`, immutable research artifacts and machine registries remain the sources of truth. This file is the compact human handoff, not a substitute for preregistration, execution, evidence, recovery or closeout artifacts.
@@ -40,7 +40,7 @@ BRRK intraday support 0053             FAIL_4H_DOES_NOT_SOLVE_0048_SUPPORT_CONST
 BRRK 4h-native readiness 0054          FAIL_4H_NATIVE_TRAINING_PRECISION_NOT_ESTABLISHED / CLOSED
 BRRK 4h structural readiness 0055     FAIL_4H_STRUCTURAL_3D_TRAINING_PRECISION_NOT_ESTABLISHED / CLOSED
 BRRK simple ETH/SOL Beta router 0056  INVALID_EXECUTION / CLOSED / NO ECONOMIC CONCLUSION
-BRRK Beta router interface replication 0057 NUMERICAL PREREG FROZEN ON BRANCH / NOT RUN
+BRRK Beta router interface replication 0057 IMPLEMENTATION-ONLY / SYNTHETIC PASS / REAL RUN NOT RUN
 
 Canonical BRRK-0011                    NO CHANGE
 Phase 7                                MONITOR_ONLY / LAUNCH BLOCKED
@@ -675,3 +675,16 @@ Exact next step after design merge: a separate numerical/data preregistration th
 The immutable market evidence remains blob `64ebf5c6deaf3f34dbeac715378f196ff0f4fafe`, payload SHA256 `d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193`, 2183 common daily rows, with exactly 2122 held periods. No historical portfolio result has been computed under 0057; actual variants evaluated remain 0.
 
 Next legal stage after prereg merge is implementation-only. Real historical evaluation remains forbidden until implementation and a separately merged controlled-execution boundary exist.
+
+
+---
+
+## 20. 0057 implementation-only handoff
+
+0057 preregistration merged at `bc61a6a2250d8deecf2f20d2fe2006b28ad4b819`. The implementation adds only a deterministic interface adapter and synthetic contract tests; it does not copy or modify the frozen 0056 portfolio engine.
+
+The adapter validates immutable tz-naive ETH/SOL source indexes, copies frames, applies only `index.tz_localize("UTC")`, proves calendar/order/row-count/close-value invariance, then delegates unchanged portfolio economics to immutable 0056 engine blob `b0fc1ac267a66593e7e2c4687aff81491bfcdf5a`. The wrapper may only replace the top-level research ID and add provenance metadata; metrics, gates, classification, targets, diagnostics and bootstrap outputs remain delegated unchanged.
+
+Synthetic Actions run `31611937198` passed all 15 immutable 0056 engine tests and 7 new 0057 adapter tests. The zero-result guard confirmed `REAL_0057_HISTORICAL_PAYLOAD_NOT_LOADED=true`, `REAL_0057_PORTFOLIO_ECONOMICS_NOT_EXECUTED=true`, and `ACTUAL_HISTORICAL_VARIANTS_EVALUATED=0`. Governance validation and no-drift also passed.
+
+No `run_once.py`, `RUN_INTERFACE.json`, `RESULT_SCHEMA.json`, controlled-execution boundary, runtime marker or historical result is present. Next legal stage after implementation merge is a separate controlled-execution boundary.

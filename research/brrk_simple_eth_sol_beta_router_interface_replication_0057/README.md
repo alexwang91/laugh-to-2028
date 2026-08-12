@@ -1,6 +1,6 @@
 # BRRK Simple ETH/SOL Beta Router Interface Replication 0057
 
-Status: **NUMERICAL PREREGISTRATION / NOT IMPLEMENTED / NOT RUN**
+Status: **IMPLEMENTATION-ONLY / SYNTHETIC CONTRACTS PASS / REAL HISTORICAL RUN NOT RUN**
 
 Research ID: `BRRK-SIMPLE-ETH-SOL-BETA-ROUTER-INTERFACE-REPLICATION-0057`
 
@@ -52,8 +52,8 @@ All history is researcher-exposed DEVELOPMENT history. It is not independent OOS
 ```text
 design                         MERGED AT 21f758260ea80040bbb38aec26e2091814e37fd9
 central registry owner         REGISTERED BEFORE FORMAL PATH
-numerical preregistration      FROZEN ON BRANCH / NOT YET MERGED
-implementation                 ABSENT
+numerical preregistration      MERGED AT bc61a6a2250d8deecf2f20d2fe2006b28ad4b819
+implementation                 FROZEN ON BRANCH / SYNTHETIC ONLY
 controlled execution boundary  ABSENT
 historical execution           NOT RUN
 result                         PREREGISTERED_NOT_RUN
@@ -65,4 +65,4 @@ signature_authorized           false
 order_submission_authorized    false
 ```
 
-No real historical portfolio evaluation is authorized until this preregistration merges, a separate implementation-only stage merges, and a separate controlled-execution boundary merges.
+Synthetic run `31611937198` passed 15 immutable 0056 engine tests plus 7 new 0057 adapter tests and a zero-result guard. No real market payload was loaded; actual historical variants remain 0. Real historical portfolio evaluation is still forbidden until this implementation stage merges and a separate controlled-execution boundary merges.
