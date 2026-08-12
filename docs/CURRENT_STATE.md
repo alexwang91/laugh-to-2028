@@ -3,7 +3,7 @@
 Last updated: **2026-08-13**  
 Authoritative repository: `alexwang91/laugh-to-2028`  
 Current `main` research merge: **`269424763528927d829b4aa78b7c849729758f86`**  
-Current research branch: **`research/0059-beta-deterioration-btc-takeover-diagnostic-design`**  
+Current research branch: **`research/0059-beta-deterioration-btc-takeover-diagnostic-prereg`**  
 Status of this document: **AUTHORITATIVE OPERATING SNAPSHOT**
 
 > GitHub `main`, immutable research artifacts and machine registries remain the sources of truth. This file is the compact human handoff, not a substitute for preregistration, execution, evidence, recovery or closeout artifacts.
@@ -42,7 +42,7 @@ BRRK 4h structural readiness 0055     FAIL_4H_STRUCTURAL_3D_TRAINING_PRECISION_N
 BRRK simple ETH/SOL Beta router 0056  INVALID_EXECUTION / CLOSED / NO ECONOMIC CONCLUSION
 BRRK Beta router interface replication 0057 FAIL_SIMPLE_BETA_ROUTER_COST_FRAGILE / CLOSED
 BRRK Beta->BTC parameter geometry 0058     FAIL_NO_STABLE_PARAMETER_PLATEAU / CLOSED
-BRRK Beta deterioration/BTC takeover 0059 DESIGN FROZEN / PREREG ABSENT / NOT RUN
+BRRK Beta deterioration/BTC takeover 0059 NUMERICAL PREREG FROZEN / NOT IMPLEMENTED / NOT RUN
 
 Canonical BRRK-0011                    NO CHANGE
 Phase 7                                MONITOR_ONLY / LAUNCH BLOCKED
@@ -971,3 +971,34 @@ order_submission_authorized           false
 ```
 
 **Exact next step:** pass standing DESIGN PR checks and merge with expected-head protection. Only after the DESIGN merge may a separate 0059 numerical/data preregistration create the central `PROGRAM_GOVERNED_V1` registry owner and freeze dataset identity, support gates, simultaneous multi-horizon association rules, temporal/dependence inference and immutable result schema. Do not compute any 0059 historical future outcome or portfolio economics during DESIGN or preregistration.
+
+---
+
+## 0059 numerical/data preregistration handoff
+
+`BRRK-BETA-DETERIORATION-BTC-TAKEOVER-DIAGNOSTIC-0059` now has a durable `PROGRAM_GOVERNED_V1` owner and frozen numerical/data preregistration. **No 0059 historical target value, association metric, bootstrap result or portfolio economic output has been computed.**
+
+```text
+design merge                           444e0ee6422e541e3d602ca0272200217834e6d8
+stage                                  NUMERICAL/DATA PREREG FROZEN / NOT IMPLEMENTED / NOT RUN
+dataset                                BRRK-LEADERSHIP-ROTATION-0048-EXPOSED-HIST-V1
+payload SHA256                         d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193
+history                                RESEARCHER_EXPOSED / DEVELOPMENT / NOT INDEPENDENT OOS
+nominal shared origins                 1644 / 2021-06-06..2025-12-05
+G1 minimum actual shared origins       1440
+G2                                     all four full-sample Spearman rho > 0
+G3                                     >=3/4 chronological blocks positive at all four horizons
+bootstrap                              non-circular moving block / length 240 / 10000 / seed 1844716895
+G4                                     all four simultaneous one-sided 95% LCB > 0
+actual variants evaluated              0
+portfolio economics                    FORBIDDEN UNDER 0059
+```
+
+Frozen future outcomes use `Y_h=log(W_BTC/W_BETA)` for h=20/60/120/240 with origin-reset arithmetic `W_BETA=0.5*ETH[t+h]/ETH[t]+0.5*SOL[t+h]/SOL[t]`; all horizons share one complete-case origin set. The 240-origin dependence block is fixed from the longest preregistered forward-target overlap, not from results.
+
+0058 remains immutable `FAIL_NO_STABLE_PARAMETER_PLATEAU / CLOSED`; its `(120,0.50)` descriptive maximum and local geometry have zero 0059 authority. 0057 micro-timing remains closed. BTC-to-cash is not opened.
+
+Classification precedence is `INVALID_EXECUTION -> FAIL_INSUFFICIENT_CAUSAL_SUPPORT -> FAIL_NO_MONOTONE_CONTINUATION_INFORMATION -> FAIL_TEMPORAL_INSTABILITY -> FAIL_DEPENDENCE_AWARE_ROBUSTNESS -> PASS_MECHANISM_INFORMATION_STAGE_ELIGIBLE`. PASS only permits a new-ID translation/calibration study.
+
+**Exact next step after prereg merge:** implementation-only with synthetic/toy/contract tests. Real market loading and all 0059 historical targets/correlations remain forbidden until a separately merged controlled-execution boundary.
+

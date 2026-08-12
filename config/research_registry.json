@@ -3715,6 +3715,168 @@
         "derived_confidence": "HIGH_FOR_FROZEN_DEVELOPMENT_G1_FAILURE",
         "confidence_rule_ref": "research/brrk_beta_btc_continuation_parameter_geometry_0058/CLOSEOUT.json"
       }
+    },
+    {
+      "research_id": "BRRK-BETA-DETERIORATION-BTC-TAKEOVER-DIAGNOSTIC-0059",
+      "research_family_id": "BRRK_BETA_TO_BTC_DEFENSIVE_HANDOFF",
+      "research_domain": "RISK_CONTROL",
+      "research_governance_version": 1,
+      "governance_mode": "PROGRAM_GOVERNED_V1",
+      "objective_type": "MECHANISM_TEST",
+      "created_at": "2026-08-12T23:03:00Z",
+      "created_before_result": true,
+      "question": "Does the single frozen low-dimensional causal deterioration state in symmetric ETH/SOL Beta contain recurrent monotone information about subsequent BTC-over-Beta continuation value across the full preregistered 20/60/120/240-day horizon family before any threshold, allocation map or switching economics is defined?",
+      "hypothesis": "If Beta continuation value genuinely deteriorates before BTC becomes the preferable defensive anchor, the frozen equal-weight state combining Beta fast-vs-slow trend disagreement, Beta distance below its 60-session high and Beta/BTC fast-vs-slow relative disagreement should have positive recurrent monotone association with future BTC-over-Beta continuation value at all four frozen horizons.",
+      "hypothesis_origin": "RESULT_INFORMED_MECHANISM_FORK_AFTER_IMMUTABLE_0058_NO_STABLE_PARAMETER_PLATEAU_USING_ONLY_PRE_0058_STATE_FAMILIES_AND_FROZEN_0059_DESIGN",
+      "economic_mechanism": "A weakening symmetric ETH/SOL Beta tier can lose continuation value relative to BTC through internal trend deterioration and BTC defensive leadership. 0059 tests only whether one frozen continuous causal deterioration state orders subsequent BTC-over-Beta continuation value. It defines no threshold, allocation response, switching strategy, NAV path, transaction-cost model or BTC-to-cash rule.",
+      "primary_target": "MONOTONE_BTC_OVER_BETA_CONTINUATION_INFORMATION_SIMULTANEOUSLY_ACROSS_20_60_120_240_DAY_FORWARD_HORIZONS",
+      "primary_metric": "FULL_SAMPLE_SPEARMAN_PLUS_240_ORIGIN_MOVING_BLOCK_SIMULTANEOUS_ONE_SIDED_95PCT_LCB_ACROSS_ALL_FOUR_HORIZONS",
+      "secondary_metrics": [
+        "four_block_chronological_recurrence_of_positive_all_horizon_spearman",
+        "D1_D2_D3_target_spearman_descriptive_only",
+        "D1_D2_D3_spearman_redundancy_matrix_and_effective_rank_descriptive_only",
+        "shared_complete_case_origin_count_and_dates"
+      ],
+      "feature_families": [
+        "SYMMETRIC_BETA_FAST_SLOW_TREND_DETERIORATION",
+        "SYMMETRIC_BETA_60_SESSION_DISTANCE_BELOW_HIGH",
+        "SYMMETRIC_BETA_VS_BTC_FAST_SLOW_RELATIVE_DETERIORATION"
+      ],
+      "horizon": "BINANCE_SPOT_UTC_DAILY_RESEARCHER_EXPOSED_DEVELOPMENT_HISTORY_THROUGH_2026-08-02_WITH_SHARED_CAUSAL_ORIGINS_AND_FORWARD_TARGETS_20_60_120_240_DAYS",
+      "universe": [
+        "BTC",
+        "ETH",
+        "SOL"
+      ],
+      "development_dataset_refs": [
+        "BRRK-LEADERSHIP-ROTATION-0048-EXPOSED-HIST-V1"
+      ],
+      "validation_dataset_refs": [],
+      "sealed_dataset_refs": [],
+      "declared_variant_budget": 1,
+      "actual_variants_evaluated": 0,
+      "parameter_candidate_count": 1,
+      "stopping_rule": "After this preregistration merges, implement exactly one frozen 0059 mechanism diagnostic on an implementation-only branch using synthetic/toy/contract tests only. After a separately merged controlled-execution boundary, execute exactly one valid DEVELOPMENT historical measurement. Any valid result closes 0059 to same-ID rerun, feature/horizon/reweighting/support/bootstrap change or rescue. A durable attempt marker removes same-ID automatic recomputation authority.",
+      "success_criteria": [
+        "G0 immutable design/source/dataset/interface/variant/result-persistence integrity passes.",
+        "G1 at least 1440 identical shared complete-case origins remain, equal to at least six complete 240-origin longest-target dependence blocks.",
+        "G2 full-sample Spearman rho(S,Y_h) is strictly positive for every h in {20,60,120,240}.",
+        "G3 at least three of four deterministic equal-as-possible chronological blocks have strictly positive Spearman at all four horizons simultaneously.",
+        "G4 all four simultaneous one-sided 95% moving-block-bootstrap lower confidence bounds are strictly positive using block length 240, 10000 replicates and seed 1844716895.",
+        "Only G0-G4 full pass produces PASS_MECHANISM_INFORMATION_STAGE_ELIGIBLE; this creates only new-ID translation/calibration eligibility."
+      ],
+      "failure_criteria": [
+        "Any immutable identity, causal timing, formula, variant-budget, forbidden-computation or persistence-contract violation is INVALID_EXECUTION.",
+        "G0 pass with fewer than 1440 shared origins produces FAIL_INSUFFICIENT_CAUSAL_SUPPORT.",
+        "G0-G1 pass with any full-sample rho_h <= 0, or a constant state/target making Spearman undefined, produces FAIL_NO_MONOTONE_CONTINUATION_INFORMATION.",
+        "G0-G2 pass with fewer than three positive-all-horizon chronological blocks produces FAIL_TEMPORAL_INSTABILITY.",
+        "G0-G3 pass with any simultaneous one-sided 95% LCB <= 0 produces FAIL_DEPENDENCE_AWARE_ROBUSTNESS.",
+        "Component diagnostics, favorable single horizons, 0058 argmax or any descriptive plot cannot rescue a failed gate."
+      ],
+      "allowed_followup": [
+        "Only PASS_MECHANISM_INFORMATION_STAGE_ELIGIBLE may motivate a new separately designed/preregistered state-to-allocation translation or parameter-calibration research ID.",
+        "Any later parameter identification must be systematic and separated from a subsequent fixed-parameter validation ID.",
+        "A genuinely independent OOS claim requires a separately governed future-only protocol."
+      ],
+      "forbidden_followup": [
+        "No same-ID trading threshold, hysteresis, allocation weight, BTC/Beta switching rule, NAV/CAGR/MDD/cost optimization or portfolio economics.",
+        "No same-ID reweighting/pruning/addition of D1/D2/D3 and no extra indicator/model rescue.",
+        "No same-ID horizon addition/removal or winning-horizon selection.",
+        "No same-ID support relaxation, temporal repartition, bootstrap block/replicate/seed/quantile change or alternative association statistic after output.",
+        "No reuse of 0058 L=120,kappa=0.5, local surface geometry, gradient/Hessian values, grid zoom, threshold relaxation or alternate normalization.",
+        "No reopening 0057 ETH/SOL micro-timing and no BTC-to-cash, leverage, shorting, signing, order submission or production authorization.",
+        "No canonical BRRK or Phase 6 modification."
+      ],
+      "researcher_decisions": [
+        "Design authority is research/governance/BRRK_BETA_DETERIORATION_BTC_TAKEOVER_DIAGNOSTIC_0059_DESIGN_FREEZE_2026-08-13.md merged by PR #216 at 444e0ee6422e541e3d602ca0272200217834e6d8 before preregistration.",
+        "0058 is immutable FAIL_NO_STABLE_PARAMETER_PLATEAU. Its exposed descriptive L=120,kappa=0.5 maximum and complete surface have zero 0059 parameter authority.",
+        "0059 is a new-target pure mechanism diagnostic rather than a parameter descendant.",
+        "Beta proxy is b=0.5*log(ETH)+0.5*log(SOL), B=exp(b); relative proxy is z=b-log(BTC), R=exp(z). No dynamic ETH/SOL leader selection exists.",
+        "Trend mathematics are hash-bound to 0047 engine blob 059b55961e279dab41ba29b5b017de0922e4f33c: horizons 20/60/120/240; FAST weights .15/.25/.30/.30; SLOW weights .10/.20/.30/.40; tanh of log momentum divided by same-horizon sample-volatility scale times sqrt(h).",
+        "D1 raw is SLOW(B)-FAST(B); D2 raw is the 0059-design-explicit log(trailing60 high(B)/B); D3 raw is SLOW(R)-FAST(R).",
+        "Each raw axis uses causal z normalization hash-bound to 0043 implementation blob 642e795a807b1210b97a9683279553fb39c2e0ce: trailing252 including t, min60, sample std ddof1, zero std NaN, clip [-3,+3].",
+        "Joint S is exactly the equal-weight mean of three finite normalized axes. Separate axes are descriptive only and cannot select or reweight the candidate.",
+        "Future Beta comparator is origin-reset arithmetic 50/50 wealth W_BETA=0.5*ETH[t+h]/ETH[t]+0.5*SOL[t+h]/SOL[t], not an average log-return/geometric-mean substitute. Y_h=log(W_BTC/W_BETA).",
+        "All four horizons 20/60/120/240 use one identical shared complete-case origin set.",
+        "Nominal first state origin 2021-06-06, last shared origin 2025-12-05 and count 1644 are calendar/formula derivations only; no 0059 target value or association was read to obtain them.",
+        "Support N>=1440 is six complete 240-origin blocks because 240 is the longest overlapping target; this scale is not estimated from outcomes.",
+        "Primary association is Spearman with average ranks. No minimum effect-size threshold is imposed because economic relevance/translation belongs to a later new ID.",
+        "Temporal recurrence uses four deterministic equal-as-possible chronological blocks and requires at least three blocks with all four rho_h>0.",
+        "Dependence inference inherits the 0058 non-circular moving-block sampling and Type-7 centered-max simultaneous LCB semantics; block length is prospectively 240. Replicates=10000, seed=1844716895.",
+        "Unique execution must losslessly persist origin-level state and all four W_BTC/W_BETA/Y targets plus block assignment.",
+        "All source history is researcher-exposed DEVELOPMENT. PASS is not independent OOS and cannot authorize a strategy or production."
+      ],
+      "research_process_complexity": {
+        "declared_parameter_candidates": [
+          "ONE_FIXED_STATE=D1_D2_D3_EQUAL_WEIGHT",
+          "TREND_HORIZONS=20_60_120_240",
+          "CAUSAL_Z=TRAILING252_MIN60_DDOF1_CLIP3",
+          "TARGET_HORIZONS=20_60_120_240_ALL_REQUIRED",
+          "SUPPORT_MIN=1440",
+          "TEMPORAL=FOUR_EQUAL_REQUIRE3_ALL_HORIZONS_POSITIVE",
+          "BOOTSTRAP=NONCIRCULAR_MBB240_X10000_SEED1844716895_SIMULTANEOUS95_LCB"
+        ],
+        "actual_parameter_candidates_evaluated": [],
+        "universes_evaluated": [
+          "BINANCE_SPOT_BTC_ETH_SOL"
+        ],
+        "horizons_evaluated": [
+          "FORWARD_CONTINUATION_20_60_120_240_ALL_SIMULTANEOUS"
+        ],
+        "rebalance_variants": [],
+        "feature_representations": [
+          "ONE_EQUAL_WEIGHT_D1_D2_D3_CONTINUOUS_DETERIORATION_STATE"
+        ],
+        "special_cases_introduced": [
+          "D2_LOG_TRAILING60_HIGH_DISTANCE_EXPLICIT_0059_DESIGN",
+          "IDENTICAL_COMPLETE_CASE_ORIGINS_ACROSS_ALL_TARGET_HORIZONS",
+          "PASS_ONLY_UNLOCKS_NEW_ID_TRANSLATION_CALIBRATION"
+        ],
+        "validation_exposure_event_refs": [],
+        "related_family_trials": 1
+      },
+      "lineage_edges": [
+        {
+          "relation": "RESULT_INFORMED",
+          "ref_research_id": "BRRK-BETA-BTC-CONTINUATION-PARAMETER-GEOMETRY-0058",
+          "provenance_status": "FACT",
+          "evidence_ref": "research/brrk_beta_btc_continuation_parameter_geometry_0058/CLOSEOUT.json"
+        },
+        {
+          "relation": "MECHANISM_FORK",
+          "ref_research_id": "BRRK-BETA-BTC-CONTINUATION-PARAMETER-GEOMETRY-0058",
+          "provenance_status": "FACT",
+          "evidence_ref": "research/governance/BRRK_BETA_DETERIORATION_BTC_TAKEOVER_DIAGNOSTIC_0059_DESIGN_FREEZE_2026-08-13.md"
+        },
+        {
+          "relation": "RESULT_INFORMED",
+          "ref_research_id": "BRRK-EXHAUSTION-STATE-0044",
+          "provenance_status": "FACT",
+          "evidence_ref": "research/brrk_exhaustion_state_0044/PRIMARY_RESULT.json"
+        }
+      ],
+      "result_status": "PREREGISTERED_NOT_RUN",
+      "failure_reason": null,
+      "promotion_state": "NONE",
+      "evidence_refs": [],
+      "decision_refs": [
+        "research/governance/BRRK_BETA_DETERIORATION_BTC_TAKEOVER_DIAGNOSTIC_0059_DESIGN_FREEZE_2026-08-13.md",
+        "research/brrk_beta_deterioration_btc_takeover_diagnostic_0059/PREREGISTRATION.json",
+        "research/brrk_beta_deterioration_btc_takeover_diagnostic_0059/DATASET_DECLARATION.json",
+        "docs/CURRENT_STATE.md"
+      ],
+      "production_relevance": "Research-only DEVELOPMENT mechanism-information diagnostic. A full PASS can only make a separately governed state-to-allocation translation/calibration study eligible; it cannot modify canonical BRRK, Phase 6 or confer production/signing/order authority.",
+      "production_authorized": false,
+      "provenance_status": "FACT",
+      "governed_path_prefixes": [
+        "research/brrk_beta_deterioration_btc_takeover_diagnostic_0059/"
+      ],
+      "notes": [
+        "0059 DESIGN merged before numerical/data preregistration.",
+        "0058 and 0057 remain immutable closed failures and cannot be rerun or rescued.",
+        "No 0059 historical target value, Spearman correlation, bootstrap result or portfolio economic output existed when this owner/preregistration was frozen.",
+        "BTC-to-cash remains outside scope."
+      ]
     }
   ],
   "research_governance_debt": [
