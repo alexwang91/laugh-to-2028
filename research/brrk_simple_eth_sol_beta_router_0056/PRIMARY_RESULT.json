@@ -1,0 +1,41 @@
+{
+  "schema_id": "BRRK-SIMPLE-ETH-SOL-BETA-ROUTER-0056-PRIMARY-RESULT-V1",
+  "research_id": "BRRK-SIMPLE-ETH-SOL-BETA-ROUTER-0056",
+  "dataset_slice_id": "BRRK-LEADERSHIP-ROTATION-0048-EXPOSED-HIST-V1",
+  "payload_sha256": "d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193",
+  "execution_head_sha": "186a7f7d57c957c98798ecd828533ffe20dedb83",
+  "classification": "INVALID_EXECUTION",
+  "measurement": {
+    "research_id": "BRRK-SIMPLE-ETH-SOL-BETA-ROUTER-0056",
+    "classification": "INVALID_EXECUTION",
+    "error_type": "RouterProtocolError",
+    "error": "price index timezone must be UTC",
+    "actual_variants_evaluated": 1,
+    "authority": {
+      "canonical_strategy_changed": false,
+      "phase6_changed": false,
+      "production_authorized": false,
+      "production_authorized_components": [],
+      "signature_authorized": false,
+      "order_submission_authorized": false
+    }
+  },
+  "authority": {
+    "development_not_independent_oos": true,
+    "researcher_exposed_history": true,
+    "portfolio_economics_executed": true,
+    "probability_or_predictive_metrics_executed": false,
+    "btc_values_consumed_by_candidate_or_benchmarks": false,
+    "oracle_or_hindsight_winner_metrics_executed": false,
+    "actual_variants_evaluated": 1,
+    "canonical_strategy_changed": false,
+    "phase6_changed": false,
+    "production_authorized": false,
+    "production_authorized_components": [],
+    "signature_authorized": false,
+    "order_submission_authorized": false,
+    "same_id_rerun_allowed": false,
+    "same_id_retuning_allowed": false,
+    "same_id_rescue_allowed": false
+  }
+}
