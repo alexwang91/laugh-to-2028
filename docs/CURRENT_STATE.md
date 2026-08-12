@@ -2,8 +2,8 @@
 
 Last updated: **2026-08-12**  
 Authoritative repository: `alexwang91/laugh-to-2028`  
-Current `main` research merge: **`dbf95e0b5179e5d58c4e2527aa1c841625f134b2`**  
-Current research branch: **`research/0057-simple-beta-router-interface-replication-design`**  
+Current `main` research merge: **`21f758260ea80040bbb38aec26e2091814e37fd9`**  
+Current research branch: **`research/0057-simple-beta-router-interface-replication-prereg`**  
 Status of this document: **AUTHORITATIVE OPERATING SNAPSHOT**
 
 > GitHub `main`, immutable research artifacts and machine registries remain the sources of truth. This file is the compact human handoff, not a substitute for preregistration, execution, evidence, recovery or closeout artifacts.
@@ -40,7 +40,7 @@ BRRK intraday support 0053             FAIL_4H_DOES_NOT_SOLVE_0048_SUPPORT_CONST
 BRRK 4h-native readiness 0054          FAIL_4H_NATIVE_TRAINING_PRECISION_NOT_ESTABLISHED / CLOSED
 BRRK 4h structural readiness 0055     FAIL_4H_STRUCTURAL_3D_TRAINING_PRECISION_NOT_ESTABLISHED / CLOSED
 BRRK simple ETH/SOL Beta router 0056  INVALID_EXECUTION / CLOSED / NO ECONOMIC CONCLUSION
-BRRK Beta router interface replication 0057 DESIGN FROZEN / PREREG ABSENT / NOT RUN
+BRRK Beta router interface replication 0057 NUMERICAL PREREG FROZEN ON BRANCH / NOT RUN
 
 Canonical BRRK-0011                    NO CHANGE
 Phase 7                                MONITOR_ONLY / LAUNCH BLOCKED
@@ -664,3 +664,14 @@ order_submission_authorized            false
 ```
 
 Exact next step after design merge: a separate numerical/data preregistration that binds the immutable source identity, exact one-adapter contract and the unchanged 0056 economic specification before any 0057 implementation or historical output.
+
+
+---
+
+## 19. 0057 numerical preregistration handoff
+
+0057 inherits the complete 0056 RM60 portfolio-economic mechanism and G0-G4 decision system without retuning. The only new-ID correction is a deterministic source representation adapter: validate the immutable 0047/0048 tz-naive UTC-normalized ETH/SOL daily indexes, copy the frames, apply `index.tz_localize("UTC")`, prove calendar/order/row-count/close-value invariance, then delegate all portfolio economics to immutable 0056 engine blob `b0fc1ac267a66593e7e2c4687aff81491bfcdf5a`.
+
+The immutable market evidence remains blob `64ebf5c6deaf3f34dbeac715378f196ff0f4fafe`, payload SHA256 `d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193`, 2183 common daily rows, with exactly 2122 held periods. No historical portfolio result has been computed under 0057; actual variants evaluated remain 0.
+
+Next legal stage after prereg merge is implementation-only. Real historical evaluation remains forbidden until implementation and a separately merged controlled-execution boundary exist.
