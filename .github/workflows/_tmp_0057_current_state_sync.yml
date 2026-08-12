@@ -1,0 +1,47 @@
+name: Temporary 0057 closeout CURRENT_STATE sync
+
+on:
+  push:
+    branches:
+      - docs/0057-closeout-current-state-sync-tooling
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: docs/0057-closeout-current-state-sync
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Synchronize only authoritative header
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('docs/CURRENT_STATE.md')
+          s=p.read_text(encoding='utf-8')
+          old_merge='Current `main` research merge: **`bc61a6a2250d8deecf2f20d2fe2006b28ad4b819`**'
+          old_branch='Current research branch: **`research/0057-simple-beta-router-interface-replication-controlled-run`**'
+          assert s.count(old_merge)==1
+          assert s.count(old_branch)==1
+          s=s.replace(old_merge,'Current `main` research merge: **`9201560b7db4af0c6043533df49ae3ac5ae909e3`**')
+          s=s.replace(old_branch,'Current research branch: **`research/0057-simple-beta-router-interface-replication-closeout`**')
+          p.write_text(s,encoding='utf-8')
+          PY
+          test "$(git diff --name-only | wc -l)" -eq 1
+          test "$(git diff --name-only)" = "docs/CURRENT_STATE.md"
+          git diff --check
+          python -m research.governance.validate
+          python -m research.governance.no_drift
+      - name: Commit docs-only sync
+        run: |
+          git config user.name 'Y_Wang'
+          git config user.email '40142450+alexwang91@users.noreply.github.com'
+          git add docs/CURRENT_STATE.md
+          git commit -m 'Docs [DRIFT_0]: sync 0057 immutable closeout header'
+          git push origin HEAD:docs/0057-closeout-current-state-sync
