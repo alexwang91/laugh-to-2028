@@ -130,11 +130,13 @@ jobs:
           state_path.write_text(state, encoding="utf-8")
           PY
 
-          git diff --check
+          # The authoritative CURRENT_STATE intentionally uses Markdown hard-break spaces.
+          # Check the machine registry strictly here; full repository CI will validate the PR later.
+          git diff --check -- config/research_registry.json
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add config/research_registry.json docs/CURRENT_STATE.md
           git rm .github/workflows/_temp_0056_prereg_governance_patch.yml
-          git diff --cached --check
+          git diff --cached --check -- config/research_registry.json
           git commit -m "Research prereg [DRIFT_0]: bind 0056 registry and handoff"
           git push origin HEAD:research/0056-simple-beta-router-prereg
