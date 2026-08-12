@@ -104,13 +104,14 @@
     "order_submission_authorized": false
   },
   "boundary_fault_contract_evidence": {
-    "status": "PENDING_SYNTHETIC_BOUNDARY_CI",
-    "successful_tooling_run": null,
-    "implementation_engine_contract_tests_expected": 17,
-    "controlled_run_fault_contract_tests_expected": 13,
-    "zero_result_guard_required": true,
-    "governance_validate_required": true,
-    "no_drift_required": true,
+    "status": "PASS_ZERO_RESULT_BOUNDARY_CONTRACTS",
+    "successful_tooling_run": 31643240307,
+    "implementation_engine_contract_tests_passed": 17,
+    "controlled_run_fault_contract_tests_passed": 13,
+    "total_boundary_tests_passed": 30,
+    "zero_result_guard_passed": true,
+    "governance_validate_passed": true,
+    "no_drift_passed": true,
     "real_0058_historical_payload_loaded": false,
     "real_0058_parameter_surface_economics_executed": false,
     "actual_historical_variants_evaluated": 0

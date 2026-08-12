@@ -2,8 +2,8 @@
 
 Last updated: **2026-08-12**  
 Authoritative repository: `alexwang91/laugh-to-2028`  
-Current `main` research merge: **`e6d94b30c8bb4d126d6c234c30980d701a9ababc`**  
-Current research branch: **`research/0058-beta-btc-continuation-parameter-geometry-implementation`**  
+Current `main` research merge: **`e2a0f2fd564274e53d099811d54bcdb06d77fb07`**  
+Current research branch: **`research/0058-beta-btc-continuation-parameter-geometry-controlled-boundary`**  
 Status of this document: **AUTHORITATIVE OPERATING SNAPSHOT**
 
 > GitHub `main`, immutable research artifacts and machine registries remain the sources of truth. This file is the compact human handoff, not a substitute for preregistration, execution, evidence, recovery or closeout artifacts.
@@ -41,7 +41,7 @@ BRRK 4h-native readiness 0054          FAIL_4H_NATIVE_TRAINING_PRECISION_NOT_EST
 BRRK 4h structural readiness 0055     FAIL_4H_STRUCTURAL_3D_TRAINING_PRECISION_NOT_ESTABLISHED / CLOSED
 BRRK simple ETH/SOL Beta router 0056  INVALID_EXECUTION / CLOSED / NO ECONOMIC CONCLUSION
 BRRK Beta router interface replication 0057 FAIL_SIMPLE_BETA_ROUTER_COST_FRAGILE / CLOSED
-BRRK Beta->BTC parameter geometry 0058     IMPLEMENTATION FROZEN ON BRANCH / SYNTHETIC ONLY / NOT RUN
+BRRK Beta->BTC parameter geometry 0058     CONTROLLED BOUNDARY FROZEN ON BRANCH / ZERO RESULT / NOT RUN
 
 Canonical BRRK-0011                    NO CHANGE
 Phase 7                                MONITOR_ONLY / LAUNCH BLOCKED
@@ -840,3 +840,45 @@ Synthetic Actions run `31640495960` passed 17/17 tests. A complete frozen-calend
 Zero-result guard: `REAL_0058_HISTORICAL_PAYLOAD_NOT_LOADED=true`, `REAL_0058_PARAMETER_SURFACE_ECONOMICS_NOT_EXECUTED=true`, `ACTUAL_HISTORICAL_VARIANTS_EVALUATED=0`.
 
 No controlled-execution boundary exists. Next legal stage after implementation merge is a separate zero-result controlled-execution boundary; real historical 0058 surface execution remains forbidden until that later boundary merges.
+
+---
+
+## 0058 controlled-execution boundary handoff
+
+0058 implementation merged at `e2a0f2fd564274e53d099811d54bcdb06d77fb07`. The active controlled-boundary branch adds only the execution safety layer around immutable engine blob `690e029588d6ff453eaabfa1e4ce5a7f3df2f139`; no historical parameter surface has been executed.
+
+```text
+research ID                              BRRK-BETA-BTC-CONTINUATION-PARAMETER-GEOMETRY-0058
+implementation merge                     e2a0f2fd564274e53d099811d54bcdb06d77fb07
+implementation engine blob               690e029588d6ff453eaabfa1e4ce5a7f3df2f139
+RUN_INTERFACE blob                        e7b7f6663a3fbae5e67f5e7e04e20f9207cb8657
+RESULT_SCHEMA blob                        cd3d894aa5f15f320263cdc37f840aad9c18e6e2
+run_once blob                             f26e2acccd37e8465c1584d43b352273f019b360
+test_run_interface blob                   3c530114a5a41bf080aa7d7274c11496d854ad21
+market evidence blob                      64ebf5c6deaf3f34dbeac715378f196ff0f4fafe
+payload SHA256                            d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193
+controlled execution boundary             FROZEN ON BRANCH / ZERO RESULT
+historical execution                      NOT RUN
+actual historical variants evaluated      0
+attempt marker                             ABSENT
+primary result                             ABSENT
+execution artifact                         ABSENT
+final marker                               ABSENT
+```
+
+The staged state machine is `preflight -> durable RUN_ATTEMPT.marker -> exactly one evaluate -> durable PRIMARY_RESULT.json + EXECUTION.json -> marker-only RUN_ONCE.marker`. The durable attempt marker binds all 108 preregistered `(L,kappa)` cells and permanently removes same-ID recomputation/retuning/rescue authority. A partial result blocks automatic recomputation. Finalization may not reload market evidence, call the 0047 loader or call the 0058 engine.
+
+The controlled result schema requires the complete 324-row 108-cell x 3-cost surface and 210-row interior geometry table. Geometry derivatives/Hessian norms are re-derived from persisted terminal wealth during validation; selected representative/path fields follow the preregistered conditional semantics, and historical argmax remains descriptive-only.
+
+Synthetic/fault Actions run `31643240307` passed all 17 immutable implementation contracts and 13 new controlled-run/schema contracts, plus governance validation, no-drift and the zero-result guard. No real market evidence was loaded and no 0058 historical portfolio economics was executed.
+
+```text
+Canonical BRRK-0011                    NO CHANGE
+Phase 6                                NO CHANGE
+production_authorized_components       []
+production_authorized                  false
+signature_authorized                   false
+order_submission_authorized            false
+```
+
+Exact next step: pass fresh PR handoff, research-governance/final-no-drift, Phase0-8, P3.2 parity/golden and Phase6 safety checks; merge this zero-result boundary with expected-head protection. Only after that merge may the exact merged boundary HEAD perform the unique staged 0058 DEVELOPMENT execution.
