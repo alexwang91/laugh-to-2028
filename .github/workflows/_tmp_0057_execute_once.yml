@@ -1,0 +1,190 @@
+name: 0057 execute exactly once
+
+on:
+  push:
+    branches:
+      - research/0057-simple-beta-router-interface-replication-execute-once
+
+permissions:
+  contents: write
+
+concurrency:
+  group: brrk-0057-unique-development-execution
+  cancel-in-progress: false
+
+env:
+  SCIENTIFIC_HEAD: 1d0b8fcf3ee49c180e90593afdb71047b34a28a7
+  RESULT_BRANCH: research/0057-simple-beta-router-interface-replication-result
+  RESULT_DIR: /tmp/0057-result
+  SCI_DIR: research/brrk_simple_eth_sol_beta_router_interface_replication_0057
+  MARKET: research/brrk_beta_handoff_0047/evidence/MARKET_EVIDENCE.json
+
+jobs:
+  execute-once:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout exact frozen scientific HEAD
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.SCIENTIFIC_HEAD }}
+          fetch-depth: 0
+
+      - name: Verify exact scientific HEAD
+        run: |
+          test "$(git rev-parse HEAD)" = "$SCIENTIFIC_HEAD"
+          echo "SCIENTIFIC_HEAD_LOCKED=$SCIENTIFIC_HEAD"
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install boundary-tested pinned runtime
+        run: python -m pip install --disable-pip-version-check numpy==2.4.2 pandas==3.0.0 requests==2.32.5 scipy==1.17.0
+
+      - name: Mount durable result branch and verify zero-result remote state
+        run: |
+          git fetch origin "$RESULT_BRANCH:$RESULT_BRANCH"
+          rm -rf "$RESULT_DIR"
+          git worktree add "$RESULT_DIR" "$RESULT_BRANCH"
+          git -C "$RESULT_DIR" config user.name 'Y_Wang'
+          git -C "$RESULT_DIR" config user.email '40142450+alexwang91@users.noreply.github.com'
+          test "$(git -C "$RESULT_DIR" rev-parse HEAD)" = "$SCIENTIFIC_HEAD"
+          for f in RUN_ATTEMPT.marker PRIMARY_RESULT.json EXECUTION.json RUN_ONCE.marker; do
+            test ! -e "$RESULT_DIR/$SCI_DIR/$f"
+          done
+          echo "REMOTE_ZERO_RESULT_STATE=true"
+
+      - name: Zero-result controlled preflight
+        run: |
+          python -m research.brrk_simple_eth_sol_beta_router_interface_replication_0057.run_once preflight \
+            --market "$MARKET" \
+            --result "$RESULT_DIR/$SCI_DIR/PRIMARY_RESULT.json" \
+            --execution "$RESULT_DIR/$SCI_DIR/EXECUTION.json" \
+            --attempt "$RESULT_DIR/$SCI_DIR/RUN_ATTEMPT.marker" \
+            --marker "$RESULT_DIR/$SCI_DIR/RUN_ONCE.marker" \
+            --expected-head-sha "$SCIENTIFIC_HEAD" > /tmp/0057-preflight.json
+          grep -q 'PREFLIGHT_ZERO_RESULT_PASS' /tmp/0057-preflight.json
+          grep -q '"actual_variants_evaluated": 0' /tmp/0057-preflight.json
+          grep -q '"attempt_marker_exists": false' /tmp/0057-preflight.json
+          grep -q '"result_exists": false' /tmp/0057-preflight.json
+          grep -q '"execution_exists": false' /tmp/0057-preflight.json
+          grep -q '"final_marker_exists": false' /tmp/0057-preflight.json
+          echo "PREFLIGHT_ZERO_RESULT_CONFIRMED=true"
+
+      - name: Create irreversible 0057 attempt marker before any portfolio computation
+        run: |
+          python -m research.brrk_simple_eth_sol_beta_router_interface_replication_0057.run_once start-attempt \
+            --market "$MARKET" \
+            --result "$RESULT_DIR/$SCI_DIR/PRIMARY_RESULT.json" \
+            --execution "$RESULT_DIR/$SCI_DIR/EXECUTION.json" \
+            --attempt "$RESULT_DIR/$SCI_DIR/RUN_ATTEMPT.marker" \
+            --marker "$RESULT_DIR/$SCI_DIR/RUN_ONCE.marker" \
+            --expected-head-sha "$SCIENTIFIC_HEAD" > /tmp/0057-attempt.json
+          test -f "$RESULT_DIR/$SCI_DIR/RUN_ATTEMPT.marker"
+          test ! -e "$RESULT_DIR/$SCI_DIR/PRIMARY_RESULT.json"
+          test ! -e "$RESULT_DIR/$SCI_DIR/EXECUTION.json"
+          test ! -e "$RESULT_DIR/$SCI_DIR/RUN_ONCE.marker"
+          grep -q '"same_id_recomputation_allowed": false' /tmp/0057-attempt.json
+          git -C "$RESULT_DIR" add "$SCI_DIR/RUN_ATTEMPT.marker"
+          git -C "$RESULT_DIR" commit -m 'Research result [0057]: persist irreversible interface-replication attempt marker'
+          git -C "$RESULT_DIR" push origin "HEAD:$RESULT_BRANCH"
+
+      - name: Verify durable remote attempt lock before evaluation
+        run: |
+          git fetch origin "$RESULT_BRANCH"
+          REMOTE_BLOB=$(git rev-parse "origin/$RESULT_BRANCH:$SCI_DIR/RUN_ATTEMPT.marker")
+          LOCAL_BLOB=$(git -C "$RESULT_DIR" rev-parse "HEAD:$SCI_DIR/RUN_ATTEMPT.marker")
+          test "$REMOTE_BLOB" = "$LOCAL_BLOB"
+          test -n "$REMOTE_BLOB"
+          echo "DURABLE_ATTEMPT_LOCK=true"
+          echo "SAME_ID_RECOMPUTATION_AUTHORITY=false"
+
+      - name: Execute immutable 0057 historical portfolio economics exactly once
+        run: |
+          python -m research.brrk_simple_eth_sol_beta_router_interface_replication_0057.run_once evaluate \
+            --market "$MARKET" \
+            --result "$RESULT_DIR/$SCI_DIR/PRIMARY_RESULT.json" \
+            --execution "$RESULT_DIR/$SCI_DIR/EXECUTION.json" \
+            --attempt "$RESULT_DIR/$SCI_DIR/RUN_ATTEMPT.marker" \
+            --marker "$RESULT_DIR/$SCI_DIR/RUN_ONCE.marker" \
+            --expected-head-sha "$SCIENTIFIC_HEAD" > /tmp/0057-primary-result.stdout.json
+          test -f "$RESULT_DIR/$SCI_DIR/PRIMARY_RESULT.json"
+          test -f "$RESULT_DIR/$SCI_DIR/EXECUTION.json"
+          test ! -e "$RESULT_DIR/$SCI_DIR/RUN_ONCE.marker"
+          git -C "$RESULT_DIR" add "$SCI_DIR/PRIMARY_RESULT.json" "$SCI_DIR/EXECUTION.json"
+          git -C "$RESULT_DIR" commit -m 'Research result [0057]: persist unique interface-replication economics bundle'
+          git -C "$RESULT_DIR" push origin "HEAD:$RESULT_BRANCH"
+
+      - name: Verify durable remote result bundle
+        run: |
+          git fetch origin "$RESULT_BRANCH"
+          for f in PRIMARY_RESULT.json EXECUTION.json RUN_ATTEMPT.marker; do
+            REMOTE_BLOB=$(git rev-parse "origin/$RESULT_BRANCH:$SCI_DIR/$f")
+            LOCAL_BLOB=$(git -C "$RESULT_DIR" rev-parse "HEAD:$SCI_DIR/$f")
+            test "$REMOTE_BLOB" = "$LOCAL_BLOB"
+          done
+          echo "DURABLE_RESULT_BUNDLE=true"
+
+      - name: Finalize closure marker from existing hashes only
+        run: |
+          python -m research.brrk_simple_eth_sol_beta_router_interface_replication_0057.run_once finalize \
+            --market "$MARKET" \
+            --result "$RESULT_DIR/$SCI_DIR/PRIMARY_RESULT.json" \
+            --execution "$RESULT_DIR/$SCI_DIR/EXECUTION.json" \
+            --attempt "$RESULT_DIR/$SCI_DIR/RUN_ATTEMPT.marker" \
+            --marker "$RESULT_DIR/$SCI_DIR/RUN_ONCE.marker" \
+            --expected-head-sha "$SCIENTIFIC_HEAD" > /tmp/0057-final-marker.stdout.json
+          test -f "$RESULT_DIR/$SCI_DIR/RUN_ONCE.marker"
+          git -C "$RESULT_DIR" add "$SCI_DIR/RUN_ONCE.marker"
+          git -C "$RESULT_DIR" commit -m 'Research result [0057]: finalize immutable same-ID closure marker'
+          git -C "$RESULT_DIR" push origin "HEAD:$RESULT_BRANCH"
+
+      - name: Verify final marker durable and emit frozen scientific summary
+        run: |
+          git fetch origin "$RESULT_BRANCH"
+          REMOTE_BLOB=$(git rev-parse "origin/$RESULT_BRANCH:$SCI_DIR/RUN_ONCE.marker")
+          LOCAL_BLOB=$(git -C "$RESULT_DIR" rev-parse "HEAD:$SCI_DIR/RUN_ONCE.marker")
+          test "$REMOTE_BLOB" = "$LOCAL_BLOB"
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=Path('/tmp/0057-result/research/brrk_simple_eth_sol_beta_router_interface_replication_0057')
+          r=json.loads((d/'PRIMARY_RESULT.json').read_text())
+          m=json.loads((d/'RUN_ONCE.marker').read_text())
+          x=r['measurement']
+          print('CLASSIFICATION='+str(r['classification']))
+          print('FINALIZED_WITHOUT_REMEASUREMENT='+str(m['finalized_without_remeasurement']).lower())
+          print('SAME_ID_RERUN_ALLOWED='+str(m['same_id_rerun_allowed']).lower())
+          print('SAME_ID_RETUNING_ALLOWED='+str(m['same_id_retuning_allowed']).lower())
+          print('SAME_ID_RESCUE_ALLOWED='+str(m['same_id_rescue_allowed']).lower())
+          print('ACTUAL_VARIANTS_EVALUATED='+str(x.get('actual_variants_evaluated')))
+          print('GATES='+json.dumps(x.get('gates',{}),sort_keys=True))
+          if r['classification'] != 'INVALID_EXECUTION':
+              p=x['metrics_by_cost_bps']['5']
+              print('W_ROUTER_5BPS='+str(p['ROUTER']['terminal_wealth']))
+              print('CAGR_ROUTER_5BPS='+str(p['ROUTER']['cagr']))
+              for b in ('B0_STATIC_ETH','B1_STATIC_SOL','B2_STATIC_50_50'):
+                  print('W_'+b+'_5BPS='+str(p[b]['terminal_wealth']))
+                  print('CAGR_'+b+'_5BPS='+str(p[b]['cagr']))
+              print('B_STAR_5BPS='+str(x['best_static_5bps']))
+              print('TEMPORAL_BLOCKS='+json.dumps(x['temporal_block_relative_log_growth_vs_best_static_5bps']))
+              print('BOOTSTRAP_LCBS='+json.dumps(x['bootstrap_5bps']['lcbs']))
+              print('ROUTER_SWITCH_COUNT='+str(x['diagnostics']['router_switch_count']))
+              print('ROUTER_TURNOVER_L1='+str(x['diagnostics']['router_total_executed_l1_turnover_5bps']))
+              print('AVG_HOLD_DAYS='+str(x['diagnostics']['router_average_holding_duration_days']))
+              print('MEDIAN_HOLD_DAYS='+str(x['diagnostics']['router_median_holding_duration_days']))
+          else:
+              print('ERROR_TYPE='+str(x.get('error_type')))
+              print('ERROR='+str(x.get('error')))
+          PY
+
+      - name: Upload immutable 0057 runtime bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: brrk-0057-interface-replication-runtime-bundle
+          if-no-files-found: error
+          path: |
+            /tmp/0057-result/research/brrk_simple_eth_sol_beta_router_interface_replication_0057/RUN_ATTEMPT.marker
+            /tmp/0057-result/research/brrk_simple_eth_sol_beta_router_interface_replication_0057/PRIMARY_RESULT.json
+            /tmp/0057-result/research/brrk_simple_eth_sol_beta_router_interface_replication_0057/EXECUTION.json
+            /tmp/0057-result/research/brrk_simple_eth_sol_beta_router_interface_replication_0057/RUN_ONCE.marker
