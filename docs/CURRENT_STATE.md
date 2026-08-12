@@ -812,7 +812,7 @@ Cost coherence requires an admissible component in the intersection of the 5/10/
 
 Static benchmarks are 100% BTC buy-and-hold, initial 50/50 ETH/SOL drifting Beta, and initial 50% BTC + 25% ETH + 25% SOL drifting buy-and-hold. Beta entries in the candidate reset to 50/50 ETH/SOL after cost and then drift without periodic internal rebalance.
 
-Valid classification precedence is: `INVALID_EXECUTION` -> `FAIL_NO_STABLE_PARAMETER_PLATEAU` -> `FAIL_STABLE_PLATEAU_NOT_COST_ROBUST` -> `FAIL_STABLE_PLATEAU_NOT_ECONOMICALLY_RELEVANT` -> `FAIL_STABLE_PLATEAU_NOT_TEMPORALLY_OR_DEPENDENCE_ROBUST` -> `PASS_PARAMETER_FREEZE_ELIGIBLE`. A PASS only freezes one `(L*,kappa*)` for a later **new research ID**.
+Valid classification precedence is: `INVALID_EXECUTION` -> `FAIL_NO_STABLE_PARAMETER_PLATEAU` -> `FAIL_STABLE_PLATEAU_NOT_COST_ROBUST` -> `FAIL_STABLE_PLATEAU_NOT_ECONOMICALLY_RELEVANT` -> `FAIL_STABLE_PLATEAU_NOT_TEMPORALLY_OR_DEPENDENCE_ROBUST` -> `PASS_PARAMETER_FREEZE_ELIGIBLE`. A PASS only freezes one `(L*,kappa*)` for a later **new research ID**. If no admissible cost-coherent component exists, no representative is selected: selected-path fields remain empty/null and G3-G5 are not evaluated; an argmax or inadmissible component may not be substituted.
 
 The future unique execution must persist the complete surface and geometry tables plus selected representative and benchmark daily NAV/drawdown/state/turnover/cost paths. Closeout may not recompute economics to draw charts.
 

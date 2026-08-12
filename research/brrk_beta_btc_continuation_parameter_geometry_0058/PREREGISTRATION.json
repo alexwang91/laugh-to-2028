@@ -267,7 +267,9 @@
     "representative": "MEDOID_MINIMIZING_SUM_OF_SQUARED_EUCLIDEAN_DISTANCES_IN_NORMALIZED_GRID_INDEX_COORDINATES_TO_ALL_COMPONENT_CELLS",
     "medoid_tie_break": "LEXICOGRAPHIC_ASCENDING_BY_L_INDEX_THEN_KAPPA_INDEX",
     "historical_argmax": "DESCRIPTIVE_ONLY_NO_SELECTION_OR_PROMOTION_AUTHORITY",
-    "historical_argmax_tie_break": "LEXICOGRAPHIC_ASCENDING_BY_L_INDEX_THEN_KAPPA_INDEX"
+    "historical_argmax_tie_break": "LEXICOGRAPHIC_ASCENDING_BY_L_INDEX_THEN_KAPPA_INDEX",
+    "no_cost_coherent_component_behavior": "NO_REPRESENTATIVE_IS_SELECTED; CLASSIFY_FAIL_STABLE_PLATEAU_NOT_COST_ROBUST; G3_G4_G5_ARE_NOT_EVALUATED",
+    "representative_exists_iff": "AT_LEAST_ONE_ADMISSIBLE_COST_COHERENT_COMPONENT_EXISTS"
   },
   "economic_relevance": {
     "primary_cost_bps": 5.0,
@@ -420,7 +422,9 @@
     ],
     "hash_chain_required": true,
     "lossless_surface_required": true,
-    "closeout_remeasurement_allowed": false
+    "closeout_remeasurement_allowed": false,
+    "selected_representative_daily_path_required_when": "A_SELECTED_REPRESENTATIVE_EXISTS; OTHERWISE FIELD MUST BE AN EMPTY_LIST_AND_SELECTED_REPRESENTATIVE_MUST_BE_NULL",
+    "robustness_required_when": "G2_COST_ROBUSTNESS_PASSES_AND_A_SELECTED_REPRESENTATIVE_EXISTS; OTHERWISE NOT_EVALUATED_FIELDS_MUST_BE_NULL_OR_EMPTY_BY_SCHEMA"
   },
   "mandatory_diagnostics": [
     "selected_L",
@@ -461,5 +465,6 @@
     "production_authorized": false,
     "signature_authorized": false,
     "order_submission_authorized": false
-  }
+  },
+  "mandatory_diagnostics_semantics": "SELECTED_* AND REPRESENTATIVE_PATH_DIAGNOSTICS ARE REQUIRED ONLY WHEN A REPRESENTATIVE EXISTS; ON G2 NO-COMPONENT FAILURE THEY MUST BE NULL/EMPTY, NEVER IMPUTED FROM ARGMAX_OR_AN_INADMISSIBLE_COMPONENT"
 }
