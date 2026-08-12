@@ -1,6 +1,6 @@
 # BRRK-BETA-BTC-CONTINUATION-PARAMETER-GEOMETRY-0058
 
-Status: **CONTROLLED EXECUTION BOUNDARY FROZEN ON BRANCH / ZERO RESULT / NOT RUN**
+Status: **FAIL_NO_STABLE_PARAMETER_PLATEAU / IMMUTABLE DEVELOPMENT CLOSURE**
 
 This directory is the formal preregistration owner path for a DEVELOPMENT parameter-geometry study of a causal Beta-versus-BTC continuation mechanism.
 
@@ -44,3 +44,13 @@ The result schema requires all 324 candidate/cost surface rows and all 210 inter
 Synthetic/fault Actions run `31643240307` passed 17 immutable implementation contracts plus 13 controlled-run/schema contracts, governance validation, no-drift and the final zero-result guard. `REAL_0058_HISTORICAL_PAYLOAD_NOT_LOADED=true`, `REAL_0058_PARAMETER_SURFACE_ECONOMICS_NOT_EXECUTED=true`, `ACTUAL_HISTORICAL_VARIANTS_EVALUATED=0`.
 
 After this boundary merges through standing governance, 0058 becomes technically eligible for its unique staged DEVELOPMENT historical execution. That execution is a separate irreversible action and is not part of this boundary.
+
+## Immutable 0058 result and closure
+
+Unique exactly-once DEVELOPMENT run `31644102517` executed the full frozen 108-cell lattice on scientific HEAD `989972a0e51ae54dc5224584ef9a0dd210a087f7` and finalized without remeasurement. Final classification: **`FAIL_NO_STABLE_PARAMETER_PLATEAU`**.
+
+G0 integrity passed. G1 failed because no admissible 5 bps stable plateau exists: among 70 eligible interior cells, 2 meet the gradient threshold, 0 meet the Hessian threshold, and therefore 0 meet both. `primary_5bps_components=[]`, no cost-coherent component exists, and no representative is selectable. G2 is false by frozen precedence; G3-G5 are not eligible and remain null.
+
+The descriptive historical maximum is `(L=120, kappa=0.50)` with 5 bps terminal wealth `8.299069650275614`, but preregistration gives this argmax **no selection authority**. It cannot be adopted, zoomed around, or used to relax the grid/geometry. Same-ID rerun, retuning, rescue, grid refinement, local zoom and threshold relaxation are permanently false. Any continuation requires a new research ID.
+
+Canonical BRRK, Phase 6, signing, order submission and production authorization remain unchanged.

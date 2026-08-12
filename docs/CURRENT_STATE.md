@@ -3,7 +3,7 @@
 Last updated: **2026-08-12**  
 Authoritative repository: `alexwang91/laugh-to-2028`  
 Current `main` research merge: **`e2a0f2fd564274e53d099811d54bcdb06d77fb07`**  
-Current research branch: **`research/0058-beta-btc-continuation-parameter-geometry-controlled-boundary`**  
+Current research branch: **`research/0058-beta-btc-continuation-parameter-geometry-closeout`**  
 Status of this document: **AUTHORITATIVE OPERATING SNAPSHOT**
 
 > GitHub `main`, immutable research artifacts and machine registries remain the sources of truth. This file is the compact human handoff, not a substitute for preregistration, execution, evidence, recovery or closeout artifacts.
@@ -41,7 +41,7 @@ BRRK 4h-native readiness 0054          FAIL_4H_NATIVE_TRAINING_PRECISION_NOT_EST
 BRRK 4h structural readiness 0055     FAIL_4H_STRUCTURAL_3D_TRAINING_PRECISION_NOT_ESTABLISHED / CLOSED
 BRRK simple ETH/SOL Beta router 0056  INVALID_EXECUTION / CLOSED / NO ECONOMIC CONCLUSION
 BRRK Beta router interface replication 0057 FAIL_SIMPLE_BETA_ROUTER_COST_FRAGILE / CLOSED
-BRRK Beta->BTC parameter geometry 0058     CONTROLLED BOUNDARY FROZEN ON BRANCH / ZERO RESULT / NOT RUN
+BRRK Beta->BTC parameter geometry 0058     FAIL_NO_STABLE_PARAMETER_PLATEAU / CLOSED
 
 Canonical BRRK-0011                    NO CHANGE
 Phase 7                                MONITOR_ONLY / LAUNCH BLOCKED
@@ -882,3 +882,36 @@ order_submission_authorized            false
 ```
 
 Exact next step: pass fresh PR handoff, research-governance/final-no-drift, Phase0-8, P3.2 parity/golden and Phase6 safety checks; merge this zero-result boundary with expected-head protection. Only after that merge may the exact merged boundary HEAD perform the unique staged 0058 DEVELOPMENT execution.
+
+---
+
+## 0058 immutable parameter-geometry result and closure
+
+`BRRK-BETA-BTC-CONTINUATION-PARAMETER-GEOMETRY-0058` completed its unique exactly-once DEVELOPMENT execution in Actions run `31644102517` on scientific HEAD `989972a0e51ae54dc5224584ef9a0dd210a087f7`. Final classification: **`FAIL_NO_STABLE_PARAMETER_PLATEAU`**.
+
+```text
+G0 integrity                           PASS
+G1 primary 5bps plateau               FAIL
+G2 cost robustness                    FALSE / no selected component
+G3 economic relevance                 NOT ELIGIBLE / null
+G4 temporal robustness                NOT ELIGIBLE / null
+G5 dependence robustness              NOT ELIGIBLE / null
+declared / actual parameter cells     108 / 108
+surface rows                          324
+geometry rows                         210
+5bps eligible interior cells          70
+5bps gradient-qualified cells         2
+5bps Hessian-qualified cells          0
+5bps jointly stable cells             0
+5bps admissible components            0
+selected representative               NONE
+descriptive argmax                    L=120, kappa=0.50
+descriptive argmax wealth 5bps        8.299069650275614
+best static at 5/10/20bps             B1_STATIC_BETA / B1_STATIC_BETA / B1_STATIC_BETA
+actual variants evaluated             108
+same-ID rerun/retune/rescue           false / false / false
+```
+
+This is a valid structural failure, not an invalid execution. The frozen Beta→BTC parameter surface does not contain a broad stable region under the prospectively fixed geometry; the historical argmax is descriptive only and cannot be promoted. Do not perform same-ID adaptive refinement, local zoom, threshold relaxation, alternate normalization, representative substitution or other surface-informed rescue. Any continuation requires a new research ID and must not treat `(120,0.50)` as a frozen trading parameter.
+
+Canonical BRRK-0011, Phase 6, signing, order submission and production authorization remain unchanged.

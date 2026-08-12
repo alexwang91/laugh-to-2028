@@ -1,0 +1,16 @@
+{
+  "research_id": "BRRK-BETA-BTC-CONTINUATION-PARAMETER-GEOMETRY-0058",
+  "dataset_slice_id": "BRRK-LEADERSHIP-ROTATION-0048-EXPOSED-HIST-V1",
+  "payload_sha256": "d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193",
+  "git_head_sha": "989972a0e51ae54dc5224584ef9a0dd210a087f7",
+  "started_at_utc": "2026-08-12T21:47:42Z",
+  "completed_at_utc": "2026-08-12T21:47:46Z",
+  "classification": "FAIL_NO_STABLE_PARAMETER_PLATEAU",
+  "actual_variants_evaluated": 108,
+  "attempt_marker_sha256": "6ebcb60c75b1f82b09da1bf122f8cb9f49705a930f04c13176dbb92f36d2524e",
+  "primary_result_sha256": "dde6b7918cc41750ee1024ae43610be9111ee67d019eda26c447b75024bc41d5",
+  "same_id_rerun_allowed": false,
+  "same_id_retuning_allowed": false,
+  "same_id_rescue_allowed": false,
+  "production_authorized": false
+}
