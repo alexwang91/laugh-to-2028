@@ -3436,6 +3436,153 @@
         "derived_confidence": "HIGH_FOR_FROZEN_DEVELOPMENT_DECISION",
         "confidence_rule_ref": "research/brrk_simple_eth_sol_beta_router_interface_replication_0057/CLOSEOUT.json"
       }
+    },
+    {
+      "research_id": "BRRK-BETA-BTC-CONTINUATION-PARAMETER-GEOMETRY-0058",
+      "research_family_id": "BRRK_BETA_TO_BTC_CONTINUATION",
+      "research_domain": "PORTFOLIO_INTEGRATION",
+      "research_governance_version": 1,
+      "governance_mode": "PROGRAM_GOVERNED_V1",
+      "objective_type": "PORTFOLIO_INTEGRATION",
+      "created_at": "2026-08-12T20:23:02Z",
+      "created_before_result": true,
+      "question": "Does a simple two-parameter causal Beta-versus-BTC continuation rule exhibit a broad connected after-cost terminal-wealth plateau under prospectively frozen finite-difference sensitivity analysis, permitting one representative parameter pair to be selected mechanically without choosing the historical wealth maximum?",
+      "hypothesis": "A symmetric ETH/SOL Beta-versus-BTC continuation mechanism may contain a broad low-gradient low-curvature region that remains geometrically coherent across 5/10/20 bps costs and whose deterministic geometric medoid has economically relevant and temporally/dependence-robust DEVELOPMENT performance versus frozen static BTC/Beta benchmarks.",
+      "hypothesis_origin": "RESULT_INFORMED_NEW_MECHANISM_FAMILY_AFTER_0057_FAIL_SIMPLE_BETA_ROUTER_COST_FRAGILE;_NO_0058_PARAMETER_SURFACE_OR_ECONOMIC_OUTPUT_OBSERVED_BEFORE_FREEZE",
+      "economic_mechanism": "At each completed UTC daily close, compute z_t=0.5*log(ETH/BTC)+0.5*log(SOL/BTC), standardize its L-session change by trailing 240-session sample volatility of daily z changes times sqrt(L), and hold a symmetric 50/50-at-entry drifting ETH/SOL Beta sleeve for the next close-to-close period only when S_t(L)>kappa; otherwise hold 100% BTC. L and kappa are calibrated only through one finite preregistered 2D lattice and stability geometry; no ETH/SOL leader routing or BTC-to-cash timing is allowed.",
+      "primary_target": "BROAD_COST_COHERENT_AFTER_COST_BETA_TO_BTC_PARAMETER_PLATEAU_AND_DETERMINISTIC_REPRESENTATIVE_FREEZE_ELIGIBILITY",
+      "primary_metric": "LOG_NET_TERMINAL_WEALTH_PARAMETER_SURFACE_WITH_PREREGISTERED_GRADIENT_HESSIAN_PLATEAU_AND_G0_G5_CLASSIFICATION",
+      "secondary_metrics": [
+        "NET_CAGR",
+        "MAXIMUM_DRAWDOWN",
+        "TOTAL_EXECUTED_L1_TURNOVER",
+        "TOTAL_STATE_SWITCH_COUNT",
+        "BETA_HOLDING_FRACTION",
+        "AVERAGE_AND_MEDIAN_STATE_SPELL_DURATION",
+        "FOUR_FIXED_CHRONOLOGICAL_BLOCK_RELATIVE_LOG_GROWTH",
+        "10BPS_AND_20BPS_COST_SURFACES",
+        "PAIRED_DEPENDENCE_AWARE_BOOTSTRAP_LOWER_BOUNDS",
+        "COMPLETE_SURFACE_GRADIENT_AND_HESSIAN_DIAGNOSTICS",
+        "SELECTED_REPRESENTATIVE_DAILY_NAV_DRAWDOWN_STATE_AND_COST_PATHS"
+      ],
+      "feature_families": [
+        "SYMMETRIC_ETH_SOL_BETA_VS_BTC_STANDARDIZED_RELATIVE_CONTINUATION"
+      ],
+      "horizon": "DAILY_UTC_CAUSAL_ORIGINS_2021-04-08_THROUGH_2026-08-01_WITH_TERMINAL_CLOSE_2026-08-02_N1942",
+      "universe": [
+        "BTC",
+        "ETH",
+        "SOL"
+      ],
+      "development_dataset_refs": [
+        "BRRK-LEADERSHIP-ROTATION-0048-EXPOSED-HIST-V1"
+      ],
+      "validation_dataset_refs": [],
+      "sealed_dataset_refs": [],
+      "declared_variant_budget": 108,
+      "actual_variants_evaluated": 0,
+      "parameter_candidate_count": 108,
+      "stopping_rule": "After 0058 numerical preregistration, implementation-only and controlled-execution boundary each merge separately, execute exactly one DEVELOPMENT parameter-geometry measurement over the frozen 108-cell lattice. Any valid output permanently closes 0058 to same-ID grid expansion, zooming, threshold/normalization/benchmark/cost/plateau/robustness changes or rescue. A durable attempt marker also closes automatic same-ID recomputation after an invalid execution.",
+      "success_criteria": [
+        "G0 immutable source/interface/calendar/value/timing/accounting/lattice/output-integrity checks all pass and exactly 108 preregistered cells are evaluated at all three costs.",
+        "G1 at least one 5 bps admissible plateau component exists using interior central differences, gradient L2 <= ln(1.05), Hessian spectral norm <= ln(1.10), 4-neighbor connectivity, >=9 cells, >=3 distinct L levels and >=3 distinct kappa levels.",
+        "G2 at least one cost-coherent component exists under the identical geometry rules on the intersection of 5/10/20 bps stable masks, and the mechanically selected representative strictly beats the best frozen static benchmark at both 10 and 20 bps.",
+        "G3 the mechanically selected representative exceeds the best frozen static benchmark at 5 bps by strictly more than ln(1.05) in terminal log wealth.",
+        "G4 selected-representative relative log growth versus the full-horizon best 5 bps static benchmark is >1e-12 in at least 3 of 4 frozen chronological blocks.",
+        "G5 all three simultaneous one-sided 95% moving-block-bootstrap lower bounds for selected-representative minus each static benchmark mean daily net log growth are >0.",
+        "Only all G0-G5 passing produces PASS_PARAMETER_FREEZE_ELIGIBLE; this freezes one representative pair for a later new-ID fixed-rule study only."
+      ],
+      "failure_criteria": [
+        "Any source/blob/payload/calendar/value/timing/accounting/lattice/result-schema/attempt-protocol breach is INVALID_EXECUTION.",
+        "G0 pass with no admissible 5 bps plateau produces FAIL_NO_STABLE_PARAMETER_PLATEAU.",
+        "G1 pass with no admissible all-cost intersection plateau, or selected representative failing strict dominance versus the best static benchmark at either 10 or 20 bps, produces FAIL_STABLE_PLATEAU_NOT_COST_ROBUST.",
+        "G1-G2 pass with selected representative 5 bps terminal log-wealth uplift versus best static <= ln(1.05) produces FAIL_STABLE_PLATEAU_NOT_ECONOMICALLY_RELEVANT.",
+        "G1-G3 pass with temporal G4 failure or dependence-aware G5 failure produces FAIL_STABLE_PLATEAU_NOT_TEMPORALLY_OR_DEPENDENCE_ROBUST.",
+        "Historical argmax, MDD, Sharpe-like metrics, favorable subperiods or alternative cells cannot rescue a failed gate."
+      ],
+      "allowed_followup": [
+        "Only PASS_PARAMETER_FREEZE_ELIGIBLE may freeze the deterministic selected (L*,kappa*) for a later new registered fixed-rule Beta-to-BTC economic study with variant budget one.",
+        "A later genuinely independent OOS claim requires observations produced after the calibration history and a separately governed future-only protocol.",
+        "BTC-to-cash/full-cycle shelter may be studied only under a later separate research ID after Beta-to-BTC parameter eligibility is resolved."
+      ],
+      "forbidden_followup": [
+        "No same-ID adaptive grid refinement, local zoom, L/kappa range or spacing change after any 0058 surface is exposed.",
+        "No same-ID volatility-normalization change, ETH/SOL leader model, hysteresis, separate entry/exit threshold, minimum hold, CORE4/BTC-trend/funding/OI/macro/sentiment overlay.",
+        "No same-ID benchmark weight, cost schedule, temporal partition, bootstrap method/block/seed, gradient/Hessian convention, plateau threshold/connectivity/minimum-support or representative-selection change.",
+        "No same-ID BTC-to-cash timing, leverage, shorting, derivatives, per-asset concentration or hindsight winner/oracle logic.",
+        "No canonical BRRK modification, Phase 6 modification, signing, order submission or production authorization."
+      ],
+      "researcher_decisions": [
+        "0058 is a RESULT_INFORMED higher-level mechanism continuation after immutable 0057 failure; it does not repair or consume the failed RM60 ETH/SOL router.",
+        "Beta is symmetric ETH/SOL: signal proxy uses equal log-relative weights and each Beta entry resets executable value weights to 50/50, then drifts without periodic rebalance.",
+        "The parameter lattice is frozen before any 0058 economics as L=20..240 by 20 and kappa=0..2.0 by 0.25, exactly 108 cells; no adaptive refinement is authorized.",
+        "Flatness thresholds are data-independent economic-sensitivity scales: gradient L2 <= ln(1.05) and Hessian spectral norm <= ln(1.10) per normalized lattice step.",
+        "A plateau requires >=9 interior 4-neighbor-connected cells spanning >=3 L and >=3 kappa levels; edge cells are never plateau-eligible because they lack central-difference neighborhoods.",
+        "B2 static mixed benchmark starts 50% BTC plus 50% Beta, i.e. 50% BTC/25% ETH/25% SOL, then all components drift without rebalance.",
+        "All history through 2026-08-02 is researcher-exposed DEVELOPMENT; selection-conditional bootstrap robustness is not independent OOS evidence."
+      ],
+      "research_process_complexity": {
+        "declared_parameter_candidates": [
+          "L={20,40,60,80,100,120,140,160,180,200,220,240}",
+          "KAPPA={0.00,0.25,0.50,0.75,1.00,1.25,1.50,1.75,2.00}",
+          "LATTICE_CELLS=108",
+          "NO_ADAPTIVE_REFINEMENT",
+          "NO_THIRD_TUNING_COORDINATE"
+        ],
+        "actual_parameter_candidates_evaluated": [],
+        "universes_evaluated": [
+          "BINANCE_SPOT_BTC_ETH_SOL"
+        ],
+        "horizons_evaluated": [
+          "FULL_CAUSAL_HELD_PERIOD_WINDOW_1942_DAYS",
+          "L_RANGE_20_TO_240_BY20"
+        ],
+        "rebalance_variants": [
+          "BTC_OR_SYMMETRIC_BETA_STATE_ONLY",
+          "BETA_ENTRY_50_50_THEN_DRIFT_NO_INTERNAL_REBALANCE",
+          "STATIC_BENCHMARKS_BUY_AND_HOLD_NO_REBALANCE"
+        ],
+        "feature_representations": [
+          "Z=0.5_LOG_ETH_BTC_PLUS_0.5_LOG_SOL_BTC",
+          "STANDARDIZED_L_SESSION_RELATIVE_CONTINUATION_WITH_FIXED_240D_VOL_SCALE"
+        ],
+        "special_cases_introduced": [
+          "EXACT_EQUALITY_S_LE_KAPPA_TARGETS_BTC",
+          "INTERIOR_CENTRAL_DIFFERENCE_ONLY",
+          "FOUR_NEIGHBOR_PLATEAU_CONNECTIVITY",
+          "GEOMETRIC_MEDOID_NON_PNL_SELECTION",
+          "HISTORICAL_ARGMAX_DESCRIPTIVE_ONLY"
+        ],
+        "validation_exposure_event_refs": [],
+        "related_family_trials": 1
+      },
+      "lineage_edges": [
+        {
+          "relation": "RESULT_INFORMED",
+          "ref_research_id": "BRRK-SIMPLE-ETH-SOL-BETA-ROUTER-INTERFACE-REPLICATION-0057",
+          "provenance_status": "FACT",
+          "evidence_ref": "research/brrk_simple_eth_sol_beta_router_interface_replication_0057/CLOSEOUT.json"
+        }
+      ],
+      "result_status": "PREREGISTERED_NOT_RUN",
+      "failure_reason": null,
+      "promotion_state": "NONE",
+      "evidence_refs": [],
+      "decision_refs": [
+        "research/governance/BRRK_BETA_BTC_CONTINUATION_PARAMETER_GEOMETRY_0058_DESIGN_FREEZE_2026-08-12.md",
+        "docs/CURRENT_STATE.md"
+      ],
+      "production_relevance": "Research-only DEVELOPMENT parameter calibration for a new Beta-to-BTC continuation mechanism. PASS can only freeze one parameter pair for a later new-ID fixed-rule study; it cannot modify canonical BRRK, Phase 6 or production authority.",
+      "production_authorized": false,
+      "provenance_status": "FACT",
+      "governed_path_prefixes": [
+        "research/brrk_beta_btc_continuation_parameter_geometry_0058/"
+      ],
+      "notes": [
+        "0058 is DEVELOPMENT-only on researcher-exposed history and makes no independent-OOS claim.",
+        "0057 remains immutable FAIL_SIMPLE_BETA_ROUTER_COST_FRAGILE / CLOSED; its ETH/SOL micro-timing router is not reused.",
+        "No 0058 parameter surface, NAV path or economic output is authorized before prereg merge, implementation-only merge and a separately merged controlled-execution boundary."
+      ]
     }
   ],
   "research_governance_debt": [
