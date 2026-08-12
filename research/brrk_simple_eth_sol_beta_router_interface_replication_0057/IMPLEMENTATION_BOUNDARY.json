@@ -1,0 +1,114 @@
+{
+  "research_id": "BRRK-SIMPLE-ETH-SOL-BETA-ROUTER-INTERFACE-REPLICATION-0057",
+  "stage": "PORTFOLIO_ECONOMICS_IMPLEMENTATION_ONLY",
+  "base_main_prereg_merge_sha": "bc61a6a2250d8deecf2f20d2fe2006b28ad4b819",
+  "status": "IMPLEMENTED_FOR_SYNTHETIC_CONTRACT_TESTING_ONLY_REAL_HISTORICAL_EVALUATION_FORBIDDEN",
+  "actual_variants_evaluated": 0,
+  "immutable_prereg_git_blobs": {
+    "research/brrk_simple_eth_sol_beta_router_interface_replication_0057/PREREGISTRATION.json": "3dc6a937b805d37b3894bc67ce8df30459372145",
+    "research/brrk_simple_eth_sol_beta_router_interface_replication_0057/DATASET_DECLARATION.json": "30ccef655a659e020a5de756a7953c561456ac34"
+  },
+  "immutable_scientific_dependency": {
+    "path": "research/brrk_simple_eth_sol_beta_router_0056/engine.py",
+    "git_blob_sha": "b0fc1ac267a66593e7e2c4687aff81491bfcdf5a",
+    "research_id": "BRRK-SIMPLE-ETH-SOL-BETA-ROUTER-0056",
+    "may_be_modified_by_0057": false,
+    "portfolio_science_delegated_unchanged": true
+  },
+  "immutable_source_dependency": {
+    "source_loader_path": "research/brrk_beta_handoff_0047/engine.py",
+    "source_loader_git_blob_sha": "059b55961e279dab41ba29b5b017de0922e4f33c",
+    "market_evidence_path": "research/brrk_beta_handoff_0047/evidence/MARKET_EVIDENCE.json",
+    "market_evidence_git_blob_sha": "64ebf5c6deaf3f34dbeac715378f196ff0f4fafe",
+    "payload_sha256": "d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193",
+    "real_market_evidence_may_be_loaded_on_this_stage": false,
+    "network_refetch_allowed": false,
+    "replacement_dataset_allowed": false
+  },
+  "implementation_surface": {
+    "adapter": "research/brrk_simple_eth_sol_beta_router_interface_replication_0057/adapter.py",
+    "synthetic_contract_tests": "research/brrk_simple_eth_sol_beta_router_interface_replication_0057/test_adapter.py",
+    "0057_scientific_engine_copy_present": false,
+    "run_once_present": false,
+    "controlled_execution_interface_present": false,
+    "historical_result_path_present": false,
+    "historical_marker_present": false
+  },
+  "frozen_adapter_contract": {
+    "source_assets_exact": ["ETH", "SOL"],
+    "source_index_type": "pandas.DatetimeIndex",
+    "source_timezone": "NONE_TZ_NAIVE_UTC_NORMALIZED_DAILY_LABELS",
+    "source_indexes_identical": true,
+    "source_indexes_unique": true,
+    "source_indexes_strictly_increasing": true,
+    "source_indexes_midnight_normalized": true,
+    "copy_frames_before_adaptation": true,
+    "sole_operation": "copied_frame.index = copied_frame.index.tz_localize('UTC')",
+    "output_timezone": "UTC",
+    "strip_output_timezone_equals_source_index": true,
+    "row_count_unchanged": true,
+    "calendar_labels_unchanged": true,
+    "row_order_unchanged": true,
+    "ETH_close_array_unchanged": true,
+    "SOL_close_array_unchanged": true,
+    "source_frames_unmodified": true,
+    "tz_convert_allowed": false,
+    "time_shift_allowed": false,
+    "resampling_allowed": false,
+    "row_mutation_allowed": false,
+    "fill_or_interpolation_allowed": false,
+    "refetch_or_alternate_loader_allowed": false
+  },
+  "delegation_contract": {
+    "adapter_evaluate_function": "evaluate_frozen_contract",
+    "delegated_function": "research.brrk_simple_eth_sol_beta_router_0056.engine.evaluate_frozen_contract",
+    "delegated_result_must_identify_0056": true,
+    "delegated_actual_variants_must_equal": 1,
+    "0057_wrapper_may_change_only": [
+      "top_level_research_id",
+      "delegated_scientific_engine_provenance_metadata",
+      "source_interface_adapter_provenance_metadata"
+    ],
+    "portfolio_metrics_may_be_modified": false,
+    "gates_may_be_modified": false,
+    "classification_may_be_modified": false,
+    "targets_may_be_modified": false,
+    "diagnostics_may_be_modified": false,
+    "bootstrap_may_be_modified": false
+  },
+  "inherited_scientific_contract": {
+    "signal": "RM60_SIGN_ROUTER_ONLY",
+    "lookback_days": 60,
+    "exact_zero": "RETAIN_PRIOR_INITIAL_ETH",
+    "timing": "COMPLETED_CLOSE_T_TO_NEXT_CLOSE_TO_CLOSE_RETURN",
+    "benchmarks": ["B0_STATIC_ETH", "B1_STATIC_SOL", "B2_STATIC_INITIAL_50_50_NO_REBALANCE"],
+    "cost_bps_per_l1": [5.0, 10.0, 20.0],
+    "held_periods": 2122,
+    "temporal_block_sizes": [531, 531, 530, 530],
+    "bootstrap_block_length": 60,
+    "bootstrap_replicates": 10000,
+    "bootstrap_seed": 1844716895,
+    "bootstrap_rng": "NUMPY_DEFAULT_RNG_PCG64_VIA_np.random.default_rng",
+    "strict_tolerance": 1e-12,
+    "classification_precedence_unchanged_from_0056": true
+  },
+  "implementation_test_policy": {
+    "synthetic_only": true,
+    "synthetic_full_frozen_calendar_allowed": true,
+    "synthetic_output_has_scientific_authority": false,
+    "real_market_evidence_may_be_loaded": false,
+    "filesystem_market_loader_may_be_added": false,
+    "network_calls_may_be_added": false,
+    "real_0057_portfolio_economics_may_be_computed": false,
+    "result_artifacts_may_be_created": false,
+    "actual_historical_variants_evaluated": 0
+  },
+  "authority": {
+    "canonical_strategy_changed": false,
+    "phase6_changed": false,
+    "production_authorized": false,
+    "production_authorized_components": [],
+    "signature_authorized": false,
+    "order_submission_authorized": false
+  }
+}
