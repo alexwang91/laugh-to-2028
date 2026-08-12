@@ -1,0 +1,189 @@
+name: 0058 execute exactly once
+
+on:
+  push:
+    branches:
+      - research/0058-beta-btc-continuation-parameter-geometry-execute-once
+
+permissions:
+  contents: write
+
+concurrency:
+  group: brrk-0058-unique-development-execution
+  cancel-in-progress: false
+
+env:
+  SCIENTIFIC_HEAD: 989972a0e51ae54dc5224584ef9a0dd210a087f7
+  RESULT_BRANCH: research/0058-beta-btc-continuation-parameter-geometry-result
+  RESULT_DIR: /tmp/0058-result
+  SCI_DIR: research/brrk_beta_btc_continuation_parameter_geometry_0058
+  MARKET: research/brrk_beta_handoff_0047/evidence/MARKET_EVIDENCE.json
+
+jobs:
+  execute-once:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout exact frozen scientific HEAD
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.SCIENTIFIC_HEAD }}
+          fetch-depth: 0
+
+      - name: Verify exact scientific HEAD
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$SCIENTIFIC_HEAD"
+          echo "SCIENTIFIC_HEAD_LOCKED=$SCIENTIFIC_HEAD"
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: execution/plan-b-bot/requirements-dev.txt
+
+      - name: Install boundary-tested pinned runtime
+        run: python -m pip install --disable-pip-version-check -r execution/plan-b-bot/requirements-dev.txt
+
+      - name: Mount durable result branch and verify zero-result remote state
+        run: |
+          set -euo pipefail
+          git fetch origin "$RESULT_BRANCH:$RESULT_BRANCH"
+          rm -rf "$RESULT_DIR"
+          git worktree add "$RESULT_DIR" "$RESULT_BRANCH"
+          git -C "$RESULT_DIR" config user.name 'Y_Wang'
+          git -C "$RESULT_DIR" config user.email '40142450+alexwang91@users.noreply.github.com'
+          test "$(git -C "$RESULT_DIR" rev-parse HEAD)" = "$SCIENTIFIC_HEAD"
+          for f in RUN_ATTEMPT.marker PRIMARY_RESULT.json EXECUTION.json RUN_ONCE.marker; do
+            test ! -e "$RESULT_DIR/$SCI_DIR/$f"
+          done
+          echo "REMOTE_ZERO_RESULT_STATE=true"
+
+      - name: Zero-result controlled preflight
+        run: |
+          set -euo pipefail
+          python -m research.brrk_beta_btc_continuation_parameter_geometry_0058.run_once preflight \
+            --market "$MARKET" \
+            --result "$RESULT_DIR/$SCI_DIR/PRIMARY_RESULT.json" \
+            --execution "$RESULT_DIR/$SCI_DIR/EXECUTION.json" \
+            --attempt "$RESULT_DIR/$SCI_DIR/RUN_ATTEMPT.marker" \
+            --marker "$RESULT_DIR/$SCI_DIR/RUN_ONCE.marker" \
+            --expected-head-sha "$SCIENTIFIC_HEAD" > /tmp/0058-preflight.json
+          grep -q 'PREFLIGHT_ZERO_RESULT_PASS' /tmp/0058-preflight.json
+          grep -q '"actual_variants_evaluated": 0' /tmp/0058-preflight.json
+          grep -q '"attempt_marker_exists": false' /tmp/0058-preflight.json
+          grep -q '"result_exists": false' /tmp/0058-preflight.json
+          grep -q '"execution_exists": false' /tmp/0058-preflight.json
+          grep -q '"final_marker_exists": false' /tmp/0058-preflight.json
+          echo "PREFLIGHT_ZERO_RESULT_CONFIRMED=true"
+
+      - name: Create irreversible 0058 attempt marker before any historical parameter-surface computation
+        run: |
+          set -euo pipefail
+          python -m research.brrk_beta_btc_continuation_parameter_geometry_0058.run_once start-attempt \
+            --market "$MARKET" \
+            --result "$RESULT_DIR/$SCI_DIR/PRIMARY_RESULT.json" \
+            --execution "$RESULT_DIR/$SCI_DIR/EXECUTION.json" \
+            --attempt "$RESULT_DIR/$SCI_DIR/RUN_ATTEMPT.marker" \
+            --marker "$RESULT_DIR/$SCI_DIR/RUN_ONCE.marker" \
+            --expected-head-sha "$SCIENTIFIC_HEAD" > /tmp/0058-attempt.json
+          test -f "$RESULT_DIR/$SCI_DIR/RUN_ATTEMPT.marker"
+          test ! -e "$RESULT_DIR/$SCI_DIR/PRIMARY_RESULT.json"
+          test ! -e "$RESULT_DIR/$SCI_DIR/EXECUTION.json"
+          test ! -e "$RESULT_DIR/$SCI_DIR/RUN_ONCE.marker"
+          grep -q '"candidate_count": 108' /tmp/0058-attempt.json
+          grep -q '"same_id_recomputation_allowed": false' /tmp/0058-attempt.json
+          git -C "$RESULT_DIR" add "$SCI_DIR/RUN_ATTEMPT.marker"
+          git -C "$RESULT_DIR" commit -m 'Research result [0058]: persist irreversible 108-cell attempt marker'
+          git -C "$RESULT_DIR" push origin "HEAD:$RESULT_BRANCH"
+
+      - name: Verify durable remote attempt lock before evaluation
+        run: |
+          set -euo pipefail
+          git fetch origin "$RESULT_BRANCH"
+          REMOTE_BLOB=$(git rev-parse "origin/$RESULT_BRANCH:$SCI_DIR/RUN_ATTEMPT.marker")
+          LOCAL_BLOB=$(git -C "$RESULT_DIR" rev-parse "HEAD:$SCI_DIR/RUN_ATTEMPT.marker")
+          test "$REMOTE_BLOB" = "$LOCAL_BLOB"
+          test -n "$REMOTE_BLOB"
+          echo "DURABLE_ATTEMPT_LOCK=true"
+          echo "SAME_ID_RECOMPUTATION_AUTHORITY=false"
+
+      - name: Execute immutable 0058 historical parameter geometry exactly once
+        run: |
+          set -euo pipefail
+          python -m research.brrk_beta_btc_continuation_parameter_geometry_0058.run_once evaluate \
+            --market "$MARKET" \
+            --result "$RESULT_DIR/$SCI_DIR/PRIMARY_RESULT.json" \
+            --execution "$RESULT_DIR/$SCI_DIR/EXECUTION.json" \
+            --attempt "$RESULT_DIR/$SCI_DIR/RUN_ATTEMPT.marker" \
+            --marker "$RESULT_DIR/$SCI_DIR/RUN_ONCE.marker" \
+            --expected-head-sha "$SCIENTIFIC_HEAD" > /tmp/0058-primary-result.stdout.json
+          test -f "$RESULT_DIR/$SCI_DIR/PRIMARY_RESULT.json"
+          test -f "$RESULT_DIR/$SCI_DIR/EXECUTION.json"
+          test ! -e "$RESULT_DIR/$SCI_DIR/RUN_ONCE.marker"
+          git -C "$RESULT_DIR" add "$SCI_DIR/PRIMARY_RESULT.json" "$SCI_DIR/EXECUTION.json"
+          git -C "$RESULT_DIR" commit -m 'Research result [0058]: persist unique lossless parameter-geometry bundle'
+          git -C "$RESULT_DIR" push origin "HEAD:$RESULT_BRANCH"
+
+      - name: Verify durable remote result bundle
+        run: |
+          set -euo pipefail
+          git fetch origin "$RESULT_BRANCH"
+          for f in PRIMARY_RESULT.json EXECUTION.json RUN_ATTEMPT.marker; do
+            REMOTE_BLOB=$(git rev-parse "origin/$RESULT_BRANCH:$SCI_DIR/$f")
+            LOCAL_BLOB=$(git -C "$RESULT_DIR" rev-parse "HEAD:$SCI_DIR/$f")
+            test "$REMOTE_BLOB" = "$LOCAL_BLOB"
+          done
+          echo "DURABLE_RESULT_BUNDLE=true"
+
+      - name: Finalize closure marker from existing hashes only
+        run: |
+          set -euo pipefail
+          python -m research.brrk_beta_btc_continuation_parameter_geometry_0058.run_once finalize \
+            --market "$MARKET" \
+            --result "$RESULT_DIR/$SCI_DIR/PRIMARY_RESULT.json" \
+            --execution "$RESULT_DIR/$SCI_DIR/EXECUTION.json" \
+            --attempt "$RESULT_DIR/$SCI_DIR/RUN_ATTEMPT.marker" \
+            --marker "$RESULT_DIR/$SCI_DIR/RUN_ONCE.marker" \
+            --expected-head-sha "$SCIENTIFIC_HEAD" > /tmp/0058-final-marker.stdout.json
+          test -f "$RESULT_DIR/$SCI_DIR/RUN_ONCE.marker"
+          git -C "$RESULT_DIR" add "$SCI_DIR/RUN_ONCE.marker"
+          git -C "$RESULT_DIR" commit -m 'Research result [0058]: finalize immutable same-ID closure marker'
+          git -C "$RESULT_DIR" push origin "HEAD:$RESULT_BRANCH"
+
+      - name: Verify final marker durable and emit frozen scientific summary
+        run: |
+          set -euo pipefail
+          git fetch origin "$RESULT_BRANCH"
+          REMOTE_BLOB=$(git rev-parse "origin/$RESULT_BRANCH:$SCI_DIR/RUN_ONCE.marker")
+          LOCAL_BLOB=$(git -C "$RESULT_DIR" rev-parse "HEAD:$SCI_DIR/RUN_ONCE.marker")
+          test "$REMOTE_BLOB" = "$LOCAL_BLOB"
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d = Path('/tmp/0058-result/research/brrk_beta_btc_continuation_parameter_geometry_0058')
+          r = json.loads((d / 'PRIMARY_RESULT.json').read_text())
+          m = json.loads((d / 'RUN_ONCE.marker').read_text())
+          x = r.get('measurement', {})
+          print('CLASSIFICATION=' + str(r.get('classification')))
+          print('FINALIZED_WITHOUT_REMEASUREMENT=' + str(m.get('finalized_without_remeasurement')).lower())
+          print('SAME_ID_RERUN_ALLOWED=' + str(m.get('same_id_rerun_allowed')).lower())
+          print('SAME_ID_RETUNING_ALLOWED=' + str(m.get('same_id_retuning_allowed')).lower())
+          print('SAME_ID_RESCUE_ALLOWED=' + str(m.get('same_id_rescue_allowed')).lower())
+          print('ACTUAL_VARIANTS_EVALUATED=' + str(x.get('actual_variants_evaluated')))
+          print('GATES=' + json.dumps(x.get('gates', {}), sort_keys=True))
+          print('SELECTED_REPRESENTATIVE=' + json.dumps(x.get('plateau_trace', {}).get('selected_representative'), sort_keys=True))
+          print('BEST_STATIC_BY_COST=' + json.dumps(x.get('best_static_by_cost_bps', {}), sort_keys=True))
+          print('ROBUSTNESS=' + json.dumps(x.get('robustness', {}), sort_keys=True))
+          print('DIAGNOSTICS=' + json.dumps(x.get('diagnostics', {}), sort_keys=True))
+          PY
+
+      - name: Upload immutable 0058 runtime bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: brrk-0058-parameter-geometry-runtime-bundle
+          if-no-files-found: error
+          path: |
+            /tmp/0058-result/research/brrk_beta_btc_continuation_parameter_geometry_0058/RUN_ATTEMPT.marker
+            /tmp/0058-result/research/brrk_beta_btc_continuation_parameter_geometry_0058/PRIMARY_RESULT.json
+            /tmp/0058-result/research/brrk_beta_btc_continuation_parameter_geometry_0058/EXECUTION.json
+            /tmp/0058-result/research/brrk_beta_btc_continuation_parameter_geometry_0058/RUN_ONCE.marker
