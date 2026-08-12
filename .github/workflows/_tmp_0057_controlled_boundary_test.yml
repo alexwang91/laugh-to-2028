@@ -20,7 +20,7 @@ jobs:
         with:
           python-version: '3.12'
       - name: Install pinned test runtime
-        run: pip install 'numpy==2.4.2' 'pandas==3.0.0'
+        run: pip install 'numpy==2.4.2' 'pandas==3.0.0' 'requests==2.32.5' 'scipy==1.17.0'
       - name: Run 0057 adapter and controlled-run fault contracts
         run: |
           python -m unittest -v research.brrk_simple_eth_sol_beta_router_interface_replication_0057.test_adapter
@@ -32,7 +32,6 @@ jobs:
           base=Path('research/brrk_simple_eth_sol_beta_router_interface_replication_0057')
           run=(base/'run_once.py').read_text()
           boundary=(base/'CONTROLLED_EXECUTION_BOUNDARY.json').read_text()
-          # Boundary code may name the frozen market path but boundary CI must not execute it.
           for name in ('PRIMARY_RESULT.json','EXECUTION.json','RUN_ATTEMPT.marker','RUN_ONCE.marker'):
               assert not (base/name).exists(), name
           assert 'frames_from_market_evidence' in run
