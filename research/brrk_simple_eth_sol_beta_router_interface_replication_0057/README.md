@@ -1,6 +1,6 @@
 # BRRK Simple ETH/SOL Beta Router Interface Replication 0057
 
-Status: **IMPLEMENTATION-ONLY / SYNTHETIC CONTRACTS PASS / REAL HISTORICAL RUN NOT RUN**
+Status: **CONTROLLED-EXECUTION BOUNDARY ON BRANCH / ZERO RESULT / REAL HISTORICAL RUN NOT RUN**
 
 Research ID: `BRRK-SIMPLE-ETH-SOL-BETA-ROUTER-INTERFACE-REPLICATION-0057`
 
@@ -53,8 +53,8 @@ All history is researcher-exposed DEVELOPMENT history. It is not independent OOS
 design                         MERGED AT 21f758260ea80040bbb38aec26e2091814e37fd9
 central registry owner         REGISTERED BEFORE FORMAL PATH
 numerical preregistration      MERGED AT bc61a6a2250d8deecf2f20d2fe2006b28ad4b819
-implementation                 FROZEN ON BRANCH / SYNTHETIC ONLY
-controlled execution boundary  ABSENT
+implementation                 MERGED AT 6ea85e0b55566cc1aeed705eae35ad81f165e56d
+controlled execution boundary  FROZEN ON BRANCH / ZERO RESULT
 historical execution           NOT RUN
 result                         PREREGISTERED_NOT_RUN
 actual variants evaluated      0
@@ -65,4 +65,4 @@ signature_authorized           false
 order_submission_authorized    false
 ```
 
-Synthetic run `31611937198` passed 15 immutable 0056 engine tests plus 7 new 0057 adapter tests and a zero-result guard. No real market payload was loaded; actual historical variants remain 0. Real historical portfolio evaluation is still forbidden until this implementation stage merges and a separate controlled-execution boundary merges.
+Synthetic run `31611937198` passed 15 immutable 0056 engine tests plus 7 new 0057 adapter tests and a zero-result guard. No real market payload was loaded; actual historical variants remain 0. Real historical portfolio evaluation is still forbidden until this implementation stage merges and a separate controlled-execution boundary merges. Controlled-boundary run `31613546954` additionally passed 7 adapter tests plus 10 exactly-once/fault-contract tests and a second zero-result guard. The first boundary tooling run `31613437898` failed only because the test environment omitted `requests`; it produced no research output. Historical evaluation remains forbidden until this boundary is merged and an explicit unique execution is separately triggered.
