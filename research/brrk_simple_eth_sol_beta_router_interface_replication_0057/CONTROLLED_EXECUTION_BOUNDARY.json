@@ -94,5 +94,22 @@
     "production_authorized_components": [],
     "signature_authorized": false,
     "order_submission_authorized": false
+  },
+  "boundary_fault_contract_evidence": {
+    "initial_tooling_run": 31613437898,
+    "initial_tooling_failure": "TEST_RUNTIME_DEPENDENCY_ONLY_MISSING_REQUESTS_BEFORE_CONTROLLED_RUN_TEST_IMPORT",
+    "initial_adapter_tests_passed": 7,
+    "initial_historical_payload_loaded": false,
+    "initial_historical_portfolio_economics_executed": false,
+    "successful_tooling_run": 31613546954,
+    "adapter_contract_tests_passed": 7,
+    "controlled_run_fault_contract_tests_passed": 10,
+    "total_boundary_tests_passed": 17,
+    "zero_result_guard_passed": true,
+    "governance_validate_passed_with_only_legacy_debt_warnings": true,
+    "no_drift_passed": true,
+    "real_0057_historical_payload_loaded": false,
+    "real_0057_portfolio_economics_executed": false,
+    "actual_historical_variants_evaluated": 0
   }
 }

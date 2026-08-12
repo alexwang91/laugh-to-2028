@@ -3,7 +3,7 @@
 Last updated: **2026-08-12**  
 Authoritative repository: `alexwang91/laugh-to-2028`  
 Current `main` research merge: **`bc61a6a2250d8deecf2f20d2fe2006b28ad4b819`**  
-Current research branch: **`research/0057-simple-beta-router-interface-replication-implementation`**  
+Current research branch: **`research/0057-simple-beta-router-interface-replication-controlled-run`**  
 Status of this document: **AUTHORITATIVE OPERATING SNAPSHOT**
 
 > GitHub `main`, immutable research artifacts and machine registries remain the sources of truth. This file is the compact human handoff, not a substitute for preregistration, execution, evidence, recovery or closeout artifacts.
@@ -40,7 +40,7 @@ BRRK intraday support 0053             FAIL_4H_DOES_NOT_SOLVE_0048_SUPPORT_CONST
 BRRK 4h-native readiness 0054          FAIL_4H_NATIVE_TRAINING_PRECISION_NOT_ESTABLISHED / CLOSED
 BRRK 4h structural readiness 0055     FAIL_4H_STRUCTURAL_3D_TRAINING_PRECISION_NOT_ESTABLISHED / CLOSED
 BRRK simple ETH/SOL Beta router 0056  INVALID_EXECUTION / CLOSED / NO ECONOMIC CONCLUSION
-BRRK Beta router interface replication 0057 IMPLEMENTATION-ONLY / SYNTHETIC PASS / REAL RUN NOT RUN
+BRRK Beta router interface replication 0057 CONTROLLED-RUN BOUNDARY / ZERO RESULT / REAL HISTORICAL RUN NOT RUN
 
 Canonical BRRK-0011                    NO CHANGE
 Phase 7                                MONITOR_ONLY / LAUNCH BLOCKED
@@ -688,3 +688,18 @@ The adapter validates immutable tz-naive ETH/SOL source indexes, copies frames, 
 Synthetic Actions run `31611937198` passed all 15 immutable 0056 engine tests and 7 new 0057 adapter tests. The zero-result guard confirmed `REAL_0057_HISTORICAL_PAYLOAD_NOT_LOADED=true`, `REAL_0057_PORTFOLIO_ECONOMICS_NOT_EXECUTED=true`, and `ACTUAL_HISTORICAL_VARIANTS_EVALUATED=0`. Governance validation and no-drift also passed.
 
 No `run_once.py`, `RUN_INTERFACE.json`, `RESULT_SCHEMA.json`, controlled-execution boundary, runtime marker or historical result is present. Next legal stage after implementation merge is a separate controlled-execution boundary.
+
+
+---
+
+## 21. 0057 controlled-execution boundary handoff
+
+0057 implementation merged at `6ea85e0b55566cc1aeed705eae35ad81f165e56d`. The controlled boundary now freezes `RUN_INTERFACE.json`, `RESULT_SCHEMA.json`, an exactly-once `run_once.py`, fault-contract tests and `CONTROLLED_EXECUTION_BOUNDARY.json`; no runtime marker or historical result exists.
+
+The execution state machine is fixed as `preflight → durable RUN_ATTEMPT.marker → exactly one real evaluate → durable PRIMARY_RESULT.json + EXECUTION.json → marker-only RUN_ONCE.marker`. Evaluation cannot call the adapter before the attempt marker exists. Existing partial result artifacts block automatic recomputation. Finalization does not read market evidence and cannot call the 0047 loader, 0057 adapter or 0056 scientific engine.
+
+Real-data path is frozen as immutable market wrapper → 0047 `frames_from_market_evidence()` tz-naive frames → ETH/SOL selection → 0057 copy + `tz_localize("UTC")` adapter → immutable 0056 engine blob `b0fc1ac267a66593e7e2c4687aff81491bfcdf5a` → 0057 result schema. No alternate loader or portfolio-science rewrite is authorized.
+
+Boundary Actions run `31613546954` passed 7 adapter contracts plus 10 exactly-once/fault contracts, the zero-result static guard, governance validation and no-drift. It explicitly confirmed `REAL_0057_HISTORICAL_PAYLOAD_NOT_LOADED=true`, `REAL_0057_PORTFOLIO_ECONOMICS_NOT_EXECUTED=true`, and `ACTUAL_HISTORICAL_VARIANTS_EVALUATED=0`. Earlier run `31613437898` failed only at test import because `requests` was missing and produced no historical output.
+
+After this boundary merges, 0057 will be technically eligible for exactly one DEVELOPMENT historical execution. That execution is irreversible once the durable attempt marker is pushed; it is not part of this boundary PR.
