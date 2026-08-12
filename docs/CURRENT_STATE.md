@@ -1,9 +1,9 @@
 # BRRK Current State
 
-Last updated: **2026-08-12**  
+Last updated: **2026-08-13**  
 Authoritative repository: `alexwang91/laugh-to-2028`  
 Current `main` research merge: **`269424763528927d829b4aa78b7c849729758f86`**  
-Current research branch: **`research/0058-beta-btc-continuation-parameter-geometry-closeout`**  
+Current research branch: **`research/0059-beta-deterioration-btc-takeover-diagnostic-design`**  
 Status of this document: **AUTHORITATIVE OPERATING SNAPSHOT**
 
 > GitHub `main`, immutable research artifacts and machine registries remain the sources of truth. This file is the compact human handoff, not a substitute for preregistration, execution, evidence, recovery or closeout artifacts.
@@ -42,6 +42,7 @@ BRRK 4h structural readiness 0055     FAIL_4H_STRUCTURAL_3D_TRAINING_PRECISION_N
 BRRK simple ETH/SOL Beta router 0056  INVALID_EXECUTION / CLOSED / NO ECONOMIC CONCLUSION
 BRRK Beta router interface replication 0057 FAIL_SIMPLE_BETA_ROUTER_COST_FRAGILE / CLOSED
 BRRK Beta->BTC parameter geometry 0058     FAIL_NO_STABLE_PARAMETER_PLATEAU / CLOSED
+BRRK Beta deterioration/BTC takeover 0059 DESIGN FROZEN / PREREG ABSENT / NOT RUN
 
 Canonical BRRK-0011                    NO CHANGE
 Phase 7                                MONITOR_ONLY / LAUNCH BLOCKED
@@ -497,7 +498,6 @@ same-ID rerun / retune / rescue          false / false / false
 ```
 
 The prospectively fixed 7D-to-3D representation did not establish the unchanged 0054 training-precision gate. This is a methodology failure, not a predictive-performance test. No predictive study, concentration study, portfolio translation, canonical change or production authority is created. Any continuation requires a new research ID.
-
 ---
 
 ## 16. 0056 simple ETH/SOL Beta-router numerical preregistration
@@ -915,3 +915,59 @@ same-ID rerun/retune/rescue           false / false / false
 This is a valid structural failure, not an invalid execution. The frozen Beta→BTC parameter surface does not contain a broad stable region under the prospectively fixed geometry; the historical argmax is descriptive only and cannot be promoted. Do not perform same-ID adaptive refinement, local zoom, threshold relaxation, alternate normalization, representative substitution or other surface-informed rescue. Any continuation requires a new research ID and must not treat `(120,0.50)` as a frozen trading parameter.
 
 Canonical BRRK-0011, Phase 6, signing, order submission and production authorization remain unchanged.
+
+---
+
+## 0059 Beta-deterioration / BTC defensive-takeover diagnostic design handoff
+
+`BRRK-BETA-DETERIORATION-BTC-TAKEOVER-DIAGNOSTIC-0059` is the active **DESIGN-ONLY** successor after immutable 0058 closure.
+
+```text
+research ID                            BRRK-BETA-DETERIORATION-BTC-TAKEOVER-DIAGNOSTIC-0059
+research family                        BRRK_BETA_TO_BTC_DEFENSIVE_HANDOFF
+objective                              MECHANISM_TEST / STAGE_1_INFORMATION_TEST
+design branch                          research/0059-beta-deterioration-btc-takeover-diagnostic-design
+design authority commit                a480cc3769676b63f58fd0c0bca1bf4291e74b85
+design freeze                           research/governance/BRRK_BETA_DETERIORATION_BTC_TAKEOVER_DIAGNOSTIC_0059_DESIGN_FREEZE_2026-08-13.md
+stage                                   DESIGN FROZEN / PREREG ABSENT / NOT IMPLEMENTED / NOT RUN
+registry owner                          ABSENT UNTIL POST-DESIGN PREREGISTRATION
+historical 0059 outcomes                NOT COMPUTED
+portfolio economics                     FORBIDDEN UNDER 0059
+```
+
+0059 does not repair the failed 0058 `J(L,kappa)` surface. The exposed descriptive `L=120, kappa=0.5` maximum, local surface geometry, gradient and Hessian results have zero 0059 parameter authority. No 0058 lookback, threshold, zoom, refinement or threshold relaxation is imported.
+
+The new mechanism question is earlier in the causal chain: before defining a Beta/BTC switch threshold, does a fixed low-dimensional deterioration state contain recurrent monotone information about future BTC-over-Beta continuation value?
+
+Frozen candidate representation uses only pre-0058 definitions:
+
+```text
+Beta signal proxy                      0.5*log(ETH) + 0.5*log(SOL)
+D1                                     Beta SLOW - FAST trend disagreement
+D2                                     Beta log distance below trailing 60-session high
+D3                                     Beta/BTC relative SLOW - FAST disagreement
+causal normalization                   trailing 252 / min 60 / clip [-3,+3]
+joint state                            equal-weight mean(D1,D2,D3)
+canonical trend horizons               20 / 60 / 120 / 240
+FAST weights                           0.15 / 0.25 / 0.30 / 0.30
+SLOW weights                           0.10 / 0.20 / 0.30 / 0.40
+```
+
+The future diagnostic target is BTC-over-Beta continuation value, evaluated over the full frozen 20/60/120/240 horizon family with no post-hoc winning-horizon selection. 0059 is not a parameter-calibration ID: it has no trading threshold, no allocation weight and no strategy wealth surface.
+
+0043/0044 support the use of low-dimensional continuous deterioration information; 0045/0046 show that earlier discrete exhaustion-trigger translations failed. 0047–0055 also block a BTC-positive episode-clock rescue, 4h row-frequency rescue or high-dimensional fitted leadership model. 0059 therefore remains daily, low-dimensional and mechanism-diagnostic only.
+
+If 0059 eventually passes its separately frozen information/temporal/dependence gates, the only authority granted is eligibility to open a **new research ID** for systematic translation/calibration. It cannot directly freeze an entry/exit threshold, validate a strategy or change canonical BRRK.
+
+```text
+BTC-to-cash                           NOT OPENED
+ETH/SOL micro-timing                  CLOSED / NOT REOPENED
+Canonical BRRK-0011                   NO CHANGE
+Phase 6                               NO CHANGE
+production_authorized_components      []
+production_authorized                 false
+signature_authorized                  false
+order_submission_authorized           false
+```
+
+**Exact next step:** pass standing DESIGN PR checks and merge with expected-head protection. Only after the DESIGN merge may a separate 0059 numerical/data preregistration create the central `PROGRAM_GOVERNED_V1` registry owner and freeze dataset identity, support gates, simultaneous multi-horizon association rules, temporal/dependence inference and immutable result schema. Do not compute any 0059 historical future outcome or portfolio economics during DESIGN or preregistration.
