@@ -1,0 +1,92 @@
+name: 0056 read-only closeout tooling
+
+on:
+  push:
+    branches:
+      - research/0056-simple-beta-router-closeout-tooling
+
+permissions:
+  contents: write
+
+jobs:
+  closeout:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout durable result branch only
+        uses: actions/checkout@v4
+        with:
+          ref: research/0056-simple-beta-router-result
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Read-only verify and write closeout
+        run: |
+          python - <<'PY'
+          import hashlib, json
+          from pathlib import Path
+          RID='BRRK-SIMPLE-ETH-SOL-BETA-ROUTER-0056'; HEAD='186a7f7d57c957c98798ecd828533ffe20dedb83'
+          SHA='d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193'; RUN=31604126017
+          base=Path('research/brrk_simple_eth_sol_beta_router_0056')
+          load=lambda n: json.loads((base/n).read_text())
+          h=lambda x: hashlib.sha256(json.dumps(x,sort_keys=True,separators=(',',':'),ensure_ascii=False,allow_nan=False).encode()).hexdigest()
+          a,r,e,m=map(load,['RUN_ATTEMPT.marker','PRIMARY_RESULT.json','EXECUTION.json','RUN_ONCE.marker'])
+          assert a['git_head_sha']==HEAD and a['same_id_recomputation_allowed'] is False
+          assert r['classification']=='INVALID_EXECUTION' and r['execution_head_sha']==HEAD and r['payload_sha256']==SHA
+          assert r['measurement']['error_type']=='RouterProtocolError' and r['measurement']['error']=='price index timezone must be UTC'
+          assert r['measurement']['actual_variants_evaluated']==1 and 'metrics_by_cost_bps' not in r['measurement'] and 'gates' not in r['measurement']
+          assert e['attempt_marker_sha256']==h(a) and e['primary_result_sha256']==h(r)
+          assert m['attempt_marker_sha256']==h(a) and m['primary_result_sha256']==h(r) and m['execution_sha256']==h(e)
+          assert m['classification']=='INVALID_EXECUTION' and m['same_id_rerun_allowed'] is False and m['same_id_retuning_allowed'] is False and m['same_id_rescue_allowed'] is False and m['finalized_without_remeasurement'] is True
+          src=Path('research/brrk_beta_handoff_0047/engine.py').read_text(); impl=(base/'engine.py').read_text()
+          assert 'if frame.index.tz is not None:' in src and 'UTC-normalized tz-naive dates' in src
+          assert 'if index.tz is None or str(index.tz) != "UTC":' in impl and 'price index timezone must be UTC' in impl
+
+          close={
+            'research_id':RID,'status':'INVALID_EXECUTION_CLOSED','closed':True,
+            'development_not_independent_oos':True,'researcher_exposed_history':True,
+            'execution_head_sha':HEAD,'payload_sha256':SHA,
+            'execution_identity':{'github_actions_run':RUN,'runtime_artifact_id':9144363833,'runtime_artifact_name':'brrk-0056-portfolio-economics-runtime-bundle','runtime_artifact_digest':'sha256:f3617a29d19e322a8c1a376c37d4eb3fde6b40314aaabf160d18df1502df7384','started_at_utc':e['started_at_utc'],'completed_at_utc':e['completed_at_utc']},
+            'runtime_hashes':{'attempt_marker_sha256':m['attempt_marker_sha256'],'primary_result_sha256':m['primary_result_sha256'],'execution_sha256':m['execution_sha256']},
+            'binding_failure':{'stage':'G0_INTERFACE_INTEGRITY','error_type':'RouterProtocolError','error':'price index timezone must be UTC','source_loader_contract':'0047/0048 frozen loader emits UTC-normalized tz-naive daily DatetimeIndex values','0056_implementation_contract':'0056 validate_price_frames requires timezone-aware DatetimeIndex with tz string UTC','diagnosis':'IMPLEMENTATION_INTERFACE_INCOMPATIBILITY_NOT_DATA_CORRUPTION_AND_NOT_ECONOMIC_STRATEGY_FAILURE'},
+            'economic_result':{'terminal_wealth_available':False,'net_cagr_available':False,'maximum_drawdown_available':False,'G1_primary_economic_dominance_reached':False,'G2_cost_survival_reached':False,'G3_temporal_robustness_reached':False,'G4_dependence_robustness_reached':False,'rm60_economic_efficacy_established':False,'rm60_economic_efficacy_rejected':False},
+            'authority':{'portfolio_economics_execution_attempted':True,'economic_conclusion_authorized':False,'corrected_interface_rerun_under_0056_allowed':False,'same_id_rerun_allowed':False,'same_id_retuning_allowed':False,'same_id_rescue_allowed':False,'result_informed_continuation_requires_new_research_id':True,'canonical_strategy_changed':False,'phase6_changed':False,'production_authorized':False,'signature_authorized':False,'order_submission_authorized':False},
+            'interpretation':'0056 closed INVALID_EXECUTION because immutable upstream loader and frozen 0056 validator use incompatible timezone representations. No terminal wealth, CAGR, G1-G4 economic statistic, or evidence about RM60 portfolio efficacy was produced. Any corrected execution requires a new research ID.'}
+          (base/'CLOSEOUT.json').write_text(json.dumps(close,indent=2)+'\n')
+          ci={'research_id':RID,'status':'READ_ONLY_CLOSEOUT_CONTRACT_PASS','scientific_engine_imported':False,'portfolio_remeasurement_executed':False,'runtime_hash_chain_verified':True,'classification_verified':'INVALID_EXECUTION','failure_stage':'G0_INTERFACE_INTEGRITY','source_loader_timezone_contract':'UTC_NORMALIZED_TZ_NAIVE_DAILY_DATES','0056_engine_timezone_contract':'TZ_AWARE_UTC_REQUIRED','interface_mismatch_verified_from_source_text':True,'terminal_wealth_computed':False,'cagr_computed':False,'G1_G4_reached':False,'same_id_rerun_allowed':False}
+          (base/'CLOSEOUT_CI.json').write_text(json.dumps(ci,indent=2)+'\n')
+          (base/'RESULT.md').write_text(f'''# 0056 Simple ETH/SOL Beta Router Result\n\nFinal classification: **INVALID_EXECUTION / CLOSED**.\n\nThe unique exactly-once DEVELOPMENT run stopped at G0 before any terminal wealth, CAGR, MDD, G1-G4 or bootstrap economic result.\n\n## Binding failure\n\n```text\nclassification       INVALID_EXECUTION\nerror_type           RouterProtocolError\nerror                price index timezone must be UTC\nexecution HEAD       {HEAD}\npayload SHA256       {SHA}\nActions run          {RUN}\n```\n\nThe frozen 0047/0048 loader explicitly produces **UTC-normalized tz-naive** daily indexes, while frozen 0056 `validate_price_frames()` requires a timezone-aware `UTC` index. This is an implementation-interface mismatch, not market-data corruption.\n\nTherefore 0056 provides **no evidence that RM60 works and no evidence that RM60 fails economically**. G1-G4 were not reached.\n\nThe attempt marker was durable before evaluate. The result/execution bundle was durable before marker-only finalization. Same-ID rerun, retuning and rescue are permanently false. A corrected timezone-interface evaluation requires a **new research ID**.\n''')
+
+          # Byte-preserving targeted 0056 registry update.
+          p=Path('config/research_registry.json'); text=p.read_text(); pos=text.index('"research_id": "'+RID+'"'); s=text.rfind('    {',0,pos); z=text.index('\n    }\n  ],\n  "research_governance_debt"',pos)+len('\n    }'); seg=text[s:z]
+          seg=seg.replace('"actual_variants_evaluated": 0','"actual_variants_evaluated": 1',1)
+          seg=seg.replace('"actual_parameter_candidates_evaluated": []','"actual_parameter_candidates_evaluated": [\n          "RM60_SIGN_ROUTER_ATTEMPT_TERMINATED_AT_G0_INTERFACE_VALIDATION"\n        ]',1)
+          seg=seg.replace('"result_status": "PREREGISTERED_NOT_RUN"','"result_status": "INVALID_EXECUTION_CLOSED"',1)
+          seg=seg.replace('"failure_reason": null','"failure_reason": "G0 implementation/interface mismatch: immutable 0047/0048 loader emits UTC-normalized tz-naive daily indexes while frozen 0056 validate_price_frames requires timezone-aware UTC; no economic gate was reached."',1)
+          ev='''"evidence_refs": [\n        "run:31604126017",\n        "artifact:brrk-0056-portfolio-economics-runtime-bundle",\n        "research/brrk_simple_eth_sol_beta_router_0056/PRIMARY_RESULT.json",\n        "research/brrk_simple_eth_sol_beta_router_0056/RUN_ONCE.marker",\n        "research/brrk_simple_eth_sol_beta_router_0056/CLOSEOUT.json"\n      ],\n      "evidence_scorecard": {\n        "temporal_novelty": "NOT_ESTABLISHED_INVALID_EXECUTION_BEFORE_ECONOMIC_PATH",\n        "statistical_sufficiency": "NOT_ESTABLISHED_G1_G4_NOT_REACHED",\n        "governance_integrity": "HIGH_EXACTLY_ONCE_HASH_BOUND_FAIL_CLOSED",\n        "operational_realism": "INVALID_INTERFACE_CONTRACT_SOURCE_TZ_NAIVE_VS_0056_TZ_AWARE_REQUIREMENT",\n        "derived_confidence": "HIGH",\n        "confidence_rule_ref": "research/brrk_simple_eth_sol_beta_router_0056/CLOSEOUT.json"\n      }'''
+          seg=seg.replace('"evidence_refs": []',ev,1)
+          seg=seg.replace('"research/brrk_simple_eth_sol_beta_router_0056/DATASET_DECLARATION.json",\n        "docs/CURRENT_STATE.md"','"research/brrk_simple_eth_sol_beta_router_0056/DATASET_DECLARATION.json",\n        "research/brrk_simple_eth_sol_beta_router_0056/CLOSEOUT.json",\n        "docs/CURRENT_STATE.md"',1)
+          note='"The sole 60-day router horizon predates 0054/0055 failure as 0048 baseline B3; no alternative lookback or same-line rescue is authorized."'
+          seg=seg.replace(note,note+',\n        "Unique run 31604126017 closed INVALID_EXECUTION at G0 due frozen timezone-interface mismatch; no economic conclusion was produced and same-ID rerun is forbidden."',1)
+          p.write_text(text[:s]+seg+text[z:])
+
+          rp=base/'README.md'; rd=rp.read_text(); rd=rd.replace('Status: **CONTROLLED-EXECUTION BOUNDARY ON BRANCH / ZERO RESULT / REAL HISTORICAL RUN NOT RUN**','Status: **INVALID_EXECUTION / CLOSED / NO ECONOMIC CONCLUSION**',1)
+          anchor='## Current authority\n'; rd=rd.replace(anchor,f'''## Immutable 0056 closeout\n\nUnique run `{RUN}` at scientific HEAD `{HEAD}` closed **`INVALID_EXECUTION`** at G0 because the source loader is tz-naive while the frozen 0056 validator requires tz-aware UTC. No terminal wealth, CAGR or G1-G4 result exists. 0056 cannot be repaired or rerun; corrected evaluation requires a new research ID.\n\n'''+anchor,1)
+          rd=rd.replace('controlled execution boundary FROZEN ON BRANCH / ZERO RESULT','controlled execution boundary MERGED AT '+HEAD,1).replace('historical execution          NOT RUN','historical execution          UNIQUE RUN 31604126017 / COMPLETE',1).replace('result                        PREREGISTERED_NOT_RUN','result                        INVALID_EXECUTION / CLOSED',1).replace('actual variants evaluated     0','actual variants evaluated     1',1)
+          rp.write_text(rd)
+
+          sp=Path('docs/CURRENT_STATE.md'); st=sp.read_text(); st=st.replace('Current `main` research merge: **`9417bc3370613f1818d11aebf91bf733ac5ecbcc`**','Current `main` research merge: **`'+HEAD+'`**',1).replace('Current research branch: **`research/0056-simple-beta-router-controlled-run`**','Current research branch: **`research/0056-simple-beta-router-result`**',1).replace('BRRK simple ETH/SOL Beta router 0056  CONTROLLED-RUN BOUNDARY / ZERO RESULT / REAL HISTORICAL RUN NOT RUN','BRRK simple ETH/SOL Beta router 0056  INVALID_EXECUTION / CLOSED / NO ECONOMIC CONCLUSION',1)
+          st += f'''\n\n---\n\n## 18. 0056 immutable INVALID_EXECUTION closeout\n\nUnique exactly-once run `{RUN}` at controlled HEAD `{HEAD}` closed `INVALID_EXECUTION`. G0 failed with `RouterProtocolError: price index timezone must be UTC`; terminal wealth/CAGR and G1-G4 were not produced.\n\nRoot cause is a frozen implementation-interface mismatch: 0047/0048 loader dates are UTC-normalized tz-naive, while 0056 requires timezone-aware UTC. This is not data corruption and is not evidence for or against RM60 economic efficacy. Same-ID rerun/retune/rescue are all false. Any corrected evaluation requires a new research ID.\n\n```text\nCanonical BRRK-0011                    NO CHANGE\nPhase 6                                NO CHANGE\nproduction_authorized_components       []\nproduction_authorized                  false\nsignature_authorized                   false\norder_submission_authorized            false\n```\n'''; sp.write_text(st)
+          PY
+      - name: Validate governance without importing 0056 engine
+        run: |
+          python -m research.governance.validate
+          python -m research.governance.no_drift
+          git diff --check
+      - name: Commit closeout to result branch
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add config/research_registry.json docs/CURRENT_STATE.md research/brrk_simple_eth_sol_beta_router_0056/README.md research/brrk_simple_eth_sol_beta_router_0056/RESULT.md research/brrk_simple_eth_sol_beta_router_0056/CLOSEOUT.json research/brrk_simple_eth_sol_beta_router_0056/CLOSEOUT_CI.json
+          git commit -m 'Research closeout [DRIFT_0]: seal immutable 0056 invalid execution'
+          git push origin HEAD:research/0056-simple-beta-router-result
