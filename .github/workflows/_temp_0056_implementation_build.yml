@@ -1,0 +1,133 @@
+name: Temporary 0056 implementation build
+
+on:
+  push:
+    branches:
+      - research/0056-simple-beta-router-implementation
+
+permissions:
+  contents: write
+
+jobs:
+  build-implementation:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: execution/plan-b-bot/requirements-dev.txt
+      - name: Install pinned test runtime
+        run: pip install -r execution/plan-b-bot/requirements-dev.txt
+      - name: Materialize frozen implementation and handoff
+        env:
+          ENGINE_GZ_B64: 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
+          TEST_GZ_B64: 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
+          BOUNDARY_GZ_B64: H4sIAGlffGoC/51Ya2+bSBf+3l9R5VNX2iSAzcWv1A/YniSoGCyM00ar6miAwWYXgwtDWme1/33PDBc7idu+3ShBFj7X59zz95u3by8qVjNaxVvIkov/vb2YBsGHy5WzWLrkkoR3lyvfvZyS0L4M/HVIgktF0Y2L3wVjzemGCZalH4Q3vuv4QGa+5y+c2QqkgAXxQjt0fA98z31ouSJaM9jRrIB6SwW3pUdRbOnWKDI0PaGGqWiGGUfRKInGE81KI6bShBnpoJQ3teAbNJA53PgBrB688I6EzgzQiDCwZyGEZBU63q3UDgGxXbhzVqEfODP8SO5td91ah+xTZz4nXquDxryhOTzSKqMFr4E90ryhnAl8FEmRVuUTK2BPD3lJxeu/8S2+31O+Fbb1mF5HVfUXRIxT2NIiKdMUFGVsXrPHLGFFzK4XdvCBhGiLg9pn5OrPuiykEShsk3GI8jLqgTLGLEr12EgYTUfpaJxEjMamqo9MK1UnRpoq6TilKev5O+sEu4YxQwmJGieaFcWmkWpxYjGmjC1Ds8w01hUEm+ljXR3pOh0xEz9oVEuYHo2UWNVRozoZ9ZIrhvD04nf0gB6C+MwSKAvg26yGPjlSmtesYysY/1oiHhVLGceEo3lefpWonlJVbJ/TmO1YwSGhHNOFf5eybnL8suJZijGre1NitI8fqZH4Hxm1bLdrOI1yBs2+5ki0gx7j+hjD57Grs90eGRjfQl3mbSirsuGsAlEJ18uABOQWsyqQqdQGEKE2DQsjpSmjVE20KFJYiiCPWGKplqIkGqOWqVJVV4+Q/orWuR3aK8ybOZm59gvNKTWoiQVjKWY8iqzYMq1Y0yf6yFKSOLbSZDKJVToen9ecMwxjVW+zPSrEWsswoJiy1jUrNlnBrvYH6Z0ST6yJicnHWGSq5oiODZWyVI0M3bLGlhVpij6eqL+o40duqRMaGcY4SmJmarqiKiPVoqaWmpMJQyjpKKGKoZnxeZW/WoK/Um4n+YVBE3nbulQ3FaYlO2ZWC+Hr/vCzaB+h73yrDwXfMp7FEJcFrzD3gbOa178uWrDBK/lVU2Ahxwz2QlrBX9SdVFrmOZY7+8biRnqbFShU+PsdJmwKvKyyGDtHV7eiWf6ceEerv9DaF3QD5l0njjG0GXYLdlrHOcbhUXSmDbJnMhIXT8Df44t3ONaAX+OAA/7bAGu2KWguqIKFoSAhEl8+wTt+aSgD0b6sMyFWkKGQi6G3bWj/GqX2r9k3EZwnVpVSLM5Rx4Nl4PhBT5EVKA79fE55ImLL8gQh400l09Ijn0KYuf6KQOj3H8THEJbuegVDzXXjC6Im2TABnPoStH1Z8bTMsxIQPUwlTIU+n44wYiPH/lpsoKCPQsiV0idJm0abqqzrc1+UBYNtie25xg4uKP5ovWph+9wRR1iDWxHjlmKqwEqsDDPoaKdq/0KCjS+0/oWuiF/Px8k+tV0ba3eQKn2J9jXs0ZBcFaJ1tO+tqoinhs/PL+FHvw8t6dGTtMnzoXbqr5kYWpJEG0gaNJ8WGyyFbZknAidJoAwE0pSERWLQsLSsEJRnAeVVc5xnEc2pqLsIA4LfFaj/ZdCqMmpqXrC6PhMsKRp9zspE4KmpmtbJ5myH4UZHcdrFoi88MYm4PlJ/f9s9FPn4/JKjYl+arEIP+9RvZQj2UR/FsuQ4Ueke+GEva8AP5o5nBw+w8O/FCjZ1/dkHmPp+KEblEmzXufVwcwvvAkJg7tzc4Bz1Qsd2VxevhLY259in5HplKK8oxNKA7YJLp1QFf16R1EyuBKo1HpuqYU3082ranBnkCSeNV5RfGqysLJee3j1484WNSyT+hQ9LAiZ468XyAVzHI3YACkz01y5VmCnP54Usbsk4Jzf22g0hQNyWs1tjDPeODcX+qhIDbHeVsJSKBooyzgvGZhmzpG2XuCcv1qE9dYmcsUC8W7QL1iuyOi8SbG/+PGr48irelqKDDp1yh9S0YGUjVz2O/TqLhbYQqvc7+g2id7sGokt8iAYCEVS/nWXO40iwubMpRO8lyxeEa0j6OMf2kaUiFGLI9I7JXv5HK87xcJF35kA+kdlarAy9nhvbcUV7aI8ZEEcMtEfMcKfAeuk6N+EzjjPkM38Vwk1g3zou+RltSBZ4D9kuXhyoZEbEKYInys/YXliEdos1aEk8uZQg1XS9Guxc2qvVD4UQrC5n6rhO+CCwlCV9USCAYkhhiJOMbopSxEwM4zJvR3jXn+R2jz1835x0FhzFrEgwkgfcLk7G0TLw52s8tfwbuHV97MOwJDje8CTDA8wPVvDxTkwovLkw7QAXPAIOXodYKncE8AxDB7FGHkShLBwP55fvDRDnJTZW7J5NgesiViVat5PtUe4aj+2odn3vFs88AfZKJsA96S3x7PtWY7D24KODs76PkQ9TMUUCHB2uLVk+4nWIBFPi+h9B7WxRCajaMIe7/p401VCvC/uTs0BNp8p7HXZwi2ulUI1O3qJs6b+DeXFH3HkH0+q726PczPY4nePDyTAeFr+yyA/Pp8fxOzm2hsWoi9vxhDrL08YbV2Ss5zhDK0TRAW34Fvcwfnh1eWGKiDW6Xc9whey26efX4AuuFDtmfahxsPRskqzqmWjymqe/GdGPvP4RYWeSbpysNQwnZLnL4uNlWO7Qy/96SHbU3b8HTnbU8/8pGCJ7iuJQTliNkld0bc42B+j2iBfK9hgRZnzvy6pMmlimS6fj6f+jkUDggla0i9nn0wUYK5t9X1xZiYDVTbTLsDGfVSz8fvPPm38BbwwzN10SAAA=
+        run: |
+          python - <<'PY2'
+          import base64, gzip, os
+          from pathlib import Path
+
+          root = Path('research/brrk_simple_eth_sol_beta_router_0056')
+          root.mkdir(parents=True, exist_ok=True)
+          for env, name in [
+              ('ENGINE_GZ_B64', 'engine.py'),
+              ('TEST_GZ_B64', 'test_engine.py'),
+              ('BOUNDARY_GZ_B64', 'IMPLEMENTATION_BOUNDARY.json'),
+          ]:
+              data = gzip.decompress(base64.b64decode(os.environ[env]))
+              (root / name).write_bytes(data)
+
+          readme = root.joinpath('README.md').read_text(encoding='utf-8')
+          def repl(text, old, new):
+              if text.count(old) != 1:
+                  raise SystemExit(f'README anchor count {text.count(old)} for {old!r}')
+              return text.replace(old, new, 1)
+          readme = repl(readme,
+              'Status: **NUMERICAL PREREGISTRATION FROZEN ON BRANCH / NOT IMPLEMENTED / NOT RUN**',
+              'Status: **NUMERICAL PREREGISTRATION MERGED / IMPLEMENTATION-ONLY ON BRANCH / REAL HISTORICAL RUN FORBIDDEN**')
+          implementation_section = (
+              "\n\n## Implementation-only boundary\n\n"
+              "The implementation branch now contains a pure deterministic engine and synthetic-only contract tests. The engine has **no filesystem market loader, no network fetch, no `run_once.py`, no result writer and no controlled-execution authority**. It accepts already-materialized ETH/SOL close frames; the later controlled-run layer must independently verify the frozen 0047 market-evidence identity before calling it.\n\n"
+              "Synthetic tests cover the exact RM60 sign/zero semantics, next-period timing, L1 cost debits, no-rebalance B2 accounting, 5/10/20 bps panel, fixed 531/531/530/530 global blocks, project-standard `np.random.default_rng` moving-block bootstrap, G0-G4 classification precedence and mandatory diagnostics. A full 2183-row **synthetic** UTC calendar is allowed only to test mechanics; any synthetic classification has zero scientific authority and is never persisted as a research result.\n\n"
+              "Real `MARKET_EVIDENCE.json` loading and any historical 0056 evaluation remain forbidden until a separate controlled-execution boundary merges.\n"
+          )
+          marker = '\n## Current authority\n'
+          if readme.count(marker) != 1:
+              raise SystemExit('README current-authority marker mismatch')
+          readme = readme.replace(marker, implementation_section + marker, 1)
+          readme = repl(readme, 'numerical preregistration     FROZEN ON PREREG BRANCH', 'numerical preregistration     MERGED AT 85bbc8583b625da670267cbb3db4928fbe1ade6f')
+          readme = repl(readme, 'implementation                ABSENT', 'implementation                IMPLEMENTATION-ONLY ON BRANCH')
+          readme = repl(readme, 'result                        ABSENT', 'result                        PREREGISTERED_NOT_RUN')
+          readme = repl(readme,
+              'After this preregistration merges, the only allowed next stage is an **implementation-only** branch with synthetic/contracts-only testing and no real 0056 historical result.',
+              'After this implementation-only branch merges green, the only allowed next stage is a **separate controlled-execution boundary**. No real 0056 historical evaluation is authorized by the implementation merge itself.')
+          root.joinpath('README.md').write_text(readme, encoding='utf-8')
+
+          state_path = Path('docs/CURRENT_STATE.md')
+          state = state_path.read_text(encoding='utf-8')
+          nonlocal_state = [state]
+          def srep(old, new):
+              if nonlocal_state[0].count(old) != 1:
+                  raise SystemExit(f'CURRENT_STATE anchor count {nonlocal_state[0].count(old)} for {old!r}')
+              nonlocal_state[0] = nonlocal_state[0].replace(old, new, 1)
+          srep('Current `main` research merge: **`16a23ce2115647beead7f7abdab68a6b4cb406fe`**', 'Current `main` research merge: **`85bbc8583b625da670267cbb3db4928fbe1ade6f`**')
+          srep('Current research branch: **`research/0056-simple-beta-router-prereg`**', 'Current research branch: **`research/0056-simple-beta-router-implementation`**')
+          srep('BRRK simple ETH/SOL Beta router 0056  DESIGN FROZEN / NUMERICAL PREREG NOT YET FROZEN / NOT IMPLEMENTED / NOT RUN', 'BRRK simple ETH/SOL Beta router 0056  PREREG MERGED / IMPLEMENTATION-ONLY / REAL HISTORICAL RUN FORBIDDEN')
+          srep('numerical preregistration               FROZEN ON PREREG BRANCH', 'numerical preregistration               MERGED AT 85bbc8583b625da670267cbb3db4928fbe1ade6f')
+          srep('implementation                          ABSENT', 'implementation                          IMPLEMENTATION-ONLY ON BRANCH')
+          srep(
+              'The numerical preregistration is now frozen before implementation or any 0056 economic output. It binds the immutable daily payload SHA256, 2122 common causal origins, NAV/cost and benchmark recursion, 5/10/20 bps L1 cost panel, 531/531/530/530 chronological blocks, 60-day moving-block bootstrap with 10,000 replicates and seed 1844716895, plus the complete G0-G4 classification hierarchy. After this preregistration merges, the only allowed continuation is a separate implementation-only branch that must not load or execute the real historical payload during implementation tests.',
+              'The numerical preregistration merged at `85bbc8583b625da670267cbb3db4928fbe1ade6f`. The current implementation-only branch mechanically encodes the immutable 2122-origin RM60 router, NAV/cost and benchmark recursion, 5/10/20 bps L1 cost panel, 531/531/530/530 chronological blocks, 60-day moving-block bootstrap with 10,000 replicates and seed 1844716895, and G0-G4 result taxonomy. Its tests are synthetic-only; loading or evaluating the real historical payload remains forbidden until a separately merged controlled-execution boundary.'
+          )
+          srep('No 0056 implementation, controlled-run workflow, historical result or run marker exists at this stage. Older next-step prose above is historical and is superseded by this section.', '0056 implementation-only engine/tests now exist on the active branch; no controlled-run workflow, historical result or run marker exists at this stage. Older next-step prose above is historical and is superseded by this section.')
+          state_path.write_text(nonlocal_state[0], encoding='utf-8')
+          PY2
+      - name: Run synthetic implementation contracts
+        run: |
+          python -m py_compile research/brrk_simple_eth_sol_beta_router_0056/engine.py research/brrk_simple_eth_sol_beta_router_0056/test_engine.py
+          python -m unittest -v research.brrk_simple_eth_sol_beta_router_0056.test_engine
+      - name: Enforce zero-result implementation boundary
+        run: |
+          python - <<'PY2'
+          from pathlib import Path
+          base = Path('research/brrk_simple_eth_sol_beta_router_0056')
+          surface = (base/'engine.py').read_text() + '\n' + (base/'test_engine.py').read_text()
+          forbidden_tokens = [
+              'MARKET_EVIDENCE.json',
+              'brrk_beta_handoff_0047',
+              'load_frozen_market_evidence',
+              'requests.get',
+              'urllib.request',
+              'Path(',
+              '.read_text(',
+              'open(',
+          ]
+          hits = [token for token in forbidden_tokens if token in surface]
+          if hits:
+              raise SystemExit(f'Forbidden real-data/loading token in implementation surface: {hits}')
+          forbidden_paths = [
+              'run_once.py', 'RUN_INTERFACE.json', 'CONTROLLED_EXECUTION_BOUNDARY.json',
+              'PRIMARY_RESULT.json', 'RESULT_SUMMARY.json', 'EXECUTION.json',
+              'RUN_ATTEMPT.marker', 'RUN_ONCE.marker'
+          ]
+          present = [name for name in forbidden_paths if (base/name).exists()]
+          if present:
+              raise SystemExit(f'Forbidden execution/result artifacts present: {present}')
+          print('REAL_0056_HISTORICAL_PAYLOAD_NOT_LOADED=true')
+          print('REAL_0056_PORTFOLIO_ECONOMICS_NOT_EXECUTED=true')
+          print('ACTUAL_HISTORICAL_VARIANTS_EVALUATED=0')
+          PY2
+          git diff --check -- research/brrk_simple_eth_sol_beta_router_0056/engine.py research/brrk_simple_eth_sol_beta_router_0056/test_engine.py research/brrk_simple_eth_sol_beta_router_0056/IMPLEMENTATION_BOUNDARY.json research/brrk_simple_eth_sol_beta_router_0056/README.md
+      - name: Commit implementation-only surface and remove helper
+        run: |
+          rm .github/workflows/_temp_0056_implementation_build.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'Research implementation [DRIFT_0]: freeze 0056 synthetic-only engine'
+          git push origin HEAD:research/0056-simple-beta-router-implementation
