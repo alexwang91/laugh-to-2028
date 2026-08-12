@@ -70,7 +70,10 @@
     "source_common_start": "2020-08-11T00:00:00Z",
     "source_common_end": "2026-08-02T00:00:00Z",
     "source_common_rows": 2183,
-    "assets_consumed": ["ETH", "SOL"],
+    "assets_consumed": [
+      "ETH",
+      "SOL"
+    ],
     "field_consumed": "daily_close",
     "network_fetch_allowed": false,
     "replacement_dataset_allowed": false,
@@ -143,7 +146,10 @@
   "portfolio_contract": {
     "starting_nav": 1.0,
     "starting_state": "CASH_BEFORE_FIRST_ENTRY_ONLY",
-    "router_assets": ["ETH", "SOL"],
+    "router_assets": [
+      "ETH",
+      "SOL"
+    ],
     "router_target_gross": 1.0,
     "router_holds_exactly_one_asset": true,
     "cash_after_initial_entry_allowed": false,
@@ -160,12 +166,19 @@
     "all_benchmarks_pay_initial_entry_cost": true,
     "pointwise_oracle_benchmark_allowed": false,
     "hindsight_winner_recomputation_allowed": false,
-    "best_static_exact_tie_break": ["B0_STATIC_ETH", "B1_STATIC_SOL", "B2_STATIC_50_50"]
+    "best_static_exact_tie_break": [
+      "B0_STATIC_ETH",
+      "B1_STATIC_SOL",
+      "B2_STATIC_50_50"
+    ]
   },
   "transaction_cost_contract": {
     "cost_semantics": "EXECUTED_L1_TURNOVER_TIMES_BPS",
     "primary_cost_bps_per_unit_l1": 5.0,
-    "stress_cost_bps_per_unit_l1": [10.0, 20.0],
+    "stress_cost_bps_per_unit_l1": [
+      10.0,
+      20.0
+    ],
     "cost_rate_formula": "cost_bps / 10000",
     "cost_formula": "cost_t = pre_trade_NAV_t * executed_L1_turnover_t * cost_rate",
     "post_cost_nav_formula": "post_trade_NAV_t = pre_trade_NAV_t - cost_t",
@@ -183,12 +196,41 @@
     "strict_dominance_test": "log(W_router/W_benchmark) > 1e-12"
   },
   "temporal_robustness": {
-    "block_sizes": [531, 531, 530, 530],
+    "block_sizes": [
+      531,
+      531,
+      530,
+      530
+    ],
     "blocks": [
-      {"block": 1, "origin_start": "2020-10-10T00:00:00Z", "origin_end": "2022-03-24T00:00:00Z", "terminal_close": "2022-03-25T00:00:00Z", "held_periods": 531},
-      {"block": 2, "origin_start": "2022-03-25T00:00:00Z", "origin_end": "2023-09-06T00:00:00Z", "terminal_close": "2023-09-07T00:00:00Z", "held_periods": 531},
-      {"block": 3, "origin_start": "2023-09-07T00:00:00Z", "origin_end": "2025-02-17T00:00:00Z", "terminal_close": "2025-02-18T00:00:00Z", "held_periods": 530},
-      {"block": 4, "origin_start": "2025-02-18T00:00:00Z", "origin_end": "2026-08-01T00:00:00Z", "terminal_close": "2026-08-02T00:00:00Z", "held_periods": 530}
+      {
+        "block": 1,
+        "origin_start": "2020-10-10T00:00:00Z",
+        "origin_end": "2022-03-24T00:00:00Z",
+        "terminal_close": "2022-03-25T00:00:00Z",
+        "held_periods": 531
+      },
+      {
+        "block": 2,
+        "origin_start": "2022-03-25T00:00:00Z",
+        "origin_end": "2023-09-06T00:00:00Z",
+        "terminal_close": "2023-09-07T00:00:00Z",
+        "held_periods": 531
+      },
+      {
+        "block": 3,
+        "origin_start": "2023-09-07T00:00:00Z",
+        "origin_end": "2025-02-17T00:00:00Z",
+        "terminal_close": "2025-02-18T00:00:00Z",
+        "held_periods": 530
+      },
+      {
+        "block": 4,
+        "origin_start": "2025-02-18T00:00:00Z",
+        "origin_end": "2026-08-01T00:00:00Z",
+        "terminal_close": "2026-08-02T00:00:00Z",
+        "held_periods": 530
+      }
     ],
     "best_static_definition": "largest full-horizon terminal wealth among B0/B1/B2 at 5bps",
     "global_no_reset_nav": true,
@@ -210,7 +252,11 @@
     "replicate_statistic": "T_r = max_b(mu_b - mu_star_(r,b))",
     "quantile": "ordinary Type-7 linear 0.95 quantile of T_r",
     "lower_bound": "LCB_b = mu_b - q95",
-    "pass_rule": "all three LCB_b > 0"
+    "pass_rule": "all three LCB_b > 0",
+    "rng_implementation": "NUMPY_DEFAULT_RNG_PCG64_VIA_np.random.default_rng",
+    "same_sampled_indices_jointly_across_all_three_benchmarks": true,
+    "router_states_recomputed_inside_bootstrap": false,
+    "bootstrap_operates_on_realized_net_log_growth_differentials": true
   },
   "gates": {
     "G0": "exact hashes/blobs/rows/calendar/source tz-naive contract/tz_localize-only adapter/value invariance/adapted UTC-aware contract/bound 0056 engine/candidate timing costs benchmarks variant budget; any breach INVALID_EXECUTION",
@@ -220,12 +266,30 @@
     "G4": "all three simultaneous moving-block-bootstrap LCBs >0"
   },
   "classification_precedence": [
-    {"if": "G0_FAIL", "classification": "INVALID_EXECUTION"},
-    {"if": "G1_FAIL", "classification": "FAIL_NO_SIMPLE_BETA_ROUTER_ECONOMIC_UPLIFT"},
-    {"if": "G2_FAIL", "classification": "FAIL_SIMPLE_BETA_ROUTER_COST_FRAGILE"},
-    {"if": "G3_FAIL", "classification": "FAIL_SIMPLE_BETA_ROUTER_TEMPORALLY_CONCENTRATED"},
-    {"if": "G4_FAIL", "classification": "FAIL_SIMPLE_BETA_ROUTER_ECONOMIC_UPLIFT_NOT_DEPENDENCE_ROBUST"},
-    {"if": "ALL_G0_G4_PASS", "classification": "PASS_SIMPLE_BETA_ROUTER_ECONOMIC_ELIGIBILITY"}
+    {
+      "if": "G0_FAIL",
+      "classification": "INVALID_EXECUTION"
+    },
+    {
+      "if": "G1_FAIL",
+      "classification": "FAIL_NO_SIMPLE_BETA_ROUTER_ECONOMIC_UPLIFT"
+    },
+    {
+      "if": "G2_FAIL",
+      "classification": "FAIL_SIMPLE_BETA_ROUTER_COST_FRAGILE"
+    },
+    {
+      "if": "G3_FAIL",
+      "classification": "FAIL_SIMPLE_BETA_ROUTER_TEMPORALLY_CONCENTRATED"
+    },
+    {
+      "if": "G4_FAIL",
+      "classification": "FAIL_SIMPLE_BETA_ROUTER_ECONOMIC_UPLIFT_NOT_DEPENDENCE_ROBUST"
+    },
+    {
+      "if": "ALL_G0_G4_PASS",
+      "classification": "PASS_SIMPLE_BETA_ROUTER_ECONOMIC_ELIGIBILITY"
+    }
   ],
   "stop_and_followup": {
     "same_id_rerun_after_valid_result": false,
@@ -244,5 +308,21 @@
     "real_historical_payload_may_be_evaluated_during_preregistration": false,
     "implementation_before_prereg_merge_allowed": false,
     "real_historical_evaluation_before_separate_implementation_merge_and_controlled_boundary_merge": false
-  }
+  },
+  "primary_endpoints": [
+    "NET_TERMINAL_WEALTH",
+    "NET_CAGR"
+  ],
+  "secondary_diagnostics": [
+    "MAXIMUM_DRAWDOWN",
+    "TOTAL_EXECUTED_L1_TURNOVER",
+    "TOTAL_ROUTER_SWITCH_COUNT",
+    "AVERAGE_HOLDING_DURATION_DAYS",
+    "MEDIAN_HOLDING_DURATION_DAYS",
+    "LONGEST_UNDERPERFORMANCE_INTERVAL_VS_FULL_HORIZON_BEST_STATIC_AT_5BPS",
+    "CALENDAR_YEAR_NET_RETURNS_2020_PARTIAL_THROUGH_2026_PARTIAL",
+    "FOUR_FIXED_CHRONOLOGICAL_BLOCK_RETURNS_AND_RELATIVE_LOG_GROWTH",
+    "10BPS_AND_20BPS_COST_SENSITIVITY",
+    "PAIRED_DEPENDENCE_AWARE_BOOTSTRAP_LOWER_BOUNDS"
+  ]
 }
