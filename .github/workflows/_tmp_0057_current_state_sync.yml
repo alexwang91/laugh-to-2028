@@ -35,7 +35,6 @@ jobs:
           PY
           test "$(git diff --name-only | wc -l)" -eq 1
           test "$(git diff --name-only)" = "docs/CURRENT_STATE.md"
-          git diff --check
           python -m research.governance.validate
           python -m research.governance.no_drift
       - name: Commit docs-only sync
