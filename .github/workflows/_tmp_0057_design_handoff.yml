@@ -1,0 +1,48 @@
+name: Temporary 0057 design handoff
+
+on:
+  push:
+    branches:
+      - research/0057-simple-beta-router-interface-replication-design
+
+permissions:
+  contents: write
+
+jobs:
+  handoff:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Update CURRENT_STATE design-only
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('docs/CURRENT_STATE.md')
+          s=p.read_text()
+          old_main='Current `main` research merge: **`186a7f7d57c957c98798ecd828533ffe20dedb83`**'
+          old_branch='Current research branch: **`research/0056-simple-beta-router-result`**'
+          assert old_main in s and old_branch in s
+          s=s.replace(old_main,'Current `main` research merge: **`dbf95e0b5179e5d58c4e2527aa1c841625f134b2`**',1)
+          s=s.replace(old_branch,'Current research branch: **`research/0057-simple-beta-router-interface-replication-design`**',1)
+          anchor='BRRK simple ETH/SOL Beta router 0056  INVALID_EXECUTION / CLOSED / NO ECONOMIC CONCLUSION\n'
+          assert anchor in s
+          s=s.replace(anchor,anchor+'BRRK Beta router interface replication 0057 DESIGN FROZEN / PREREG ABSENT / NOT RUN\n',1)
+          assert '## 19. 0057 interface-corrected Beta-router replication design' not in s
+          s += '''\n\n---\n\n## 19. 0057 interface-corrected Beta-router replication design\n\nNew research ID: `BRRK-SIMPLE-ETH-SOL-BETA-ROUTER-INTERFACE-REPLICATION-0057`.\n\n0056 remains immutable `INVALID_EXECUTION / CLOSED`; it produced no terminal wealth, CAGR or G1-G4 economic result. 0057 is a new-ID measurement replication of the unresolved economic question, not a same-ID rerun or strategy rescue.\n\nThe only permitted design change is a deterministic representation adapter for the already-identified interface mismatch:\n\n```text\nimmutable 0047/0048 source frames      UTC-normalized tz-naive daily indexes\nadapter                                assert source contract, copy frames, index.tz_localize("UTC") only\ncalendar labels / order / close values MUST remain identical\nscientific mechanics                   immutable 0056 engine blob b0fc1ac267a66593e7e2c4687aff81491bfcdf5a\n```\n\nNo `tz_convert`, time shift, resampling, fill, row mutation, refetch or alternate loader is allowed. The RM60 candidate, causal timing, B0/B1/B2 benchmarks, 5/10/20 bps costs, 2,122-period window, 531/531/530/530 temporal partition, moving-block bootstrap and G0-G4 hierarchy are not reopened for selection. The next numerical preregistration must inherit them without relaxation.\n\n```text\n0057 numerical preregistration         ABSENT\n0057 central registry owner            ABSENT\n0057 implementation                    ABSENT\n0057 controlled execution boundary     ABSENT\n0057 historical execution              NOT RUN\n0057 result                            ABSENT\n0057 actual variants evaluated         0\nCanonical BRRK-0011                    NO CHANGE\nPhase 6                                NO CHANGE\nproduction_authorized_components       []\nproduction_authorized                  false\nsignature_authorized                   false\norder_submission_authorized            false\n```\n\nExact next step after design merge: a separate numerical/data preregistration that binds the immutable source identity, exact one-adapter contract and the unchanged 0056 economic specification before any 0057 implementation or historical output.\n'''
+          p.write_text(s)
+          PY
+      - name: Verify design-only surface
+        run: |
+          test ! -e research/brrk_simple_eth_sol_beta_router_interface_replication_0057/PREREGISTRATION.json
+          test ! -e research/brrk_simple_eth_sol_beta_router_interface_replication_0057/engine.py
+          test ! -e research/brrk_simple_eth_sol_beta_router_interface_replication_0057/RUN_ATTEMPT.marker
+      - name: Commit handoff and remove helper
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git rm .github/workflows/_tmp_0057_design_handoff.yml
+          git add docs/CURRENT_STATE.md
+          git commit -m 'Research design [DRIFT_0]: advance 0057 design-only handoff'
+          git push origin HEAD:research/0057-simple-beta-router-interface-replication-design
