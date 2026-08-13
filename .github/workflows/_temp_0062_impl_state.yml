@@ -1,0 +1,44 @@
+name: Temp 0062 implementation handoff
+on:
+  push:
+    branches: [docs/0062-implementation-state]
+    paths: ['.github/workflows/_temp_0062_impl_state.yml']
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/0062-implementation-v1
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Update CURRENT_STATE only
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "e30a7916654f0f0b3b3a926e267c613ac65300ef"
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('docs/CURRENT_STATE.md')
+          s=p.read_text()
+          pairs=[
+          ('Current `main` research merge: **`aa3fa9c1814c4113918e0d012636db44a1f89659`**','Current `main` research merge: **`f1982689c59be9362f25b36a2f2067d0539054fe`**'),
+          ('Current research branch: **`research/0062-prereg-v1`**','Current research branch: **`research/0062-implementation-v1`**'),
+          ('BRRK BTC risk signal atlas 0062        PREREGISTERED / IMPLEMENTATION ABSENT / NOT RUN','BRRK BTC risk signal atlas 0062        IMPLEMENTED / CONTROLLED BOUNDARY ABSENT / NOT RUN'),
+          ('stage                                   PREREGISTERED / NOT RUN','stage                                   IMPLEMENTED / CONTROLLED BOUNDARY ABSENT / NOT RUN')]
+          for a,b in pairs:
+              assert s.count(a)==1,(a,s.count(a))
+              s=s.replace(a,b,1)
+          needle='frozen family-track hypotheses          34\n'
+          assert s.count(needle)==1
+          s=s.replace(needle,needle+'engine blob                              cac8e946998c836d10842b9388e1e3ef345a8c0b\nimplementation contracts                SYNTHETIC ONLY / NO HISTORICAL READ\n',1)
+          p.write_text(s)
+          PY
+          test "$(git diff --name-only)" = "docs/CURRENT_STATE.md"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs/CURRENT_STATE.md
+          git commit -m 'docs: hand off 0062 implementation state'
+          git push origin HEAD:research/0062-implementation-v1
