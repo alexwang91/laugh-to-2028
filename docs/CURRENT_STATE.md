@@ -2,8 +2,8 @@
 
 Last updated: **2026-08-13**  
 Authoritative repository: `alexwang91/laugh-to-2028`  
-Current `main` research merge: **`fe210187472c2bcdfb51573b4cc544c187ade079`**  
-Current research branch: **`research/0060-btc-cash-absolute-risk-diagnostic-closeout`**  
+Current `main` research merge: **`9ac4a70c638bf55d8b7b614e877ed36e8193f0e7`**  
+Current research branch: **`research/0061-btc-cash-absolute-risk-measurement-replication-design`**  
 Status of this document: **AUTHORITATIVE OPERATING SNAPSHOT**
 
 > GitHub `main`, immutable research artifacts and machine registries remain the sources of truth. This file is the compact human handoff, not a substitute for preregistration, execution, evidence, recovery or closeout artifacts.
@@ -44,6 +44,7 @@ BRRK Beta router interface replication 0057 FAIL_SIMPLE_BETA_ROUTER_COST_FRAGILE
 BRRK Beta->BTC parameter geometry 0058     FAIL_NO_STABLE_PARAMETER_PLATEAU / CLOSED
 BRRK Beta deterioration/BTC takeover 0059 FAIL_NO_MONOTONE_CONTINUATION_INFORMATION / CLOSED
 BRRK BTC->Cash absolute risk 0060     INVALID_EXECUTION / CLOSED / NO SCIENTIFIC CONCLUSION
+BRRK BTC->Cash measurement replication 0061 DESIGN FROZEN / PREREG ABSENT / NOT RUN
 
 Canonical BRRK-0011                    NO CHANGE
 Phase 7                                MONITOR_ONLY / LAUNCH BLOCKED
@@ -1235,3 +1236,28 @@ production_authorized                  false
 signature_authorized                   false
 order_submission_authorized            false
 ```
+
+---
+
+## 0061 BTC-to-Cash measurement-corrected replication design handoff
+
+`BRRK-BTC-CASH-ABSOLUTE-RISK-MEASUREMENT-REPLICATION-0061` is a new-ID measurement replication of the unresolved 0060 question.
+
+```text
+research family                        BRRK_BTC_TO_CASH_GROSS_RISK
+design branch                          research/0061-btc-cash-absolute-risk-measurement-replication-design
+design authority commit                2f432e26040138b33a9687fec12a6e2dee8a176d
+design freeze                           research/governance/BRRK_BTC_CASH_ABSOLUTE_RISK_MEASUREMENT_REPLICATION_0061_DESIGN_FREEZE_2026-08-13.md
+stage                                   DESIGN FROZEN / PREREG ABSENT / NOT IMPLEMENTED / NOT RUN
+registry owner                          ABSENT UNTIL POST-DESIGN PREREGISTRATION
+historical 0061 outcomes                NOT COMPUTED
+actual variants evaluated               0
+```
+
+0061 leaves the 0060 BTC-only A1/A2/A3 state, all eight terminal-loss/adverse-excursion targets, 20/60/120/240 horizon family, immutable DEVELOPMENT dataset and full-sample/temporal Spearman questions unchanged. It corrects only the dependence-aware measurement interface: full-panel average-tie midrank scores are standardized once, then aligned moving-block resampling operates on fixed score products rather than recomputing a replicate-specific correlation denominator. The full-panel observed fixed-score association must equal ordinary Spearman within a preregistered numerical tolerance.
+
+A constant required coordinate on the full shared panel is a valid scientific no-information FAIL, not an execution INVALID. Degenerate bootstrap resamples must remain finite under the fixed-score statistic. `INVALID_EXECUTION` remains reserved for protocol/integrity failures.
+
+No signed target, volatility controller, drawdown controller, CUSUM/change detector, BTC/Cash threshold, re-entry rule, hysteresis, gross map, strategy NAV, CAGR/MDD optimization, leverage or shorting is opened under 0061.
+
+**Exact next step after DESIGN merge:** a separate numerical/data preregistration must create the central 0061 owner and freeze the inherited support/temporal rules plus exact fixed-score normalization, Spearman-equivalence tolerance, 240-row non-circular MBB geometry, replicate count, seed, quantile convention, simultaneous eight-target LCB construction, short-circuit semantics and lossless result schema before implementation or any real historical 0061 output.
