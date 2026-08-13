@@ -1,0 +1,74 @@
+name: Tooling 0062 owner writer fixed artifact
+
+on:
+  push:
+    branches:
+      - tools/0062-owner-writer-v1
+    paths:
+      - '.github/workflows/tooling-0062-owner-writer.yml'
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  apply-owner:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout formal prereg branch
+        uses: actions/checkout@v4
+        with:
+          ref: research/0062-prereg-v1
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: execution/plan-b-bot/requirements-dev.txt
+      - name: Install pinned governance runtime
+        run: pip install -r execution/plan-b-bot/requirements-dev.txt
+      - name: Download exact validated artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: 0062-clean-prereg-owner
+          path: /tmp/0062-owner-artifact
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          repository: alexwang91/laugh-to-2028
+          run-id: 31751181470
+      - name: Verify and apply owner-only registry
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "aa3fa9c1814c4113918e0d012636db44a1f89659"
+          test "$(git hash-object /tmp/0062-owner-artifact/research_registry.json)" = "b6c5373a568dac28a897034a3ff8c7672efb0b5e"
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r = json.loads(Path('/tmp/0062-owner-artifact/BUILD_REPORT.json').read_text())
+          assert r['base_commit_sha'] == 'aa3fa9c1814c4113918e0d012636db44a1f89659'
+          assert r['base_registry_blob_sha'] == 'b8c96a35afe96776e5dc34a93d11bf402c2c8603'
+          assert r['preexisting_records_unchanged'] is True
+          assert r['base_record_count'] == 34 and r['output_record_count'] == 35
+          assert r['new_owner_has_evidence_scorecard'] is False
+          assert r['actual_variants_evaluated'] == 0
+          assert r['production_authorized'] is False
+          assert r['result_status'] == 'PREREGISTERED_NOT_RUN'
+          owner = json.loads(Path('/tmp/0062-owner-artifact/OWNER.json').read_text())
+          assert owner['research_id'] == 'BRRK-BTC-RISK-SIGNAL-ATLAS-0062'
+          assert owner['promotion_state'] == 'NONE'
+          assert owner['evidence_refs'] == []
+          assert owner['lineage_edges'] == []
+          assert 'evidence_scorecard' not in owner
+          assert owner['actual_variants_evaluated'] == 0
+          PY
+          cp /tmp/0062-owner-artifact/research_registry.json config/research_registry.json
+          python -m research.governance.validate
+          test "$(git diff --name-only)" = "config/research_registry.json"
+          git diff --exit-code -- docs/CURRENT_STATE.md research/ || true
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add config/research_registry.json
+          git diff --cached --name-only | grep -qx 'config/research_registry.json'
+          git commit -m 'research: register 0062 prereg owner'
+          git push origin HEAD:research/0062-prereg-v1
