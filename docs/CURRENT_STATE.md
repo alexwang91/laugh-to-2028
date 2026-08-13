@@ -1,9 +1,9 @@
 # BRRK Current State
 
-Last updated: **2026-08-13**  
+Last updated: **2026-08-14**  
 Authoritative repository: `alexwang91/laugh-to-2028`  
-Current `main` research merge: **`d9759316d80ea67390c9b2f65334f30d52fad19c`**  
-Current research branch: **`research/0062-btc-risk-signal-atlas-design`**  
+Current `main` research merge: **`aa3fa9c1814c4113918e0d012636db44a1f89659`**  
+Current research branch: **`research/0062-prereg-v1`**  
 Status of this document: **AUTHORITATIVE OPERATING SNAPSHOT**
 
 > GitHub `main`, immutable research artifacts and machine registries remain the sources of truth. This file is the compact human handoff, not a substitute for preregistration, execution, evidence, recovery or closeout artifacts.
@@ -45,7 +45,7 @@ BRRK Beta->BTC parameter geometry 0058     FAIL_NO_STABLE_PARAMETER_PLATEAU / CL
 BRRK Beta deterioration/BTC takeover 0059 FAIL_NO_MONOTONE_CONTINUATION_INFORMATION / CLOSED
 BRRK BTC->Cash absolute risk 0060     INVALID_EXECUTION / CLOSED / NO SCIENTIFIC CONCLUSION
 BRRK BTC->Cash measurement replication 0061 FAIL_NO_JOINT_DOWNSIDE_INFORMATION / CLOSED
-BRRK BTC risk signal atlas 0062        DESIGN FROZEN / PREREG ABSENT / NOT RUN
+BRRK BTC risk signal atlas 0062        PREREGISTERED / IMPLEMENTATION ABSENT / NOT RUN
 
 Canonical BRRK-0011                    NO CHANGE
 Phase 7                                MONITOR_ONLY / LAUNCH BLOCKED
@@ -59,6 +59,32 @@ order_submission_authorized = false
 ```
 
 Phase-6 counts above are copied from the committed accounting index. That ledger is non-evidence and cannot create or backfill credit; durable Actions evidence and its separate receipt remain the evidence authority.
+
+
+## 0062 numerical/data preregistration handoff
+
+```text
+research id                             BRRK-BTC-RISK-SIGNAL-ATLAS-0062
+design merge                            aa3fa9c1814c4113918e0d012636db44a1f89659
+stage                                   PREREGISTERED / NOT RUN
+Tier-A family count                     17
+frozen candidate cells                  185
+frozen family-track hypotheses          34
+horizons                                5 / 10 / 20 / 40 sessions
+Tier-B/C F15-F20                        DATA_UNAVAILABLE / NOT SUBSTITUTABLE POST HOC
+F22 latent-state                        NOT EVALUATED IN 0062
+historical 0062 outcomes                NOT COMPUTED
+actual variants evaluated               0
+RUN_ATTEMPT.marker                      ABSENT
+portfolio economics                     FORBIDDEN
+canonical BRRK-0011                     NO CHANGE
+Phase 6                                 NO CHANGE
+production_authorized                   false
+signature_authorized                    false
+order_submission_authorized             false
+```
+
+Exact candidate geometry, target formulas, family-track mapping, support gates, temporal recurrence, plateau gate and dependence-aware simultaneous MBB inference are frozen in `research/brrk_btc_risk_signal_atlas_0062/PREREGISTRATION.json`. The immutable Tier-A evidence wrapper remains researcher-exposed DEVELOPMENT history and is not independent OOS. No 0062 historical target, signal association or family ranking was computed during preregistration.
 
 ---
 
