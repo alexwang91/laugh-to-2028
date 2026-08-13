@@ -1,0 +1,82 @@
+{
+  "research_id": "BRRK-BTC-CASH-ABSOLUTE-RISK-DIAGNOSTIC-0060",
+  "status": "CONTROLLED_EXECUTION_INTERFACE_FROZEN_NOT_RUN",
+  "controlled_execution_base_main_sha": "7bb4883aa176f421199173b56d9753f447afe851",
+  "frozen_implementation_merge_sha": "7bb4883aa176f421199173b56d9753f447afe851",
+  "candidate_count": 1,
+  "actual_variants_evaluated": 0,
+  "result_status": "PREREGISTERED_NOT_RUN",
+  "immutable_upstream_git_blobs": {
+    "research/brrk_btc_cash_absolute_risk_diagnostic_0060/PREREGISTRATION.json": "c870f8bb7038349ea6f07506f377319ac42ab9f0",
+    "research/brrk_btc_cash_absolute_risk_diagnostic_0060/DATASET_DECLARATION.json": "10037eb79f5270bd814195d6d3d92508324a8575",
+    "research/brrk_btc_cash_absolute_risk_diagnostic_0060/IMPLEMENTATION_BOUNDARY.json": "5b2767bea05d8f658a59baccba154792d4bef932",
+    "research/brrk_btc_cash_absolute_risk_diagnostic_0060/engine.py": "b901774b6849c9bcf6fbbf9887022142bf74a42d",
+    "research/brrk_beta_handoff_0047/engine.py": "059b55961e279dab41ba29b5b017de0922e4f33c",
+    "research/brrk_beta_handoff_0047/evidence/MARKET_EVIDENCE.json": "64ebf5c6deaf3f34dbeac715378f196ff0f4fafe"
+  },
+  "frozen_market_evidence": {
+    "path": "research/brrk_beta_handoff_0047/evidence/MARKET_EVIDENCE.json",
+    "git_blob_sha": "64ebf5c6deaf3f34dbeac715378f196ff0f4fafe",
+    "payload_sha256": "d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193",
+    "dataset_slice_id": "BRRK-LEADERSHIP-ROTATION-0048-EXPOSED-HIST-V1",
+    "history_start": "2020-08-11T00:00:00Z",
+    "history_end": "2026-08-02T00:00:00Z",
+    "common_rows": 2183,
+    "resolution": "1D",
+    "stored_index_representation": "TZ_NAIVE_UTC_NORMALIZED_DAILY_DATES",
+    "network_fetch_allowed": false,
+    "replacement_allowed": false,
+    "independent_oos": false
+  },
+  "source_loader": {
+    "module": "research.brrk_beta_handoff_0047.engine",
+    "function": "frames_from_market_evidence",
+    "git_blob_sha": "059b55961e279dab41ba29b5b017de0922e4f33c",
+    "expected_assets_exact": ["BTC", "ETH", "SOL"],
+    "alternate_loader_allowed": false,
+    "network_fetch_allowed": false
+  },
+  "scientific_engine": {
+    "module": "research.brrk_btc_cash_absolute_risk_diagnostic_0060.engine",
+    "function": "evaluate",
+    "git_blob_sha": "b901774b6849c9bcf6fbbf9887022142bf74a42d",
+    "candidate_count": 1,
+    "bootstrap_replicates": 10000,
+    "engine_may_be_modified_by_runner": false
+  },
+  "runtime_artifacts": {
+    "attempt": "RUN_ATTEMPT.marker",
+    "result": "PRIMARY_RESULT.json",
+    "execution": "EXECUTION.json",
+    "final_marker": "RUN_ONCE.marker"
+  },
+  "execution_sequence": [
+    "PREFLIGHT_ZERO_RESULT_NO_MARKET_CONTENT_READ",
+    "DURABLY_PERSIST_RUN_ATTEMPT_MARKER",
+    "READ_IMMUTABLE_MARKET_WRAPPER_EXACTLY_ONCE",
+    "CALL_0047_SOURCE_LOADER_EXACTLY_ONCE",
+    "CALL_0060_SCIENTIFIC_ENGINE_EXACTLY_ONCE",
+    "DURABLY_PERSIST_PRIMARY_RESULT_AND_EXECUTION",
+    "FINALIZE_MARKER_FROM_EXISTING_HASHES_WITHOUT_MARKET_READ_OR_REMEASUREMENT"
+  ],
+  "execution_head_policy": "CALLER_MUST_PASS_EXACT_MERGED_CONTROLLED_BOUNDARY_HEAD_SHA",
+  "preflight_repeatable": true,
+  "preflight_reads_market_content": false,
+  "attempt_start_repeatable": false,
+  "evaluate_repeatable": false,
+  "attempt_marker_create_only": true,
+  "result_create_only": true,
+  "execution_create_only": true,
+  "final_marker_create_only": true,
+  "existing_partial_result_blocks_automatic_recompute": true,
+  "marker_only_recovery_allowed": true,
+  "marker_only_recovery_condition": "attempt,result,execution all exist and verify while final marker alone is absent",
+  "same_id_rerun_after_attempt_allowed": false,
+  "same_id_retuning_after_attempt_allowed": false,
+  "same_id_rescue_after_attempt_allowed": false,
+  "portfolio_economics": false,
+  "btc_cash_gross_map": false,
+  "production_authorized": false,
+  "signature_authorized": false,
+  "order_submission_authorized": false
+}
