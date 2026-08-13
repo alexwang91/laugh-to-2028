@@ -2,8 +2,8 @@
 
 Last updated: **2026-08-13**  
 Authoritative repository: `alexwang91/laugh-to-2028`  
-Current `main` research merge: **`142733887c0e8c0652e29afa9eb99c9c4ede4a42`**  
-Current research branch: **`research/0060-btc-cash-absolute-risk-diagnostic-prereg`**  
+Current `main` research merge: **`cf803b355632a91d19a38186cbf5a369e8a2a6db`**  
+Current research branch: **`research/0060-btc-cash-absolute-risk-diagnostic-implementation`**  
 Status of this document: **AUTHORITATIVE OPERATING SNAPSHOT**
 
 > GitHub `main`, immutable research artifacts and machine registries remain the sources of truth. This file is the compact human handoff, not a substitute for preregistration, execution, evidence, recovery or closeout artifacts.
@@ -43,7 +43,7 @@ BRRK simple ETH/SOL Beta router 0056  INVALID_EXECUTION / CLOSED / NO ECONOMIC C
 BRRK Beta router interface replication 0057 FAIL_SIMPLE_BETA_ROUTER_COST_FRAGILE / CLOSED
 BRRK Beta->BTC parameter geometry 0058     FAIL_NO_STABLE_PARAMETER_PLATEAU / CLOSED
 BRRK Beta deterioration/BTC takeover 0059 FAIL_NO_MONOTONE_CONTINUATION_INFORMATION / CLOSED
-BRRK BTC->Cash absolute risk 0060     NUMERICAL/DATA PREREG FROZEN / NOT IMPLEMENTED / NOT RUN
+BRRK BTC->Cash absolute risk 0060     IMPLEMENTATION-ONLY / ZERO RESULT / NOT RUN
 
 Canonical BRRK-0011                    NO CHANGE
 Phase 7                                MONITOR_ONLY / LAUNCH BLOCKED
@@ -1143,3 +1143,29 @@ The state is one fixed equal-weight BTC-only A1/A2/A3 representation. All eight 
 Classification precedence is `INVALID_EXECUTION -> FAIL_INSUFFICIENT_CAUSAL_SUPPORT -> FAIL_NO_JOINT_DOWNSIDE_INFORMATION -> FAIL_TEMPORAL_INSTABILITY -> FAIL_DEPENDENCE_AWARE_ROBUSTNESS -> PASS_ABSOLUTE_RISK_INFORMATION_STAGE_ELIGIBLE`. PASS only permits a new-ID translation study.
 
 **Exact next step after prereg merge:** implementation-only with synthetic/toy/contract tests. Real historical target computation remains forbidden until a separately merged controlled-execution boundary.
+
+
+---
+
+## 0060 implementation-only handoff
+
+0060 numerical/data preregistration merged at `cf803b355632a91d19a38186cbf5a369e8a2a6db`. The implementation branch adds only the data-agnostic frozen BTC absolute-risk engine, synthetic contract tests and `IMPLEMENTATION_BOUNDARY.json`.
+
+The engine accepts a caller-supplied BTC close frame. It contains no 0047 market loader import, no network request, no filesystem market-evidence reader, no `run_once.py`, no `RUN_INTERFACE.json`, no `RESULT_SCHEMA.json`, no controlled-execution boundary and no runtime marker.
+
+Frozen mechanics implemented: 20/60/120/240 BRRK trend components; A1 trend disagreement/persistence; A2 trailing-high/age/MA20 slope structure; A3 RV acceleration/semivol asymmetry/negative-return share; trailing252/min60 causal z-score clip3; strict required-coordinate equal-weight A1/A2/A3/S; terminal-loss and origin-relative adverse-excursion targets at all four horizons; identical shared origin set; average-tie Spearman; four equal-as-possible chronological blocks; 240-row non-circular aligned moving-block bootstrap with simultaneous centered-max LCBs; G1-G4 classification hierarchy.
+
+Synthetic tests exercise formula timing, strict missingness, tie handling, target semantics, block partition, deterministic bootstrap, classification precedence and a synthetic end-to-end call. Synthetic classifications have zero scientific authority.
+
+```text
+REAL_0060_HISTORICAL_PAYLOAD_NOT_LOADED     true
+REAL_0060_DOWNSIDE_TARGETS_NOT_EXECUTED     true
+ACTUAL_HISTORICAL_VARIANTS_EVALUATED        0
+BTC/Cash gross map                           absent / forbidden
+portfolio economics                         absent / forbidden
+production_authorized                       false
+signature_authorized                        false
+order_submission_authorized                 false
+```
+
+**Exact next step after implementation merge:** a separate zero-result controlled-execution boundary must freeze immutable engine/source hashes, result schema, run interface and exactly-once marker/fault semantics. No historical 0060 target may be computed before that boundary merges.
