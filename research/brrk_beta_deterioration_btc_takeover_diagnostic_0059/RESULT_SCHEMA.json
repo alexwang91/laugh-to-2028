@@ -1,0 +1,160 @@
+{
+  "schema_id": "BRRK-BETA-DETERIORATION-BTC-TAKEOVER-DIAGNOSTIC-0059-PRIMARY-RESULT-V1",
+  "schema_version": 1,
+  "research_id": "BRRK-BETA-DETERIORATION-BTC-TAKEOVER-DIAGNOSTIC-0059",
+  "dataset_slice_id": "BRRK-LEADERSHIP-ROTATION-0048-EXPOSED-HIST-V1",
+  "payload_sha256": "d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193",
+  "purpose": "Frozen structural contract for the single exactly-once 0059 DEVELOPMENT mechanism diagnostic. It preserves the lossless origin panel, all preregistered primary and descriptive diagnostics, classification precedence, and zero production authority without adding any threshold, allocation, portfolio economics, or selection freedom.",
+  "required_top_level_keys": [
+    "schema_id",
+    "research_id",
+    "dataset_slice_id",
+    "payload_sha256",
+    "execution_head_sha",
+    "classification",
+    "measurement",
+    "authority"
+  ],
+  "classification_enum": [
+    "INVALID_EXECUTION",
+    "FAIL_INSUFFICIENT_CAUSAL_SUPPORT",
+    "FAIL_NO_MONOTONE_CONTINUATION_INFORMATION",
+    "FAIL_TEMPORAL_INSTABILITY",
+    "FAIL_DEPENDENCE_AWARE_ROBUSTNESS",
+    "PASS_MECHANISM_INFORMATION_STAGE_ELIGIBLE"
+  ],
+  "successful_measurement_required_keys": [
+    "research_id",
+    "classification",
+    "gates",
+    "shared_origin_count",
+    "shared_origin_start",
+    "shared_origin_end",
+    "full_sample_rho_by_horizon",
+    "temporal_block_rho_by_horizon",
+    "bootstrap_q95",
+    "simultaneous_lcb_by_horizon",
+    "component_target_spearman",
+    "component_redundancy_matrix",
+    "component_eigenvalues",
+    "component_effective_rank",
+    "actual_variants_evaluated",
+    "origin_panel",
+    "authority"
+  ],
+  "invalid_measurement_required_keys": [
+    "research_id",
+    "classification",
+    "error_type",
+    "error",
+    "actual_variants_evaluated",
+    "authority"
+  ],
+  "required_gate_keys": [
+    "G0_INTEGRITY",
+    "G1_SUPPORT",
+    "G2_MONOTONE_INFORMATION",
+    "G3_TEMPORAL_RECURRENCE",
+    "G4_DEPENDENCE_AWARE_ROBUSTNESS"
+  ],
+  "horizon_keys": [
+    "20",
+    "60",
+    "120",
+    "240"
+  ],
+  "temporal_block_keys": [
+    "1",
+    "2",
+    "3",
+    "4"
+  ],
+  "component_keys": [
+    "D1_z",
+    "D2_z",
+    "D3_z"
+  ],
+  "origin_panel_fields": [
+    "origin_date",
+    "b_log_beta",
+    "z_log_beta_over_btc",
+    "D1_raw",
+    "D2_raw",
+    "D3_raw",
+    "D1_z",
+    "D2_z",
+    "D3_z",
+    "S",
+    "WBTC_20",
+    "WBETA_20",
+    "Y_20",
+    "WBTC_60",
+    "WBETA_60",
+    "Y_60",
+    "WBTC_120",
+    "WBETA_120",
+    "Y_120",
+    "WBTC_240",
+    "WBETA_240",
+    "Y_240",
+    "chronological_block_id"
+  ],
+  "frozen_counts": {
+    "source_rows": 2183,
+    "nominal_shared_origins": 1644,
+    "minimum_shared_origins": 1440,
+    "target_horizons": 4,
+    "temporal_blocks": 4,
+    "bootstrap_replicates": 10000,
+    "bootstrap_block_length": 240,
+    "bootstrap_seed": 1844716895,
+    "actual_variants_after_attempted_historical_evaluation": 1
+  },
+  "frozen_nominal_origin_window": {
+    "start": "2021-06-06T00:00:00Z",
+    "end": "2025-12-05T00:00:00Z"
+  },
+  "measurement_authority_invariants": {
+    "development_not_independent_oos": true,
+    "researcher_exposed_history": true,
+    "canonical_strategy_changed": false,
+    "phase6_changed": false,
+    "production_authorized_components": [],
+    "production_authorized": false,
+    "signature_authorized": false,
+    "order_submission_authorized": false
+  },
+  "authority_invariants": {
+    "development_not_independent_oos": true,
+    "researcher_exposed_history": true,
+    "historical_execution_attempted": true,
+    "declared_variants": 1,
+    "actual_variants_evaluated": 1,
+    "canonical_strategy_changed": false,
+    "phase6_changed": false,
+    "production_authorized_components": [],
+    "production_authorized": false,
+    "signature_authorized": false,
+    "order_submission_authorized": false,
+    "same_id_rerun_allowed": false,
+    "same_id_retuning_allowed": false,
+    "same_id_rescue_allowed": false
+  },
+  "forbidden_result_concepts": [
+    "trading_threshold",
+    "entry_threshold",
+    "exit_threshold",
+    "hysteresis",
+    "allocation_map",
+    "portfolio_nav",
+    "transaction_cost",
+    "cagr",
+    "mdd",
+    "turnover",
+    "leverage",
+    "short",
+    "btc_to_cash",
+    "historical_argmax",
+    "winner_horizon"
+  ]
+}
