@@ -1,0 +1,242 @@
+{
+  "schema_version": 1,
+  "research_id": "BRRK-BTC-CASH-ABSOLUTE-RISK-MEASUREMENT-REPLICATION-0061",
+  "research_family_id": "BRRK_BTC_TO_CASH_GROSS_RISK",
+  "research_domain": "RISK_CONTROL",
+  "research_governance_version": 1,
+  "governance_mode": "PROGRAM_GOVERNED_V1",
+  "objective_type": "MECHANISM_TEST",
+  "created_before_result": true,
+  "stage": "NUMERICAL_DATA_PREREGISTRATION",
+  "result_status": "PREREGISTERED_NOT_RUN",
+  "actual_variants_evaluated": 0,
+  "design_authority": {
+    "path": "research/governance/BRRK_BTC_CASH_ABSOLUTE_RISK_MEASUREMENT_REPLICATION_0061_DESIGN_FREEZE_2026-08-13.md",
+    "design_pr": 226,
+    "design_merge_sha": "c81e780ae2faa38f2e0bcda8f25e04ec7c5bc2a7",
+    "design_blob_sha": "4253e061b3b2f402df18eee8ec1b865af00d1cc3",
+    "design_changed_after_merge": false
+  },
+  "research_role": "MEASUREMENT_CORRECTED_REPLICATION_PURE_MECHANISM_DIAGNOSTIC_NOT_GROSS_MAP_NOT_THRESHOLD_CALIBRATION_NOT_STRATEGY_VALIDATION",
+  "variant_budget": {
+    "declared_candidate_representations": 1,
+    "declared_parameter_candidates": 1,
+    "actual_variants_evaluated_before_execution": 0,
+    "feature_tournament_allowed": false,
+    "horizon_selection_allowed": false,
+    "target_family_selection_allowed": false,
+    "threshold_search_allowed": false,
+    "portfolio_variant_allowed": false
+  },
+  "immutable_bindings": {
+    "0060_closeout": {
+      "path": "research/brrk_btc_cash_absolute_risk_diagnostic_0060/CLOSEOUT.json",
+      "blob_sha": "6f68b43657d72896f3a317683934f1c790c7e0a8",
+      "status": "INVALID_EXECUTION_CLOSED",
+      "scientific_conclusion_available": false,
+      "same_id_recovery_authority": false
+    },
+    "0060_scientific_engine": {
+      "path": "research/brrk_btc_cash_absolute_risk_diagnostic_0060/engine.py",
+      "blob_sha": "b901774b6849c9bcf6fbbf9887022142bf74a42d",
+      "delegated_state_and_target_construction_only": true,
+      "0060_bootstrap_not_delegated": true
+    },
+    "market_evidence": {
+      "path": "research/brrk_beta_handoff_0047/evidence/MARKET_EVIDENCE.json",
+      "blob_sha": "64ebf5c6deaf3f34dbeac715378f196ff0f4fafe",
+      "payload_sha256": "d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193"
+    }
+  },
+  "data_contract": {
+    "dataset_slice_ref": "BRRK-LEADERSHIP-ROTATION-0048-EXPOSED-HIST-V1",
+    "dataset_id": "BINANCE-SPOT-BTC-ETH-SOL-UTC-DAILY-OHLCV-TRADES",
+    "source_common_start": "2020-08-11T00:00:00Z",
+    "source_common_end": "2026-08-02T00:00:00Z",
+    "source_common_rows": 2183,
+    "assets_consumed": ["BTC"],
+    "field_consumed": "daily_close",
+    "resolution": "1D",
+    "semantic_timezone": "UTC",
+    "source_index_representation": "UTC_NORMALIZED_TZ_NAIVE_DAILY_DATES",
+    "network_fetch_allowed": false,
+    "replacement_dataset_allowed": false,
+    "synthetic_fill_allowed": false,
+    "researcher_exposed_history": true,
+    "data_budget": "DEVELOPMENT",
+    "independent_oos": false
+  },
+  "representation": {
+    "inherit_exact_0060_state": true,
+    "trend_horizons": [20, 60, 120, 240],
+    "FAST_weights": [0.15, 0.25, 0.30, 0.30],
+    "SLOW_weights": [0.10, 0.20, 0.30, 0.40],
+    "trend_formula": "tanh(log(P_t/P_(t-h))/(sample_std_ddof1(dlogP,trailing_h_including_t)*sqrt(h)))",
+    "A1a_raw": "TREND_SLOW(BTC)-TREND_FAST(BTC)",
+    "A1b_raw": "consecutive completed sessions through t with valid TREND_FAST<TREND_SLOW; valid false resets to 0; invalid trend pair gives NaN",
+    "A2a_raw": "log(max(BTC_(t-59)..BTC_t)/BTC_t)",
+    "A2b_raw": "sessions since most recent occurrence of trailing60 BTC high, integer 0..59; invalid before full trailing60 window",
+    "A2c_raw": "-log(MA20_t/MA20_(t-10)), MA20 causal arithmetic mean of BTC closes t-19..t",
+    "A3a_raw": "log(RV10/RV30), RV sample_std_ddof1 of trailing completed log returns; zero RV on either side gives NaN",
+    "A3b_raw": "log(DOWN20/UP20), semivol=sqrt(mean(r^2)) separately over strict negative and strict positive returns in trailing20; either side empty gives NaN",
+    "A3c_raw": "count(r<0 over trailing20 completed returns)/20",
+    "causal_z": "each raw coordinate trailing252_including_t,min60_valid,sample_std_ddof1,zero_std_nan,clip[-3,+3]",
+    "A1": "mean(A1a_z,A1b_z) only when both finite",
+    "A2": "mean(A2a_z,A2b_z,A2c_z) only when all three finite",
+    "A3": "mean(A3a_z,A3b_z,A3c_z) only when all three finite",
+    "joint_state": "S=(A1+A2+A3)/3 only when all three finite",
+    "available_feature_averaging_allowed": false,
+    "axis_reweighting_allowed": false,
+    "component_selection_authority": false
+  },
+  "target_contract": {
+    "inherit_exact_0060_targets": true,
+    "horizons_days": [20, 60, 120, 240],
+    "all_horizons_co_primary": true,
+    "all_target_families_co_primary": true,
+    "W_BTC": "BTC_(t+h)/BTC_t",
+    "W_CASH": 1.0,
+    "TERMINAL_LOSS": "max(0,-log(BTC_(t+h)/BTC_t))",
+    "ADVERSE_EXCURSION": "max_{u=1..h} max(0,-log(BTC_(t+u)/BTC_t))",
+    "adverse_excursion_is_origin_relative_not_running_peak_drawdown": true,
+    "identical_shared_origins_across_all_eight_targets": true,
+    "winning_horizon_selection_allowed": false,
+    "winning_target_family_selection_allowed": false,
+    "signed_target_allowed": false,
+    "cash_yield_or_stablecoin_yield_allowed": false
+  },
+  "support_contract": {
+    "nominal_first_joint_state_origin": "2021-06-06T00:00:00Z",
+    "nominal_last_shared_origin": "2025-12-05T00:00:00Z",
+    "nominal_shared_origin_count": 1644,
+    "nominal_values_inherited_from_0060_preregistered_calendar_formula_accounting": true,
+    "G1_min_shared_origins": 1440,
+    "actual_support_measured_only_in_unique_execution": true
+  },
+  "association_contract": {
+    "statistic": "ordinary average-tie Spearman(S,target) on identical shared origins",
+    "rank_ties": "average",
+    "co_primary_target_keys": [
+      "terminal_loss_20", "terminal_loss_60", "terminal_loss_120", "terminal_loss_240",
+      "adverse_excursion_20", "adverse_excursion_60", "adverse_excursion_120", "adverse_excursion_240"
+    ],
+    "G2_rule": "all eight co-primary ordinary Spearman rho values strictly >0",
+    "full_panel_constant_state_policy": "VALID_FAIL_NO_JOINT_DOWNSIDE_INFORMATION",
+    "full_panel_constant_required_target_policy": "VALID_FAIL_NO_JOINT_DOWNSIDE_INFORMATION",
+    "minimum_effect_size_gate": null
+  },
+  "temporal_contract": {
+    "partition": "q,r=divmod(N,4); first r chronological blocks q+1 rows, others q",
+    "nominal_sizes_if_N1644": [411, 411, 411, 411],
+    "block_statistic": "ordinary average-tie Spearman",
+    "positive_block": "all eight co-primary Spearman rho values finite and strictly >0",
+    "constant_coordinate_block_policy": "block is not positive but execution remains valid",
+    "G3_rule": "at least 3 of 4 positive blocks"
+  },
+  "fixed_score_contract": {
+    "purpose": "sole 0061 measurement correction for G4 dependence inference",
+    "rank_source": "full shared panel only, average ties",
+    "center": "subtract full-panel arithmetic mean rank",
+    "scale": "full-panel population RMS sqrt(mean(centered_rank^2))",
+    "state_score": "U_i",
+    "target_score": "V_i_k for each of eight co-primary targets",
+    "observed_association": "A_k=mean(U_i*V_i_k)",
+    "ordinary_spearman_equivalence_required": true,
+    "ordinary_spearman_equivalence_abs_tolerance": 1e-12,
+    "full_panel_zero_or_nonfinite_RMS_policy": "VALID_FAIL_NO_JOINT_DOWNSIDE_INFORMATION_BEFORE_BOOTSTRAP",
+    "replicate_reranking_allowed": false,
+    "replicate_recentering_allowed": false,
+    "replicate_rescaling_allowed": false,
+    "replicate_correlation_denominator_allowed": false
+  },
+  "bootstrap_contract": {
+    "method": "aligned non-circular moving-block bootstrap over fixed full-panel score rows",
+    "block_length": 240,
+    "replicates": 10000,
+    "seed": 1844716895,
+    "starts": "uniform-with-replacement from 0..N-L inclusive",
+    "assembly": "draw full contiguous blocks until >=N then truncate",
+    "replicate_statistic": "A_b_k=mean over resampled row indices of U_i*V_i_k",
+    "degenerate_resample_policy": "finite fixed-score sample mean; never rerank or divide by replicate variance",
+    "simultaneous_error": "M_b=max_k(A_k-A_b_k) over all eight co-primary targets",
+    "q95": "numpy quantile 0.95 method=linear / Type-7",
+    "LCB_k": "A_k-q95",
+    "G4_rule": "all eight simultaneous one-sided 95% LCB values finite and strictly >0"
+  },
+  "gate_execution_contract": {
+    "order": ["G0_INTEGRITY", "G1_SUPPORT", "G2_FULL_SAMPLE_INFORMATION", "G3_TEMPORAL_RECURRENCE", "G4_DEPENDENCE_ROBUSTNESS"],
+    "short_circuit": true,
+    "after_G1_fail": "G2_G3_G4_NOT_EVALUATED_DUE_TO_PRIOR_GATE",
+    "after_full_panel_constant_fail": "G2_CLASSIFIED_NO_INFORMATION_AND_G3_G4_NOT_EVALUATED_DUE_TO_PRIOR_GATE",
+    "after_G2_fail": "G3_G4_NOT_EVALUATED_DUE_TO_PRIOR_GATE",
+    "after_G3_fail": "G4_NOT_EVALUATED_DUE_TO_PRIOR_GATE",
+    "scientific_fail_is_persistable": true,
+    "invalid_execution_reserved_for_integrity_protocol_failure": true
+  },
+  "diagnostics": {
+    "axis_target_spearman": "A1,A2,A3 vs all eight targets when mathematically defined; non-gating",
+    "axis_redundancy": "3x3 Spearman matrix when mathematically defined",
+    "effective_rank": "entropy effective rank of nonnegative correlation eigenvalues; descriptive only",
+    "terminal_positive_rate_by_horizon": "descriptive only",
+    "selection_authority": false
+  },
+  "classification_precedence": [
+    "INVALID_EXECUTION",
+    "FAIL_INSUFFICIENT_CAUSAL_SUPPORT",
+    "FAIL_NO_JOINT_DOWNSIDE_INFORMATION",
+    "FAIL_TEMPORAL_INSTABILITY",
+    "FAIL_DEPENDENCE_AWARE_ROBUSTNESS",
+    "PASS_ABSOLUTE_RISK_INFORMATION_STAGE_ELIGIBLE"
+  ],
+  "result_persistence_contract": {
+    "unique_execution_lossless_origin_panel_required": true,
+    "origin_panel_required_fields": [
+      "origin_date", "A1a_raw", "A1b_raw", "A2a_raw", "A2b_raw", "A2c_raw", "A3a_raw", "A3b_raw", "A3c_raw",
+      "A1a_z", "A1b_z", "A2a_z", "A2b_z", "A2c_z", "A3a_z", "A3b_z", "A3c_z", "A1", "A2", "A3", "S",
+      "terminal_loss_20", "terminal_loss_60", "terminal_loss_120", "terminal_loss_240",
+      "adverse_excursion_20", "adverse_excursion_60", "adverse_excursion_120", "adverse_excursion_240", "chronological_block_id"
+    ],
+    "fixed_score_panel_required_if_G4_reached": true,
+    "fixed_score_panel_fields_if_G4_reached": [
+      "origin_date", "U_S", "V_terminal_loss_20", "V_terminal_loss_60", "V_terminal_loss_120", "V_terminal_loss_240",
+      "V_adverse_excursion_20", "V_adverse_excursion_60", "V_adverse_excursion_120", "V_adverse_excursion_240"
+    ],
+    "primary_result_required": [
+      "classification", "gates", "shared_origin_count", "shared_origin_start", "shared_origin_end", "full_sample_rho_by_target",
+      "temporal_block_rho_by_target", "temporal_positive_block_count", "fixed_score_observed_by_target", "spearman_equivalence_max_abs_error",
+      "bootstrap_q95", "simultaneous_lcb_by_target", "downstream_not_evaluated_reason", "axis_target_spearman", "axis_redundancy_matrix",
+      "axis_eigenvalues", "axis_effective_rank", "terminal_positive_rate_by_horizon", "actual_variants_evaluated"
+    ],
+    "not_evaluated_fields_use_null_plus_reason_code": true,
+    "result_schema_hash_frozen_before_controlled_execution": true,
+    "closeout_may_not_remeasure_targets_or_associations": true
+  },
+  "execution_firewall": {
+    "historical_target_values_during_preregistration": false,
+    "historical_association_metrics_during_preregistration": false,
+    "historical_target_values_during_implementation_only": false,
+    "implementation_real_market_loader_allowed": false,
+    "implementation_tests": "synthetic/toy/contract only including zero-inflated and degenerate-resample adversarial cases",
+    "real_execution_before_controlled_boundary_merge": false,
+    "portfolio_nav_under_0061": false,
+    "transaction_cost_economics_under_0061": false,
+    "btc_cash_threshold_under_0061": false,
+    "gross_allocation_mapping_under_0061": false,
+    "reentry_or_hysteresis_under_0061": false
+  },
+  "followup_contract": {
+    "PASS_authority": "NEW_ID_SYSTEMATIC_BTC_TO_CASH_STATE_TO_GROSS_TRANSLATION_ONLY",
+    "PASS_does_not_freeze_trading_parameter": true,
+    "PASS_does_not_validate_strategy": true,
+    "FAIL_closes_same_id_rescue": true,
+    "INVALID_after_durable_attempt_closes_same_id_rescue": true,
+    "signed_target_requires_new_id": true,
+    "volatility_or_drawdown_controller_requires_new_id": true,
+    "onchain_or_external_data_rescue_under_same_id": false,
+    "canonical_strategy_changed": false,
+    "phase6_changed": false,
+    "production_authorized": false,
+    "signature_authorized": false,
+    "order_submission_authorized": false
+  }
+}
