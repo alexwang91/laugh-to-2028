@@ -1,4 +1,4 @@
-name: TEMP 0061 closeout registry
+name: TEMP 0061 closeout handoff
 on:
   push:
     branches: [docs/0061-prereg-tooling]
@@ -15,22 +15,17 @@ jobs:
       - shell: bash
         run: |
           python - <<'PY'
-          import json
           from pathlib import Path
-          p=Path('config/research_registry.json'); d=json.loads(p.read_text())
-          r=next(x for x in d['records'] if x.get('research_id')=='BRRK-BTC-CASH-ABSOLUTE-RISK-MEASUREMENT-REPLICATION-0061')
-          r['actual_variants_evaluated']=1; r['research_process_complexity']['actual_parameter_candidates_evaluated']=1
-          r['result_status']='FAIL_NO_JOINT_DOWNSIDE_INFORMATION'; r['promotion_state']='NO_PROMOTION'
-          r['failure_reason']='G2 failed: 5 of 8 co-primary full-sample Spearman associations were not strictly positive; G3/G4 were not evaluated by preregistered short-circuit.'
-          r['evidence_refs']=['run:31717797348','research/brrk_btc_cash_absolute_risk_measurement_replication_0061/PRIMARY_RESULT.json','research/brrk_btc_cash_absolute_risk_measurement_replication_0061/EXECUTION.json','research/brrk_btc_cash_absolute_risk_measurement_replication_0061/RUN_ONCE.marker','research/brrk_btc_cash_absolute_risk_measurement_replication_0061/CLOSEOUT.json']
-          c='research/brrk_btc_cash_absolute_risk_measurement_replication_0061/CLOSEOUT.json'
-          if c not in r['decision_refs']: r['decision_refs'].append(c)
-          r['production_relevance']='DEVELOPMENT mechanism-information failure; no state-to-gross, canonical, Phase 6 or production authority.'
-          r['evidence_scorecard']={'temporal_novelty':'RESEARCHER_EXPOSED_DEVELOPMENT_NOT_INDEPENDENT_OOS','statistical_sufficiency':'G1_SUPPORT_PASS_1635_ORIGINS_BUT_G2_JOINT_DOWNSIDE_INFORMATION_FAIL','governance_integrity':'HIGH_EXACTLY_ONCE_HASH_BOUND_FINALIZED_WITHOUT_MARKET_READ_OR_REMEASUREMENT','operational_realism':'CAUSAL_DAILY_BTC_ABSOLUTE_RISK_INFORMATION_DIAGNOSTIC_NO_STRATEGY_ECONOMICS','derived_confidence':'HIGH_FOR_FROZEN_DEVELOPMENT_G2_FAILURE','confidence_rule_ref':c}
-          p.write_text(json.dumps(d,indent=2)+'\n')
+          p=Path('docs/CURRENT_STATE.md'); s=p.read_text()
+          s=s.replace('Current `main` research merge: **`3e624dc5a6af9a4ffc14c5727d730d31a4be738c`**','Current `main` research merge: **`eb55377744cf063c38f34c68f0c17541b9325aaa`**')
+          s=s.replace('Current research branch: **`research/0061-btc-cash-absolute-risk-measurement-replication-controlled-boundary`**','Current research branch: **`docs/0061-closeout-v1`**')
+          s=s.replace('BRRK BTC->Cash measurement replication 0061 CONTROLLED BOUNDARY / ZERO RESULT / NOT RUN','BRRK BTC->Cash measurement replication 0061 FAIL_NO_JOINT_DOWNSIDE_INFORMATION / CLOSED')
+          if '## 0061 immutable mechanism result and closure' not in s:
+            s += '''\n\n---\n\n## 0061 immutable mechanism result and closure\n\n`BRRK-BTC-CASH-ABSOLUTE-RISK-MEASUREMENT-REPLICATION-0061` completed its unique exactly-once DEVELOPMENT execution in Actions run `31717797348` on scientific HEAD `eb55377744cf063c38f34c68f0c17541b9325aaa`. Final classification: **`FAIL_NO_JOINT_DOWNSIDE_INFORMATION`**.\n\n```text\nG0 integrity                           PASS\nG1 support                             PASS / 1635 >= 1440\nG2 all-eight joint monotone info       FAIL / binding\nG3 temporal recurrence                 NOT EVALUATED / prereg short-circuit\nG4 fixed-score dependence robustness   NOT EVALUATED / prereg short-circuit\nshared origins                         1635 / 2021-06-06..2025-12-05\nterminal rho 20/60/120/240             +0.05318853 / -0.09113181 / -0.07443946 / -0.08618769\nadverse rho 20/60/120/240              +0.07584870 / +0.01009220 / -0.03613042 / -0.10627940\nactual variants evaluated              1\nresult branch                          docs/0061-result-v1 @ dc909d9db8a9acc1af85654fb2ae65eb5921806f\nsame-ID rerun / retune / rescue        false / false / false\nstate-to-gross translation eligible    false\n```\n\n0061 validly persisted and finalized a scientific result; unlike 0060, the measurement/persistence interface did not invalidate execution. The binding failure occurred at G2: the unchanged equal-weight A1/A2/A3 BTC absolute-risk state did not rank both terminal loss and adverse excursion positively across every required 20/60/120/240-day horizon.\n\nThe favorable 20-day cells, positive 60-day adverse-excursion cell and descriptive axis diagnostics have no selection or rescue authority. G3 and corrected fixed-score G4 were not eligible and must not be recomputed. Scientifically distinct signed BTC-vs-Cash targets or volatility/drawdown/change-detection feedback controllers require new research IDs.\n\n```text\nCanonical BRRK-0011                    NO CHANGE\nPhase 6                                NO CHANGE\nproduction_authorized_components       []\nproduction_authorized                  false\nsignature_authorized                   false\norder_submission_authorized            false\n```\n\n**Exact next step:** 0061 is permanently closed. Any outer BTC-to-Cash continuation requires a scientifically distinct new-ID design; do not rerun or rescue 0061.\n'''
+          p.write_text(s)
           PY
           git config user.name github-actions
           git config user.email github-actions@github.com
-          git add config/research_registry.json
-          git commit -m 'docs: register 0061 immutable G2 failure'
+          git add docs/CURRENT_STATE.md
+          git commit -m 'docs: update 0061 final handoff'
           git push origin HEAD:docs/0061-closeout-tooling
