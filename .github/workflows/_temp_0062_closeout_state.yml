@@ -1,0 +1,52 @@
+name: Temp 0062 closeout handoff
+on:
+  push:
+    branches: [docs/0062-closeout-state]
+    paths: ['.github/workflows/_temp_0062_closeout_state.yml']
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/0062-closeout-v1
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Update CURRENT_STATE only
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "a20361dcaeae9dadd76fc7463386711f838fefa7"
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('docs/CURRENT_STATE.md')
+          s=p.read_text()
+          pairs=[
+          ('Current `main` research merge: **`b55a39883de8132371580c466124b9ff3a195729`**','Current `main` research merge: **`ae8f585bfc3fd9599cee0844ee29971a36461dd0`**'),
+          ('Current research branch: **`research/0062-controlled-boundary-v1`**','Current research branch: **`research/0062-closeout-v1`**'),
+          ('BRRK BTC risk signal atlas 0062        CONTROLLED BOUNDARY FROZEN / NOT RUN','BRRK BTC risk signal atlas 0062        FAIL_NO_SIGNAL_ATLAS_FAMILY_INFORMATION / CLOSED'),
+          ('stage                                   CONTROLLED BOUNDARY FROZEN / NOT RUN','stage                                   CLOSED / FAIL_NO_SIGNAL_ATLAS_FAMILY_INFORMATION'),
+          ('historical 0062 outcomes                NOT COMPUTED','historical 0062 outcomes                UNIQUE VALID EXECUTION COMPLETE'),
+          ('actual variants evaluated               0','actual variants evaluated               185'),
+          ('RUN_ATTEMPT.marker                      ABSENT','RUN_ATTEMPT.marker                      DURABLE / ATTEMPT CONSUMED')]
+          for a,b in pairs:
+              assert s.count(a)==1,(a,s.count(a))
+              s=s.replace(a,b,1)
+          needle='historical execution attempt budget     1\n'
+          add=needle+'scientific head                         ae8f585bfc3fd9599cee0844ee29971a36461dd0\nexecution workflow run                  31753763747\ncommon origins                          1975\nchronological blocks                    494 / 494 / 494 / 493\nG2 / G3 / G4 / G5 track passes          16 / 3 / 14 / 0\nglobal simultaneous q95                 0.2439283076788892\nRUN_ONCE.marker                         FINALIZED\nmarket / loader / engine calls          1 / 1 / 1\nstate_to_gross_translation_eligible     false\n'
+          assert s.count(needle)==1
+          s=s.replace(needle,add,1)
+          old='Exact candidate geometry, target formulas, family-track mapping, support gates, temporal recurrence, plateau gate and dependence-aware simultaneous MBB inference are frozen in `research/brrk_btc_risk_signal_atlas_0062/PREREGISTRATION.json`. The immutable Tier-A evidence wrapper remains researcher-exposed DEVELOPMENT history and is not independent OOS. No 0062 historical target, signal association or family ranking was computed during preregistration.'
+          new='0062 is immutably closed as `FAIL_NO_SIGNAL_ATLAS_FAMILY_INFORMATION`. G0/G1 passed, but the preregistered global simultaneous dependence-aware G5 gate passed 0/34 family tracks, so no signal family is eligible for state-to-gross translation under this ID. Descriptively, F10 volatility-regime R_SHORT, F11 downside/tail R_SHORT and F12 volume/flow D_SWING are result-informed DEVELOPMENT leads only; none passed all gates and none may be promoted, pruned, reweighted or rescued within 0062. The Tier-A history remains researcher-exposed and is not independent OOS.'
+          assert s.count(old)==1
+          s=s.replace(old,new,1)
+          p.write_text(s)
+          PY
+          test "$(git diff --name-only)" = "docs/CURRENT_STATE.md"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs/CURRENT_STATE.md
+          git commit -m 'docs: hand off immutable 0062 closeout state'
+          git push origin HEAD:research/0062-closeout-v1
