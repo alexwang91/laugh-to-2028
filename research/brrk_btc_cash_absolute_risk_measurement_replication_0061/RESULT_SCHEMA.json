@@ -1,0 +1,82 @@
+{
+  "schema_id": "BRRK-BTC-CASH-ABSOLUTE-RISK-MEASUREMENT-REPLICATION-0061-PRIMARY-RESULT-V1",
+  "research_id": "BRRK-BTC-CASH-ABSOLUTE-RISK-MEASUREMENT-REPLICATION-0061",
+  "schema_version": 1,
+  "classification_enum": [
+    "FAIL_INSUFFICIENT_CAUSAL_SUPPORT",
+    "FAIL_NO_JOINT_DOWNSIDE_INFORMATION",
+    "FAIL_TEMPORAL_INSTABILITY",
+    "FAIL_DEPENDENCE_AWARE_ROBUSTNESS",
+    "PASS_ABSOLUTE_RISK_INFORMATION_STAGE_ELIGIBLE"
+  ],
+  "target_keys": [
+    "terminal_loss_20", "terminal_loss_60", "terminal_loss_120", "terminal_loss_240",
+    "adverse_excursion_20", "adverse_excursion_60", "adverse_excursion_120", "adverse_excursion_240"
+  ],
+  "gate_keys": ["G0", "G1", "G2", "G3", "G4"],
+  "required_primary_result_keys": [
+    "schema_version", "research_id", "upstream_research_id", "dataset_slice_ref", "payload_sha256",
+    "classification", "gates", "shared_origin_count", "shared_origin_start", "shared_origin_end",
+    "full_sample_rho_by_target", "temporal_block_rho_by_target", "temporal_positive_block_count",
+    "fixed_score_observed_by_target", "spearman_equivalence_max_abs_error", "bootstrap_q95",
+    "simultaneous_lcb_by_target", "downstream_not_evaluated_reason", "axis_target_spearman",
+    "axis_redundancy_matrix", "axis_eigenvalues", "axis_effective_rank", "terminal_positive_rate_by_horizon",
+    "origin_panel", "fixed_score_panel", "actual_variants_evaluated", "portfolio_economics_executed",
+    "btc_cash_gross_map_executed", "production_authorized", "signature_authorized", "order_submission_authorized"
+  ],
+  "origin_panel_fields": [
+    "origin_date",
+    "A1a_raw", "A1b_raw", "A2a_raw", "A2b_raw", "A2c_raw", "A3a_raw", "A3b_raw", "A3c_raw",
+    "A1a_z", "A1b_z", "A2a_z", "A2b_z", "A2c_z", "A3a_z", "A3b_z", "A3c_z",
+    "A1", "A2", "A3", "S",
+    "terminal_loss_20", "terminal_loss_60", "terminal_loss_120", "terminal_loss_240",
+    "adverse_excursion_20", "adverse_excursion_60", "adverse_excursion_120", "adverse_excursion_240",
+    "chronological_block_id"
+  ],
+  "fixed_score_panel_fields": [
+    "origin_date", "U_S",
+    "V_terminal_loss_20", "V_terminal_loss_60", "V_terminal_loss_120", "V_terminal_loss_240",
+    "V_adverse_excursion_20", "V_adverse_excursion_60", "V_adverse_excursion_120", "V_adverse_excursion_240"
+  ],
+  "frozen_counts": {
+    "candidate_count": 1,
+    "minimum_shared_origins": 1440,
+    "chronological_blocks": 4,
+    "bootstrap_block_length": 240,
+    "bootstrap_replicates": 10000,
+    "bootstrap_seed": 1844716895,
+    "spearman_equivalence_abs_tolerance": 1e-12
+  },
+  "short_circuit_semantics": {
+    "G1_fail": {"G2": null, "G3": null, "G4": null, "classification": "FAIL_INSUFFICIENT_CAUSAL_SUPPORT"},
+    "G2_fail": {"G3": null, "G4": null, "classification": "FAIL_NO_JOINT_DOWNSIDE_INFORMATION"},
+    "G3_fail": {"G4": null, "classification": "FAIL_TEMPORAL_INSTABILITY"},
+    "G4_reached_requires_finite_fixed_score_outputs": true,
+    "skipped_fixed_score_outputs_are_null": true,
+    "scientific_fail_is_valid_persisted_measurement": true
+  },
+  "semantic_rules": {
+    "all_eight_targets_co_primary": true,
+    "shared_origin_panel_lossless": true,
+    "target_or_horizon_selection_allowed": false,
+    "axis_diagnostics_gating": false,
+    "portfolio_economics_present": false,
+    "gross_map_present": false,
+    "nonfinite_json_numbers_allowed": false,
+    "null_only_when_mathematically_undefined_or_preregistered_short_circuit": true
+  },
+  "execution_required_keys": [
+    "research_id", "scientific_head_sha", "attempt_started_at", "measurement_completed_at",
+    "dataset_slice_ref", "payload_sha256", "market_wrapper_git_blob_sha", "source_loader_git_blob_sha",
+    "scientific_engine_git_blob_sha", "run_interface_git_blob_sha", "result_schema_git_blob_sha",
+    "attempt_sha256", "primary_result_sha256", "market_content_reads", "source_loader_calls",
+    "scientific_engine_calls", "actual_variants_evaluated", "production_authorized",
+    "signature_authorized", "order_submission_authorized", "same_id_rerun_allowed",
+    "same_id_retuning_allowed", "same_id_rescue_allowed"
+  ],
+  "final_marker_required_keys": [
+    "research_id", "scientific_head_sha", "attempt_sha256", "primary_result_sha256", "execution_sha256",
+    "finalized_at", "status", "market_content_read_during_finalize", "scientific_remeasurement_during_finalize",
+    "same_id_rerun_allowed", "same_id_retuning_allowed", "same_id_rescue_allowed"
+  ]
+}
