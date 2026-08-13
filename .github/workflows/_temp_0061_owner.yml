@@ -1,4 +1,4 @@
-name: TEMP 0061 handoff materializer
+name: TEMP 0061 registry metadata normalizer
 
 on:
   push:
@@ -9,34 +9,37 @@ permissions:
   contents: write
 
 jobs:
-  materialize:
+  normalize:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           ref: docs/0061-prereg-tooling
           fetch-depth: 0
-      - name: Refresh handoff
-        env:
-          SECTION_B64: "LS0tCgojIyAwMDYxIG51bWVyaWNhbC9kYXRhIHByZXJlZ2lzdHJhdGlvbiBoYW5kb2ZmCgpgQlJSSy1CVEMtQ0FTSC1BQlNPTFVURS1SSVNLLU1FQVNVUkVNRU5ULVJFUExJQ0FUSU9OLTAwNjFgIG5vdyBoYXMgYSBkdXJhYmxlIG93bmVyLWZpcnN0IGNlbnRyYWwgcmVnaXN0cnkgcmVjb3JkIGFuZCBhIGZyb3plbiBudW1lcmljYWwvZGF0YSBjb250cmFjdC4gTm8gMDA2MSBoaXN0b3JpY2FsIHRhcmdldCwgYXNzb2NpYXRpb24sIGJvb3RzdHJhcCByZXN1bHQgb3IgcG9ydGZvbGlvIG91dHB1dCBoYXMgYmVlbiBjb21wdXRlZC4KCmBgYHRleHQKZGVzaWduIG1lcmdlICAgICAgICAgICAgICAgICAgICAgICAgICAgYzgxZTc4MGFlMmZhYTM4ZjJlMGJjZGE4ZjI1ZTA0ZWM3YzViYzJhNwpzdGFnZSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBOVU1FUklDQUwvREFUQSBQUkVSRUcgRlJPWkVOIC8gTk9UIElNUExFTUVOVEVEIC8gTk9UIFJVTgpkYXRhc2V0ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBCUlJLLUxFQURFUlNISVAtUk9UQVRJT04tMDA0OC1FWFBPU0VELUhJU1QtVjEKcGF5bG9hZCBTSEEyNTYgICAgICAgICAgICAgICAgICAgICAgICAgZDFjZDI4YmM3NmYyY2Q4ZWUwNDg2Mjg3ZmM1MGI0OWU1NDUxMzU1YTNlNzUxMzJhMmRlNWIzMGMxNWFmMzE5Mwphc3NldCBjb25zdW1lZCAgICAgICAgICAgICAgICAgICAgICAgICBCVEMgZGFpbHkgY2xvc2Ugb25seQpoaXN0b3J5ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBSRVNFQVJDSEVSX0VYUE9TRUQgLyBERVZFTE9QTUVOVCAvIE5PVCBJTkRFUEVOREVOVCBPT1MKaG9yaXpvbnMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgMjAgLyA2MCAvIDEyMCAvIDI0MCBhbGwgY28tcHJpbWFyeQp0YXJnZXQgZmFtaWxpZXMgICAgICAgICAgICAgICAgICAgICAgICB0ZXJtaW5hbCBsb3NzICsgYWR2ZXJzZSBleGN1cnNpb24gYm90aCBjby1wcmltYXJ5CmNvLXByaW1hcnkgY2VsbHMgICAgICAgICAgICAgICAgICAgICAgIDgKRzEgbWluaW11bSBzaGFyZWQgb3JpZ2lucyAgICAgICAgICAgICAgMTQ0MApHMiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBhbGwgOCBvcmRpbmFyeSBmdWxsLXNhbXBsZSBTcGVhcm1hbiByaG8gPiAwCkczICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgID49My80IGNocm9ub2xvZ2ljYWwgYmxvY2tzIHBvc2l0aXZlIGluIGFsbCA4IGNlbGxzCmZpeGVkLXNjb3JlIGVxdWl2YWxlbmNlIHRvbGVyYW5jZSAgICAgIDFlLTEyIGFic29sdXRlCkc0IGJvb3RzdHJhcCAgICAgICAgICAgICAgICAgICAgICAgICAgIGZpeGVkLXNjb3JlIG5vbi1jaXJjdWxhciBNQkIgLyBMPTI0MCAvIDEwMDAwIC8gc2VlZCAxODQ0NzE2ODk1Ckc0ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGFsbCA4IHNpbXVsdGFuZW91cyBvbmUtc2lkZWQgOTUlIExDQiA+IDAKYWN0dWFsIHZhcmlhbnRzIGV2YWx1YXRlZCAgICAgICAgICAgICAgMApgYGAKClRoZSAwMDYwIHN0YXRlIGFuZCB0YXJnZXQgY29uc3RydWN0aW9uIHJlbWFpbiBpbW11dGFibGUgYW5kIHVuY2hhbmdlZC4gMDA2MSBjb3JyZWN0cyBvbmx5IGRlcGVuZGVuY2UgaW5mZXJlbmNlOiBmdWxsLXBhbmVsIGF2ZXJhZ2UtdGllIHJhbmtzIGFyZSBjZW50ZXJlZCBhbmQgc2NhbGVkIG9uY2UgYnkgcG9wdWxhdGlvbiBSTVM7IG9ic2VydmVkIGZpeGVkLXNjb3JlIG1lYW4gcHJvZHVjdHMgbXVzdCBlcXVhbCBvcmRpbmFyeSBTcGVhcm1hbiB3aXRoaW4gMWUtMTI7IGJvb3RzdHJhcCByZXBsaWNhdGVzIHJlc2FtcGxlIGFsaWduZWQgZml4ZWQgc2NvcmUgcm93cyBhbmQgdGhlcmVmb3JlIGRvIG5vdCByZWNvbXB1dGUgYSByZXBsaWNhdGUtc3BlY2lmaWMgdmFyaWFuY2UgZGVub21pbmF0b3IuCgpHYXRlIGV2YWx1YXRpb24gaXMgcHJvc3BlY3RpdmVseSBzaG9ydC1jaXJjdWl0ZWQgaW4gb3JkZXIgRzEgLT4gRzIgLT4gRzMgLT4gRzQuIEEgY29uc3RhbnQgcmVxdWlyZWQgY29vcmRpbmF0ZSBvbiB0aGUgZnVsbCBwYW5lbCBpcyBhIHZhbGlkIGBGQUlMX05PX0pPSU5UX0RPV05TSURFX0lORk9STUFUSU9OYC4gQSBjb25zdGFudCBjb29yZGluYXRlIGluc2lkZSBhIHRlbXBvcmFsIGJsb2NrIG1ha2VzIHRoYXQgYmxvY2sgbm9uLXBvc2l0aXZlIGJ1dCBkb2VzIG5vdCBpbnZhbGlkYXRlIGV4ZWN1dGlvbi4gSWYgYW4gZWFybGllciBzY2llbnRpZmljIGdhdGUgZmFpbHMsIGxhdGVyIGdhdGVzIGFyZSBwZXJzaXN0ZWQgYXMgbm90IGV2YWx1YXRlZCB3aXRoIGEgcmVhc29uIGNvZGUuCgpObyByZWFsIGhpc3RvcmljYWwgcGF5bG9hZCBtYXkgYmUgbG9hZGVkIGluIGltcGxlbWVudGF0aW9uLW9ubHkuIE5vIHRocmVzaG9sZCwgZ3Jvc3MgbWFwLCBzaWduZWQgdGFyZ2V0LCBzdHJhdGVneSBlY29ub21pY3MsIHZvbGF0aWxpdHkvZHJhd2Rvd24gY29udHJvbGxlciBvciBjaGFuZ2UgZGV0ZWN0b3IgaXMgb3BlbmVkIHVuZGVyIDAwNjEuCgoqKkV4YWN0IG5leHQgc3RlcCBhZnRlciBwcmVyZWcgbWVyZ2U6KiogaW1wbGVtZW50YXRpb24tb25seS4gSW1wbGVtZW50IHRoZSBmcm96ZW4gc3RhdGUvdGFyZ2V0IGRlbGVnYXRpb24gYW5kIGZpeGVkLXNjb3JlIGluZmVyZW5jZSB3aXRoIHN5bnRoZXRpYy90b3kvYWR2ZXJzYXJpYWwgdGVzdHMgb25seS4gQSBzZXBhcmF0ZSBjb250cm9sbGVkLWV4ZWN1dGlvbiBib3VuZGFyeSBtdXN0IG1lcmdlIGJlZm9yZSB0aGUgdW5pcXVlIGhpc3RvcmljYWwgREVWRUxPUE1FTlQgZXhlY3V0aW9uLgo="
+      - name: Normalize prereg metadata only
+        shell: bash
         run: |
           python - <<'PY'
-          import base64, os
+          import json
           from pathlib import Path
-          p = Path('docs/CURRENT_STATE.md')
-          s = p.read_text()
-          s = s.replace('Current `main` research merge: **`9ac4a70c638bf55d8b7b614e877ed36e8193f0e7`**', 'Current `main` research merge: **`c81e780ae2faa38f2e0bcda8f25e04ec7c5bc2a7`**')
-          s = s.replace('Current research branch: **`research/0061-btc-cash-absolute-risk-measurement-replication-design`**', 'Current research branch: **`research/0061-btc-cash-absolute-risk-measurement-replication-prereg`**')
-          s = s.replace('BRRK BTC->Cash measurement replication 0061 DESIGN FROZEN / PREREG ABSENT / NOT RUN', 'BRRK BTC->Cash measurement replication 0061 NUMERICAL/DATA PREREG FROZEN / NOT RUN')
-          if '## 0061 numerical/data preregistration handoff' not in s:
-              s = s.rstrip() + '\n\n' + base64.b64decode(os.environ['SECTION_B64']).decode().rstrip() + '\n'
-          p.write_text(s)
+          p = Path('config/research_registry.json')
+          reg = json.loads(p.read_text())
+          rid = 'BRRK-BTC-CASH-ABSOLUTE-RISK-MEASUREMENT-REPLICATION-0061'
+          r = next(x for x in reg['records'] if x.get('research_id') == rid)
+          for e in r.get('lineage_edges', []):
+              e['relation'] = 'RESULT_INFORMED'
+          r['promotion_state'] = 'NONE'
+          r['evidence_refs'] = []
+          r['decision_refs'] = [
+              'research/governance/BRRK_BTC_CASH_ABSOLUTE_RISK_MEASUREMENT_REPLICATION_0061_DESIGN_FREEZE_2026-08-13.md',
+              'research/brrk_btc_cash_absolute_risk_measurement_replication_0061/PREREGISTRATION.json',
+              'research/brrk_btc_cash_absolute_risk_measurement_replication_0061/DATASET_DECLARATION.json',
+              'docs/CURRENT_STATE.md'
+          ]
+          p.write_text(json.dumps(reg, indent=2) + '\n')
           PY
           git config user.name github-actions
           git config user.email github-actions@github.com
-          if git diff --quiet -- docs/CURRENT_STATE.md; then
-            exit 0
-          fi
-          git add docs/CURRENT_STATE.md
-          git commit -m 'docs: update 0061 prereg handoff'
+          git add config/research_registry.json
+          git commit -m 'docs: normalize 0061 prereg registry metadata'
           git push origin HEAD:docs/0061-prereg-tooling
