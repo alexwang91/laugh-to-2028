@@ -1,0 +1,51 @@
+name: Temp 0062 closeout state writer
+on:
+  push:
+    branches: [tools/0062-closeout-state-writer-v1]
+    paths: ['.github/workflows/_temp_0062_closeout_state_writer.yml']
+permissions:
+  contents: write
+  actions: read
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/0062-closeout-v1
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: 0062-closeout-current-state
+          path: /tmp/0062-closeout-state
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          repository: alexwang91/laugh-to-2028
+          run-id: 31754706514
+      - name: Verify fixed artifact and write only CURRENT_STATE
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "96304697439c246f966474412805e7ea304646e3"
+          test "$(git hash-object /tmp/0062-closeout-state/CURRENT_STATE.md)" = "dcc655864caf0a62a5123b38700047b77920e546"
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r=json.loads(Path('/tmp/0062-closeout-state/BUILD_REPORT.json').read_text())
+          assert r['base_head']=='96304697439c246f966474412805e7ea304646e3'
+          assert r['output_git_blob_sha']=='dcc655864caf0a62a5123b38700047b77920e546'
+          assert r['status']=='FAIL_NO_SIGNAL_ATLAS_FAMILY_INFORMATION_CLOSED'
+          assert r['actual_variants_evaluated']==185
+          assert r['state_to_gross_translation_eligible'] is False
+          PY
+          cp /tmp/0062-closeout-state/CURRENT_STATE.md docs/CURRENT_STATE.md
+          test "$(git diff --name-only)" = "docs/CURRENT_STATE.md"
+          grep -q 'BRRK BTC risk signal atlas 0062        FAIL_NO_SIGNAL_ATLAS_FAMILY_INFORMATION / CLOSED' docs/CURRENT_STATE.md
+          grep -q 'G2 / G3 / G4 / G5 track passes          16 / 3 / 14 / 0' docs/CURRENT_STATE.md
+          grep -q 'state_to_gross_translation_eligible     false' docs/CURRENT_STATE.md
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs/CURRENT_STATE.md
+          test "$(git diff --cached --name-only)" = "docs/CURRENT_STATE.md"
+          git commit -m 'docs: hand off immutable 0062 closeout state'
+          git push origin HEAD:research/0062-closeout-v1
