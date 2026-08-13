@@ -1,7 +1,8 @@
 name: TEMP 0062 design state
 on:
   push:
-    branches: [docs/0062-design-tooling]
+    branches:
+      - docs/0062-design-tooling
 permissions:
   contents: write
 jobs:
@@ -12,60 +13,10 @@ jobs:
         with:
           ref: docs/0062-design-tooling
           fetch-depth: 0
-      - name: Update CURRENT_STATE for 0062 design
-        shell: bash
+      - name: Patch CURRENT_STATE
+        run: echo 'ZnJvbSBwYXRobGliIGltcG9ydCBQYXRoCmltcG9ydCBiYXNlNjQKcD1QYXRoKCJkb2NzL0NVUlJFTlRfU1RBVEUubWQiKQpzPXAucmVhZF90ZXh0KCkKcz1zLnJlcGxhY2UoIkN1cnJlbnQgYG1haW5gIHJlc2VhcmNoIG1lcmdlOiAqKmBlYjU1Mzc3NzQ0Y2YwNjNjMzhmMzRjNjhmMGMxNzU0MWI5MzI1YWFhYCoqIiwiQ3VycmVudCBgbWFpbmAgcmVzZWFyY2ggbWVyZ2U6ICoqYGQ5NzU5MzE2ZDgwZWE2NzM5MGM5YjJmNjUzMzRmMzBkNTJmYWQxOWNgKioiLDEpCnM9cy5yZXBsYWNlKCJDdXJyZW50IHJlc2VhcmNoIGJyYW5jaDogKipgZG9jcy8wMDYxLWNsb3Nlb3V0LXYxYCoqIiwiQ3VycmVudCByZXNlYXJjaCBicmFuY2g6ICoqYHJlc2VhcmNoLzAwNjItYnRjLXJpc2stc2lnbmFsLWF0bGFzLWRlc2lnbmAqKiIsMSkKYW5jaG9yPSJCUlJLIEJUQy0+Q2FzaCBtZWFzdXJlbWVudCByZXBsaWNhdGlvbiAwMDYxIEZBSUxfTk9fSk9JTlRfRE9XTlNJREVfSU5GT1JNQVRJT04gLyBDTE9TRURcbiIKYWRkPWFuY2hvcisiQlJSSyBCVEMgcmlzayBzaWduYWwgYXRsYXMgMDA2MiAgICAgICAgREVTSUdOIEZST1pFTiAvIFBSRVJFRyBBQlNFTlQgLyBOT1QgUlVOXG4iCmlmICJCUlJLIEJUQyByaXNrIHNpZ25hbCBhdGxhcyAwMDYyIiBub3QgaW4gczoKICAgIGlmIGFuY2hvciBub3QgaW4gczoKICAgICAgICByYWlzZSBTeXN0ZW1FeGl0KCIwMDYxIGFuY2hvciBtaXNzaW5nIikKICAgIHM9cy5yZXBsYWNlKGFuY2hvcixhZGQsMSkKaGFuZG9mZj1iYXNlNjQuYjY0ZGVjb2RlKCJDZ290TFMwS0NpTWpJREF3TmpJZ1FsUkRJSEpwYzJzZ2MybG5ibUZzSUdGMGJHRnpJR1JsYzJsbmJpQm9ZVzVrYjJabUNncGdRbEpTU3kxQ1ZFTXRVa2xUU3kxVFNVZE9RVXd0UVZSTVFWTXRNREEyTW1BZ2FYTWdZU0J1WlhjdFNVUWdZbkpoWVdRZ2FXNW1iM0p0WVhScGIyNHRZWFJzWVhNZ2MzUjFaSGtnWm05eUlIUm9aU0J2ZFhSbGNpQkNWRU10ZEc4dFEyRnphQ0J5YVhOckxXTnZiblJ5YjJ3Z2NISnZaM0poYlM0S0NtQmdZSFJsZUhRS2NtVnpaV0Z5WTJnZ1ptRnRhV3g1SUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJRUpTVWt0ZlFsUkRYMVJQWDBOQlUwaGZSMUpQVTFOZlVrbFRTd3BrWlhOcFoyNGdZbkpoYm1Ob0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ2NtVnpaV0Z5WTJndk1EQTJNaTFpZEdNdGNtbHpheTF6YVdkdVlXd3RZWFJzWVhNdFpHVnphV2R1Q21SbGMybG5iaUJtY21WbGVtVWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQnlaWE5sWVhKamFDOW5iM1psY201aGJtTmxMMEpTVWt0ZlFsUkRYMUpKVTB0ZlUwbEhUa0ZNWDBGVVRFRlRYekF3TmpKZlJFVlRTVWRPWDBaU1JVVmFSVjh5TURJMkxUQTRMVEV6TG0xa0NuTjBZV2RsSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0JFUlZOSlIwNGdSbEpQV2tWT0lDOGdVRkpGVWtWSElFRkNVMFZPVkNBdklFNVBWQ0JKVFZCTVJVMUZUbFJGUkNBdklFNVBWQ0JTVlU0S2MybG5ibUZzSUcxbFkyaGhibWx6YlNCbVlXMXBiR2xsY3lBZ0lDQWdJQ0FnSUNBZ0lDQWdJRVl3TVM0dVJqSTBJR1p5YjNwbGJpQmhjeUJ2Ym5SdmJHOW5lUzl6WldGeVkyZ2dkVzVwZG1WeWMyVUtaR0YwWVNCMGFXVnljeUFnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUVFZ1pYaHBjM1JwYm1jZ2JXRnlhMlYwTFdsdWRHVnlibUZzSUM4Z1FpQmpjbmx3ZEc4dGJtRjBhWFpsSUdWNGRHVnlibUZzSUM4Z1F5QnRZV055YnkxelpXNTBhVzFsYm5RZ1pYaDBaWEp1WVd3S2RHRnlaMlYwSUdOb1lXNXVaV3h6SUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJSE5wWjI1bFpDQkNWRU10ZG5NdFEyRnphQ0F2SUhCaGRHZ2daR0Z0WVdkbElDOGdablYwZFhKbElISnBjMnNnTHlCeVpYWmxjbk5oYkMxMGNtRnVjMmwwYVc5dUlDOGdjbVZqYjNabGNua0tZMlZ1ZEhKaGJDQnlaV2RwYzNSeWVTQnZkMjVsY2lBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0FnSUVGQ1UwVk9WQ0JWVGxSSlRDQlFVa1ZTUlVkSlUxUlNRVlJKVDA0S2FHbHpkRzl5YVdOaGJDQXdNRFl5SUc5MWRHTnZiV1Z6SUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJRTVQVkNCRFQwMVFWVlJGUkFwb2FYTjBiM0pwWTJGc0lHbHVaR2xqWVhSdmNpQnlZVzVyYVc1bklDQWdJQ0FnSUNBZ0lDQWdUazlVSUVOUFRWQlZWRVZFQ21ocGMzUnZjbWxqWVd3Z2NHOXlkR1p2YkdsdklHVmpiMjV2YldsamN5QWdJQ0FnSUNBZ0lDQkdUMUpDU1VSRVJVNEtZV04wZFdGc0lIWmhjbWxoYm5SeklHVjJZV3gxWVhSbFpDQWdJQ0FnSUNBZ0lDQWdJQ0FnSURBS2NISnZaSFZqZEdsdmJsOWhkWFJvYjNKcGVtVmtJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJR1poYkhObENuTnBaMjVoZEhWeVpWOWhkWFJvYjNKcGVtVmtJQ0FnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWdJQ0JtWVd4elpRcHZjbVJsY2w5emRXSnRhWE56YVc5dVgyRjFkR2h2Y21sNlpXUWdJQ0FnSUNBZ0lDQWdJQ0FnWm1Gc2MyVUtZR0JnQ2dvd01EWXlJR1JsYkdsaVpYSmhkR1ZzZVNCaWNtVmhhM01nZEdobElIQnlaWFpwYjNWeklHRnVZMmh2Y21sdVp5QnZiaUJCTVM5Qk1pOUJNeXdnVWxOSkxDQk5RVU5FTENCVGRYQmxjblJ5Wlc1a0lHOXlJRTFCTWpBdUlFNWhiV1ZrSUdsdVpHbGpZWFJ2Y25NZ1lYSmxJR1Y0WVcxd2JHVnpJR2x1YzJsa1pTQnRaV05vWVc1cGMyMGdabUZ0YVd4cFpYTXNJRzV2ZENCd2NtbDJhV3hsWjJWa0lHTmhibVJwWkdGMFpYTXVJRlJvWlNCbWNtOTZaVzRnWVhSc1lYTWdjM0JoYm5NZ2RISmxibVFnYkdWMlpXd3NJSFJ5Wlc1a0lHUnBjMkZuY21WbGJXVnVkQ3dnWVdOalpXeGxjbUYwYVc5dUwyUmxZMlZzWlhKaGRHbHZiaXdnWTNKdmMzTnBibWNnWlhabGJuUnpMQ0IyYjJ4aGRHbHNhWFI1TFdGa2FuVnpkR1ZrSUhSeVpXNWtJR2QxWVhKa2N5d2diVzl0Wlc1MGRXMHNJRzkyWlhKaWIzVm5hSFF2YjNabGNuTnZiR1FnYzNSaGRHVXNJR1JwZG1WeVoyVnVZMlV2Wlhob1lYVnpkR2x2Yml3Z1luSmxZV3R2ZFhRdlptRnBiSFZ5WlNCemRISjFZM1IxY21Vc0lIWnZiR0YwYVd4cGRIa2djbVZuYVcxbExDQmtiM2R1YzJsa1pTMTBZV2xzSUdOc2RYTjBaWEpwYm1jc0lIWnZiSFZ0WlM5bWJHOTNJR052Ym1acGNtMWhkR2x2Yml3Z1kzSnZjM010WTNKNWNIUnZJR0p5WldGa2RHZ3NJSEpsYkdGMGFYWmxJR055ZVhCMGJ5QnpkSEoxWTNSMWNtVXNJR1JsY21sMllYUnBkbVZ6SUdOeWIzZGthVzVuTENCdmNIUnBiMjV6TFdsdGNHeHBaV1FnZEdGcGJDQnlhWE5yTENCdmJpMWphR0ZwYmlCb2IyeGtaWElnYzNSaGRHVXNJR3hwY1hWcFpHbDBlUzl6ZEdGaWJHVmpiMmx1TDJSbGNIUm9MQ0J0WVdOeWJ5OWpjbTl6Y3kxaGMzTmxkQ0J6ZEdGMFpTd2djMlZ1ZEdsdFpXNTBMMlpzYjNkekxDQnpaWEYxWlc1MGFXRnNJR05vWVc1blpYQnZhVzUwY3l3Z2JHRjBaVzUwSUhKbFoybHRaWE1zSUcxMWJIUnBMWFJwYldWelkyRnNaU0JrYVhOaFozSmxaVzFsYm5RZ1lXNWtJR3hwYldsMFpXUWdjSEp2YzNCbFkzUnBkbVZzZVNCaWRXUm5aWFJsWkNCcGJuUmxjbUZqZEdsdmJuTXVDZ293TURZeUlHRnNjMjhnWTJoaGJtZGxjeUIwYUdVZ2MyTnBaVzUwYVdacFl5QjBZWEpuWlhRZ1lYSmphR2wwWldOMGRYSmxMaUJKZENCM2FXeHNJRzV2ZENCeVpYRjFhWEpsSUc5dVpTQmtZV2xzZVNCemFXZHVZV3dnZEc4Z2NISmxaR2xqZENCMGFHVWdjMkZ0WlNCa2FYSmxZM1JwYjI0Z1lXTnliM056SURJd0x6WXdMekV5TUM4eU5EQWdaR0Y1Y3k0Z1RuVnRaWEpwWTJGc0wyUmhkR0VnY0hKbGNtVm5hWE4wY21GMGFXOXVJRzExYzNRZ2FXNXpkR1ZoWkNCbWNtVmxlbVVnWVc0Z1pXTnZibTl0YVdOaGJHeDVJR2x1ZEdWeWNISmxkR0ZpYkdVZ2FHOXlhWHB2YmlCblpXOXRaWFJ5ZVNCaGJtUWdjMlZ3WVhKaGRHVWdjMmxuYm1Wa0lFSlVReTEyY3kxRFlYTm9JRzl3Y0c5eWRIVnVhWFI1SUdOdmMzUXNJSEJoZEdnZ1pHRnRZV2RsTENCbWRYUjFjbVVnY21semF5d2djbVYyWlhKellXd3ZjbVZuYVcxbExYUnlZVzV6YVhScGIyNGdZVzVrSUhKbFkyOTJaWEo1SUdsdVptOXliV0YwYVc5dUxpQkJJR1poYldsc2VTQnRZWGtnYjI1c2VTQmlaU0JsZG1Gc2RXRjBaV1FnYjI0Z2NISnZjM0JsWTNScGRtVnNlU0JtY205NlpXNGdkR0Z5WjJWMEwyaHZjbWw2YjI0Z2JXRndjR2x1WjNNN0lIQnZjM1F0YUc5aklHSmxjM1F0WTJWc2JDQnlaWEJ2Y25ScGJtY2dhWE1nWm05eVltbGtaR1Z1TGdvS1ZHaGxJR0p5YjJGa0lHRjBiR0Z6SUcxMWMzUWdkWE5sSUdocFpYSmhjbU5vYVdOaGJDQnRkV3gwYVhCc2FXTnBkSGtnWTI5dWRISnZiQ0JoYm1RZ1ptRnRhV3g1TFd4bGRtVnNJR2RoZEdWekxpQklkVzVrY21Wa2N5QnZaaUJqYjNKeVpXeGhkR1ZrSUhSbGVIUmliMjlySUdsdVpHbGpZWFJ2Y25NZ1kyRnVibTkwSUdKbElIUnlaV0YwWldRZ1lYTWdhVzVrWlhCbGJtUmxiblFnWTI5dVptbHliV0YwYVc5dWN5NGdVR0Z5WVcxbGRHVnlhWHBsWkNCdFpXTm9ZVzVwYzIxeklHMTFjM1FnZFhObElITjVjM1JsYldGMGFXTWdaMlZ2YldWMGNua2dZVzVrSUdKeWIyRmtMWEJzWVhSbFlYVWdiRzluYVdNZ2NtRjBhR1Z5SUhSb1lXNGdhR2x6ZEc5eWFXTmhiQ0JoY21kdFlYZ2djMlZzWldOMGFXOXVMaUF3TURZeUlHbDBjMlZzWmlCallXNXViM1FnWkdWbWFXNWxJR0VnUWxSREwwTmhjMmdnWjNKdmMzTWdiV0Z3TENCMGFISmxjMmh2YkdRc0lHaDVjM1JsY21WemFYTXNJSE4wY21GMFpXZDVJRTVCVmlCdmNpQkRRVWRTTDAxRVJDQnZjSFJwYldsNllYUnBiMjR1Q2dvcUtrVjRZV04wSUc1bGVIUWdjM1JsY0NCaFpuUmxjaUJFUlZOSlIwNGdiV1Z5WjJVNktpb2dZM0psWVhSbElHRWdjMlZ3WVhKaGRHVWdiblZ0WlhKcFkyRnNMMlJoZEdFZ2NISmxjbVZuYVhOMGNtRjBhVzl1TGlCQ1pXWnZjbVVnWVc1NUlHaHBjM1J2Y21sallXd2dNREEyTWlCdmRYUndkWFFzSUdaeVpXVjZaU0IwYUdVZ1lXTjBkV0ZzSUdWNFpXTjFkR0ZpYkdVZ2NtVndjbVZ6Wlc1MFlYUnBiMjV6TENCVWFXVnlJRUV2UWk5RElITnZkWEpqWlNCamIyNTBjbUZqZEhNZ1lXNWtJSEJ2YVc1MExXbHVMWFJwYldVZ2MyVnRZVzUwYVdOekxDQndZWEpoYldWMFpYSXZkbUZ5YVdGdWRDQmlkV1JuWlhRc0lIUmhjbWRsZEM5b2IzSnBlbTl1SUdadmNtMTFiR0Z6TENCemRYQndiM0owSUdGdVpDQjBaVzF3YjNKaGJDQnlaV04xY25KbGJtTmxJSEoxYkdWekxDQmtaWEJsYm1SbGJtTmxMV0YzWVhKbElHMTFiSFJwY0d4cFkybDBlU0J0WlhSb2IyUXNJR05zWVhOemFXWnBZMkYwYVc5dUlIQnlaV05sWkdWdVkyVXNJR3h2YzNOc1pYTnpJSEpsYzNWc2RDQnpZMmhsYldFZ1lXNWtJR1Y0WVdOMGJIa3RiMjVqWlNCbGVHVmpkWFJwYjI0Z2MyVnRZVzUwYVdOekxnbz0iKS5kZWNvZGUoKQppZiAiIyMgMDA2MiBCVEMgcmlzayBzaWduYWwgYXRsYXMgZGVzaWduIGhhbmRvZmYiIG5vdCBpbiBzOgogICAgcz1zLnJzdHJpcCgpK2hhbmRvZmYrIlxuIgpwLndyaXRlX3RleHQocykK' | base64 -d | python
+      - name: Commit CURRENT_STATE
         run: |
-          set -euo pipefail
-          python - <<'PY'
-          from pathlib import Path
-          p = Path('docs/CURRENT_STATE.md')
-          s = p.read_text()
-          s = s.replace('Current `main` research merge: **`eb55377744cf063c38f34c68f0c17541b9325aaa`**', 'Current `main` research merge: **`d9759316d80ea67390c9b2f65334f30d52fad19c`**', 1)
-          s = s.replace('Current research branch: **`docs/0061-closeout-v1`**', 'Current research branch: **`research/0062-btc-risk-signal-atlas-design`**', 1)
-          anchor = 'BRRK BTC->Cash measurement replication 0061 FAIL_NO_JOINT_DOWNSIDE_INFORMATION / CLOSED\n'
-          add = anchor + 'BRRK BTC risk signal atlas 0062        DESIGN FROZEN / PREREG ABSENT / NOT RUN\n'
-          if 'BRRK BTC risk signal atlas 0062' not in s:
-              if anchor not in s:
-                  raise SystemExit('0061 executive-state anchor missing')
-              s = s.replace(anchor, add, 1)
-          handoff = r'''
-
----
-
-## 0062 BTC risk signal atlas design handoff
-
-`BRRK-BTC-RISK-SIGNAL-ATLAS-0062` is a new-ID broad information-atlas study for the outer BTC-to-Cash risk-control program.
-
-```text
-research family                         BRRK_BTC_TO_CASH_GROSS_RISK
-design branch                           research/0062-btc-risk-signal-atlas-design
-design freeze                           research/governance/BRRK_BTC_RISK_SIGNAL_ATLAS_0062_DESIGN_FREEZE_2026-08-13.md
-stage                                   DESIGN FROZEN / PREREG ABSENT / NOT IMPLEMENTED / NOT RUN
-signal mechanism families               F01..F24 frozen as ontology/search universe
-data tiers                              A existing market-internal / B crypto-native external / C macro-sentiment external
-target channels                         signed BTC-vs-Cash / path damage / future risk / reversal-transition / recovery
-central registry owner                  ABSENT UNTIL PREREGISTRATION
-historical 0062 outcomes                NOT COMPUTED
-historical indicator ranking            NOT COMPUTED
-historical portfolio economics          FORBIDDEN
-actual variants evaluated               0
-production_authorized                   false
-signature_authorized                    false
-order_submission_authorized             false
-```
-
-0062 deliberately breaks the previous anchoring on A1/A2/A3, RSI, MACD, Supertrend or MA20. Named indicators are examples inside mechanism families, not privileged candidates. The frozen atlas spans trend level, trend disagreement, acceleration/deceleration, crossing events, volatility-adjusted trend guards, momentum, overbought/oversold state, divergence/exhaustion, breakout/failure structure, volatility regime, downside-tail clustering, volume/flow confirmation, cross-crypto breadth, relative crypto structure, derivatives crowding, options-implied tail risk, on-chain holder state, liquidity/stablecoin/depth, macro/cross-asset state, sentiment/flows, sequential changepoints, latent regimes, multi-timescale disagreement and limited prospectively budgeted interactions.
-
-0062 also changes the scientific target architecture. It will not require one daily signal to predict the same direction across 20/60/120/240 days. Numerical/data preregistration must instead freeze an economically interpretable horizon geometry and separate signed BTC-vs-Cash opportunity cost, path damage, future risk, reversal/regime-transition and recovery information. A family may only be evaluated on prospectively frozen target/horizon mappings; post-hoc best-cell reporting is forbidden.
-
-The broad atlas must use hierarchical multiplicity control and family-level gates. Hundreds of correlated textbook indicators cannot be treated as independent confirmations. Parameterized mechanisms must use systematic geometry and broad-plateau logic rather than historical argmax selection. 0062 itself cannot define a BTC/Cash gross map, threshold, hysteresis, strategy NAV or CAGR/MDD optimization.
-
-**Exact next step after DESIGN merge:** create a separate numerical/data preregistration. Before any historical 0062 output, freeze the actual executable representations, Tier A/B/C source contracts and point-in-time semantics, parameter/variant budget, target/horizon formulas, support and temporal recurrence rules, dependence-aware multiplicity method, classification precedence, lossless result schema and exactly-once execution semantics.
-'''
-          if '## 0062 BTC risk signal atlas design handoff' not in s:
-              s = s.rstrip() + handoff + '\n'
-          p.write_text(s)
-          PY
           git config user.name github-actions
           git config user.email github-actions@github.com
           git add docs/CURRENT_STATE.md
