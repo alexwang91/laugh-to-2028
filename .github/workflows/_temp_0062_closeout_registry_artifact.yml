@@ -41,6 +41,12 @@ jobs:
           row['evidence_refs']=['run:31753763747','research/brrk_btc_risk_signal_atlas_0062/RUN_ATTEMPT.marker','research/brrk_btc_risk_signal_atlas_0062/PRIMARY_RESULT.json','research/brrk_btc_risk_signal_atlas_0062/EVIDENCE.json','research/brrk_btc_risk_signal_atlas_0062/EXECUTION.json','research/brrk_btc_risk_signal_atlas_0062/RUN_ONCE.marker','research/brrk_btc_risk_signal_atlas_0062/CLOSEOUT.json']
           row['decision_refs']=['research/governance/BRRK_BTC_RISK_SIGNAL_ATLAS_0062_DESIGN_FREEZE_2026-08-13.md','research/brrk_btc_risk_signal_atlas_0062/PREREGISTRATION.json','research/brrk_btc_risk_signal_atlas_0062/DATASET_DECLARATION.json','research/brrk_btc_risk_signal_atlas_0062/IMPLEMENTATION_CONTRACT.json','research/brrk_btc_risk_signal_atlas_0062/CONTROLLED_EXECUTION_BOUNDARY.json','research/brrk_btc_risk_signal_atlas_0062/CLOSEOUT.json','docs/CURRENT_STATE.md']
           row['production_relevance']='DEVELOPMENT Signal Atlas failed the frozen family-level simultaneous information gate; no state-to-gross, canonical, Phase-6 or production authority.'
+          row['evidence_scorecard']={
+            'temporal_novelty':'RESEARCHER_EXPOSED_DEVELOPMENT_NOT_INDEPENDENT_OOS',
+            'statistical_sufficiency':'G0_G1_SUPPORT_PASS_N1975_BUT_GLOBAL_SIMULTANEOUS_G5_FAIL_0_OF_34',
+            'governance_integrity':'HIGH_EXACTLY_ONCE_HASH_BOUND_FINALIZED_MARKET_READ_1_LOADER_1_ENGINE_1',
+            'operational_realism':'CAUSAL_DAILY_SIGNAL_INFORMATION_ATLAS_NO_PORTFOLIO_ECONOMICS_NO_GROSS_TRANSLATION'
+          }
           row['notes']=list(row.get('notes',[]))+['Unique execution: N=1975; G2 16/34, G3 3/34, G4 14/34, G5 0/34; classification FAIL_NO_SIGNAL_ATLAS_FAMILY_INFORMATION.','F10 volatility R_SHORT, F11 tail R_SHORT and F12 volume/flow D_SWING are descriptive result-informed DEVELOPMENT leads only; none is eligible under 0062.','Same-ID rerun, retune, rescue, family/cell pruning, multiplicity relaxation and gross-map translation are permanently unavailable.']
           new={r['research_id']:h(r) for r in reg['records'] if r.get('research_id')!=RID}
           assert old==new and row['production_authorized'] is False
@@ -54,7 +60,7 @@ jobs:
           from pathlib import Path
           reg=json.loads(Path('config/research_registry.json').read_text())
           row=next(r for r in reg['records'] if r.get('research_id')=='BRRK-BTC-RISK-SIGNAL-ATLAS-0062')
-          report={'research_id':row['research_id'],'result_status':row['result_status'],'promotion_state':row['promotion_state'],'actual_variants_evaluated':row['actual_variants_evaluated'],'production_authorized':row['production_authorized'],'output_registry_git_blob_sha':subprocess.check_output(['git','hash-object','config/research_registry.json'],text=True).strip()}
+          report={'research_id':row['research_id'],'result_status':row['result_status'],'promotion_state':row['promotion_state'],'actual_variants_evaluated':row['actual_variants_evaluated'],'production_authorized':row['production_authorized'],'evidence_scorecard':row['evidence_scorecard'],'output_registry_git_blob_sha':subprocess.check_output(['git','hash-object','config/research_registry.json'],text=True).strip()}
           Path('/tmp/0062-closeout-registry/BUILD_REPORT.json').write_text(json.dumps(report,indent=2,sort_keys=True)+'\n')
           print(json.dumps(report,sort_keys=True))
           PY
