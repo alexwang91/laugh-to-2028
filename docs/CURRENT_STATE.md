@@ -2,8 +2,8 @@
 
 Last updated: **2026-08-13**  
 Authoritative repository: `alexwang91/laugh-to-2028`  
-Current `main` research merge: **`269424763528927d829b4aa78b7c849729758f86`**  
-Current research branch: **`research/0059-beta-deterioration-btc-takeover-diagnostic-prereg`**  
+Current `main` research merge: **`2e62245655008a74234b65d38d774b0d71847f05`**  
+Current research branch: **`research/0059-beta-deterioration-btc-takeover-diagnostic-implementation`**  
 Status of this document: **AUTHORITATIVE OPERATING SNAPSHOT**
 
 > GitHub `main`, immutable research artifacts and machine registries remain the sources of truth. This file is the compact human handoff, not a substitute for preregistration, execution, evidence, recovery or closeout artifacts.
@@ -42,7 +42,7 @@ BRRK 4h structural readiness 0055     FAIL_4H_STRUCTURAL_3D_TRAINING_PRECISION_N
 BRRK simple ETH/SOL Beta router 0056  INVALID_EXECUTION / CLOSED / NO ECONOMIC CONCLUSION
 BRRK Beta router interface replication 0057 FAIL_SIMPLE_BETA_ROUTER_COST_FRAGILE / CLOSED
 BRRK Beta->BTC parameter geometry 0058     FAIL_NO_STABLE_PARAMETER_PLATEAU / CLOSED
-BRRK Beta deterioration/BTC takeover 0059 NUMERICAL PREREG FROZEN / NOT IMPLEMENTED / NOT RUN
+BRRK Beta deterioration/BTC takeover 0059 IMPLEMENTED / SYNTHETIC CONTRACT TESTED / NOT RUN
 
 Canonical BRRK-0011                    NO CHANGE
 Phase 7                                MONITOR_ONLY / LAUNCH BLOCKED
@@ -1002,3 +1002,20 @@ Classification precedence is `INVALID_EXECUTION -> FAIL_INSUFFICIENT_CAUSAL_SUPP
 
 **Exact next step after prereg merge:** implementation-only with synthetic/toy/contract tests. Real market loading and all 0059 historical targets/correlations remain forbidden until a separately merged controlled-execution boundary.
 
+
+
+---
+
+## 0059 implementation-only handoff
+
+0059 numerical/data preregistration merged at `2e62245655008a74234b65d38d774b0d71847f05`. The implementation branch adds only `engine.py`, 17 synthetic contract tests, `IMPLEMENTATION_BOUNDARY.json`, README and this CURRENT_STATE handoff.
+
+The engine is data-agnostic. It accepts caller-supplied BTC/ETH/SOL close DataFrames but contains no 0047 network loader import, no filesystem market-evidence reader, no `run_once.py`, no `RUN_INTERFACE.json`, no `RESULT_SCHEMA.json`, no controlled-execution boundary, no durable runtime marker and no historical result.
+
+Frozen mechanics implemented exactly: symmetric log Beta and Beta/BTC proxies; 20/60/120/240 volatility-normalized FAST/SLOW trend; D1 Beta SLOW-FAST; D2 log distance below 60-session Beta high; D3 Beta/BTC SLOW-FAST; trailing252/min60 causal z-score clip ±3; equal-weight joint state; arithmetic origin-reset 50/50 ETH/SOL future Beta wealth; common 20/60/120/240 targets; average-tie Spearman; four equal-as-possible chronological blocks; non-circular MBB length 240, 10,000 reps, seed 1844716895 and simultaneous Type-7 LCBs.
+
+Synthetic Actions run `31675848796` passed 17/17 contract tests. The deterministic 2,183-day synthetic fixture mechanically yields 1,644 shared origins from 2021-06-06 through 2025-12-05 and exercises the full frozen 10,000-replicate bootstrap. Any synthetic classification/correlation has **zero scientific authority** and is not recorded as a 0059 research result.
+
+Zero-result guard: `REAL_0059_HISTORICAL_PAYLOAD_NOT_LOADED=true`, `REAL_0059_TARGET_ASSOCIATION_NOT_EXECUTED=true`, `ACTUAL_HISTORICAL_VARIANTS_EVALUATED=0`.
+
+No controlled-execution boundary exists. Next legal stage after implementation merge is a separate zero-result controlled-execution boundary. It must freeze result schema, run interface, exactly-once marker/fault semantics and the immutable real-data path before the unique historical DEVELOPMENT execution.

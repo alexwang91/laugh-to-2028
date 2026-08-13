@@ -1,0 +1,170 @@
+{
+  "research_id": "BRRK-BETA-DETERIORATION-BTC-TAKEOVER-DIAGNOSTIC-0059",
+  "stage": "MECHANISM_DIAGNOSTIC_IMPLEMENTATION_ONLY",
+  "base_main_prereg_merge_sha": "2e62245655008a74234b65d38d774b0d71847f05",
+  "status": "IMPLEMENTED_FOR_SYNTHETIC_CONTRACT_TESTING_ONLY_REAL_HISTORICAL_EVALUATION_FORBIDDEN",
+  "actual_variants_evaluated": 0,
+  "immutable_prereg_git_blobs": {
+    "research/brrk_beta_deterioration_btc_takeover_diagnostic_0059/PREREGISTRATION.json": "35daee8865b793d6871757e55c406df4643f5c2a",
+    "research/brrk_beta_deterioration_btc_takeover_diagnostic_0059/DATASET_DECLARATION.json": "8a28d8b97cdba4c6790eddeb3dfac5dca17ab3a6"
+  },
+  "immutable_source_dependencies": {
+    "trend_source_path": "research/brrk_beta_handoff_0047/engine.py",
+    "trend_source_git_blob_sha": "059b55961e279dab41ba29b5b017de0922e4f33c",
+    "causal_z_source_path": "research/governance/brrk_exhaustion_event_study.py",
+    "causal_z_source_git_blob_sha": "642e795a807b1210b97a9683279553fb39c2e0ce",
+    "market_evidence_path": "research/brrk_beta_handoff_0047/evidence/MARKET_EVIDENCE.json",
+    "market_evidence_git_blob_sha": "64ebf5c6deaf3f34dbeac715378f196ff0f4fafe",
+    "payload_sha256": "d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193",
+    "real_market_evidence_may_be_loaded_on_this_stage": false,
+    "network_refetch_allowed": false,
+    "replacement_dataset_allowed": false
+  },
+  "implementation_surface": {
+    "engine_path": "research/brrk_beta_deterioration_btc_takeover_diagnostic_0059/engine.py",
+    "engine_git_blob_sha": "e56d4918c34bde8f1d71e6d5152166db43e21689",
+    "synthetic_contract_tests_path": "research/brrk_beta_deterioration_btc_takeover_diagnostic_0059/test_engine.py",
+    "synthetic_contract_tests_git_blob_sha": "a7e3b314099e4e7d20eebfbe01aa823b5570c791",
+    "result_schema_present": false,
+    "run_once_present": false,
+    "controlled_execution_interface_present": false,
+    "controlled_execution_boundary_present": false,
+    "historical_result_path_present": false,
+    "historical_marker_present": false,
+    "market_loader_present": false
+  },
+  "frozen_scientific_contract": {
+    "assets": [
+      "BTC",
+      "ETH",
+      "SOL"
+    ],
+    "source_index_timezone_state": "TZ_NAIVE_UTC_NORMALIZED_DAILY_DATES",
+    "source_rows": 2183,
+    "beta_log_proxy": "0.5*log(ETH)+0.5*log(SOL)",
+    "relative_log_proxy": "beta_log_proxy-log(BTC)",
+    "trend_horizons": [
+      20,
+      60,
+      120,
+      240
+    ],
+    "FAST_weights": [
+      0.15,
+      0.25,
+      0.3,
+      0.3
+    ],
+    "SLOW_weights": [
+      0.1,
+      0.2,
+      0.3,
+      0.4
+    ],
+    "D1_raw": "TREND_SLOW(B)-TREND_FAST(B)",
+    "D2_raw": "log(trailing60_high(B)/B)",
+    "D3_raw": "TREND_SLOW(R)-TREND_FAST(R)",
+    "causal_z": "trailing252_including_t_min60_sample_std_ddof1_zero_std_nan_clip3",
+    "joint_state": "(D1_z+D2_z+D3_z)/3",
+    "target_horizons": [
+      20,
+      60,
+      120,
+      240
+    ],
+    "W_BETA": "0.5*(ETH_t_plus_h/ETH_t)+0.5*(SOL_t_plus_h/SOL_t)",
+    "W_BTC": "BTC_t_plus_h/BTC_t",
+    "Y_h": "log(W_BTC/W_BETA)",
+    "identical_shared_complete_case_origins": true,
+    "nominal_shared_origin_count": 1644,
+    "nominal_shared_origin_start": "2021-06-06T00:00:00Z",
+    "nominal_shared_origin_end": "2025-12-05T00:00:00Z",
+    "G1_min_shared_origins": 1440,
+    "primary_statistic": "SPEARMAN_AVERAGE_RANKS",
+    "G2": "ALL_FOUR_FULL_SAMPLE_RHO_STRICTLY_POSITIVE",
+    "temporal_partition": "FOUR_EQUAL_AS_POSSIBLE_CHRONOLOGICAL_BLOCKS",
+    "G3": "AT_LEAST_THREE_OF_FOUR_BLOCKS_ALL_FOUR_RHO_STRICTLY_POSITIVE",
+    "bootstrap_method": "ALIGNED_NONCIRCULAR_MOVING_BLOCK",
+    "bootstrap_block_length": 240,
+    "bootstrap_replicates": 10000,
+    "bootstrap_seed": 1844716895,
+    "bootstrap_quantile": "NUMPY_TYPE7_METHOD_LINEAR_0.95",
+    "simultaneous_error": "MAX_H_OF_OBSERVED_RHO_MINUS_BOOTSTRAP_RHO",
+    "G4": "ALL_FOUR_SIMULTANEOUS_ONE_SIDED_95PCT_LCB_STRICTLY_POSITIVE",
+    "classification_precedence": [
+      "INVALID_EXECUTION",
+      "FAIL_INSUFFICIENT_CAUSAL_SUPPORT",
+      "FAIL_NO_MONOTONE_CONTINUATION_INFORMATION",
+      "FAIL_TEMPORAL_INSTABILITY",
+      "FAIL_DEPENDENCE_AWARE_ROBUSTNESS",
+      "PASS_MECHANISM_INFORMATION_STAGE_ELIGIBLE"
+    ]
+  },
+  "result_persistence_implementation": {
+    "lossless_origin_panel_fields": [
+      "origin_date",
+      "b_log_beta",
+      "z_log_beta_over_btc",
+      "D1_raw",
+      "D2_raw",
+      "D3_raw",
+      "D1_z",
+      "D2_z",
+      "D3_z",
+      "S",
+      "WBTC_20",
+      "WBETA_20",
+      "Y_20",
+      "WBTC_60",
+      "WBETA_60",
+      "Y_60",
+      "WBTC_120",
+      "WBETA_120",
+      "Y_120",
+      "WBTC_240",
+      "WBETA_240",
+      "Y_240",
+      "chronological_block_id"
+    ],
+    "component_target_spearman_non_gating": true,
+    "component_redundancy_and_effective_rank_non_gating": true,
+    "result_schema_present_at_implementation_stage": false,
+    "result_schema_must_be_frozen_before_controlled_execution": true
+  },
+  "implementation_test_policy": {
+    "synthetic_only": true,
+    "synthetic_full_frozen_calendar_allowed": true,
+    "synthetic_output_has_scientific_authority": false,
+    "real_market_evidence_may_be_loaded": false,
+    "filesystem_market_loader_may_be_added": false,
+    "network_calls_may_be_added": false,
+    "real_0059_target_values_may_be_computed": false,
+    "real_0059_association_metrics_may_be_computed": false,
+    "portfolio_economics_may_be_computed": false,
+    "result_artifacts_may_be_created": false,
+    "actual_historical_variants_evaluated": 0
+  },
+  "synthetic_contract_evidence": {
+    "github_actions_run": 31675848796,
+    "0059_engine_tests_passed": 17,
+    "full_frozen_calendar_synthetic_source_rows": 2183,
+    "full_frozen_calendar_synthetic_shared_origin_rows": 1644,
+    "full_frozen_calendar_synthetic_origin_start": "2021-06-06T00:00:00Z",
+    "full_frozen_calendar_synthetic_origin_end": "2025-12-05T00:00:00Z",
+    "public_path_synthetic_bootstrap_replicates": 10000,
+    "zero_result_guard_passed": true,
+    "governance_validate_passed": true,
+    "no_drift_passed": true,
+    "real_0059_historical_payload_loaded": false,
+    "real_0059_target_association_executed": false,
+    "actual_historical_variants_evaluated": 0
+  },
+  "authority": {
+    "canonical_strategy_changed": false,
+    "phase6_changed": false,
+    "production_authorized_components": [],
+    "production_authorized": false,
+    "signature_authorized": false,
+    "order_submission_authorized": false
+  }
+}
