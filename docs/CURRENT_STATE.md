@@ -2,8 +2,8 @@
 
 Last updated: **2026-08-14**  
 Authoritative repository: `alexwang91/laugh-to-2028`  
-Current `main` research merge: **`aa3fa9c1814c4113918e0d012636db44a1f89659`**  
-Current research branch: **`research/0062-prereg-v1`**  
+Current `main` research merge: **`f1982689c59be9362f25b36a2f2067d0539054fe`**  
+Current research branch: **`research/0062-implementation-v1`**  
 Status of this document: **AUTHORITATIVE OPERATING SNAPSHOT**
 
 > GitHub `main`, immutable research artifacts and machine registries remain the sources of truth. This file is the compact human handoff, not a substitute for preregistration, execution, evidence, recovery or closeout artifacts.
@@ -45,7 +45,7 @@ BRRK Beta->BTC parameter geometry 0058     FAIL_NO_STABLE_PARAMETER_PLATEAU / CL
 BRRK Beta deterioration/BTC takeover 0059 FAIL_NO_MONOTONE_CONTINUATION_INFORMATION / CLOSED
 BRRK BTC->Cash absolute risk 0060     INVALID_EXECUTION / CLOSED / NO SCIENTIFIC CONCLUSION
 BRRK BTC->Cash measurement replication 0061 FAIL_NO_JOINT_DOWNSIDE_INFORMATION / CLOSED
-BRRK BTC risk signal atlas 0062        PREREGISTERED / IMPLEMENTATION ABSENT / NOT RUN
+BRRK BTC risk signal atlas 0062        IMPLEMENTED / CONTROLLED BOUNDARY ABSENT / NOT RUN
 
 Canonical BRRK-0011                    NO CHANGE
 Phase 7                                MONITOR_ONLY / LAUNCH BLOCKED
@@ -66,10 +66,12 @@ Phase-6 counts above are copied from the committed accounting index. That ledger
 ```text
 research id                             BRRK-BTC-RISK-SIGNAL-ATLAS-0062
 design merge                            aa3fa9c1814c4113918e0d012636db44a1f89659
-stage                                   PREREGISTERED / NOT RUN
+stage                                   IMPLEMENTED / CONTROLLED BOUNDARY ABSENT / NOT RUN
 Tier-A family count                     17
 frozen candidate cells                  185
 frozen family-track hypotheses          34
+engine blob                              cac8e946998c836d10842b9388e1e3ef345a8c0b
+implementation contracts                SYNTHETIC ONLY / NO HISTORICAL READ
 horizons                                5 / 10 / 20 / 40 sessions
 Tier-B/C F15-F20                        DATA_UNAVAILABLE / NOT SUBSTITUTABLE POST HOC
 F22 latent-state                        NOT EVALUATED IN 0062
