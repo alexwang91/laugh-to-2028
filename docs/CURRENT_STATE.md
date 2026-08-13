@@ -2,8 +2,8 @@
 
 Last updated: **2026-08-13**  
 Authoritative repository: `alexwang91/laugh-to-2028`  
-Current `main` research merge: **`3e624dc5a6af9a4ffc14c5727d730d31a4be738c`**  
-Current research branch: **`research/0061-btc-cash-absolute-risk-measurement-replication-controlled-boundary`**  
+Current `main` research merge: **`eb55377744cf063c38f34c68f0c17541b9325aaa`**  
+Current research branch: **`docs/0061-closeout-v1`**  
 Status of this document: **AUTHORITATIVE OPERATING SNAPSHOT**
 
 > GitHub `main`, immutable research artifacts and machine registries remain the sources of truth. This file is the compact human handoff, not a substitute for preregistration, execution, evidence, recovery or closeout artifacts.
@@ -44,7 +44,7 @@ BRRK Beta router interface replication 0057 FAIL_SIMPLE_BETA_ROUTER_COST_FRAGILE
 BRRK Beta->BTC parameter geometry 0058     FAIL_NO_STABLE_PARAMETER_PLATEAU / CLOSED
 BRRK Beta deterioration/BTC takeover 0059 FAIL_NO_MONOTONE_CONTINUATION_INFORMATION / CLOSED
 BRRK BTC->Cash absolute risk 0060     INVALID_EXECUTION / CLOSED / NO SCIENTIFIC CONCLUSION
-BRRK BTC->Cash measurement replication 0061 CONTROLLED BOUNDARY / ZERO RESULT / NOT RUN
+BRRK BTC->Cash measurement replication 0061 FAIL_NO_JOINT_DOWNSIDE_INFORMATION / CLOSED
 
 Canonical BRRK-0011                    NO CHANGE
 Phase 7                                MONITOR_ONLY / LAUNCH BLOCKED
@@ -1357,3 +1357,40 @@ order_submission_authorized            false
 ```
 
 **Exact next step after boundary merge:** the exact merged controlled-boundary HEAD may perform exactly one DEVELOPMENT historical execution. The durable result branch must persist `RUN_ATTEMPT.marker` before market content is read. From that point same-ID recomputation, rerun, retuning and rescue are permanently unavailable.
+
+
+---
+
+## 0061 immutable mechanism result and closure
+
+`BRRK-BTC-CASH-ABSOLUTE-RISK-MEASUREMENT-REPLICATION-0061` completed its unique exactly-once DEVELOPMENT execution in Actions run `31717797348` on scientific HEAD `eb55377744cf063c38f34c68f0c17541b9325aaa`. Final classification: **`FAIL_NO_JOINT_DOWNSIDE_INFORMATION`**.
+
+```text
+G0 integrity                           PASS
+G1 support                             PASS / 1635 >= 1440
+G2 all-eight joint monotone info       FAIL / binding
+G3 temporal recurrence                 NOT EVALUATED / prereg short-circuit
+G4 fixed-score dependence robustness   NOT EVALUATED / prereg short-circuit
+shared origins                         1635 / 2021-06-06..2025-12-05
+terminal rho 20/60/120/240             +0.05318853 / -0.09113181 / -0.07443946 / -0.08618769
+adverse rho 20/60/120/240              +0.07584870 / +0.01009220 / -0.03613042 / -0.10627940
+actual variants evaluated              1
+result branch                          docs/0061-result-v1 @ dc909d9db8a9acc1af85654fb2ae65eb5921806f
+same-ID rerun / retune / rescue        false / false / false
+state-to-gross translation eligible    false
+```
+
+0061 validly persisted and finalized a scientific result; unlike 0060, the measurement/persistence interface did not invalidate execution. The binding failure occurred at G2: the unchanged equal-weight A1/A2/A3 BTC absolute-risk state did not rank both terminal loss and adverse excursion positively across every required 20/60/120/240-day horizon.
+
+The favorable 20-day cells, positive 60-day adverse-excursion cell and descriptive axis diagnostics have no selection or rescue authority. G3 and corrected fixed-score G4 were not eligible and must not be recomputed. Scientifically distinct signed BTC-vs-Cash targets or volatility/drawdown/change-detection feedback controllers require new research IDs.
+
+```text
+Canonical BRRK-0011                    NO CHANGE
+Phase 6                                NO CHANGE
+production_authorized_components       []
+production_authorized                  false
+signature_authorized                   false
+order_submission_authorized            false
+```
+
+**Exact next step:** 0061 is permanently closed. Any outer BTC-to-Cash continuation requires a scientifically distinct new-ID design; do not rerun or rescue 0061.
