@@ -34,4 +34,5 @@ jobs:
       - name: Run isolated prereg materializer from tooling branch
         run: |
           git show origin/tools/0062-prereg-materializer-v2:tools/materialize_0062_prereg.py > /tmp/materialize_0062_prereg.py
+          sed -i 's|ROOT = Path(__file__).resolve().parents\[1\]|ROOT = Path.cwd()|' /tmp/materialize_0062_prereg.py
           python /tmp/materialize_0062_prereg.py
