@@ -1,6 +1,6 @@
 # BRRK-BETA-DETERIORATION-BTC-TAKEOVER-DIAGNOSTIC-0059
 
-Status: **IMPLEMENTATION FROZEN / SYNTHETIC CONTRACT TESTED / NOT RUN**
+Status: **CONTROLLED EXECUTION BOUNDARY FROZEN / NOT RUN**
 
 0059 is a pure DEVELOPMENT mechanism diagnostic. It freezes one equal-weight three-axis causal deterioration state and asks whether it has recurrent monotone information about future BTC-over-Beta continuation value simultaneously at 20/60/120/240 days. It defines no trading threshold, allocation map, switching rule, NAV path, transaction-cost model or production action.
 
@@ -19,3 +19,13 @@ Synthetic Actions run `31675848796` verifies the exact 0047 trend semantics, exa
 No real 0059 market evidence was loaded and no real 0059 future target, association metric or portfolio output was computed. Actual historical variants evaluated remain `0`.
 
 Next legal stage after implementation merge is a separate controlled-execution boundary that must freeze `RESULT_SCHEMA.json`, `RUN_INTERFACE.json`, exactly-once runner and fault/marker semantics before the unique DEVELOPMENT historical execution.
+
+## Controlled-execution boundary handoff
+
+Implementation merged at `195ef80ce99fa71098bdcb56a756b583fce10a70`. This stage freezes `RESULT_SCHEMA.json`, `RUN_INTERFACE.json`, the exactly-once `run_once.py` state machine and 15 mock/synthetic fault-contract tests. Tooling run `31679196616` also reran all 17 implementation engine tests, for 32 boundary tests total.
+
+Boundary CI read **no real market wrapper content**, loaded no historical payload and executed no real 0059 target, association or classification. Actual historical variants evaluated remain `0`.
+
+The future unique historical DEVELOPMENT execution must run from the exact merged controlled-boundary HEAD. `preflight` and `start-attempt` do not read market content. After `RUN_ATTEMPT.marker` is durably created, same-ID recomputation, retuning and rescue are permanently unavailable. `evaluate` may read the frozen market wrapper once, call the immutable 0047 source loader once and call the immutable 0059 engine once. Marker-only recovery is allowed only when attempt, complete primary result and complete execution already exist and only the final marker is absent; recovery may not read market content or remeasure anything.
+
+No threshold, allocation map, portfolio economics, BTC-to-cash, ETH/SOL micro-timing, leverage, shorting, canonical change or production authority is introduced. The next legal stage after this boundary merges is exactly one historical execution; it is **not** performed by this boundary stage.

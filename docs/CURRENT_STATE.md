@@ -2,8 +2,8 @@
 
 Last updated: **2026-08-13**  
 Authoritative repository: `alexwang91/laugh-to-2028`  
-Current `main` research merge: **`2e62245655008a74234b65d38d774b0d71847f05`**  
-Current research branch: **`research/0059-beta-deterioration-btc-takeover-diagnostic-implementation`**  
+Current `main` research merge: **`195ef80ce99fa71098bdcb56a756b583fce10a70`**  
+Current research branch: **`research/0059-beta-deterioration-btc-takeover-diagnostic-controlled-boundary`**  
 Status of this document: **AUTHORITATIVE OPERATING SNAPSHOT**
 
 > GitHub `main`, immutable research artifacts and machine registries remain the sources of truth. This file is the compact human handoff, not a substitute for preregistration, execution, evidence, recovery or closeout artifacts.
@@ -42,7 +42,7 @@ BRRK 4h structural readiness 0055     FAIL_4H_STRUCTURAL_3D_TRAINING_PRECISION_N
 BRRK simple ETH/SOL Beta router 0056  INVALID_EXECUTION / CLOSED / NO ECONOMIC CONCLUSION
 BRRK Beta router interface replication 0057 FAIL_SIMPLE_BETA_ROUTER_COST_FRAGILE / CLOSED
 BRRK Beta->BTC parameter geometry 0058     FAIL_NO_STABLE_PARAMETER_PLATEAU / CLOSED
-BRRK Beta deterioration/BTC takeover 0059 IMPLEMENTED / SYNTHETIC CONTRACT TESTED / NOT RUN
+BRRK Beta deterioration/BTC takeover 0059 CONTROLLED EXECUTION BOUNDARY FROZEN / NOT RUN
 
 Canonical BRRK-0011                    NO CHANGE
 Phase 7                                MONITOR_ONLY / LAUNCH BLOCKED
@@ -1019,3 +1019,18 @@ Synthetic Actions run `31675848796` passed 17/17 contract tests. The determinist
 Zero-result guard: `REAL_0059_HISTORICAL_PAYLOAD_NOT_LOADED=true`, `REAL_0059_TARGET_ASSOCIATION_NOT_EXECUTED=true`, `ACTUAL_HISTORICAL_VARIANTS_EVALUATED=0`.
 
 No controlled-execution boundary exists. Next legal stage after implementation merge is a separate zero-result controlled-execution boundary. It must freeze result schema, run interface, exactly-once marker/fault semantics and the immutable real-data path before the unique historical DEVELOPMENT execution.
+
+
+---
+
+## 0059 controlled-execution boundary handoff
+
+0059 implementation merged at `195ef80ce99fa71098bdcb56a756b583fce10a70`. The controlled boundary freezes result schema, immutable source/engine bindings, exact-head policy, create-only runtime artifacts and exactly-once state-machine semantics.
+
+Actions `31679196616` passed 17/17 implementation engine tests plus 15/15 controlled-run fault contracts, then governance validation and no-drift. Boundary tooling read no real market wrapper content, loaded no real historical payload and executed no historical target/association. `actual_variants_evaluated=0`.
+
+The execution sequence is: repeatable zero-result preflight (no market-content read) -> durable create-only `RUN_ATTEMPT.marker` -> one market-wrapper read + one 0047 source-loader call + one immutable 0059 engine call -> create-only `PRIMARY_RESULT.json` and `EXECUTION.json` -> hash-only `RUN_ONCE.marker` finalize with no market read or remeasurement.
+
+Once `RUN_ATTEMPT.marker` exists, same-ID recomputation, rerun, retuning and rescue are permanently forbidden. Automatic recomputation is also forbidden if a partial result exists. Marker-only recovery requires complete attempt/result/execution with verified hash chain and a missing final marker only.
+
+No real historical execution has occurred. The next legal stage is exactly one DEVELOPMENT historical execution from the exact merged controlled-boundary HEAD, followed by immutable closeout in a separate stage.
