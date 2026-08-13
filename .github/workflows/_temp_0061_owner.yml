@@ -1,44 +1,34 @@
-name: TEMP 0061 boundary contracts
+name: TEMP 0061 boundary handoff
 on:
   push:
     branches: [docs/0061-prereg-tooling]
 permissions:
-  contents: read
+  contents: write
 jobs:
-  contracts:
+  handoff:
     runs-on: ubuntu-latest
-    env:
-      PYTHONPATH: .
     steps:
       - uses: actions/checkout@v4
         with:
           ref: docs/0061-boundary-tooling
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-      - run: pip install 'numpy==1.26.4' 'pandas==2.2.2' 'pytest==8.3.2' 'requests==2.32.3' scipy
-      - run: pytest -q research/brrk_btc_cash_absolute_risk_measurement_replication_0061/test_engine.py
-      - run: pytest -q research/brrk_btc_cash_absolute_risk_measurement_replication_0061/test_run_interface.py
-      - name: State-machine faults without market read
+          fetch-depth: 0
+      - name: Update CURRENT_STATE only
         shell: bash
         run: |
-          set -euo pipefail
-          HEAD=$(git rev-parse HEAD)
-          MARKET=research/brrk_beta_handoff_0047/evidence/MARKET_EVIDENCE.json
-          RUNNER='python -m research.brrk_btc_cash_absolute_risk_measurement_replication_0061.run_once'
-          D=$(mktemp -d)
-          A=$D/RUN_ATTEMPT.marker
-          R=$D/PRIMARY_RESULT.json
-          E=$D/EXECUTION.json
-          M=$D/RUN_ONCE.marker
-          COMMON="--expected-head-sha $HEAD --market $MARKET --attempt $A --result $R --execution $E --marker $M"
-          $RUNNER preflight $COMMON
-          if $RUNNER evaluate $COMMON; then exit 31; fi
-          test ! -e "$R" && test ! -e "$E" && test ! -e "$M"
-          $RUNNER start-attempt $COMMON
-          test -s "$A"
-          printf '{}\n' > "$R"
-          if $RUNNER evaluate $COMMON; then exit 32; fi
-          test ! -e "$E" && test ! -e "$M"
-          if $RUNNER finalize $COMMON; then exit 33; fi
-          echo EPHEMERAL_FAULT_TESTS_NO_REAL_MEASUREMENT=true
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('docs/CURRENT_STATE.md')
+          s=p.read_text()
+          s=s.replace('Current `main` research merge: **`cc48e359b741bb8949093f9006d7a8ce287a10c0`**','Current `main` research merge: **`3e624dc5a6af9a4ffc14c5727d730d31a4be738c`**')
+          s=s.replace('Current research branch: **`research/0061-btc-cash-absolute-risk-measurement-replication-implementation`**','Current research branch: **`research/0061-btc-cash-absolute-risk-measurement-replication-controlled-boundary`**')
+          s=s.replace('BRRK BTC->Cash measurement replication 0061 IMPLEMENTATION-ONLY / ZERO RESULT / NOT RUN','BRRK BTC->Cash measurement replication 0061 CONTROLLED BOUNDARY / ZERO RESULT / NOT RUN')
+          marker='## 0061 controlled-execution boundary handoff'
+          if marker not in s:
+              s=s.rstrip()+'''\n\n---\n\n## 0061 controlled-execution boundary handoff\n\n0061 implementation merged at `3e624dc5a6af9a4ffc14c5727d730d31a4be738c`. The controlled boundary freezes immutable source/engine identities, a short-circuit-aware nullable result schema, staged exactly-once runner and fault contracts. No real historical 0061 market content has been read and no scientific result exists.\n\n```text\nscientific engine blob                 b548c82c446308f817871648d0db542848d419e6\nupstream 0060 engine blob              b901774b6849c9bcf6fbbf9887022142bf74a42d\nRUN_INTERFACE blob                     c651dcd5c0b062667ab7256396f84e2ae099768e\nRESULT_SCHEMA blob                     b969187dec0563240c51b398d50674706f7b4864\nrun_once blob                          a12216da6d65fcbc0dee2021a5c61d0a5b3e8360\ntest_run_interface blob                52036b7e6730024931b029018f904e2dd13005ec\nCONTROLLED_EXECUTION_BOUNDARY blob     747e59fa425d72dbbb5c3c2e5ba1128ef9bbc815\nboundary synthetic/fault run           31716990935\nreal historical payload loaded         false\nreal target/association executed       false\nactual historical variants evaluated   0\ndurable RUN_ATTEMPT.marker             ABSENT\nPRIMARY_RESULT / EXECUTION / final     ABSENT / ABSENT / ABSENT\n```\n\nThe schema accepts valid preregistered G1/G2/G3 scientific failures with nullable later-gate fields and independently re-derives their classification. Only a reached G4 requires finite fixed-score observed values, Spearman-equivalence error, q95, all eight simultaneous LCBs and a lossless fixed-score panel. `INVALID_EXECUTION` remains reserved for integrity/protocol failures.\n\nBoundary run `31716990935` passed 7 implementation tests, 5 result-schema tests and state-machine fault checks proving preflight does not read market content, evaluate without an attempt is rejected before market read, an ephemeral attempt plus existing partial result blocks automatic recomputation before market read, and incomplete finalization is rejected. The fault attempt existed only under `/tmp`; it is not a durable research attempt and consumes no historical execution authority.\n\n```text\nCanonical BRRK-0011                    NO CHANGE\nPhase 6                                NO CHANGE\nproduction_authorized_components       []\nproduction_authorized                  false\nsignature_authorized                   false\norder_submission_authorized            false\n```\n\n**Exact next step after boundary merge:** the exact merged controlled-boundary HEAD may perform exactly one DEVELOPMENT historical execution. The durable result branch must persist `RUN_ATTEMPT.marker` before market content is read. From that point same-ID recomputation, rerun, retuning and rescue are permanently unavailable.\n'''
+          p.write_text(s)
+          PY
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add docs/CURRENT_STATE.md
+          git commit -m 'docs: update 0061 boundary handoff'
+          git push origin HEAD:docs/0061-boundary-tooling
