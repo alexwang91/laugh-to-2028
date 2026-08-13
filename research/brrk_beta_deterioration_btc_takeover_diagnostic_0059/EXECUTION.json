@@ -1,0 +1,16 @@
+{
+  "research_id": "BRRK-BETA-DETERIORATION-BTC-TAKEOVER-DIAGNOSTIC-0059",
+  "dataset_slice_id": "BRRK-LEADERSHIP-ROTATION-0048-EXPOSED-HIST-V1",
+  "payload_sha256": "d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193",
+  "git_head_sha": "3bbe0d236f5e88abb6b60a701a12d78a3e925e45",
+  "started_at_utc": "2026-08-13T08:13:16Z",
+  "completed_at_utc": "2026-08-13T08:13:39Z",
+  "classification": "FAIL_NO_MONOTONE_CONTINUATION_INFORMATION",
+  "actual_variants_evaluated": 1,
+  "attempt_marker_sha256": "0de899434316353dd251e815d7fe22177da1e34ff9d5736ff1c9b527725e204a",
+  "primary_result_sha256": "a2fb9fea68b3ba22b2c7b262e7be52357fb50489108c13e0804c485595465779",
+  "same_id_rerun_allowed": false,
+  "same_id_retuning_allowed": false,
+  "same_id_rescue_allowed": false,
+  "production_authorized": false
+}
