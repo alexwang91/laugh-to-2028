@@ -1,0 +1,163 @@
+name: Temp 0062 exactly-once historical execution
+
+on:
+  push:
+    branches: [tools/0062-execution-v1]
+    paths: ['.github/workflows/_temp_0062_execute_once.yml']
+
+permissions:
+  contents: write
+
+env:
+  PYTHONHASHSEED: '0'
+  OMP_NUM_THREADS: '1'
+  OPENBLAS_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+  NUMEXPR_NUM_THREADS: '1'
+
+jobs:
+  execute-once:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout durable result branch
+        uses: actions/checkout@v4
+        with:
+          ref: research/0062-result-v1
+          path: result
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Checkout exact frozen scientific head
+        uses: actions/checkout@v4
+        with:
+          ref: ae8f585bfc3fd9599cee0844ee29971a36461dd0
+          path: science
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: science/execution/plan-b-bot/requirements-dev.txt
+
+      - name: Install pinned scientific runtime
+        run: pip install -r science/execution/plan-b-bot/requirements-dev.txt
+
+      - name: Zero-result preflight
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git -C science rev-parse HEAD)" = "ae8f585bfc3fd9599cee0844ee29971a36461dd0"
+          test "$(git -C result rev-parse HEAD)" = "ae8f585bfc3fd9599cee0844ee29971a36461dd0"
+          for f in RUN_ATTEMPT.marker PRIMARY_RESULT.json EVIDENCE.json EXECUTION.json RUN_ONCE.marker; do
+            test ! -e "science/research/brrk_btc_risk_signal_atlas_0062/$f"
+            test ! -e "result/research/brrk_btc_risk_signal_atlas_0062/$f"
+          done
+          cd science
+          python -m research.brrk_btc_risk_signal_atlas_0062.run_once preflight \
+            --expected-head-sha ae8f585bfc3fd9599cee0844ee29971a36461dd0 \
+            --market research/brrk_beta_handoff_0047/evidence/MARKET_EVIDENCE.json | tee /tmp/0062-preflight.json
+          grep -q '"market_content_read": false' /tmp/0062-preflight.json
+
+      - name: Create attempt marker without market read
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd science
+          python -m research.brrk_btc_risk_signal_atlas_0062.run_once start-attempt \
+            --expected-head-sha ae8f585bfc3fd9599cee0844ee29971a36461dd0 \
+            --market research/brrk_beta_handoff_0047/evidence/MARKET_EVIDENCE.json
+          test -f research/brrk_btc_risk_signal_atlas_0062/RUN_ATTEMPT.marker
+          test ! -e research/brrk_btc_risk_signal_atlas_0062/PRIMARY_RESULT.json
+
+      - name: Durably persist attempt marker before market read
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p result/research/brrk_btc_risk_signal_atlas_0062
+          cp science/research/brrk_btc_risk_signal_atlas_0062/RUN_ATTEMPT.marker result/research/brrk_btc_risk_signal_atlas_0062/RUN_ATTEMPT.marker
+          cmp science/research/brrk_btc_risk_signal_atlas_0062/RUN_ATTEMPT.marker result/research/brrk_btc_risk_signal_atlas_0062/RUN_ATTEMPT.marker
+          git -C result config user.name 'github-actions[bot]'
+          git -C result config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git -C result add research/brrk_btc_risk_signal_atlas_0062/RUN_ATTEMPT.marker
+          test "$(git -C result diff --cached --name-only)" = "research/brrk_btc_risk_signal_atlas_0062/RUN_ATTEMPT.marker"
+          git -C result commit -m '0062 persist attempt marker before market read'
+          git -C result push origin HEAD:research/0062-result-v1
+          remote_sha="$(git -C result ls-remote origin refs/heads/research/0062-result-v1 | cut -f1)"
+          test "$remote_sha" = "$(git -C result rev-parse HEAD)"
+          echo "DURABLE_ATTEMPT_COMMIT=$remote_sha"
+
+      - name: Unique historical measurement after durable attempt
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd science
+          python -m research.brrk_btc_risk_signal_atlas_0062.run_once evaluate \
+            --expected-head-sha ae8f585bfc3fd9599cee0844ee29971a36461dd0 \
+            --market research/brrk_beta_handoff_0047/evidence/MARKET_EVIDENCE.json | tee /tmp/0062-measurement.json
+          test -f research/brrk_btc_risk_signal_atlas_0062/PRIMARY_RESULT.json
+          test -f research/brrk_btc_risk_signal_atlas_0062/EVIDENCE.json
+          test -f research/brrk_btc_risk_signal_atlas_0062/EXECUTION.json
+          test ! -e research/brrk_btc_risk_signal_atlas_0062/RUN_ONCE.marker
+
+      - name: Durably persist result evidence and execution
+        shell: bash
+        run: |
+          set -euo pipefail
+          for f in PRIMARY_RESULT.json EVIDENCE.json EXECUTION.json; do
+            cp "science/research/brrk_btc_risk_signal_atlas_0062/$f" "result/research/brrk_btc_risk_signal_atlas_0062/$f"
+            cmp "science/research/brrk_btc_risk_signal_atlas_0062/$f" "result/research/brrk_btc_risk_signal_atlas_0062/$f"
+          done
+          git -C result add research/brrk_btc_risk_signal_atlas_0062/PRIMARY_RESULT.json research/brrk_btc_risk_signal_atlas_0062/EVIDENCE.json research/brrk_btc_risk_signal_atlas_0062/EXECUTION.json
+          staged="$(git -C result diff --cached --name-only | sort)"
+          expected="$(printf '%s\n' research/brrk_btc_risk_signal_atlas_0062/EVIDENCE.json research/brrk_btc_risk_signal_atlas_0062/EXECUTION.json research/brrk_btc_risk_signal_atlas_0062/PRIMARY_RESULT.json | sort)"
+          test "$staged" = "$expected"
+          git -C result commit -m '0062 persist unique historical measurement'
+          git -C result push origin HEAD:research/0062-result-v1
+          remote_sha="$(git -C result ls-remote origin refs/heads/research/0062-result-v1 | cut -f1)"
+          test "$remote_sha" = "$(git -C result rev-parse HEAD)"
+          echo "DURABLE_MEASUREMENT_COMMIT=$remote_sha"
+
+      - name: Finalize from persisted hashes without market read or remeasurement
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd science
+          python -m research.brrk_btc_risk_signal_atlas_0062.run_once finalize \
+            --expected-head-sha ae8f585bfc3fd9599cee0844ee29971a36461dd0 \
+            --market research/brrk_beta_handoff_0047/evidence/MARKET_EVIDENCE.json
+          test -f research/brrk_btc_risk_signal_atlas_0062/RUN_ONCE.marker
+
+      - name: Durably persist final marker
+        shell: bash
+        run: |
+          set -euo pipefail
+          cp science/research/brrk_btc_risk_signal_atlas_0062/RUN_ONCE.marker result/research/brrk_btc_risk_signal_atlas_0062/RUN_ONCE.marker
+          cmp science/research/brrk_btc_risk_signal_atlas_0062/RUN_ONCE.marker result/research/brrk_btc_risk_signal_atlas_0062/RUN_ONCE.marker
+          git -C result add research/brrk_btc_risk_signal_atlas_0062/RUN_ONCE.marker
+          test "$(git -C result diff --cached --name-only)" = "research/brrk_btc_risk_signal_atlas_0062/RUN_ONCE.marker"
+          git -C result commit -m '0062 finalize exactly-once historical execution'
+          git -C result push origin HEAD:research/0062-result-v1
+          remote_sha="$(git -C result ls-remote origin refs/heads/research/0062-result-v1 | cut -f1)"
+          test "$remote_sha" = "$(git -C result rev-parse HEAD)"
+          echo "DURABLE_FINAL_COMMIT=$remote_sha"
+
+      - name: Emit frozen result summary
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=json.loads(Path('result/research/brrk_btc_risk_signal_atlas_0062/PRIMARY_RESULT.json').read_text())
+          e=json.loads(Path('result/research/brrk_btc_risk_signal_atlas_0062/EXECUTION.json').read_text())
+          print(json.dumps({
+              'classification':p['classification'],
+              'common_origin_count':p['common_origin_count'],
+              'passing_family_tracks':p.get('passing_family_tracks',[]),
+              'historical_execution_attempts':e['historical_execution_attempts'],
+              'market_content_reads':e['market_content_reads'],
+              'source_loader_calls':e['source_loader_calls'],
+              'scientific_engine_calls':e['scientific_engine_calls'],
+              'actual_variants_evaluated':e['actual_variants_evaluated']
+          },sort_keys=True))
+          PY
