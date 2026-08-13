@@ -1,0 +1,70 @@
+name: 0060 boundary validate
+
+on:
+  push:
+    branches:
+      - research/0060-btc-cash-absolute-risk-diagnostic-controlled-boundary
+
+permissions:
+  contents: write
+
+concurrency:
+  group: brrk-0060-boundary-validate
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/0060-btc-cash-absolute-risk-diagnostic-controlled-boundary
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install pinned test runtime
+        run: pip install -r execution/plan-b-bot/requirements-dev.txt
+      - name: Run immutable implementation and controlled-run contracts
+        run: |
+          pytest -q research/brrk_btc_cash_absolute_risk_diagnostic_0060/test_engine.py
+          pytest -q research/brrk_btc_cash_absolute_risk_diagnostic_0060/test_run_interface.py
+      - name: Enforce zero-result boundary
+        run: |
+          set -euo pipefail
+          DIR=research/brrk_btc_cash_absolute_risk_diagnostic_0060
+          test ! -e "$DIR/RUN_ATTEMPT.marker"
+          test ! -e "$DIR/PRIMARY_RESULT.json"
+          test ! -e "$DIR/EXECUTION.json"
+          test ! -e "$DIR/RUN_ONCE.marker"
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('research/brrk_btc_cash_absolute_risk_diagnostic_0060/CONTROLLED_EXECUTION_BOUNDARY.json')
+          x=json.loads(p.read_text())
+          assert x['historical_payload_loaded_during_boundary'] is False
+          assert x['historical_downside_targets_computed_during_boundary'] is False
+          assert x['actual_historical_variants_evaluated']==0
+          print('REAL_0060_HISTORICAL_PAYLOAD_NOT_LOADED=true')
+          print('REAL_0060_DOWNSIDE_TARGETS_NOT_EXECUTED=true')
+          print('ACTUAL_HISTORICAL_VARIANTS_EVALUATED=0')
+          PY
+      - name: Materialize boundary handoff and remove temporary workflow
+        run: |
+          set -euo pipefail
+          git config user.name 'Y_Wang'
+          git config user.email '40142450+alexwang91@users.noreply.github.com'
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('docs/CURRENT_STATE.md'); s=p.read_text()
+          s=s.replace('Current `main` research merge: **`cf803b355632a91d19a38186cbf5a369e8a2a6db`**','Current `main` research merge: **`7bb4883aa176f421199173b56d9753f447afe851`**')
+          s=s.replace('Current research branch: **`research/0060-btc-cash-absolute-risk-diagnostic-implementation`**','Current research branch: **`research/0060-btc-cash-absolute-risk-diagnostic-controlled-boundary`**')
+          s=s.replace('BRRK BTC->Cash absolute risk 0060     IMPLEMENTATION-ONLY / ZERO RESULT / NOT RUN','BRRK BTC->Cash absolute risk 0060     CONTROLLED-EXECUTION BOUNDARY / ZERO RESULT / NOT RUN')
+          if '## 0060 controlled-execution boundary handoff' not in s:
+              s += '''\n\n---\n\n## 0060 controlled-execution boundary handoff\n\n0060 implementation merged at `7bb4883aa176f421199173b56d9753f447afe851`. The controlled boundary freezes the exact scientific-engine blob, immutable market/source bindings, lossless result schema and a staged exactly-once runner. No real 0060 market content has been read and no historical target/association has been computed in this boundary.\n\n```text\nscientific engine blob                 b901774b6849c9bcf6fbbf9887022142bf74a42d\nmarket evidence blob                   64ebf5c6deaf3f34dbeac715378f196ff0f4fafe\npayload SHA256                         d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193\npreflight                              repeatable / zero-result / no market-content read\nattempt marker                         create-only / irreversible authority boundary\nmeasurement                            exactly one loader call + one engine call\nresult + execution                     create-only\nfinalization                           hash-only / no market read / no remeasurement\npartial result automatic recompute     forbidden\nmarker-only recovery                   only complete result+execution with missing final marker\nactual historical variants evaluated  0\nBTC/Cash gross map                     forbidden\nproduction_authorized                  false\nsignature_authorized                   false\norder_submission_authorized            false\n```\n\nAfter this boundary merges, the exact merged boundary HEAD is eligible for exactly one DEVELOPMENT historical execution. Once `RUN_ATTEMPT.marker` is durably pushed, no same-ID rerun/recompute/retune/rescue is available.\n'''
+          p.write_text(s)
+          PY
+          git rm .github/workflows/_tmp_0060_boundary_validate.yml
+          git add docs/CURRENT_STATE.md
+          git commit -m 'Research boundary [0060]: record exactly-once zero-result handoff'
+          git push origin HEAD:research/0060-btc-cash-absolute-risk-diagnostic-controlled-boundary
