@@ -1,0 +1,105 @@
+{
+  "research_id": "BRRK-BETA-DETERIORATION-BTC-TAKEOVER-DIAGNOSTIC-0059",
+  "status": "FAIL_NO_MONOTONE_CONTINUATION_INFORMATION",
+  "closed": true,
+  "development_not_independent_oos": true,
+  "researcher_exposed_history": true,
+  "execution_head_sha": "3bbe0d236f5e88abb6b60a701a12d78a3e925e45",
+  "result_branch_head_sha": "cd36249044099ed54fb3899a0753752d32f4c379",
+  "payload_sha256": "d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193",
+  "execution_identity": {
+    "github_actions_run": 31681057766,
+    "runtime_artifact_id": 9173499766,
+    "runtime_artifact_name": "brrk-0059-beta-deterioration-btc-takeover-runtime-bundle",
+    "runtime_artifact_digest": "sha256:957c6e13a8cc76b48f75ee5ce08e06d215570a5b773d112cd9cc3f235fb46bf9",
+    "started_at_utc": "2026-08-13T08:13:16Z",
+    "completed_at_utc": "2026-08-13T08:13:39Z",
+    "finalized_at_utc": "2026-08-13T08:13:43Z"
+  },
+  "runtime_git_blobs": {
+    "RUN_ATTEMPT.marker": "efafce859384217d5897e6b17051c7f24acfb869",
+    "PRIMARY_RESULT.json": "5f05e952bfbc61e9ba15be1dc631fa6279bd25af",
+    "EXECUTION.json": "4c94ef3823e9f07bc1857f11f410e3ec6913cc03",
+    "RUN_ONCE.marker": "a9140c81d19b34fe4c80ddbc701edb4fc1363560"
+  },
+  "runtime_hashes": {
+    "attempt_marker_sha256": "0de899434316353dd251e815d7fe22177da1e34ff9d5736ff1c9b527725e204a",
+    "primary_result_sha256": "a2fb9fea68b3ba22b2c7b262e7be52357fb50489108c13e0804c485595465779",
+    "execution_sha256": "c64de54fb28ea32cebebeaba3b7d767ad41b14c9140c97c6821574997c20ed05"
+  },
+  "gates": {
+    "G0_INTEGRITY": true,
+    "G1_SUPPORT": true,
+    "G2_MONOTONE_INFORMATION": false,
+    "G3_TEMPORAL_RECURRENCE": false,
+    "G4_DEPENDENCE_AWARE_ROBUSTNESS": false
+  },
+  "mechanism_result": {
+    "declared_variants": 1,
+    "actual_variants_evaluated": 1,
+    "shared_origin_count": 1644,
+    "shared_origin_start": "2021-06-06T00:00:00Z",
+    "shared_origin_end": "2025-12-05T00:00:00Z",
+    "full_sample_rho_by_horizon": {
+      "20": 0.05558695281620582,
+      "60": -0.13344059874250927,
+      "120": -0.1533350260405994,
+      "240": -0.18679790148770495
+    },
+    "positive_all_horizon_chronological_blocks": 0,
+    "required_positive_all_horizon_chronological_blocks": 3,
+    "bootstrap_q95": 0.32013854993934265,
+    "simultaneous_lcb_by_horizon": {
+      "20": -0.2645515971231368,
+      "60": -0.4535791486818519,
+      "120": -0.47347357597994205,
+      "240": -0.5069364514270476
+    },
+    "component_target_spearman_descriptive_only": {
+      "D1_z": {
+        "20": 0.10809721415069966,
+        "60": -0.032697630066240414,
+        "120": -0.12831980322068728,
+        "240": -0.25401528991874534
+      },
+      "D2_z": {
+        "20": 0.1100998404185312,
+        "60": -0.14134660154330794,
+        "120": -0.1238629181690459,
+        "240": -0.05777557995885019
+      },
+      "D3_z": {
+        "20": -0.0757455069117895,
+        "60": -0.14306530107248608,
+        "120": -0.11773600154106169,
+        "240": -0.13488471716114106
+      }
+    },
+    "component_effective_rank_descriptive_only": 2.2730582329500537
+  },
+  "binding_failure": {
+    "gate": "G2_MONOTONE_INFORMATION",
+    "reason": "G0 integrity and G1 support passed with 1,644 shared origins, but the frozen equal-weight D1/D2/D3 state did not have strictly positive full-sample Spearman association with BTC-over-Beta continuation value at all four required horizons. Only 20d was positive; 60d, 120d and 240d were negative. Under frozen precedence this closes 0059 as FAIL_NO_MONOTONE_CONTINUATION_INFORMATION. G3 and G4 were also false but do not supersede the binding G2 classification."
+  },
+  "authority": {
+    "mechanism_conclusion_authorized": true,
+    "monotone_information_established": false,
+    "state_to_allocation_translation_eligible_from_0059": false,
+    "favorable_20d_selection_authority": false,
+    "component_selection_or_reweighting_authority": false,
+    "same_id_horizon_pruning_allowed": false,
+    "same_id_feature_pruning_allowed": false,
+    "same_id_feature_addition_allowed": false,
+    "same_id_bootstrap_or_support_change_allowed": false,
+    "same_id_rerun_allowed": false,
+    "same_id_retuning_allowed": false,
+    "same_id_rescue_allowed": false,
+    "next_continuation_requires_new_research_id": true,
+    "canonical_strategy_changed": false,
+    "phase6_changed": false,
+    "production_authorized": false,
+    "signature_authorized": false,
+    "order_submission_authorized": false
+  },
+  "interpretation": "The exact frozen low-dimensional equal-weight Beta-deterioration state does not provide the preregistered recurrent monotone BTC-over-Beta continuation information across 20/60/120/240 days. The 20-day positive rho and individual component diagnostics are exposed descriptive outputs only and cannot justify same-ID horizon selection, component pruning/reweighting, thresholding or strategy translation. 0059 is permanently closed. A scientifically distinct continuation requires a new research ID and must explicitly treat all 0059 outputs as exposed DEVELOPMENT evidence."
+}

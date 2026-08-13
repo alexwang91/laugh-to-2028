@@ -2,8 +2,8 @@
 
 Last updated: **2026-08-13**  
 Authoritative repository: `alexwang91/laugh-to-2028`  
-Current `main` research merge: **`195ef80ce99fa71098bdcb56a756b583fce10a70`**  
-Current research branch: **`research/0059-beta-deterioration-btc-takeover-diagnostic-controlled-boundary`**  
+Current `main` research merge: **`3bbe0d236f5e88abb6b60a701a12d78a3e925e45`**  
+Current research branch: **`research/0059-beta-deterioration-btc-takeover-diagnostic-closeout`**  
 Status of this document: **AUTHORITATIVE OPERATING SNAPSHOT**
 
 > GitHub `main`, immutable research artifacts and machine registries remain the sources of truth. This file is the compact human handoff, not a substitute for preregistration, execution, evidence, recovery or closeout artifacts.
@@ -42,7 +42,7 @@ BRRK 4h structural readiness 0055     FAIL_4H_STRUCTURAL_3D_TRAINING_PRECISION_N
 BRRK simple ETH/SOL Beta router 0056  INVALID_EXECUTION / CLOSED / NO ECONOMIC CONCLUSION
 BRRK Beta router interface replication 0057 FAIL_SIMPLE_BETA_ROUTER_COST_FRAGILE / CLOSED
 BRRK Beta->BTC parameter geometry 0058     FAIL_NO_STABLE_PARAMETER_PLATEAU / CLOSED
-BRRK Beta deterioration/BTC takeover 0059 CONTROLLED EXECUTION BOUNDARY FROZEN / NOT RUN
+BRRK Beta deterioration/BTC takeover 0059 FAIL_NO_MONOTONE_CONTINUATION_INFORMATION / CLOSED
 
 Canonical BRRK-0011                    NO CHANGE
 Phase 7                                MONITOR_ONLY / LAUNCH BLOCKED
@@ -1034,3 +1034,41 @@ The execution sequence is: repeatable zero-result preflight (no market-content r
 Once `RUN_ATTEMPT.marker` exists, same-ID recomputation, rerun, retuning and rescue are permanently forbidden. Automatic recomputation is also forbidden if a partial result exists. Marker-only recovery requires complete attempt/result/execution with verified hash chain and a missing final marker only.
 
 No real historical execution has occurred. The next legal stage is exactly one DEVELOPMENT historical execution from the exact merged controlled-boundary HEAD, followed by immutable closeout in a separate stage.
+
+
+---
+
+## 0059 immutable mechanism result and closure
+
+`BRRK-BETA-DETERIORATION-BTC-TAKEOVER-DIAGNOSTIC-0059` completed its unique exactly-once DEVELOPMENT execution in Actions run `31681057766` on frozen scientific HEAD `3bbe0d236f5e88abb6b60a701a12d78a3e925e45`. Final classification: **`FAIL_NO_MONOTONE_CONTINUATION_INFORMATION`**.
+
+```text
+G0 integrity                           PASS
+G1 support                             PASS / 1644 >= 1440
+G2 all-horizon monotone information   FAIL / binding
+G3 temporal recurrence                FAIL / 0 of 4 positive-all-horizon blocks
+G4 dependence-aware robustness        FAIL
+shared origins                         1644 / 2021-06-06..2025-12-05
+rho 20d                                +0.0555869528
+rho 60d                                -0.1334405987
+rho 120d                               -0.1533350260
+rho 240d                               -0.1867979015
+bootstrap q95                          0.3201385499
+LCB 20d / 60d                          -0.2645515971 / -0.4535791487
+LCB 120d / 240d                        -0.4734735760 / -0.5069364514
+actual variants evaluated              1
+same-ID rerun/retune/rescue            false / false / false
+```
+
+The exact frozen equal-weight D1/D2/D3 state does not establish recurrent monotone BTC-over-Beta continuation information across the required 20/60/120/240-day family. The positive 20d rho cannot be selected after the fact, and component diagnostics cannot be used to prune or reweight the state under 0059. No state-to-allocation translation is unlocked by this result.
+
+0059 is permanently closed. Any continuation must use a new research ID and must not masquerade as a 0059 horizon/component/support/bootstrap rescue. BTC-to-cash remains a separate gross-risk research layer and was not tested by 0059.
+
+```text
+Canonical BRRK-0011                    NO CHANGE
+Phase 6                                NO CHANGE
+production_authorized_components       []
+production_authorized                  false
+signature_authorized                   false
+order_submission_authorized            false
+```

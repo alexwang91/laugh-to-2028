@@ -1,6 +1,6 @@
 # BRRK-BETA-DETERIORATION-BTC-TAKEOVER-DIAGNOSTIC-0059
 
-Status: **CONTROLLED EXECUTION BOUNDARY FROZEN / NOT RUN**
+Status: **FAIL_NO_MONOTONE_CONTINUATION_INFORMATION / IMMUTABLE DEVELOPMENT CLOSURE**
 
 0059 is a pure DEVELOPMENT mechanism diagnostic. It freezes one equal-weight three-axis causal deterioration state and asks whether it has recurrent monotone information about future BTC-over-Beta continuation value simultaneously at 20/60/120/240 days. It defines no trading threshold, allocation map, switching rule, NAV path, transaction-cost model or production action.
 
@@ -29,3 +29,15 @@ Boundary CI read **no real market wrapper content**, loaded no historical payloa
 The future unique historical DEVELOPMENT execution must run from the exact merged controlled-boundary HEAD. `preflight` and `start-attempt` do not read market content. After `RUN_ATTEMPT.marker` is durably created, same-ID recomputation, retuning and rescue are permanently unavailable. `evaluate` may read the frozen market wrapper once, call the immutable 0047 source loader once and call the immutable 0059 engine once. Marker-only recovery is allowed only when attempt, complete primary result and complete execution already exist and only the final marker is absent; recovery may not read market content or remeasure anything.
 
 No threshold, allocation map, portfolio economics, BTC-to-cash, ETH/SOL micro-timing, leverage, shorting, canonical change or production authority is introduced. The next legal stage after this boundary merges is exactly one historical execution; it is **not** performed by this boundary stage.
+
+## Immutable 0059 result and closure
+
+Unique exactly-once DEVELOPMENT run `31681057766` executed the single frozen representation on scientific HEAD `3bbe0d236f5e88abb6b60a701a12d78a3e925e45` and finalized from persisted hashes without market reread or scientific remeasurement. Final classification: **`FAIL_NO_MONOTONE_CONTINUATION_INFORMATION`**.
+
+G0 integrity and G1 support passed. The complete shared-origin panel contains 1,644 origins from 2021-06-06 through 2025-12-05. G2 failed because full-sample Spearman rho(S,Y_h) was `+0.05558695` at 20d but `-0.13344060`, `-0.15333503`, and `-0.18679790` at 60d, 120d, and 240d. The frozen rule required every horizon to be strictly positive.
+
+No one of the four chronological blocks had all four horizon correlations positive, and the simultaneous dependence-aware LCBs were all non-positive (`20d -0.26455`, `60d -0.45358`, `120d -0.47347`, `240d -0.50694`). G3/G4 therefore also failed, but G2 remains the binding classification by preregistered precedence.
+
+The favorable 20d rho and separate D1/D2/D3 component diagnostics are descriptive-only. They cannot authorize picking 20d, deleting/reweighting a component, changing normalization/support/bootstrap, or defining a threshold/allocation map under 0059. Same-ID rerun, retuning and rescue are permanently false. Any continuation requires a new research ID and must treat these outputs as exposed DEVELOPMENT evidence.
+
+Canonical BRRK-0011, Phase 6, signing, order submission and production authorization remain unchanged.

@@ -3754,7 +3754,7 @@
       "validation_dataset_refs": [],
       "sealed_dataset_refs": [],
       "declared_variant_budget": 1,
-      "actual_variants_evaluated": 0,
+      "actual_variants_evaluated": 1,
       "parameter_candidate_count": 1,
       "stopping_rule": "After this preregistration merges, implement exactly one frozen 0059 mechanism diagnostic on an implementation-only branch using synthetic/toy/contract tests only. After a separately merged controlled-execution boundary, execute exactly one valid DEVELOPMENT historical measurement. Any valid result closes 0059 to same-ID rerun, feature/horizon/reweighting/support/bootstrap change or rescue. A durable attempt marker removes same-ID automatic recomputation authority.",
       "success_criteria": [
@@ -3816,7 +3816,9 @@
           "TEMPORAL=FOUR_EQUAL_REQUIRE3_ALL_HORIZONS_POSITIVE",
           "BOOTSTRAP=NONCIRCULAR_MBB240_X10000_SEED1844716895_SIMULTANEOUS95_LCB"
         ],
-        "actual_parameter_candidates_evaluated": [],
+        "actual_parameter_candidates_evaluated": [
+          "ONE_FIXED_STATE=D1_D2_D3_EQUAL_WEIGHT"
+        ],
         "universes_evaluated": [
           "BINANCE_SPOT_BTC_ETH_SOL"
         ],
@@ -3855,15 +3857,24 @@
           "evidence_ref": "research/brrk_exhaustion_state_0044/PRIMARY_RESULT.json"
         }
       ],
-      "result_status": "PREREGISTERED_NOT_RUN",
-      "failure_reason": null,
-      "promotion_state": "NONE",
-      "evidence_refs": [],
+      "result_status": "FAIL_NO_MONOTONE_CONTINUATION_INFORMATION",
+      "failure_reason": "G2 monotone-information gate failed: with 1,644 shared origins, full-sample rho(S,Y_h) was +0.05558695 at 20d but -0.13344060, -0.15333503 and -0.18679790 at 60d, 120d and 240d; the preregistered all-four-positive requirement therefore failed.",
+      "promotion_state": "NO_PROMOTION",
+      "evidence_refs": [
+        "run:31681057766",
+        "artifact:brrk-0059-beta-deterioration-btc-takeover-runtime-bundle",
+        "research/brrk_beta_deterioration_btc_takeover_diagnostic_0059/RUN_ATTEMPT.marker",
+        "research/brrk_beta_deterioration_btc_takeover_diagnostic_0059/PRIMARY_RESULT.json",
+        "research/brrk_beta_deterioration_btc_takeover_diagnostic_0059/EXECUTION.json",
+        "research/brrk_beta_deterioration_btc_takeover_diagnostic_0059/RUN_ONCE.marker",
+        "research/brrk_beta_deterioration_btc_takeover_diagnostic_0059/CLOSEOUT.json"
+      ],
       "decision_refs": [
         "research/governance/BRRK_BETA_DETERIORATION_BTC_TAKEOVER_DIAGNOSTIC_0059_DESIGN_FREEZE_2026-08-13.md",
         "research/brrk_beta_deterioration_btc_takeover_diagnostic_0059/PREREGISTRATION.json",
         "research/brrk_beta_deterioration_btc_takeover_diagnostic_0059/DATASET_DECLARATION.json",
-        "docs/CURRENT_STATE.md"
+        "docs/CURRENT_STATE.md",
+        "research/brrk_beta_deterioration_btc_takeover_diagnostic_0059/CLOSEOUT.json"
       ],
       "production_relevance": "Research-only DEVELOPMENT mechanism-information diagnostic. A full PASS can only make a separately governed state-to-allocation translation/calibration study eligible; it cannot modify canonical BRRK, Phase 6 or confer production/signing/order authority.",
       "production_authorized": false,
@@ -3875,8 +3886,21 @@
         "0059 DESIGN merged before numerical/data preregistration.",
         "0058 and 0057 remain immutable closed failures and cannot be rerun or rescued.",
         "No 0059 historical target value, Spearman correlation, bootstrap result or portfolio economic output existed when this owner/preregistration was frozen.",
-        "BTC-to-cash remains outside scope."
-      ]
+        "BTC-to-cash remains outside scope.",
+        "Unique run 31681057766 validly classified FAIL_NO_MONOTONE_CONTINUATION_INFORMATION; G0 and G1 passed and G2 is the binding failure.",
+        "Shared support was exactly 1,644 origins from 2021-06-06 through 2025-12-05. Full-sample rho was positive only at 20d and negative at 60d, 120d and 240d, so the frozen all-four-positive monotonicity requirement failed.",
+        "No chronological block had all four horizon correlations positive; all four simultaneous moving-block-bootstrap lower confidence bounds were non-positive. These later failures corroborate but do not replace the binding G2 classification.",
+        "The favorable 20d result and D1/D2/D3 descriptive diagnostics have no horizon-selection, component-pruning, reweighting, threshold, allocation or rescue authority.",
+        "0059 is closed to same-ID rerun, retuning, feature/horizon alteration, support/bootstrap changes or strategy translation. Any continuation requires a scientifically distinct new research ID."
+      ],
+      "evidence_scorecard": {
+        "temporal_novelty": "RESEARCHER_EXPOSED_DEVELOPMENT_NOT_INDEPENDENT_OOS",
+        "statistical_sufficiency": "G1_SUPPORT_PASS_1644_ORIGINS_BUT_G2_MONOTONE_INFORMATION_FAIL_THREE_OF_FOUR_FULL_SAMPLE_RHOS_NEGATIVE",
+        "governance_integrity": "HIGH_EXACTLY_ONCE_HASH_BOUND_FINALIZED_WITHOUT_MARKET_READ_OR_REMEASUREMENT",
+        "operational_realism": "CAUSAL_DAILY_BTC_VS_SYMMETRIC_ETH_SOL_BETA_INFORMATION_DIAGNOSTIC_NO_STRATEGY_ECONOMICS",
+        "derived_confidence": "HIGH_FOR_FROZEN_DEVELOPMENT_G2_FAILURE",
+        "confidence_rule_ref": "research/brrk_beta_deterioration_btc_takeover_diagnostic_0059/CLOSEOUT.json"
+      }
     }
   ],
   "research_governance_debt": [
