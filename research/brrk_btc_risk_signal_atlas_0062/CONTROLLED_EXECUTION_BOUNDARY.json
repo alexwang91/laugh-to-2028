@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "research_id": "BRRK-BTC-RISK-SIGNAL-ATLAS-0062",
+  "stage": "CONTROLLED_EXECUTION_BOUNDARY_FROZEN_NOT_RUN",
+  "implementation_merge_sha": "b55a39883de8132371580c466124b9ff3a195729",
+  "frozen_git_blobs": {
+    "PREREGISTRATION.json": "2eedf6575dc6a18c9b0d71356f3767d00199a565",
+    "DATASET_DECLARATION.json": "058a1d07583da1515e7f4f9831b814eb953c656e",
+    "IMPLEMENTATION_CONTRACT.json": "8eb481e3d9e74410a81e4afe783fa87557fb9d25",
+    "engine.py": "cac8e946998c836d10842b9388e1e3ef345a8c0b",
+    "RUN_INTERFACE.json": "5e46c6baba67e1761f05b75ee739ed2dd0054a74",
+    "RESULT_SCHEMA.json": "d113364aa9d785d25ee2cc925a65bc104ce29ce5",
+    "run_once.py": "91706156ef7c456d66ce0da016e82d4f91374ff7",
+    "source_loader_engine.py": "059b55961e279dab41ba29b5b017de0922e4f33c",
+    "MARKET_EVIDENCE.json": "64ebf5c6deaf3f34dbeac715378f196ff0f4fafe"
+  },
+  "exactly_once_semantics": {
+    "historical_execution_attempt_budget": 1,
+    "market_content_reads": 1,
+    "source_loader_calls": 1,
+    "scientific_engine_calls": 1,
+    "candidate_cells_evaluated_inside_single_engine_call": 185,
+    "family_tracks_evaluated_inside_single_engine_call": 34,
+    "attempt_marker_must_be_durable_before_market_read": true,
+    "automatic_recompute_after_attempt_marker": false,
+    "same_id_rerun_allowed": false,
+    "same_id_retuning_allowed": false,
+    "same_id_rescue_allowed": false,
+    "marker_only_recovery_allowed": true,
+    "marker_only_recovery_requires_existing_result_evidence_execution_hash_chain": true
+  },
+  "result_persistence": {
+    "attempt": "RUN_ATTEMPT.marker",
+    "primary_result": "PRIMARY_RESULT.json",
+    "lossless_evidence": "EVIDENCE.json",
+    "execution": "EXECUTION.json",
+    "final_marker": "RUN_ONCE.marker"
+  },
+  "historical_outcomes_seen_at_boundary_freeze": false,
+  "portfolio_economics": false,
+  "gross_map_translation": false,
+  "reentry_optimization": false,
+  "canonical_brrk_change": false,
+  "phase6_change": false,
+  "production_authorized": false,
+  "signature_authorized": false,
+  "order_submission_authorized": false
+}
