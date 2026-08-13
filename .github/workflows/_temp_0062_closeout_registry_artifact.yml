@@ -1,0 +1,66 @@
+name: Temp 0062 closeout registry artifact
+on:
+  push:
+    branches: [tools/0062-closeout-registry-v1]
+    paths: ['.github/workflows/_temp_0062_closeout_registry_artifact.yml']
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/0062-closeout-v1
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: execution/plan-b-bot/requirements-dev.txt
+      - run: pip install -r execution/plan-b-bot/requirements-dev.txt
+      - name: Build exactly one-record closeout registry update
+        run: |
+          python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          RID='BRRK-BTC-RISK-SIGNAL-ATLAS-0062'
+          p=Path('config/research_registry.json')
+          reg=json.loads(p.read_text())
+          def h(x): return hashlib.sha256(json.dumps(x,sort_keys=True,separators=(',',':'),ensure_ascii=False).encode()).hexdigest()
+          rows=[r for r in reg['records'] if r.get('research_id')==RID]
+          assert len(rows)==1
+          row=rows[0]
+          assert row['result_status']=='PREREGISTERED_NOT_RUN' and row['actual_variants_evaluated']==0
+          old={r['research_id']:h(r) for r in reg['records'] if r.get('research_id')!=RID}
+          row['result_status']='FAIL_NO_SIGNAL_ATLAS_FAMILY_INFORMATION'
+          row['failure_reason']='G5 failed: 0 of 34 preregistered family-track hypotheses had a strictly positive global simultaneous dependence-aware MBB lower confidence bound; global q95=0.2439283076788892.'
+          row['promotion_state']='NO_PROMOTION'
+          row['actual_variants_evaluated']=185
+          row['research_process_complexity']['actual_parameter_candidates_evaluated']=185
+          row['evidence_refs']=['run:31753763747','research/brrk_btc_risk_signal_atlas_0062/RUN_ATTEMPT.marker','research/brrk_btc_risk_signal_atlas_0062/PRIMARY_RESULT.json','research/brrk_btc_risk_signal_atlas_0062/EVIDENCE.json','research/brrk_btc_risk_signal_atlas_0062/EXECUTION.json','research/brrk_btc_risk_signal_atlas_0062/RUN_ONCE.marker','research/brrk_btc_risk_signal_atlas_0062/CLOSEOUT.json']
+          row['decision_refs']=['research/governance/BRRK_BTC_RISK_SIGNAL_ATLAS_0062_DESIGN_FREEZE_2026-08-13.md','research/brrk_btc_risk_signal_atlas_0062/PREREGISTRATION.json','research/brrk_btc_risk_signal_atlas_0062/DATASET_DECLARATION.json','research/brrk_btc_risk_signal_atlas_0062/IMPLEMENTATION_CONTRACT.json','research/brrk_btc_risk_signal_atlas_0062/CONTROLLED_EXECUTION_BOUNDARY.json','research/brrk_btc_risk_signal_atlas_0062/CLOSEOUT.json','docs/CURRENT_STATE.md']
+          row['production_relevance']='DEVELOPMENT Signal Atlas failed the frozen family-level simultaneous information gate; no state-to-gross, canonical, Phase-6 or production authority.'
+          row['notes']=list(row.get('notes',[]))+['Unique execution: N=1975; G2 16/34, G3 3/34, G4 14/34, G5 0/34; classification FAIL_NO_SIGNAL_ATLAS_FAMILY_INFORMATION.','F10 volatility R_SHORT, F11 tail R_SHORT and F12 volume/flow D_SWING are descriptive result-informed DEVELOPMENT leads only; none is eligible under 0062.','Same-ID rerun, retune, rescue, family/cell pruning, multiplicity relaxation and gross-map translation are permanently unavailable.']
+          new={r['research_id']:h(r) for r in reg['records'] if r.get('research_id')!=RID}
+          assert old==new and row['production_authorized'] is False
+          p.write_text(json.dumps(reg,indent=2,ensure_ascii=False,allow_nan=False)+'\n')
+          PY
+          python -m research.governance.validate
+          mkdir -p /tmp/0062-closeout-registry
+          cp config/research_registry.json /tmp/0062-closeout-registry/research_registry.json
+          python - <<'PY'
+          import json,subprocess
+          from pathlib import Path
+          reg=json.loads(Path('config/research_registry.json').read_text())
+          row=next(r for r in reg['records'] if r.get('research_id')=='BRRK-BTC-RISK-SIGNAL-ATLAS-0062')
+          report={'research_id':row['research_id'],'result_status':row['result_status'],'promotion_state':row['promotion_state'],'actual_variants_evaluated':row['actual_variants_evaluated'],'production_authorized':row['production_authorized'],'output_registry_git_blob_sha':subprocess.check_output(['git','hash-object','config/research_registry.json'],text=True).strip()}
+          Path('/tmp/0062-closeout-registry/BUILD_REPORT.json').write_text(json.dumps(report,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(report,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: 0062-closeout-registry
+          path: /tmp/0062-closeout-registry/
+          if-no-files-found: error
+          retention-days: 7
