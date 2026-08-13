@@ -1,4 +1,4 @@
-name: TEMP 0061 implementation synthetic tests
+name: TEMP 0061 implementation handoff
 
 on:
   push:
@@ -6,19 +6,33 @@ on:
       - docs/0061-prereg-tooling
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
-  synthetic:
+  handoff:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           ref: docs/0061-implementation-tooling
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-      - name: Install runtime
-        run: pip install 'numpy==1.26.4' 'pandas==2.2.2' 'pytest==8.3.2'
-      - name: Run synthetic tests
-        run: pytest -q --import-mode=importlib research/brrk_btc_cash_absolute_risk_diagnostic_0060/test_engine.py research/brrk_btc_cash_absolute_risk_measurement_replication_0061/test_engine.py
+          fetch-depth: 0
+      - name: Update CURRENT_STATE only
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('docs/CURRENT_STATE.md')
+          s=p.read_text()
+          s=s.replace('Current `main` research merge: **`c81e780ae2faa38f2e0bcda8f25e04ec7c5bc2a7`**','Current `main` research merge: **`cc48e359b741bb8949093f9006d7a8ce287a10c0`**')
+          s=s.replace('Current research branch: **`research/0061-btc-cash-absolute-risk-measurement-replication-prereg`**','Current research branch: **`research/0061-btc-cash-absolute-risk-measurement-replication-implementation`**')
+          s=s.replace('BRRK BTC->Cash measurement replication 0061 NUMERICAL/DATA PREREG FROZEN / NOT RUN','BRRK BTC->Cash measurement replication 0061 IMPLEMENTATION-ONLY / ZERO RESULT / NOT RUN')
+          marker='## 0061 implementation-only handoff'
+          if marker not in s:
+              s=s.rstrip()+'''\n\n---\n\n## 0061 implementation-only handoff\n\n`BRRK-BTC-CASH-ABSOLUTE-RISK-MEASUREMENT-REPLICATION-0061` preregistration merged at `cc48e359b741bb8949093f9006d7a8ce287a10c0`. The implementation delegates the unchanged 0060 state/target/shared-origin construction to immutable 0060 engine blob `b901774b6849c9bcf6fbbf9887022142bf74a42d` and implements only the preregistered fixed-score dependence inference plus gate short-circuit semantics.\n\n```text\nimplementation engine blob             b548c82c446308f817871648d0db542848d419e6\nsynthetic Actions run                   31715033232\nsynthetic contracts                     23 passed\nreal historical payload loaded          false\nreal target/association executed         false\nactual historical variants evaluated     0\nrun_once / execution interface           ABSENT\ncontrolled execution boundary            ABSENT\nportfolio economics                      FORBIDDEN\nBTC/Cash gross map                       FORBIDDEN\nproduction_authorized                    false\nsignature_authorized                     false\norder_submission_authorized              false\n```\n\nSynthetic coverage includes the immutable 0060 contracts plus 0061 fixed-score/Spearman equivalence under heavy ties and a long zero-mass region, full-panel constant-coordinate detection, finite deterministic eight-target fixed-score MBB, repeated/variance-free resample rows and frozen MBB index determinism. No synthetic output has scientific authority.\n\n**Exact next step after implementation merge:** create a separate zero-result controlled-execution boundary freezing immutable hashes, nullable short-circuit-aware result schema, run interface and exactly-once marker/fault semantics before any real historical 0061 measurement.\n'''
+          p.write_text(s)
+          PY
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add docs/CURRENT_STATE.md
+          git commit -m 'docs: update 0061 implementation handoff'
+          git push origin HEAD:docs/0061-implementation-tooling
