@@ -4103,7 +4103,7 @@
       "validation_dataset_refs": [],
       "sealed_dataset_refs": [],
       "declared_variant_budget": 1,
-      "actual_variants_evaluated": 0,
+      "actual_variants_evaluated": 1,
       "parameter_candidate_count": 1,
       "stopping_rule": "One preregistered representation and one historical execution only; after a durable attempt marker no same-ID recomputation, rerun, retuning or rescue.",
       "success_criteria": "All preregistered support, all-eight monotonicity, temporal recurrence and dependence-aware simultaneous lower-bound gates pass.",
@@ -4120,7 +4120,7 @@
       ],
       "research_process_complexity": {
         "declared_parameter_candidates": 1,
-        "actual_parameter_candidates_evaluated": 0,
+        "actual_parameter_candidates_evaluated": 1,
         "universes_evaluated": 1,
         "horizons_evaluated": 4,
         "rebalance_variants": 0,
@@ -4141,17 +4141,24 @@
           "relation": "RESULT_INFORMED"
         }
       ],
-      "result_status": "PREREGISTERED_NOT_RUN",
-      "failure_reason": null,
-      "promotion_state": "NONE",
-      "evidence_refs": [],
+      "result_status": "FAIL_NO_JOINT_DOWNSIDE_INFORMATION",
+      "failure_reason": "G2 failed: 5 of 8 co-primary full-sample Spearman associations were not strictly positive; G3/G4 were not evaluated by preregistered short-circuit.",
+      "promotion_state": "NO_PROMOTION",
+      "evidence_refs": [
+        "run:31717797348",
+        "research/brrk_btc_cash_absolute_risk_measurement_replication_0061/PRIMARY_RESULT.json",
+        "research/brrk_btc_cash_absolute_risk_measurement_replication_0061/EXECUTION.json",
+        "research/brrk_btc_cash_absolute_risk_measurement_replication_0061/RUN_ONCE.marker",
+        "research/brrk_btc_cash_absolute_risk_measurement_replication_0061/CLOSEOUT.json"
+      ],
       "decision_refs": [
         "research/governance/BRRK_BTC_CASH_ABSOLUTE_RISK_MEASUREMENT_REPLICATION_0061_DESIGN_FREEZE_2026-08-13.md",
         "research/brrk_btc_cash_absolute_risk_measurement_replication_0061/PREREGISTRATION.json",
         "research/brrk_btc_cash_absolute_risk_measurement_replication_0061/DATASET_DECLARATION.json",
-        "docs/CURRENT_STATE.md"
+        "docs/CURRENT_STATE.md",
+        "research/brrk_btc_cash_absolute_risk_measurement_replication_0061/CLOSEOUT.json"
       ],
-      "production_relevance": "DEVELOPMENT mechanism evidence only; no automatic canonical, Phase 6 or production authority.",
+      "production_relevance": "DEVELOPMENT mechanism-information failure; no state-to-gross, canonical, Phase 6 or production authority.",
       "production_authorized": false,
       "provenance_status": "FACT",
       "governed_path_prefixes": [
@@ -4161,7 +4168,15 @@
         "0060 is immutable INVALID_EXECUTION with no scientific conclusion.",
         "0061 changes only the dependence-measurement interface and treats all 0060 attempt information as exposed DEVELOPMENT evidence.",
         "No 0061 historical target, association or bootstrap output existed when this owner was created."
-      ]
+      ],
+      "evidence_scorecard": {
+        "temporal_novelty": "RESEARCHER_EXPOSED_DEVELOPMENT_NOT_INDEPENDENT_OOS",
+        "statistical_sufficiency": "G1_SUPPORT_PASS_1635_ORIGINS_BUT_G2_JOINT_DOWNSIDE_INFORMATION_FAIL",
+        "governance_integrity": "HIGH_EXACTLY_ONCE_HASH_BOUND_FINALIZED_WITHOUT_MARKET_READ_OR_REMEASUREMENT",
+        "operational_realism": "CAUSAL_DAILY_BTC_ABSOLUTE_RISK_INFORMATION_DIAGNOSTIC_NO_STRATEGY_ECONOMICS",
+        "derived_confidence": "HIGH_FOR_FROZEN_DEVELOPMENT_G2_FAILURE",
+        "confidence_rule_ref": "research/brrk_btc_cash_absolute_risk_measurement_replication_0061/CLOSEOUT.json"
+      }
     }
   ],
   "research_governance_debt": [
