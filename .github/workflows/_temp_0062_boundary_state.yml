@@ -1,0 +1,45 @@
+name: Temp 0062 boundary handoff
+on:
+  push:
+    branches: [docs/0062-boundary-state]
+    paths: ['.github/workflows/_temp_0062_boundary_state.yml']
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/0062-controlled-boundary-v1
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Update CURRENT_STATE only
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "1bbb5cdc96baab65c408dc7db948dd6a69bbd875"
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('docs/CURRENT_STATE.md')
+          s=p.read_text()
+          pairs=[
+          ('Current `main` research merge: **`f1982689c59be9362f25b36a2f2067d0539054fe`**','Current `main` research merge: **`b55a39883de8132371580c466124b9ff3a195729`**'),
+          ('Current research branch: **`research/0062-implementation-v1`**','Current research branch: **`research/0062-controlled-boundary-v1`**'),
+          ('BRRK BTC risk signal atlas 0062        IMPLEMENTED / CONTROLLED BOUNDARY ABSENT / NOT RUN','BRRK BTC risk signal atlas 0062        CONTROLLED BOUNDARY FROZEN / NOT RUN'),
+          ('stage                                   IMPLEMENTED / CONTROLLED BOUNDARY ABSENT / NOT RUN','stage                                   CONTROLLED BOUNDARY FROZEN / NOT RUN')]
+          for a,b in pairs:
+              assert s.count(a)==1,(a,s.count(a))
+              s=s.replace(a,b,1)
+          needle='implementation contracts                SYNTHETIC ONLY / NO HISTORICAL READ\n'
+          add=needle+'run interface blob                      5e46c6baba67e1761f05b75ee739ed2dd0054a74\nresult schema blob                       d113364aa9d785d25ee2cc925a65bc104ce29ce5\nrun-once runner blob                     91706156ef7c456d66ce0da016e82d4f91374ff7\nhistorical execution attempt budget     1\n'
+          assert s.count(needle)==1
+          s=s.replace(needle,add,1)
+          p.write_text(s)
+          PY
+          test "$(git diff --name-only)" = "docs/CURRENT_STATE.md"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs/CURRENT_STATE.md
+          git commit -m 'docs: hand off 0062 controlled boundary state'
+          git push origin HEAD:research/0062-controlled-boundary-v1
