@@ -1,0 +1,49 @@
+name: Tooling 0062 owner artifact read-only
+
+on:
+  push:
+    branches:
+      - tools/0062-owner-artifact-v1
+    paths:
+      - 'tools/build_0062_owner_artifact.py'
+      - '.github/workflows/tooling-0062-owner-artifact.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  build-owner-artifact:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout tooling source
+        uses: actions/checkout@v4
+        with:
+          ref: tools/0062-owner-artifact-v1
+          path: tooling
+          fetch-depth: 1
+      - name: Checkout exact merged DESIGN tree
+        uses: actions/checkout@v4
+        with:
+          ref: aa3fa9c1814c4113918e0d012636db44a1f89659
+          path: target
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: target/execution/plan-b-bot/requirements-dev.txt
+      - name: Install pinned governance runtime
+        run: pip install -r target/execution/plan-b-bot/requirements-dev.txt
+      - name: Build and validate clean owner artifact
+        run: |
+          cp tooling/tools/build_0062_owner_artifact.py /tmp/build_0062_owner_artifact.py
+          cd target
+          python /tmp/build_0062_owner_artifact.py
+      - name: Upload clean registry artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: 0062-clean-prereg-owner
+          path: /tmp/0062-owner-artifact/
+          if-no-files-found: error
+          retention-days: 7
+          overwrite: false
