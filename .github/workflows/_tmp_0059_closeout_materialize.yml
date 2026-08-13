@@ -1,0 +1,326 @@
+name: Temporary 0059 immutable closeout materializer
+
+on:
+  push:
+    branches:
+      - research/0059-beta-deterioration-btc-takeover-diagnostic-closeout-tooling
+
+permissions:
+  contents: write
+
+jobs:
+  materialize:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    env:
+      BASE_MAIN: 3bbe0d236f5e88abb6b60a701a12d78a3e925e45
+      TARGET_BRANCH: research/0059-beta-deterioration-btc-takeover-diagnostic-closeout
+      RESULT_BRANCH: research/0059-beta-deterioration-btc-takeover-diagnostic-result
+      RESULT_HEAD: cd36249044099ed54fb3899a0753752d32f4c379
+      SCI_DIR: research/brrk_beta_deterioration_btc_takeover_diagnostic_0059
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.TARGET_BRANCH }}
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: execution/plan-b-bot/requirements-dev.txt
+
+      - name: Install pinned governance runtime
+        run: pip install -r execution/plan-b-bot/requirements-dev.txt
+
+      - name: Verify frozen main and import exact immutable runtime bundle without remeasurement
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$BASE_MAIN"
+          REMOTE_MAIN=$(git ls-remote origin refs/heads/main | awk '{print $1}')
+          test "$REMOTE_MAIN" = "$BASE_MAIN"
+          git fetch origin "$RESULT_BRANCH"
+          test "$(git rev-parse origin/$RESULT_BRANCH)" = "$RESULT_HEAD"
+          for f in RUN_ATTEMPT.marker PRIMARY_RESULT.json EXECUTION.json RUN_ONCE.marker; do
+            test ! -e "$SCI_DIR/$f"
+            git show "origin/$RESULT_BRANCH:$SCI_DIR/$f" > "$SCI_DIR/$f"
+          done
+          test "$(git hash-object "$SCI_DIR/RUN_ATTEMPT.marker")" = "efafce859384217d5897e6b17051c7f24acfb869"
+          test "$(git hash-object "$SCI_DIR/PRIMARY_RESULT.json")" = "5f05e952bfbc61e9ba15be1dc631fa6279bd25af"
+          test "$(git hash-object "$SCI_DIR/EXECUTION.json")" = "4c94ef3823e9f07bc1857f11f410e3ec6913cc03"
+          test "$(git hash-object "$SCI_DIR/RUN_ONCE.marker")" = "a9140c81d19b34fe4c80ddbc701edb4fc1363560"
+          echo "IMMUTABLE_RUNTIME_IMPORTED=true"
+          echo "SCIENTIFIC_REMEASUREMENT=false"
+          echo "MARKET_CONTENT_READ=false"
+          echo "SCIENTIFIC_ENGINE_CALLED=false"
+
+      - name: Materialize immutable 0059 closeout from persisted JSON only
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          RID = 'BRRK-BETA-DETERIORATION-BTC-TAKEOVER-DIAGNOSTIC-0059'
+          EXEC_HEAD = '3bbe0d236f5e88abb6b60a701a12d78a3e925e45'
+          RESULT_HEAD = 'cd36249044099ed54fb3899a0753752d32f4c379'
+          root = Path('research/brrk_beta_deterioration_btc_takeover_diagnostic_0059')
+          result = json.loads((root/'PRIMARY_RESULT.json').read_text())
+          execution = json.loads((root/'EXECUTION.json').read_text())
+          attempt = json.loads((root/'RUN_ATTEMPT.marker').read_text())
+          marker = json.loads((root/'RUN_ONCE.marker').read_text())
+          m = result['measurement']
+
+          expected_gates = {
+            'G0_INTEGRITY': True,
+            'G1_SUPPORT': True,
+            'G2_MONOTONE_INFORMATION': False,
+            'G3_TEMPORAL_RECURRENCE': False,
+            'G4_DEPENDENCE_AWARE_ROBUSTNESS': False,
+          }
+          expected_rho = {
+            '20': 0.05558695281620582,
+            '60': -0.13344059874250927,
+            '120': -0.1533350260405994,
+            '240': -0.18679790148770495,
+          }
+          expected_lcb = {
+            '20': -0.2645515971231368,
+            '60': -0.4535791486818519,
+            '120': -0.47347357597994205,
+            '240': -0.5069364514270476,
+          }
+
+          assert result['research_id'] == RID
+          assert result['execution_head_sha'] == EXEC_HEAD
+          assert result['classification'] == 'FAIL_NO_MONOTONE_CONTINUATION_INFORMATION'
+          assert m['research_id'] == RID
+          assert m['classification'] == result['classification']
+          assert m['actual_variants_evaluated'] == 1
+          assert m['gates'] == expected_gates
+          assert m['shared_origin_count'] == 1644
+          assert m['shared_origin_start'] == '2021-06-06T00:00:00Z'
+          assert m['shared_origin_end'] == '2025-12-05T00:00:00Z'
+          assert m['full_sample_rho_by_horizon'] == expected_rho
+          assert m['bootstrap_q95'] == 0.32013854993934265
+          assert m['simultaneous_lcb_by_horizon'] == expected_lcb
+          assert len(m['origin_panel']) == 1644
+          assert execution['classification'] == result['classification']
+          assert execution['actual_variants_evaluated'] == 1
+          assert attempt['candidate_count'] == 1
+          assert attempt['same_id_recomputation_allowed'] is False
+          assert marker['classification'] == result['classification']
+          assert marker['actual_variants_evaluated'] == 1
+          assert marker['finalized_without_market_read'] is True
+          assert marker['finalized_without_remeasurement'] is True
+          assert marker['same_id_rerun_allowed'] is False
+          assert marker['same_id_retuning_allowed'] is False
+          assert marker['same_id_rescue_allowed'] is False
+
+          positive_all_horizon_blocks = 0
+          for block in m['temporal_block_rho_by_horizon'].values():
+            if all(block[h] > 0 for h in ('20','60','120','240')):
+              positive_all_horizon_blocks += 1
+          assert positive_all_horizon_blocks == 0
+          assert all(v <= 0 for v in expected_lcb.values())
+
+          closeout_ref = f'{root}/CLOSEOUT.json'
+          closeout = {
+            'research_id': RID,
+            'status': 'FAIL_NO_MONOTONE_CONTINUATION_INFORMATION',
+            'closed': True,
+            'development_not_independent_oos': True,
+            'researcher_exposed_history': True,
+            'execution_head_sha': EXEC_HEAD,
+            'result_branch_head_sha': RESULT_HEAD,
+            'payload_sha256': result['payload_sha256'],
+            'execution_identity': {
+              'github_actions_run': 31681057766,
+              'runtime_artifact_id': 9173499766,
+              'runtime_artifact_name': 'brrk-0059-beta-deterioration-btc-takeover-runtime-bundle',
+              'runtime_artifact_digest': 'sha256:957c6e13a8cc76b48f75ee5ce08e06d215570a5b773d112cd9cc3f235fb46bf9',
+              'started_at_utc': execution['started_at_utc'],
+              'completed_at_utc': execution['completed_at_utc'],
+              'finalized_at_utc': marker['finalized_at_utc'],
+            },
+            'runtime_git_blobs': {
+              'RUN_ATTEMPT.marker': 'efafce859384217d5897e6b17051c7f24acfb869',
+              'PRIMARY_RESULT.json': '5f05e952bfbc61e9ba15be1dc631fa6279bd25af',
+              'EXECUTION.json': '4c94ef3823e9f07bc1857f11f410e3ec6913cc03',
+              'RUN_ONCE.marker': 'a9140c81d19b34fe4c80ddbc701edb4fc1363560',
+            },
+            'runtime_hashes': {
+              'attempt_marker_sha256': execution['attempt_marker_sha256'],
+              'primary_result_sha256': execution['primary_result_sha256'],
+              'execution_sha256': marker['execution_sha256'],
+            },
+            'gates': m['gates'],
+            'mechanism_result': {
+              'declared_variants': 1,
+              'actual_variants_evaluated': 1,
+              'shared_origin_count': m['shared_origin_count'],
+              'shared_origin_start': m['shared_origin_start'],
+              'shared_origin_end': m['shared_origin_end'],
+              'full_sample_rho_by_horizon': m['full_sample_rho_by_horizon'],
+              'positive_all_horizon_chronological_blocks': positive_all_horizon_blocks,
+              'required_positive_all_horizon_chronological_blocks': 3,
+              'bootstrap_q95': m['bootstrap_q95'],
+              'simultaneous_lcb_by_horizon': m['simultaneous_lcb_by_horizon'],
+              'component_target_spearman_descriptive_only': m['component_target_spearman'],
+              'component_effective_rank_descriptive_only': m['component_effective_rank'],
+            },
+            'binding_failure': {
+              'gate': 'G2_MONOTONE_INFORMATION',
+              'reason': 'G0 integrity and G1 support passed with 1,644 shared origins, but the frozen equal-weight D1/D2/D3 state did not have strictly positive full-sample Spearman association with BTC-over-Beta continuation value at all four required horizons. Only 20d was positive; 60d, 120d and 240d were negative. Under frozen precedence this closes 0059 as FAIL_NO_MONOTONE_CONTINUATION_INFORMATION. G3 and G4 were also false but do not supersede the binding G2 classification.'
+            },
+            'authority': {
+              'mechanism_conclusion_authorized': True,
+              'monotone_information_established': False,
+              'state_to_allocation_translation_eligible_from_0059': False,
+              'favorable_20d_selection_authority': False,
+              'component_selection_or_reweighting_authority': False,
+              'same_id_horizon_pruning_allowed': False,
+              'same_id_feature_pruning_allowed': False,
+              'same_id_feature_addition_allowed': False,
+              'same_id_bootstrap_or_support_change_allowed': False,
+              'same_id_rerun_allowed': False,
+              'same_id_retuning_allowed': False,
+              'same_id_rescue_allowed': False,
+              'next_continuation_requires_new_research_id': True,
+              'canonical_strategy_changed': False,
+              'phase6_changed': False,
+              'production_authorized': False,
+              'signature_authorized': False,
+              'order_submission_authorized': False,
+            },
+            'interpretation': 'The exact frozen low-dimensional equal-weight Beta-deterioration state does not provide the preregistered recurrent monotone BTC-over-Beta continuation information across 20/60/120/240 days. The 20-day positive rho and individual component diagnostics are exposed descriptive outputs only and cannot justify same-ID horizon selection, component pruning/reweighting, thresholding or strategy translation. 0059 is permanently closed. A scientifically distinct continuation requires a new research ID and must explicitly treat all 0059 outputs as exposed DEVELOPMENT evidence.'
+          }
+          (root/'CLOSEOUT.json').write_text(json.dumps(closeout, indent=2) + '\n')
+
+          registry_path = Path('config/research_registry.json')
+          registry = json.loads(registry_path.read_text())
+          entry = next(x for x in registry['records'] if x['research_id'] == RID)
+          assert entry['actual_variants_evaluated'] == 0
+          assert entry['result_status'] == 'PREREGISTERED_NOT_RUN'
+          entry['actual_variants_evaluated'] = 1
+          entry['research_process_complexity']['actual_parameter_candidates_evaluated'] = [
+            'ONE_FIXED_STATE=D1_D2_D3_EQUAL_WEIGHT'
+          ]
+          entry['result_status'] = 'FAIL_NO_MONOTONE_CONTINUATION_INFORMATION'
+          entry['failure_reason'] = 'G2 monotone-information gate failed: with 1,644 shared origins, full-sample rho(S,Y_h) was +0.05558695 at 20d but -0.13344060, -0.15333503 and -0.18679790 at 60d, 120d and 240d; the preregistered all-four-positive requirement therefore failed.'
+          entry['promotion_state'] = 'NO_PROMOTION'
+          entry['evidence_refs'] = [
+            'run:31681057766',
+            'artifact:brrk-0059-beta-deterioration-btc-takeover-runtime-bundle',
+            f'{root}/RUN_ATTEMPT.marker',
+            f'{root}/PRIMARY_RESULT.json',
+            f'{root}/EXECUTION.json',
+            f'{root}/RUN_ONCE.marker',
+            closeout_ref,
+          ]
+          if closeout_ref not in entry['decision_refs']:
+            entry['decision_refs'].append(closeout_ref)
+          entry['notes'].extend([
+            'Unique run 31681057766 validly classified FAIL_NO_MONOTONE_CONTINUATION_INFORMATION; G0 and G1 passed and G2 is the binding failure.',
+            'Shared support was exactly 1,644 origins from 2021-06-06 through 2025-12-05. Full-sample rho was positive only at 20d and negative at 60d, 120d and 240d, so the frozen all-four-positive monotonicity requirement failed.',
+            'No chronological block had all four horizon correlations positive; all four simultaneous moving-block-bootstrap lower confidence bounds were non-positive. These later failures corroborate but do not replace the binding G2 classification.',
+            'The favorable 20d result and D1/D2/D3 descriptive diagnostics have no horizon-selection, component-pruning, reweighting, threshold, allocation or rescue authority.',
+            '0059 is closed to same-ID rerun, retuning, feature/horizon alteration, support/bootstrap changes or strategy translation. Any continuation requires a scientifically distinct new research ID.'
+          ])
+          entry['evidence_scorecard'] = {
+            'temporal_novelty': 'RESEARCHER_EXPOSED_DEVELOPMENT_NOT_INDEPENDENT_OOS',
+            'statistical_sufficiency': 'G1_SUPPORT_PASS_1644_ORIGINS_BUT_G2_MONOTONE_INFORMATION_FAIL_THREE_OF_FOUR_FULL_SAMPLE_RHOS_NEGATIVE',
+            'governance_integrity': 'HIGH_EXACTLY_ONCE_HASH_BOUND_FINALIZED_WITHOUT_MARKET_READ_OR_REMEASUREMENT',
+            'operational_realism': 'CAUSAL_DAILY_BTC_VS_SYMMETRIC_ETH_SOL_BETA_INFORMATION_DIAGNOSTIC_NO_STRATEGY_ECONOMICS',
+            'derived_confidence': 'HIGH_FOR_FROZEN_DEVELOPMENT_G2_FAILURE',
+            'confidence_rule_ref': closeout_ref,
+          }
+          registry_path.write_text(json.dumps(registry, indent=2) + '\n')
+
+          readme_path = root/'README.md'
+          readme = readme_path.read_text()
+          old_status = 'Status: **CONTROLLED EXECUTION BOUNDARY FROZEN / NOT RUN**'
+          assert old_status in readme
+          readme = readme.replace(old_status, 'Status: **FAIL_NO_MONOTONE_CONTINUATION_INFORMATION / IMMUTABLE DEVELOPMENT CLOSURE**', 1)
+          if '\n## Immutable 0059 result and closure\n' not in readme:
+            readme += '''\n## Immutable 0059 result and closure\n\nUnique exactly-once DEVELOPMENT run `31681057766` executed the single frozen representation on scientific HEAD `3bbe0d236f5e88abb6b60a701a12d78a3e925e45` and finalized from persisted hashes without market reread or scientific remeasurement. Final classification: **`FAIL_NO_MONOTONE_CONTINUATION_INFORMATION`**.\n\nG0 integrity and G1 support passed. The complete shared-origin panel contains 1,644 origins from 2021-06-06 through 2025-12-05. G2 failed because full-sample Spearman rho(S,Y_h) was `+0.05558695` at 20d but `-0.13344060`, `-0.15333503`, and `-0.18679790` at 60d, 120d, and 240d. The frozen rule required every horizon to be strictly positive.\n\nNo one of the four chronological blocks had all four horizon correlations positive, and the simultaneous dependence-aware LCBs were all non-positive (`20d -0.26455`, `60d -0.45358`, `120d -0.47347`, `240d -0.50694`). G3/G4 therefore also failed, but G2 remains the binding classification by preregistered precedence.\n\nThe favorable 20d rho and separate D1/D2/D3 component diagnostics are descriptive-only. They cannot authorize picking 20d, deleting/reweighting a component, changing normalization/support/bootstrap, or defining a threshold/allocation map under 0059. Same-ID rerun, retuning and rescue are permanently false. Any continuation requires a new research ID and must treat these outputs as exposed DEVELOPMENT evidence.\n\nCanonical BRRK-0011, Phase 6, signing, order submission and production authorization remain unchanged.\n'''
+          readme_path.write_text(readme)
+
+          state_path = Path('docs/CURRENT_STATE.md')
+          state = state_path.read_text()
+          old_exec = 'BRRK Beta deterioration/BTC takeover 0059 CONTROLLED EXECUTION BOUNDARY FROZEN / NOT RUN'
+          assert old_exec in state
+          state = state.replace(old_exec, 'BRRK Beta deterioration/BTC takeover 0059 FAIL_NO_MONOTONE_CONTINUATION_INFORMATION / CLOSED', 1)
+          state = state.replace(
+            'Current `main` research merge: **`195ef80ce99fa71098bdcb56a756b583fce10a70`**',
+            'Current `main` research merge: **`3bbe0d236f5e88abb6b60a701a12d78a3e925e45`**',
+            1,
+          )
+          state = state.replace(
+            'Current research branch: **`research/0059-beta-deterioration-btc-takeover-diagnostic-controlled-boundary`**',
+            'Current research branch: **`research/0059-beta-deterioration-btc-takeover-diagnostic-closeout`**',
+            1,
+          )
+          if '\n## 0059 immutable mechanism result and closure\n' not in state:
+            state += '''\n\n---\n\n## 0059 immutable mechanism result and closure\n\n`BRRK-BETA-DETERIORATION-BTC-TAKEOVER-DIAGNOSTIC-0059` completed its unique exactly-once DEVELOPMENT execution in Actions run `31681057766` on frozen scientific HEAD `3bbe0d236f5e88abb6b60a701a12d78a3e925e45`. Final classification: **`FAIL_NO_MONOTONE_CONTINUATION_INFORMATION`**.\n\n```text\nG0 integrity                           PASS\nG1 support                             PASS / 1644 >= 1440\nG2 all-horizon monotone information   FAIL / binding\nG3 temporal recurrence                FAIL / 0 of 4 positive-all-horizon blocks\nG4 dependence-aware robustness        FAIL\nshared origins                         1644 / 2021-06-06..2025-12-05\nrho 20d                                +0.0555869528\nrho 60d                                -0.1334405987\nrho 120d                               -0.1533350260\nrho 240d                               -0.1867979015\nbootstrap q95                          0.3201385499\nLCB 20d / 60d                          -0.2645515971 / -0.4535791487\nLCB 120d / 240d                        -0.4734735760 / -0.5069364514\nactual variants evaluated              1\nsame-ID rerun/retune/rescue            false / false / false\n```\n\nThe exact frozen equal-weight D1/D2/D3 state does not establish recurrent monotone BTC-over-Beta continuation information across the required 20/60/120/240-day family. The positive 20d rho cannot be selected after the fact, and component diagnostics cannot be used to prune or reweight the state under 0059. No state-to-allocation translation is unlocked by this result.\n\n0059 is permanently closed. Any continuation must use a new research ID and must not masquerade as a 0059 horizon/component/support/bootstrap rescue. BTC-to-cash remains a separate gross-risk research layer and was not tested by 0059.\n\n```text\nCanonical BRRK-0011                    NO CHANGE\nPhase 6                                NO CHANGE\nproduction_authorized_components       []\nproduction_authorized                  false\nsignature_authorized                   false\norder_submission_authorized            false\n```\n'''
+          state_path.write_text(state)
+          print('CLOSEOUT_MATERIALIZED_FROM_PERSISTED_JSON_ONLY=true')
+          print('SCIENTIFIC_REMEASUREMENT=false')
+          PY
+
+      - name: Validate governance and no-drift before commit
+        run: |
+          set -euo pipefail
+          python -m research.governance.validate
+          python -m research.governance.no_drift
+          echo "GOVERNANCE_VALIDATE_PASS=true"
+          echo "NO_DRIFT_PASS=true"
+
+      - name: Commit exact eight-file closeout bundle
+        run: |
+          set -euo pipefail
+          git config user.name 'Y_Wang'
+          git config user.email '40142450+alexwang91@users.noreply.github.com'
+          mapfile -t files < <(git status --short | sed 's/^...//' | sort)
+          printf '%s\n' "${files[@]}"
+          expected=(
+            config/research_registry.json
+            docs/CURRENT_STATE.md
+            research/brrk_beta_deterioration_btc_takeover_diagnostic_0059/CLOSEOUT.json
+            research/brrk_beta_deterioration_btc_takeover_diagnostic_0059/EXECUTION.json
+            research/brrk_beta_deterioration_btc_takeover_diagnostic_0059/PRIMARY_RESULT.json
+            research/brrk_beta_deterioration_btc_takeover_diagnostic_0059/README.md
+            research/brrk_beta_deterioration_btc_takeover_diagnostic_0059/RUN_ATTEMPT.marker
+            research/brrk_beta_deterioration_btc_takeover_diagnostic_0059/RUN_ONCE.marker
+          )
+          test "${#files[@]}" -eq "${#expected[@]}"
+          for i in "${!expected[@]}"; do test "${files[$i]}" = "${expected[$i]}"; done
+          git add "${expected[@]}"
+          git commit -m 'Research closeout [0059]: seal immutable monotone-information failure'
+          git push origin "HEAD:$TARGET_BRANCH"
+
+      - name: Final exact-diff and immutable runtime audit
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD^)" = "$BASE_MAIN"
+          mapfile -t changed < <(git diff --name-only "$BASE_MAIN" HEAD | sort)
+          expected=(
+            config/research_registry.json
+            docs/CURRENT_STATE.md
+            research/brrk_beta_deterioration_btc_takeover_diagnostic_0059/CLOSEOUT.json
+            research/brrk_beta_deterioration_btc_takeover_diagnostic_0059/EXECUTION.json
+            research/brrk_beta_deterioration_btc_takeover_diagnostic_0059/PRIMARY_RESULT.json
+            research/brrk_beta_deterioration_btc_takeover_diagnostic_0059/README.md
+            research/brrk_beta_deterioration_btc_takeover_diagnostic_0059/RUN_ATTEMPT.marker
+            research/brrk_beta_deterioration_btc_takeover_diagnostic_0059/RUN_ONCE.marker
+          )
+          test "${#changed[@]}" -eq "${#expected[@]}"
+          for i in "${!expected[@]}"; do test "${changed[$i]}" = "${expected[$i]}"; done
+          test "$(git rev-parse HEAD:$SCI_DIR/RUN_ATTEMPT.marker)" = "efafce859384217d5897e6b17051c7f24acfb869"
+          test "$(git rev-parse HEAD:$SCI_DIR/PRIMARY_RESULT.json)" = "5f05e952bfbc61e9ba15be1dc631fa6279bd25af"
+          test "$(git rev-parse HEAD:$SCI_DIR/EXECUTION.json)" = "4c94ef3823e9f07bc1857f11f410e3ec6913cc03"
+          test "$(git rev-parse HEAD:$SCI_DIR/RUN_ONCE.marker)" = "a9140c81d19b34fe4c80ddbc701edb4fc1363560"
+          python -m research.governance.validate
+          python -m research.governance.no_drift
+          echo "FINAL_EIGHT_FILE_DIFF_PASS=true"
+          echo "RUNTIME_BLOBS_BYTE_IDENTICAL=true"
+          echo "SCIENTIFIC_REMEASUREMENT=false"
