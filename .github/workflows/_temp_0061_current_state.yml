@@ -17,9 +17,11 @@ jobs:
           ref: research/0061-btc-cash-absolute-risk-measurement-replication-design
           fetch-depth: 0
       - name: Update CURRENT_STATE only
-        shell: bash
+        env:
+          SECTION_B64: "LS0tCgojIyAwMDYxIEJUQy10by1DYXNoIG1lYXN1cmVtZW50LWNvcnJlY3RlZCByZXBsaWNhdGlvbiBkZXNpZ24gaGFuZG9mZgoKYEJSUkstQlRDLUNBU0gtQUJTT0xVVEUtUklTSy1NRUFTVVJFTUVOVC1SRVBMSUNBVElPTi0wMDYxYCBpcyBhIG5ldy1JRCBtZWFzdXJlbWVudCByZXBsaWNhdGlvbiBvZiB0aGUgdW5yZXNvbHZlZCAwMDYwIHF1ZXN0aW9uLgoKYGBgdGV4dApyZXNlYXJjaCBmYW1pbHkgICAgICAgICAgICAgICAgICAgICAgICBCUlJLX0JUQ19UT19DQVNIX0dST1NTX1JJU0sKZGVzaWduIGJyYW5jaCAgICAgICAgICAgICAgICAgICAgICAgICAgcmVzZWFyY2gvMDA2MS1idGMtY2FzaC1hYnNvbHV0ZS1yaXNrLW1lYXN1cmVtZW50LXJlcGxpY2F0aW9uLWRlc2lnbgpkZXNpZ24gYXV0aG9yaXR5IGNvbW1pdCAgICAgICAgICAgICAgICAyZjQzMmUyNjA0MDEzOGIzM2E5Njg3ZmVjMTJhNmUyZGVlOGExNzZkCmRlc2lnbiBmcmVlemUgICAgICAgICAgICAgICAgICAgICAgICAgICByZXNlYXJjaC9nb3Zlcm5hbmNlL0JSUktfQlRDX0NBU0hfQUJTT0xVVEVfUklTS19NRUFTVVJFTUVOVF9SRVBMSUNBVElPTl8wMDYxX0RFU0lHTl9GUkVFWkVfMjAyNi0wOC0xMy5tZApzdGFnZSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgREVTSUdOIEZST1pFTiAvIFBSRVJFRyBBQlNFTlQgLyBOT1QgSU1QTEVNRU5URUQgLyBOT1QgUlVOCnJlZ2lzdHJ5IG93bmVyICAgICAgICAgICAgICAgICAgICAgICAgICBBQlNFTlQgVU5USUwgUE9TVC1ERVNJR04gUFJFUkVHSVNUUkFUSU9OCmhpc3RvcmljYWwgMDA2MSBvdXRjb21lcyAgICAgICAgICAgICAgICBOT1QgQ09NUFVURUQKYWN0dWFsIHZhcmlhbnRzIGV2YWx1YXRlZCAgICAgICAgICAgICAgIDAKYGBgCgowMDYxIGxlYXZlcyB0aGUgMDA2MCBCVEMtb25seSBBMS9BMi9BMyBzdGF0ZSwgYWxsIGVpZ2h0IHRlcm1pbmFsLWxvc3MvYWR2ZXJzZS1leGN1cnNpb24gdGFyZ2V0cywgMjAvNjAvMTIwLzI0MCBob3Jpem9uIGZhbWlseSwgaW1tdXRhYmxlIERFVkVMT1BNRU5UIGRhdGFzZXQgYW5kIGZ1bGwtc2FtcGxlL3RlbXBvcmFsIFNwZWFybWFuIHF1ZXN0aW9ucyB1bmNoYW5nZWQuIEl0IGNvcnJlY3RzIG9ubHkgdGhlIGRlcGVuZGVuY2UtYXdhcmUgbWVhc3VyZW1lbnQgaW50ZXJmYWNlOiBmdWxsLXBhbmVsIGF2ZXJhZ2UtdGllIG1pZHJhbmsgc2NvcmVzIGFyZSBzdGFuZGFyZGl6ZWQgb25jZSwgdGhlbiBhbGlnbmVkIG1vdmluZy1ibG9jayByZXNhbXBsaW5nIG9wZXJhdGVzIG9uIGZpeGVkIHNjb3JlIHByb2R1Y3RzIHJhdGhlciB0aGFuIHJlY29tcHV0aW5nIGEgcmVwbGljYXRlLXNwZWNpZmljIGNvcnJlbGF0aW9uIGRlbm9taW5hdG9yLiBUaGUgZnVsbC1wYW5lbCBvYnNlcnZlZCBmaXhlZC1zY29yZSBhc3NvY2lhdGlvbiBtdXN0IGVxdWFsIG9yZGluYXJ5IFNwZWFybWFuIHdpdGhpbiBhIHByZXJlZ2lzdGVyZWQgbnVtZXJpY2FsIHRvbGVyYW5jZS4KCkEgY29uc3RhbnQgcmVxdWlyZWQgY29vcmRpbmF0ZSBvbiB0aGUgZnVsbCBzaGFyZWQgcGFuZWwgaXMgYSB2YWxpZCBzY2llbnRpZmljIG5vLWluZm9ybWF0aW9uIEZBSUwsIG5vdCBhbiBleGVjdXRpb24gSU5WQUxJRC4gRGVnZW5lcmF0ZSBib290c3RyYXAgcmVzYW1wbGVzIG11c3QgcmVtYWluIGZpbml0ZSB1bmRlciB0aGUgZml4ZWQtc2NvcmUgc3RhdGlzdGljLiBgSU5WQUxJRF9FWEVDVVRJT05gIHJlbWFpbnMgcmVzZXJ2ZWQgZm9yIHByb3RvY29sL2ludGVncml0eSBmYWlsdXJlcy4KCk5vIHNpZ25lZCB0YXJnZXQsIHZvbGF0aWxpdHkgY29udHJvbGxlciwgZHJhd2Rvd24gY29udHJvbGxlciwgQ1VTVU0vY2hhbmdlIGRldGVjdG9yLCBCVEMvQ2FzaCB0aHJlc2hvbGQsIHJlLWVudHJ5IHJ1bGUsIGh5c3RlcmVzaXMsIGdyb3NzIG1hcCwgc3RyYXRlZ3kgTkFWLCBDQUdSL01ERCBvcHRpbWl6YXRpb24sIGxldmVyYWdlIG9yIHNob3J0aW5nIGlzIG9wZW5lZCB1bmRlciAwMDYxLgoKKipFeGFjdCBuZXh0IHN0ZXAgYWZ0ZXIgREVTSUdOIG1lcmdlOioqIGEgc2VwYXJhdGUgbnVtZXJpY2FsL2RhdGEgcHJlcmVnaXN0cmF0aW9uIG11c3QgY3JlYXRlIHRoZSBjZW50cmFsIDAwNjEgb3duZXIgYW5kIGZyZWV6ZSB0aGUgaW5oZXJpdGVkIHN1cHBvcnQvdGVtcG9yYWwgcnVsZXMgcGx1cyBleGFjdCBmaXhlZC1zY29yZSBub3JtYWxpemF0aW9uLCBTcGVhcm1hbi1lcXVpdmFsZW5jZSB0b2xlcmFuY2UsIDI0MC1yb3cgbm9uLWNpcmN1bGFyIE1CQiBnZW9tZXRyeSwgcmVwbGljYXRlIGNvdW50LCBzZWVkLCBxdWFudGlsZSBjb252ZW50aW9uLCBzaW11bHRhbmVvdXMgZWlnaHQtdGFyZ2V0IExDQiBjb25zdHJ1Y3Rpb24sIHNob3J0LWNpcmN1aXQgc2VtYW50aWNzIGFuZCBsb3NzbGVzcyByZXN1bHQgc2NoZW1hIGJlZm9yZSBpbXBsZW1lbnRhdGlvbiBvciBhbnkgcmVhbCBoaXN0b3JpY2FsIDAwNjEgb3V0cHV0Lgo="
         run: |
           python - <<'PY'
+          import base64, os
           from pathlib import Path
           p = Path('docs/CURRENT_STATE.md')
           s = p.read_text()
@@ -29,52 +31,15 @@ jobs:
           add = 'BRRK BTC->Cash measurement replication 0061 DESIGN FROZEN / PREREG ABSENT / NOT RUN\n'
           if add not in s:
               if anchor not in s:
-                  raise SystemExit('executive anchor missing')
+                  raise SystemExit('0060 executive anchor missing')
               s = s.replace(anchor, anchor + add)
-          section = r'''
-
----
-
-## 0061 BTC-to-Cash measurement-corrected replication design handoff
-
-`BRRK-BTC-CASH-ABSOLUTE-RISK-MEASUREMENT-REPLICATION-0061` is a new-ID measurement replication of the unresolved 0060 question.
-
-```text
-research family                        BRRK_BTC_TO_CASH_GROSS_RISK
-design branch                          research/0061-btc-cash-absolute-risk-measurement-replication-design
-design authority commit                2f432e26040138b33a9687fec12a6e2dee8a176d
-design freeze                           research/governance/BRRK_BTC_CASH_ABSOLUTE_RISK_MEASUREMENT_REPLICATION_0061_DESIGN_FREEZE_2026-08-13.md
-stage                                   DESIGN FROZEN / PREREG ABSENT / NOT IMPLEMENTED / NOT RUN
-registry owner                          ABSENT UNTIL POST-DESIGN PREREGISTRATION
-historical 0061 outcomes                NOT COMPUTED
-actual variants evaluated               0
-```
-
-0061 leaves the 0060 BTC-only A1/A2/A3 state, all eight terminal-loss/adverse-excursion targets, 20/60/120/240 horizon family, immutable DEVELOPMENT dataset and full-sample/temporal Spearman questions unchanged. It corrects only the dependence-aware measurement interface: full-panel average-tie midrank scores are standardized once, then aligned moving-block resampling operates on fixed score products rather than recomputing a replicate-specific correlation denominator. The full-panel observed fixed-score association must equal ordinary Spearman within a preregistered numerical tolerance.
-
-A constant required coordinate on the full shared panel is a valid scientific no-information FAIL, not an execution INVALID. Degenerate bootstrap resamples must remain finite under the fixed-score statistic. `INVALID_EXECUTION` remains reserved for protocol/integrity failures.
-
-No signed target, volatility controller, drawdown controller, CUSUM/change detector, BTC/Cash threshold, re-entry rule, hysteresis, gross map, strategy NAV, CAGR/MDD optimization, leverage, shorting or production authority is opened under 0061.
-
-```text
-Canonical BRRK-0011                    NO CHANGE
-Phase 6                                NO CHANGE
-production_authorized_components       []
-production_authorized                  false
-signature_authorized                   false
-order_submission_authorized            false
-```
-
-**Exact next step after DESIGN merge:** a separate numerical/data preregistration must create the central 0061 owner and freeze the inherited support/temporal rules plus exact fixed-score normalization, Spearman-equivalence tolerance, 240-row non-circular MBB geometry, replicate count, seed, quantile convention, simultaneous eight-target LCB construction, short-circuit semantics and lossless result schema before implementation or any real historical 0061 output.
-'''
           if '## 0061 BTC-to-Cash measurement-corrected replication design handoff' not in s:
-              s = s.rstrip() + section + '\n'
+              s = s.rstrip() + '\n\n' + base64.b64decode(os.environ['SECTION_B64']).decode().rstrip() + '\n'
           p.write_text(s)
           PY
           git config user.name github-actions
           git config user.email github-actions@github.com
           if git diff --quiet -- docs/CURRENT_STATE.md; then
-            echo 'CURRENT_STATE already materialized'
             exit 0
           fi
           git add docs/CURRENT_STATE.md
