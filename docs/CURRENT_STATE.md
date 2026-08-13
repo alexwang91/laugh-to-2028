@@ -2,8 +2,8 @@
 
 Last updated: **2026-08-13**  
 Authoritative repository: `alexwang91/laugh-to-2028`  
-Current `main` research merge: **`f79f5c6b19b1e0e01647fdac2923f5943ff80bf1`**  
-Current research branch: **`research/0060-btc-cash-absolute-risk-diagnostic-design`**  
+Current `main` research merge: **`142733887c0e8c0652e29afa9eb99c9c4ede4a42`**  
+Current research branch: **`research/0060-btc-cash-absolute-risk-diagnostic-prereg`**  
 Status of this document: **AUTHORITATIVE OPERATING SNAPSHOT**
 
 > GitHub `main`, immutable research artifacts and machine registries remain the sources of truth. This file is the compact human handoff, not a substitute for preregistration, execution, evidence, recovery or closeout artifacts.
@@ -43,7 +43,7 @@ BRRK simple ETH/SOL Beta router 0056  INVALID_EXECUTION / CLOSED / NO ECONOMIC C
 BRRK Beta router interface replication 0057 FAIL_SIMPLE_BETA_ROUTER_COST_FRAGILE / CLOSED
 BRRK Beta->BTC parameter geometry 0058     FAIL_NO_STABLE_PARAMETER_PLATEAU / CLOSED
 BRRK Beta deterioration/BTC takeover 0059 FAIL_NO_MONOTONE_CONTINUATION_INFORMATION / CLOSED
-BRRK BTC->Cash absolute risk 0060     DESIGN FROZEN / PREREG ABSENT / NOT RUN
+BRRK BTC->Cash absolute risk 0060     NUMERICAL/DATA PREREG FROZEN / NOT IMPLEMENTED / NOT RUN
 
 Canonical BRRK-0011                    NO CHANGE
 Phase 7                                MONITOR_ONLY / LAUNCH BLOCKED
@@ -1112,3 +1112,34 @@ order_submission_authorized            false
 ```
 
 **Exact next step after DESIGN merge:** open a separate 0060 numerical/data preregistration stage that creates the central `PROGRAM_GOVERNED_V1` registry owner and prospectively freezes immutable dataset identity, exact state formulas, horizon/maturity rules, terminal-loss/pathwise-adverse-excursion targets, support gates, temporal/dependence inference, classification precedence and immutable result schema. Do not implement or compute any 0060 historical outcome in the DESIGN merge stage.
+
+---
+
+## 0060 numerical/data preregistration handoff
+
+`BRRK-BTC-CASH-ABSOLUTE-RISK-DIAGNOSTIC-0060` now has a central `PROGRAM_GOVERNED_V1` owner and a prospectively frozen numerical/data contract. No 0060 historical target value, Spearman statistic, bootstrap result, plot or portfolio economic output has been computed.
+
+```text
+stage                                  NUMERICAL/DATA PREREG FROZEN / NOT IMPLEMENTED / NOT RUN
+dataset                                BRRK-LEADERSHIP-ROTATION-0048-EXPOSED-HIST-V1
+payload SHA256                         d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193
+asset consumed                         BTC close only
+history                                RESEARCHER_EXPOSED / DEVELOPMENT / NOT INDEPENDENT OOS
+horizons                               20 / 60 / 120 / 240 all co-primary
+target families                        terminal loss + adverse excursion both co-primary
+co-primary association cells           8
+G1 minimum shared origins              1440
+G2                                     all eight full-sample Spearman rho > 0
+G3                                     >=3/4 chronological blocks positive in all eight cells
+bootstrap                              non-circular MBB / length 240 / 10000 / seed 1844716895
+G4                                     all eight simultaneous one-sided 95% LCB > 0
+actual variants evaluated              0
+BTC/Cash threshold or gross map        FORBIDDEN UNDER 0060
+portfolio economics                    FORBIDDEN UNDER 0060
+```
+
+The state is one fixed equal-weight BTC-only A1/A2/A3 representation. All eight raw coordinates are required; causal normalization is trailing252/min60/sample-ddof1/zero-std-NaN/clip3. Missing required coordinates invalidate an origin. There is no feature tournament, fitted weight, horizon selection or target-family selection.
+
+Classification precedence is `INVALID_EXECUTION -> FAIL_INSUFFICIENT_CAUSAL_SUPPORT -> FAIL_NO_JOINT_DOWNSIDE_INFORMATION -> FAIL_TEMPORAL_INSTABILITY -> FAIL_DEPENDENCE_AWARE_ROBUSTNESS -> PASS_ABSOLUTE_RISK_INFORMATION_STAGE_ELIGIBLE`. PASS only permits a new-ID translation study.
+
+**Exact next step after prereg merge:** implementation-only with synthetic/toy/contract tests. Real historical target computation remains forbidden until a separately merged controlled-execution boundary.
