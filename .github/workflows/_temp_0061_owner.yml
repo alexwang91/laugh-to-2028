@@ -1,4 +1,4 @@
-name: TEMP 0061 owner materializer
+name: TEMP 0061 handoff materializer
 
 on:
   push:
@@ -16,90 +16,27 @@ jobs:
         with:
           ref: docs/0061-prereg-tooling
           fetch-depth: 0
-      - name: Materialize owner only
-        shell: bash
+      - name: Refresh handoff
+        env:
+          SECTION_B64: "LS0tCgojIyAwMDYxIG51bWVyaWNhbC9kYXRhIHByZXJlZ2lzdHJhdGlvbiBoYW5kb2ZmCgpgQlJSSy1CVEMtQ0FTSC1BQlNPTFVURS1SSVNLLU1FQVNVUkVNRU5ULVJFUExJQ0FUSU9OLTAwNjFgIG5vdyBoYXMgYSBkdXJhYmxlIG93bmVyLWZpcnN0IGNlbnRyYWwgcmVnaXN0cnkgcmVjb3JkIGFuZCBhIGZyb3plbiBudW1lcmljYWwvZGF0YSBjb250cmFjdC4gTm8gMDA2MSBoaXN0b3JpY2FsIHRhcmdldCwgYXNzb2NpYXRpb24sIGJvb3RzdHJhcCByZXN1bHQgb3IgcG9ydGZvbGlvIG91dHB1dCBoYXMgYmVlbiBjb21wdXRlZC4KCmBgYHRleHQKZGVzaWduIG1lcmdlICAgICAgICAgICAgICAgICAgICAgICAgICAgYzgxZTc4MGFlMmZhYTM4ZjJlMGJjZGE4ZjI1ZTA0ZWM3YzViYzJhNwpzdGFnZSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBOVU1FUklDQUwvREFUQSBQUkVSRUcgRlJPWkVOIC8gTk9UIElNUExFTUVOVEVEIC8gTk9UIFJVTgpkYXRhc2V0ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBCUlJLLUxFQURFUlNISVAtUk9UQVRJT04tMDA0OC1FWFBPU0VELUhJU1QtVjEKcGF5bG9hZCBTSEEyNTYgICAgICAgICAgICAgICAgICAgICAgICAgZDFjZDI4YmM3NmYyY2Q4ZWUwNDg2Mjg3ZmM1MGI0OWU1NDUxMzU1YTNlNzUxMzJhMmRlNWIzMGMxNWFmMzE5Mwphc3NldCBjb25zdW1lZCAgICAgICAgICAgICAgICAgICAgICAgICBCVEMgZGFpbHkgY2xvc2Ugb25seQpoaXN0b3J5ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBSRVNFQVJDSEVSX0VYUE9TRUQgLyBERVZFTE9QTUVOVCAvIE5PVCBJTkRFUEVOREVOVCBPT1MKaG9yaXpvbnMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgMjAgLyA2MCAvIDEyMCAvIDI0MCBhbGwgY28tcHJpbWFyeQp0YXJnZXQgZmFtaWxpZXMgICAgICAgICAgICAgICAgICAgICAgICB0ZXJtaW5hbCBsb3NzICsgYWR2ZXJzZSBleGN1cnNpb24gYm90aCBjby1wcmltYXJ5CmNvLXByaW1hcnkgY2VsbHMgICAgICAgICAgICAgICAgICAgICAgIDgKRzEgbWluaW11bSBzaGFyZWQgb3JpZ2lucyAgICAgICAgICAgICAgMTQ0MApHMiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBhbGwgOCBvcmRpbmFyeSBmdWxsLXNhbXBsZSBTcGVhcm1hbiByaG8gPiAwCkczICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgID49My80IGNocm9ub2xvZ2ljYWwgYmxvY2tzIHBvc2l0aXZlIGluIGFsbCA4IGNlbGxzCmZpeGVkLXNjb3JlIGVxdWl2YWxlbmNlIHRvbGVyYW5jZSAgICAgIDFlLTEyIGFic29sdXRlCkc0IGJvb3RzdHJhcCAgICAgICAgICAgICAgICAgICAgICAgICAgIGZpeGVkLXNjb3JlIG5vbi1jaXJjdWxhciBNQkIgLyBMPTI0MCAvIDEwMDAwIC8gc2VlZCAxODQ0NzE2ODk1Ckc0ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGFsbCA4IHNpbXVsdGFuZW91cyBvbmUtc2lkZWQgOTUlIExDQiA+IDAKYWN0dWFsIHZhcmlhbnRzIGV2YWx1YXRlZCAgICAgICAgICAgICAgMApgYGAKClRoZSAwMDYwIHN0YXRlIGFuZCB0YXJnZXQgY29uc3RydWN0aW9uIHJlbWFpbiBpbW11dGFibGUgYW5kIHVuY2hhbmdlZC4gMDA2MSBjb3JyZWN0cyBvbmx5IGRlcGVuZGVuY2UgaW5mZXJlbmNlOiBmdWxsLXBhbmVsIGF2ZXJhZ2UtdGllIHJhbmtzIGFyZSBjZW50ZXJlZCBhbmQgc2NhbGVkIG9uY2UgYnkgcG9wdWxhdGlvbiBSTVM7IG9ic2VydmVkIGZpeGVkLXNjb3JlIG1lYW4gcHJvZHVjdHMgbXVzdCBlcXVhbCBvcmRpbmFyeSBTcGVhcm1hbiB3aXRoaW4gMWUtMTI7IGJvb3RzdHJhcCByZXBsaWNhdGVzIHJlc2FtcGxlIGFsaWduZWQgZml4ZWQgc2NvcmUgcm93cyBhbmQgdGhlcmVmb3JlIGRvIG5vdCByZWNvbXB1dGUgYSByZXBsaWNhdGUtc3BlY2lmaWMgdmFyaWFuY2UgZGVub21pbmF0b3IuCgpHYXRlIGV2YWx1YXRpb24gaXMgcHJvc3BlY3RpdmVseSBzaG9ydC1jaXJjdWl0ZWQgaW4gb3JkZXIgRzEgLT4gRzIgLT4gRzMgLT4gRzQuIEEgY29uc3RhbnQgcmVxdWlyZWQgY29vcmRpbmF0ZSBvbiB0aGUgZnVsbCBwYW5lbCBpcyBhIHZhbGlkIGBGQUlMX05PX0pPSU5UX0RPV05TSURFX0lORk9STUFUSU9OYC4gQSBjb25zdGFudCBjb29yZGluYXRlIGluc2lkZSBhIHRlbXBvcmFsIGJsb2NrIG1ha2VzIHRoYXQgYmxvY2sgbm9uLXBvc2l0aXZlIGJ1dCBkb2VzIG5vdCBpbnZhbGlkYXRlIGV4ZWN1dGlvbi4gSWYgYW4gZWFybGllciBzY2llbnRpZmljIGdhdGUgZmFpbHMsIGxhdGVyIGdhdGVzIGFyZSBwZXJzaXN0ZWQgYXMgbm90IGV2YWx1YXRlZCB3aXRoIGEgcmVhc29uIGNvZGUuCgpObyByZWFsIGhpc3RvcmljYWwgcGF5bG9hZCBtYXkgYmUgbG9hZGVkIGluIGltcGxlbWVudGF0aW9uLW9ubHkuIE5vIHRocmVzaG9sZCwgZ3Jvc3MgbWFwLCBzaWduZWQgdGFyZ2V0LCBzdHJhdGVneSBlY29ub21pY3MsIHZvbGF0aWxpdHkvZHJhd2Rvd24gY29udHJvbGxlciBvciBjaGFuZ2UgZGV0ZWN0b3IgaXMgb3BlbmVkIHVuZGVyIDAwNjEuCgoqKkV4YWN0IG5leHQgc3RlcCBhZnRlciBwcmVyZWcgbWVyZ2U6KiogaW1wbGVtZW50YXRpb24tb25seS4gSW1wbGVtZW50IHRoZSBmcm96ZW4gc3RhdGUvdGFyZ2V0IGRlbGVnYXRpb24gYW5kIGZpeGVkLXNjb3JlIGluZmVyZW5jZSB3aXRoIHN5bnRoZXRpYy90b3kvYWR2ZXJzYXJpYWwgdGVzdHMgb25seS4gQSBzZXBhcmF0ZSBjb250cm9sbGVkLWV4ZWN1dGlvbiBib3VuZGFyeSBtdXN0IG1lcmdlIGJlZm9yZSB0aGUgdW5pcXVlIGhpc3RvcmljYWwgREVWRUxPUE1FTlQgZXhlY3V0aW9uLgo="
         run: |
           python - <<'PY'
-          import copy, json
+          import base64, os
           from pathlib import Path
-          p = Path('config/research_registry.json')
-          reg = json.loads(p.read_text())
-          rid = 'BRRK-BTC-CASH-ABSOLUTE-RISK-MEASUREMENT-REPLICATION-0061'
-          if any(r.get('research_id') == rid for r in reg['records']):
-              raise SystemExit(0)
-          src = next(r for r in reg['records'] if r.get('research_id') == 'BRRK-BTC-CASH-ABSOLUTE-RISK-DIAGNOSTIC-0060')
-          r = copy.deepcopy(src)
-          r['research_id'] = rid
-          r['research_family_id'] = 'BRRK_BTC_TO_CASH_GROSS_RISK'
-          r['research_domain'] = 'RISK_CONTROL'
-          r['research_governance_version'] = 1
-          r['governance_mode'] = 'PROGRAM_GOVERNED_V1'
-          r['objective_type'] = 'MECHANISM_TEST'
-          r['created_at'] = '2026-08-13'
-          r['created_before_result'] = True
-          r['question'] = 'Does the unchanged 0060 BTC absolute-risk state contain recurrent monotone information about the same eight future downside targets when only the identified resampled-correlation degeneracy is corrected by fixed full-panel midrank-score dependence inference?'
-          r['hypothesis'] = 'Higher unchanged BTC absolute-risk state is positively associated with all eight unchanged future downside targets, recurrently across time and with dependence-aware simultaneous lower bounds above zero.'
-          r['hypothesis_origin'] = 'New-ID measurement-corrected replication required by immutable 0060 INVALID_EXECUTION closeout; no unpersisted 0060 statistic has authority.'
-          r['economic_mechanism'] = 'Pure information diagnostic only; no BTC-to-Cash threshold, gross map or portfolio economics.'
-          r['primary_metric'] = 'Eight co-primary full-sample ordinary Spearman associations plus fixed-score aligned moving-block simultaneous one-sided lower bounds.'
-          r['declared_variant_budget'] = 1
-          r['actual_variants_evaluated'] = 0
-          r['parameter_candidate_count'] = 1
-          r['stopping_rule'] = 'One preregistered representation and one historical execution only; after a durable attempt marker no same-ID recomputation, rerun, retuning or rescue.'
-          r['success_criteria'] = 'All preregistered support, all-eight monotonicity, temporal recurrence and dependence-aware simultaneous lower-bound gates pass.'
-          r['failure_criteria'] = 'Any preregistered scientific gate fails; full-panel constant required coordinates are valid no-information failures, not protocol invalidity.'
-          r['allowed_followup'] = 'PASS permits only a new-ID systematic BTC-to-Cash translation study; FAIL or INVALID closes same-ID rescue.'
-          r['forbidden_followup'] = 'No same-ID feature change, target/horizon selection, signed-target substitution, threshold/gross-map search, portfolio economics, bootstrap relaxation, rerun, retune or rescue.'
-          r['researcher_decisions'] = [
-              'Keep the complete 0060 BTC-only A1/A2/A3/S representation unchanged.',
-              'Keep all eight 0060 terminal-loss and adverse-excursion targets and all four horizons co-primary.',
-              'Keep full-sample and temporal ordinary average-tie Spearman unchanged.',
-              'Correct only G4 dependence inference using full-panel fixed average-tie midrank scores and aligned moving-block sampling of fixed score products.',
-              'Treat full-panel constant required coordinates as valid scientific no-information failure.',
-              'Treat degenerate resamples as finite sampling observations rather than execution invalidity when the full panel is nonconstant.'
-          ]
-          rpc = r.get('research_process_complexity', {})
-          rpc.update({
-              'declared_parameter_candidates': 1,
-              'actual_parameter_candidates_evaluated': 0,
-              'universes_evaluated': 1,
-              'horizons_evaluated': 4,
-              'rebalance_variants': 0,
-              'feature_representations': 1,
-              'special_cases_introduced': 1,
-              'validation_exposure_event_refs': ['BRRK-BTC-CASH-ABSOLUTE-RISK-DIAGNOSTIC-0060'],
-              'related_family_trials': ['BRRK-BTC-CASH-ABSOLUTE-RISK-DIAGNOSTIC-0060']
-          })
-          r['research_process_complexity'] = rpc
-          r['lineage_edges'] = [{
-              'ref_research_id': 'BRRK-BTC-CASH-ABSOLUTE-RISK-DIAGNOSTIC-0060',
-              'provenance_status': 'FACT',
-              'evidence_ref': 'research/brrk_btc_cash_absolute_risk_diagnostic_0060/CLOSEOUT.json'
-          }]
-          r['result_status'] = 'PREREGISTERED_NOT_RUN'
-          r['failure_reason'] = None
-          r['promotion_state'] = 'NO_PROMOTION'
-          r['evidence_refs'] = ['research/governance/BRRK_BTC_CASH_ABSOLUTE_RISK_MEASUREMENT_REPLICATION_0061_DESIGN_FREEZE_2026-08-13.md']
-          r['decision_refs'] = []
-          r['production_relevance'] = 'DEVELOPMENT mechanism evidence only; no automatic canonical, Phase 6 or production authority.'
-          r['production_authorized'] = False
-          r['provenance_status'] = 'FACT'
-          r['governed_path_prefixes'] = ['research/brrk_btc_cash_absolute_risk_measurement_replication_0061/']
-          r['notes'] = [
-              '0060 is immutable INVALID_EXECUTION with no scientific conclusion.',
-              '0061 changes only the dependence-measurement interface and treats all 0060 attempt information as exposed DEVELOPMENT evidence.',
-              'No 0061 historical target, association or bootstrap output existed when this owner was created.'
-          ]
-          r.pop('evidence_scorecard', None)
-          r.pop('derived_confidence', None)
-          reg['records'].append(r)
-          p.write_text(json.dumps(reg, indent=2, sort_keys=False) + '\n')
+          p = Path('docs/CURRENT_STATE.md')
+          s = p.read_text()
+          s = s.replace('Current `main` research merge: **`9ac4a70c638bf55d8b7b614e877ed36e8193f0e7`**', 'Current `main` research merge: **`c81e780ae2faa38f2e0bcda8f25e04ec7c5bc2a7`**')
+          s = s.replace('Current research branch: **`research/0061-btc-cash-absolute-risk-measurement-replication-design`**', 'Current research branch: **`research/0061-btc-cash-absolute-risk-measurement-replication-prereg`**')
+          s = s.replace('BRRK BTC->Cash measurement replication 0061 DESIGN FROZEN / PREREG ABSENT / NOT RUN', 'BRRK BTC->Cash measurement replication 0061 NUMERICAL/DATA PREREG FROZEN / NOT RUN')
+          if '## 0061 numerical/data preregistration handoff' not in s:
+              s = s.rstrip() + '\n\n' + base64.b64decode(os.environ['SECTION_B64']).decode().rstrip() + '\n'
+          p.write_text(s)
           PY
           git config user.name github-actions
           git config user.email github-actions@github.com
-          if git diff --quiet -- config/research_registry.json; then
+          if git diff --quiet -- docs/CURRENT_STATE.md; then
             exit 0
           fi
-          git add config/research_registry.json
-          git commit -m 'Research prereg [0061]: register owner first'
+          git add docs/CURRENT_STATE.md
+          git commit -m 'docs: update 0061 prereg handoff'
           git push origin HEAD:docs/0061-prereg-tooling
