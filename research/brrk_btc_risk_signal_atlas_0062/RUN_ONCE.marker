@@ -1,0 +1,15 @@
+{
+  "research_id": "BRRK-BTC-RISK-SIGNAL-ATLAS-0062",
+  "scientific_head_sha": "ae8f585bfc3fd9599cee0844ee29971a36461dd0",
+  "attempt_sha256": "3a11b43775e9465629b7e9bc6bf94c5f41a2240c44a8d24076843396175c90ad",
+  "primary_result_sha256": "ed0e6811c5f2a10ae88066ea8c49aad798d6fa87c9614469b546b3b7d58b64a5",
+  "evidence_sha256": "ad2c51464ac34aae21909a3c8e93b5f82692fc4549b05e13556971b8e39a7aac",
+  "execution_sha256": "42d49615afe480ac1ebc27b3a15f55c6e0ffc293aa81b74ec5c992b5df1ca87f",
+  "finalized_at": "2026-08-13T23:26:23Z",
+  "status": "VALID_EXECUTION_COMPLETE_CLOSED_TO_SAME_ID_RERUN",
+  "market_content_read_during_finalize": false,
+  "scientific_remeasurement_during_finalize": false,
+  "same_id_rerun_allowed": false,
+  "same_id_retuning_allowed": false,
+  "same_id_rescue_allowed": false
+}
