@@ -1,0 +1,37 @@
+name: Tooling 0062 prereg materializer
+
+on:
+  push:
+    branches:
+      - tools/0062-prereg-materializer-v2
+    paths:
+      - '.github/workflows/tooling-0062-prereg-materializer.yml'
+      - 'tools/materialize_0062_prereg.py'
+
+permissions:
+  contents: write
+
+jobs:
+  materialize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/0062-prereg-v1
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: execution/plan-b-bot/requirements-dev.txt
+      - name: Install pinned test runtime
+        run: pip install -r execution/plan-b-bot/requirements-dev.txt
+      - name: Configure git
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+      - name: Run isolated prereg materializer from tooling branch
+        run: |
+          git show origin/tools/0062-prereg-materializer-v2:tools/materialize_0062_prereg.py > /tmp/materialize_0062_prereg.py
+          python /tmp/materialize_0062_prereg.py
