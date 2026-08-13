@@ -2,8 +2,8 @@
 
 Last updated: **2026-08-13**  
 Authoritative repository: `alexwang91/laugh-to-2028`  
-Current `main` research merge: **`cc48e359b741bb8949093f9006d7a8ce287a10c0`**  
-Current research branch: **`research/0061-btc-cash-absolute-risk-measurement-replication-implementation`**  
+Current `main` research merge: **`3e624dc5a6af9a4ffc14c5727d730d31a4be738c`**  
+Current research branch: **`research/0061-btc-cash-absolute-risk-measurement-replication-controlled-boundary`**  
 Status of this document: **AUTHORITATIVE OPERATING SNAPSHOT**
 
 > GitHub `main`, immutable research artifacts and machine registries remain the sources of truth. This file is the compact human handoff, not a substitute for preregistration, execution, evidence, recovery or closeout artifacts.
@@ -44,7 +44,7 @@ BRRK Beta router interface replication 0057 FAIL_SIMPLE_BETA_ROUTER_COST_FRAGILE
 BRRK Beta->BTC parameter geometry 0058     FAIL_NO_STABLE_PARAMETER_PLATEAU / CLOSED
 BRRK Beta deterioration/BTC takeover 0059 FAIL_NO_MONOTONE_CONTINUATION_INFORMATION / CLOSED
 BRRK BTC->Cash absolute risk 0060     INVALID_EXECUTION / CLOSED / NO SCIENTIFIC CONCLUSION
-BRRK BTC->Cash measurement replication 0061 IMPLEMENTATION-ONLY / ZERO RESULT / NOT RUN
+BRRK BTC->Cash measurement replication 0061 CONTROLLED BOUNDARY / ZERO RESULT / NOT RUN
 
 Canonical BRRK-0011                    NO CHANGE
 Phase 7                                MONITOR_ONLY / LAUNCH BLOCKED
@@ -1320,3 +1320,40 @@ order_submission_authorized              false
 Synthetic coverage includes the immutable 0060 contracts plus 0061 fixed-score/Spearman equivalence under heavy ties and a long zero-mass region, full-panel constant-coordinate detection, finite deterministic eight-target fixed-score MBB, repeated/variance-free resample rows and frozen MBB index determinism. No synthetic output has scientific authority.
 
 **Exact next step after implementation merge:** create a separate zero-result controlled-execution boundary freezing immutable hashes, nullable short-circuit-aware result schema, run interface and exactly-once marker/fault semantics before any real historical 0061 measurement.
+
+---
+
+## 0061 controlled-execution boundary handoff
+
+0061 implementation merged at `3e624dc5a6af9a4ffc14c5727d730d31a4be738c`. The controlled boundary freezes immutable source/engine identities, a short-circuit-aware nullable result schema, staged exactly-once runner and fault contracts. No real historical 0061 market content has been read and no scientific result exists.
+
+```text
+scientific engine blob                 b548c82c446308f817871648d0db542848d419e6
+upstream 0060 engine blob              b901774b6849c9bcf6fbbf9887022142bf74a42d
+RUN_INTERFACE blob                     c651dcd5c0b062667ab7256396f84e2ae099768e
+RESULT_SCHEMA blob                     b969187dec0563240c51b398d50674706f7b4864
+run_once blob                          a12216da6d65fcbc0dee2021a5c61d0a5b3e8360
+test_run_interface blob                52036b7e6730024931b029018f904e2dd13005ec
+CONTROLLED_EXECUTION_BOUNDARY blob     747e59fa425d72dbbb5c3c2e5ba1128ef9bbc815
+boundary synthetic/fault run           31716990935
+real historical payload loaded         false
+real target/association executed       false
+actual historical variants evaluated   0
+durable RUN_ATTEMPT.marker             ABSENT
+PRIMARY_RESULT / EXECUTION / final     ABSENT / ABSENT / ABSENT
+```
+
+The schema accepts valid preregistered G1/G2/G3 scientific failures with nullable later-gate fields and independently re-derives their classification. Only a reached G4 requires finite fixed-score observed values, Spearman-equivalence error, q95, all eight simultaneous LCBs and a lossless fixed-score panel. `INVALID_EXECUTION` remains reserved for integrity/protocol failures.
+
+Boundary run `31716990935` passed 7 implementation tests, 5 result-schema tests and state-machine fault checks proving preflight does not read market content, evaluate without an attempt is rejected before market read, an ephemeral attempt plus existing partial result blocks automatic recomputation before market read, and incomplete finalization is rejected. The fault attempt existed only under `/tmp`; it is not a durable research attempt and consumes no historical execution authority.
+
+```text
+Canonical BRRK-0011                    NO CHANGE
+Phase 6                                NO CHANGE
+production_authorized_components       []
+production_authorized                  false
+signature_authorized                   false
+order_submission_authorized            false
+```
+
+**Exact next step after boundary merge:** the exact merged controlled-boundary HEAD may perform exactly one DEVELOPMENT historical execution. The durable result branch must persist `RUN_ATTEMPT.marker` before market content is read. From that point same-ID recomputation, rerun, retuning and rescue are permanently unavailable.
