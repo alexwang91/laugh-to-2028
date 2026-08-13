@@ -1,6 +1,6 @@
 # BRRK-BETA-DETERIORATION-BTC-TAKEOVER-DIAGNOSTIC-0059
 
-Status: **NUMERICAL/DATA PREREGISTRATION FROZEN / NOT IMPLEMENTED / NOT RUN**
+Status: **IMPLEMENTATION FROZEN / SYNTHETIC CONTRACT TESTED / NOT RUN**
 
 0059 is a pure DEVELOPMENT mechanism diagnostic. It freezes one equal-weight three-axis causal deterioration state and asks whether it has recurrent monotone information about future BTC-over-Beta continuation value simultaneously at 20/60/120/240 days. It defines no trading threshold, allocation map, switching rule, NAV path, transaction-cost model or production action.
 
@@ -9,3 +9,13 @@ Primary gates are: G1 shared support >=1440; G2 all four full-sample Spearman co
 0058 remains immutable FAIL_NO_STABLE_PARAMETER_PLATEAU and its exposed `(120,0.50)` maximum has zero 0059 authority. 0057 ETH/SOL micro-timing remains closed. BTC-to-cash is not opened.
 
 No real 0059 target, correlation, bootstrap or portfolio output may be computed during preregistration or implementation-only. After prereg merge, the next legal stage is implementation-only with synthetic/toy/contract tests. A separate controlled-execution boundary must merge before the unique historical DEVELOPMENT execution. A future PASS only makes a new-ID translation/calibration study eligible; it cannot freeze a trading parameter or modify canonical/production authority.
+
+## Implementation-only handoff
+
+Preregistration merged at `2e62245655008a74234b65d38d774b0d71847f05`. This stage adds a data-agnostic `engine.py` plus 17 synthetic contract tests only. The engine accepts caller-supplied BTC/ETH/SOL close DataFrames and contains no market loader, filesystem evidence reader, network request, portfolio-economics surface or controlled-run entrypoint.
+
+Synthetic Actions run `31675848796` verifies the exact 0047 trend semantics, exact 0043 causal z-score semantics, D1/D2/D3 construction, arithmetic origin-reset 50/50 Beta target, the 1,644-row nominal complete-origin calendar, average-tie Spearman, four-block partition, deterministic moving-block bootstrap, classification precedence and lossless origin-panel shape. The complete 2,183-row synthetic calendar exercises the frozen public 10,000-replicate bootstrap path. Synthetic output has **zero scientific authority**.
+
+No real 0059 market evidence was loaded and no real 0059 future target, association metric or portfolio output was computed. Actual historical variants evaluated remain `0`.
+
+Next legal stage after implementation merge is a separate controlled-execution boundary that must freeze `RESULT_SCHEMA.json`, `RUN_INTERFACE.json`, exactly-once runner and fault/marker semantics before the unique DEVELOPMENT historical execution.
