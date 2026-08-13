@@ -2,8 +2,8 @@
 
 Last updated: **2026-08-13**  
 Authoritative repository: `alexwang91/laugh-to-2028`  
-Current `main` research merge: **`9ac4a70c638bf55d8b7b614e877ed36e8193f0e7`**  
-Current research branch: **`research/0061-btc-cash-absolute-risk-measurement-replication-design`**  
+Current `main` research merge: **`c81e780ae2faa38f2e0bcda8f25e04ec7c5bc2a7`**  
+Current research branch: **`research/0061-btc-cash-absolute-risk-measurement-replication-prereg`**  
 Status of this document: **AUTHORITATIVE OPERATING SNAPSHOT**
 
 > GitHub `main`, immutable research artifacts and machine registries remain the sources of truth. This file is the compact human handoff, not a substitute for preregistration, execution, evidence, recovery or closeout artifacts.
@@ -44,7 +44,7 @@ BRRK Beta router interface replication 0057 FAIL_SIMPLE_BETA_ROUTER_COST_FRAGILE
 BRRK Beta->BTC parameter geometry 0058     FAIL_NO_STABLE_PARAMETER_PLATEAU / CLOSED
 BRRK Beta deterioration/BTC takeover 0059 FAIL_NO_MONOTONE_CONTINUATION_INFORMATION / CLOSED
 BRRK BTC->Cash absolute risk 0060     INVALID_EXECUTION / CLOSED / NO SCIENTIFIC CONCLUSION
-BRRK BTC->Cash measurement replication 0061 DESIGN FROZEN / PREREG ABSENT / NOT RUN
+BRRK BTC->Cash measurement replication 0061 NUMERICAL/DATA PREREG FROZEN / NOT RUN
 
 Canonical BRRK-0011                    NO CHANGE
 Phase 7                                MONITOR_ONLY / LAUNCH BLOCKED
@@ -1261,3 +1261,36 @@ A constant required coordinate on the full shared panel is a valid scientific no
 No signed target, volatility controller, drawdown controller, CUSUM/change detector, BTC/Cash threshold, re-entry rule, hysteresis, gross map, strategy NAV, CAGR/MDD optimization, leverage or shorting is opened under 0061.
 
 **Exact next step after DESIGN merge:** a separate numerical/data preregistration must create the central 0061 owner and freeze the inherited support/temporal rules plus exact fixed-score normalization, Spearman-equivalence tolerance, 240-row non-circular MBB geometry, replicate count, seed, quantile convention, simultaneous eight-target LCB construction, short-circuit semantics and lossless result schema before implementation or any real historical 0061 output.
+
+---
+
+## 0061 numerical/data preregistration handoff
+
+`BRRK-BTC-CASH-ABSOLUTE-RISK-MEASUREMENT-REPLICATION-0061` now has a durable owner-first central registry record and a frozen numerical/data contract. No 0061 historical target, association, bootstrap result or portfolio output has been computed.
+
+```text
+design merge                           c81e780ae2faa38f2e0bcda8f25e04ec7c5bc2a7
+stage                                  NUMERICAL/DATA PREREG FROZEN / NOT IMPLEMENTED / NOT RUN
+dataset                                BRRK-LEADERSHIP-ROTATION-0048-EXPOSED-HIST-V1
+payload SHA256                         d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193
+asset consumed                         BTC daily close only
+history                                RESEARCHER_EXPOSED / DEVELOPMENT / NOT INDEPENDENT OOS
+horizons                               20 / 60 / 120 / 240 all co-primary
+target families                        terminal loss + adverse excursion both co-primary
+co-primary cells                       8
+G1 minimum shared origins              1440
+G2                                     all 8 ordinary full-sample Spearman rho > 0
+G3                                     >=3/4 chronological blocks positive in all 8 cells
+fixed-score equivalence tolerance      1e-12 absolute
+G4 bootstrap                           fixed-score non-circular MBB / L=240 / 10000 / seed 1844716895
+G4                                     all 8 simultaneous one-sided 95% LCB > 0
+actual variants evaluated              0
+```
+
+The 0060 state and target construction remain immutable and unchanged. 0061 corrects only dependence inference: full-panel average-tie ranks are centered and scaled once by population RMS; observed fixed-score mean products must equal ordinary Spearman within 1e-12; bootstrap replicates resample aligned fixed score rows and therefore do not recompute a replicate-specific variance denominator.
+
+Gate evaluation is prospectively short-circuited in order G1 -> G2 -> G3 -> G4. A constant required coordinate on the full panel is a valid `FAIL_NO_JOINT_DOWNSIDE_INFORMATION`. A constant coordinate inside a temporal block makes that block non-positive but does not invalidate execution. If an earlier scientific gate fails, later gates are persisted as not evaluated with a reason code.
+
+No real historical payload may be loaded in implementation-only. No threshold, gross map, signed target, strategy economics, volatility/drawdown controller or change detector is opened under 0061.
+
+**Exact next step after prereg merge:** implementation-only. Implement the frozen state/target delegation and fixed-score inference with synthetic/toy/adversarial tests only. A separate controlled-execution boundary must merge before the unique historical DEVELOPMENT execution.
