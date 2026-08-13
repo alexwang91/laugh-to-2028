@@ -2,8 +2,8 @@
 
 Last updated: **2026-08-13**  
 Authoritative repository: `alexwang91/laugh-to-2028`  
-Current `main` research merge: **`c81e780ae2faa38f2e0bcda8f25e04ec7c5bc2a7`**  
-Current research branch: **`research/0061-btc-cash-absolute-risk-measurement-replication-prereg`**  
+Current `main` research merge: **`cc48e359b741bb8949093f9006d7a8ce287a10c0`**  
+Current research branch: **`research/0061-btc-cash-absolute-risk-measurement-replication-implementation`**  
 Status of this document: **AUTHORITATIVE OPERATING SNAPSHOT**
 
 > GitHub `main`, immutable research artifacts and machine registries remain the sources of truth. This file is the compact human handoff, not a substitute for preregistration, execution, evidence, recovery or closeout artifacts.
@@ -44,7 +44,7 @@ BRRK Beta router interface replication 0057 FAIL_SIMPLE_BETA_ROUTER_COST_FRAGILE
 BRRK Beta->BTC parameter geometry 0058     FAIL_NO_STABLE_PARAMETER_PLATEAU / CLOSED
 BRRK Beta deterioration/BTC takeover 0059 FAIL_NO_MONOTONE_CONTINUATION_INFORMATION / CLOSED
 BRRK BTC->Cash absolute risk 0060     INVALID_EXECUTION / CLOSED / NO SCIENTIFIC CONCLUSION
-BRRK BTC->Cash measurement replication 0061 NUMERICAL/DATA PREREG FROZEN / NOT RUN
+BRRK BTC->Cash measurement replication 0061 IMPLEMENTATION-ONLY / ZERO RESULT / NOT RUN
 
 Canonical BRRK-0011                    NO CHANGE
 Phase 7                                MONITOR_ONLY / LAUNCH BLOCKED
@@ -1294,3 +1294,29 @@ Gate evaluation is prospectively short-circuited in order G1 -> G2 -> G3 -> G4. 
 No real historical payload may be loaded in implementation-only. No threshold, gross map, signed target, strategy economics, volatility/drawdown controller or change detector is opened under 0061.
 
 **Exact next step after prereg merge:** implementation-only. Implement the frozen state/target delegation and fixed-score inference with synthetic/toy/adversarial tests only. A separate controlled-execution boundary must merge before the unique historical DEVELOPMENT execution.
+
+---
+
+## 0061 implementation-only handoff
+
+`BRRK-BTC-CASH-ABSOLUTE-RISK-MEASUREMENT-REPLICATION-0061` preregistration merged at `cc48e359b741bb8949093f9006d7a8ce287a10c0`. The implementation delegates the unchanged 0060 state/target/shared-origin construction to immutable 0060 engine blob `b901774b6849c9bcf6fbbf9887022142bf74a42d` and implements only the preregistered fixed-score dependence inference plus gate short-circuit semantics.
+
+```text
+implementation engine blob             b548c82c446308f817871648d0db542848d419e6
+synthetic Actions run                   31715033232
+synthetic contracts                     23 passed
+real historical payload loaded          false
+real target/association executed         false
+actual historical variants evaluated     0
+run_once / execution interface           ABSENT
+controlled execution boundary            ABSENT
+portfolio economics                      FORBIDDEN
+BTC/Cash gross map                       FORBIDDEN
+production_authorized                    false
+signature_authorized                     false
+order_submission_authorized              false
+```
+
+Synthetic coverage includes the immutable 0060 contracts plus 0061 fixed-score/Spearman equivalence under heavy ties and a long zero-mass region, full-panel constant-coordinate detection, finite deterministic eight-target fixed-score MBB, repeated/variance-free resample rows and frozen MBB index determinism. No synthetic output has scientific authority.
+
+**Exact next step after implementation merge:** create a separate zero-result controlled-execution boundary freezing immutable hashes, nullable short-circuit-aware result schema, run interface and exactly-once marker/fault semantics before any real historical 0061 measurement.
