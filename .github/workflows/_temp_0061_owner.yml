@@ -1,4 +1,4 @@
-name: TEMP 0061 registry metadata normalizer
+name: TEMP 0061 implementation synthetic tests
 
 on:
   push:
@@ -6,40 +6,19 @@ on:
       - docs/0061-prereg-tooling
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
-  normalize:
+  synthetic:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: docs/0061-prereg-tooling
-          fetch-depth: 0
-      - name: Normalize prereg metadata only
-        shell: bash
-        run: |
-          python - <<'PY'
-          import json
-          from pathlib import Path
-          p = Path('config/research_registry.json')
-          reg = json.loads(p.read_text())
-          rid = 'BRRK-BTC-CASH-ABSOLUTE-RISK-MEASUREMENT-REPLICATION-0061'
-          r = next(x for x in reg['records'] if x.get('research_id') == rid)
-          for e in r.get('lineage_edges', []):
-              e['relation'] = 'RESULT_INFORMED'
-          r['promotion_state'] = 'NONE'
-          r['evidence_refs'] = []
-          r['decision_refs'] = [
-              'research/governance/BRRK_BTC_CASH_ABSOLUTE_RISK_MEASUREMENT_REPLICATION_0061_DESIGN_FREEZE_2026-08-13.md',
-              'research/brrk_btc_cash_absolute_risk_measurement_replication_0061/PREREGISTRATION.json',
-              'research/brrk_btc_cash_absolute_risk_measurement_replication_0061/DATASET_DECLARATION.json',
-              'docs/CURRENT_STATE.md'
-          ]
-          p.write_text(json.dumps(reg, indent=2) + '\n')
-          PY
-          git config user.name github-actions
-          git config user.email github-actions@github.com
-          git add config/research_registry.json
-          git commit -m 'docs: normalize 0061 prereg registry metadata'
-          git push origin HEAD:docs/0061-prereg-tooling
+          ref: docs/0061-implementation-tooling
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install runtime
+        run: pip install 'numpy==1.26.4' 'pandas==2.2.2' 'pytest==8.3.2'
+      - name: Run synthetic contracts
+        run: pytest -q research/brrk_btc_cash_absolute_risk_diagnostic_0060/test_engine.py research/brrk_btc_cash_absolute_risk_measurement_replication_0061/test_engine.py
