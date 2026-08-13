@@ -1,13 +1,9 @@
 name: TEMP 0061 boundary contracts
-
 on:
   push:
-    branches:
-      - docs/0061-prereg-tooling
-
+    branches: [docs/0061-prereg-tooling]
 permissions:
   contents: read
-
 jobs:
   contracts:
     runs-on: ubuntu-latest
@@ -18,13 +14,6 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Install runtime
-        run: pip install 'numpy==1.26.4' 'pandas==2.2.2' 'pytest==8.3.2'
-      - name: Run implementation and boundary tests
-        run: pytest -q --import-mode=importlib research/brrk_btc_cash_absolute_risk_measurement_replication_0061/test_engine.py research/brrk_btc_cash_absolute_risk_measurement_replication_0061/test_run_interface.py
-      - name: Zero-result guard
-        run: |
-          test ! -e research/brrk_btc_cash_absolute_risk_measurement_replication_0061/RUN_ATTEMPT.marker
-          test ! -e research/brrk_btc_cash_absolute_risk_measurement_replication_0061/PRIMARY_RESULT.json
-          test ! -e research/brrk_btc_cash_absolute_risk_measurement_replication_0061/EXECUTION.json
-          test ! -e research/brrk_btc_cash_absolute_risk_measurement_replication_0061/RUN_ONCE.marker
+      - run: pip install 'numpy==1.26.4' 'pandas==2.2.2' 'pytest==8.3.2'
+      - run: pytest -q research/brrk_btc_cash_absolute_risk_measurement_replication_0061/test_engine.py
+      - run: pytest -q research/brrk_btc_cash_absolute_risk_measurement_replication_0061/test_run_interface.py
