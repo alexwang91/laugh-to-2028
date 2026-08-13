@@ -1,0 +1,283 @@
+name: Temporary 0059 controlled-boundary tooling v2
+
+on:
+  push:
+    branches:
+      - research/0059-beta-deterioration-btc-takeover-diagnostic-controlled-boundary-tooling-v2
+
+permissions:
+  contents: write
+
+jobs:
+  seal-boundary:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/0059-beta-deterioration-btc-takeover-diagnostic-controlled-boundary
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: execution/plan-b-bot/requirements-dev.txt
+
+      - name: Install pinned test runtime
+        run: pip install -r execution/plan-b-bot/requirements-dev.txt
+
+      - name: Verify exact zero-result boundary surface
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE=195ef80ce99fa71098bdcb56a756b583fce10a70
+          INITIAL=79c6b598671d138907bcac0292cec8f921f2d996
+          test "$(git rev-parse HEAD)" = "$INITIAL"
+          test "$(git merge-base "$BASE" HEAD)" = "$BASE"
+          test "$(git rev-parse HEAD:research/brrk_beta_deterioration_btc_takeover_diagnostic_0059/RESULT_SCHEMA.json)" = "ffa183c59335bde16e53d313e845c0237bb4edd5"
+          test "$(git rev-parse HEAD:research/brrk_beta_deterioration_btc_takeover_diagnostic_0059/RUN_INTERFACE.json)" = "7fd83af452d49428ec98cf0e3352041372132d07"
+          test "$(git rev-parse HEAD:research/brrk_beta_deterioration_btc_takeover_diagnostic_0059/run_once.py)" = "9f80c973ac2daa77ce44528e9a0eaf61fd263d25"
+          test "$(git rev-parse HEAD:research/brrk_beta_deterioration_btc_takeover_diagnostic_0059/test_run_interface.py)" = "91286cc1f5e436b570052a2623b27aea1e9d9e91"
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root = Path('research/brrk_beta_deterioration_btc_takeover_diagnostic_0059')
+          for name in ('RUN_ATTEMPT.marker','PRIMARY_RESULT.json','EXECUTION.json','RUN_ONCE.marker'):
+              assert not (root / name).exists(), name
+          registry = json.loads(Path('config/research_registry.json').read_text())
+          rows = [x for x in registry['records'] if x.get('research_id') == 'BRRK-BETA-DETERIORATION-BTC-TAKEOVER-DIAGNOSTIC-0059']
+          assert len(rows) == 1
+          owner = rows[0]
+          assert owner['result_status'] == 'PREREGISTERED_NOT_RUN'
+          assert owner['actual_variants_evaluated'] == 0
+          runner = (root / 'run_once.py').read_text().lower()
+          for token in ('requests.get','fetch_daily_frame(','api.binance','data-api.binance','source_engine.fetch'):
+              assert token not in runner, token
+          print('REAL_0059_MARKET_WRAPPER_CONTENT_READ=false')
+          print('REAL_0059_HISTORICAL_PAYLOAD_LOADED=false')
+          print('REAL_0059_TARGET_ASSOCIATION_EXECUTED=false')
+          print('ACTUAL_HISTORICAL_VARIANTS_EVALUATED=0')
+          PY
+
+      - name: Run 0059 implementation synthetic tests
+        run: python -m unittest research.brrk_beta_deterioration_btc_takeover_diagnostic_0059.test_engine -v
+
+      - name: Run 0059 exactly-once fault contracts
+        run: python -m unittest research.brrk_beta_deterioration_btc_takeover_diagnostic_0059.test_run_interface -v
+
+      - name: Validate governance before boundary materialization
+        run: |
+          python -m research.governance.validate
+          python -m research.governance.no_drift
+
+      - name: Materialize frozen controlled-execution boundary and handoff
+        env:
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          import os
+          import subprocess
+          from pathlib import Path
+
+          root = Path('research/brrk_beta_deterioration_btc_takeover_diagnostic_0059')
+          run_id = int(os.environ['RUN_ID'])
+          blobs = {name: subprocess.check_output(['git','hash-object',str(root / name)], text=True).strip() for name in ('RESULT_SCHEMA.json','RUN_INTERFACE.json','run_once.py','test_run_interface.py')}
+          expected = {
+              'RESULT_SCHEMA.json': 'ffa183c59335bde16e53d313e845c0237bb4edd5',
+              'RUN_INTERFACE.json': '7fd83af452d49428ec98cf0e3352041372132d07',
+              'run_once.py': '9f80c973ac2daa77ce44528e9a0eaf61fd263d25',
+              'test_run_interface.py': '91286cc1f5e436b570052a2623b27aea1e9d9e91',
+          }
+          assert blobs == expected
+          boundary = {
+              'research_id': 'BRRK-BETA-DETERIORATION-BTC-TAKEOVER-DIAGNOSTIC-0059',
+              'stage': 'CONTROLLED_EXECUTION_BOUNDARY',
+              'status': 'CONTROLLED_EXECUTION_BOUNDARY_FROZEN_ZERO_RESULT',
+              'base_main_implementation_merge_sha': '195ef80ce99fa71098bdcb56a756b583fce10a70',
+              'actual_variants_evaluated': 0,
+              'historical_execution_performed': False,
+              'real_market_wrapper_content_read': False,
+              'real_historical_payload_loaded': False,
+              'runtime_artifacts_present': False,
+              'boundary_files': blobs,
+              'immutable_scientific_bindings': {
+                  '0059_preregistration_blob_sha': '35daee8865b793d6871757e55c406df4643f5c2a',
+                  '0059_dataset_declaration_blob_sha': '8a28d8b97cdba4c6790eddeb3dfac5dca17ab3a6',
+                  '0059_implementation_boundary_blob_sha': 'd167b896a6d5732b5165e6680a1c25c2c582fd1c',
+                  '0059_engine_blob_sha': 'e56d4918c34bde8f1d71e6d5152166db43e21689',
+                  '0059_test_engine_blob_sha': 'a7e3b314099e4e7d20eebfbe01aa823b5570c791',
+                  '0047_source_engine_blob_sha': '059b55961e279dab41ba29b5b017de0922e4f33c',
+                  'market_evidence_blob_sha': '64ebf5c6deaf3f34dbeac715378f196ff0f4fafe',
+                  'market_payload_sha256': 'd1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193'
+              },
+              'source_to_science_path': [
+                  'VERIFY_EXACT_MERGED_CONTROLLED_BOUNDARY_HEAD',
+                  'VERIFY_IMMUTABLE_UPSTREAM_AND_MARKET_GIT_BLOBS_WITHOUT_READING_MARKET_CONTENT',
+                  'DURABLY_PERSIST_RUN_ATTEMPT_MARKER',
+                  'READ_IMMUTABLE_MARKET_WRAPPER_ONCE',
+                  '0047_FRAMES_FROM_MARKET_EVIDENCE_EXACTLY_ONCE',
+                  'SELECT_EXACT_BTC_ETH_SOL_SET',
+                  'DELEGATE_EXACTLY_ONCE_TO_IMMUTABLE_0059_ENGINE',
+                  'VALIDATE_LOSSLESS_0059_RESULT_SCHEMA'
+              ],
+              'execution_sequence': [
+                  'PREFLIGHT_ZERO_RESULT_NO_MARKET_CONTENT_READ',
+                  'DURABLY_PERSIST_RUN_ATTEMPT_MARKER',
+                  'EVALUATE_REAL_PAYLOAD_EXACTLY_ONCE',
+                  'DURABLY_PERSIST_PRIMARY_RESULT_AND_EXECUTION',
+                  'FINALIZE_MARKER_FROM_EXISTING_HASHES_WITHOUT_MARKET_READ_OR_REMEASUREMENT'
+              ],
+              'state_machine_contract': {
+                  'preflight_repeatable': True,
+                  'preflight_writes_result': False,
+                  'preflight_reads_market_content': False,
+                  'preflight_calls_source_loader': False,
+                  'preflight_calls_scientific_engine': False,
+                  'start_attempt_requires_zero_runtime_artifacts': True,
+                  'start_attempt_reads_market_content': False,
+                  'attempt_marker_create_only': True,
+                  'attempt_marker_candidate_count': 1,
+                  'attempt_marker_same_id_recomputation_allowed': False,
+                  'attempt_marker_same_id_retuning_allowed': False,
+                  'attempt_marker_same_id_rescue_allowed': False,
+                  'evaluate_requires_durable_attempt_marker': True,
+                  'evaluate_reads_market_wrapper_exactly_once': True,
+                  'evaluate_calls_source_loader_exactly_once': True,
+                  'evaluate_calls_scientific_engine_exactly_once': True,
+                  'evaluate_result_create_only': True,
+                  'evaluate_execution_create_only': True,
+                  'existing_partial_result_blocks_automatic_recompute': True,
+                  'interrupted_partial_execution_requires_governance_closeout_or_authorized_marker_recovery': True,
+                  'finalize_may_read_market_content': False,
+                  'finalize_may_call_source_loader': False,
+                  'finalize_may_call_scientific_engine': False,
+                  'finalize_verifies_attempt_result_execution_hash_chain': True,
+                  'final_marker_create_only': True,
+                  'same_id_rerun_after_attempt_allowed': False,
+                  'same_id_retuning_after_attempt_allowed': False,
+                  'same_id_rescue_after_attempt_allowed': False
+              },
+              'marker_only_recovery': {
+                  'allowed': True,
+                  'condition': 'RUN_ATTEMPT.marker, PRIMARY_RESULT.json and EXECUTION.json already exist and their frozen identities/hash chain verify; RUN_ONCE.marker alone is absent',
+                  'market_content_read_allowed': False,
+                  'target_remeasurement_allowed': False,
+                  'association_remeasurement_allowed': False,
+                  'source_loader_reexecution_allowed': False,
+                  'scientific_engine_reexecution_allowed': False
+              },
+              'result_contract': {
+                  'declared_variants': 1,
+                  'successful_result_persists_lossless_origin_panel': True,
+                  'origin_panel_field_count': 23,
+                  'full_sample_horizons': [20,60,120,240],
+                  'temporal_block_count': 4,
+                  'bootstrap_block_length': 240,
+                  'bootstrap_replicates': 10000,
+                  'bootstrap_seed': 1844716895,
+                  'classification_precedence_inherited_unchanged': True,
+                  'component_diagnostics_non_gating': True,
+                  'result_schema_frozen_before_execution': True,
+                  'closeout_target_remeasurement_allowed': False,
+                  'trading_threshold_output_allowed': False,
+                  'allocation_mapping_allowed': False,
+                  'portfolio_economics_allowed': False,
+                  'btc_to_cash_allowed': False,
+                  'eth_sol_micro_timing_allowed': False,
+                  'leverage_shorting_allowed': False
+              },
+              'boundary_ci_policy': {
+                  'real_market_wrapper_content_may_be_read': False,
+                  'real_market_evidence_may_be_loaded': False,
+                  'real_historical_evaluation_may_run': False,
+                  'runtime_artifact_may_be_created_in_repository': False,
+                  'synthetic_or_mock_fault_contracts_only': True,
+                  'actual_historical_variants_evaluated': 0
+              },
+              'authority': {
+                  'canonical_strategy_changed': False,
+                  'phase6_changed': False,
+                  'production_authorized': False,
+                  'production_authorized_components': [],
+                  'signature_authorized': False,
+                  'order_submission_authorized': False
+              },
+              'boundary_fault_contract_evidence': {
+                  'status': 'PASS_ZERO_RESULT_BOUNDARY_CONTRACTS',
+                  'successful_tooling_run': run_id,
+                  'implementation_engine_contract_tests_passed': 17,
+                  'controlled_run_fault_contract_tests_passed': 15,
+                  'total_boundary_tests_passed': 32,
+                  'zero_result_guard_passed': True,
+                  'governance_validate_passed': True,
+                  'no_drift_passed': True,
+                  'real_0059_market_wrapper_content_read': False,
+                  'real_0059_historical_payload_loaded': False,
+                  'real_0059_target_association_executed': False,
+                  'actual_historical_variants_evaluated': 0
+              }
+          }
+          (root / 'CONTROLLED_EXECUTION_BOUNDARY.json').write_text(json.dumps(boundary, indent=2) + '\n')
+
+          readme_path = root / 'README.md'
+          readme = readme_path.read_text()
+          readme = readme.replace('Status: **IMPLEMENTATION FROZEN / SYNTHETIC CONTRACT TESTED / NOT RUN**','Status: **CONTROLLED EXECUTION BOUNDARY FROZEN / NOT RUN**')
+          if '\n## Controlled-execution boundary handoff\n' not in readme:
+              readme += f'''\n## Controlled-execution boundary handoff\n\nImplementation merged at `195ef80ce99fa71098bdcb56a756b583fce10a70`. This stage freezes `RESULT_SCHEMA.json`, `RUN_INTERFACE.json`, the exactly-once `run_once.py` state machine and 15 mock/synthetic fault-contract tests. Tooling run `{run_id}` also reran all 17 implementation engine tests, for 32 boundary tests total.\n\nBoundary CI read **no real market wrapper content**, loaded no historical payload and executed no real 0059 target, association or classification. Actual historical variants evaluated remain `0`.\n\nThe future unique historical DEVELOPMENT execution must run from the exact merged controlled-boundary HEAD. `preflight` and `start-attempt` do not read market content. After `RUN_ATTEMPT.marker` is durably created, same-ID recomputation, retuning and rescue are permanently unavailable. `evaluate` may read the frozen market wrapper once, call the immutable 0047 source loader once and call the immutable 0059 engine once. Marker-only recovery is allowed only when attempt, complete primary result and complete execution already exist and only the final marker is absent; recovery may not read market content or remeasure anything.\n\nNo threshold, allocation map, portfolio economics, BTC-to-cash, ETH/SOL micro-timing, leverage, shorting, canonical change or production authority is introduced. The next legal stage after this boundary merges is exactly one historical execution; it is **not** performed by this boundary stage.\n'''
+          readme_path.write_text(readme)
+
+          state_path = Path('docs/CURRENT_STATE.md')
+          state = state_path.read_text()
+          state = state.replace('Current `main` research merge: **`2e62245655008a74234b65d38d774b0d71847f05`**','Current `main` research merge: **`195ef80ce99fa71098bdcb56a756b583fce10a70`**')
+          state = state.replace('Current research branch: **`research/0059-beta-deterioration-btc-takeover-diagnostic-implementation`**','Current research branch: **`research/0059-beta-deterioration-btc-takeover-diagnostic-controlled-boundary`**')
+          state = state.replace('BRRK Beta deterioration/BTC takeover 0059 IMPLEMENTED / SYNTHETIC CONTRACT TESTED / NOT RUN','BRRK Beta deterioration/BTC takeover 0059 CONTROLLED EXECUTION BOUNDARY FROZEN / NOT RUN')
+          if '\n---\n\n## 0059 controlled-execution boundary handoff\n' not in state:
+              state += f'''\n\n---\n\n## 0059 controlled-execution boundary handoff\n\n0059 implementation merged at `195ef80ce99fa71098bdcb56a756b583fce10a70`. The controlled boundary freezes result schema, immutable source/engine bindings, exact-head policy, create-only runtime artifacts and exactly-once state-machine semantics.\n\nActions `{run_id}` passed 17/17 implementation engine tests plus 15/15 controlled-run fault contracts, then governance validation and no-drift. Boundary tooling read no real market wrapper content, loaded no real historical payload and executed no historical target/association. `actual_variants_evaluated=0`.\n\nThe execution sequence is: repeatable zero-result preflight (no market-content read) -> durable create-only `RUN_ATTEMPT.marker` -> one market-wrapper read + one 0047 source-loader call + one immutable 0059 engine call -> create-only `PRIMARY_RESULT.json` and `EXECUTION.json` -> hash-only `RUN_ONCE.marker` finalize with no market read or remeasurement.\n\nOnce `RUN_ATTEMPT.marker` exists, same-ID recomputation, rerun, retuning and rescue are permanently forbidden. Automatic recomputation is also forbidden if a partial result exists. Marker-only recovery requires complete attempt/result/execution with verified hash chain and a missing final marker only.\n\nNo real historical execution has occurred. The next legal stage is exactly one DEVELOPMENT historical execution from the exact merged controlled-boundary HEAD, followed by immutable closeout in a separate stage.\n'''
+          state_path.write_text(state)
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add research/brrk_beta_deterioration_btc_takeover_diagnostic_0059/CONTROLLED_EXECUTION_BOUNDARY.json research/brrk_beta_deterioration_btc_takeover_diagnostic_0059/README.md docs/CURRENT_STATE.md
+          git commit -m 'Research controlled boundary [DRIFT_0]: seal 0059 zero-result execution boundary'
+          git push origin HEAD:refs/heads/research/0059-beta-deterioration-btc-takeover-diagnostic-controlled-boundary
+
+      - name: Final boundary audit from written-back branch
+        env:
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          git fetch origin research/0059-beta-deterioration-btc-takeover-diagnostic-controlled-boundary
+          git checkout -B research/0059-beta-deterioration-btc-takeover-diagnostic-controlled-boundary origin/research/0059-beta-deterioration-btc-takeover-diagnostic-controlled-boundary
+          python - <<'PY'
+          import json, os, subprocess
+          from pathlib import Path
+          base='195ef80ce99fa71098bdcb56a756b583fce10a70'
+          expected={
+              'docs/CURRENT_STATE.md',
+              'research/brrk_beta_deterioration_btc_takeover_diagnostic_0059/CONTROLLED_EXECUTION_BOUNDARY.json',
+              'research/brrk_beta_deterioration_btc_takeover_diagnostic_0059/README.md',
+              'research/brrk_beta_deterioration_btc_takeover_diagnostic_0059/RESULT_SCHEMA.json',
+              'research/brrk_beta_deterioration_btc_takeover_diagnostic_0059/RUN_INTERFACE.json',
+              'research/brrk_beta_deterioration_btc_takeover_diagnostic_0059/run_once.py',
+              'research/brrk_beta_deterioration_btc_takeover_diagnostic_0059/test_run_interface.py',
+          }
+          actual=set(subprocess.check_output(['git','diff','--name-only',f'{base}...HEAD'], text=True).splitlines())
+          assert actual == expected, (actual, expected)
+          root=Path('research/brrk_beta_deterioration_btc_takeover_diagnostic_0059')
+          for name in ('RUN_ATTEMPT.marker','PRIMARY_RESULT.json','EXECUTION.json','RUN_ONCE.marker'):
+              assert not (root/name).exists(), name
+          boundary=json.loads((root/'CONTROLLED_EXECUTION_BOUNDARY.json').read_text())
+          assert boundary['historical_execution_performed'] is False
+          assert boundary['real_market_wrapper_content_read'] is False
+          assert boundary['actual_variants_evaluated'] == 0
+          assert boundary['boundary_fault_contract_evidence']['successful_tooling_run'] == int(os.environ['RUN_ID'])
+          print('FINAL_BOUNDARY_DIFF_EXACT_SEVEN_FILES=true')
+          print('FINAL_REAL_0059_MARKET_WRAPPER_CONTENT_READ=false')
+          print('FINAL_ACTUAL_HISTORICAL_VARIANTS_EVALUATED=0')
+          PY
+          python -m unittest research.brrk_beta_deterioration_btc_takeover_diagnostic_0059.test_engine -v
+          python -m unittest research.brrk_beta_deterioration_btc_takeover_diagnostic_0059.test_run_interface -v
+          python -m research.governance.validate
+          python -m research.governance.no_drift
