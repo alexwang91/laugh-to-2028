@@ -2,8 +2,8 @@
 
 Last updated: **2026-08-13**  
 Authoritative repository: `alexwang91/laugh-to-2028`  
-Current `main` research merge: **`eb55377744cf063c38f34c68f0c17541b9325aaa`**  
-Current research branch: **`docs/0061-closeout-v1`**  
+Current `main` research merge: **`d9759316d80ea67390c9b2f65334f30d52fad19c`**  
+Current research branch: **`research/0062-btc-risk-signal-atlas-design`**  
 Status of this document: **AUTHORITATIVE OPERATING SNAPSHOT**
 
 > GitHub `main`, immutable research artifacts and machine registries remain the sources of truth. This file is the compact human handoff, not a substitute for preregistration, execution, evidence, recovery or closeout artifacts.
@@ -45,6 +45,7 @@ BRRK Beta->BTC parameter geometry 0058     FAIL_NO_STABLE_PARAMETER_PLATEAU / CL
 BRRK Beta deterioration/BTC takeover 0059 FAIL_NO_MONOTONE_CONTINUATION_INFORMATION / CLOSED
 BRRK BTC->Cash absolute risk 0060     INVALID_EXECUTION / CLOSED / NO SCIENTIFIC CONCLUSION
 BRRK BTC->Cash measurement replication 0061 FAIL_NO_JOINT_DOWNSIDE_INFORMATION / CLOSED
+BRRK BTC risk signal atlas 0062        DESIGN FROZEN / PREREG ABSENT / NOT RUN
 
 Canonical BRRK-0011                    NO CHANGE
 Phase 7                                MONITOR_ONLY / LAUNCH BLOCKED
@@ -1394,3 +1395,36 @@ order_submission_authorized            false
 ```
 
 **Exact next step:** 0061 is permanently closed. Any outer BTC-to-Cash continuation requires a scientifically distinct new-ID design; do not rerun or rescue 0061.
+
+---
+
+## 0062 BTC risk signal atlas design handoff
+
+`BRRK-BTC-RISK-SIGNAL-ATLAS-0062` is a new-ID braad information-atlas study for the outer BTC-to-Cash risk-control program.
+
+```text
+research family                         BRRK_BTC_TO_CASH_GROSS_RISK
+design branch                           research/0062-btc-risk-signal-atlas-design
+design freeze                           research/governance/BRRK_BTC_RISK_SIGNAL_ATLAS_0062_DESIGN_FREEZE_2026-08-13.md
+stage                                   DESIGN FROZEN / PREREG ABSENT / NOT IMPLEMENTED / NOT RUN
+signal mechanism families               F01..F24 frozen as ontology/search universe
+data tiers                              A existing market-internal / B crypto-native external / C macro-sentiment external
+target channels                         signed BTC-vs-Cash / path damage / future risk / reversal-transition / recovery
+central registry owner                  ABSENT UNTIL PREREGISTRATION
+historical 0062 outcomes                NOT COMPUTED
+historical indicator ranking            NOT COMPUTED
+historical portfolio economics          FORBIDDEN
+actual variants evaluated               0
+production_authorized                   false
+signature_authorized                    false
+order_submission_authorized             false
+```
+
+0062 deliberately breaks the previous anchoring on A1/A2/A3, RSI, MACD, Supertrend or MA20. Named indicators are examples inside mechanism families, not privileged candidates. The frozen atlas spans trend level, trend disagreement, acceleration/deceleration, crossing events, volatility-adjusted trend guards, momentum, overbought/oversold state, divergence/exhaustion, breakout/failure structure, volatility regime, downside-tail clustering, volume/flow confirmation, cross-crypto breadth, relative crypto structure, derivatives crowding, options-implied tail risk, on-chain holder state, liquidity/stablecoin/depth, macro/cross-asset state, sentiment/flows, sequential changepoints, latent regimes, multi-timescale disagreement and limited prospectively budgeted interactions.
+
+0062 also changes the scientific target architecture. It will not require one daily signal to predict the same direction across 20/60/120/240 days. Numerical/data preregistration must instead freeze an economically interpretable horizon geometry and separate signed BTC-vs-Cash opportunity cost, path damage, future risk, reversal/regime-transition and recovery information. A family may only be evaluated on prospectively frozen target/horizon mappings; post-hoc best-cell reporting is forbidden.
+
+The broad atlas must use hierarchical multiplicity control and family-level gates. Hundreds of correlated textbook indicators cannot be treated as independent confirmations. Parameterized mechanisms must use systematic geometry and broad-plateau logic rather than historical argmax selection. 0062 itself cannot define a BTC/Cash gross map, threshold, hysteresis, strategy NAV or CAGR/MDD optimization.
+
+**Exact next step after DESIGN merge:** create a separate numerical/data preregistration. Before any historical 0062 output, freeze the actual executable representations, Tier A/B/C source contracts and point-in-time semantics, parameter/variant budget, target/horizon formulas, support and temporal recurrence rules, dependence-aware multiplicity method, classification precedence, lossless result schema and exactly-once execution semantics.
+
