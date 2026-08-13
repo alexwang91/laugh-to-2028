@@ -19,3 +19,26 @@ jobs:
       - run: pip install 'numpy==1.26.4' 'pandas==2.2.2' 'pytest==8.3.2' 'requests==2.32.3' scipy
       - run: pytest -q research/brrk_btc_cash_absolute_risk_measurement_replication_0061/test_engine.py
       - run: pytest -q research/brrk_btc_cash_absolute_risk_measurement_replication_0061/test_run_interface.py
+      - name: State-machine faults without market read
+        shell: bash
+        run: |
+          set -euo pipefail
+          HEAD=$(git rev-parse HEAD)
+          MARKET=research/brrk_beta_handoff_0047/evidence/MARKET_EVIDENCE.json
+          RUNNER='python -m research.brrk_btc_cash_absolute_risk_measurement_replication_0061.run_once'
+          D=$(mktemp -d)
+          A=$D/RUN_ATTEMPT.marker
+          R=$D/PRIMARY_RESULT.json
+          E=$D/EXECUTION.json
+          M=$D/RUN_ONCE.marker
+          COMMON="--expected-head-sha $HEAD --market $MARKET --attempt $A --result $R --execution $E --marker $M"
+          $RUNNER preflight $COMMON
+          if $RUNNER evaluate $COMMON; then exit 31; fi
+          test ! -e "$R" && test ! -e "$E" && test ! -e "$M"
+          $RUNNER start-attempt $COMMON
+          test -s "$A"
+          printf '{}\n' > "$R"
+          if $RUNNER evaluate $COMMON; then exit 32; fi
+          test ! -e "$E" && test ! -e "$M"
+          if $RUNNER finalize $COMMON; then exit 33; fi
+          echo EPHEMERAL_FAULT_TESTS_NO_REAL_MEASUREMENT=true
