@@ -1,6 +1,6 @@
 # BRRK-BTC-CASH-ABSOLUTE-RISK-DIAGNOSTIC-0060
 
-Status: **NUMERICAL/DATA PREREGISTRATION FROZEN ON BRANCH / NOT IMPLEMENTED / NOT RUN**.
+Status: **INVALID_EXECUTION / CLOSED / NO SCIENTIFIC CONCLUSION**.
 
 0060 is a pure BTC-only absolute-risk mechanism diagnostic. It asks whether one fixed causal low-dimensional BTC risk state contains recurrent information about subsequent terminal BTC loss versus Cash and origin-relative pathwise adverse excursion.
 
@@ -36,3 +36,9 @@ Under 0060 there is no BTC/Cash threshold, no gross map, no re-entry/hysteresis/
 A PASS can only make a separately governed new-ID state-to-gross translation study eligible. A valid FAIL closes 0060 against same-ID feature/horizon/target/bootstrap/support rescue.
 
 Production, signing and order-submission authority remain false.
+
+## Immutable invalid closeout
+
+The unique authorized DEVELOPMENT historical attempt crossed the durable attempt boundary and then failed the frozen controlled-result schema before any primary result or execution receipt could be persisted. The exact validator error was `lcb.terminal_loss_20 must be finite numeric`. No historical statistic may be reconstructed by recomputation. `RUN_ATTEMPT.marker` is preserved byte-for-byte; `PRIMARY_RESULT.json`, `EXECUTION.json` and `RUN_ONCE.marker` do not exist.
+
+0060 therefore closes `INVALID_EXECUTION` with no conclusion for or against the BTC absolute-risk mechanism. Any corrected replication requires a new research ID. No BTC/Cash gross map, canonical change, Phase-6 change or production authority is created.

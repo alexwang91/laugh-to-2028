@@ -1,0 +1,95 @@
+{
+  "schema_version": 1,
+  "research_id": "BRRK-BTC-CASH-ABSOLUTE-RISK-DIAGNOSTIC-0060",
+  "status": "INVALID_EXECUTION_CLOSED",
+  "final_classification": "INVALID_EXECUTION",
+  "closed": true,
+  "development_not_independent_oos": true,
+  "researcher_exposed_history": true,
+  "scientific_head_sha": "fe210187472c2bcdfb51573b4cc544c187ade079",
+  "result_branch": "research/0060-btc-cash-absolute-risk-diagnostic-result",
+  "result_branch_head_sha": "2a324685754d1ab577de2f77e7f45c93fb8e27b5",
+  "execution_identity": {
+    "github_actions_run": 31688388675,
+    "github_actions_job": 94409763730,
+    "trigger_head_sha": "a3061b7dd4352ca9fdd6f0fe6b7d279ae4174ebd",
+    "runtime_artifact_id": 9176374369,
+    "runtime_artifact_name": "brrk-0060-runtime-bundle",
+    "runtime_artifact_digest": "sha256:118668740ec129d834db04a1e84d3cb7d839551ddf3e229f9dbf647074c3ced2",
+    "attempt_started_at_utc": "2026-08-13T09:50:47Z",
+    "measurement_failure_observed_at_utc": "2026-08-13T09:51:24Z",
+    "workflow_completed_at_utc": "2026-08-13T09:51:27Z",
+    "workflow_conclusion": "failure"
+  },
+  "runtime_persistence": {
+    "run_attempt_persisted": true,
+    "run_attempt_git_blob_sha": "6f7f18465d85e59af12a5c2a5dc00955932ad791",
+    "run_attempt_sha256": "e2342f0e75e89d847a4e38d06afe59d4b2dfc79d690a0278072d9480bb5b5999",
+    "primary_result_persisted": false,
+    "execution_receipt_persisted": false,
+    "final_marker_persisted": false,
+    "result_branch_diff_from_scientific_head": [
+      "research/brrk_btc_cash_absolute_risk_diagnostic_0060/RUN_ATTEMPT.marker"
+    ],
+    "runtime_artifact_contains_attempt_only": true
+  },
+  "binding_failure": {
+    "stage": "CONTROLLED_RESULT_SCHEMA_VALIDATION_AFTER_UNIQUE_SCIENTIFIC_ENGINE_CALL_BEFORE_RESULT_PERSISTENCE",
+    "error_type": "ControlledRunError",
+    "error": "lcb.terminal_loss_20 must be finite numeric",
+    "diagnosis": "UNIQUE_ENGINE_MEASUREMENT_RETURNED_A_NONFINITE_SIMULTANEOUS_LCB_FIELD_AND_THE_FROZEN_RESULT_SCHEMA_CORRECTLY_REJECTED_PERSISTENCE",
+    "invalid_reason_code": "NONFINITE_SIMULTANEOUS_LCB_TERMINAL_LOSS_20_BEFORE_PRIMARY_RESULT_PERSISTENCE",
+    "data_corruption_established": false,
+    "mechanism_failure_established": false,
+    "mechanism_success_established": false
+  },
+  "unique_attempt_accounting": {
+    "market_content_reads": 1,
+    "source_loader_calls": 1,
+    "scientific_engine_calls": 1,
+    "actual_variants_evaluated": 1,
+    "primary_result_validation_passed": false,
+    "primary_result_written": false,
+    "execution_receipt_written": false,
+    "finalization_reached": false
+  },
+  "scientific_result": {
+    "scientific_conclusion_available": false,
+    "G0_valid_result_available": false,
+    "G1_support_result_available": false,
+    "G2_joint_downside_information_result_available": false,
+    "G3_temporal_result_available": false,
+    "G4_dependence_result_available": false,
+    "full_sample_rho_available": false,
+    "simultaneous_lcb_available": false,
+    "origin_panel_available": false,
+    "unpersisted_in_memory_statistics_have_authority": false,
+    "state_to_gross_translation_eligible": false
+  },
+  "recovery_and_authority": {
+    "marker_only_recovery_eligible": false,
+    "automatic_recompute_allowed": false,
+    "same_id_rerun_allowed": false,
+    "same_id_retuning_allowed": false,
+    "same_id_rescue_allowed": false,
+    "same_id_schema_relaxation_allowed": false,
+    "same_id_nonfinite_lcb_repair_allowed": false,
+    "corrected_replication_requires_new_research_id": true,
+    "new_id_must_treat_0060_attempt_as_exposed_development_evidence": true,
+    "canonical_strategy_changed": false,
+    "phase6_changed": false,
+    "production_authorized": false,
+    "signature_authorized": false,
+    "order_submission_authorized": false
+  },
+  "closeout_process": {
+    "market_content_read": false,
+    "scientific_engine_called": false,
+    "scientific_remeasurement": false,
+    "historical_targets_recomputed": false,
+    "association_recomputed": false,
+    "bootstrap_recomputed": false,
+    "attempt_marker_imported_byte_for_byte_from_result_branch": true
+  },
+  "interpretation": "0060 is INVALID_EXECUTION / CLOSED with no scientific conclusion. The single authorized historical engine call occurred after the durable attempt marker, but its returned measurement failed the frozen result-schema contract because terminal_loss_20 simultaneous LCB was nonfinite. No PRIMARY_RESULT.json, EXECUTION.json or RUN_ONCE.marker was persisted. The in-memory measurement cannot be reconstructed or promoted; same-ID recomputation, rerun, retuning, schema relaxation and rescue are permanently forbidden."
+}

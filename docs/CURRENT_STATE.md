@@ -2,8 +2,8 @@
 
 Last updated: **2026-08-13**  
 Authoritative repository: `alexwang91/laugh-to-2028`  
-Current `main` research merge: **`7bb4883aa176f421199173b56d9753f447afe851`**  
-Current research branch: **`research/0060-btc-cash-absolute-risk-diagnostic-controlled-boundary`**  
+Current `main` research merge: **`fe210187472c2bcdfb51573b4cc544c187ade079`**  
+Current research branch: **`research/0060-btc-cash-absolute-risk-diagnostic-closeout`**  
 Status of this document: **AUTHORITATIVE OPERATING SNAPSHOT**
 
 > GitHub `main`, immutable research artifacts and machine registries remain the sources of truth. This file is the compact human handoff, not a substitute for preregistration, execution, evidence, recovery or closeout artifacts.
@@ -43,7 +43,7 @@ BRRK simple ETH/SOL Beta router 0056  INVALID_EXECUTION / CLOSED / NO ECONOMIC C
 BRRK Beta router interface replication 0057 FAIL_SIMPLE_BETA_ROUTER_COST_FRAGILE / CLOSED
 BRRK Beta->BTC parameter geometry 0058     FAIL_NO_STABLE_PARAMETER_PLATEAU / CLOSED
 BRRK Beta deterioration/BTC takeover 0059 FAIL_NO_MONOTONE_CONTINUATION_INFORMATION / CLOSED
-BRRK BTC->Cash absolute risk 0060     CONTROLLED-EXECUTION BOUNDARY / ZERO RESULT / NOT RUN
+BRRK BTC->Cash absolute risk 0060     INVALID_EXECUTION / CLOSED / NO SCIENTIFIC CONCLUSION
 
 Canonical BRRK-0011                    NO CHANGE
 Phase 7                                MONITOR_ONLY / LAUNCH BLOCKED
@@ -1196,3 +1196,42 @@ order_submission_authorized            false
 ```
 
 After this boundary merges, the exact merged boundary HEAD is eligible for exactly one DEVELOPMENT historical execution. Once `RUN_ATTEMPT.marker` is durably pushed, no same-ID rerun/recompute/retune/rescue is available.
+
+
+---
+
+## 0060 immutable INVALID_EXECUTION closeout
+
+`BRRK-BTC-CASH-ABSOLUTE-RISK-DIAGNOSTIC-0060` is permanently **`INVALID_EXECUTION / CLOSED / NO SCIENTIFIC CONCLUSION`**.
+
+```text
+scientific execution HEAD              fe210187472c2bcdfb51573b4cc544c187ade079
+GitHub Actions run / job               31688388675 / 94409763730
+result branch head                     2a324685754d1ab577de2f77e7f45c93fb8e27b5
+durable attempt marker                 PRESENT / byte-for-byte preserved
+primary result                         ABSENT / never persisted
+execution receipt                      ABSENT / never persisted
+final marker                           ABSENT / never persisted
+market content reads                   1
+source-loader calls                    1
+scientific-engine calls                1
+actual variants evaluated              1
+binding error                          lcb.terminal_loss_20 must be finite numeric
+marker-only recovery eligible          false
+same-ID rerun / retune / rescue        false / false / false
+scientific conclusion                  NONE
+state-to-gross translation eligible    false
+```
+
+The unique measurement returned to the controlled runner, but the frozen schema rejected it before persistence because one simultaneous-LCB field was nonfinite. Since the durable attempt marker already existed, the result cannot be recomputed, rescued, schema-relaxed or reconstructed from exposed history. The absence of a persisted lossless result means 0060 provides neither evidence for nor evidence against the BTC absolute-risk hypothesis.
+
+Any corrected execution requires a **new research ID** and must explicitly treat the 0060 attempt/failure as exposed DEVELOPMENT history. No favorable or unfavorable 0060 statistic may be inferred from the failed in-memory measurement.
+
+```text
+Canonical BRRK-0011                    NO CHANGE
+Phase 6                                NO CHANGE
+production_authorized_components       []
+production_authorized                  false
+signature_authorized                   false
+order_submission_authorized            false
+```
