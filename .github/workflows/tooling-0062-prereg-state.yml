@@ -1,0 +1,40 @@
+name: Tooling 0062 prereg current-state only
+
+on:
+  push:
+    branches:
+      - tools/0062-prereg-state-v1
+    paths:
+      - '.github/workflows/tooling-0062-prereg-state.yml'
+      - 'tools/patch_0062_prereg_current_state.py'
+
+permissions:
+  contents: write
+
+jobs:
+  patch-state:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/0062-prereg-v1
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Configure git
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+      - name: Apply fixed doc-only patch
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "1af234f9f369c504dca3789040935fd2ae0fce30"
+          git show origin/tools/0062-prereg-state-v1:tools/patch_0062_prereg_current_state.py > /tmp/patch_state.py
+          python /tmp/patch_state.py
+          test "$(git diff --name-only)" = "docs/CURRENT_STATE.md"
+          grep -q 'BRRK BTC risk signal atlas 0062        PREREGISTERED / IMPLEMENTATION ABSENT / NOT RUN' docs/CURRENT_STATE.md
+          grep -q 'actual variants evaluated               0' docs/CURRENT_STATE.md
+          grep -q 'RUN_ATTEMPT.marker                      ABSENT' docs/CURRENT_STATE.md
+          git add docs/CURRENT_STATE.md
+          test "$(git diff --cached --name-only)" = "docs/CURRENT_STATE.md"
+          git commit -m 'docs: hand off 0062 preregistration state'
+          git push origin HEAD:research/0062-prereg-v1
