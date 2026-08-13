@@ -20,5 +20,5 @@ jobs:
           python-version: '3.11'
       - name: Install runtime
         run: pip install 'numpy==1.26.4' 'pandas==2.2.2' 'pytest==8.3.2'
-      - name: Run synthetic contracts
-        run: pytest -q research/brrk_btc_cash_absolute_risk_diagnostic_0060/test_engine.py research/brrk_btc_cash_absolute_risk_measurement_replication_0061/test_engine.py
+      - name: Run synthetic tests
+        run: pytest -q --import-mode=importlib research/brrk_btc_cash_absolute_risk_diagnostic_0060/test_engine.py research/brrk_btc_cash_absolute_risk_measurement_replication_0061/test_engine.py
