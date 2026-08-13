@@ -3939,7 +3939,7 @@
       "validation_dataset_refs": [],
       "sealed_dataset_refs": [],
       "declared_variant_budget": 1,
-      "actual_variants_evaluated": 0,
+      "actual_variants_evaluated": 1,
       "parameter_candidate_count": 1,
       "stopping_rule": "After preregistration merge, implement exactly one frozen 0060 mechanism diagnostic using synthetic/toy/contract tests only. After a separately merged controlled-execution boundary, execute exactly one DEVELOPMENT historical measurement. Any valid result closes 0060 to same-ID rerun, feature/horizon/target/support/bootstrap change or rescue; durable RUN_ATTEMPT removes automatic recomputation authority.",
       "success_criteria": [
@@ -3995,7 +3995,9 @@
           "TEMPORAL=FOUR_EQUAL_REQUIRE3_ALL_EIGHT_POSITIVE",
           "BOOTSTRAP=NONCIRCULAR_MBB240_X10000_SEED1844716895_SIMULTANEOUS95_LCB"
         ],
-        "actual_parameter_candidates_evaluated": [],
+        "actual_parameter_candidates_evaluated": [
+          "ONE_FIXED_STATE=A1_A2_A3_EQUAL_WEIGHT / UNIQUE_EXECUTION_ATTEMPT_INVALID_BEFORE_RESULT_PERSISTENCE"
+        ],
         "universes_evaluated": [
           "BINANCE_SPOT_BTC_ONLY_FROM_FROZEN_BTC_ETH_SOL_WRAPPER"
         ],
@@ -4027,17 +4029,21 @@
           "evidence_ref": "research/brrk_exhaustion_state_0044/CLOSEOUT.json"
         }
       ],
-      "result_status": "PREREGISTERED_NOT_RUN",
-      "failure_reason": null,
-      "promotion_state": "NONE",
-      "evidence_refs": [],
+      "result_status": "INVALID_EXECUTION",
+      "failure_reason": "NONFINITE_SIMULTANEOUS_LCB_TERMINAL_LOSS_20_BEFORE_PRIMARY_RESULT_PERSISTENCE",
+      "promotion_state": "NO_PROMOTION",
+      "evidence_refs": [
+        "research/brrk_btc_cash_absolute_risk_diagnostic_0060/RUN_ATTEMPT.marker",
+        "research/brrk_btc_cash_absolute_risk_diagnostic_0060/CLOSEOUT.json"
+      ],
       "decision_refs": [
         "research/governance/BRRK_BTC_CASH_ABSOLUTE_RISK_DIAGNOSTIC_0060_DESIGN_FREEZE_2026-08-13.md",
         "research/brrk_btc_cash_absolute_risk_diagnostic_0060/PREREGISTRATION.json",
         "research/brrk_btc_cash_absolute_risk_diagnostic_0060/DATASET_DECLARATION.json",
-        "docs/CURRENT_STATE.md"
+        "docs/CURRENT_STATE.md",
+        "research/brrk_btc_cash_absolute_risk_diagnostic_0060/CLOSEOUT.json"
       ],
-      "production_relevance": "Research-only DEVELOPMENT BTC absolute-risk information diagnostic. PASS can only make a later new-ID BTC-to-Cash state-to-gross translation study eligible; it cannot modify canonical BRRK, Phase 6 or production authority.",
+      "production_relevance": "INVALID DEVELOPMENT execution; no BTC absolute-risk mechanism conclusion and no state-to-gross translation authority. Any corrected replication requires a new research ID. Canonical BRRK, Phase 6 and production authority unchanged.",
       "production_authorized": false,
       "provenance_status": "FACT",
       "governed_path_prefixes": [
@@ -4046,8 +4052,19 @@
       "notes": [
         "0060 is DEVELOPMENT-only on researcher-exposed history and makes no independent-OOS claim.",
         "No 0060 historical target/statistic may be computed before preregistration, implementation-only and controlled-execution boundary are separately merged.",
-        "No BTC/Cash gross map or portfolio economics exist under 0060."
-      ]
+        "No BTC/Cash gross map or portfolio economics exist under 0060.",
+        "Unique historical attempt run 31688388675 crossed durable RUN_ATTEMPT then failed frozen result-schema validation before PRIMARY_RESULT/EXECUTION persistence because terminal_loss_20 simultaneous LCB was nonfinite.",
+        "The unique scientific engine call counts as actual_variants_evaluated=1, but no scientific statistic has persistence or conclusion authority.",
+        "Marker-only recovery is ineligible because PRIMARY_RESULT.json and EXECUTION.json were never persisted; no same-ID recomputation/rerun/retune/rescue is permitted."
+      ],
+      "evidence_scorecard": {
+        "temporal_novelty": "RESEARCHER_EXPOSED_DEVELOPMENT_HISTORY / NOT INDEPENDENT OOS; the unique 0060 attempt used history already available to the research program.",
+        "statistical_sufficiency": "UNAVAILABLE_DUE_INVALID_EXECUTION_BEFORE_RESULT_PERSISTENCE; no lossless origin panel, valid G1-G4 result, rho vector or simultaneous LCB vector was persisted, so no statistical conclusion is authorized.",
+        "governance_integrity": "EXACTLY_ONCE_BOUNDARY_PRESERVED; durable RUN_ATTEMPT consumed the single execution, frozen schema rejected the nonfinite field, attempt-only evidence was preserved, and closeout performed no recomputation or schema relaxation.",
+        "operational_realism": "NOT_EVALUATED; 0060 is a mechanism-information diagnostic only and contains no BTC/Cash threshold, gross map, transaction-cost economics, execution strategy or production behavior.",
+        "derived_confidence": "UNKNOWN",
+        "confidence_rule_ref": "research/brrk_btc_cash_absolute_risk_diagnostic_0060/CLOSEOUT.json"
+      }
     }
   ],
   "research_governance_debt": [
