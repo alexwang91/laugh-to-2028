@@ -1,0 +1,131 @@
+{
+  "schema_version": 1,
+  "research_id": "BRRK-BTC-CASH-ABSOLUTE-RISK-MEASUREMENT-REPLICATION-0061",
+  "status": "FAIL_NO_JOINT_DOWNSIDE_INFORMATION_CLOSED",
+  "final_classification": "FAIL_NO_JOINT_DOWNSIDE_INFORMATION",
+  "closed": true,
+  "development_not_independent_oos": true,
+  "researcher_exposed_history": true,
+  "scientific_head_sha": "eb55377744cf063c38f34c68f0c17541b9325aaa",
+  "result_branch": "docs/0061-result-v1",
+  "result_branch_head_sha": "dc909d9db8a9acc1af85654fb2ae65eb5921806f",
+  "execution_identity": {
+    "github_actions_run": 31717797348,
+    "github_actions_job": 94506823887,
+    "trigger_head_sha": "ad4b15cee5fc51d0380bf440a55990eab66db740",
+    "runtime_artifact_id": 9188002731,
+    "runtime_artifact_name": "brrk-0061-runtime-bundle",
+    "runtime_artifact_digest": "sha256:30a2307762ca35c1c3495c3d47afc77563bd3effc98cc5034f6bed81771eebbf",
+    "attempt_started_at_utc": "2026-08-13T15:53:26Z",
+    "measurement_completed_at_utc": "2026-08-13T15:53:29Z",
+    "finalized_at_utc": "2026-08-13T15:53:32Z",
+    "workflow_conclusion": "success"
+  },
+  "runtime_persistence": {
+    "run_attempt_persisted": true,
+    "run_attempt_git_blob_sha": "bcdb324df0775f1f11857b8f684aa6c4547340dc",
+    "run_attempt_sha256": "205e95a36216bac8359c91e9fa8456ea8c9b18890ef60501799868d7f3e0c361",
+    "primary_result_persisted": true,
+    "primary_result_git_blob_sha": "834c7cd7f486a5557b62e9e4f0d394c4ad266892",
+    "primary_result_sha256": "02d95a24e7e736fe1c09693c1c4005f2d72704ae6d26e73a7dbd926de9477aac",
+    "execution_receipt_persisted": true,
+    "execution_git_blob_sha": "642f165bd2424e8c72a9dde079d4a5426eeca101",
+    "execution_sha256": "d4999a22a8ba1bd0e5fbd71fc86789ef2dfd85e8f520f8aa5a8c199c7829d0a9",
+    "final_marker_persisted": true,
+    "final_marker_git_blob_sha": "3c3e73f902eecd30373767479bc6292cca0de945",
+    "result_branch_diff_from_scientific_head": [
+      "research/brrk_btc_cash_absolute_risk_measurement_replication_0061/RUN_ATTEMPT.marker",
+      "research/brrk_btc_cash_absolute_risk_measurement_replication_0061/PRIMARY_RESULT.json",
+      "research/brrk_btc_cash_absolute_risk_measurement_replication_0061/EXECUTION.json",
+      "research/brrk_btc_cash_absolute_risk_measurement_replication_0061/RUN_ONCE.marker"
+    ]
+  },
+  "unique_attempt_accounting": {
+    "market_content_reads": 1,
+    "source_loader_calls": 1,
+    "scientific_engine_calls": 1,
+    "actual_variants_evaluated": 1,
+    "primary_result_validation_passed": true,
+    "primary_result_written": true,
+    "execution_receipt_written": true,
+    "finalization_reached": true
+  },
+  "scientific_result": {
+    "classification": "FAIL_NO_JOINT_DOWNSIDE_INFORMATION",
+    "G0": true,
+    "G1": true,
+    "G2": false,
+    "G3": null,
+    "G4": null,
+    "binding_gate": "G2_FULL_SAMPLE_INFORMATION",
+    "shared_origin_count": 1635,
+    "shared_origin_start": "2021-06-06",
+    "shared_origin_end": "2025-12-05",
+    "full_sample_rho_by_target": {
+      "terminal_loss_20": 0.05318852972334924,
+      "terminal_loss_60": -0.09113181042610367,
+      "terminal_loss_120": -0.07443945514577321,
+      "terminal_loss_240": -0.08618768683210337,
+      "adverse_excursion_20": 0.07584870086583011,
+      "adverse_excursion_60": 0.010092197303962156,
+      "adverse_excursion_120": -0.03613042354623886,
+      "adverse_excursion_240": -0.10627939944899867
+    },
+    "downstream_not_evaluated_reason": "G3_G4_NOT_EVALUATED_DUE_TO_G2_NO_JOINT_DOWNSIDE_INFORMATION",
+    "temporal_result_available": false,
+    "fixed_score_dependence_result_available": false,
+    "bootstrap_result_available": false,
+    "simultaneous_lcb_available": false,
+    "lossless_origin_panel_persisted": true,
+    "state_to_gross_translation_eligible": false
+  },
+  "descriptive_diagnostics_no_selection_authority": {
+    "axis_effective_rank": 2.3171074414232784,
+    "terminal_positive_rate_by_horizon": {
+      "20": 0.4813455657492355,
+      "60": 0.46422018348623856,
+      "120": 0.45137614678899085,
+      "240": 0.3333333333333333
+    },
+    "axis_component_selection_allowed": false,
+    "axis_reweighting_allowed": false,
+    "favorable_horizon_selection_allowed": false
+  },
+  "binding_failure": {
+    "stage": "G2_FULL_SAMPLE_INFORMATION",
+    "reason_code": "NOT_ALL_EIGHT_CO_PRIMARY_FULL_SAMPLE_SPEARMAN_ASSOCIATIONS_STRICTLY_POSITIVE",
+    "explanation": "The unchanged 0060 equal-weight BTC absolute-risk state failed the preregistered all-eight monotonicity requirement. Terminal-loss associations were negative at 60, 120 and 240 days; adverse-excursion associations were negative at 120 and 240 days. G3 and G4 were therefore correctly not evaluated under the preregistered short-circuit contract.",
+    "measurement_interface_failure_established": false,
+    "protocol_failure_established": false,
+    "mechanism_information_stage_pass_established": false
+  },
+  "recovery_and_authority": {
+    "automatic_recompute_allowed": false,
+    "same_id_rerun_allowed": false,
+    "same_id_retuning_allowed": false,
+    "same_id_rescue_allowed": false,
+    "same_id_feature_pruning_or_reweighting_allowed": false,
+    "same_id_horizon_or_target_selection_allowed": false,
+    "same_id_bootstrap_or_gate_change_allowed": false,
+    "state_to_gross_translation_eligible": false,
+    "signed_btc_vs_cash_target_requires_new_research_id": true,
+    "volatility_feedback_requires_new_research_id": true,
+    "drawdown_feedback_requires_new_research_id": true,
+    "change_detection_requires_new_research_id": true,
+    "canonical_strategy_changed": false,
+    "phase6_changed": false,
+    "production_authorized": false,
+    "signature_authorized": false,
+    "order_submission_authorized": false
+  },
+  "closeout_process": {
+    "market_content_read": false,
+    "scientific_engine_called": false,
+    "scientific_remeasurement": false,
+    "historical_targets_recomputed": false,
+    "association_recomputed": false,
+    "bootstrap_recomputed": false,
+    "runtime_artifacts_imported_byte_for_byte_from_result_branch": true
+  },
+  "interpretation": "0061 validly resolves the unchanged 0060 clipped-downside information question as FAIL_NO_JOINT_DOWNSIDE_INFORMATION. The measurement/persistence architecture no longer invalidated the study: one valid lossless result was durably persisted and finalized. The binding scientific failure occurred earlier at G2, because the unchanged equal-weight A1/A2/A3 BTC absolute-risk state did not rank both terminal loss and adverse excursion positively across all required 20/60/120/240-day horizons. The favorable 20-day cells, the positive adverse-excursion 60-day cell, and descriptive A1/A2/A3 diagnostics have no selection, pruning, reweighting or rescue authority. G3 and fixed-score G4 were not eligible and must not be reconstructed after closeout. This result closes the specific 0061 state/target mechanism line; it does not test or reject scientifically distinct signed BTC-vs-Cash targets or non-predictive volatility/drawdown/change-detection feedback controllers, which would require new research IDs."
+}
