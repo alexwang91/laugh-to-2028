@@ -1,129 +1,36 @@
-name: TEMP 0061 exactly-once execution
+name: TEMP 0061 closeout registry
 on:
   push:
     branches: [docs/0061-prereg-tooling]
 permissions:
   contents: write
 jobs:
-  execute-once:
+  closeout:
     runs-on: ubuntu-latest
-    env:
-      PYTHONPATH: .
-      SCI_HEAD: eb55377744cf063c38f34c68f0c17541b9325aaa
-      RESULT_BRANCH: docs/0061-result-v1
-      MARKET: research/brrk_beta_handoff_0047/evidence/MARKET_EVIDENCE.json
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: eb55377744cf063c38f34c68f0c17541b9325aaa
+          ref: docs/0061-closeout-tooling
           fetch-depth: 0
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-      - name: Install frozen execution runtime
-        run: pip install 'numpy==1.26.4' 'pandas==2.2.2' 'requests==2.32.3' scipy
-      - name: Exact-head and pristine-result preflight
-        shell: bash
+      - shell: bash
         run: |
-          set -euo pipefail
-          test "$(git rev-parse HEAD)" = "$SCI_HEAD"
-          git fetch origin main "$RESULT_BRANCH"
-          test "$(git rev-parse origin/main)" = "$SCI_HEAD"
-          test "$(git rev-parse origin/$RESULT_BRANCH)" = "$SCI_HEAD"
-          D=/tmp/0061-runtime
-          rm -rf "$D" /tmp/0061-result-wt
-          mkdir -p "$D"
-          python -m research.brrk_btc_cash_absolute_risk_measurement_replication_0061.run_once preflight \
-            --expected-head-sha "$SCI_HEAD" --market "$MARKET" \
-            --attempt "$D/RUN_ATTEMPT.marker" --result "$D/PRIMARY_RESULT.json" \
-            --execution "$D/EXECUTION.json" --marker "$D/RUN_ONCE.marker"
-      - name: Create attempt locally without market read
-        shell: bash
-        run: |
-          set -euo pipefail
-          D=/tmp/0061-runtime
-          python -m research.brrk_btc_cash_absolute_risk_measurement_replication_0061.run_once start-attempt \
-            --expected-head-sha "$SCI_HEAD" --market "$MARKET" \
-            --attempt "$D/RUN_ATTEMPT.marker" --result "$D/PRIMARY_RESULT.json" \
-            --execution "$D/EXECUTION.json" --marker "$D/RUN_ONCE.marker"
-          test -s "$D/RUN_ATTEMPT.marker"
-          test ! -e "$D/PRIMARY_RESULT.json"
-      - name: Durably persist irreversible attempt marker
-        shell: bash
-        run: |
-          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('config/research_registry.json'); d=json.loads(p.read_text())
+          r=next(x for x in d['records'] if x.get('research_id')=='BRRK-BTC-CASH-ABSOLUTE-RISK-MEASUREMENT-REPLICATION-0061')
+          r['actual_variants_evaluated']=1; r['research_process_complexity']['actual_parameter_candidates_evaluated']=1
+          r['result_status']='FAIL_NO_JOINT_DOWNSIDE_INFORMATION'; r['promotion_state']='NO_PROMOTION'
+          r['failure_reason']='G2 failed: 5 of 8 co-primary full-sample Spearman associations were not strictly positive; G3/G4 were not evaluated by preregistered short-circuit.'
+          r['evidence_refs']=['run:31717797348','research/brrk_btc_cash_absolute_risk_measurement_replication_0061/PRIMARY_RESULT.json','research/brrk_btc_cash_absolute_risk_measurement_replication_0061/EXECUTION.json','research/brrk_btc_cash_absolute_risk_measurement_replication_0061/RUN_ONCE.marker','research/brrk_btc_cash_absolute_risk_measurement_replication_0061/CLOSEOUT.json']
+          c='research/brrk_btc_cash_absolute_risk_measurement_replication_0061/CLOSEOUT.json'
+          if c not in r['decision_refs']: r['decision_refs'].append(c)
+          r['production_relevance']='DEVELOPMENT mechanism-information failure; no state-to-gross, canonical, Phase 6 or production authority.'
+          r['evidence_scorecard']={'temporal_novelty':'RESEARCHER_EXPOSED_DEVELOPMENT_NOT_INDEPENDENT_OOS','statistical_sufficiency':'G1_SUPPORT_PASS_1635_ORIGINS_BUT_G2_JOINT_DOWNSIDE_INFORMATION_FAIL','governance_integrity':'HIGH_EXACTLY_ONCE_HASH_BOUND_FINALIZED_WITHOUT_MARKET_READ_OR_REMEASUREMENT','operational_realism':'CAUSAL_DAILY_BTC_ABSOLUTE_RISK_INFORMATION_DIAGNOSTIC_NO_STRATEGY_ECONOMICS','derived_confidence':'HIGH_FOR_FROZEN_DEVELOPMENT_G2_FAILURE','confidence_rule_ref':c}
+          p.write_text(json.dumps(d,indent=2)+'\n')
+          PY
           git config user.name github-actions
           git config user.email github-actions@github.com
-          git worktree add -b result-ledger /tmp/0061-result-wt "origin/$RESULT_BRANCH"
-          P=/tmp/0061-result-wt/research/brrk_btc_cash_absolute_risk_measurement_replication_0061
-          cp /tmp/0061-runtime/RUN_ATTEMPT.marker "$P/RUN_ATTEMPT.marker"
-          cd /tmp/0061-result-wt
-          git add research/brrk_btc_cash_absolute_risk_measurement_replication_0061/RUN_ATTEMPT.marker
-          git commit -m '0061 runtime: durable attempt marker'
-          git push origin HEAD:"$RESULT_BRANCH"
-          git fetch origin "$RESULT_BRANCH"
-          test "$(git rev-parse HEAD)" = "$(git rev-parse origin/$RESULT_BRANCH)"
-          git show "origin/$RESULT_BRANCH:research/brrk_btc_cash_absolute_risk_measurement_replication_0061/RUN_ATTEMPT.marker" >/dev/null
-          echo DURABLE_RUN_ATTEMPT_MARKER=true
-      - name: Unique historical measurement
-        shell: bash
-        run: |
-          set -euo pipefail
-          test "$(git rev-parse HEAD)" = "$SCI_HEAD"
-          D=/tmp/0061-runtime
-          python -m research.brrk_btc_cash_absolute_risk_measurement_replication_0061.run_once evaluate \
-            --expected-head-sha "$SCI_HEAD" --market "$MARKET" \
-            --attempt "$D/RUN_ATTEMPT.marker" --result "$D/PRIMARY_RESULT.json" \
-            --execution "$D/EXECUTION.json" --marker "$D/RUN_ONCE.marker"
-          test -s "$D/PRIMARY_RESULT.json"
-          test -s "$D/EXECUTION.json"
-      - name: Durably persist result and execution receipt
-        shell: bash
-        run: |
-          set -euo pipefail
-          P=/tmp/0061-result-wt/research/brrk_btc_cash_absolute_risk_measurement_replication_0061
-          cp /tmp/0061-runtime/PRIMARY_RESULT.json "$P/PRIMARY_RESULT.json"
-          cp /tmp/0061-runtime/EXECUTION.json "$P/EXECUTION.json"
-          cd /tmp/0061-result-wt
-          git add research/brrk_btc_cash_absolute_risk_measurement_replication_0061/PRIMARY_RESULT.json research/brrk_btc_cash_absolute_risk_measurement_replication_0061/EXECUTION.json
-          git commit -m '0061 runtime: persist unique measurement'
-          git push origin HEAD:"$RESULT_BRANCH"
-      - name: Hash-only finalization without remeasurement
-        shell: bash
-        run: |
-          set -euo pipefail
-          D=/tmp/0061-runtime
-          python -m research.brrk_btc_cash_absolute_risk_measurement_replication_0061.run_once finalize \
-            --expected-head-sha "$SCI_HEAD" --market "$MARKET" \
-            --attempt "$D/RUN_ATTEMPT.marker" --result "$D/PRIMARY_RESULT.json" \
-            --execution "$D/EXECUTION.json" --marker "$D/RUN_ONCE.marker"
-          test -s "$D/RUN_ONCE.marker"
-      - name: Durably persist final marker
-        shell: bash
-        run: |
-          set -euo pipefail
-          P=/tmp/0061-result-wt/research/brrk_btc_cash_absolute_risk_measurement_replication_0061
-          cp /tmp/0061-runtime/RUN_ONCE.marker "$P/RUN_ONCE.marker"
-          cd /tmp/0061-result-wt
-          git add research/brrk_btc_cash_absolute_risk_measurement_replication_0061/RUN_ONCE.marker
-          git commit -m '0061 runtime: finalize exactly-once measurement'
-          git push origin HEAD:"$RESULT_BRANCH"
-          git fetch origin "$RESULT_BRANCH"
-          test "$(git rev-parse HEAD)" = "$(git rev-parse origin/$RESULT_BRANCH)"
-      - name: Stage runtime bundle
-        if: always()
-        shell: bash
-        run: |
-          mkdir -p /tmp/0061-bundle
-          cp -f /tmp/0061-runtime/* /tmp/0061-bundle/ 2>/dev/null || true
-          printf '%s\n' "$SCI_HEAD" > /tmp/0061-bundle/SCIENTIFIC_HEAD.txt
-          git rev-parse HEAD > /tmp/0061-bundle/WORKTREE_HEAD.txt || true
-          git ls-remote origin "refs/heads/$RESULT_BRANCH" > /tmp/0061-bundle/RESULT_BRANCH_HEAD.txt || true
-          sha256sum /tmp/0061-bundle/* > /tmp/0061-bundle/SHA256SUMS.txt || true
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: brrk-0061-runtime-bundle
-          path: /tmp/0061-bundle
-          if-no-files-found: error
-          retention-days: 90
+          git add config/research_registry.json
+          git commit -m 'docs: register 0061 immutable G2 failure'
+          git push origin HEAD:docs/0061-closeout-tooling
