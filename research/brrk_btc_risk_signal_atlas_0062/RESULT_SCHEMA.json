@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "research_id": "BRRK-BTC-RISK-SIGNAL-ATLAS-0062",
+  "classification_enum": [
+    "PASS_SIGNAL_ATLAS_FAMILY_INFORMATION",
+    "FAIL_NO_SIGNAL_ATLAS_FAMILY_INFORMATION",
+    "MEASUREMENT_INCONCLUSIVE_INSUFFICIENT_SUPPORT"
+  ],
+  "required_primary_keys": [
+    "schema_version", "research_id", "candidate_cell_count", "family_count",
+    "family_track_hypothesis_count", "common_origin_count", "common_origin_start",
+    "common_origin_end", "chronological_block_sizes", "gates", "family_tracks",
+    "data_unavailable", "classification"
+  ],
+  "required_evidence_keys": [
+    "common_origins", "block_ids", "family_scores", "target_values",
+    "cell_target_associations", "family_target_associations"
+  ],
+  "required_track_keys_after_g1_pass": [
+    "family", "targets", "full_sample_rhos", "observed_track_min",
+    "G2_full_sample_sign", "positive_blocks", "G3_temporal_recurrence",
+    "favorable_cell_fraction", "representation_favorable_fractions",
+    "G4_parameter_plateau", "simultaneous_lcb", "G5_simultaneous_lcb",
+    "passes_all_information_gates"
+  ],
+  "fixed_counts": {
+    "candidate_cell_count": 185,
+    "family_count": 17,
+    "family_track_hypothesis_count": 34,
+    "minimum_common_origins": 1200,
+    "minimum_per_block": 250,
+    "chronological_blocks": 4,
+    "bootstrap_replicates": 4000,
+    "bootstrap_seed": 620062,
+    "bootstrap_block_length": 60
+  },
+  "required_data_unavailable": {
+    "F15_DERIVATIVES_LEVERAGE_CROWDING": "DATA_UNAVAILABLE",
+    "F16_OPTIONS_IMPLIED_RISK": "DATA_UNAVAILABLE",
+    "F17_ONCHAIN_HOLDER_STATE": "DATA_UNAVAILABLE",
+    "F18_CRYPTO_LIQUIDITY_STABLECOIN_DEPTH": "DATA_UNAVAILABLE",
+    "F19_CROSS_ASSET_MACRO": "DATA_UNAVAILABLE",
+    "F20_SENTIMENT_ATTENTION_FLOW": "DATA_UNAVAILABLE",
+    "F22_LATENT_REGIME_STATE_SPACE": "NOT_EVALUATED"
+  },
+  "execution_required_keys": [
+    "research_id", "scientific_head_sha", "attempt_started_at", "measurement_completed_at",
+    "dataset_slice_ref", "payload_sha256", "market_wrapper_git_blob_sha",
+    "source_loader_git_blob_sha", "scientific_engine_git_blob_sha",
+    "run_interface_git_blob_sha", "result_schema_git_blob_sha",
+    "attempt_sha256", "primary_result_sha256", "evidence_sha256",
+    "market_content_reads", "source_loader_calls", "scientific_engine_calls",
+    "historical_execution_attempts", "actual_variants_evaluated",
+    "production_authorized", "signature_authorized", "order_submission_authorized",
+    "same_id_rerun_allowed", "same_id_retuning_allowed", "same_id_rescue_allowed"
+  ],
+  "final_marker_required_keys": [
+    "research_id", "scientific_head_sha", "attempt_sha256", "primary_result_sha256",
+    "evidence_sha256", "execution_sha256", "finalized_at", "status",
+    "market_content_read_during_finalize", "scientific_remeasurement_during_finalize",
+    "same_id_rerun_allowed", "same_id_retuning_allowed", "same_id_rescue_allowed"
+  ]
+}
