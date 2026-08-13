@@ -2,8 +2,8 @@
 
 Last updated: **2026-08-13**  
 Authoritative repository: `alexwang91/laugh-to-2028`  
-Current `main` research merge: **`3bbe0d236f5e88abb6b60a701a12d78a3e925e45`**  
-Current research branch: **`research/0059-beta-deterioration-btc-takeover-diagnostic-closeout`**  
+Current `main` research merge: **`f79f5c6b19b1e0e01647fdac2923f5943ff80bf1`**  
+Current research branch: **`research/0060-btc-cash-absolute-risk-diagnostic-design`**  
 Status of this document: **AUTHORITATIVE OPERATING SNAPSHOT**
 
 > GitHub `main`, immutable research artifacts and machine registries remain the sources of truth. This file is the compact human handoff, not a substitute for preregistration, execution, evidence, recovery or closeout artifacts.
@@ -43,6 +43,7 @@ BRRK simple ETH/SOL Beta router 0056  INVALID_EXECUTION / CLOSED / NO ECONOMIC C
 BRRK Beta router interface replication 0057 FAIL_SIMPLE_BETA_ROUTER_COST_FRAGILE / CLOSED
 BRRK Beta->BTC parameter geometry 0058     FAIL_NO_STABLE_PARAMETER_PLATEAU / CLOSED
 BRRK Beta deterioration/BTC takeover 0059 FAIL_NO_MONOTONE_CONTINUATION_INFORMATION / CLOSED
+BRRK BTC->Cash absolute risk 0060     DESIGN FROZEN / PREREG ABSENT / NOT RUN
 
 Canonical BRRK-0011                    NO CHANGE
 Phase 7                                MONITOR_ONLY / LAUNCH BLOCKED
@@ -447,7 +448,6 @@ predictive metrics                        FORBIDDEN / NONE
 portfolio economics                       FORBIDDEN / NONE
 production authority                      NO CHANGE
 ```
-
 After this boundary merges fully green, the only permitted scientific action is the staged unique measurement: exact-head preflight -> durably persist attempt marker -> evaluate once -> durably persist method result/execution -> finalize marker without remeasurement. No execution is authorized before this boundary merges.
 
 
@@ -1072,3 +1072,43 @@ production_authorized                  false
 signature_authorized                   false
 order_submission_authorized            false
 ```
+
+---
+
+## 0060 BTC-to-Cash absolute-risk diagnostic design handoff
+
+`BRRK-BTC-CASH-ABSOLUTE-RISK-DIAGNOSTIC-0060` is the active **DESIGN-ONLY** successor after immutable 0059 closure.
+
+```text
+research ID                            BRRK-BTC-CASH-ABSOLUTE-RISK-DIAGNOSTIC-0060
+research family                        BRRK_BTC_TO_CASH_GROSS_RISK
+objective                              MECHANISM_TEST / STAGE_1_INFORMATION_TEST
+design branch                          research/0060-btc-cash-absolute-risk-diagnostic-design
+design authority commit                f1c5f299dc5edc2fe21e89201c80206ebdee1f47
+design freeze                           research/governance/BRRK_BTC_CASH_ABSOLUTE_RISK_DIAGNOSTIC_0060_DESIGN_FREEZE_2026-08-13.md
+stage                                   DESIGN FROZEN / PREREG ABSENT / NOT IMPLEMENTED / NOT RUN
+registry owner                          ABSENT UNTIL POST-DESIGN PREREGISTRATION
+historical 0060 outcomes                NOT COMPUTED
+BTC/Cash gross map                      FORBIDDEN UNDER 0060
+```
+
+0060 is scientifically distinct from 0059. It does not test Beta deterioration relative to BTC; it tests whether a **BTC-only absolute-risk state** contains recurrent information about future BTC downside severity and cash-relative terminal underperformance. The design explicitly preserves 0059's closed negative result and forbids promotion of its exposed 20-day statistic or any D1/D2/D3 rescue.
+
+The sole candidate state is low-dimensional and BTC-only. Its three equal-weight causal structure families are fast/slow trend disagreement and persistence, price-structure deterioration, and volatility/downside asymmetry. No ETH/SOL/Beta, 4h, on-chain, stablecoin, macro, derivatives, ML/HMM or feature tournament is opened under 0060.
+
+The later numerical preregistration must prospectively freeze both **terminal BTC loss versus Cash** and **pathwise adverse excursion** semantics. No historical target, statistic or plot may be observed before those numerical/data/inference contracts are frozen and merged.
+
+0060 is not a gross-map search. It defines no BTC/Cash threshold, re-entry rule, hysteresis, holding period, cooldown, 100/0 or partial-gross allocation, strategy NAV, CAGR, MDD, Calmar, turnover or transaction-cost economics. Exposure-Smooth 0038 and P5.4/P5.5 remain binding prior evidence against disguised state-to-gross retuning.
+
+A future full 0060 PASS can only make a separately governed **new research ID** eligible for systematic state-to-gross translation. It cannot directly change canonical BRRK, Phase 6 or production authority.
+
+```text
+Canonical BRRK-0011                    NO CHANGE
+Phase 6                                NO CHANGE
+production_authorized_components       []
+production_authorized                  false
+signature_authorized                   false
+order_submission_authorized            false
+```
+
+**Exact next step after DESIGN merge:** open a separate 0060 numerical/data preregistration stage that creates the central `PROGRAM_GOVERNED_V1` registry owner and prospectively freezes immutable dataset identity, exact state formulas, horizon/maturity rules, terminal-loss/pathwise-adverse-excursion targets, support gates, temporal/dependence inference, classification precedence and immutable result schema. Do not implement or compute any 0060 historical outcome in the DESIGN merge stage.
