@@ -1,0 +1,16 @@
+{
+  "research_id": "BRRK-BTC-CASH-ABSOLUTE-RISK-MEASUREMENT-REPLICATION-0061",
+  "scientific_head_sha": "eb55377744cf063c38f34c68f0c17541b9325aaa",
+  "started_at": "2026-08-13T15:53:26Z",
+  "dataset_slice_ref": "BRRK-LEADERSHIP-ROTATION-0048-EXPOSED-HIST-V1",
+  "payload_sha256": "d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193",
+  "market_wrapper_git_blob_sha": "64ebf5c6deaf3f34dbeac715378f196ff0f4fafe",
+  "scientific_engine_git_blob_sha": "b548c82c446308f817871648d0db542848d419e6",
+  "run_interface_git_blob_sha": "c651dcd5c0b062667ab7256396f84e2ae099768e",
+  "result_schema_git_blob_sha": "b969187dec0563240c51b398d50674706f7b4864",
+  "declared_variants": 1,
+  "market_content_read": false,
+  "same_id_rerun_allowed": false,
+  "same_id_retuning_allowed": false,
+  "same_id_rescue_allowed": false
+}

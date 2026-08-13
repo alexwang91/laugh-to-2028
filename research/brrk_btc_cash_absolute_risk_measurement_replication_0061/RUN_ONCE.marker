@@ -1,0 +1,14 @@
+{
+  "research_id": "BRRK-BTC-CASH-ABSOLUTE-RISK-MEASUREMENT-REPLICATION-0061",
+  "scientific_head_sha": "eb55377744cf063c38f34c68f0c17541b9325aaa",
+  "attempt_sha256": "205e95a36216bac8359c91e9fa8456ea8c9b18890ef60501799868d7f3e0c361",
+  "primary_result_sha256": "02d95a24e7e736fe1c09693c1c4005f2d72704ae6d26e73a7dbd926de9477aac",
+  "execution_sha256": "d4999a22a8ba1bd0e5fbd71fc86789ef2dfd85e8f520f8aa5a8c199c7829d0a9",
+  "finalized_at": "2026-08-13T15:53:32Z",
+  "status": "VALID_EXECUTION_COMPLETE_CLOSED_TO_SAME_ID_RERUN",
+  "market_content_read_during_finalize": false,
+  "scientific_remeasurement_during_finalize": false,
+  "same_id_rerun_allowed": false,
+  "same_id_retuning_allowed": false,
+  "same_id_rescue_allowed": false
+}
