@@ -16,6 +16,6 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - run: pip install 'numpy==1.26.4' 'pandas==2.2.2' 'pytest==8.3.2' 'requests==2.32.3'
+      - run: pip install 'numpy==1.26.4' 'pandas==2.2.2' 'pytest==8.3.2' 'requests==2.32.3' scipy
       - run: pytest -q research/brrk_btc_cash_absolute_risk_measurement_replication_0061/test_engine.py
       - run: pytest -q research/brrk_btc_cash_absolute_risk_measurement_replication_0061/test_run_interface.py
