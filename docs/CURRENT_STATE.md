@@ -2,8 +2,8 @@
 
 Last updated: **2026-08-13**  
 Authoritative repository: `alexwang91/laugh-to-2028`  
-Current `main` research merge: **`cf803b355632a91d19a38186cbf5a369e8a2a6db`**  
-Current research branch: **`research/0060-btc-cash-absolute-risk-diagnostic-implementation`**  
+Current `main` research merge: **`7bb4883aa176f421199173b56d9753f447afe851`**  
+Current research branch: **`research/0060-btc-cash-absolute-risk-diagnostic-controlled-boundary`**  
 Status of this document: **AUTHORITATIVE OPERATING SNAPSHOT**
 
 > GitHub `main`, immutable research artifacts and machine registries remain the sources of truth. This file is the compact human handoff, not a substitute for preregistration, execution, evidence, recovery or closeout artifacts.
@@ -43,7 +43,7 @@ BRRK simple ETH/SOL Beta router 0056  INVALID_EXECUTION / CLOSED / NO ECONOMIC C
 BRRK Beta router interface replication 0057 FAIL_SIMPLE_BETA_ROUTER_COST_FRAGILE / CLOSED
 BRRK Beta->BTC parameter geometry 0058     FAIL_NO_STABLE_PARAMETER_PLATEAU / CLOSED
 BRRK Beta deterioration/BTC takeover 0059 FAIL_NO_MONOTONE_CONTINUATION_INFORMATION / CLOSED
-BRRK BTC->Cash absolute risk 0060     IMPLEMENTATION-ONLY / ZERO RESULT / NOT RUN
+BRRK BTC->Cash absolute risk 0060     CONTROLLED-EXECUTION BOUNDARY / ZERO RESULT / NOT RUN
 
 Canonical BRRK-0011                    NO CHANGE
 Phase 7                                MONITOR_ONLY / LAUNCH BLOCKED
@@ -1169,3 +1169,30 @@ order_submission_authorized                 false
 ```
 
 **Exact next step after implementation merge:** a separate zero-result controlled-execution boundary must freeze immutable engine/source hashes, result schema, run interface and exactly-once marker/fault semantics. No historical 0060 target may be computed before that boundary merges.
+
+
+---
+
+## 0060 controlled-execution boundary handoff
+
+0060 implementation merged at `7bb4883aa176f421199173b56d9753f447afe851`. The controlled boundary freezes the exact scientific-engine blob, immutable market/source bindings, lossless result schema and a staged exactly-once runner. No real 0060 market content has been read and no historical target/association has been computed in this boundary.
+
+```text
+scientific engine blob                 b901774b6849c9bcf6fbbf9887022142bf74a42d
+market evidence blob                   64ebf5c6deaf3f34dbeac715378f196ff0f4fafe
+payload SHA256                         d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193
+preflight                              repeatable / zero-result / no market-content read
+attempt marker                         create-only / irreversible authority boundary
+measurement                            exactly one loader call + one engine call
+result + execution                     create-only
+finalization                           hash-only / no market read / no remeasurement
+partial result automatic recompute     forbidden
+marker-only recovery                   only complete result+execution with missing final marker
+actual historical variants evaluated  0
+BTC/Cash gross map                     forbidden
+production_authorized                  false
+signature_authorized                   false
+order_submission_authorized            false
+```
+
+After this boundary merges, the exact merged boundary HEAD is eligible for exactly one DEVELOPMENT historical execution. Once `RUN_ATTEMPT.marker` is durably pushed, no same-ID rerun/recompute/retune/rescue is available.
