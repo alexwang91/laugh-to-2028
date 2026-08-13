@@ -1,0 +1,81 @@
+name: 0060 owner first
+
+on:
+  push:
+    branches:
+      - research/0060-prereg-owner-first-rebuild
+
+permissions:
+  contents: write
+
+concurrency:
+  group: brrk-0060-owner-first
+  cancel-in-progress: false
+
+jobs:
+  owner-first:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/0060-prereg-owner-first-rebuild
+          fetch-depth: 0
+      - name: Create central owner before governed path introduction
+        run: |
+          set -euo pipefail
+          git config user.name 'Y_Wang'
+          git config user.email '40142450+alexwang91@users.noreply.github.com'
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('config/research_registry.json')
+          d=json.loads(p.read_text())
+          rid='BRRK-BTC-CASH-ABSOLUTE-RISK-DIAGNOSTIC-0060'
+          assert all(x.get('research_id')!=rid for x in d['records'])
+          d['records'].append({
+            'research_id':rid,
+            'research_family_id':'BRRK_BTC_TO_CASH_GROSS_RISK',
+            'research_domain':'RISK_CONTROL',
+            'research_governance_version':1,
+            'governance_mode':'PROGRAM_GOVERNED_V1',
+            'objective_type':'MECHANISM_TEST',
+            'created_at':'2026-08-13T09:15:00Z',
+            'created_before_result':True,
+            'question':'Does one fixed low-dimensional causal BTC-only absolute-risk state contain recurrent information about subsequent BTC terminal loss versus Cash and origin-relative pathwise adverse excursion across the full frozen 20/60/120/240-day horizon family before any BTC/Cash threshold, gross map, holding or re-entry rule is defined?',
+            'hypothesis':'If BTC absolute risk deteriorates before materially adverse crypto-risk periods, the frozen equal-weight A1/A2/A3 BTC state should have positive recurrent monotone association with both terminal cash-relative loss and origin-relative adverse excursion at every frozen horizon.',
+            'hypothesis_origin':'RESULT_INFORMED_NEW_LAYER_AFTER_IMMUTABLE_0059_FAILURE_USING_0043_0044_LOW_DIMENSIONAL_RISK_INFORMATION_AND_0060_DESIGN_ONLY',
+            'economic_mechanism':'BTC can remain the defensive crypto anchor relative to Beta while still entering absolute-risk states in which preserving nominal capital in Cash would avoid terminal loss or severe pathwise downside. 0060 tests only information ordering; it defines no trading threshold or allocation response.',
+            'primary_target':'JOINT_MONOTONE_BTC_ABSOLUTE_DOWNSIDE_INFORMATION_ACROSS_TERMINAL_LOSS_AND_ADVERSE_EXCURSION_AT_20_60_120_240_DAYS',
+            'primary_metric':'FULL_SAMPLE_SPEARMAN_PLUS_240_ORIGIN_MOVING_BLOCK_SIMULTANEOUS_ONE_SIDED_95PCT_LCB_ACROSS_ALL_EIGHT_CO_PRIMARY_TARGETS',
+            'secondary_metrics':['four_block_chronological_recurrence_of_positive_all_eight_target_spearman','A1_A2_A3_target_spearman_descriptive_only','A1_A2_A3_spearman_redundancy_matrix_and_effective_rank_descriptive_only','terminal_loss_positive_rate_by_horizon_descriptive_only','shared_complete_case_origin_count_and_dates'],
+            'feature_families':['BTC_FAST_SLOW_TREND_DISAGREEMENT_AND_PERSISTENCE','BTC_PRICE_STRUCTURE_DETERIORATION','BTC_VOLATILITY_DOWNSIDE_ASYMMETRY'],
+            'horizon':'BINANCE_SPOT_UTC_DAILY_RESEARCHER_EXPOSED_DEVELOPMENT_HISTORY_THROUGH_2026-08-02_WITH_SHARED_CAUSAL_ORIGINS_AND_20_60_120_240_DAY_TERMINAL_AND_PATHWISE_TARGETS',
+            'universe':['BTC'],
+            'development_dataset_refs':['BRRK-LEADERSHIP-ROTATION-0048-EXPOSED-HIST-V1'],
+            'validation_dataset_refs':[],
+            'sealed_dataset_refs':[],
+            'declared_variant_budget':1,
+            'actual_variants_evaluated':0,
+            'parameter_candidate_count':1,
+            'stopping_rule':'After preregistration merge, implement exactly one frozen 0060 mechanism diagnostic using synthetic/toy/contract tests only. After a separately merged controlled-execution boundary, execute exactly one DEVELOPMENT historical measurement. Any valid result closes 0060 to same-ID rerun, feature/horizon/target/support/bootstrap change or rescue; durable RUN_ATTEMPT removes automatic recomputation authority.',
+            'success_criteria':['G0 immutable design/source/dataset/formula/interface/variant/result-persistence integrity passes.','G1 at least 1440 identical shared complete-case origins remain.','G2 all eight full-sample Spearman correlations between S and co-primary downside targets are strictly positive.','G3 at least three of four deterministic chronological blocks have all eight co-primary Spearman correlations strictly positive.','G4 all eight simultaneous one-sided 95% moving-block-bootstrap lower confidence bounds are strictly positive using block length 240, 10000 replicates and seed 1844716895.','Only G0-G4 full pass produces PASS_ABSOLUTE_RISK_INFORMATION_STAGE_ELIGIBLE.'],
+            'failure_criteria':['Any immutable identity, causal timing, formula, target, variant-budget, forbidden-computation or persistence-contract violation is INVALID_EXECUTION.','G0 pass with fewer than 1440 shared origins produces FAIL_INSUFFICIENT_CAUSAL_SUPPORT.','G0-G1 pass with any of the eight full-sample rho values <=0 or undefined due constant state/target produces FAIL_NO_JOINT_DOWNSIDE_INFORMATION.','G0-G2 pass with fewer than three positive-all-eight chronological blocks produces FAIL_TEMPORAL_INSTABILITY.','G0-G3 pass with any simultaneous one-sided 95% LCB <=0 produces FAIL_DEPENDENCE_AWARE_ROBUSTNESS.','Axis diagnostics, favorable single horizons or one target family cannot rescue a failed gate.'],
+            'allowed_followup':['Only PASS_ABSOLUTE_RISK_INFORMATION_STAGE_ELIGIBLE may motivate a new separately designed/preregistered BTC-to-Cash state-to-gross translation research ID.','Any later translation must systematically calibrate gross geometry before a separate fixed-rule validation ID.','Independent OOS claims require separately governed future-only evidence.'],
+            'forbidden_followup':['No same-ID BTC/Cash threshold, gross allocation, re-entry, hysteresis, holding/cooldown rule, strategy NAV, CAGR, MDD, Calmar, turnover or transaction-cost economics.','No same-ID reweighting/pruning/addition of A1/A2/A3 or the eight raw coordinates and no feature/model rescue.','No same-ID horizon or target-family addition/removal/selection.','No same-ID support relaxation, temporal repartition, bootstrap change or alternative association statistic after output.','No 0059 20d/component rescue, no ETH/SOL micro-timing, no on-chain/macro/4h rescue under 0060.','No canonical BRRK, Phase 6, leverage, shorting, signing, order submission or production modification.'],
+            'researcher_decisions':['Design authority merged by PR #221 at 142733887c0e8c0652e29afa9eb99c9c4ede4a42 before this preregistration.','0059 is immutable FAIL_NO_MONOTONE_CONTINUATION_INFORMATION / CLOSED; its favorable 20d statistic and components have zero 0060 selection authority.','0060 opens BTC-to-Cash absolute risk as a separate gross-risk information layer and is not a Beta-to-BTC rescue.','The sole state is BTC-only and equal-weight across A1 trend disagreement/persistence, A2 price structure and A3 volatility/downside asymmetry.','All eight raw coordinates are fully required; no available-feature averaging is allowed.','Causal normalization is trailing252/min60/sample-ddof1/zero-std-NaN/clip3.','A3 semivolatility uses strict negative and strict positive returns; either side empty invalidates that raw coordinate.','All four horizons 20/60/120/240 and both outcome families are co-primary on one identical shared origin set.','Support N>=1440 equals six longest-horizon 240-origin dependence blocks and is not estimated from outcomes.','Primary association is average-rank Spearman; no minimum effect-size threshold is imposed at this mechanism-only stage.','Temporal recurrence uses four deterministic equal-as-possible chronological blocks and requires at least three with all eight rho>0.','Dependence inference is aligned non-circular MBB length240 x10000 seed1844716895 with centered-max simultaneous Type-7 95% LCB across all eight targets.','History is researcher-exposed DEVELOPMENT, not independent OOS; PASS cannot directly authorize a strategy.'],
+            'research_process_complexity':{'declared_parameter_candidates':['ONE_FIXED_STATE=A1_A2_A3_EQUAL_WEIGHT','TARGET_HORIZONS=20_60_120_240_ALL_REQUIRED','TARGET_FAMILIES=TERMINAL_LOSS_AND_ADVERSE_EXCURSION_BOTH_REQUIRED','SUPPORT_MIN=1440','TEMPORAL=FOUR_EQUAL_REQUIRE3_ALL_EIGHT_POSITIVE','BOOTSTRAP=NONCIRCULAR_MBB240_X10000_SEED1844716895_SIMULTANEOUS95_LCB'],'actual_parameter_candidates_evaluated':[],'universes_evaluated':['BINANCE_SPOT_BTC_ONLY_FROM_FROZEN_BTC_ETH_SOL_WRAPPER'],'horizons_evaluated':['FORWARD_DOWNSIDE_20_60_120_240_ALL_SIMULTANEOUS'],'rebalance_variants':[],'feature_representations':['ONE_EQUAL_WEIGHT_A1_A2_A3_CONTINUOUS_BTC_ABSOLUTE_RISK_STATE'],'special_cases_introduced':['ORIGIN_RELATIVE_ADVERSE_EXCURSION_NOT_RUNNING_PEAK_DRAWDOWN','TERMINAL_ZERO_FLOOR_WITH_AVERAGE_RANK_TIES'],'validation_exposure_event_refs':[],'related_family_trials':1},
+            'lineage_edges':[{'relation':'RESULT_INFORMED','ref_research_id':'BRRK-BETA-DETERIORATION-BTC-TAKEOVER-DIAGNOSTIC-0059','provenance_status':'FACT','evidence_ref':'research/brrk_beta_deterioration_btc_takeover_diagnostic_0059/CLOSEOUT.json'},{'relation':'RESULT_INFORMED','ref_research_id':'BRRK-EXHAUSTION-STATE-0044','provenance_status':'FACT','evidence_ref':'research/brrk_exhaustion_state_0044/CLOSEOUT.json'}],
+            'result_status':'PREREGISTERED_NOT_RUN','failure_reason':None,'promotion_state':'NONE','evidence_refs':[],
+            'decision_refs':['research/governance/BRRK_BTC_CASH_ABSOLUTE_RISK_DIAGNOSTIC_0060_DESIGN_FREEZE_2026-08-13.md','research/brrk_btc_cash_absolute_risk_diagnostic_0060/PREREGISTRATION.json','research/brrk_btc_cash_absolute_risk_diagnostic_0060/DATASET_DECLARATION.json','docs/CURRENT_STATE.md'],
+            'production_relevance':'Research-only DEVELOPMENT BTC absolute-risk information diagnostic. PASS can only make a later new-ID BTC-to-Cash state-to-gross translation study eligible; it cannot modify canonical BRRK, Phase 6 or production authority.',
+            'production_authorized':False,'provenance_status':'FACT','governed_path_prefixes':['research/brrk_btc_cash_absolute_risk_diagnostic_0060/'],
+            'notes':['0060 is DEVELOPMENT-only on researcher-exposed history and makes no independent-OOS claim.','No 0060 historical target/statistic may be computed before preregistration, implementation-only and controlled-execution boundary are separately merged.','No BTC/Cash gross map or portfolio economics exist under 0060.']
+          })
+          p.write_text(json.dumps(d,indent=2,ensure_ascii=False)+'\n')
+          print('OWNER_FIRST_DURABLE=true')
+          print('GOVERNED_PATHS_PRESENT=false')
+          PY
+          git rm .github/workflows/_tmp_0060_owner_first.yml
+          git add config/research_registry.json
+          git commit -m 'Research preregistration [0060]: register central owner before path introduction'
+          git push origin HEAD:research/0060-prereg-owner-first-rebuild
