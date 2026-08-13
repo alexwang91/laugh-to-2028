@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "research_id": "BRRK-BTC-CASH-ABSOLUTE-RISK-DIAGNOSTIC-0060",
+  "stage": "IMPLEMENTATION_ONLY_ZERO_RESULT",
+  "prereg_merge_sha": "cf803b355632a91d19a38186cbf5a369e8a2a6db",
+  "scientific_contract": "research/brrk_btc_cash_absolute_risk_diagnostic_0060/PREREGISTRATION.json",
+  "implementation_files": [
+    "research/brrk_btc_cash_absolute_risk_diagnostic_0060/engine.py",
+    "research/brrk_btc_cash_absolute_risk_diagnostic_0060/test_engine.py"
+  ],
+  "real_market_loader_imported_by_engine": false,
+  "network_access_in_engine": false,
+  "filesystem_market_reader_in_engine": false,
+  "historical_payload_loaded": false,
+  "historical_downside_targets_computed": false,
+  "historical_association_computed": false,
+  "historical_bootstrap_computed": false,
+  "actual_historical_variants_evaluated": 0,
+  "tests_allowed": "SYNTHETIC_TOY_CONTRACT_ONLY",
+  "run_once_present": false,
+  "run_interface_present": false,
+  "result_schema_present": false,
+  "controlled_execution_boundary_present": false,
+  "runtime_markers_present": false,
+  "portfolio_economics_allowed": false,
+  "btc_cash_gross_map_allowed": false,
+  "production_authorized": false,
+  "signature_authorized": false,
+  "order_submission_authorized": false,
+  "next_stage": "SEPARATE_CONTROLLED_EXECUTION_BOUNDARY_AFTER_IMPLEMENTATION_MERGE"
+}
