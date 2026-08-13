@@ -26,6 +26,8 @@ jobs:
       - name: Install pinned test runtime
         run: pip install -r execution/plan-b-bot/requirements-dev.txt
       - name: Run immutable implementation and controlled-run contracts
+        env:
+          PYTHONPATH: .
         run: |
           pytest -q research/brrk_btc_cash_absolute_risk_diagnostic_0060/test_engine.py
           pytest -q research/brrk_btc_cash_absolute_risk_diagnostic_0060/test_run_interface.py
