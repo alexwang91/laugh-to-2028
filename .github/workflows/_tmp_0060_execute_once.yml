@@ -1,0 +1,125 @@
+name: 0060 execute exactly once
+
+on:
+  push:
+    branches:
+      - research/0060-btc-cash-absolute-risk-diagnostic-execute-once
+
+permissions:
+  contents: write
+
+concurrency:
+  group: brrk-0060-unique-execution
+  cancel-in-progress: false
+
+jobs:
+  execute-once:
+    runs-on: ubuntu-24.04
+    env:
+      SCIENTIFIC_HEAD: fe210187472c2bcdfb51573b4cc544c187ade079
+      RESULT_BRANCH: research/0060-btc-cash-absolute-risk-diagnostic-result
+      DIR: research/brrk_btc_cash_absolute_risk_diagnostic_0060
+      MARKET: research/brrk_beta_handoff_0047/evidence/MARKET_EVIDENCE.json
+      PYTHONPATH: .
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fe210187472c2bcdfb51573b4cc544c187ade079
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify immutable main and pristine result branch
+        run: |
+          set -euo pipefail
+          git fetch origin "+refs/heads/main:refs/remotes/origin/main" "+refs/heads/${RESULT_BRANCH}:refs/remotes/origin/${RESULT_BRANCH}"
+          test "$(git rev-parse HEAD)" = "$SCIENTIFIC_HEAD"
+          test "$(git rev-parse origin/main)" = "$SCIENTIFIC_HEAD"
+          test "$(git rev-parse origin/${RESULT_BRANCH})" = "$SCIENTIFIC_HEAD"
+          for f in RUN_ATTEMPT.marker PRIMARY_RESULT.json EXECUTION.json RUN_ONCE.marker; do
+            if git cat-file -e "origin/${RESULT_BRANCH}:${DIR}/${f}" 2>/dev/null; then
+              echo "runtime artifact unexpectedly already exists: $f" >&2
+              exit 1
+            fi
+          done
+          git worktree add -B result-local /tmp/0060-result "origin/${RESULT_BRANCH}"
+          git config user.name 'Y_Wang'
+          git config user.email '40142450+alexwang91@users.noreply.github.com'
+      - name: Install pinned scientific runtime
+        run: pip install -r execution/plan-b-bot/requirements-dev.txt
+      - name: Repeatable zero-result preflight
+        run: |
+          python -m research.brrk_btc_cash_absolute_risk_diagnostic_0060.run_once preflight \
+            --expected-head-sha "$SCIENTIFIC_HEAD" --market "$MARKET"
+      - name: Create attempt marker at scientific HEAD
+        run: |
+          python -m research.brrk_btc_cash_absolute_risk_diagnostic_0060.run_once start-attempt \
+            --expected-head-sha "$SCIENTIFIC_HEAD" --market "$MARKET"
+      - name: Durably persist attempt marker before measurement
+        run: |
+          set -euo pipefail
+          mkdir -p "/tmp/0060-result/${DIR}"
+          cp "${DIR}/RUN_ATTEMPT.marker" "/tmp/0060-result/${DIR}/RUN_ATTEMPT.marker"
+          cd /tmp/0060-result
+          git add "${DIR}/RUN_ATTEMPT.marker"
+          git commit -m 'Research execution [0060]: durable RUN_ATTEMPT marker'
+          git push origin HEAD:"${RESULT_BRANCH}"
+          cd "$GITHUB_WORKSPACE"
+          git fetch origin "+refs/heads/${RESULT_BRANCH}:refs/remotes/origin/${RESULT_BRANCH}"
+          git show "origin/${RESULT_BRANCH}:${DIR}/RUN_ATTEMPT.marker" > /tmp/remote-attempt
+          cmp "${DIR}/RUN_ATTEMPT.marker" /tmp/remote-attempt
+          echo 'RUN_ATTEMPT_DURABLE_REMOTE=true'
+      - name: Execute exactly one frozen historical measurement
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$SCIENTIFIC_HEAD"
+          python -m research.brrk_btc_cash_absolute_risk_diagnostic_0060.run_once evaluate \
+            --expected-head-sha "$SCIENTIFIC_HEAD" --market "$MARKET"
+      - name: Durably persist primary result and execution receipt
+        run: |
+          set -euo pipefail
+          cp "${DIR}/PRIMARY_RESULT.json" "/tmp/0060-result/${DIR}/PRIMARY_RESULT.json"
+          cp "${DIR}/EXECUTION.json" "/tmp/0060-result/${DIR}/EXECUTION.json"
+          cd /tmp/0060-result
+          git add "${DIR}/PRIMARY_RESULT.json" "${DIR}/EXECUTION.json"
+          git commit -m 'Research execution [0060]: durable immutable result and execution receipt'
+          git push origin HEAD:"${RESULT_BRANCH}"
+          cd "$GITHUB_WORKSPACE"
+          git fetch origin "+refs/heads/${RESULT_BRANCH}:refs/remotes/origin/${RESULT_BRANCH}"
+          for f in RUN_ATTEMPT.marker PRIMARY_RESULT.json EXECUTION.json; do
+            git show "origin/${RESULT_BRANCH}:${DIR}/${f}" > "/tmp/remote-${f}"
+            cmp "${DIR}/${f}" "/tmp/remote-${f}"
+          done
+          echo 'PRIMARY_RESULT_AND_EXECUTION_DURABLE_REMOTE=true'
+      - name: Finalize hash-only marker without remeasurement
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$SCIENTIFIC_HEAD"
+          python -m research.brrk_btc_cash_absolute_risk_diagnostic_0060.run_once finalize \
+            --expected-head-sha "$SCIENTIFIC_HEAD" --market "$MARKET"
+      - name: Durably persist final marker
+        run: |
+          set -euo pipefail
+          cp "${DIR}/RUN_ONCE.marker" "/tmp/0060-result/${DIR}/RUN_ONCE.marker"
+          cd /tmp/0060-result
+          git add "${DIR}/RUN_ONCE.marker"
+          git commit -m 'Research execution [0060]: seal exactly-once final marker'
+          git push origin HEAD:"${RESULT_BRANCH}"
+          cd "$GITHUB_WORKSPACE"
+          git fetch origin "+refs/heads/${RESULT_BRANCH}:refs/remotes/origin/${RESULT_BRANCH}"
+          for f in RUN_ATTEMPT.marker PRIMARY_RESULT.json EXECUTION.json RUN_ONCE.marker; do
+            git show "origin/${RESULT_BRANCH}:${DIR}/${f}" > "/tmp/final-${f}"
+            cmp "${DIR}/${f}" "/tmp/final-${f}"
+          done
+          echo 'VALID_EXECUTION_COMPLETE_DURABLE_REMOTE=true'
+      - name: Upload immutable runtime bundle
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: brrk-0060-runtime-bundle
+          if-no-files-found: warn
+          path: |
+            research/brrk_btc_cash_absolute_risk_diagnostic_0060/RUN_ATTEMPT.marker
+            research/brrk_btc_cash_absolute_risk_diagnostic_0060/PRIMARY_RESULT.json
+            research/brrk_btc_cash_absolute_risk_diagnostic_0060/EXECUTION.json
+            research/brrk_btc_cash_absolute_risk_diagnostic_0060/RUN_ONCE.marker
