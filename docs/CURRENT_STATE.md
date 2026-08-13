@@ -2,8 +2,8 @@
 
 Last updated: **2026-08-14**  
 Authoritative repository: `alexwang91/laugh-to-2028`  
-Current `main` research merge: **`b55a39883de8132371580c466124b9ff3a195729`**  
-Current research branch: **`research/0062-controlled-boundary-v1`**  
+Current `main` research merge: **`ae8f585bfc3fd9599cee0844ee29971a36461dd0`**  
+Current research branch: **`research/0062-closeout-v1`**  
 Status of this document: **AUTHORITATIVE OPERATING SNAPSHOT**
 
 > GitHub `main`, immutable research artifacts and machine registries remain the sources of truth. This file is the compact human handoff, not a substitute for preregistration, execution, evidence, recovery or closeout artifacts.
@@ -45,7 +45,7 @@ BRRK Beta->BTC parameter geometry 0058     FAIL_NO_STABLE_PARAMETER_PLATEAU / CL
 BRRK Beta deterioration/BTC takeover 0059 FAIL_NO_MONOTONE_CONTINUATION_INFORMATION / CLOSED
 BRRK BTC->Cash absolute risk 0060     INVALID_EXECUTION / CLOSED / NO SCIENTIFIC CONCLUSION
 BRRK BTC->Cash measurement replication 0061 FAIL_NO_JOINT_DOWNSIDE_INFORMATION / CLOSED
-BRRK BTC risk signal atlas 0062        CONTROLLED BOUNDARY FROZEN / NOT RUN
+BRRK BTC risk signal atlas 0062        FAIL_NO_SIGNAL_ATLAS_FAMILY_INFORMATION / CLOSED
 
 Canonical BRRK-0011                    NO CHANGE
 Phase 7                                MONITOR_ONLY / LAUNCH BLOCKED
@@ -66,7 +66,7 @@ Phase-6 counts above are copied from the committed accounting index. That ledger
 ```text
 research id                             BRRK-BTC-RISK-SIGNAL-ATLAS-0062
 design merge                            aa3fa9c1814c4113918e0d012636db44a1f89659
-stage                                   CONTROLLED BOUNDARY FROZEN / NOT RUN
+stage                                   CLOSED / FAIL_NO_SIGNAL_ATLAS_FAMILY_INFORMATION
 Tier-A family count                     17
 frozen candidate cells                  185
 frozen family-track hypotheses          34
@@ -76,12 +76,21 @@ run interface blob                      5e46c6baba67e1761f05b75ee739ed2dd0054a74
 result schema blob                       d113364aa9d785d25ee2cc925a65bc104ce29ce5
 run-once runner blob                     91706156ef7c456d66ce0da016e82d4f91374ff7
 historical execution attempt budget     1
+scientific head                         ae8f585bfc3fd9599cee0844ee29971a36461dd0
+execution workflow run                  31753763747
+common origins                          1975
+chronological blocks                    494 / 494 / 494 / 493
+G2 / G3 / G4 / G5 track passes          16 / 3 / 14 / 0
+global simultaneous q95                 0.2439283076788892
+RUN_ONCE.marker                         FINALIZED
+market / loader / engine calls          1 / 1 / 1
+state_to_gross_translation_eligible     false
 horizons                                5 / 10 / 20 / 40 sessions
 Tier-B/C F15-F20                        DATA_UNAVAILABLE / NOT SUBSTITUTABLE POST HOC
 F22 latent-state                        NOT EVALUATED IN 0062
-historical 0062 outcomes                NOT COMPUTED
-actual variants evaluated               0
-RUN_ATTEMPT.marker                      ABSENT
+historical 0062 outcomes                UNIQUE VALID EXECUTION COMPLETE
+actual variants evaluated               185
+RUN_ATTEMPT.marker                      DURABLE / ATTEMPT CONSUMED
 portfolio economics                     FORBIDDEN
 canonical BRRK-0011                     NO CHANGE
 Phase 6                                 NO CHANGE
@@ -90,7 +99,7 @@ signature_authorized                    false
 order_submission_authorized             false
 ```
 
-Exact candidate geometry, target formulas, family-track mapping, support gates, temporal recurrence, plateau gate and dependence-aware simultaneous MBB inference are frozen in `research/brrk_btc_risk_signal_atlas_0062/PREREGISTRATION.json`. The immutable Tier-A evidence wrapper remains researcher-exposed DEVELOPMENT history and is not independent OOS. No 0062 historical target, signal association or family ranking was computed during preregistration.
+0062 is immutably closed as `FAIL_NO_SIGNAL_ATLAS_FAMILY_INFORMATION`. G0/G1 passed, but the preregistered global simultaneous dependence-aware G5 gate passed 0/34 family tracks, so no signal family is eligible for state-to-gross translation under this ID. Descriptively, F10 volatility-regime R_SHORT, F11 downside/tail R_SHORT and F12 volume/flow D_SWING are result-informed DEVELOPMENT leads only; none passed all gates and none may be promoted, pruned, reweighted or rescued within 0062. The Tier-A history remains researcher-exposed and is not independent OOS.
 
 ---
 

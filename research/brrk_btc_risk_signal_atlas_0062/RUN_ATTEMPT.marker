@@ -1,0 +1,17 @@
+{
+  "research_id": "BRRK-BTC-RISK-SIGNAL-ATLAS-0062",
+  "scientific_head_sha": "ae8f585bfc3fd9599cee0844ee29971a36461dd0",
+  "started_at": "2026-08-13T23:26:04Z",
+  "dataset_slice_ref": "BRRK-LEADERSHIP-ROTATION-0048-EXPOSED-HIST-V1",
+  "payload_sha256": "d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193",
+  "market_wrapper_git_blob_sha": "64ebf5c6deaf3f34dbeac715378f196ff0f4fafe",
+  "scientific_engine_git_blob_sha": "cac8e946998c836d10842b9388e1e3ef345a8c0b",
+  "run_interface_git_blob_sha": "5e46c6baba67e1761f05b75ee739ed2dd0054a74",
+  "result_schema_git_blob_sha": "d113364aa9d785d25ee2cc925a65bc104ce29ce5",
+  "declared_candidate_cells": 185,
+  "historical_execution_attempt_budget": 1,
+  "market_content_read": false,
+  "same_id_rerun_allowed": false,
+  "same_id_retuning_allowed": false,
+  "same_id_rescue_allowed": false
+}

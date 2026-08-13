@@ -1,0 +1,121 @@
+{
+  "schema_version": 1,
+  "research_id": "BRRK-BTC-RISK-SIGNAL-ATLAS-0062",
+  "closeout_status": "FAIL_NO_SIGNAL_ATLAS_FAMILY_INFORMATION_CLOSED",
+  "scientific_head_sha": "ae8f585bfc3fd9599cee0844ee29971a36461dd0",
+  "result_branch_final_sha": "1aae4f1e1b2c0e635eb7233cb148107033931a09",
+  "execution_workflow_run_id": 31753763747,
+  "classification": "FAIL_NO_SIGNAL_ATLAS_FAMILY_INFORMATION",
+  "binding_gate": "G5_SIMULTANEOUS_DEPENDENCE_AWARE_LCB",
+  "common_origin_count": 1975,
+  "common_origin_start": "2021-01-26 00:00:00",
+  "common_origin_end": "2026-06-23 00:00:00",
+  "chronological_block_sizes": [494, 494, 494, 493],
+  "gate_summary": {
+    "G0_contract_and_data_identity": true,
+    "G1_common_support": true,
+    "G2_track_pass_count": 16,
+    "G3_track_pass_count": 3,
+    "G4_track_pass_count": 14,
+    "G5_track_pass_count": 0,
+    "global_q95": 0.2439283076788892,
+    "passing_family_tracks": []
+  },
+  "descriptive_development_only": {
+    "F10_VOLATILITY_REGIME_R_SHORT": {
+      "full_sample_rhos": [0.1817207202057019, 0.13434264211648442, 0.18484524618222717, 0.15365950652473645],
+      "observed_track_min": 0.13434264211648442,
+      "positive_blocks": 4,
+      "favorable_cell_fraction": 0.9,
+      "simultaneous_lcb": -0.10958566556240479,
+      "eligible": false
+    },
+    "F11_DOWNSIDE_ASYMMETRY_TAIL_R_SHORT": {
+      "full_sample_rhos": [0.16234228540960233, 0.14807721411803615, 0.16593285561165133, 0.17484348581642337],
+      "observed_track_min": 0.14807721411803615,
+      "positive_blocks": 2,
+      "favorable_cell_fraction": 1.0,
+      "simultaneous_lcb": -0.09585109356085306,
+      "eligible": false
+    },
+    "F12_VOLUME_FLOW_CONFIRMATION_D_SWING": {
+      "full_sample_rhos": [0.1397469491541528, 0.16446597282183562, 0.13117663121320258, 0.17921397989567645],
+      "observed_track_min": 0.13117663121320258,
+      "positive_blocks": 3,
+      "favorable_cell_fraction": 0.7142857142857143,
+      "simultaneous_lcb": -0.11275167646568662,
+      "eligible": false
+    },
+    "F06_MOMENTUM_LEVEL_D_SWING": {
+      "full_sample_rhos": [0.049339600113835744, 0.08140520946920043, 0.03166596440966718, 0.0924712083067306],
+      "observed_track_min": 0.03166596440966718,
+      "positive_blocks": 2,
+      "favorable_cell_fraction": 0.8571428571428571,
+      "simultaneous_lcb": -0.21226234326922203,
+      "eligible": false
+    },
+    "F05_VOL_ADJUSTED_TREND_GUARDS": {
+      "D_SHORT_observed_track_min": -0.026390902674656755,
+      "D_SHORT_favorable_cell_fraction": 0.0,
+      "D_SWING_observed_track_min": 0.0005289233566835744,
+      "D_SWING_positive_blocks": 0,
+      "D_SWING_favorable_cell_fraction": 0.36,
+      "eligible": false,
+      "interpretation": "The frozen Supertrend/Chandelier family did not establish robust BTC-vs-Cash information under 0062."
+    }
+  },
+  "scientific_interpretation": [
+    "The prospectively frozen 185-cell Tier-A Signal Atlas did not establish any family-track that survived all support, sign, temporal recurrence, parameter-plateau and global dependence-aware simultaneous inference gates.",
+    "Descriptively, future-risk-intensity channels were stronger than directional BTC-vs-Cash channels: F10 short-horizon volatility regime was positive in all four chronological blocks, while F11 downside/tail had the largest descriptive track minimum but only two positive blocks.",
+    "F12 volume/flow showed the strongest descriptive directional swing-horizon channel, but its simultaneous LCB remained negative.",
+    "These descriptive findings are researcher-exposed DEVELOPMENT evidence only and are not controller, strategy, promotion or independent-OOS evidence."
+  ],
+  "data_unavailable_or_deferred": {
+    "F15_DERIVATIVES_LEVERAGE_CROWDING": "DATA_UNAVAILABLE",
+    "F16_OPTIONS_IMPLIED_RISK": "DATA_UNAVAILABLE",
+    "F17_ONCHAIN_HOLDER_STATE": "DATA_UNAVAILABLE",
+    "F18_CRYPTO_LIQUIDITY_STABLECOIN_DEPTH": "DATA_UNAVAILABLE",
+    "F19_CROSS_ASSET_MACRO": "DATA_UNAVAILABLE",
+    "F20_SENTIMENT_ATTENTION_FLOW": "DATA_UNAVAILABLE",
+    "F22_LATENT_REGIME_STATE_SPACE": "NOT_EVALUATED"
+  },
+  "exactly_once": {
+    "market_content_reads": 1,
+    "source_loader_calls": 1,
+    "scientific_engine_calls": 1,
+    "historical_execution_attempts": 1,
+    "actual_variants_evaluated": 185,
+    "finalize_market_content_read": false,
+    "finalize_scientific_remeasurement": false,
+    "same_id_rerun_allowed": false,
+    "same_id_retuning_allowed": false,
+    "same_id_rescue_allowed": false
+  },
+  "same_id_forbidden_followup": [
+    "drop G5 or reduce the global multiplicity family after seeing the result",
+    "select only F10, F11, F12, 20-day, 40-day, RSI, volume, Supertrend or favorable cells within 0062",
+    "reweight or prune cells/families based on 0062 outcomes",
+    "retune Supertrend, RSI, MACD, volume or horizon geometry under 0062",
+    "translate any 0062 descriptive family directly into a BTC-to-Cash gross map",
+    "re-run 0062 on the same history"
+  ],
+  "new_id_followup_allowed": [
+    "A separately governed result-informed DEVELOPMENT study may test future-risk-intensity control using F10/F11-type volatility/downside primitives without claiming independent OOS.",
+    "A separately governed result-informed DEVELOPMENT study may test the F12 volume/flow swing mechanism without same-ID cherry-picking or promotion.",
+    "F15-F20 require separately frozen immutable point-in-time datasets before any new-data study.",
+    "Any independent validation requires future-only data under a new validation ID."
+  ],
+  "state_to_gross_translation_eligible": false,
+  "portfolio_economics_evaluated": false,
+  "canonical_brrk_change": false,
+  "phase6_change": false,
+  "production_authorized": false,
+  "signature_authorized": false,
+  "order_submission_authorized": false,
+  "immutable_evidence": {
+    "RUN_ATTEMPT.marker_sha256": "3a11b43775e9465629b7e9bc6bf94c5f41a2240c44a8d24076843396175c90ad",
+    "PRIMARY_RESULT.json_sha256": "ed0e6811c5f2a10ae88066ea8c49aad798d6fa87c9614469b546b3b7d58b64a5",
+    "EVIDENCE.json_sha256": "ad2c51464ac34aae21909a3c8e93b5f82692fc4549b05e13556971b8e39a7aac",
+    "EXECUTION.json_sha256": "42d49615afe480ac1ebc27b3a15f55c6e0ffc293aa81b74ec5c992b5df1ca87f"
+  }
+}
