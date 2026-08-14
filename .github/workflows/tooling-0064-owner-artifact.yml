@@ -1,0 +1,24 @@
+name: Tooling 0064 owner artifact read-only
+on:
+  push:
+    branches: [tools/0062-owner-artifact-v1]
+    paths: ['.github/workflows/tooling-0064-owner-artifact.yml']
+permissions:
+  contents: read
+jobs:
+  build-owner:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 38b5740cb89ae16b4bc005f3d5bcb4f8e0a0181f
+          fetch-depth: 1
+      - name: Fetch builder
+        run: curl -fsSL -H 'Accept: application/vnd.github.raw+json' -H 'Authorization: Bearer ${{ github.token }}' 'https://api.github.com/repos/${{ github.repository }}/contents/tools/build_0064_owner_artifact.py?ref=tools%2F0062-owner-artifact-v1' -o /tmp/b.py
+      - run: python /tmp/b.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: 0064-clean-prereg-owner
+          path: /tmp/0064-owner-artifact
+          if-no-files-found: error
+          retention-days: 7
