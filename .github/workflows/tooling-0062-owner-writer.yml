@@ -15,6 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       PYTHONHASHSEED: '0'
+      PYTHONPATH: '.'
       OMP_NUM_THREADS: '1'
       OPENBLAS_NUM_THREADS: '1'
       MKL_NUM_THREADS: '1'
@@ -38,8 +39,10 @@ jobs:
           s=p.read_text()
           old='''def empirical_percentile(values: np.ndarray, reference: np.ndarray) -> np.ndarray:\n    ref = np.sort(np.asarray(reference, dtype=float)[np.isfinite(reference)])\n    v = np.asarray(values, dtype=float)\n    if len(ref) == 0:\n        raise ValueError("empty percentile calibration reference")\n    return np.searchsorted(ref, v, side="right").astype(float) / float(len(ref))\n'''
           new='''def empirical_percentile(values: np.ndarray, reference: np.ndarray) -> np.ndarray:\n    ref = np.sort(np.asarray(reference, dtype=float)[np.isfinite(reference)])\n    v = np.asarray(values, dtype=float)\n    if len(ref) == 0:\n        raise ValueError("empty percentile calibration reference")\n    out = np.full(v.shape, np.nan, dtype=float)\n    mask = np.isfinite(v)\n    out[mask] = np.searchsorted(ref, v[mask], side="right").astype(float) / float(len(ref))\n    return out\n'''
-          assert old in s
-          p.write_text(s.replace(old,new,1))
+          if old in s:
+              p.write_text(s.replace(old,new,1))
+          else:
+              assert 'out = np.full(v.shape, np.nan, dtype=float)' in s
           PY
           git diff --check
       - name: Compile implementation-only modules
@@ -62,9 +65,12 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test "$(git diff --name-only)" = "research/brrk_btc_sol_path_event_early_warning_0066/models.py"
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add research/brrk_btc_sol_path_event_early_warning_0066/models.py
-          git commit -m 'research: make 0066 validation percentiles NaN-safe'
-          git push origin HEAD:research/0066-implementation-v1
+          CHANGED="$(git diff --name-only)"
+          if [ -n "$CHANGED" ]; then
+            test "$CHANGED" = "research/brrk_btc_sol_path_event_early_warning_0066/models.py"
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git add research/brrk_btc_sol_path_event_early_warning_0066/models.py
+            git commit -m 'research: make 0066 validation percentiles NaN-safe'
+            git push origin HEAD:research/0066-implementation-v1
+          fi
