@@ -1,4 +1,4 @@
-name: Temp 0062 exactly-once historical execution
+name: Temp 0063 exactly-once historical execution
 
 on:
   push:
@@ -23,15 +23,15 @@ jobs:
       - name: Checkout durable result branch
         uses: actions/checkout@v4
         with:
-          ref: research/0062-result-v1
+          ref: research/0063-result-v1
           path: result
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Checkout exact frozen scientific head
+      - name: Checkout exact merged controlled boundary
         uses: actions/checkout@v4
         with:
-          ref: ae8f585bfc3fd9599cee0844ee29971a36461dd0
+          ref: e17b96cd3358062ebd9eb88fae050ff865a9fb39
           path: science
           fetch-depth: 0
 
@@ -44,47 +44,49 @@ jobs:
       - name: Install pinned scientific runtime
         run: pip install -r science/execution/plan-b-bot/requirements-dev.txt
 
-      - name: Zero-result preflight
+      - name: Zero-result preflight before consuming attempt
         shell: bash
         run: |
           set -euo pipefail
-          test "$(git -C science rev-parse HEAD)" = "ae8f585bfc3fd9599cee0844ee29971a36461dd0"
-          test "$(git -C result rev-parse HEAD)" = "ae8f585bfc3fd9599cee0844ee29971a36461dd0"
+          boundary=e17b96cd3358062ebd9eb88fae050ff865a9fb39
+          test "$(git -C science rev-parse HEAD)" = "$boundary"
+          test "$(git -C result rev-parse HEAD)" = "$boundary"
           for f in RUN_ATTEMPT.marker PRIMARY_RESULT.json EVIDENCE.json EXECUTION.json RUN_ONCE.marker; do
-            test ! -e "science/research/brrk_btc_risk_signal_atlas_0062/$f"
-            test ! -e "result/research/brrk_btc_risk_signal_atlas_0062/$f"
+            test ! -e "science/research/brrk_idle_cash_sweep_robustness_0063/$f"
+            test ! -e "result/research/brrk_idle_cash_sweep_robustness_0063/$f"
           done
           cd science
-          python -m research.brrk_btc_risk_signal_atlas_0062.run_once preflight \
-            --expected-head-sha ae8f585bfc3fd9599cee0844ee29971a36461dd0 \
-            --market research/brrk_beta_handoff_0047/evidence/MARKET_EVIDENCE.json | tee /tmp/0062-preflight.json
-          grep -q '"market_content_read": false' /tmp/0062-preflight.json
+          python -m research.brrk_idle_cash_sweep_robustness_0063.run_once preflight \
+            --boundary-sha "$boundary" | tee /tmp/0063-preflight.json
+          grep -q 'PREFLIGHT_PASS_ZERO_RESULT_GIT_IDENTITY_ONLY' /tmp/0063-preflight.json
+          grep -q '"historical_csv_content_reads": 0' /tmp/0063-preflight.json
+          grep -q '"scientific_engine_calls": 0' /tmp/0063-preflight.json
 
-      - name: Create attempt marker without market read
+      - name: Create attempt marker without historical content read
         shell: bash
         run: |
           set -euo pipefail
           cd science
-          python -m research.brrk_btc_risk_signal_atlas_0062.run_once start-attempt \
-            --expected-head-sha ae8f585bfc3fd9599cee0844ee29971a36461dd0 \
-            --market research/brrk_beta_handoff_0047/evidence/MARKET_EVIDENCE.json
-          test -f research/brrk_btc_risk_signal_atlas_0062/RUN_ATTEMPT.marker
-          test ! -e research/brrk_btc_risk_signal_atlas_0062/PRIMARY_RESULT.json
+          python -m research.brrk_idle_cash_sweep_robustness_0063.run_once start \
+            --boundary-sha e17b96cd3358062ebd9eb88fae050ff865a9fb39 \
+            --workflow-run-id "$GITHUB_RUN_ID" | tee /tmp/0063-attempt.json
+          test -f research/brrk_idle_cash_sweep_robustness_0063/RUN_ATTEMPT.marker
+          test ! -e research/brrk_idle_cash_sweep_robustness_0063/PRIMARY_RESULT.json
 
-      - name: Durably persist attempt marker before market read
+      - name: Durably persist attempt marker before any historical read
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p result/research/brrk_btc_risk_signal_atlas_0062
-          cp science/research/brrk_btc_risk_signal_atlas_0062/RUN_ATTEMPT.marker result/research/brrk_btc_risk_signal_atlas_0062/RUN_ATTEMPT.marker
-          cmp science/research/brrk_btc_risk_signal_atlas_0062/RUN_ATTEMPT.marker result/research/brrk_btc_risk_signal_atlas_0062/RUN_ATTEMPT.marker
+          mkdir -p result/research/brrk_idle_cash_sweep_robustness_0063
+          cp science/research/brrk_idle_cash_sweep_robustness_0063/RUN_ATTEMPT.marker result/research/brrk_idle_cash_sweep_robustness_0063/RUN_ATTEMPT.marker
+          cmp science/research/brrk_idle_cash_sweep_robustness_0063/RUN_ATTEMPT.marker result/research/brrk_idle_cash_sweep_robustness_0063/RUN_ATTEMPT.marker
           git -C result config user.name 'github-actions[bot]'
           git -C result config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git -C result add research/brrk_btc_risk_signal_atlas_0062/RUN_ATTEMPT.marker
-          test "$(git -C result diff --cached --name-only)" = "research/brrk_btc_risk_signal_atlas_0062/RUN_ATTEMPT.marker"
-          git -C result commit -m '0062 persist attempt marker before market read'
-          git -C result push origin HEAD:research/0062-result-v1
-          remote_sha="$(git -C result ls-remote origin refs/heads/research/0062-result-v1 | cut -f1)"
+          git -C result add research/brrk_idle_cash_sweep_robustness_0063/RUN_ATTEMPT.marker
+          test "$(git -C result diff --cached --name-only)" = "research/brrk_idle_cash_sweep_robustness_0063/RUN_ATTEMPT.marker"
+          git -C result commit -m '0063 persist attempt marker before historical read'
+          git -C result push origin HEAD:research/0063-result-v1
+          remote_sha="$(git -C result ls-remote origin refs/heads/research/0063-result-v1 | cut -f1)"
           test "$remote_sha" = "$(git -C result rev-parse HEAD)"
           echo "DURABLE_ATTEMPT_COMMIT=$remote_sha"
 
@@ -93,71 +95,84 @@ jobs:
         run: |
           set -euo pipefail
           cd science
-          python -m research.brrk_btc_risk_signal_atlas_0062.run_once evaluate \
-            --expected-head-sha ae8f585bfc3fd9599cee0844ee29971a36461dd0 \
-            --market research/brrk_beta_handoff_0047/evidence/MARKET_EVIDENCE.json | tee /tmp/0062-measurement.json
-          test -f research/brrk_btc_risk_signal_atlas_0062/PRIMARY_RESULT.json
-          test -f research/brrk_btc_risk_signal_atlas_0062/EVIDENCE.json
-          test -f research/brrk_btc_risk_signal_atlas_0062/EXECUTION.json
-          test ! -e research/brrk_btc_risk_signal_atlas_0062/RUN_ONCE.marker
+          python -m research.brrk_idle_cash_sweep_robustness_0063.run_once evaluate \
+            --boundary-sha e17b96cd3358062ebd9eb88fae050ff865a9fb39 | tee /tmp/0063-measurement.json
+          test -f research/brrk_idle_cash_sweep_robustness_0063/PRIMARY_RESULT.json
+          test -f research/brrk_idle_cash_sweep_robustness_0063/EVIDENCE.json
+          test -f research/brrk_idle_cash_sweep_robustness_0063/EXECUTION.json
+          test ! -e research/brrk_idle_cash_sweep_robustness_0063/RUN_ONCE.marker
 
       - name: Durably persist result evidence and execution
         shell: bash
         run: |
           set -euo pipefail
           for f in PRIMARY_RESULT.json EVIDENCE.json EXECUTION.json; do
-            cp "science/research/brrk_btc_risk_signal_atlas_0062/$f" "result/research/brrk_btc_risk_signal_atlas_0062/$f"
-            cmp "science/research/brrk_btc_risk_signal_atlas_0062/$f" "result/research/brrk_btc_risk_signal_atlas_0062/$f"
+            cp "science/research/brrk_idle_cash_sweep_robustness_0063/$f" "result/research/brrk_idle_cash_sweep_robustness_0063/$f"
+            cmp "science/research/brrk_idle_cash_sweep_robustness_0063/$f" "result/research/brrk_idle_cash_sweep_robustness_0063/$f"
           done
-          git -C result add research/brrk_btc_risk_signal_atlas_0062/PRIMARY_RESULT.json research/brrk_btc_risk_signal_atlas_0062/EVIDENCE.json research/brrk_btc_risk_signal_atlas_0062/EXECUTION.json
+          git -C result add \
+            research/brrk_idle_cash_sweep_robustness_0063/PRIMARY_RESULT.json \
+            research/brrk_idle_cash_sweep_robustness_0063/EVIDENCE.json \
+            research/brrk_idle_cash_sweep_robustness_0063/EXECUTION.json
           staged="$(git -C result diff --cached --name-only | sort)"
-          expected="$(printf '%s\n' research/brrk_btc_risk_signal_atlas_0062/EVIDENCE.json research/brrk_btc_risk_signal_atlas_0062/EXECUTION.json research/brrk_btc_risk_signal_atlas_0062/PRIMARY_RESULT.json | sort)"
+          expected="$(printf '%s\n' \
+            research/brrk_idle_cash_sweep_robustness_0063/EVIDENCE.json \
+            research/brrk_idle_cash_sweep_robustness_0063/EXECUTION.json \
+            research/brrk_idle_cash_sweep_robustness_0063/PRIMARY_RESULT.json | sort)"
           test "$staged" = "$expected"
-          git -C result commit -m '0062 persist unique historical measurement'
-          git -C result push origin HEAD:research/0062-result-v1
-          remote_sha="$(git -C result ls-remote origin refs/heads/research/0062-result-v1 | cut -f1)"
+          git -C result commit -m '0063 persist unique historical measurement'
+          git -C result push origin HEAD:research/0063-result-v1
+          remote_sha="$(git -C result ls-remote origin refs/heads/research/0063-result-v1 | cut -f1)"
           test "$remote_sha" = "$(git -C result rev-parse HEAD)"
           echo "DURABLE_MEASUREMENT_COMMIT=$remote_sha"
 
-      - name: Finalize from persisted hashes without market read or remeasurement
+      - name: Finalize only from persisted hashes without historical re-read
         shell: bash
         run: |
           set -euo pipefail
           cd science
-          python -m research.brrk_btc_risk_signal_atlas_0062.run_once finalize \
-            --expected-head-sha ae8f585bfc3fd9599cee0844ee29971a36461dd0 \
-            --market research/brrk_beta_handoff_0047/evidence/MARKET_EVIDENCE.json
-          test -f research/brrk_btc_risk_signal_atlas_0062/RUN_ONCE.marker
+          python -m research.brrk_idle_cash_sweep_robustness_0063.run_once finalize \
+            --boundary-sha e17b96cd3358062ebd9eb88fae050ff865a9fb39 | tee /tmp/0063-finalize.json
+          test -f research/brrk_idle_cash_sweep_robustness_0063/RUN_ONCE.marker
 
       - name: Durably persist final marker
         shell: bash
         run: |
           set -euo pipefail
-          cp science/research/brrk_btc_risk_signal_atlas_0062/RUN_ONCE.marker result/research/brrk_btc_risk_signal_atlas_0062/RUN_ONCE.marker
-          cmp science/research/brrk_btc_risk_signal_atlas_0062/RUN_ONCE.marker result/research/brrk_btc_risk_signal_atlas_0062/RUN_ONCE.marker
-          git -C result add research/brrk_btc_risk_signal_atlas_0062/RUN_ONCE.marker
-          test "$(git -C result diff --cached --name-only)" = "research/brrk_btc_risk_signal_atlas_0062/RUN_ONCE.marker"
-          git -C result commit -m '0062 finalize exactly-once historical execution'
-          git -C result push origin HEAD:research/0062-result-v1
-          remote_sha="$(git -C result ls-remote origin refs/heads/research/0062-result-v1 | cut -f1)"
+          cp science/research/brrk_idle_cash_sweep_robustness_0063/RUN_ONCE.marker result/research/brrk_idle_cash_sweep_robustness_0063/RUN_ONCE.marker
+          cmp science/research/brrk_idle_cash_sweep_robustness_0063/RUN_ONCE.marker result/research/brrk_idle_cash_sweep_robustness_0063/RUN_ONCE.marker
+          git -C result add research/brrk_idle_cash_sweep_robustness_0063/RUN_ONCE.marker
+          test "$(git -C result diff --cached --name-only)" = "research/brrk_idle_cash_sweep_robustness_0063/RUN_ONCE.marker"
+          git -C result commit -m '0063 finalize exactly-once historical execution'
+          git -C result push origin HEAD:research/0063-result-v1
+          remote_sha="$(git -C result ls-remote origin refs/heads/research/0063-result-v1 | cut -f1)"
           test "$remote_sha" = "$(git -C result rev-parse HEAD)"
           echo "DURABLE_FINAL_COMMIT=$remote_sha"
 
       - name: Emit frozen result summary
+        shell: bash
         run: |
           python - <<'PY'
           import json
           from pathlib import Path
-          p=json.loads(Path('result/research/brrk_btc_risk_signal_atlas_0062/PRIMARY_RESULT.json').read_text())
-          e=json.loads(Path('result/research/brrk_btc_risk_signal_atlas_0062/EXECUTION.json').read_text())
+          base=Path('result/research/brrk_idle_cash_sweep_robustness_0063')
+          p=json.loads((base/'PRIMARY_RESULT.json').read_text())
+          e=json.loads((base/'EXECUTION.json').read_text())
           print(json.dumps({
-              'classification':p['classification'],
-              'common_origin_count':p['common_origin_count'],
-              'passing_family_tracks':p.get('passing_family_tracks',[]),
-              'historical_execution_attempts':e['historical_execution_attempts'],
-              'market_content_reads':e['market_content_reads'],
-              'source_loader_calls':e['source_loader_calls'],
-              'scientific_engine_calls':e['scientific_engine_calls'],
-              'actual_variants_evaluated':e['actual_variants_evaluated']
+            'classification':p['classification'],
+            'baseline_cagr':None if p['baseline'] is None else p['baseline']['cagr'],
+            'primary_cagr':None if p['primary'] is None else p['primary']['cagr'],
+            'baseline_mdd':None if p['baseline'] is None else p['baseline']['max_drawdown'],
+            'primary_mdd':None if p['primary'] is None else p['primary']['max_drawdown'],
+            'positive_chronological_blocks':p['positive_chronological_blocks'],
+            'mbb_lcb':None if p['bootstrap'] is None else p['bootstrap']['lcb'],
+            'core_stress_pass':p['core_stress_pass'],
+            'actual_variants_evaluated':p['actual_variants_evaluated'],
+            'input_read_counts':e['input_read_counts'],
+            'scientific_engine_calls':e['scientific_engine_calls'],
+            'network_fetches':e['network_fetches'],
+            'reruns':e['reruns'],
+            'retunes':e['retunes'],
+            'rescues':e['rescues']
           },sort_keys=True))
           PY
