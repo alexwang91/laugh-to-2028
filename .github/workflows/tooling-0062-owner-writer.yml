@@ -1,4 +1,4 @@
-name: Tooling 0066 implementation handoff patch
+name: Tooling 0066 controlled boundary validation
 
 on:
   push:
@@ -11,39 +11,61 @@ permissions:
   contents: write
 
 jobs:
-  handoff:
+  boundary-validation:
     runs-on: ubuntu-latest
+    env:
+      PYTHONHASHSEED: '0'
+      PYTHONPATH: '.'
+      OMP_NUM_THREADS: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: research/0066-implementation-v1
+          ref: research/0066-controlled-boundary-v1
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Update implementation-only CURRENT_STATE
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r execution/plan-b-bot/requirements-dev.txt
+      - name: Validate zero-result boundary and handoff
         shell: bash
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD)" = "f642240696edeb109d06f38202a4a326083ac038"
+          test "$(git rev-parse HEAD)" = "695f9f22ec53b5b74dc439ca40b3d403f8b4fcb3"
+          for f in RUN_ATTEMPT.marker PRIMARY_RESULT.json EVIDENCE.json EXECUTION.json RUN_ONCE.marker; do
+            test ! -e "research/brrk_btc_sol_path_event_early_warning_0066/$f"
+          done
+          python -m py_compile \
+            research/brrk_btc_sol_path_event_early_warning_0066/run_once.py \
+            research/brrk_btc_sol_path_event_early_warning_0066/engine.py \
+            research/brrk_btc_sol_path_event_early_warning_0066/event_engine.py \
+            research/brrk_btc_sol_path_event_early_warning_0066/models.py
           python - <<'PY'
           from pathlib import Path
           p=Path('docs/CURRENT_STATE.md')
           s=p.read_text()
-          old="0066 = `PREREGISTERED / IMPLEMENTATION ABSENT / NOT RUN`."
-          new="0066 = `IMPLEMENTED / NOT RUN / CONTROLLED BOUNDARY ABSENT`."
+          old="0066 = `IMPLEMENTED / NOT RUN / CONTROLLED BOUNDARY ABSENT`."
+          new="0066 = `CONTROLLED EXECUTION BOUNDARY FROZEN / NOT RUN`."
           assert s.count(old)==1
           s=s.replace(old,new)
-          anchor="Historical actual variants evaluated = 0 / 1704.\n"
-          insert=(
-              "Historical actual variants evaluated = 0 / 1704.\n"
-              "Implementation-only engine/event/model modules are present on the implementation branch.\n"
-              "Runtime observability commit = `f642240696edeb109d06f38202a4a326083ac038`; it adds phase/progress logging and suppresses only the sklearn penalty-deprecation FutureWarning without changing any frozen model parameter or mathematical path.\n"
-              "Bounded artificial implementation validation run = `31801841347`; synthetic unit tests, full 1632/64/8 configuration enumeration audit, zero-result assertions and clean-worktree assertions all passed.\n"
-              "The cancelled full-artificial tooling run `31792978620` was implementation-only synthetic validation, not a historical execution attempt, and created no runtime result marker.\n"
-          )
+          anchor="0066 owner-first registry commit: `44f8df24538216b9b83466522fc8efb209b3082a`.\n"
+          insert=anchor+"Merged 0066 IMPLEMENTATION: `aa55a5625f59e1f0221bf972104c96e5b709511a`.\n"
           assert s.count(anchor)==1
           s=s.replace(anchor,insert)
-          oldnext="Merge 0066 numerical/data PREREGISTRATION after fresh standing CI. Only then begin IMPLEMENTATION-ONLY using synthetic/artificial data; do not read 0066 historical outcomes or compute event counts, indicator associations, classifier metrics or portfolio economics during implementation."
-          newnext="Open and merge the 0066 IMPLEMENTATION-ONLY PR after fresh standing CI. Then freeze and merge a CONTROLLED-EXECUTION BOUNDARY with exact implementation blobs. Do not create RUN_ATTEMPT.marker or read historical 0066 outcomes before that boundary is merged."
+          oldimpl="Implementation-only engine/event/model modules are present on the implementation branch."
+          newimpl="Implementation-only engine/event/model modules are merged and immutable for the controlled boundary."
+          assert s.count(oldimpl)==1
+          s=s.replace(oldimpl,newimpl)
+          marker="The cancelled full-artificial tooling run `31792978620` was implementation-only synthetic validation, not a historical execution attempt, and created no runtime result marker.\n"
+          extra=(marker+
+              "Controlled boundary branch = `research/0066-controlled-boundary-v1`; it freezes RUN_INTERFACE, RESULT_SCHEMA, exactly-once run_once and exact scientific/data blob identities.\n"
+              "Boundary preflight is Git-identity-only: historical content reads=0, market loader calls=0, scientific engine calls=0.\n")
+          assert s.count(marker)==1
+          s=s.replace(marker,extra)
+          oldnext="Open and merge the 0066 IMPLEMENTATION-ONLY PR after fresh standing CI. Then freeze and merge a CONTROLLED-EXECUTION BOUNDARY with exact implementation blobs. Do not create RUN_ATTEMPT.marker or read historical 0066 outcomes before that boundary is merged."
+          newnext="Open and merge the zero-result 0066 CONTROLLED-EXECUTION BOUNDARY after fresh standing CI. After boundary merge, run exact-merged-SHA Git-only preflight; only then durably persist the unique RUN_ATTEMPT.marker before any historical content read, execute the frozen 0066 program exactly once, persist PRIMARY_RESULT/EVIDENCE/EXECUTION create-only, and finalize RUN_ONCE without remeasurement."
           assert s.count(oldnext)==1
           s=s.replace(oldnext,newnext)
           p.write_text(s)
@@ -53,5 +75,20 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add docs/CURRENT_STATE.md
-          git commit -m 'docs: hand off repaired 0066 implementation state'
-          git push origin HEAD:research/0066-implementation-v1
+          git commit -m 'docs: hand off 0066 controlled boundary state'
+          FINAL_SHA="$(git rev-parse HEAD)"
+          python -m research.brrk_btc_sol_path_event_early_warning_0066.run_once preflight --boundary-sha "$FINAL_SHA" > /tmp/0066-preflight.json
+          python - <<'PY'
+          import json
+          p=json.load(open('/tmp/0066-preflight.json'))
+          assert p['status']=='PREFLIGHT_PASS_ZERO_RESULT_GIT_IDENTITY_ONLY'
+          assert p['market_loader_calls']==0
+          assert p['scientific_engine_calls']==0
+          assert all(v==0 for v in p['historical_content_reads'].values())
+          print(json.dumps(p,indent=2,sort_keys=True))
+          PY
+          for f in RUN_ATTEMPT.marker PRIMARY_RESULT.json EVIDENCE.json EXECUTION.json RUN_ONCE.marker; do
+            test ! -e "research/brrk_btc_sol_path_event_early_warning_0066/$f"
+          done
+          git status --porcelain | grep -q '^' && { echo 'unexpected dirty worktree'; git status --porcelain; exit 1; } || true
+          git push origin HEAD:research/0066-controlled-boundary-v1
