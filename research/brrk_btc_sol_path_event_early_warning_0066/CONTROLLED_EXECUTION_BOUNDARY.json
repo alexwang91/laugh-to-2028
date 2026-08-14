@@ -1,0 +1,84 @@
+{
+  "schema_version": 1,
+  "research_id": "BRRK-BTC-SOL-PATH-EVENT-EARLY-WARNING-0066",
+  "stage": "CONTROLLED_EXECUTION_BOUNDARY_FROZEN_NOT_RUN",
+  "implementation_merge_sha": "aa55a5625f59e1f0221bf972104c96e5b709511a",
+  "frozen_blobs": {
+    "PREREGISTRATION.json": "8a7949cb84c46b802252de8c39f67936cf491901",
+    "DATASET_DECLARATION.json": "daed821114325422dbfdaf6ce3979b4a529565b2",
+    "IMPLEMENTATION_CONTRACT.json": "82ff75368cdd52fb9776316f5def76d655b66552",
+    "engine.py": "79320c83d0ce89c2c952fd0a4f7a9b7452a8e0ae",
+    "event_engine.py": "651ebb824b9dc1390ed0170a4eab07a3870786aa",
+    "models.py": "6b255b887f2cd8f1741086a7bf27e6254288e836",
+    "RUN_INTERFACE.json": "7b1f7f489fe3b11812f3e48c3922ef9021b86daa",
+    "RESULT_SCHEMA.json": "dfe76fa4291924786596ed0ed54e088628299257",
+    "run_once.py": "4dcecb01308e0bcfa75d5f4e62404ca634f503f8",
+    "0062_feature_engine": "cac8e946998c836d10842b9388e1e3ef345a8c0b",
+    "0047_market_loader": "059b55961e279dab41ba29b5b017de0922e4f33c",
+    "market_evidence": "64ebf5c6deaf3f34dbeac715378f196ff0f4fafe",
+    "BRRK0011_equity": "82c87f8cb0ff01c728ffd3b717fff17cf5a364f2",
+    "BRRK0011_weights": "2f6c8d3a8c25d3cafeaa0128f1c425dac248370b",
+    "DTB3": "71d50e26f8a9afb6bcb88401d20b97d5fb0a891a",
+    "0064_cash_engine": "4060a307be2204c11952cb52e2fc718a5343d8e1"
+  },
+  "payload_hashes": {
+    "market_evidence_payload_sha256": "d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193",
+    "DTB3_payload_sha256": "4d8aee67dbd528ce38ff8482e9bb02dd5ccf2c6cd461f606fe90007151ab6879"
+  },
+  "frozen_scientific_counts": {
+    "indicator_atlas_hypothesis_cells": 8080,
+    "validation_tuning_configs": 1632,
+    "final_predictor_tracks": 64,
+    "final_controllers": 8,
+    "model_controller_variants": 1704,
+    "historical_attempt_budget": 1
+  },
+  "preflight": {
+    "must_run_on_exact_merged_boundary_sha": true,
+    "checks": ["Git blob identities", "pinned payload identities", "absence of all runtime artifacts"],
+    "historical_content_reads": 0,
+    "market_loader_calls": 0,
+    "scientific_engine_calls": 0
+  },
+  "attempt_consumption": {
+    "RUN_ATTEMPT_must_be_create_only": true,
+    "RUN_ATTEMPT_must_be_durably_pushed_before_any_historical_content_read": true,
+    "same_id_rerun_allowed_after_attempt": false,
+    "same_id_retune_allowed_after_attempt": false,
+    "same_id_rescue_allowed_after_attempt": false
+  },
+  "unique_historical_execution": {
+    "market_evidence_reads": 1,
+    "equity_reads": 1,
+    "weights_reads": 1,
+    "DTB3_reads": 1,
+    "market_loader_calls": 1,
+    "scientific_engine_calls": 1,
+    "network_fetches": 0,
+    "all_frozen_0066_paths_inside_single_engine_call": true
+  },
+  "persistence": {
+    "create_only": true,
+    "result_artifacts": ["PRIMARY_RESULT.json", "EVIDENCE.json", "EXECUTION.json"],
+    "final_marker": "RUN_ONCE.marker",
+    "finalize_historical_content_reads": 0,
+    "finalize_market_loader_calls": 0,
+    "finalize_scientific_engine_calls": 0,
+    "partial_artifact_auto_recompute_allowed": false,
+    "marker_only_recovery": "Only if complete persisted result/evidence/execution hashes already exist; historical reread and scientific remeasurement forbidden."
+  },
+  "zero_result_state": {
+    "historical_execution_performed": false,
+    "runtime_artifacts_present": false,
+    "actual_variants_evaluated": 0
+  },
+  "no_drift": {
+    "canonical_BRRK_0011": "NO_CHANGE",
+    "0064": "NO_CHANGE",
+    "0065": "NO_CHANGE",
+    "Phase_6": "NO_CHANGE",
+    "production_authorized": false,
+    "signature_authorized": false,
+    "order_submission_authorized": false
+  }
+}
