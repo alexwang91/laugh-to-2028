@@ -1,0 +1,55 @@
+name: Tooling 0063 prereg artifact read-only
+
+on:
+  push:
+    branches: [tools/0062-owner-artifact-v1]
+    paths:
+      - 'tools/build_0063_prereg_artifact.py'
+      - '.github/workflows/tooling-0063-prereg-artifact.yml'
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  build-prereg:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: aeff95faa60f5e7f5c209c143a329e7e45545286
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: execution/plan-b-bot/requirements-dev.txt
+      - name: Install pinned governance runtime
+        run: pip install -r execution/plan-b-bot/requirements-dev.txt
+      - name: Download exact result-blind DTB3 capture
+        uses: actions/download-artifact@v4
+        with:
+          name: 0063-dtb3-raw-capture
+          path: /tmp/0063-capture
+          github-token: ${{ github.token }}
+          repository: alexwang91/laugh-to-2028
+          run-id: 31757177489
+      - name: Fetch prereg builder from tooling branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -fsSL -H 'Accept: application/vnd.github.raw+json' \
+            -H 'Authorization: Bearer ${{ github.token }}' \
+            'https://api.github.com/repos/${{ github.repository }}/contents/tools/build_0063_prereg_artifact.py?ref=tools%2F0062-owner-artifact-v1' \
+            -o /tmp/build_0063_prereg_artifact.py
+      - name: Build and validate prereg artifact without baseline reads
+        shell: bash
+        run: |
+          set -euo pipefail
+          python /tmp/build_0063_prereg_artifact.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: 0063-prereg-package
+          path: /tmp/0063-prereg-artifact
+          if-no-files-found: error
+          retention-days: 7
