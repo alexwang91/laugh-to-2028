@@ -1,0 +1,60 @@
+{
+  "actual_variants_evaluated": 16,
+  "baseline": {
+    "cagr": 0.6516609785339962,
+    "max_drawdown": -0.3371507034657847,
+    "terminal_wealth": 62247.382312942056
+  },
+  "bootstrap": {
+    "block_length": 60,
+    "lcb": -1.4818569508981128e-05,
+    "mu_obs": -3.7078918892085084e-06,
+    "q95": 1.1110677619772619e-05,
+    "replicates": 4000,
+    "seed": 630063
+  },
+  "candidate_cell_count": 16,
+  "chronological_block_sizes": [
+    333,
+    333,
+    333,
+    333
+  ],
+  "classification": "FAIL_IDLE_CASH_SWEEP_PRIMARY_ECONOMICS",
+  "core_stress_pass": false,
+  "future_only_validation_eligible": false,
+  "gates": {
+    "G0_CONTRACT_AND_DATA_IDENTITY": true,
+    "G1_BASELINE_RECONSTRUCTION_AND_SUPPORT": true,
+    "G2_PRIMARY_NET_TERMINAL_WEALTH_AND_CAGR": false,
+    "G3_PRIMARY_MAX_DRAWDOWN_NONINFERIORITY": false,
+    "G4_TEMPORAL_RECURRENCE": false,
+    "G5_DEPENDENCE_AWARE_MBB_LCB": false,
+    "G6_CORE_STRESS_ROBUSTNESS": false
+  },
+  "order_submission_authorized": false,
+  "positive_chronological_blocks": 1,
+  "primary": {
+    "block_relative_log_growth": [
+      -0.0031067278401201836,
+      -0.005322700713641648,
+      -0.001005165706544642,
+      0.004495682263880739
+    ],
+    "cagr": 0.6494239573667522,
+    "cash_sweep_turnover": 22.9757546716,
+    "max_drawdown": -0.33978817065676337,
+    "relative_terminal_log_growth": -0.004938911996425733,
+    "sweep_friction_bps": 10,
+    "terminal_wealth": 61940.70591694873,
+    "total_carry_return_units": 0.018015541729267455,
+    "total_sweep_friction_return_units": 0.0229757546716,
+    "yield_realization": 0.5
+  },
+  "primary_cell_key": "a050_f10bps",
+  "production_authorized": false,
+  "research_id": "BRRK-IDLE-CASH-SWEEP-ROBUSTNESS-0063",
+  "schema_version": 1,
+  "signature_authorized": false,
+  "state_to_canonical_integration_eligible": false
+}

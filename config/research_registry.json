@@ -4338,7 +4338,7 @@
       "validation_dataset_refs": [],
       "sealed_dataset_refs": [],
       "declared_variant_budget": 16,
-      "actual_variants_evaluated": 0,
+      "actual_variants_evaluated": 16,
       "parameter_candidate_count": 16,
       "stopping_rule": "Exactly one governed historical execution attempt after preregistration, implementation and controlled-boundary merges; all 16 frozen stress cells are evaluated in one scientific engine call with no result-dependent rerun or rescue.",
       "success_criteria": "The preregistered conservative primary cell passes data identity, net terminal wealth/CAGR, drawdown, temporal recurrence and dependence-aware MBB gates, and all preregistered core stress-neighborhood cells retain positive relative terminal wealth.",
@@ -4348,7 +4348,7 @@
       "researcher_decisions": "The unchanged BRRK-0011 path, first-valid DTB3 capture contract, 4x4 stress grid, conservative primary cell and minimum robustness substance were frozen at DESIGN before 0063 candidate economics.",
       "research_process_complexity": {
         "declared_parameter_candidates": 16,
-        "actual_parameter_candidates_evaluated": 0,
+        "actual_parameter_candidates_evaluated": 16,
         "universes_evaluated": 1,
         "horizons_evaluated": 1,
         "rebalance_variants": 0,
@@ -4358,17 +4358,28 @@
         "related_family_trials": 1
       },
       "lineage_edges": [],
-      "result_status": "PREREGISTERED_NOT_RUN",
-      "failure_reason": null,
-      "promotion_state": "NONE",
-      "evidence_refs": [],
+      "result_status": "FAIL_IDLE_CASH_SWEEP_PRIMARY_ECONOMICS",
+      "failure_reason": "Frozen primary 50% DTB3 realization / 10-bps L1 cash-sweep-friction cell failed G2: terminal wealth 61940.70591694873 < baseline 62247.382312942056 and CAGR 0.6494239573667522 < baseline 0.6516609785339962.",
+      "promotion_state": "NO_PROMOTION",
+      "evidence_refs": [
+        "run:31759258964",
+        "research/brrk_idle_cash_sweep_robustness_0063/RUN_ATTEMPT.marker",
+        "research/brrk_idle_cash_sweep_robustness_0063/PRIMARY_RESULT.json",
+        "research/brrk_idle_cash_sweep_robustness_0063/EVIDENCE.json",
+        "research/brrk_idle_cash_sweep_robustness_0063/EXECUTION.json",
+        "research/brrk_idle_cash_sweep_robustness_0063/RUN_ONCE.marker",
+        "research/brrk_idle_cash_sweep_robustness_0063/CLOSEOUT.json"
+      ],
       "decision_refs": [
         "research/governance/BRRK_IDLE_CASH_SWEEP_ROBUSTNESS_0063_DESIGN_FREEZE_2026-08-14.md",
         "research/brrk_idle_cash_sweep_robustness_0063/PREREGISTRATION.json",
         "research/brrk_idle_cash_sweep_robustness_0063/DATASET_DECLARATION.json",
+        "research/brrk_idle_cash_sweep_robustness_0063/IMPLEMENTATION_CONTRACT.json",
+        "research/brrk_idle_cash_sweep_robustness_0063/CONTROLLED_EXECUTION_BOUNDARY.json",
+        "research/brrk_idle_cash_sweep_robustness_0063/CLOSEOUT.json",
         "docs/CURRENT_STATE.md"
       ],
-      "production_relevance": "DEVELOPMENT cash-carry robustness replication only; no canonical BRRK-0011, Phase-6, production, signer or order-submission authority.",
+      "production_relevance": "DEVELOPMENT idle-cash sweep-friction mechanism failed the frozen primary net wealth/CAGR gate; no canonical, Phase-6 or production authority.",
       "production_authorized": false,
       "provenance_status": "FACT",
       "governed_path_prefixes": [
@@ -4378,8 +4389,17 @@
         "F27 R2 is exposed DEVELOPMENT motivation only and cannot satisfy 0063 gates.",
         "0063 changes no BRRK-0011 risk-asset signal, target, weight or gross exposure.",
         "The result-blind DTB3 capture is bound later in formal preregistration because owner-first registry validation cannot reference an unregistered dataset slice.",
-        "All 16 stress cells are reported; only the prospectively frozen primary hypothesis can promote."
-      ]
+        "All 16 stress cells are reported; only the prospectively frozen primary hypothesis can promote.",
+        "0063 unique execution: baseline CAGR 0.6516609785339962; primary CAGR 0.6494239573667522; primary failed G2.",
+        "Zero-sweep cells are descriptive result-informed DEVELOPMENT motivation only and cannot rescue or promote 0063.",
+        "Same-ID rerun, recomputation, retune, rescue and post-hoc cost-model substitution are permanently forbidden."
+      ],
+      "evidence_scorecard": {
+        "temporal_novelty": "RESEARCHER_EXPOSED_DEVELOPMENT_NOT_INDEPENDENT_OOS",
+        "statistical_sufficiency": "G0_G1_PASS_G2_PRIMARY_ECONOMICS_FAIL_50PCT_DTB3_10BPS_SWEEP",
+        "governance_integrity": "HIGH_EXACTLY_ONCE_HASH_BOUND_FINALIZED_EQUITY1_WEIGHTS1_DTB3_1_ENGINE1_NO_RERUN",
+        "operational_realism": "EXPLICIT_TRANSACTION_LIKE_SWEEP_FRICTION_TESTED_AND_PRIMARY_FAILED;_PASSIVE_CARRY_REQUIRES_NEW_ID_COST_MODEL"
+      }
     }
   ],
   "research_governance_debt": [

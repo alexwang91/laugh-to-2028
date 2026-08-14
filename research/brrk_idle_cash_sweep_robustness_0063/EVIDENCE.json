@@ -1,0 +1,310 @@
+{
+  "cells": {
+    "a025_f00bps": {
+      "block_relative_log_growth": [
+        0.0015604562714651303,
+        0.000764070880691986,
+        0.0007739429367060106,
+        0.005906916166347956
+      ],
+      "cagr": 0.6557476728676677,
+      "cash_sweep_turnover": 22.9757546716,
+      "max_drawdown": -0.33674431589829945,
+      "relative_terminal_log_growth": 0.009005386255211084,
+      "sweep_friction_bps": 0,
+      "terminal_wealth": 62810.475665187296,
+      "total_carry_return_units": 0.009007770864633727,
+      "total_sweep_friction_return_units": 0.0,
+      "yield_realization": 0.25
+    },
+    "a025_f05bps": {
+      "block_relative_log_growth": [
+        -0.0015530746620429129,
+        -0.002660978757142975,
+        -0.0005024634183041024,
+        0.0022481498818592333
+      ],
+      "cagr": 0.650542582232899,
+      "cash_sweep_turnover": 22.9757546716,
+      "max_drawdown": -0.33847056216745575,
+      "relative_terminal_log_growth": -0.0024683669556307573,
+      "sweep_friction_bps": 5,
+      "terminal_wealth": 62093.922406963546,
+      "total_carry_return_units": 0.009007770864633727,
+      "total_sweep_friction_return_units": 0.0114878773358,
+      "yield_realization": 0.25
+    },
+    "a025_f10bps": {
+      "block_relative_log_growth": [
+        -0.004667202476044236,
+        -0.006086826137104326,
+        -0.0017791206991465162,
+        -0.0014111726991224796
+      ],
+      "cagr": 0.6453528604155014,
+      "cash_sweep_turnover": 22.9757546716,
+      "max_drawdown": -0.3401927235971228,
+      "relative_terminal_log_growth": -0.013944322011417556,
+      "sweep_friction_bps": 10,
+      "terminal_wealth": 61385.40855651329,
+      "total_carry_return_units": 0.009007770864633727,
+      "total_sweep_friction_return_units": 0.0229757546716,
+      "yield_realization": 0.25
+    },
+    "a025_f20bps": {
+      "block_relative_log_growth": [
+        -0.010897249778605952,
+        -0.012940915738152894,
+        -0.004333188513282665,
+        -0.008731487605175156
+      ],
+      "cagr": 0.6350193533056763,
+      "cash_sweep_turnover": 22.9757546716,
+      "max_drawdown": -0.3436248267872448,
+      "relative_terminal_log_growth": -0.03690284163521667,
+      "sweep_friction_bps": 20,
+      "terminal_wealth": 59992.14527851946,
+      "total_carry_return_units": 0.009007770864633727,
+      "total_sweep_friction_return_units": 0.0459515093432,
+      "yield_realization": 0.25
+    },
+    "a050_f00bps": {
+      "block_relative_log_growth": [
+        0.003120873716403869,
+        0.0015281269004577297,
+        0.0015478724729394106,
+        0.01181369815610813
+      ],
+      "cagr": 0.6598443872092135,
+      "cash_sweep_turnover": 22.9757546716,
+      "max_drawdown": -0.33633768733836955,
+      "relative_terminal_log_growth": 0.01801057124590914,
+      "sweep_friction_bps": 0,
+      "terminal_wealth": 63378.65003597219,
+      "total_carry_return_units": 0.018015541729267455,
+      "total_sweep_friction_return_units": 0.0,
+      "yield_realization": 0.5
+    },
+    "a050_f05bps": {
+      "block_relative_log_growth": [
+        7.371373706785726e-06,
+        -0.0018968880428236353,
+        0.0002714788440733269,
+        0.008154968353873323
+      ],
+      "cagr": 0.6546264690185226,
+      "cash_sweep_turnover": 22.9757546716,
+      "max_drawdown": -0.33806497262339674,
+      "relative_terminal_log_growth": 0.006536930528829801,
+      "sweep_friction_bps": 5,
+      "terminal_wealth": 62655.62199020606,
+      "total_carry_return_units": 0.018015541729267455,
+      "total_sweep_friction_return_units": 0.0114878773358,
+      "yield_realization": 0.5
+    },
+    "a050_f10bps": {
+      "block_relative_log_growth": [
+        -0.0031067278401201836,
+        -0.005322700713641648,
+        -0.001005165706544642,
+        0.004495682263880739
+      ],
+      "cagr": 0.6494239573667522,
+      "cash_sweep_turnover": 22.9757546716,
+      "max_drawdown": -0.33978817065676337,
+      "relative_terminal_log_growth": -0.004938911996425733,
+      "sweep_friction_bps": 10,
+      "terminal_wealth": 61940.70591694873,
+      "total_carry_return_units": 0.018015541729267455,
+      "total_sweep_friction_return_units": 0.0229757546716,
+      "yield_realization": 0.5
+    },
+    "a050_f20bps": {
+      "block_relative_log_growth": [
+        -0.009336717914220017,
+        -0.012176720852591133,
+        -0.003559208047979649,
+        -0.0028245596339703974
+      ],
+      "cagr": 0.6390649833375015,
+      "cash_sweep_turnover": 22.9757546716,
+      "max_drawdown": -0.34322233983794126,
+      "relative_terminal_log_growth": -0.027897206448761196,
+      "sweep_friction_bps": 20,
+      "terminal_wealth": 60534.852697607035,
+      "total_carry_return_units": 0.018015541729267455,
+      "total_sweep_friction_return_units": 0.0459515093432,
+      "yield_realization": 0.5
+    },
+    "a075_f00bps": {
+      "block_relative_log_growth": [
+        0.004681252336877818,
+        0.002292168059886246,
+        0.002321788609167477,
+        0.017720345975632733
+      ],
+      "cagr": 0.6639511459017513,
+      "cash_sweep_turnover": 22.9757546716,
+      "max_drawdown": -0.33593081764791355,
+      "relative_terminal_log_growth": 0.02701555498156427,
+      "sweep_friction_bps": 0,
+      "terminal_wealth": 63951.95115831049,
+      "total_carry_return_units": 0.027023312593901186,
+      "total_sweep_friction_return_units": 0.0,
+      "yield_realization": 0.75
+    },
+    "a075_f05bps": {
+      "block_relative_log_growth": [
+        0.0015677785840632064,
+        -0.0011328121901363361,
+        0.001045407706032872,
+        0.014061652654520966
+      ],
+      "cagr": 0.6587203688302581,
+      "cash_sweep_turnover": 22.9757546716,
+      "max_drawdown": -0.3376591425534545,
+      "relative_terminal_log_growth": 0.015542026754480708,
+      "sweep_friction_bps": 5,
+      "terminal_wealth": 63222.38996537006,
+      "total_carry_return_units": 0.027023312593901186,
+      "total_sweep_friction_return_units": 0.0114878773358,
+      "yield_realization": 0.75
+    },
+    "a075_f10bps": {
+      "block_relative_log_growth": [
+        -0.0015462920305183816,
+        -0.004558590153106598,
+        -0.00023122411477341823,
+        0.010402403054386238
+      ],
+      "cagr": 0.6535050361109773,
+      "cash_sweep_turnover": 22.9757546716,
+      "max_drawdown": -0.33938337779378736,
+      "relative_terminal_log_growth": 0.0040662967559878405,
+      "sweep_friction_bps": 10,
+      "terminal_wealth": 62501.01396300944,
+      "total_carry_return_units": 0.027023312593901186,
+      "total_sweep_friction_return_units": 0.0229757546716,
+      "yield_realization": 0.75
+    },
+    "a075_f20bps": {
+      "block_relative_log_growth": [
+        -0.007776224878015516,
+        -0.01141254083255065,
+        -0.0027852409843332937,
+        0.003082234162473004
+      ],
+      "cagr": 0.6431205329702305,
+      "cash_sweep_turnover": 22.9757546716,
+      "max_drawdown": -0.34281961416843687,
+      "relative_terminal_log_growth": -0.018891772532426455,
+      "sweep_friction_bps": 20,
+      "terminal_wealth": 61082.45732104314,
+      "total_carry_return_units": 0.027023312593901186,
+      "total_sweep_friction_return_units": 0.0459515093432,
+      "yield_realization": 0.75
+    },
+    "a100_f00bps": {
+      "block_relative_log_growth": [
+        0.006241592134948411,
+        0.003056194359566394,
+        0.0030956913458574722,
+        0.023626859631273436
+      ],
+      "cagr": 0.6680679733470085,
+      "cash_sweep_turnover": 22.9757546716,
+      "max_drawdown": -0.3355237066887795,
+      "relative_terminal_log_growth": 0.036020337471645715,
+      "sweep_friction_bps": 0,
+      "terminal_wealth": 64530.425175814366,
+      "total_carry_return_units": 0.03603108345853491,
+      "total_sweep_friction_return_units": 0.0,
+      "yield_realization": 1.0
+    },
+    "a100_f05bps": {
+      "block_relative_log_growth": [
+        0.0031281469710878296,
+        -0.0003687511984921452,
+        0.0018193231680418013,
+        0.01996820279015388
+      ],
+      "cagr": 0.6628243059940426,
+      "cash_sweep_turnover": 22.9757546716,
+      "max_drawdown": -0.337253071819818,
+      "relative_terminal_log_growth": 0.024546921730791368,
+      "sweep_friction_bps": 5,
+      "terminal_wealth": 63794.27195137288,
+      "total_carry_return_units": 0.03603108345853491,
+      "total_sweep_friction_return_units": 0.0114878773358,
+      "yield_realization": 1.0
+    },
+    "a100_f10bps": {
+      "block_relative_log_growth": [
+        1.4104954822759079e-05,
+        -0.0037944944549101697,
+        0.0005427040766344735,
+        0.016308989678745816
+      ],
+      "cagr": 0.6575961208985392,
+      "cash_sweep_turnover": 22.9757546716,
+      "max_drawdown": -0.33897834487072087,
+      "relative_terminal_log_growth": 0.013071304255292876,
+      "sweep_friction_bps": 10,
+      "terminal_wealth": 63066.377794784676,
+      "total_carry_return_units": 0.03603108345853491,
+      "total_sweep_friction_return_units": 0.0229757546716,
+      "yield_realization": 1.0
+    },
+    "a100_f20bps": {
+      "block_relative_log_growth": [
+        -0.00621577066793081,
+        -0.01064837567744225,
+        -0.0020112873218762926,
+        0.008988893790506988
+      ],
+      "cagr": 0.6471860263037486,
+      "cash_sweep_turnover": 22.9757546716,
+      "max_drawdown": -0.3424166496419291,
+      "relative_terminal_log_growth": -0.009886539876742366,
+      "sweep_friction_bps": 20,
+      "terminal_wealth": 61635.00322860761,
+      "total_carry_return_units": 0.03603108345853491,
+      "total_sweep_friction_return_units": 0.0459515093432,
+      "yield_realization": 1.0
+    }
+  },
+  "core_stress_cell_keys": [
+    "a050_f00bps",
+    "a050_f05bps",
+    "a050_f10bps",
+    "a075_f00bps",
+    "a075_f05bps",
+    "a075_f10bps",
+    "a100_f00bps",
+    "a100_f05bps",
+    "a100_f10bps"
+  ],
+  "data_identity": {
+    "dtb3_payload_sha256": "4d8aee67dbd528ce38ff8482e9bb02dd5ccf2c6cd461f606fe90007151ab6879",
+    "dtb3_payload_sha256_verified": true,
+    "pinned_git_blobs_verified": true
+  },
+  "input_read_counts": {
+    "dtb3": 1,
+    "equity": 1,
+    "weights": 1
+  },
+  "research_id": "BRRK-IDLE-CASH-SWEEP-ROBUSTNESS-0063",
+  "schema_version": 1,
+  "scientific_engine_calls": 1,
+  "support_validation": {
+    "cagr_anchor_expected": 0.6516609785339953,
+    "end": "2026-08-02",
+    "gross_max": 1.0,
+    "observations": 1332,
+    "passed": true,
+    "reasons": [],
+    "start": "2022-12-10",
+    "terminal_10k_anchor_expected": 62247.38231294191
+  }
+}
