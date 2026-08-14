@@ -3,7 +3,8 @@
 Last updated: 2026-08-14
 
 Authoritative repository: `alexwang91/laugh-to-2028`.
-Active research handoff: 0063 immutable closeout; next legal research step is a new ID.
+Merged 0063 closeout: `b7fd66f28c8d7611cd4c71dc04b1c152bc65d62d`.
+Active branch: `research/0064-design-v2`.
 
 ## Required closed-research anchors
 
@@ -16,20 +17,18 @@ ID 0043 is closed against result-informed pruning, reweighting, threshold rescue
 
 0062 = `FAIL_NO_SIGNAL_ATLAS_FAMILY_INFORMATION / CLOSED`.
 0063 = `FAIL_IDLE_CASH_SWEEP_PRIMARY_ECONOMICS / CLOSED`.
-0063 boundary merge = `e17b96cd3358062ebd9eb88fae050ff865a9fb39`.
-0063 execution run = `31759258964`.
-0063 final result branch SHA = `868bddfdee72f3b06cf3df275debc681c382e8c6`.
-Baseline CAGR = 0.6516609785339962.
-Primary 50% DTB3 / 10-bps sweep CAGR = 0.6494239573667522.
-Primary terminal wealth = 61940.70591694873 versus baseline 62247.382312942056.
-Primary MDD = -0.33978817065676337 versus baseline -0.3371507034657847.
-Binding gate = G2 primary net terminal wealth/CAGR.
-Historical variants evaluated = 16.
-RUN_ATTEMPT = consumed.
-RUN_ONCE = finalized.
-Same-ID rerun/recompute/retune/rescue = permanently forbidden.
+0064 = `DESIGN FROZEN / PREREGISTRATION ABSENT / IMPLEMENTATION ABSENT / NOT RUN`.
+0064 research ID = `BRRK-IDLE-CASH-PASSIVE-ACCRUAL-ROBUSTNESS-0064`.
+Mechanism = already-idle residual cash remains continuously interest-bearing; no additional sweep trade.
+Frozen yield-realization grid = 25%, 50%, 75%, 100%.
+Frozen continuous annual idle-cash spread/fee grid = 0, 50, 100, 150, 200 bps.
+Primary conservative cell = 50% yield realization / 100 bps annual spread/fee.
+Core stress neighborhood = 50/75/100% realization x 50/100/150 bps annual fee = 9 cells.
+Historical 0064 candidate economics = NOT COMPUTED.
+Actual historical variants evaluated = 0.
+RUN_ATTEMPT.marker = ABSENT.
 
-Descriptive zero-sweep cells showed positive carry across 25/50/75/100% realization, but they have no 0063 promotion authority. A distinct passive-interest/custody-spread mechanism requires a new ID and a fresh preregistered cost model.
+0063 zero-sweep cells are result-informed DEVELOPMENT motivation only. They cannot satisfy any 0064 gate. 0064 freezes a different operational cost model: continuous fee/spread on idle cash principal, with no zero-yield floor and no per-change sweep transaction charge.
 
 ## No-drift authority
 
@@ -44,4 +43,4 @@ Phase 6 = NO CHANGE.
 
 ## Exact next step
 
-Open a new governed research ID for passive interest-bearing idle cash using a continuous annual yield haircut/spread/fee model rather than transaction-like per-sweep friction. Treat every 0063 stress-cell result as exposed DEVELOPMENT evidence only.
+Merge 0064 DESIGN through fresh standing CI. Then owner-first numerical/data preregistration, synthetic-only implementation, separate controlled boundary, exactly one historical attempt and immutable closeout.
