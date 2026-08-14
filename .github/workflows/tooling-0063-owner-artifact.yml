@@ -1,10 +1,10 @@
-name: Tooling 0063 owner artifact read-only
+name: Tooling 0064 owner artifact read-only
 
 on:
   push:
     branches: [tools/0062-owner-artifact-v1]
     paths:
-      - 'tools/build_0063_owner_artifact.py'
+      - 'tools/build_0064_owner_artifact.py'
       - '.github/workflows/tooling-0063-owner-artifact.yml'
 
 permissions:
@@ -16,7 +16,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: e1ac320e092e554c283ef6b88aaaa5f65aaf61ab
+          ref: 38b5740cb89ae16b4bc005f3d5bcb4f8e0a0181f
           fetch-depth: 1
       - name: Fetch builder from tooling branch
         shell: bash
@@ -24,16 +24,16 @@ jobs:
           set -euo pipefail
           curl -fsSL -H 'Accept: application/vnd.github.raw+json' \
             -H 'Authorization: Bearer ${{ github.token }}' \
-            'https://api.github.com/repos/${{ github.repository }}/contents/tools/build_0063_owner_artifact.py?ref=tools%2F0062-owner-artifact-v1' \
-            -o /tmp/build_0063_owner_artifact.py
+            'https://api.github.com/repos/${{ github.repository }}/contents/tools/build_0064_owner_artifact.py?ref=tools%2F0062-owner-artifact-v1' \
+            -o /tmp/build_0064_owner_artifact.py
       - name: Build and validate clean owner artifact
         shell: bash
         run: |
           set -euo pipefail
-          python /tmp/build_0063_owner_artifact.py
+          python /tmp/build_0064_owner_artifact.py
       - uses: actions/upload-artifact@v4
         with:
-          name: 0063-clean-prereg-owner
-          path: /tmp/0063-owner-artifact
+          name: 0064-clean-prereg-owner
+          path: /tmp/0064-owner-artifact
           if-no-files-found: error
           retention-days: 7
