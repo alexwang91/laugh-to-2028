@@ -327,6 +327,8 @@ def _tune_validation(
                     best_metric: dict[str, Any] | None = None
                     for params in configs[arch]:
                         attempts += 1
+                        if attempts == 1 or attempts % 25 == 0:
+                            print(f"[0066][validation] tuning_attempt={attempts}/1632 asset={asset} target={target} lead={h} arch={arch}", flush=True)
                         pred, pa = _walk_forward_classifier(
                             arch, params, cells, families, signals, lab, mi, h, vidx,
                             selected_signals=screened[(asset, target, h)] if arch == "P03_VALIDATION_SCREENED_SIGNAL_LOGIT" else None,
@@ -350,6 +352,8 @@ def _tune_validation(
             labels_by_h = {h: labels[(asset, target, h)] for h in ee.WARNING_HORIZONS}
             for params in configs["P07_DISCRETE_TIME_HAZARD_LOGIT"]:
                 attempts += 1
+                if attempts == 1 or attempts % 25 == 0:
+                    print(f"[0066][validation] tuning_attempt={attempts}/1632 asset={asset} target={target} arch=P07_DISCRETE_TIME_HAZARD_LOGIT", flush=True)
                 preds, pa = _walk_forward_hazard(params, families, labels_by_h, market_indices[asset], vidx)
                 metrics = {h: _metrics_for_prediction(labels_by_h[h], preds[h], vidx) for h in ee.WARNING_HORIZONS}
                 ok = [m for m in metrics.values() if m.get("status") == "OK"]
@@ -839,15 +843,27 @@ def evaluate_program(
     """Single top-level 0066 scientific call. No file I/O, network I/O, signer or order submission."""
     if bootstrap_replicates != BOOT_REPS:
         raise ValueError("historical execution must use frozen 4000 bootstrap replicates")
+    print("[0066] phase=feature_build start", flush=True)
     frames = _naive_frames(frames)
     cells, families, meta, signals = _common_feature_objects(frames)
+    print("[0066] phase=feature_build done", flush=True)
+    print("[0066] phase=event_atlas start", flush=True)
     bundle = ee.build_event_atlas(frames)
     labels, support = _labels_and_support(bundle, cells.index)
+    print("[0066] phase=event_atlas done", flush=True)
+    print("[0066] phase=indicator_atlas start", flush=True)
     atlas, screened = build_indicator_warning_atlas(signals, meta, labels, support, {a: bundle.asset_indices[a] for a in ee.ASSETS})
+    print("[0066] phase=indicator_atlas done", flush=True)
+    print("[0066] phase=validation_tuning start declared_attempts=1632", flush=True)
     selected_params, validation_predictions, validation_metrics, tuning_audit, tuning_attempts = _tune_validation(cells, families, signals, labels, {a: bundle.asset_indices[a] for a in ee.ASSETS}, screened)
+    print(f"[0066] phase=validation_tuning done actual_attempts={tuning_attempts}", flush=True)
     preferred_horizon, preferred_arch, exact_arch = _preferred_selections(validation_metrics)
+    print("[0066] phase=economic_prediction_generation start", flush=True)
     economic_predictions, evaluation_audit = _evaluate_selected_over_economic_period(cells, families, signals, labels, {a: bundle.asset_indices[a] for a in ee.ASSETS}, screened, selected_params, validation_predictions)
+    print("[0066] phase=economic_prediction_generation done", flush=True)
+    print("[0066] phase=predictive_inference start", flush=True)
     predictor_results, predictor_boot = _final_predictor_results(labels, support, economic_predictions, preferred_horizon, cells.index)
+    print("[0066] phase=predictive_inference done", flush=True)
 
     pidx = _series(baseline_returns).index
     pidx = pidx[(pidx >= ECON_START) & (pidx <= ECON_END)]

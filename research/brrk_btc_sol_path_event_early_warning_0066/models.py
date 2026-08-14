@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import math
+import warnings
 from dataclasses import dataclass
 from typing import Any, Mapping, Sequence
 
@@ -14,6 +15,13 @@ from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import average_precision_score, brier_score_loss, roc_auc_score
 from sklearn.preprocessing import StandardScaler
+
+warnings.filterwarnings(
+    "ignore",
+    message=r"'penalty' was deprecated in version 1\.8.*",
+    category=FutureWarning,
+    module=r"sklearn\.linear_model\._logistic",
+)
 
 FAMILY_ORDER = (
     "F01_TREND_LEVEL_DIRECTION",
