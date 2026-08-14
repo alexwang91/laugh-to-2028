@@ -1,4 +1,4 @@
-name: Tooling 0064 durable-attempt topology synthetic
+name: Research 0064 unique historical execution
 
 on:
   push:
@@ -8,61 +8,161 @@ on:
       - '.github/workflows/tooling-0062-owner-writer.yml'
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
-  topology-synthetic:
+  unique-historical-attempt:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout exact formal result branch
+        uses: actions/checkout@v4
         with:
-          ref: 876fdf657bd11bc4aeb9d0dcd3859886ee099568
+          ref: research/0064-result-v1
           fetch-depth: 0
-      - name: Reconfirm exact zero-result boundary without content read
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: execution/plan-b-bot/requirements-dev.txt
+      - run: pip install -r execution/plan-b-bot/requirements-dev.txt
+      - name: Final zero-result / no-drift preflight before attempt consumption
         shell: bash
+        env:
+          BOUNDARY: 876fdf657bd11bc4aeb9d0dcd3859886ee099568
+          RESULT_BRANCH: research/0064-result-v1
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD)" = "876fdf657bd11bc4aeb9d0dcd3859886ee099568"
+          git fetch origin main "$RESULT_BRANCH"
+          test "$(git rev-parse HEAD)" = "$BOUNDARY"
+          test "$(git rev-parse origin/main)" = "$BOUNDARY"
+          test "$(git rev-parse origin/$RESULT_BRANCH)" = "$BOUNDARY"
           for f in RUN_ATTEMPT.marker PRIMARY_RESULT.json EVIDENCE.json EXECUTION.json RUN_ONCE.marker; do
             test ! -e "research/brrk_idle_cash_passive_accrual_robustness_0064/$f"
           done
-      - name: Prove durable-attempt parent topology in isolated toy repository
+          PYTHONPATH=. python research/brrk_idle_cash_passive_accrual_robustness_0064/run_once.py preflight --boundary-sha "$BOUNDARY" | tee /tmp/final_preflight.json
+          python - <<'PY'
+          import json
+          p=json.load(open('/tmp/final_preflight.json'))
+          assert p['status']=='PREFLIGHT_PASS_ZERO_RESULT_GIT_IDENTITY_ONLY'
+          assert p['historical_csv_content_reads']==0
+          assert p['scientific_engine_calls']==0
+          PY
+      - name: Consume attempt and durably push marker before any historical content read
+        id: attempt
+        shell: bash
+        env:
+          BOUNDARY: 876fdf657bd11bc4aeb9d0dcd3859886ee099568
+          RESULT_BRANCH: research/0064-result-v1
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python research/brrk_idle_cash_passive_accrual_robustness_0064/run_once.py start-attempt --boundary-sha "$BOUNDARY" --workflow-run-id "$GITHUB_RUN_ID"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add research/brrk_idle_cash_passive_accrual_robustness_0064/RUN_ATTEMPT.marker
+          test "$(git diff --cached --name-only)" = "research/brrk_idle_cash_passive_accrual_robustness_0064/RUN_ATTEMPT.marker"
+          git commit -m 'research: consume 0064 historical attempt'
+          ATTEMPT_COMMIT="$(git rev-parse HEAD)"
+          test "$(git rev-parse HEAD^)" = "$BOUNDARY"
+          git push origin HEAD:"$RESULT_BRANCH"
+          REMOTE="$(git ls-remote origin "refs/heads/$RESULT_BRANCH" | awk '{print $1}')"
+          test "$REMOTE" = "$ATTEMPT_COMMIT"
+          echo "attempt_commit=$ATTEMPT_COMMIT" >> "$GITHUB_OUTPUT"
+          printf 'DURABLE_ATTEMPT_COMMIT=%s\n' "$ATTEMPT_COMMIT"
+
+          # Restore scientific HEAD to the exact frozen boundary while keeping
+          # the already-durable marker in the working tree.
+          git reset --mixed "$BOUNDARY"
+          test "$(git rev-parse HEAD)" = "$BOUNDARY"
+          test -f research/brrk_idle_cash_passive_accrual_robustness_0064/RUN_ATTEMPT.marker
+      - name: Execute frozen scientific measurement exactly once
+        shell: bash
+        env:
+          BOUNDARY: 876fdf657bd11bc4aeb9d0dcd3859886ee099568
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$BOUNDARY"
+          PYTHONPATH=. python research/brrk_idle_cash_passive_accrual_robustness_0064/run_once.py evaluate --boundary-sha "$BOUNDARY" | tee /tmp/primary_stdout.json
+          PYTHONPATH=. python research/brrk_idle_cash_passive_accrual_robustness_0064/run_once.py finalize --boundary-sha "$BOUNDARY" | tee /tmp/final_stdout.json
+      - name: Verify persisted result contract without recomputation
         shell: bash
         run: |
           set -euo pipefail
-          rm -rf /tmp/attempt-topology
-          mkdir /tmp/attempt-topology
-          cd /tmp/attempt-topology
-          git init -q
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          h=Path('research/brrk_idle_cash_passive_accrual_robustness_0064')
+          names=['RUN_ATTEMPT.marker','PRIMARY_RESULT.json','EVIDENCE.json','EXECUTION.json','RUN_ONCE.marker']
+          for n in names:
+              assert (h/n).exists(), n
+          p=json.loads((h/'PRIMARY_RESULT.json').read_text())
+          e=json.loads((h/'EVIDENCE.json').read_text())
+          x=json.loads((h/'EXECUTION.json').read_text())
+          m=json.loads((h/'RUN_ONCE.marker').read_text())
+          allowed={
+              'MEASUREMENT_INCONCLUSIVE_DATA_IDENTITY',
+              'FAIL_PASSIVE_CASH_PRIMARY_ECONOMICS',
+              'FAIL_PASSIVE_CASH_DRAWDOWN',
+              'FAIL_PASSIVE_CASH_TEMPORAL_ROBUSTNESS',
+              'FAIL_PASSIVE_CASH_DEPENDENCE_ROBUSTNESS',
+              'FAIL_PASSIVE_CASH_STRESS_ROBUSTNESS',
+              'PASS_PASSIVE_CASH_ACCRUAL_ROBUSTNESS',
+          }
+          assert p['classification'] in allowed
+          assert p['production_authorized'] is False
+          assert p['signature_authorized'] is False
+          assert p['order_submission_authorized'] is False
+          assert x['input_read_counts']=={'equity':1,'weights':1,'dtb3':1}
+          assert x['network_fetches']==0
+          if p['classification']=='MEASUREMENT_INCONCLUSIVE_DATA_IDENTITY':
+              assert p['candidate_cell_count']==0 and p['actual_variants_evaluated']==0
+              assert x['scientific_engine_calls']==0
+          else:
+              assert p['candidate_cell_count']==20 and p['actual_variants_evaluated']==20
+              assert x['scientific_engine_calls']==1
+              assert len(e['cells'])==20
+              assert p['primary_cell_key']=='a050_fee100bps'
+              assert p['chronological_block_sizes']==[333,333,333,333]
+              assert p['bootstrap']['block_length']==60
+              assert p['bootstrap']['replicates']==4000
+              assert p['bootstrap']['seed']==640064
+          assert m['classification']==p['classification']
+          assert m['historical_input_reads_during_finalize']==0
+          assert m['scientific_engine_calls_during_finalize']==0
+          assert m['same_id_rerun_allowed'] is False
+          print(json.dumps({
+              'classification':p['classification'],
+              'baseline':p.get('baseline'),
+              'primary':p.get('primary'),
+              'positive_chronological_blocks':p.get('positive_chronological_blocks'),
+              'bootstrap':p.get('bootstrap'),
+              'core_stress_pass':p.get('core_stress_pass'),
+              'gates':p.get('gates'),
+          }, indent=2, sort_keys=True))
+          PY
+      - name: Persist complete result as child of durable attempt commit
+        shell: bash
+        env:
+          ATTEMPT_COMMIT: ${{ steps.attempt.outputs.attempt_commit }}
+          RESULT_BRANCH: research/0064-result-v1
+        run: |
+          set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          echo frozen > boundary.txt
-          git add boundary.txt
-          git commit -q -m boundary
-          BOUNDARY="$(git rev-parse HEAD)"
-
-          echo attempt > RUN_ATTEMPT.marker
-          git add RUN_ATTEMPT.marker
-          git commit -q -m attempt
-          ATTEMPT="$(git rev-parse HEAD)"
-          test "$(git rev-parse HEAD^)" = "$BOUNDARY"
-
-          git reset --mixed "$BOUNDARY" >/dev/null
-          test "$(git rev-parse HEAD)" = "$BOUNDARY"
-          test -f RUN_ATTEMPT.marker
-          echo primary > PRIMARY_RESULT.json
-          echo evidence > EVIDENCE.json
-          echo execution > EXECUTION.json
-          echo final > RUN_ONCE.marker
-
-          git read-tree "$ATTEMPT"
-          git add RUN_ATTEMPT.marker PRIMARY_RESULT.json EVIDENCE.json EXECUTION.json RUN_ONCE.marker
+          git read-tree "$ATTEMPT_COMMIT"
+          git add \
+            research/brrk_idle_cash_passive_accrual_robustness_0064/RUN_ATTEMPT.marker \
+            research/brrk_idle_cash_passive_accrual_robustness_0064/PRIMARY_RESULT.json \
+            research/brrk_idle_cash_passive_accrual_robustness_0064/EVIDENCE.json \
+            research/brrk_idle_cash_passive_accrual_robustness_0064/EXECUTION.json \
+            research/brrk_idle_cash_passive_accrual_robustness_0064/RUN_ONCE.marker
           TREE="$(git write-tree)"
-          FINAL="$(printf '%s\n' 'final result' | git commit-tree "$TREE" -p "$ATTEMPT")"
-          git merge-base --is-ancestor "$ATTEMPT" "$FINAL"
-          test "$(git rev-parse "$FINAL^")" = "$ATTEMPT"
+          FINAL_COMMIT="$(printf '%s\n' 'research: record 0064 unique historical result' | git commit-tree "$TREE" -p "$ATTEMPT_COMMIT")"
+          test "$(git rev-parse "$FINAL_COMMIT^")" = "$ATTEMPT_COMMIT"
           for f in RUN_ATTEMPT.marker PRIMARY_RESULT.json EVIDENCE.json EXECUTION.json RUN_ONCE.marker; do
-            git cat-file -e "$FINAL:$f"
+            git cat-file -e "$FINAL_COMMIT:research/brrk_idle_cash_passive_accrual_robustness_0064/$f"
           done
-          test "$(git show "$FINAL:RUN_ATTEMPT.marker")" = attempt
-          printf 'BOUNDARY=%s\nATTEMPT=%s\nFINAL=%s\n' "$BOUNDARY" "$ATTEMPT" "$FINAL"
+          git push origin "$FINAL_COMMIT":"refs/heads/$RESULT_BRANCH"
+          REMOTE="$(git ls-remote origin "refs/heads/$RESULT_BRANCH" | awk '{print $1}')"
+          test "$REMOTE" = "$FINAL_COMMIT"
+          printf 'FINAL_RESULT_COMMIT=%s\n' "$FINAL_COMMIT"
