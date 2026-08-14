@@ -1,0 +1,4 @@
+BRRK-EXHAUSTION-EVENT-STUDY-0043 \u2014 complete diagnostic
+workflow run                         31381953131 / attempt 1
+7\u201314 day exhaustion-ranking signal appears feasible
+ID 0043 is closed against result-informed pruning, reweighting, threshold rescue
