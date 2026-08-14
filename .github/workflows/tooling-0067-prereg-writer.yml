@@ -1,0 +1,54 @@
+name: Tooling 0067 prereg registry writer
+on:
+  push:
+    branches: [tools/0067-prereg-writer-v1]
+    paths: ['.github/workflows/tooling-0067-prereg-writer.yml']
+permissions:
+  contents: write
+concurrency:
+  group: brrk-0067-prereg-registry
+  cancel-in-progress: false
+jobs:
+  write:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: f3e5adc14631d9a3ae13ba686388b7a3c189e867
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('config/research_registry.json'); r=json.loads(p.read_text())
+          rid='BRRK-BTC-SOL-PATH-EVENT-EARLY-WARNING-RUNTIME-QUALIFIED-0067'
+          x=next(z for z in r['records'] if z.get('research_id')==rid)
+          x['development_dataset_refs']=['BRRK-LEADERSHIP-ROTATION-0048-EXPOSED-HIST-V1']
+          x['validation_dataset_refs']=['BRRK-LEADERSHIP-ROTATION-0048-EXPOSED-HIST-V1']
+          x['declared_variant_budget']=1704
+          x['parameter_candidate_count']=1632
+          x['research_process_complexity'].update({'declared_parameter_candidates':1632,'actual_parameter_candidates_evaluated':0,'universes_evaluated':2,'horizons_evaluated':5,'rebalance_variants':8,'feature_representations':8,'related_family_trials':1704})
+          x['decision_refs']=['research/brrk_btc_sol_path_event_early_warning_runtime_qualified_0067/PREREGISTRATION.json','research/brrk_btc_sol_path_event_early_warning_runtime_qualified_0067/DATASET_DECLARATION.json','research/brrk_btc_sol_path_event_early_warning_runtime_qualified_0067/QUALIFICATION_PREREGISTRATION.json']
+          x['notes']=[
+            'Owner-first registration preceded the formal 0067 path.',
+            '0067 scientific numerical contract preserves 0066 semantics; 0066 timeout supplies process information only.',
+            'Full-shape nonhistorical qualification is mandatory before any historical attempt marker.',
+            'production_authorized=false; signature_authorized=false; order_submission_authorized=false.'
+          ]
+          p.write_text(json.dumps(r,indent=2,ensure_ascii=False)+'\n')
+          PY
+          python -m research.governance.validate
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add config/research_registry.json
+          git commit -m 'research: freeze 0067 prereg registry accounting'
+          SHA=$(git rev-parse HEAD)
+          git push origin "$SHA:refs/heads/research/0067-prereg-v1"
+          test "$(git ls-remote origin refs/heads/research/0067-prereg-v1 | cut -f1)" = "$SHA"
+          echo prereg_registry_sha=$SHA
