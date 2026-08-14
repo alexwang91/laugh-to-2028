@@ -41,6 +41,41 @@ jobs:
           set -euo pipefail
           python -m py_compile research/brrk_multi_architecture_gross_controller_0065/engine.py
           PYTHONPATH=. pytest -q research/brrk_multi_architecture_gross_controller_0065/test_engine.py
+      - name: Run full synthetic 2020-2026 tournament integration
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python - <<'PY'
+          import numpy as np, pandas as pd
+          from research.brrk_multi_architecture_gross_controller_0065.engine import evaluate_tournament, ARCHITECTURES
+          rng=np.random.default_rng(650065)
+          idx=pd.date_range('2020-08-11','2026-08-02',freq='D')
+          frames={}
+          common=rng.normal(0.0005,0.018,len(idx))
+          for j,a in enumerate(['BTC','ETH','SOL']):
+              r=0.55*common+rng.normal(0.0003+0.00005*j,0.014+0.002*j,len(idx))
+              close=(100+40*j)*np.exp(np.cumsum(r))
+              prev=np.r_[close[0],close[:-1]]
+              op=prev*np.exp(rng.normal(0,0.003,len(idx)))
+              hi=np.maximum(op,close)*(1+np.abs(rng.normal(0.006,0.003,len(idx))))
+              lo=np.minimum(op,close)*(1-np.abs(rng.normal(0.006,0.003,len(idx))))
+              lo=np.maximum(lo,1e-6)
+              vol=np.exp(rng.normal(12+0.2*j,0.35,len(idx)))
+              frames[a]=pd.DataFrame({'open':op,'high':hi,'low':lo,'close':close,'volume':vol,'quote_volume':vol*close,'trades':np.maximum(1,np.round(np.exp(rng.normal(10,0.3,len(idx)))))},index=idx)
+          eidx=pd.date_range('2022-12-10','2026-08-02',freq='D')
+          base=pd.Series(rng.normal(0.0012,0.02,len(eidx)),index=eidx)
+          gross=pd.Series(np.clip(0.78+0.15*np.sin(np.linspace(0,12,len(eidx))),0.55,1.0),index=eidx)
+          rf=pd.Series(0.00012,index=eidx)
+          out=evaluate_tournament(frames,base,gross,rf,enforce_historical_anchors=False)
+          p=out['primary_result']
+          assert p['actual_validation_configs_evaluated']==63
+          assert p['actual_variants_evaluated']==71
+          assert set(p['methods'])==set(ARCHITECTURES)
+          assert len(p['methods'])==8
+          assert p['PBO_CSCV']['split_count']==70
+          assert all(np.isfinite(p['methods'][a]['calendar_CAGR']) for a in ARCHITECTURES)
+          print('FULL_SYNTHETIC_0065_OK',p['classification'],p['descriptive_best_CAGR_method'])
+          PY
       - name: Verify implementation identity and no I/O primitives
         shell: bash
         run: |
