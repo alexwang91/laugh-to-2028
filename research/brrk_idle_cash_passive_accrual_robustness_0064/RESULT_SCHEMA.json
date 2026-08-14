@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "research_id": "BRRK-IDLE-CASH-PASSIVE-ACCRUAL-ROBUSTNESS-0064",
+  "classification_enum": [
+    "INVALID_EXECUTION",
+    "MEASUREMENT_INCONCLUSIVE_DATA_IDENTITY",
+    "FAIL_PASSIVE_CASH_PRIMARY_ECONOMICS",
+    "FAIL_PASSIVE_CASH_DRAWDOWN",
+    "FAIL_PASSIVE_CASH_TEMPORAL_ROBUSTNESS",
+    "FAIL_PASSIVE_CASH_DEPENDENCE_ROBUSTNESS",
+    "FAIL_PASSIVE_CASH_STRESS_ROBUSTNESS",
+    "PASS_PASSIVE_CASH_ACCRUAL_ROBUSTNESS"
+  ],
+  "required_primary_keys": [
+    "schema_version",
+    "research_id",
+    "classification",
+    "gates",
+    "baseline",
+    "primary_cell_key",
+    "primary",
+    "positive_chronological_blocks",
+    "chronological_block_sizes",
+    "bootstrap",
+    "core_stress_pass",
+    "candidate_cell_count",
+    "actual_variants_evaluated",
+    "future_only_validation_eligible",
+    "production_authorized",
+    "signature_authorized",
+    "order_submission_authorized"
+  ],
+  "required_gates": [
+    "G0_CONTRACT_AND_DATA_IDENTITY",
+    "G1_BASELINE_RECONSTRUCTION_AND_SUPPORT",
+    "G2_PRIMARY_NET_TERMINAL_WEALTH_AND_CAGR",
+    "G3_PRIMARY_MAX_DRAWDOWN_NONINFERIORITY",
+    "G4_TEMPORAL_RECURRENCE",
+    "G5_DEPENDENCE_AWARE_MBB_LCB",
+    "G6_CORE_STRESS_ROBUSTNESS"
+  ],
+  "fixed_counts": {
+    "candidate_cell_count_on_valid_support": 20,
+    "primary_cell_key": "a050_fee100bps",
+    "core_stress_cell_count": 9,
+    "chronological_block_count": 4,
+    "expected_full_support_block_sizes": [333,333,333,333],
+    "bootstrap_replicates": 4000,
+    "bootstrap_seed": 640064,
+    "bootstrap_block_length": 60
+  },
+  "inconclusive_contract": {
+    "classification": "MEASUREMENT_INCONCLUSIVE_DATA_IDENTITY",
+    "candidate_cell_count": 0,
+    "actual_variants_evaluated": 0,
+    "engine_calls": 0
+  },
+  "pass_contract": {
+    "classification": "PASS_PASSIVE_CASH_ACCRUAL_ROBUSTNESS",
+    "all_G0_through_G6_true": true,
+    "future_only_validation_eligible": true,
+    "production_authorized": false,
+    "signature_authorized": false,
+    "order_submission_authorized": false
+  },
+  "all_other_classifications_future_only_validation_eligible": false,
+  "production_authorized": false,
+  "signature_authorized": false,
+  "order_submission_authorized": false
+}
