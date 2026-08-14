@@ -4400,6 +4400,90 @@
         "governance_integrity": "HIGH_EXACTLY_ONCE_HASH_BOUND_FINALIZED_EQUITY1_WEIGHTS1_DTB3_1_ENGINE1_NO_RERUN",
         "operational_realism": "EXPLICIT_TRANSACTION_LIKE_SWEEP_FRICTION_TESTED_AND_PRIMARY_FAILED;_PASSIVE_CARRY_REQUIRES_NEW_ID_COST_MODEL"
       }
+    },
+    {
+      "research_id": "BRRK-IDLE-CASH-PASSIVE-ACCRUAL-ROBUSTNESS-0064",
+      "research_family_id": "IDLE_CASH_CARRY",
+      "research_domain": "RISK_CONTROL",
+      "research_governance_version": 1,
+      "governance_mode": "PROGRAM_GOVERNED_V1",
+      "objective_type": "MECHANISM_TEST",
+      "created_at": "2026-08-14T07:55:00Z",
+      "created_before_result": true,
+      "question": "Does unchanged BRRK-0011 achieve a robust full-cycle net wealth/CAGR improvement when already-idle residual cash remains continuously interest-bearing after frozen yield realization and continuous annual cash-account spread/fee, without worsening drawdown?",
+      "hypothesis": "The frozen 50%-DTB3-realization / 100-bps-annual-fee primary passive-accrual cell will improve terminal wealth and calendar-span CAGR versus unchanged BRRK-0011, preserve drawdown, recur temporally, pass a dependence-aware lower-confidence gate, and remain positive across the frozen nine-cell core stress neighborhood.",
+      "hypothesis_origin": "RESULT_INFORMED_NEW_ID_FROM_0063_ZERO_SWEEP_DESCRIPTIVE_DEVELOPMENT_NOT_INDEPENDENT_OOS",
+      "economic_mechanism": "Residual cash already implied by unchanged BRRK-0011 gross exposure remains continuously in an interest-bearing balance. Candidate economics apply a frozen short-rate realization haircut and a continuous annual spread/fee to idle cash principal, with no extra sweep trade or per-change transaction cost.",
+      "primary_target": "FULL_CYCLE_NET_TERMINAL_WEALTH_AND_CALENDAR_SPAN_CAGR_VERSUS_UNCHANGED_BRRK_0011",
+      "primary_metric": "PRIMARY_50_PERCENT_DTB3_REALIZATION_100_BPS_ANNUAL_FEE_PAIRED_RELATIVE_LOG_GROWTH_WITH_ECONOMIC_DRAWDOWN_TEMPORAL_MBB_AND_STRESS_GATES",
+      "secondary_metrics": [
+        "max_drawdown",
+        "chronological_block_relative_log_growth",
+        "stress_grid_relative_terminal_wealth",
+        "idle_cash_carry",
+        "continuous_idle_cash_fee"
+      ],
+      "feature_families": [
+        "IDLE_CASH_FRACTION",
+        "FRED_DTB3_SHORT_RATE",
+        "CONTINUOUS_IDLE_CASH_SPREAD_FEE"
+      ],
+      "horizon": "FULL_COMMITTED_BRRK0011_WINDOW",
+      "universe": [
+        "BTC",
+        "ETH",
+        "SOL",
+        "BNB",
+        "CASH"
+      ],
+      "development_dataset_refs": [
+        "BRRK-WINNER-0001-CANONICAL-HIST-V1",
+        "BRRK-IDLE-CASH-SWEEP-0063-DTB3-HIST-V1"
+      ],
+      "validation_dataset_refs": [],
+      "sealed_dataset_refs": [],
+      "declared_variant_budget": 20,
+      "actual_variants_evaluated": 0,
+      "parameter_candidate_count": 20,
+      "stopping_rule": "Exactly one governed historical execution attempt after preregistration, implementation and controlled-boundary merges; all 20 frozen stress cells are evaluated in one scientific engine call with no result-dependent rerun or rescue.",
+      "success_criteria": "The prospectively frozen primary 50%-realization/100-bps annual-fee cell passes data identity, terminal wealth/CAGR, drawdown, temporal recurrence and dependence-aware MBB gates, and all nine frozen core stress cells retain positive relative terminal log growth.",
+      "failure_criteria": "Ordered preregistered failure taxonomy binds at the first failed gate; data-identity failure is inconclusive/invalid rather than economic failure.",
+      "allowed_followup": "A PASS may satisfy the program DEVELOPMENT-stage low-complexity robust net-CAGR-improvement stop condition and motivate future-only confirmation. A FAIL requires a scientifically distinct new ID after immutable closeout.",
+      "forbidden_followup": "No same-ID rate substitution, yield/fee-grid change, primary-cell change, cash-yield floor, BRRK signal/weight/gross change, favorable-block/cell selection, gate relaxation, rerun, recomputation, retune or rescue after outcome exposure.",
+      "researcher_decisions": "0064 DESIGN prospectively froze passive residual-cash accrual, the 4x5 realization/annual-fee grid, the 50%/100-bps primary cell, nine-cell core neighborhood, no zero-yield floor and no per-change sweep cost before 0064 candidate economics.",
+      "research_process_complexity": {
+        "declared_parameter_candidates": 20,
+        "actual_parameter_candidates_evaluated": 0,
+        "universes_evaluated": 1,
+        "horizons_evaluated": 1,
+        "rebalance_variants": 0,
+        "feature_representations": 3,
+        "special_cases_introduced": 1,
+        "validation_exposure_event_refs": [],
+        "related_family_trials": 2
+      },
+      "lineage_edges": [],
+      "result_status": "PREREGISTERED_NOT_RUN",
+      "failure_reason": null,
+      "promotion_state": "NONE",
+      "evidence_refs": [],
+      "decision_refs": [
+        "research/governance/BRRK_IDLE_CASH_PASSIVE_ACCRUAL_ROBUSTNESS_0064_DESIGN_FREEZE_2026-08-14.md",
+        "docs/CURRENT_STATE.md"
+      ],
+      "production_relevance": "DEVELOPMENT mechanism test only; no canonical, Phase-6 or production authority.",
+      "production_authorized": false,
+      "provenance_status": "FACT",
+      "governed_path_prefixes": [
+        "research/brrk_idle_cash_passive_accrual_robustness_0064/"
+      ],
+      "notes": [
+        "0063 zero-sweep cells are exposed DEVELOPMENT motivation only and cannot satisfy 0064 gates.",
+        "0064 changes no BRRK-0011 risk-asset signal, target, weight or gross exposure.",
+        "The already frozen and registered 0063 DTB3 payload is reused by immutable identity with no new network capture.",
+        "All 20 stress cells must be reported; only the prospectively frozen primary hypothesis can satisfy the program stop condition.",
+        "Historical 0064 candidate economics have not been computed; RUN_ATTEMPT.marker is absent."
+      ]
     }
   ],
   "research_governance_debt": [

@@ -4,7 +4,9 @@ Last updated: 2026-08-14
 
 Authoritative repository: `alexwang91/laugh-to-2028`.
 Merged 0063 closeout: `b7fd66f28c8d7611cd4c71dc04b1c152bc65d62d`.
-Active branch: `research/0064-design-v2`.
+Merged 0064 DESIGN: `38b5740cb89ae16b4bc005f3d5bcb4f8e0a0181f`.
+0064 owner-first commit: `7a48ebd4b34bb6e04de621fbeb0cabd84d447a6a`.
+Active branch: `research/0064-prereg-v1`.
 
 ## Required closed-research anchors
 
@@ -17,18 +19,20 @@ ID 0043 is closed against result-informed pruning, reweighting, threshold rescue
 
 0062 = `FAIL_NO_SIGNAL_ATLAS_FAMILY_INFORMATION / CLOSED`.
 0063 = `FAIL_IDLE_CASH_SWEEP_PRIMARY_ECONOMICS / CLOSED`.
-0064 = `DESIGN FROZEN / PREREGISTRATION ABSENT / IMPLEMENTATION ABSENT / NOT RUN`.
+0064 = `PREREGISTERED / IMPLEMENTATION ABSENT / CONTROLLED BOUNDARY ABSENT / NOT RUN`.
 0064 research ID = `BRRK-IDLE-CASH-PASSIVE-ACCRUAL-ROBUSTNESS-0064`.
 Mechanism = already-idle residual cash remains continuously interest-bearing; no additional sweep trade.
 Frozen yield-realization grid = 25%, 50%, 75%, 100%.
 Frozen continuous annual idle-cash spread/fee grid = 0, 50, 100, 150, 200 bps.
 Primary conservative cell = 50% yield realization / 100 bps annual spread/fee.
 Core stress neighborhood = 50/75/100% realization x 50/100/150 bps annual fee = 9 cells.
+Frozen chronology = 4 contiguous count-balanced blocks; expected 333/333/333/333 at 1332 rows.
+Frozen MBB = aligned non-circular L60 / 4000 reps / seed 640064 / Type-7 q95 / one-sided LCB > 0.
 Historical 0064 candidate economics = NOT COMPUTED.
 Actual historical variants evaluated = 0.
 RUN_ATTEMPT.marker = ABSENT.
 
-0063 zero-sweep cells are result-informed DEVELOPMENT motivation only. They cannot satisfy any 0064 gate. 0064 freezes a different operational cost model: continuous fee/spread on idle cash principal, with no zero-yield floor and no per-change sweep transaction charge.
+0063 zero-sweep cells are result-informed DEVELOPMENT motivation only. They cannot satisfy any 0064 gate. 0064 uses the already frozen 0063 DTB3 payload by immutable identity; no new network capture or rate substitution is permitted.
 
 ## No-drift authority
 
@@ -43,4 +47,4 @@ Phase 6 = NO CHANGE.
 
 ## Exact next step
 
-Merge 0064 DESIGN through fresh standing CI. Then owner-first numerical/data preregistration, synthetic-only implementation, separate controlled boundary, exactly one historical attempt and immutable closeout.
+Run governance/future-enforcement checks on the frozen 0064 preregistration and merge through fresh standing CI. Then implement the frozen 20-cell passive-accrual formulas using synthetic/toy/contract tests only, with no historical 0064 outcome read.
