@@ -37,4 +37,4 @@ jobs:
           set -euo pipefail
           python -m research.brrk_idle_cash_sweep_robustness_0063.run_once preflight --boundary-sha f632bdb146571c1b7580ab1e4571512d1fab9366 | tee /tmp/preflight.json
           grep -q 'PREFLIGHT_PASS_ZERO_RESULT_GIT_IDENTITY_ONLY' /tmp/preflight.json
-          git status --porcelain | grep -q '^' && test -z "$(git status --porcelain)"
+          test -z "$(git status --porcelain)"
