@@ -27,63 +27,66 @@ ID 0043 is closed against result-informed pruning, reweighting, threshold rescue
 0064 = `PASS_PASSIVE_CASH_ACCRUAL_ROBUSTNESS / CLOSED TO SAME-ID RERUN`.
 0065 = `FAIL_NO_ROBUST_MULTI_ARCHITECTURE_IMPROVEMENT / CLOSED TO SAME-ID RERUN`.
 0065 research ID = `BRRK-MULTI-ARCHITECTURE-GROSS-CONTROLLER-0065`.
+0066 = `DESIGN FROZEN / NOT PREREGISTERED / NOT IMPLEMENTED / NOT RUN`.
+0066 research ID = `BRRK-BTC-SOL-PATH-EVENT-EARLY-WARNING-0066`.
 
-Historical attempt = 1 / 1 consumed.
-Validation tuning configurations evaluated = 63 / 63.
-Final architectures evaluated = 8 / 8.
-Total actual variants evaluated = 71 / 71.
-
-## 0065 tournament result
+## 0065 closed tournament result
 
 Frozen benchmark = 0064 primary: CAGR `0.6557689400699214`, terminal wealth `62813.41563922909`, MDD `-0.3366471268083583`.
+Descriptive best 0065 method = A04 THEORY_QUADRATIC_HESSIAN_RIDGE with CAGR `0.661265451355094`, terminal wealth `63576.606019763145`, MDD `-0.2963539206683067`; it failed temporal recurrence and simultaneous inference. Scientific winners=`[]` and same-ID 0065 work is permanently forbidden.
 
-Final method CAGRs:
+## 0066 event-first design
 
-1. A01 FAMILY_ELASTIC_NET = `0.6557689400699214`.
-2. A02 RAW_ELASTIC_NET = `0.6344356897390435`.
-3. A03 PCR_RIDGE = `0.6547758829891572`.
-4. A04 THEORY_QUADRATIC_HESSIAN_RIDGE = `0.661265451355094`.
-5. A05 GAM_SPLINE_RIDGE = `0.6029612393012411`.
-6. A06 SHALLOW_GBDT = `0.63870174828745`.
-7. A07 HMM_REGIME_MIXTURE_RIDGE = `0.6291194761159626`.
-8. A08 STACKED_ENSEMBLE = `0.6334063138258086`.
+0066 changes the research abstraction from direct return prediction to price-path event prediction.
 
-Descriptive best = A04 THEORY_QUADRATIC_HESSIAN_RIDGE.
-A04 CAGR advantage versus 0064 = `+0.549651128517259` percentage points.
-A04 terminal wealth = `63576.606019763145`.
-A04 MDD = `-0.2963539206683067`, materially better than 0064.
-A04 selected ridge alpha = `1000.0`.
+Price-only outcomes:
+- assets: BTC and SOL;
+- future trend-scan horizons: 10/15/20/30/45/60/90/120/180/240 sessions;
+- event classes: DOWN and SIDEWAYS;
+- duration grades: SHORT 10-20, MEDIUM 30-60, LONG 90-120, SECULAR 180-240;
+- decline severity additionally graded by volatility-normalized maximum adverse excursion;
+- indicator values are forbidden from changing event definitions or onset extraction.
 
-A04 nevertheless fails the frozen robustness gates:
-- four chronological block relative log growth = `[-0.012261224493538014, 0.028019864802351573, -0.025462841386824885, 0.02178109839203702]`;
-- positive blocks = 2 / 4, so G4 fails;
-- simultaneous L60/4000/seed650065 LCB = `-0.00023941640352518253`, so G5 fails.
+Prediction layer:
+- complete frozen 0062 Tier-A universe: 185 cells + 17 family scores;
+- lead times: 1/3/5/10/20 sessions before unique event onset;
+- targets per asset: ANY_DOWN, MAJOR_DOWN, ANY_SIDEWAYS, LONG_SIDEWAYS;
+- total frozen event/lead tracks: 40;
+- every one of the 202 signal units is reported in an early-warning atlas with TRAIN-frozen direction and no evaluation-period sign flip;
+- unsupported event tracks remain descriptive only under a frozen support gate.
 
-Scientific winners = `[]`.
-Classification = `FAIL_NO_ROBUST_MULTI_ARCHITECTURE_IMPROVEMENT`.
-PBO/CSCV = `0.6285714285714286` over 70 frozen splits, reinforcing high model-selection instability and the decision not to cherry-pick A04.
+Prospectively frozen predictor architectures:
+1. P01 FAMILY_RIDGE_LOGIT;
+2. P02 RAW_ELASTIC_NET_LOGIT;
+3. P03 VALIDATION_SCREENED_SIGNAL_LOGIT;
+4. P04 PCR_LOGIT;
+5. P05 THEORY_QUADRATIC_LOGIT — explicitly RESULT_INFORMED from closed 0065 but not privileged;
+6. P06 SHALLOW_GBDT_CLASSIFIER;
+7. P07 DISCRETE_TIME_HAZARD_LOGIT;
+8. P08 STACKED_PROBABILITY_ENSEMBLE.
 
-## Methodological interpretation
+Prospectively frozen economic controllers:
+1. C01 BTC_ANY_DOWN_5D;
+2. C02 SOL_ANY_DOWN_5D;
+3. C03 MAX_BTC_SOL_ANY_DOWN_5D;
+4. C04 BTC_MAJOR_DOWN_10D;
+5. C05 MAX_BTC_SOL_MAJOR_DOWN_10D;
+6. C06 MULTILEAD_DOWN_BLEND_3_5_10;
+7. C07 DOWN_PLUS_SIDEWAYS;
+8. C08 STACKED_EVENT_RISK.
 
-The method-first tournament was more informative than sequential one-off trials. Broad unstructured complexity was not rewarded: raw elastic net, additive splines, shallow GBDT, HMM regime mixture and validation-only stacking all reduced CAGR versus 0064. PCR was close but slightly below 0064. Family elastic net collapsed to the baseline/no-overlay path.
+Economic benchmark remains the closed 0064 passive-cash path. Outer controller uses no leverage, no shorting and 10 bps per unit outer-turnover cost. Exact solver grids, total trial count, data blobs, label maturity logic and simultaneous inference are NOT yet frozen; they belong to numerical/data PREREGISTRATION after DESIGN merge.
 
-The only architecture with positive full-cycle economic improvement was the theory-guided quadratic/Hessian model. This is evidence that low-order curvature and prespecified interactions are more promising than generic nonlinear complexity on the exposed DEVELOPMENT history. It is not sufficient evidence for promotion because temporal recurrence and simultaneous inference fail.
-
-No same-ID interaction pruning, Hessian-guided local refinement, new cross terms, gross-map retuning or post-hoc ensemble rescue is allowed. Any continuation must use a new research ID and explicitly mark the A04 result as RESULT_INFORMED. A genuinely higher-evidence confirmation should freeze the quadratic/interactions hypothesis before future data arrive.
-
-## Execution integrity
-
-Market evidence reads = 1.
-Equity reads = 1.
-Weights reads = 1.
-DTB3 reads = 1.
-Market loader calls = 1.
-Scientific engine calls = 1.
-Network fetches = 0.
-RUN_ONCE = finalized.
-Same-ID rerun = FORBIDDEN.
-Same-ID retune = FORBIDDEN.
-Same-ID rescue = FORBIDDEN.
+Historical 0066 event atlas computed = false.
+Historical 0066 indicator/event association computed = false.
+Historical 0066 classifier metrics computed = false.
+Historical 0066 controller CAGR/NAV/MDD computed = false.
+Historical 0066 actual variants evaluated = 0.
+RUN_ATTEMPT.marker = ABSENT.
+PRIMARY_RESULT.json = ABSENT.
+EVIDENCE.json = ABSENT.
+EXECUTION.json = ABSENT.
+RUN_ONCE.marker = ABSENT.
 
 ## No-drift authority
 
@@ -94,8 +97,9 @@ signature_authorized = false
 order_submission_authorized = false
 Canonical BRRK-0011 = NO CHANGE.
 0064 = NO CHANGE.
+0065 = NO CHANGE.
 Phase 6 = NO CHANGE.
 
 ## Exact next step
 
-0065 is fully closed and requires no further same-ID work. Do not select A04 for canonical or production use, and do not rerun, prune, retune or rescue 0065. If further research is desired, create a new explicitly RESULT_INFORMED research ID that freezes a quadratic/interactions hypothesis before accessing any new outcome data; genuinely future validation is the preferred higher-evidence path.
+Merge 0066 DESIGN only after fresh standing CI. Then create owner-first numerical/data PREREGISTRATION freezing exact estimator grids, trial accounting, data identities, event-label maturity rules, support gates, bootstrap/PBO procedures and persistence schema before any implementation or 0066 historical measurement.
