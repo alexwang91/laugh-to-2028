@@ -4749,6 +4749,93 @@
         "Indicator-atlas hypothesis cells are counted separately from the declared 1704 model/controller variant budget.",
         "production_authorized=false; signature_authorized=false; order_submission_authorized=false."
       ]
+    },
+    {
+      "research_id": "BRRK-BTC-SOL-PATH-EVENT-EARLY-WARNING-RUNTIME-QUALIFIED-0067",
+      "research_family_id": "BRRK_PATH_EVENT_EARLY_WARNING_RUNTIME_QUALIFIED",
+      "research_domain": "RISK_CONTROL",
+      "research_governance_version": 1,
+      "governance_mode": "PROGRAM_GOVERNED_V1",
+      "objective_type": "PORTFOLIO_INTEGRATION",
+      "created_at": "2026-08-14",
+      "created_before_result": true,
+      "question": "Can the unresolved BTC/SOL price-path event early-warning program be executed under prospectively frozen scientific semantics while first proving the complete compute graph fits a full-shape nonhistorical runtime and memory envelope?",
+      "hypothesis": "Some duration-graded BTC/SOL price-path event onsets may have detectable precursor structure and economically useful defensive-controller value, but 0067 must first prove execution feasibility without changing scientific semantics or reading historical outcomes.",
+      "hypothesis_origin": "SCIENTIFIC_STRUCTURE_CARRIED_FORWARD_PROSPECTIVELY_FROM_0066_DESIGN; PROCESS_INFORMED_BY_0066_TIMEOUT_ONLY; NOT_RESULT_INFORMED_BY_0066; P05_QUADRATIC_REMAINS_RESULT_INFORMED_FROM_CLOSED_0065_WITHOUT_PRIVILEGE.",
+      "economic_mechanism": "If measurable precursor states precede sustained declines or capital-inefficient sideways regimes, a causal outer gross controller may selectively increase cash before event onset while retaining normal-period exposure; runtime qualification changes execution assurance, not this mechanism.",
+      "primary_target": "BTC_SOL_PRICE_PATH_EVENT_ONSET_WARNING_AND_0064_RELATIVE_NET_WEALTH_WITH_RUNTIME_QUALIFICATION",
+      "primary_metric": "PR_AUC_LIFT_WITH_DEPENDENCE_AWARE_INFERENCE_AND_NET_CALENDAR_CAGR_VS_0064_AFTER_QUALIFICATION",
+      "secondary_metrics": [
+        "ROC_AUC",
+        "Brier_score",
+        "temporal_block_recurrence",
+        "terminal_wealth",
+        "maximum_drawdown",
+        "outer_turnover",
+        "PBO_CSCV",
+        "qualification_wall_clock",
+        "qualification_peak_RSS"
+      ],
+      "feature_families": [
+        "0062_TIER_A_SIGNAL_UNIVERSE",
+        "0062_FAMILY_SCORES"
+      ],
+      "horizon": [
+        1,
+        3,
+        5,
+        10,
+        20
+      ],
+      "universe": [
+        "BTC",
+        "SOL"
+      ],
+      "development_dataset_refs": [],
+      "validation_dataset_refs": [],
+      "sealed_dataset_refs": [],
+      "declared_variant_budget": 0,
+      "actual_variants_evaluated": 0,
+      "parameter_candidate_count": 0,
+      "stopping_rule": "No 0067 historical execution before DESIGN, owner-first numerical/data preregistration, implementation-only merge, exact full-shape nonhistorical qualification PASS, and controlled-boundary merge. After a historical RUN_ATTEMPT marker, no same-ID rerun, retune, rescue, or recomputation.",
+      "success_criteria": "Scientific success/failure gates and exact execution-qualification limits are frozen in numerical/data PREREGISTRATION; DESIGN creates no historical result authority.",
+      "failure_criteria": "A pre-historical compute-qualification failure blocks historical execution without consuming a historical attempt; post-marker execution failure is execution invalidation rather than scientific rejection.",
+      "allowed_followup": "Before historical access, semantic-preserving execution engineering may continue under the frozen lifecycle; after immutable closeout, any result-informed scientific change requires a new research ID.",
+      "forbidden_followup": "No 0066 rerun or rescue; no historical read to optimize runtime; no dropping slow scientific architectures/configs/refits/replicates; no post-marker rerun, retune, rescue, or missing-result recomputation.",
+      "researcher_decisions": [
+        "0067 is new-ID research and uses the 0066 timeout as process information only.",
+        "A full-shape synthetic/nonhistorical compute qualification is mandatory before any historical attempt marker.",
+        "Runtime engineering must preserve prospectively frozen scientific semantics and pass reference-equivalence tests."
+      ],
+      "research_process_complexity": {
+        "declared_parameter_candidates": 0,
+        "actual_parameter_candidates_evaluated": 0,
+        "universes_evaluated": 2,
+        "horizons_evaluated": 5,
+        "rebalance_variants": 8,
+        "feature_representations": 8,
+        "special_cases_introduced": 1,
+        "validation_exposure_event_refs": 0,
+        "related_family_trials": 0
+      },
+      "lineage_edges": [],
+      "result_status": "PREREGISTERED_NOT_RUN",
+      "failure_reason": null,
+      "promotion_state": "NONE",
+      "evidence_refs": [],
+      "decision_refs": [],
+      "production_relevance": "Research-only defensive gross study; compute qualification and any later scientific PASS confer no automatic production authority.",
+      "production_authorized": false,
+      "provenance_status": "PROSPECTIVE_FROZEN",
+      "governed_path_prefixes": [
+        "research/brrk_btc_sol_path_event_early_warning_runtime_qualified_0067"
+      ],
+      "notes": [
+        "Owner-first registration precedes introduction of the 0067 formal research path.",
+        "Exact historical data refs, scientific counts, and runtime/memory acceptance limits are intentionally deferred to numerical/data PREREGISTRATION.",
+        "declared_variant_budget=0 is an owner-registration placeholder and must be prospectively replaced by the exact preregistered budget before implementation.",
+        "production_authorized=false; signature_authorized=false; order_submission_authorized=false."
+      ]
     }
   ],
   "research_governance_debt": [
