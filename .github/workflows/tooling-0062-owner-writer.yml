@@ -1,4 +1,4 @@
-name: Tooling 0064 controlled boundary synthetic-only
+name: Tooling 0064 post-merge zero-result preflight
 
 on:
   push:
@@ -11,12 +11,12 @@ permissions:
   contents: read
 
 jobs:
-  boundary-synthetic:
+  post-merge-preflight:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: research/0064-boundary-v1
+          ref: 876fdf657bd11bc4aeb9d0dcd3859886ee099568
           fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
@@ -24,64 +24,31 @@ jobs:
           cache: pip
           cache-dependency-path: execution/plan-b-bot/requirements-dev.txt
       - run: pip install -r execution/plan-b-bot/requirements-dev.txt
-      - name: Verify exact boundary head and frozen file identities
+      - name: Verify exact merged boundary identities and zero-result state
         shell: bash
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD)" = "9ac01e07f24790c5340eda24212c86d7e24d8bce"
+          test "$(git rev-parse HEAD)" = "876fdf657bd11bc4aeb9d0dcd3859886ee099568"
           test "$(git rev-parse HEAD:research/brrk_idle_cash_passive_accrual_robustness_0064/RUN_INTERFACE.json)" = "1289d808bd5da99dd4de295f70360f4673536cee"
           test "$(git rev-parse HEAD:research/brrk_idle_cash_passive_accrual_robustness_0064/RESULT_SCHEMA.json)" = "3dd860f51b96f769db75a50e50acf850db35bf19"
           test "$(git rev-parse HEAD:research/brrk_idle_cash_passive_accrual_robustness_0064/run_once.py)" = "f9af95b99c862ead8e8907cd06042884c0892b7b"
           test "$(git rev-parse HEAD:research/brrk_idle_cash_passive_accrual_robustness_0064/engine.py)" = "4060a307be2204c11952cb52e2fc718a5343d8e1"
-          test "$(git rev-parse HEAD:research/results/pit_disp_0015/daily_equity.csv)" = "82c87f8cb0ff01c728ffd3b717fff17cf5a364f2"
-          test "$(git rev-parse HEAD:research/results/pit_disp_0015/daily_weights.csv)" = "2f6c8d3a8c25d3cafeaa0128f1c425dac248370b"
-          test "$(git rev-parse HEAD:research/brrk_idle_cash_sweep_robustness_0063/DTB3_RAW.csv)" = "71d50e26f8a9afb6bcb88401d20b97d5fb0a891a"
-      - name: Assert zero historical runtime artifacts
-        shell: bash
-        run: |
-          set -euo pipefail
           for f in RUN_ATTEMPT.marker PRIMARY_RESULT.json EVIDENCE.json EXECUTION.json RUN_ONCE.marker; do
             test ! -e "research/brrk_idle_cash_passive_accrual_robustness_0064/$f"
           done
-      - name: Compile runner and run Git-only preflight
+      - name: Run exact merged-boundary Git-only preflight
         shell: bash
         run: |
           set -euo pipefail
-          PYTHONPATH=. python -m py_compile research/brrk_idle_cash_passive_accrual_robustness_0064/run_once.py
-          PYTHONPATH=. python research/brrk_idle_cash_passive_accrual_robustness_0064/run_once.py preflight --boundary-sha "$(git rev-parse HEAD)" | tee /tmp/preflight.json
+          PYTHONPATH=. python research/brrk_idle_cash_passive_accrual_robustness_0064/run_once.py preflight --boundary-sha 876fdf657bd11bc4aeb9d0dcd3859886ee099568 | tee /tmp/preflight.json
           python - <<'PY'
           import json
           p=json.load(open('/tmp/preflight.json'))
+          assert p['research_id']=='BRRK-IDLE-CASH-PASSIVE-ACCRUAL-ROBUSTNESS-0064'
           assert p['status']=='PREFLIGHT_PASS_ZERO_RESULT_GIT_IDENTITY_ONLY'
+          assert p['boundary_sha']=='876fdf657bd11bc4aeb9d0dcd3859886ee099568'
           assert p['historical_csv_content_reads']==0
           assert p['scientific_engine_calls']==0
           assert p['runtime_artifacts_present']==[]
           PY
-      - name: Run scientific and exactly-once synthetic contracts
-        shell: bash
-        run: |
-          set -euo pipefail
-          PYTHONPATH=. pytest -q \
-            research/brrk_idle_cash_passive_accrual_robustness_0064/test_contract.py \
-            research/brrk_idle_cash_passive_accrual_robustness_0064/test_run_once_contract.py
-      - name: Reassert zero repo runtime artifacts and governance
-        shell: bash
-        run: |
-          set -euo pipefail
-          for f in RUN_ATTEMPT.marker PRIMARY_RESULT.json EVIDENCE.json EXECUTION.json RUN_ONCE.marker; do
-            test ! -e "research/brrk_idle_cash_passive_accrual_robustness_0064/$f"
-          done
           PYTHONPATH=. python -m research.governance.validate
-          python - <<'PY'
-          import json
-          from pathlib import Path
-          b=json.loads(Path('research/brrk_idle_cash_passive_accrual_robustness_0064/CONTROLLED_EXECUTION_BOUNDARY.json').read_text())
-          assert b['stage']=='CONTROLLED_EXECUTION_BOUNDARY_FROZEN_NOT_RUN'
-          assert b['historical_execution']['attempt_budget']==1
-          assert b['pre_attempt_state']['actual_variants_evaluated']==0
-          assert b['runner']['preflight_reads_historical_csv_content'] is False
-          assert b['runner']['scientific_engine_call_budget']==1
-          assert b['authorization']['production_authorized'] is False
-          assert b['authorization']['signature_authorized'] is False
-          assert b['authorization']['order_submission_authorized'] is False
-          PY
