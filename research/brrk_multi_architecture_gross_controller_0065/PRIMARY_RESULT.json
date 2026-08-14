@@ -1,0 +1,1594 @@
+{
+  "PBO_CSCV": {
+    "pbo": 0.6285714285714286,
+    "records": [
+      {
+        "in_slices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "overfit": true,
+        "winner": "A04_THEORY_QUADRATIC_HESSIAN_RIDGE",
+        "winner_oos_rank": 3.0
+      },
+      {
+        "in_slices": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "overfit": true,
+        "winner": "A03_PCR_RIDGE",
+        "winner_oos_rank": 3.0
+      },
+      {
+        "in_slices": [
+          0,
+          1,
+          2,
+          5
+        ],
+        "overfit": true,
+        "winner": "A03_PCR_RIDGE",
+        "winner_oos_rank": 3.0
+      },
+      {
+        "in_slices": [
+          0,
+          1,
+          2,
+          6
+        ],
+        "overfit": false,
+        "winner": "A04_THEORY_QUADRATIC_HESSIAN_RIDGE",
+        "winner_oos_rank": 7.0
+      },
+      {
+        "in_slices": [
+          0,
+          1,
+          2,
+          7
+        ],
+        "overfit": true,
+        "winner": "A05_GAM_SPLINE_RIDGE",
+        "winner_oos_rank": 1.0
+      },
+      {
+        "in_slices": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "overfit": true,
+        "winner": "A04_THEORY_QUADRATIC_HESSIAN_RIDGE",
+        "winner_oos_rank": 3.0
+      },
+      {
+        "in_slices": [
+          0,
+          1,
+          3,
+          5
+        ],
+        "overfit": false,
+        "winner": "A04_THEORY_QUADRATIC_HESSIAN_RIDGE",
+        "winner_oos_rank": 5.0
+      },
+      {
+        "in_slices": [
+          0,
+          1,
+          3,
+          6
+        ],
+        "overfit": true,
+        "winner": "A04_THEORY_QUADRATIC_HESSIAN_RIDGE",
+        "winner_oos_rank": 3.0
+      },
+      {
+        "in_slices": [
+          0,
+          1,
+          3,
+          7
+        ],
+        "overfit": true,
+        "winner": "A04_THEORY_QUADRATIC_HESSIAN_RIDGE",
+        "winner_oos_rank": 4.0
+      },
+      {
+        "in_slices": [
+          0,
+          1,
+          4,
+          5
+        ],
+        "overfit": true,
+        "winner": "A03_PCR_RIDGE",
+        "winner_oos_rank": 1.0
+      },
+      {
+        "in_slices": [
+          0,
+          1,
+          4,
+          6
+        ],
+        "overfit": true,
+        "winner": "A06_SHALLOW_GBDT",
+        "winner_oos_rank": 1.0
+      },
+      {
+        "in_slices": [
+          0,
+          1,
+          4,
+          7
+        ],
+        "overfit": false,
+        "winner": "A03_PCR_RIDGE",
+        "winner_oos_rank": 5.0
+      },
+      {
+        "in_slices": [
+          0,
+          1,
+          5,
+          6
+        ],
+        "overfit": false,
+        "winner": "A03_PCR_RIDGE",
+        "winner_oos_rank": 5.0
+      },
+      {
+        "in_slices": [
+          0,
+          1,
+          5,
+          7
+        ],
+        "overfit": false,
+        "winner": "A03_PCR_RIDGE",
+        "winner_oos_rank": 6.0
+      },
+      {
+        "in_slices": [
+          0,
+          1,
+          6,
+          7
+        ],
+        "overfit": true,
+        "winner": "A06_SHALLOW_GBDT",
+        "winner_oos_rank": 1.0
+      },
+      {
+        "in_slices": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "overfit": false,
+        "winner": "A04_THEORY_QUADRATIC_HESSIAN_RIDGE",
+        "winner_oos_rank": 5.0
+      },
+      {
+        "in_slices": [
+          0,
+          2,
+          3,
+          5
+        ],
+        "overfit": true,
+        "winner": "A04_THEORY_QUADRATIC_HESSIAN_RIDGE",
+        "winner_oos_rank": 4.0
+      },
+      {
+        "in_slices": [
+          0,
+          2,
+          3,
+          6
+        ],
+        "overfit": false,
+        "winner": "A04_THEORY_QUADRATIC_HESSIAN_RIDGE",
+        "winner_oos_rank": 5.0
+      },
+      {
+        "in_slices": [
+          0,
+          2,
+          3,
+          7
+        ],
+        "overfit": true,
+        "winner": "A04_THEORY_QUADRATIC_HESSIAN_RIDGE",
+        "winner_oos_rank": 4.0
+      },
+      {
+        "in_slices": [
+          0,
+          2,
+          4,
+          5
+        ],
+        "overfit": true,
+        "winner": "A03_PCR_RIDGE",
+        "winner_oos_rank": 1.0
+      },
+      {
+        "in_slices": [
+          0,
+          2,
+          4,
+          6
+        ],
+        "overfit": false,
+        "winner": "A03_PCR_RIDGE",
+        "winner_oos_rank": 5.0
+      },
+      {
+        "in_slices": [
+          0,
+          2,
+          4,
+          7
+        ],
+        "overfit": false,
+        "winner": "A03_PCR_RIDGE",
+        "winner_oos_rank": 5.0
+      },
+      {
+        "in_slices": [
+          0,
+          2,
+          5,
+          6
+        ],
+        "overfit": false,
+        "winner": "A03_PCR_RIDGE",
+        "winner_oos_rank": 5.0
+      },
+      {
+        "in_slices": [
+          0,
+          2,
+          5,
+          7
+        ],
+        "overfit": false,
+        "winner": "A03_PCR_RIDGE",
+        "winner_oos_rank": 5.0
+      },
+      {
+        "in_slices": [
+          0,
+          2,
+          6,
+          7
+        ],
+        "overfit": false,
+        "winner": "A04_THEORY_QUADRATIC_HESSIAN_RIDGE",
+        "winner_oos_rank": 5.0
+      },
+      {
+        "in_slices": [
+          0,
+          3,
+          4,
+          5
+        ],
+        "overfit": true,
+        "winner": "A04_THEORY_QUADRATIC_HESSIAN_RIDGE",
+        "winner_oos_rank": 4.0
+      },
+      {
+        "in_slices": [
+          0,
+          3,
+          4,
+          6
+        ],
+        "overfit": true,
+        "winner": "A04_THEORY_QUADRATIC_HESSIAN_RIDGE",
+        "winner_oos_rank": 4.0
+      },
+      {
+        "in_slices": [
+          0,
+          3,
+          4,
+          7
+        ],
+        "overfit": true,
+        "winner": "A04_THEORY_QUADRATIC_HESSIAN_RIDGE",
+        "winner_oos_rank": 4.0
+      },
+      {
+        "in_slices": [
+          0,
+          3,
+          5,
+          6
+        ],
+        "overfit": true,
+        "winner": "A04_THEORY_QUADRATIC_HESSIAN_RIDGE",
+        "winner_oos_rank": 3.0
+      },
+      {
+        "in_slices": [
+          0,
+          3,
+          5,
+          7
+        ],
+        "overfit": true,
+        "winner": "A04_THEORY_QUADRATIC_HESSIAN_RIDGE",
+        "winner_oos_rank": 4.0
+      },
+      {
+        "in_slices": [
+          0,
+          3,
+          6,
+          7
+        ],
+        "overfit": true,
+        "winner": "A04_THEORY_QUADRATIC_HESSIAN_RIDGE",
+        "winner_oos_rank": 4.0
+      },
+      {
+        "in_slices": [
+          0,
+          4,
+          5,
+          6
+        ],
+        "overfit": true,
+        "winner": "A03_PCR_RIDGE",
+        "winner_oos_rank": 4.0
+      },
+      {
+        "in_slices": [
+          0,
+          4,
+          5,
+          7
+        ],
+        "overfit": true,
+        "winner": "A03_PCR_RIDGE",
+        "winner_oos_rank": 3.0
+      },
+      {
+        "in_slices": [
+          0,
+          4,
+          6,
+          7
+        ],
+        "overfit": true,
+        "winner": "A06_SHALLOW_GBDT",
+        "winner_oos_rank": 2.0
+      },
+      {
+        "in_slices": [
+          0,
+          5,
+          6,
+          7
+        ],
+        "overfit": true,
+        "winner": "A06_SHALLOW_GBDT",
+        "winner_oos_rank": 2.0
+      },
+      {
+        "in_slices": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "overfit": false,
+        "winner": "A04_THEORY_QUADRATIC_HESSIAN_RIDGE",
+        "winner_oos_rank": 5.0
+      },
+      {
+        "in_slices": [
+          1,
+          2,
+          3,
+          5
+        ],
+        "overfit": false,
+        "winner": "A04_THEORY_QUADRATIC_HESSIAN_RIDGE",
+        "winner_oos_rank": 7.0
+      },
+      {
+        "in_slices": [
+          1,
+          2,
+          3,
+          6
+        ],
+        "overfit": false,
+        "winner": "A04_THEORY_QUADRATIC_HESSIAN_RIDGE",
+        "winner_oos_rank": 5.0
+      },
+      {
+        "in_slices": [
+          1,
+          2,
+          3,
+          7
+        ],
+        "overfit": false,
+        "winner": "A04_THEORY_QUADRATIC_HESSIAN_RIDGE",
+        "winner_oos_rank": 5.0
+      },
+      {
+        "in_slices": [
+          1,
+          2,
+          4,
+          5
+        ],
+        "overfit": true,
+        "winner": "A03_PCR_RIDGE",
+        "winner_oos_rank": 1.0
+      },
+      {
+        "in_slices": [
+          1,
+          2,
+          4,
+          6
+        ],
+        "overfit": true,
+        "winner": "A03_PCR_RIDGE",
+        "winner_oos_rank": 2.0
+      },
+      {
+        "in_slices": [
+          1,
+          2,
+          4,
+          7
+        ],
+        "overfit": true,
+        "winner": "A03_PCR_RIDGE",
+        "winner_oos_rank": 2.0
+      },
+      {
+        "in_slices": [
+          1,
+          2,
+          5,
+          6
+        ],
+        "overfit": true,
+        "winner": "A03_PCR_RIDGE",
+        "winner_oos_rank": 4.0
+      },
+      {
+        "in_slices": [
+          1,
+          2,
+          5,
+          7
+        ],
+        "overfit": true,
+        "winner": "A03_PCR_RIDGE",
+        "winner_oos_rank": 2.0
+      },
+      {
+        "in_slices": [
+          1,
+          2,
+          6,
+          7
+        ],
+        "overfit": false,
+        "winner": "A03_PCR_RIDGE",
+        "winner_oos_rank": 5.0
+      },
+      {
+        "in_slices": [
+          1,
+          3,
+          4,
+          5
+        ],
+        "overfit": true,
+        "winner": "A03_PCR_RIDGE",
+        "winner_oos_rank": 3.0
+      },
+      {
+        "in_slices": [
+          1,
+          3,
+          4,
+          6
+        ],
+        "overfit": false,
+        "winner": "A04_THEORY_QUADRATIC_HESSIAN_RIDGE",
+        "winner_oos_rank": 6.0
+      },
+      {
+        "in_slices": [
+          1,
+          3,
+          4,
+          7
+        ],
+        "overfit": false,
+        "winner": "A04_THEORY_QUADRATIC_HESSIAN_RIDGE",
+        "winner_oos_rank": 7.0
+      },
+      {
+        "in_slices": [
+          1,
+          3,
+          5,
+          6
+        ],
+        "overfit": true,
+        "winner": "A02_RAW_ELASTIC_NET",
+        "winner_oos_rank": 2.0
+      },
+      {
+        "in_slices": [
+          1,
+          3,
+          5,
+          7
+        ],
+        "overfit": true,
+        "winner": "A02_RAW_ELASTIC_NET",
+        "winner_oos_rank": 2.0
+      },
+      {
+        "in_slices": [
+          1,
+          3,
+          6,
+          7
+        ],
+        "overfit": true,
+        "winner": "A08_STACKED_ENSEMBLE",
+        "winner_oos_rank": 1.0
+      },
+      {
+        "in_slices": [
+          1,
+          4,
+          5,
+          6
+        ],
+        "overfit": true,
+        "winner": "A03_PCR_RIDGE",
+        "winner_oos_rank": 1.0
+      },
+      {
+        "in_slices": [
+          1,
+          4,
+          5,
+          7
+        ],
+        "overfit": true,
+        "winner": "A03_PCR_RIDGE",
+        "winner_oos_rank": 1.0
+      },
+      {
+        "in_slices": [
+          1,
+          4,
+          6,
+          7
+        ],
+        "overfit": true,
+        "winner": "A03_PCR_RIDGE",
+        "winner_oos_rank": 2.0
+      },
+      {
+        "in_slices": [
+          1,
+          5,
+          6,
+          7
+        ],
+        "overfit": true,
+        "winner": "A03_PCR_RIDGE",
+        "winner_oos_rank": 3.0
+      },
+      {
+        "in_slices": [
+          2,
+          3,
+          4,
+          5
+        ],
+        "overfit": true,
+        "winner": "A03_PCR_RIDGE",
+        "winner_oos_rank": 4.0
+      },
+      {
+        "in_slices": [
+          2,
+          3,
+          4,
+          6
+        ],
+        "overfit": false,
+        "winner": "A04_THEORY_QUADRATIC_HESSIAN_RIDGE",
+        "winner_oos_rank": 5.0
+      },
+      {
+        "in_slices": [
+          2,
+          3,
+          4,
+          7
+        ],
+        "overfit": true,
+        "winner": "A04_THEORY_QUADRATIC_HESSIAN_RIDGE",
+        "winner_oos_rank": 4.0
+      },
+      {
+        "in_slices": [
+          2,
+          3,
+          5,
+          6
+        ],
+        "overfit": false,
+        "winner": "A04_THEORY_QUADRATIC_HESSIAN_RIDGE",
+        "winner_oos_rank": 6.0
+      },
+      {
+        "in_slices": [
+          2,
+          3,
+          5,
+          7
+        ],
+        "overfit": false,
+        "winner": "A04_THEORY_QUADRATIC_HESSIAN_RIDGE",
+        "winner_oos_rank": 6.0
+      },
+      {
+        "in_slices": [
+          2,
+          3,
+          6,
+          7
+        ],
+        "overfit": false,
+        "winner": "A04_THEORY_QUADRATIC_HESSIAN_RIDGE",
+        "winner_oos_rank": 5.0
+      },
+      {
+        "in_slices": [
+          2,
+          4,
+          5,
+          6
+        ],
+        "overfit": true,
+        "winner": "A03_PCR_RIDGE",
+        "winner_oos_rank": 1.0
+      },
+      {
+        "in_slices": [
+          2,
+          4,
+          5,
+          7
+        ],
+        "overfit": true,
+        "winner": "A03_PCR_RIDGE",
+        "winner_oos_rank": 1.0
+      },
+      {
+        "in_slices": [
+          2,
+          4,
+          6,
+          7
+        ],
+        "overfit": true,
+        "winner": "A03_PCR_RIDGE",
+        "winner_oos_rank": 4.0
+      },
+      {
+        "in_slices": [
+          2,
+          5,
+          6,
+          7
+        ],
+        "overfit": true,
+        "winner": "A03_PCR_RIDGE",
+        "winner_oos_rank": 2.0
+      },
+      {
+        "in_slices": [
+          3,
+          4,
+          5,
+          6
+        ],
+        "overfit": false,
+        "winner": "A04_THEORY_QUADRATIC_HESSIAN_RIDGE",
+        "winner_oos_rank": 7.0
+      },
+      {
+        "in_slices": [
+          3,
+          4,
+          5,
+          7
+        ],
+        "overfit": false,
+        "winner": "A03_PCR_RIDGE",
+        "winner_oos_rank": 6.0
+      },
+      {
+        "in_slices": [
+          3,
+          4,
+          6,
+          7
+        ],
+        "overfit": false,
+        "winner": "A04_THEORY_QUADRATIC_HESSIAN_RIDGE",
+        "winner_oos_rank": 7.0
+      },
+      {
+        "in_slices": [
+          3,
+          5,
+          6,
+          7
+        ],
+        "overfit": true,
+        "winner": "A02_RAW_ELASTIC_NET",
+        "winner_oos_rank": 3.0
+      },
+      {
+        "in_slices": [
+          4,
+          5,
+          6,
+          7
+        ],
+        "overfit": true,
+        "winner": "A03_PCR_RIDGE",
+        "winner_oos_rank": 1.0
+      }
+    ],
+    "split_count": 70,
+    "status": "OK"
+  },
+  "actual_validation_configs_evaluated": 63,
+  "actual_variants_evaluated": 71,
+  "benchmark_0064": {
+    "average_cash_fraction": 0.24570026699729736,
+    "average_outer_multiplier": 1.0,
+    "average_total_gross": 0.7542997330027027,
+    "cagr": 0.6557689400699214,
+    "max_drawdown": -0.3366471268083583,
+    "outer_transaction_cost_return_units": 0.0,
+    "outer_turnover": 0.0,
+    "terminal_wealth": 62813.41563922909
+  },
+  "classification": "FAIL_NO_ROBUST_MULTI_ARCHITECTURE_IMPROVEMENT",
+  "descriptive_best_CAGR_method": "A04_THEORY_QUADRATIC_HESSIAN_RIDGE",
+  "final_architecture_count": 8,
+  "methods": {
+    "A01_FAMILY_ELASTIC_NET": {
+      "G2": false,
+      "G3": true,
+      "G4": false,
+      "G5": false,
+      "G6": true,
+      "average_cash_fraction": 0.24570026699729736,
+      "average_outer_multiplier": 1.0,
+      "average_total_gross": 0.7542997330027027,
+      "calendar_CAGR": 0.6557689400699214,
+      "deflated_sharpe": {
+        "annualized_sharpe": 1.3588182686470374,
+        "daily_sharpe": 0.07112379882624752,
+        "deflated_sharpe_probability": 0.5754486862021245,
+        "deflated_sharpe_z": 0.19026353363938434,
+        "expected_max_null_daily_sharpe": 0.06599430376942114,
+        "formula_note": "Bailey-Lopez-de-Prado-style finite-sample PSR adjustment with expected maximum null Sharpe under 71 declared trials; diagnostic only.",
+        "kurtosis": 7.073667812422262,
+        "skew": 0.5660353844275562,
+        "status": "OK",
+        "trial_count": 71
+      },
+      "evaluation_diagnostics": {
+        "last_refit_diagnostics": {},
+        "refit_count": 67
+      },
+      "four_block_relative_log_growth": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "max_drawdown": -0.3366471268083583,
+      "outer_transaction_cost_return_units": 0.0,
+      "outer_turnover": 0.0,
+      "passes_all_scientific_gates": false,
+      "positive_block_count": 0,
+      "relative_terminal_log_growth": 0.0,
+      "selected_hyperparameters": {
+        "alpha": 0.1,
+        "l1_ratio": 0.5
+      },
+      "simultaneous_LCB": -0.00024848314325042706,
+      "status": "EVALUATED",
+      "terminal_wealth": 62813.41563922909,
+      "validation_MSE": 0.028691308261673643
+    },
+    "A02_RAW_ELASTIC_NET": {
+      "G2": false,
+      "G3": true,
+      "G4": false,
+      "G5": false,
+      "G6": true,
+      "average_cash_fraction": 0.3123893146734518,
+      "average_outer_multiplier": 0.9064278796255409,
+      "average_total_gross": 0.6876106853265482,
+      "calendar_CAGR": 0.6344356897390435,
+      "deflated_sharpe": {
+        "annualized_sharpe": 1.4005955899836475,
+        "daily_sharpe": 0.07331052376717954,
+        "deflated_sharpe_probability": 0.6072163177331096,
+        "deflated_sharpe_z": 0.27207108172475475,
+        "expected_max_null_daily_sharpe": 0.06599430376942114,
+        "formula_note": "Bailey-Lopez-de-Prado-style finite-sample PSR adjustment with expected maximum null Sharpe under 71 declared trials; diagnostic only.",
+        "kurtosis": 7.866376117599378,
+        "skew": 0.6377884680758311,
+        "status": "OK",
+        "trial_count": 71
+      },
+      "evaluation_diagnostics": {
+        "last_refit_diagnostics": {},
+        "refit_count": 67
+      },
+      "four_block_relative_log_growth": [
+        -0.043781295586488314,
+        -0.03449753358881229,
+        -0.002732819502379782,
+        0.03375553168694636
+      ],
+      "max_drawdown": -0.3207756843964714,
+      "outer_transaction_cost_return_units": 0.03197920015887465,
+      "outer_turnover": 31.979200158874647,
+      "passes_all_scientific_gates": false,
+      "positive_block_count": 1,
+      "relative_terminal_log_growth": -0.04725611699073406,
+      "selected_hyperparameters": {
+        "alpha": 0.1,
+        "l1_ratio": 0.1
+      },
+      "simultaneous_LCB": -0.00028396070855878596,
+      "status": "EVALUATED",
+      "terminal_wealth": 59914.14126620162,
+      "validation_MSE": 0.027898537355451742
+    },
+    "A03_PCR_RIDGE": {
+      "G2": false,
+      "G3": false,
+      "G4": false,
+      "G5": false,
+      "G6": true,
+      "average_cash_fraction": 0.30977602157503037,
+      "average_outer_multiplier": 0.908566957867522,
+      "average_total_gross": 0.6902239784249697,
+      "calendar_CAGR": 0.6547758829891572,
+      "deflated_sharpe": {
+        "annualized_sharpe": 1.4294675386325562,
+        "daily_sharpe": 0.07482175062864305,
+        "deflated_sharpe_probability": 0.6285589401537001,
+        "deflated_sharpe_z": 0.3280390730999811,
+        "expected_max_null_daily_sharpe": 0.06599430376942114,
+        "formula_note": "Bailey-Lopez-de-Prado-style finite-sample PSR adjustment with expected maximum null Sharpe under 71 declared trials; diagnostic only.",
+        "kurtosis": 7.682815242311749,
+        "skew": 0.608518832291758,
+        "status": "OK",
+        "trial_count": 71
+      },
+      "evaluation_diagnostics": {
+        "last_refit_diagnostics": {
+          "explained_variance_ratio_sum": 0.8473340140150567
+        },
+        "refit_count": 67
+      },
+      "four_block_relative_log_growth": [
+        -0.04985904603445653,
+        -0.054569023722627834,
+        0.07242472724204893,
+        0.02981712897576036
+      ],
+      "max_drawdown": -0.36290543391699126,
+      "outer_transaction_cost_return_units": 0.03371691993311419,
+      "outer_turnover": 33.716919933114184,
+      "passes_all_scientific_gates": false,
+      "positive_block_count": 2,
+      "relative_terminal_log_growth": -0.0021862135392750753,
+      "selected_hyperparameters": {
+        "n_components": 20,
+        "ridge_alpha": 10.0
+      },
+      "simultaneous_LCB": -0.00025012444470633936,
+      "status": "EVALUATED",
+      "terminal_wealth": 62676.24209947115,
+      "validation_MSE": 0.03286214052438203
+    },
+    "A04_THEORY_QUADRATIC_HESSIAN_RIDGE": {
+      "G2": true,
+      "G3": true,
+      "G4": false,
+      "G5": false,
+      "G6": true,
+      "average_cash_fraction": 0.3084065845220283,
+      "average_outer_multiplier": 0.9033625883407345,
+      "average_total_gross": 0.6915934154779717,
+      "calendar_CAGR": 0.661265451355094,
+      "deflated_sharpe": {
+        "annualized_sharpe": 1.4315863177293229,
+        "daily_sharpe": 0.07493265259523622,
+        "deflated_sharpe_probability": 0.6304575930214622,
+        "deflated_sharpe_z": 0.33306553582743714,
+        "expected_max_null_daily_sharpe": 0.06599430376942114,
+        "formula_note": "Bailey-Lopez-de-Prado-style finite-sample PSR adjustment with expected maximum null Sharpe under 71 declared trials; diagnostic only.",
+        "kurtosis": 7.729744998832392,
+        "skew": 0.6786881532810051,
+        "status": "OK",
+        "trial_count": 71
+      },
+      "evaluation_diagnostics": {
+        "last_refit_diagnostics": {
+          "basis": "STANDARDIZED_EXPANDED_FEATURE_BASIS",
+          "interaction_coefficients": {
+            "F01_TREND_LEVEL_DIRECTION*F10_VOLATILITY_REGIME": -0.001243699141616803,
+            "F01_TREND_LEVEL_DIRECTION*F14_RELATIVE_CRYPTO_LEADERSHIP": -0.002218098030224735,
+            "F03_TREND_ACCELERATION_DECELERATION*F10_VOLATILITY_REGIME": -0.0013572839305378314,
+            "F05_VOL_ADJUSTED_TREND_GUARDS*F11_DOWNSIDE_ASYMMETRY_TAIL": 0.002327882925985418,
+            "F06_MOMENTUM_LEVEL*F13_CROSS_CRYPTO_BREADTH": -0.0013267005472844858,
+            "F07_OVERBOUGHT_STRETCH*F08_BEARISH_DIVERGENCE_EXHAUSTION": -0.005032844357550837,
+            "F09_BREAKDOWN_FAILED_BREAK_STRUCTURE*F12_VOLUME_FLOW_CONFIRMATION": 0.004322873297248207,
+            "F11_DOWNSIDE_ASYMMETRY_TAIL*F12_VOLUME_FLOW_CONFIRMATION": 0.003810301828102806,
+            "F14_RELATIVE_CRYPTO_LEADERSHIP*F13_CROSS_CRYPTO_BREADTH": -0.003570699341378675,
+            "F21_SEQUENTIAL_CHANGE_DETECTION*F23_MULTI_TIMESCALE_DISAGREEMENT": -0.0032018113672366635
+          },
+          "linear_coefficients": {
+            "F01_TREND_LEVEL_DIRECTION": 0.0005000004168586681,
+            "F02_TREND_SPREAD_DISAGREEMENT": -0.0016976949283094298,
+            "F03_TREND_ACCELERATION_DECELERATION": 0.005929722324473528,
+            "F04_TREND_CROSS_TRANSITION": -0.0022632920007296313,
+            "F05_VOL_ADJUSTED_TREND_GUARDS": 0.0011010397855199978,
+            "F06_MOMENTUM_LEVEL": -0.004842269308873192,
+            "F07_OVERBOUGHT_STRETCH": 0.0036978121140949787,
+            "F08_BEARISH_DIVERGENCE_EXHAUSTION": 0.0018386519464493678,
+            "F09_BREAKDOWN_FAILED_BREAK_STRUCTURE": 0.009024047691522655,
+            "F10_VOLATILITY_REGIME": 0.008766081563869375,
+            "F11_DOWNSIDE_ASYMMETRY_TAIL": 0.0007776041457458549,
+            "F12_VOLUME_FLOW_CONFIRMATION": -0.018310065449656007,
+            "F13_CROSS_CRYPTO_BREADTH": 0.005919599626098776,
+            "F14_RELATIVE_CRYPTO_LEADERSHIP": -0.0003647961194286249,
+            "F21_SEQUENTIAL_CHANGE_DETECTION": 0.004394820473680319,
+            "F23_MULTI_TIMESCALE_DISAGREEMENT": -0.0016976949283094326,
+            "F24_FIXED_LOW_ORDER_INTERACTIONS": -5.05659720419048e-05
+          },
+          "square_coefficients": {
+            "F01_TREND_LEVEL_DIRECTION": -2.6825696033468107e-07,
+            "F02_TREND_SPREAD_DISAGREEMENT": -0.006157659996873363,
+            "F03_TREND_ACCELERATION_DECELERATION": 0.0056003041394992,
+            "F04_TREND_CROSS_TRANSITION": -0.0028235976738563424,
+            "F05_VOL_ADJUSTED_TREND_GUARDS": -0.003951624192505685,
+            "F06_MOMENTUM_LEVEL": 0.000935016372559808,
+            "F07_OVERBOUGHT_STRETCH": -0.0020272807363168194,
+            "F08_BEARISH_DIVERGENCE_EXHAUSTION": 0.0019932161252027695,
+            "F09_BREAKDOWN_FAILED_BREAK_STRUCTURE": 0.007192539341487281,
+            "F10_VOLATILITY_REGIME": -0.003056344439176216,
+            "F11_DOWNSIDE_ASYMMETRY_TAIL": 0.0038145213145566255,
+            "F12_VOLUME_FLOW_CONFIRMATION": -0.0008763659247068738,
+            "F13_CROSS_CRYPTO_BREADTH": -0.0008214852439433728,
+            "F14_RELATIVE_CRYPTO_LEADERSHIP": 0.00086303411397732,
+            "F21_SEQUENTIAL_CHANGE_DETECTION": 0.0034871578807498045,
+            "F23_MULTI_TIMESCALE_DISAGREEMENT": -0.0061576599968733645,
+            "F24_FIXED_LOW_ORDER_INTERACTIONS": -0.0010395052835596268
+          },
+          "symmetric_quadratic_hessian": [
+            [
+              -5.365139206693621e-07,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              -0.001243699141616803,
+              0.0,
+              0.0,
+              0.0,
+              -0.002218098030224735,
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              -0.012315319993746725,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0112006082789984,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              -0.0013572839305378314,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              -0.005647195347712685,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              -0.00790324838501137,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.002327882925985418,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.001870032745119616,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              -0.0013267005472844858,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              -0.004054561472633639,
+              -0.005032844357550837,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              -0.005032844357550837,
+              0.003986432250405539,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.014385078682974561,
+              0.0,
+              0.0,
+              0.004322873297248207,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              -0.001243699141616803,
+              0.0,
+              -0.0013572839305378314,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              -0.006112688878352432,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.002327882925985418,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.007629042629113251,
+              0.003810301828102806,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.004322873297248207,
+              0.0,
+              0.003810301828102806,
+              -0.0017527318494137477,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              -0.0013267005472844858,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              -0.0016429704878867457,
+              -0.003570699341378675,
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              -0.002218098030224735,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              -0.003570699341378675,
+              0.00172606822795464,
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.006974315761499609,
+              -0.0032018113672366635,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              -0.0032018113672366635,
+              -0.012315319993746729,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              -0.0020790105671192535
+            ]
+          ]
+        },
+        "refit_count": 67
+      },
+      "four_block_relative_log_growth": [
+        -0.012261224493538014,
+        0.028019864802351573,
+        -0.025462841386824885,
+        0.02178109839203702
+      ],
+      "max_drawdown": -0.2963539206683067,
+      "outer_transaction_cost_return_units": 0.03391383712484883,
+      "outer_turnover": 33.913837124848826,
+      "passes_all_scientific_gates": false,
+      "positive_block_count": 2,
+      "relative_terminal_log_growth": 0.012076897314025732,
+      "selected_hyperparameters": {
+        "ridge_alpha": 1000.0
+      },
+      "simultaneous_LCB": -0.00023941640352518253,
+      "status": "EVALUATED",
+      "terminal_wealth": 63576.606019763145,
+      "validation_MSE": 0.03141079890887614
+    },
+    "A05_GAM_SPLINE_RIDGE": {
+      "G2": false,
+      "G3": true,
+      "G4": false,
+      "G5": false,
+      "G6": true,
+      "average_cash_fraction": 0.3104178693928004,
+      "average_outer_multiplier": 0.9115449085917393,
+      "average_total_gross": 0.6895821306071995,
+      "calendar_CAGR": 0.6029612393012411,
+      "deflated_sharpe": {
+        "annualized_sharpe": 1.3544503907548617,
+        "daily_sharpe": 0.07089517364827574,
+        "deflated_sharpe_probability": 0.5723480348817146,
+        "deflated_sharpe_z": 0.18235526529860033,
+        "expected_max_null_daily_sharpe": 0.06599430376942114,
+        "formula_note": "Bailey-Lopez-de-Prado-style finite-sample PSR adjustment with expected maximum null Sharpe under 71 declared trials; diagnostic only.",
+        "kurtosis": 7.981741762825895,
+        "skew": 0.6687187968613505,
+        "status": "OK",
+        "trial_count": 71
+      },
+      "evaluation_diagnostics": {
+        "last_refit_diagnostics": {},
+        "refit_count": 67
+      },
+      "four_block_relative_log_growth": [
+        -0.07162128624641079,
+        0.008036619259822912,
+        -0.07913901291345839,
+        0.024608775563851486
+      ],
+      "max_drawdown": -0.33256656154627773,
+      "outer_transaction_cost_return_units": 0.04288207241635746,
+      "outer_turnover": 42.88207241635746,
+      "passes_all_scientific_gates": false,
+      "positive_block_count": 2,
+      "relative_terminal_log_growth": -0.11811490433619477,
+      "selected_hyperparameters": {
+        "n_knots": 3,
+        "ridge_alpha": 100.0
+      },
+      "simultaneous_LCB": -0.0003371579963556785,
+      "status": "EVALUATED",
+      "terminal_wealth": 55815.62070449676,
+      "validation_MSE": 0.03517462016334866
+    },
+    "A06_SHALLOW_GBDT": {
+      "G2": false,
+      "G3": true,
+      "G4": false,
+      "G5": false,
+      "G6": true,
+      "average_cash_fraction": 0.30869728978185296,
+      "average_outer_multiplier": 0.8817244735840233,
+      "average_total_gross": 0.6913027102181472,
+      "calendar_CAGR": 0.63870174828745,
+      "deflated_sharpe": {
+        "annualized_sharpe": 1.3886065109879784,
+        "daily_sharpe": 0.07268298669156384,
+        "deflated_sharpe_probability": 0.5982837419923689,
+        "deflated_sharpe_z": 0.24890726429881446,
+        "expected_max_null_daily_sharpe": 0.06599430376942114,
+        "formula_note": "Bailey-Lopez-de-Prado-style finite-sample PSR adjustment with expected maximum null Sharpe under 71 declared trials; diagnostic only.",
+        "kurtosis": 7.863438637895507,
+        "skew": 0.6594411666238442,
+        "status": "OK",
+        "trial_count": 71
+      },
+      "evaluation_diagnostics": {
+        "last_refit_diagnostics": {},
+        "refit_count": 67
+      },
+      "four_block_relative_log_growth": [
+        0.011046057541966544,
+        -0.050137737622227466,
+        -0.03304576034665279,
+        0.03438038368807325
+      ],
+      "max_drawdown": -0.33607554517450755,
+      "outer_transaction_cost_return_units": 0.022793612574454017,
+      "outer_turnover": 22.793612574454016,
+      "passes_all_scientific_gates": false,
+      "positive_block_count": 2,
+      "relative_terminal_log_growth": -0.037757056738840444,
+      "selected_hyperparameters": {
+        "learning_rate": 0.03,
+        "max_depth": 1,
+        "n_estimators": 50
+      },
+      "simultaneous_LCB": -0.0002768292819432502,
+      "status": "EVALUATED",
+      "terminal_wealth": 60485.98097409593,
+      "validation_MSE": 0.03130513337831719
+    },
+    "A07_HMM_REGIME_MIXTURE_RIDGE": {
+      "G2": false,
+      "G3": true,
+      "G4": false,
+      "G5": false,
+      "G6": true,
+      "average_cash_fraction": 0.3012161063702053,
+      "average_outer_multiplier": 0.9140216984772981,
+      "average_total_gross": 0.6987838936297948,
+      "calendar_CAGR": 0.6291194761159626,
+      "deflated_sharpe": {
+        "annualized_sharpe": 1.3798222117202703,
+        "daily_sharpe": 0.07222319545357282,
+        "deflated_sharpe_probability": 0.5916828870820829,
+        "deflated_sharpe_z": 0.23187612866221735,
+        "expected_max_null_daily_sharpe": 0.06599430376942114,
+        "formula_note": "Bailey-Lopez-de-Prado-style finite-sample PSR adjustment with expected maximum null Sharpe under 71 declared trials; diagnostic only.",
+        "kurtosis": 7.620898031236345,
+        "skew": 0.6667625608831639,
+        "status": "OK",
+        "trial_count": 71
+      },
+      "evaluation_diagnostics": {
+        "last_refit_diagnostics": {
+          "hmm_converged": true,
+          "state_weight_sums": [
+            816.7256446159519,
+            714.0043002094206,
+            619.2700551746201
+          ]
+        },
+        "refit_count": 67
+      },
+      "four_block_relative_log_growth": [
+        -0.07481239323191412,
+        0.003311627948250126,
+        -0.012884051275957688,
+        0.025256541331436396
+      ],
+      "max_drawdown": -0.3174694275613139,
+      "outer_transaction_cost_return_units": 0.04221023195848948,
+      "outer_turnover": 42.21023195848949,
+      "passes_all_scientific_gates": false,
+      "positive_block_count": 2,
+      "relative_terminal_log_growth": -0.059128275228185284,
+      "selected_hyperparameters": {
+        "n_components": 3,
+        "ridge_alpha": 100.0
+      },
+      "simultaneous_LCB": -0.00029287374026858414,
+      "status": "EVALUATED",
+      "terminal_wealth": 59207.03683368694,
+      "validation_MSE": 0.031868555104727886
+    },
+    "A08_STACKED_ENSEMBLE": {
+      "G2": false,
+      "G3": true,
+      "G4": false,
+      "G5": false,
+      "G6": true,
+      "average_cash_fraction": 0.3109969566141489,
+      "average_outer_multiplier": 0.9088348749733312,
+      "average_total_gross": 0.6890030433858513,
+      "calendar_CAGR": 0.6334063138258086,
+      "deflated_sharpe": {
+        "annualized_sharpe": 1.398339193061929,
+        "daily_sharpe": 0.07319241855441092,
+        "deflated_sharpe_probability": 0.60553316601067,
+        "deflated_sharpe_z": 0.2676955596793565,
+        "expected_max_null_daily_sharpe": 0.06599430376942114,
+        "formula_note": "Bailey-Lopez-de-Prado-style finite-sample PSR adjustment with expected maximum null Sharpe under 71 declared trials; diagnostic only.",
+        "kurtosis": 7.855644590455204,
+        "skew": 0.6398366192128717,
+        "status": "OK",
+        "trial_count": 71
+      },
+      "evaluation_diagnostics": {
+        "refit_count": 67,
+        "stack_weights": {
+          "A01_FAMILY_ELASTIC_NET": 0.0,
+          "A02_RAW_ELASTIC_NET": 0.9343066639180669,
+          "A03_PCR_RIDGE": 0.0,
+          "A04_THEORY_QUADRATIC_HESSIAN_RIDGE": 0.0,
+          "A05_GAM_SPLINE_RIDGE": 0.06569333608193303,
+          "A06_SHALLOW_GBDT": 0.0,
+          "A07_HMM_REGIME_MIXTURE_RIDGE": 0.0
+        }
+      },
+      "four_block_relative_log_growth": [
+        -0.04409651299281812,
+        -0.03236563865169294,
+        -0.01063770619608699,
+        0.03754795808076862
+      ],
+      "max_drawdown": -0.3200476227810579,
+      "outer_transaction_cost_return_units": 0.030853705827897964,
+      "outer_turnover": 30.85370582789796,
+      "passes_all_scientific_gates": false,
+      "positive_block_count": 1,
+      "relative_terminal_log_growth": -0.04955189975982945,
+      "selected_hyperparameters": {
+        "stack_weights": {
+          "A01_FAMILY_ELASTIC_NET": 0.0,
+          "A02_RAW_ELASTIC_NET": 0.9343066639180669,
+          "A03_PCR_RIDGE": 0.0,
+          "A04_THEORY_QUADRATIC_HESSIAN_RIDGE": 0.0,
+          "A05_GAM_SPLINE_RIDGE": 0.06569333608193303,
+          "A06_SHALLOW_GBDT": 0.0,
+          "A07_HMM_REGIME_MIXTURE_RIDGE": 0.0
+        }
+      },
+      "simultaneous_LCB": -0.00028568426919624496,
+      "status": "EVALUATED",
+      "terminal_wealth": 59776.74918458959,
+      "validation_MSE": 0.02739633624859194
+    }
+  },
+  "order_submission_authorized": false,
+  "production_authorized": false,
+  "research_id": "BRRK-MULTI-ARCHITECTURE-GROSS-CONTROLLER-0065",
+  "schema_version": 1,
+  "scientific_winners": [],
+  "signature_authorized": false,
+  "simultaneous_bootstrap": {
+    "block_length": 60,
+    "q95": 0.00024848314325042706,
+    "replicates": 4000,
+    "seed": 650065
+  },
+  "stack_weights": {
+    "A01_FAMILY_ELASTIC_NET": 0.0,
+    "A02_RAW_ELASTIC_NET": 0.9343066639180669,
+    "A03_PCR_RIDGE": 0.0,
+    "A04_THEORY_QUADRATIC_HESSIAN_RIDGE": 0.0,
+    "A05_GAM_SPLINE_RIDGE": 0.06569333608193303,
+    "A06_SHALLOW_GBDT": 0.0,
+    "A07_HMM_REGIME_MIXTURE_RIDGE": 0.0
+  }
+}
