@@ -23,7 +23,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD)" = "f642240c6c5162dfd8274745b8449490966849b7"
+          test "$(git rev-parse HEAD)" = "f642240696edeb109d06f38202a4a326083ac038"
           python - <<'PY'
           from pathlib import Path
           p=Path('docs/CURRENT_STATE.md')
@@ -36,7 +36,7 @@ jobs:
           insert=(
               "Historical actual variants evaluated = 0 / 1704.\n"
               "Implementation-only engine/event/model modules are present on the implementation branch.\n"
-              "Runtime observability commit = `f642240c6c5162dfd8274745b8449490966849b7`; it adds phase/progress logging and suppresses only the sklearn penalty-deprecation FutureWarning without changing any frozen model parameter or mathematical path.\n"
+              "Runtime observability commit = `f642240696edeb109d06f38202a4a326083ac038`; it adds phase/progress logging and suppresses only the sklearn penalty-deprecation FutureWarning without changing any frozen model parameter or mathematical path.\n"
               "Bounded artificial implementation validation run = `31801841347`; synthetic unit tests, full 1632/64/8 configuration enumeration audit, zero-result assertions and clean-worktree assertions all passed.\n"
               "The cancelled full-artificial tooling run `31792978620` was implementation-only synthetic validation, not a historical execution attempt, and created no runtime result marker.\n"
           )
