@@ -1,4 +1,4 @@
-name: Tooling 0065 preregistration validation
+name: Tooling 0065 synthetic implementation
 
 on:
   push:
@@ -11,56 +11,52 @@ permissions:
   contents: read
 
 jobs:
-  prereg-validation:
+  synthetic-implementation:
     runs-on: ubuntu-latest
+    env:
+      PYTHONHASHSEED: '0'
+      OMP_NUM_THREADS: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      NUMEXPR_NUM_THREADS: '1'
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: research/0065-prereg-v1
+          ref: research/0065-implementation-v1
           fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Verify frozen preregistration without historical portfolio read
+      - run: pip install -r execution/plan-b-bot/requirements-dev.txt
+      - name: Reassert zero historical result state
         shell: bash
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD)" = "3d74b80fd5448c72fa33032b4ffa85d17f90ddde"
+          for f in RUN_ATTEMPT.marker PRIMARY_RESULT.json EVIDENCE.json EXECUTION.json RUN_ONCE.marker; do
+            test ! -e "research/brrk_multi_architecture_gross_controller_0065/$f"
+          done
+      - name: Compile and run synthetic method contracts only
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile research/brrk_multi_architecture_gross_controller_0065/engine.py
+          PYTHONPATH=. pytest -q research/brrk_multi_architecture_gross_controller_0065/test_engine.py
+      - name: Verify implementation identity and no I/O primitives
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git hash-object research/brrk_multi_architecture_gross_controller_0065/engine.py)" = "762b608dd9eb5feedc06867ce07f02d0de8ea928"
           python - <<'PY'
           import json
-          from pathlib import Path
-          rid='BRRK-MULTI-ARCHITECTURE-GROSS-CONTROLLER-0065'
           p=json.load(open('research/brrk_multi_architecture_gross_controller_0065/PREREGISTRATION.json'))
-          d=json.load(open('research/brrk_multi_architecture_gross_controller_0065/DATASET_DECLARATION.json'))
-          r=json.load(open('config/research_registry.json'))
-          o=[x for x in r['records'] if x.get('research_id')==rid]
-          assert len(o)==1
-          o=o[0]
-          assert o['result_status']=='PREREGISTERED_NOT_RUN'
-          assert o['promotion_state']=='NONE'
-          assert o['declared_variant_budget']==71 and o['actual_variants_evaluated']==0
-          assert o['parameter_candidate_count']==63
-          assert p['trial_accounting']=={
-            'validation_tuning_config_count':63,'final_architecture_count':8,'declared_variant_budget':71,
-            'actual_variants_evaluated_before_run':0,'architecture_set_may_change_after_prereg':False}
-          assert len(p['architectures'])==8
-          assert sum(x['config_count'] for x in p['architectures'].values())==63
-          assert p['time_contract']['validation_origin_end_inclusive']=='2022-11-19'
-          assert p['time_contract']['portfolio_evaluation_start']=='2022-12-10'
-          assert p['time_contract']['decision_timing'].startswith('Features and model forecast computed after completed UTC close t')
-          assert p['gross_mapping']['outer_multiplier_formula']=='g = clip(1 + 0.25*z, 0, 1)'
-          assert p['portfolio_economics']['outer_turnover_cost_bps_per_unit_gross']==10
-          assert p['simultaneous_inference']['block_length']==60
-          assert p['simultaneous_inference']['replicates']==4000
-          assert p['simultaneous_inference']['seed']==650065
-          assert p['selection_risk_diagnostics']['PBO_CSCV']['split_count']==70
-          assert d['feature_builder']['git_blob_sha']=='cac8e946998c836d10842b9388e1e3ef345a8c0b'
-          assert d['feature_market_data']['git_blob_sha']=='64ebf5c6deaf3f34dbeac715378f196ff0f4fafe'
-          assert d['portfolio_baseline']['equity_git_blob_sha']=='82c87f8cb0ff01c728ffd3b717fff17cf5a364f2'
-          assert d['portfolio_baseline']['weights_git_blob_sha']=='2f6c8d3a8c25d3cafeaa0128f1c425dac248370b'
-          assert d['cash_rate']['git_blob_sha']=='71d50e26f8a9afb6bcb88401d20b97d5fb0a891a'
-          for f in ['RUN_ATTEMPT.marker','PRIMARY_RESULT.json','EVIDENCE.json','EXECUTION.json','RUN_ONCE.marker']:
-              assert not (Path('research/brrk_multi_architecture_gross_controller_0065')/f).exists(), f
-          print('0065 frozen prereg validation OK; historical portfolio content reads=0; result variants=0')
+          c=json.load(open('research/brrk_multi_architecture_gross_controller_0065/IMPLEMENTATION_CONTRACT.json'))
+          from research.brrk_multi_architecture_gross_controller_0065.engine import frozen_configurations, ARCHITECTURES
+          assert sum(len(v) for v in frozen_configurations().values()) == 63
+          assert len(ARCHITECTURES) == 8
+          assert c['declared_variant_budget'] == 71
+          assert c['historical_portfolio_reads_during_implementation'] == 0
+          assert c['historical_0065_CAGR_computed_during_implementation'] is False
+          assert p['trial_accounting']['declared_variant_budget'] == 71
           PY
+          ! grep -nE '(^|[^A-Za-z_])(open\(|Path\(|requests\.|urlopen|read_csv|read_json)' research/brrk_multi_architecture_gross_controller_0065/engine.py
           PYTHONPATH=. python -m research.governance.validate
