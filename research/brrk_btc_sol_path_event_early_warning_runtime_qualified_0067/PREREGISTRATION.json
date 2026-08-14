@@ -1,0 +1,141 @@
+{
+  "schema_version": 1,
+  "research_id": "BRRK-BTC-SOL-PATH-EVENT-EARLY-WARNING-RUNTIME-QUALIFIED-0067",
+  "stage": "NUMERICAL_DATA_PREREGISTRATION_FROZEN_NOT_RUN",
+  "design_merge_sha": "f3e5adc14631d9a3ae13ba686388b7a3c189e867",
+  "owner_first_commit_sha": "e584003ed04c92322c6cde87714d5cce4995b12e",
+  "scientific_relation_to_0066": "SAME_PROSPECTIVELY_FROZEN_SCIENTIFIC_SEMANTICS; PROCESS_INFORMED_BY_0066_TIMEOUT_ONLY; NOT_RESULT_INFORMED_BY_0066",
+  "evidence_tier": "RESEARCHER_EXPOSED_DEVELOPMENT_NOT_INDEPENDENT_OOS",
+  "event_contract": {
+    "outcome_assets": ["BTC", "SOL"],
+    "scan_horizons_sessions": [10, 15, 20, 30, 45, 60, 90, 120, 180, 240],
+    "price_field": "close",
+    "fit_path": "For each origin t and H, OLS log(close[t+j]) = intercept + beta*j + epsilon for j=0..H; slope t-statistic is a standardized path-shape score only, not an IID significance test.",
+    "past_scale": "sigma60 = ddof=1 standard deviation of daily log returns over preceding 60 sessions, minimum 30, using no future return.",
+    "scale_selection": "H_star = argmax absolute slope_t_stat across frozen H; ties choose shorter H.",
+    "down_candidate": {
+      "slope_t_stat_max": -2.5,
+      "terminal_log_return_rule": "R_H_star <= -1.0*sigma60*sqrt(H_star)",
+      "mae_rule": "MAE_magnitude >= 1.5*sigma60*sqrt(H_star)",
+      "duration_grades": {"D1_SHORT": [10,15,20], "D2_MEDIUM": [30,45,60], "D3_LONG": [90,120], "D4_SECULAR": [180,240]},
+      "severity_z_mae": {"S1": [1.5,2.5], "S2": [2.5,4.0], "S3_min": 4.0}
+    },
+    "sideways_candidate": {
+      "abs_slope_t_stat_max": 1.25,
+      "abs_terminal_log_return_rule": "abs(R_H) <= 0.50*sigma60*sqrt(H)",
+      "path_log_range_rule": "range(log_close[t:t+H]) <= 1.75*sigma60*sqrt(H)",
+      "scale_selection": "LONGEST qualifying H",
+      "duration_grades": {"S1_SHORT": [10,15,20], "S2_MEDIUM": [30,45,60], "S3_LONG": [90,120], "S4_SECULAR": [180,240]}
+    },
+    "precedence": "DOWN before SIDEWAYS at same origin; otherwise OTHER",
+    "onset_extraction": "For each asset,event_type,duration_grade, contiguous candidate run onset is first date. Same-type new onsets suppressed ceil(H_star/2) sessions. A strictly longer duration grade may begin a hierarchical new episode only after 10 sessions.",
+    "risk_set": "Dates in an already-started event suppression interval are excluded from classifier risk set and are not negatives.",
+    "indicator_independence": true
+  },
+  "warning_targets": {
+    "T1_ANY_DOWN": "D1_SHORT or D2_MEDIUM or D3_LONG or D4_SECULAR",
+    "T2_MAJOR_DOWN": "D2_MEDIUM/D3_LONG/D4_SECULAR OR decline severity S2/S3",
+    "T3_ANY_SIDEWAYS": "S1_SHORT/S2_MEDIUM/S3_LONG/S4_SECULAR",
+    "T4_LONG_SIDEWAYS": "S2_MEDIUM/S3_LONG/S4_SECULAR",
+    "warning_horizons_sessions": [1,3,5,10,20],
+    "binary_label": "For an at-risk date t and lead L, Y_L[t]=1 iff a qualifying unique onset occurs in strictly future (t,t+L]; else 0.",
+    "track_count": 40,
+    "support": {"train_plus_validation_min_unique_onsets": 8, "final_min_unique_onsets": 3, "insufficient_status": "LOW_SUPPORT_DESCRIPTIVE_ONLY"}
+  },
+  "time_contract": {
+    "calendar": "DAILY_CONTIGUOUS_UTC_SESSIONS",
+    "maximum_event_scan_horizon": 240,
+    "maximum_warning_horizon": 20,
+    "fit_label_maturity_rule": "origin + L + 240 sessions strictly earlier than refit date",
+    "validation_prediction_start": "2023-01-01",
+    "validation_prediction_end": "2023-12-31",
+    "final_event_prediction_start": "2024-01-01",
+    "final_event_prediction_end": "2025-11-15",
+    "economic_evaluation_start": "2024-01-01",
+    "economic_evaluation_end": "2026-08-02",
+    "refit_cadence_sessions": 20,
+    "decision_timing": "Prediction after completed close t may affect only portfolio return row t+1."
+  },
+  "feature_contract": {
+    "builder_path": "research/brrk_btc_risk_signal_atlas_0062/engine.py",
+    "builder_git_blob_sha": "cac8e946998c836d10842b9388e1e3ef345a8c0b",
+    "function": "build_signal_atlas",
+    "raw_cell_count": 185,
+    "family_score_count": 17,
+    "signal_unit_count": 202,
+    "anti_pruning": true,
+    "missing_value_rule": "Training-column median at each refit; all-missing required training column causes config/track MODEL_FIT_FAILURE."
+  },
+  "indicator_atlas": {
+    "hypothesis_cells": 8080,
+    "orientation": "TRAIN-only sign of point-biserial association; zero tie +1; no validation/final sign flip.",
+    "metrics": ["ROC_AUC","PR_AUC","PREVALENCE","PR_AUC_LIFT","BRIER","FOUR_CHRONOLOGICAL_BLOCK_METRICS"],
+    "P03_screening": "VALIDATION only: positive PR-AUC lift, >=3/4 positive blocks, max 2 signals/family, max 12 signals; ties frozen signal ID; no FINAL screening.",
+    "final_multiplicity": "One-sided Mann-Whitney U equivalent to TRAIN-oriented ROC-AUC>0.50, Holm-Bonferroni FWER 0.05 across all supported FINAL cells."
+  },
+  "architectures": {
+    "P01_FAMILY_RIDGE_LOGIT": {"input":"17 family scores","grid":{"C":[0.01,0.1,1.0,10.0],"penalty":"l2","solver":"lbfgs","class_weight":"balanced","max_iter":5000},"configs_per_track":4,"tracks":40,"validation_configs":160},
+    "P02_RAW_ELASTIC_NET_LOGIT": {"input":"185 raw cells","grid":{"C":[0.01,0.1,1.0],"l1_ratio":[0.1,0.5,0.9],"penalty":"elasticnet","solver":"saga","class_weight":"balanced","max_iter":10000,"tol":1e-6,"random_state":660067},"configs_per_track":9,"tracks":40,"validation_configs":360},
+    "P03_VALIDATION_SCREENED_SIGNAL_LOGIT": {"input":"<=12 validation-screened signal units","grid":{"C":[0.1,1.0,10.0],"penalty":"l2","solver":"lbfgs","class_weight":"balanced","max_iter":5000},"configs_per_track":3,"tracks":40,"validation_configs":120},
+    "P04_PCR_LOGIT": {"input":"185 raw cells","grid":{"n_components":[5,10,20,40],"C":[0.1,1.0,10.0],"solver":"lbfgs","class_weight":"balanced","max_iter":5000},"configs_per_track":12,"tracks":40,"validation_configs":480},
+    "P05_THEORY_QUADRATIC_LOGIT": {"result_informed_from_closed_0065":true,"selection_privilege":false,"input":"17 linear + 17 squares + 10 fixed interactions","fixed_interactions":[["F01_TREND_LEVEL_DIRECTION","F10_VOLATILITY_REGIME"],["F03_TREND_ACCELERATION_DECELERATION","F10_VOLATILITY_REGIME"],["F05_VOL_ADJUSTED_TREND_GUARDS","F11_DOWNSIDE_ASYMMETRY_TAIL"],["F06_MOMENTUM_LEVEL","F13_CROSS_CRYPTO_BREADTH"],["F07_OVERBOUGHT_STRETCH","F08_BEARISH_DIVERGENCE_EXHAUSTION"],["F09_BREAKDOWN_FAILED_BREAK_STRUCTURE","F12_VOLUME_FLOW_CONFIRMATION"],["F14_RELATIVE_CRYPTO_LEADERSHIP","F13_CROSS_CRYPTO_BREADTH"],["F21_SEQUENTIAL_CHANGE_DETECTION","F23_MULTI_TIMESCALE_DISAGREEMENT"],["F01_TREND_LEVEL_DIRECTION","F14_RELATIVE_CRYPTO_LEADERSHIP"],["F11_DOWNSIDE_ASYMMETRY_TAIL","F12_VOLUME_FLOW_CONFIRMATION"]],"grid":{"C":[0.001,0.01,0.1,1.0],"solver":"lbfgs","class_weight":"balanced","max_iter":5000},"configs_per_track":4,"tracks":40,"validation_configs":160},
+    "P06_SHALLOW_GBDT_CLASSIFIER": {"input":"17 family scores","grid":{"max_depth":[1,2],"n_estimators":[50,100],"learning_rate":[0.03,0.1],"min_samples_leaf":20,"subsample":0.8,"random_state":660067},"configs_per_track":8,"tracks":40,"validation_configs":320},
+    "P07_DISCRETE_TIME_HAZARD_LOGIT": {"input":"17 family scores + warning-horizon one-hot","grid":{"C":[0.01,0.1,1.0,10.0],"solver":"lbfgs","class_weight":"balanced","max_iter":5000},"configs_per_asset_target":4,"asset_target_count":8,"validation_configs":32},
+    "P08_STACKED_PROBABILITY_ENSEMBLE": {"input":"causal validation probabilities from P01-P07","fit":"scipy.optimize.nnls; normalize nonnegative weights; equal 1/7 fallback if zero/nonfinite","validation_configs":0}
+  },
+  "validation_selection": {
+    "primary": "PR_AUC_LIFT",
+    "secondary": "ROC_AUC",
+    "tertiary": "lower Brier",
+    "hyperparameter_tie_break": "lexicographic ascending canonical JSON",
+    "preferred_warning_horizon": "highest VALIDATION PR_AUC_LIFT; tie LONGER horizon",
+    "preferred_architecture": "highest VALIDATION PR_AUC_LIFT; tie ROC_AUC, lower Brier, architecture ID",
+    "final_reselection_forbidden": true,
+    "controller_exact_horizon_resolution": "5D/10D controllers use exact lead and validation-best architecture at that lead; C06 exact 3D/5D/10D; C07 exact required down/sideways components."
+  },
+  "predictive_final_gates": {
+    "G0":"Frozen identities exact","G1":"support gate","G2":"FINAL ROC_AUC>0.50 and PR_AUC_LIFT>0","G3":">=3/4 blocks ROC_AUC>0.50 and PR_AUC>prevalence","G4":"preferred lead>=5 OR adjacent pair {3,5}/{5,10}/{10,20} both G2","G5":"simultaneous one-sided 95% dependence-aware bootstrap LCB FINAL PR_AUC_LIFT >0"
+  },
+  "controller_contract": {
+    "controllers":["C01_BTC_ANY_DOWN_5D","C02_SOL_ANY_DOWN_5D","C03_MAX_BTC_SOL_ANY_DOWN_5D","C04_BTC_MAJOR_DOWN_10D","C05_MAX_BTC_SOL_MAJOR_DOWN_10D","C06_MULTILEAD_DOWN_BLEND_3_5_10","C07_DOWN_PLUS_SIDEWAYS","C08_STACKED_EVENT_RISK"],
+    "count":8,
+    "threshold_calibration":"empirical risk percentiles fit on causal VALIDATION predictions only",
+    "gross_rules":{"below_p90":1.0,"down_at_or_above_p90":0.5,"sideways_only_at_or_above_p90":0.75,"down_at_or_above_p97_5":0.25,"multiple_rules":"minimum g"},
+    "C03_C05":"max calibrated percentile BTC/SOL","C06":"max calibrated percentile exact 3D/5D/10D ANY_DOWN","C07":"DOWN precedence; SIDEWAYS only if no stronger DOWN","C08":"P08 stacked event risk",
+    "leverage_allowed":false,"shorting_allowed":false,"smoothing":"NONE","outer_turnover_cost_per_unit_multiplier_change":0.001
+  },
+  "economic_reference": {"research_id":"BRRK-IDLE-CASH-PASSIVE-ACCRUAL-ROBUSTNESS-0064","cash_yield_realization":0.5,"annual_cash_fee_bps":100,"comparison_window":["2024-01-01","2026-08-02"]},
+  "economic_gates": {"E0":"identity/timing/benchmark/cost pass","E1":"terminal wealth and CAGR strictly exceed same-window 0064","E2":"MDD >= 0064 MDD -1e-12","E3":">=3/4 economic blocks positive relative log growth","E4":"simultaneous one-sided 95% MBB LCB mean relative daily log increment >0","E5":"dependence/cost/no-lookahead/no-leverage/no-short/nonnegative-cash pass"},
+  "trial_accounting": {
+    "indicator_atlas_hypothesis_cells_separate":8080,
+    "validation_tuning_executions":1632,
+    "breakdown":{"P01":160,"P02":360,"P03":120,"P04":480,"P05":160,"P06":320,"P07":32,"P08":0},
+    "final_predictor_tracks":64,
+    "final_economic_controllers":8,
+    "declared_model_controller_variant_budget":1704,
+    "no_hidden_grid_trials_allowed":true
+  },
+  "physical_compute_accounting": {
+    "validation_prediction_rows":365,
+    "validation_refit_blocks_per_config":19,
+    "nonhazard_validation_configs":1600,
+    "pooled_hazard_validation_configs":32,
+    "validation_estimator_fit_calls_declared":31008,
+    "economic_prediction_rows":945,
+    "economic_refit_blocks_per_selected_series":48,
+    "nonhazard_selected_asset_target_horizon_series":240,
+    "pooled_hazard_asset_target_series":8,
+    "economic_estimator_fit_calls_declared":11904,
+    "total_estimator_fit_calls_declared":42912,
+    "stacking_nnls_solves_declared":40,
+    "fit_call_formula":"(1600*19)+(32*19)+(240*48)+(8*48)=42912",
+    "qualification_must_exercise_full_count":true
+  },
+  "simultaneous_inference": {"bootstrap":"aligned non-circular moving-block","block_length":60,"replicates_per_predictive_and_economic_family":4000,"seed":670067,"quantile":"Type-7 q95","strict_pass":"LCB>0","predictive":"one max-stat correction across confirmatory predictor tracks; no retrain/reorient/rescreen/recalibrate","economic":"same sampled indices for all valid controllers; max-stat simultaneous LCB","indicator_atlas":"separate Holm-Bonferroni FWER 0.05"},
+  "temporal_blocks":{"count":4,"construction":"count-balanced contiguous eligible rows; earlier blocks receive remainder"},
+  "selection_risk":{"PBO_CSCV_slices":8,"in_sample_slices":4,"split_count":70,"selection_statistic":"controller annualized Sharpe on in-sample slices","role":"diagnostic_not_primary_gate"},
+  "classification_enum":["PASS_EVENT_EARLY_WARNING_AND_ECONOMIC_CONTROLLER","PASS_EVENT_EARLY_WARNING_ONLY","FAIL_NO_ROBUST_EVENT_CONTROLLER","FAIL_NO_ROBUST_EVENT_EARLY_WARNING","MEASUREMENT_INCONCLUSIVE_INSUFFICIENT_EVENT_SUPPORT","INVALID_EXECUTION"],
+  "exactly_once":{"historical_attempts_authorized":1,"same_id_rerun":false,"same_id_retune":false,"same_id_rescue":false,"marker_only_recovery":"only if complete PRIMARY_RESULT+EVIDENCE+EXECUTION already durably persist and only RUN_ONCE.marker is missing"},
+  "qualification_required_before_historical_marker":true,
+  "authority":{"production_authorized":false,"signature_authorized":false,"order_submission_authorized":false}
+}
