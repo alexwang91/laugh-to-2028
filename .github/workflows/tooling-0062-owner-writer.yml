@@ -1,4 +1,4 @@
-name: Tooling 0064 prereg read-only validation
+name: Tooling 0064 implementation synthetic-only
 
 on:
   push:
@@ -11,12 +11,12 @@ permissions:
   contents: read
 
 jobs:
-  validate-prereg:
+  synthetic-only:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: research/0064-prereg-v1
+          ref: research/0064-implementation-v1
           fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
@@ -24,40 +24,35 @@ jobs:
           cache: pip
           cache-dependency-path: execution/plan-b-bot/requirements-dev.txt
       - run: pip install -r execution/plan-b-bot/requirements-dev.txt
-      - name: Validate frozen prereg and zero-result state
+      - name: Assert implementation zero-result boundary
         shell: bash
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD)" = "3523571480daa2bbc4cd412bd05086ffe7f3e23b"
-          python -m research.governance.validate
-          python -m research.governance.enforce_future --base 7a48ebd4b34bb6e04de621fbeb0cabd84d447a6a
+          test "$(git rev-parse HEAD)" = "85086ef04d684c08a1a15ae39bd40b60f2b16b05"
           test ! -e research/brrk_idle_cash_passive_accrual_robustness_0064/RUN_ATTEMPT.marker
           test ! -e research/brrk_idle_cash_passive_accrual_robustness_0064/PRIMARY_RESULT.json
+          test ! -e research/brrk_idle_cash_passive_accrual_robustness_0064/EVIDENCE.json
+          test ! -e research/brrk_idle_cash_passive_accrual_robustness_0064/EXECUTION.json
           test ! -e research/brrk_idle_cash_passive_accrual_robustness_0064/RUN_ONCE.marker
+      - name: Run committed synthetic contracts only
+        run: pytest -q research/brrk_idle_cash_passive_accrual_robustness_0064/test_contract.py
+      - name: Validate implementation contract and governance
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m research.governance.validate
           python - <<'PY'
           import json
           from pathlib import Path
-          p=json.loads(Path('research/brrk_idle_cash_passive_accrual_robustness_0064/PREREGISTRATION.json').read_text())
-          d=json.loads(Path('research/brrk_idle_cash_passive_accrual_robustness_0064/DATASET_DECLARATION.json').read_text())
-          assert p['research_id']=='BRRK-IDLE-CASH-PASSIVE-ACCRUAL-ROBUSTNESS-0064'
-          assert p['owner_first_commit_sha']=='7a48ebd4b34bb6e04de621fbeb0cabd84d447a6a'
-          assert p['candidate_geometry']['cell_count']==20
-          assert p['candidate_geometry']['primary_cell']=={'yield_realization':0.5,'annual_spread_fee_bps':100}
-          assert p['candidate_geometry']['core_stress_cells']['cell_count']==9
-          assert p['chronological_blocks']['expected_sizes_at_1332_rows']==[333,333,333,333]
-          assert p['moving_block_bootstrap']['block_length_sessions']==60
-          assert p['moving_block_bootstrap']['replicates']==4000
-          assert p['moving_block_bootstrap']['seed']==640064
-          assert p['execution_budget']['historical_attempts']==1
-          assert p['execution_budget']['actual_variants_evaluated_before_execution']==0
-          assert d['cash_rate']['payload_sha256']=='4d8aee67dbd528ce38ff8482e9bb02dd5ccf2c6cd461f606fe90007151ab6879'
-          assert d['cash_rate']['new_capture_for_0064'] is False
-          assert d['0063_outcomes_may_satisfy_0064_gate'] is False
-          r=json.load(open('config/research_registry.json'))
-          o=[x for x in r['records'] if x['research_id']=='BRRK-IDLE-CASH-PASSIVE-ACCRUAL-ROBUSTNESS-0064']
-          assert len(o)==1 and o[0]['actual_variants_evaluated']==0
-          assert o[0]['result_status']=='PREREGISTERED_NOT_RUN' and o[0]['promotion_state']=='NONE'
+          c=json.loads(Path('research/brrk_idle_cash_passive_accrual_robustness_0064/IMPLEMENTATION_CONTRACT.json').read_text())
+          assert c['research_id']=='BRRK-IDLE-CASH-PASSIVE-ACCRUAL-ROBUSTNESS-0064'
+          assert c['candidate_cell_count']==20
+          assert c['primary_cell']=={'yield_realization':0.5,'annual_spread_fee_bps':100}
+          assert c['actual_variants_evaluated']==0
+          assert c['implementation_invariants']['network_access'] is False
+          assert c['implementation_invariants']['file_io_in_scientific_engine'] is False
+          assert c['implementation_invariants']['historical_dataset_read_in_implementation_tests'] is False
+          assert c['implementation_invariants']['historical_outcome_computation_in_implementation_tests'] is False
+          assert c['implementation_invariants']['cash_yield_floor'] is False
+          assert c['implementation_invariants']['sweep_transaction_cost'] is False
           PY
-          changed="$(git diff --name-only 38b5740cb89ae16b4bc005f3d5bcb4f8e0a0181f...HEAD | sort)"
-          printf '%s\n' "$changed"
-          test "$changed" = "$(printf '%s\n' config/research_registry.json docs/CURRENT_STATE.md research/brrk_idle_cash_passive_accrual_robustness_0064/DATASET_DECLARATION.json research/brrk_idle_cash_passive_accrual_robustness_0064/PREREGISTRATION.json | sort)"
