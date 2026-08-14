@@ -26,6 +26,17 @@ The pre-0063 long-form handoff remains preserved by Git history at blob `dcc6558
 - Historical 0063 candidate economics: not computed.
 - Actual historical variants evaluated: 0.
 
+## No-drift authority
+
+production gross cap = 1.0
+production_authorized_components = []
+production_authorized = false
+signature_authorized = false
+order_submission_authorized = false
+
+Canonical BRRK-0011: NO CHANGE.
+Phase 6: NO CHANGE.
+
 ## Exact next step
 
 Merge DESIGN through standing CI. Then perform the result-blind DTB3 capture, freeze owner-first numerical/data preregistration, implement with synthetic-only tests, merge a separate controlled boundary, execute exactly once, and close out immutably.
