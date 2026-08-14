@@ -1,0 +1,11 @@
+{
+  "attempt_number": 1,
+  "boundary_merge_sha": "876fdf657bd11bc4aeb9d0dcd3859886ee099568",
+  "created_at_utc": "2026-08-14T08:22:40.050589+00:00",
+  "research_id": "BRRK-IDLE-CASH-PASSIVE-ACCRUAL-ROBUSTNESS-0064",
+  "same_id_rerun_allowed": false,
+  "same_id_rescue_allowed": false,
+  "same_id_retune_allowed": false,
+  "schema_version": 1,
+  "workflow_run_id": "31783619793"
+}
