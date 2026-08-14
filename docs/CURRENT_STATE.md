@@ -3,8 +3,8 @@
 Last updated: 2026-08-14
 
 Authoritative repository: `alexwang91/laugh-to-2028`.
-Merged preregistration: `42bd7ef1d8dde65c15e9c0ec5ace07a6d548c564`.
-Active branch: `research/0063-implementation-v1`.
+Merged implementation: `981a38dc2a7f02094d19c5de44e39afc10942510`.
+Active branch: `research/0063-boundary-v1`.
 The pre-0063 long-form handoff remains preserved by Git history at blob `dcc655864caf0a62a5123b38700047b77920e546`.
 
 ## Required closed-research anchors
@@ -17,20 +17,26 @@ ID 0043 is closed against result-informed pruning, reweighting, threshold rescue
 ## Research state
 
 0062 = `FAIL_NO_SIGNAL_ATLAS_FAMILY_INFORMATION / CLOSED`; same-ID rerun/retune/rescue forbidden.
-0063 = `IMPLEMENTED / CONTROLLED BOUNDARY ABSENT / NOT RUN`.
+0063 = `CONTROLLED BOUNDARY FROZEN / NOT RUN`.
 Research ID = `BRRK-IDLE-CASH-SWEEP-ROBUSTNESS-0063`.
-Owner-first commit = `aeff95faa60f5e7f5c209c143a329e7e45545286`.
 Frozen DTB3 raw SHA256 = `4d8aee67dbd528ce38ff8482e9bb02dd5ccf2c6cd461f606fe90007151ab6879`.
-Frozen yield-realization grid = 25%, 50%, 75%, 100%.
-Frozen sweep-friction grid = 0, 5, 10, 20 bps.
 Primary conservative cell = 50% realization / 10 bps.
+Frozen stress cells = 16.
 MBB = L60 / 4000 reps / seed 630063 / aligned non-circular moving blocks.
 Implementation engine blob = `94dec1f3071ce80b859c9558556cdb4f1ffd26c8`.
-Implementation tests = SYNTHETIC / TOY / CONTRACT ONLY.
-Historical BRRK/DTB3 values read by implementation tests = NO.
+Controlled runner blob = `9ce6b2d486a9dab994d9d905c1db1a63334c8de2`.
+Historical execution attempt budget = 1.
 Historical 0063 candidate economics = NOT COMPUTED.
 Actual historical variants evaluated = 0.
 RUN_ATTEMPT.marker = ABSENT.
+PRIMARY_RESULT.json = ABSENT.
+EXECUTION.json = ABSENT.
+RUN_ONCE.marker = ABSENT.
+
+## Exactly-once boundary
+
+Preflight checks Git blob identities and zero-result state only; it does not open historical CSV content or call the scientific engine.
+After boundary merge, the authorized execution must durably persist RUN_ATTEMPT.marker before opening any frozen historical input. Equity, weights and DTB3 may each be read once; all 16 stress cells are evaluated inside at most one scientific engine call. Same-ID rerun, recomputation, retune and rescue are forbidden after marker persistence.
 
 ## No-drift authority
 
@@ -45,4 +51,4 @@ Phase 6 = NO CHANGE.
 
 ## Exact next step
 
-Run the frozen implementation through a dedicated synthetic-only test job and standing CI. After implementation merge, create a separate controlled-execution boundary that pins all upstream blob identities and preserves a zero-result preflight before the unique historical attempt.
+Run a zero-result boundary preflight and standing CI. After the controlled boundary merges, execute exactly one governed historical attempt: persist the attempt marker first, read each frozen input once, call the frozen engine at most once, persist result/evidence/execution, then finalize from persisted hashes without any market re-read or remeasurement.
