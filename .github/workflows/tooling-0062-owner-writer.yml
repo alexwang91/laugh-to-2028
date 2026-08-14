@@ -1,4 +1,4 @@
-name: Research 0064 unique historical execution
+name: Tooling 0064 registry closeout writer
 
 on:
   push:
@@ -11,11 +11,10 @@ permissions:
   contents: write
 
 jobs:
-  unique-historical-attempt:
+  registry-closeout:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout exact formal result branch
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           ref: research/0064-result-v1
           fetch-depth: 0
@@ -26,143 +25,88 @@ jobs:
           cache: pip
           cache-dependency-path: execution/plan-b-bot/requirements-dev.txt
       - run: pip install -r execution/plan-b-bot/requirements-dev.txt
-      - name: Final zero-result / no-drift preflight before attempt consumption
-        shell: bash
-        env:
-          BOUNDARY: 876fdf657bd11bc4aeb9d0dcd3859886ee099568
-          RESULT_BRANCH: research/0064-result-v1
-        run: |
-          set -euo pipefail
-          git fetch origin main "$RESULT_BRANCH"
-          test "$(git rev-parse HEAD)" = "$BOUNDARY"
-          test "$(git rev-parse origin/main)" = "$BOUNDARY"
-          test "$(git rev-parse origin/$RESULT_BRANCH)" = "$BOUNDARY"
-          for f in RUN_ATTEMPT.marker PRIMARY_RESULT.json EVIDENCE.json EXECUTION.json RUN_ONCE.marker; do
-            test ! -e "research/brrk_idle_cash_passive_accrual_robustness_0064/$f"
-          done
-          PYTHONPATH=. python research/brrk_idle_cash_passive_accrual_robustness_0064/run_once.py preflight --boundary-sha "$BOUNDARY" | tee /tmp/final_preflight.json
-          python - <<'PY'
-          import json
-          p=json.load(open('/tmp/final_preflight.json'))
-          assert p['status']=='PREFLIGHT_PASS_ZERO_RESULT_GIT_IDENTITY_ONLY'
-          assert p['historical_csv_content_reads']==0
-          assert p['scientific_engine_calls']==0
-          PY
-      - name: Consume attempt and durably push marker before any historical content read
-        id: attempt
-        shell: bash
-        env:
-          BOUNDARY: 876fdf657bd11bc4aeb9d0dcd3859886ee099568
-          RESULT_BRANCH: research/0064-result-v1
-        run: |
-          set -euo pipefail
-          PYTHONPATH=. python research/brrk_idle_cash_passive_accrual_robustness_0064/run_once.py start-attempt --boundary-sha "$BOUNDARY" --workflow-run-id "$GITHUB_RUN_ID"
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add research/brrk_idle_cash_passive_accrual_robustness_0064/RUN_ATTEMPT.marker
-          test "$(git diff --cached --name-only)" = "research/brrk_idle_cash_passive_accrual_robustness_0064/RUN_ATTEMPT.marker"
-          git commit -m 'research: consume 0064 historical attempt'
-          ATTEMPT_COMMIT="$(git rev-parse HEAD)"
-          test "$(git rev-parse HEAD^)" = "$BOUNDARY"
-          git push origin HEAD:"$RESULT_BRANCH"
-          REMOTE="$(git ls-remote origin "refs/heads/$RESULT_BRANCH" | awk '{print $1}')"
-          test "$REMOTE" = "$ATTEMPT_COMMIT"
-          echo "attempt_commit=$ATTEMPT_COMMIT" >> "$GITHUB_OUTPUT"
-          printf 'DURABLE_ATTEMPT_COMMIT=%s\n' "$ATTEMPT_COMMIT"
-
-          # Restore scientific HEAD to the exact frozen boundary while keeping
-          # the already-durable marker in the working tree.
-          git reset --mixed "$BOUNDARY"
-          test "$(git rev-parse HEAD)" = "$BOUNDARY"
-          test -f research/brrk_idle_cash_passive_accrual_robustness_0064/RUN_ATTEMPT.marker
-      - name: Execute frozen scientific measurement exactly once
-        shell: bash
-        env:
-          BOUNDARY: 876fdf657bd11bc4aeb9d0dcd3859886ee099568
-        run: |
-          set -euo pipefail
-          test "$(git rev-parse HEAD)" = "$BOUNDARY"
-          PYTHONPATH=. python research/brrk_idle_cash_passive_accrual_robustness_0064/run_once.py evaluate --boundary-sha "$BOUNDARY" | tee /tmp/primary_stdout.json
-          PYTHONPATH=. python research/brrk_idle_cash_passive_accrual_robustness_0064/run_once.py finalize --boundary-sha "$BOUNDARY" | tee /tmp/final_stdout.json
-      - name: Verify persisted result contract without recomputation
+      - name: Update only 0064 released research record
         shell: bash
         run: |
           set -euo pipefail
+          BEFORE="$(git rev-parse HEAD:config/research_registry.json)"
+          cp config/research_registry.json /tmp/research_registry.before.json
           python - <<'PY'
           import json
           from pathlib import Path
-          h=Path('research/brrk_idle_cash_passive_accrual_robustness_0064')
-          names=['RUN_ATTEMPT.marker','PRIMARY_RESULT.json','EVIDENCE.json','EXECUTION.json','RUN_ONCE.marker']
-          for n in names:
-              assert (h/n).exists(), n
-          p=json.loads((h/'PRIMARY_RESULT.json').read_text())
-          e=json.loads((h/'EVIDENCE.json').read_text())
-          x=json.loads((h/'EXECUTION.json').read_text())
-          m=json.loads((h/'RUN_ONCE.marker').read_text())
-          allowed={
-              'MEASUREMENT_INCONCLUSIVE_DATA_IDENTITY',
-              'FAIL_PASSIVE_CASH_PRIMARY_ECONOMICS',
-              'FAIL_PASSIVE_CASH_DRAWDOWN',
-              'FAIL_PASSIVE_CASH_TEMPORAL_ROBUSTNESS',
-              'FAIL_PASSIVE_CASH_DEPENDENCE_ROBUSTNESS',
-              'FAIL_PASSIVE_CASH_STRESS_ROBUSTNESS',
-              'PASS_PASSIVE_CASH_ACCRUAL_ROBUSTNESS',
+          rid='BRRK-IDLE-CASH-PASSIVE-ACCRUAL-ROBUSTNESS-0064'
+          p=Path('config/research_registry.json')
+          r=json.loads(p.read_text())
+          rows=[x for x in r['records'] if x.get('research_id')==rid]
+          assert len(rows)==1
+          o=rows[0]
+          assert o['result_status']=='PREREGISTERED_NOT_RUN'
+          assert o['actual_variants_evaluated']==0
+          assert o['promotion_state']=='NONE'
+          assert o['evidence_refs']==[]
+          o['actual_variants_evaluated']=20
+          o['research_process_complexity']['actual_parameter_candidates_evaluated']=20
+          o['result_status']='PASS_PASSIVE_CASH_ACCRUAL_ROBUSTNESS'
+          o['failure_reason']=None
+          o['promotion_state']='NO_PROMOTION'
+          o['evidence_refs']=[
+            'run:31783619793',
+            'research/brrk_idle_cash_passive_accrual_robustness_0064/RUN_ATTEMPT.marker',
+            'research/brrk_idle_cash_passive_accrual_robustness_0064/PRIMARY_RESULT.json',
+            'research/brrk_idle_cash_passive_accrual_robustness_0064/EVIDENCE.json',
+            'research/brrk_idle_cash_passive_accrual_robustness_0064/EXECUTION.json',
+            'research/brrk_idle_cash_passive_accrual_robustness_0064/RUN_ONCE.marker',
+            'research/brrk_idle_cash_passive_accrual_robustness_0064/CLOSEOUT.json'
+          ]
+          for ref in [
+            'research/brrk_idle_cash_passive_accrual_robustness_0064/PREREGISTRATION.json',
+            'research/brrk_idle_cash_passive_accrual_robustness_0064/DATASET_DECLARATION.json',
+            'research/brrk_idle_cash_passive_accrual_robustness_0064/IMPLEMENTATION_CONTRACT.json',
+            'research/brrk_idle_cash_passive_accrual_robustness_0064/CONTROLLED_EXECUTION_BOUNDARY.json',
+            'research/brrk_idle_cash_passive_accrual_robustness_0064/CLOSEOUT.json'
+          ]:
+              if ref not in o['decision_refs']:
+                  o['decision_refs'].append(ref)
+          o['production_relevance']='DEVELOPMENT PASS satisfying the requested reliable full-cycle net-CAGR-above-BRRK-0011 stop condition; future-only validation eligible; no automatic canonical or production authority.'
+          o['notes']=[n for n in o.get('notes',[]) if 'have not been computed' not in n and 'RUN_ATTEMPT.marker is absent' not in n]
+          o['notes'] += [
+            'Unique historical attempt run 31783619793 completed exactly once on frozen boundary 876fdf657bd11bc4aeb9d0dcd3859886ee099568.',
+            'Frozen primary 50% DTB3 realization / 100-bps annual fee passed all G0-G6 gates: CAGR 0.6557689400699214 > baseline 0.6516609785339962; MDD noninferior; 4/4 blocks positive; MBB LCB positive; 9/9 core stresses positive.',
+            'The DEVELOPMENT-stage optimization stop condition is satisfied. 0064 is permanently closed to same-ID rerun, recomputation, retune and rescue.',
+            'Evidence remains researcher-exposed DEVELOPMENT history rather than independent OOS; future-only confirmation is eligible and separate.',
+            'production_authorized=false; signature_authorized=false; order_submission_authorized=false.'
+          ]
+          o['evidence_scorecard']={
+            'temporal_novelty':'RESEARCHER_EXPOSED_DEVELOPMENT_NOT_INDEPENDENT_OOS_FUTURE_ONLY_CONFIRMATION_ELIGIBLE',
+            'statistical_sufficiency':'G0_G6_ALL_PASS_PRIMARY_CAGR_PLUS_0_4108PP_MDD_NONINFERIOR_4_OF_4_BLOCKS_POSITIVE_MBB_L60_4000_LCB_POSITIVE_CORE_STRESS_9_OF_9',
+            'governance_integrity':'HIGH_EXACTLY_ONCE_HASH_BOUND_FINALIZED_EQUITY1_WEIGHTS1_DTB3_1_ENGINE1_DURABLE_ATTEMPT_PARENT_NO_RERUN',
+            'operational_realism':'UNCHANGED_BRRK0011_RISK_ASSET_PATH_PASSIVE_IDLE_CASH_CARRY_WITH_50PCT_DTB3_REALIZATION_AND_100BPS_ANNUAL_CONTINUOUS_ACCOUNT_COST_NO_SWEEP_COST'
           }
-          assert p['classification'] in allowed
-          assert p['production_authorized'] is False
-          assert p['signature_authorized'] is False
-          assert p['order_submission_authorized'] is False
-          assert x['input_read_counts']=={'equity':1,'weights':1,'dtb3':1}
-          assert x['network_fetches']==0
-          if p['classification']=='MEASUREMENT_INCONCLUSIVE_DATA_IDENTITY':
-              assert p['candidate_cell_count']==0 and p['actual_variants_evaluated']==0
-              assert x['scientific_engine_calls']==0
-          else:
-              assert p['candidate_cell_count']==20 and p['actual_variants_evaluated']==20
-              assert x['scientific_engine_calls']==1
-              assert len(e['cells'])==20
-              assert p['primary_cell_key']=='a050_fee100bps'
-              assert p['chronological_block_sizes']==[333,333,333,333]
-              assert p['bootstrap']['block_length']==60
-              assert p['bootstrap']['replicates']==4000
-              assert p['bootstrap']['seed']==640064
-          assert m['classification']==p['classification']
-          assert m['historical_input_reads_during_finalize']==0
-          assert m['scientific_engine_calls_during_finalize']==0
-          assert m['same_id_rerun_allowed'] is False
-          print(json.dumps({
-              'classification':p['classification'],
-              'baseline':p.get('baseline'),
-              'primary':p.get('primary'),
-              'positive_chronological_blocks':p.get('positive_chronological_blocks'),
-              'bootstrap':p.get('bootstrap'),
-              'core_stress_pass':p.get('core_stress_pass'),
-              'gates':p.get('gates'),
-          }, indent=2, sort_keys=True))
+          p.write_text(json.dumps(r,indent=2,ensure_ascii=False)+'\n')
           PY
-      - name: Persist complete result as child of durable attempt commit
-        shell: bash
-        env:
-          ATTEMPT_COMMIT: ${{ steps.attempt.outputs.attempt_commit }}
-          RESULT_BRANCH: research/0064-result-v1
-        run: |
-          set -euo pipefail
+          python - <<'PY'
+          import json, hashlib
+          before=json.load(open('/tmp/research_registry.before.json'))
+          after=json.load(open('config/research_registry.json'))
+          rid='BRRK-IDLE-CASH-PASSIVE-ACCRUAL-ROBUSTNESS-0064'
+          def canon(x): return hashlib.sha256(json.dumps(x,sort_keys=True,separators=(',',':'),ensure_ascii=False).encode()).hexdigest()
+          b={x['research_id']:x for x in before['records']}
+          a={x['research_id']:x for x in after['records']}
+          assert set(a)==set(b)
+          assert all(canon(a[k])==canon(b[k]) for k in a if k!=rid)
+          o=a[rid]
+          assert o['result_status']=='PASS_PASSIVE_CASH_ACCRUAL_ROBUSTNESS'
+          assert o['actual_variants_evaluated']==20
+          assert o['research_process_complexity']['actual_parameter_candidates_evaluated']==20
+          assert o['promotion_state']=='NO_PROMOTION'
+          assert len(o['evidence_refs'])==7
+          assert set(o['evidence_scorecard'])=={'temporal_novelty','statistical_sufficiency','governance_integrity','operational_realism'}
+          assert o['production_authorized'] is False
+          PY
+          PYTHONPATH=. python -m research.governance.validate
+          test "$(git diff --name-only)" = "config/research_registry.json"
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git read-tree "$ATTEMPT_COMMIT"
-          git add \
-            research/brrk_idle_cash_passive_accrual_robustness_0064/RUN_ATTEMPT.marker \
-            research/brrk_idle_cash_passive_accrual_robustness_0064/PRIMARY_RESULT.json \
-            research/brrk_idle_cash_passive_accrual_robustness_0064/EVIDENCE.json \
-            research/brrk_idle_cash_passive_accrual_robustness_0064/EXECUTION.json \
-            research/brrk_idle_cash_passive_accrual_robustness_0064/RUN_ONCE.marker
-          TREE="$(git write-tree)"
-          FINAL_COMMIT="$(printf '%s\n' 'research: record 0064 unique historical result' | git commit-tree "$TREE" -p "$ATTEMPT_COMMIT")"
-          test "$(git rev-parse "$FINAL_COMMIT^")" = "$ATTEMPT_COMMIT"
-          for f in RUN_ATTEMPT.marker PRIMARY_RESULT.json EVIDENCE.json EXECUTION.json RUN_ONCE.marker; do
-            git cat-file -e "$FINAL_COMMIT:research/brrk_idle_cash_passive_accrual_robustness_0064/$f"
-          done
-          git push origin "$FINAL_COMMIT":"refs/heads/$RESULT_BRANCH"
-          REMOTE="$(git ls-remote origin "refs/heads/$RESULT_BRANCH" | awk '{print $1}')"
-          test "$REMOTE" = "$FINAL_COMMIT"
-          printf 'FINAL_RESULT_COMMIT=%s\n' "$FINAL_COMMIT"
+          git add config/research_registry.json
+          git commit -m 'research: register 0064 PASS closeout'
+          git push origin HEAD:research/0064-result-v1
