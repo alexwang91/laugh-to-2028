@@ -1,18 +1,17 @@
-name: Temp 0062 closeout registry writer
+name: Temp 0063 immutable closeout registry writer
 on:
   push:
     branches: [tools/0062-closeout-registry-writer-v1]
     paths: ['.github/workflows/_temp_0062_closeout_registry_writer.yml']
 permissions:
   contents: write
-  actions: read
 jobs:
   apply:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: research/0062-closeout-v1
+          ref: research/0063-closeout-v1
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/setup-python@v5
@@ -21,36 +20,86 @@ jobs:
           cache: pip
           cache-dependency-path: execution/plan-b-bot/requirements-dev.txt
       - run: pip install -r execution/plan-b-bot/requirements-dev.txt
-      - uses: actions/download-artifact@v4
-        with:
-          name: 0062-closeout-registry
-          path: /tmp/0062-closeout-registry
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          repository: alexwang91/laugh-to-2028
-          run-id: 31754250670
-      - name: Verify exact artifact and write only registry
+      - name: Verify persisted result and update only registry plus handoff
         shell: bash
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD)" = "a20361dcaeae9dadd76fc7463386711f838fefa7"
-          test "$(git hash-object /tmp/0062-closeout-registry/research_registry.json)" = "a1e34c10d8dadfeea27cff16310199472a2d1ef7"
+          test "$(git rev-parse HEAD)" = "3c2cdf6838a3c514e79e1710f77a6574ee692814"
           python - <<'PY'
-          import json
+          import hashlib,json
           from pathlib import Path
-          r=json.loads(Path('/tmp/0062-closeout-registry/BUILD_REPORT.json').read_text())
-          assert r['research_id']=='BRRK-BTC-RISK-SIGNAL-ATLAS-0062'
-          assert r['result_status']=='FAIL_NO_SIGNAL_ATLAS_FAMILY_INFORMATION'
-          assert r['promotion_state']=='NO_PROMOTION'
-          assert r['actual_variants_evaluated']==185
-          assert r['production_authorized'] is False
-          assert set(r['evidence_scorecard'])=={'temporal_novelty','statistical_sufficiency','governance_integrity','operational_realism'}
+          RID='BRRK-IDLE-CASH-SWEEP-ROBUSTNESS-0063'
+          base=Path('research/brrk_idle_cash_sweep_robustness_0063')
+          close=json.loads((base/'CLOSEOUT.json').read_text())
+          result=json.loads((base/'PRIMARY_RESULT.json').read_text())
+          execution=json.loads((base/'EXECUTION.json').read_text())
+          final=json.loads((base/'RUN_ONCE.marker').read_text())
+          def sha(p): return hashlib.sha256(p.read_bytes()).hexdigest()
+          assert close['classification']=='FAIL_IDLE_CASH_SWEEP_PRIMARY_ECONOMICS'
+          assert result['classification']==close['classification']
+          assert sha(base/'PRIMARY_RESULT.json')=='d05c03f8d062ef618f2b30e1dea1b76ad859af951d6370cdaa848dd12f94e24e'
+          assert sha(base/'EVIDENCE.json')=='43a0d59db3d5ee8277965a3a25211910ad24b63bcf09b446027f31b5e9616bb0'
+          assert sha(base/'EXECUTION.json')=='bedcc9951c323f7fc5e27325908e2f05ce814b2ddf2028ab8ee00dd4801398bb'
+          assert final['status']=='VALID_EXECUTION_COMPLETE_CLOSED_TO_SAME_ID_RERUN'
+          assert execution['input_read_counts']=={'dtb3':1,'equity':1,'weights':1}
+          assert execution['scientific_engine_calls']==1 and execution['network_fetches']==0
+          assert execution['reruns']==execution['retunes']==execution['rescues']==0
+
+          p=Path('config/research_registry.json')
+          reg=json.loads(p.read_text())
+          rows=[r for r in reg['records'] if r.get('research_id')==RID]
+          assert len(rows)==1
+          row=rows[0]
+          assert row['result_status']=='PREREGISTERED_NOT_RUN'
+          assert row['actual_variants_evaluated']==0
+          row['result_status']='FAIL_IDLE_CASH_SWEEP_PRIMARY_ECONOMICS'
+          row['failure_reason']='Frozen primary 50% DTB3 realization / 10-bps L1 cash-sweep-friction cell failed G2: terminal wealth 61940.70591694873 < baseline 62247.382312942056 and CAGR 0.6494239573667522 < baseline 0.6516609785339962.'
+          row['promotion_state']='NO_PROMOTION'
+          row['actual_variants_evaluated']=16
+          rpc=row.get('research_process_complexity',{})
+          rpc['actual_parameter_candidates_evaluated']=16
+          row['research_process_complexity']=rpc
+          row['evidence_refs']=[
+            'run:31759258964',
+            'research/brrk_idle_cash_sweep_robustness_0063/RUN_ATTEMPT.marker',
+            'research/brrk_idle_cash_sweep_robustness_0063/PRIMARY_RESULT.json',
+            'research/brrk_idle_cash_sweep_robustness_0063/EVIDENCE.json',
+            'research/brrk_idle_cash_sweep_robustness_0063/EXECUTION.json',
+            'research/brrk_idle_cash_sweep_robustness_0063/RUN_ONCE.marker',
+            'research/brrk_idle_cash_sweep_robustness_0063/CLOSEOUT.json']
+          row['decision_refs']=[
+            'research/governance/BRRK_IDLE_CASH_SWEEP_ROBUSTNESS_0063_DESIGN_FREEZE_2026-08-14.md',
+            'research/brrk_idle_cash_sweep_robustness_0063/PREREGISTRATION.json',
+            'research/brrk_idle_cash_sweep_robustness_0063/DATASET_DECLARATION.json',
+            'research/brrk_idle_cash_sweep_robustness_0063/IMPLEMENTATION_CONTRACT.json',
+            'research/brrk_idle_cash_sweep_robustness_0063/CONTROLLED_EXECUTION_BOUNDARY.json',
+            'research/brrk_idle_cash_sweep_robustness_0063/CLOSEOUT.json',
+            'docs/CURRENT_STATE.md']
+          row['production_relevance']='DEVELOPMENT idle-cash sweep-friction mechanism failed the frozen primary net wealth/CAGR gate; no canonical, Phase-6 or production authority.'
+          row['evidence_scorecard']={
+            'temporal_novelty':'RESEARCHER_EXPOSED_DEVELOPMENT_NOT_INDEPENDENT_OOS',
+            'statistical_sufficiency':'G0_G1_PASS_G2_PRIMARY_ECONOMICS_FAIL_50PCT_DTB3_10BPS_SWEEP',
+            'governance_integrity':'HIGH_EXACTLY_ONCE_HASH_BOUND_FINALIZED_EQUITY1_WEIGHTS1_DTB3_1_ENGINE1_NO_RERUN',
+            'operational_realism':'EXPLICIT_TRANSACTION_LIKE_SWEEP_FRICTION_TESTED_AND_PRIMARY_FAILED;_PASSIVE_CARRY_REQUIRES_NEW_ID_COST_MODEL'
+          }
+          row['notes']=list(row.get('notes',[]))+[
+            '0063 unique execution: baseline CAGR 0.6516609785339962; primary CAGR 0.6494239573667522; primary failed G2.',
+            'Zero-sweep cells are descriptive result-informed DEVELOPMENT motivation only and cannot rescue or promote 0063.',
+            'Same-ID rerun, recomputation, retune, rescue and post-hoc cost-model substitution are permanently forbidden.'
+          ]
+          assert row['production_authorized'] is False
+          p.write_text(json.dumps(reg,indent=2,ensure_ascii=False,allow_nan=False)+'\n')
+
+          current='''# BRRK Current State\n\nLast updated: 2026-08-14\n\nAuthoritative repository: `alexwang91/laugh-to-2028`.\nActive research handoff: 0063 immutable closeout; next legal research step is a new ID.\n\n## Required closed-research anchors\n\nBRRK-EXHAUSTION-EVENT-STUDY-0043 — complete diagnostic\nworkflow run                         31381953131 / attempt 1\n7–14 day exhaustion-ranking signal appears feasible\nID 0043 is closed against result-informed pruning, reweighting, threshold rescue\n\n## Current research state\n\n0062 = `FAIL_NO_SIGNAL_ATLAS_FAMILY_INFORMATION / CLOSED`.\n0063 = `FAIL_IDLE_CASH_SWEEP_PRIMARY_ECONOMICS / CLOSED`.\n0063 boundary merge = `e17b96cd3358062ebd9eb88fae050ff865a9fb39`.\n0063 execution run = `31759258964`.\n0063 final result branch SHA = `868bddfdee72f3b06cf3df275debc681c382e8c6`.\nBaseline CAGR = 0.6516609785339962.\nPrimary 50% DTB3 / 10-bps sweep CAGR = 0.6494239573667522.\nPrimary terminal wealth = 61940.70591694873 versus baseline 62247.382312942056.\nPrimary MDD = -0.33978817065676337 versus baseline -0.3371507034657847.\nBinding gate = G2 primary net terminal wealth/CAGR.\nHistorical variants evaluated = 16.\nRUN_ATTEMPT = consumed.\nRUN_ONCE = finalized.\nSame-ID rerun/recompute/retune/rescue = permanently forbidden.\n\nDescriptive zero-sweep cells showed positive carry across 25/50/75/100% realization, but they have no 0063 promotion authority. A distinct passive-interest/custody-spread mechanism requires a new ID and a fresh preregistered cost model.\n\n## No-drift authority\n\nproduction gross cap = 1.0\nproduction_authorized_components = []\nproduction_authorized = false\nsignature_authorized = false\norder_submission_authorized = false\n\nCanonical BRRK-0011 = NO CHANGE.\nPhase 6 = NO CHANGE.\n\n## Exact next step\n\nOpen a new governed research ID for passive interest-bearing idle cash using a continuous annual yield haircut/spread/fee model rather than transaction-like per-sweep friction. Treat every 0063 stress-cell result as exposed DEVELOPMENT evidence only.\n'''
+          Path('docs/CURRENT_STATE.md').write_text(current)
           PY
-          cp /tmp/0062-closeout-registry/research_registry.json config/research_registry.json
           python -m research.governance.validate
-          test "$(git diff --name-only)" = "config/research_registry.json"
+          python -m research.governance.enforce_future --base e17b96cd3358062ebd9eb88fae050ff865a9fb39
+          changed="$(git diff --name-only | sort)"
+          expected="$(printf '%s\n' config/research_registry.json docs/CURRENT_STATE.md | sort)"
+          test "$changed" = "$expected"
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add config/research_registry.json
-          test "$(git diff --cached --name-only)" = "config/research_registry.json"
-          git commit -m 'research: register immutable 0062 closeout result'
-          git push origin HEAD:research/0062-closeout-v1
+          git add config/research_registry.json docs/CURRENT_STATE.md
+          git commit -m 'research: register immutable 0063 closeout result'
+          git push origin HEAD:research/0063-closeout-v1
