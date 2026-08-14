@@ -1,0 +1,1 @@
+Pre-0063 CURRENT_STATE is preserved at Git blob `dcc655864caf0a62a5123b38700047b77920e546`.
