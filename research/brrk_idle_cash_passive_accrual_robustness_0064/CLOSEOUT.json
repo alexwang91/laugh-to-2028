@@ -1,0 +1,89 @@
+{
+  "schema_version": 1,
+  "research_id": "BRRK-IDLE-CASH-PASSIVE-ACCRUAL-ROBUSTNESS-0064",
+  "status": "PASS_PASSIVE_CASH_ACCRUAL_ROBUSTNESS_CLOSED",
+  "classification": "PASS_PASSIVE_CASH_ACCRUAL_ROBUSTNESS",
+  "evidence_tier": "RESEARCHER_EXPOSED_DEVELOPMENT_NOT_INDEPENDENT_OOS",
+  "unique_historical_workflow_run": 31783619793,
+  "boundary_merge_sha": "876fdf657bd11bc4aeb9d0dcd3859886ee099568",
+  "durable_attempt_commit": "51fe15adf20452d90700e9b5afa2313ee8775706",
+  "result_commit": "d45e7e7e2d1a62f0243c4a1576bc4a60727d90d4",
+  "attempt_number": 1,
+  "candidate_cells_evaluated": 20,
+  "primary_cell": {
+    "yield_realization": 0.5,
+    "annual_spread_fee_bps": 100
+  },
+  "baseline": {
+    "terminal_wealth": 62247.382312942056,
+    "cagr": 0.6516609785339962,
+    "max_drawdown": -0.3371507034657847
+  },
+  "primary": {
+    "terminal_wealth": 62813.41563922909,
+    "cagr": 0.6557689400699214,
+    "max_drawdown": -0.3366471268083583,
+    "relative_terminal_log_growth": 0.009052192225187487,
+    "positive_chronological_blocks": 4,
+    "chronological_block_sizes": [333,333,333,333],
+    "gross_carry_return_units": 0.018015541729267455,
+    "continuous_fee_return_units": 0.00896023971636961,
+    "net_cash_contribution_return_units": 0.009055302012897847
+  },
+  "improvement": {
+    "cagr_absolute": 0.004107961535925217,
+    "cagr_percentage_points": 0.4107961535925217,
+    "terminal_wealth_absolute": 566.0333262870337,
+    "terminal_wealth_relative": 0.009093289882340696,
+    "max_drawdown_absolute": 0.0005035766574264075,
+    "max_drawdown_percentage_points_less_negative": 0.05035766574264075
+  },
+  "dependence_aware_inference": {
+    "method": "aligned non-circular moving-block bootstrap",
+    "block_length": 60,
+    "replicates": 4000,
+    "seed": 640064,
+    "mu_obs": 6.795940108999615e-06,
+    "q95_type7": 3.3685131018363514e-06,
+    "one_sided_lcb": 3.4274270071632633e-06,
+    "pass": true
+  },
+  "gates": {
+    "G0_CONTRACT_AND_DATA_IDENTITY": true,
+    "G1_BASELINE_RECONSTRUCTION_AND_SUPPORT": true,
+    "G2_PRIMARY_NET_TERMINAL_WEALTH_AND_CAGR": true,
+    "G3_PRIMARY_MAX_DRAWDOWN_NONINFERIORITY": true,
+    "G4_TEMPORAL_RECURRENCE": true,
+    "G5_DEPENDENCE_AWARE_MBB_LCB": true,
+    "G6_CORE_STRESS_ROBUSTNESS": true
+  },
+  "core_stress": {
+    "predeclared_cell_count": 9,
+    "all_relative_terminal_log_growth_positive": true
+  },
+  "execution_integrity": {
+    "equity_reads": 1,
+    "weights_reads": 1,
+    "dtb3_reads": 1,
+    "scientific_engine_calls": 1,
+    "network_fetches": 0,
+    "attempt_marker_sha256": "b0723ee0b9b661f90ca84a1bcee0f89cf83f8a0a6dff63b68c7fec48d98678af",
+    "result_sha256": "9214b4601e9c194bc055c1e9950a9bacdceaf863207c7489f711177a5a0911c6",
+    "evidence_sha256": "4e5fc4c1c54df6f725f69a17772cb7a5a8bd27561ce84a31de90484ff97758bc",
+    "execution_sha256": "65efc24c9388690fd203894294838a8fd6489d10d64987228fa076d034f68373"
+  },
+  "program_stop_condition": {
+    "reliable_full_cycle_net_cagr_above_canonical_BRRK_0011": true,
+    "satisfied_by": "frozen primary 50% DTB3 realization / 100-bps annual idle-cash spread-fee",
+    "interpretation": "The requested DEVELOPMENT-stage optimization loop stops here. This is not independent OOS and does not authorize production; future-only confirmation is the next evidentiary tier, not a prerequisite for the stated research stop condition."
+  },
+  "same_id_rerun_allowed": false,
+  "same_id_retune_allowed": false,
+  "same_id_rescue_allowed": false,
+  "canonical_BRRK_0011": "NO_CHANGE",
+  "Phase_6": "NO_CHANGE",
+  "future_only_validation_eligible": true,
+  "production_authorized": false,
+  "signature_authorized": false,
+  "order_submission_authorized": false
+}

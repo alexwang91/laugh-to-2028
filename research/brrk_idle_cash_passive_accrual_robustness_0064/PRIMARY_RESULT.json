@@ -1,0 +1,59 @@
+{
+  "actual_variants_evaluated": 20,
+  "baseline": {
+    "cagr": 0.6516609785339962,
+    "max_drawdown": -0.3371507034657847,
+    "terminal_wealth": 62247.382312942056
+  },
+  "bootstrap": {
+    "block_length": 60,
+    "lcb": 3.4274270071632633e-06,
+    "mu_obs": 6.795940108999615e-06,
+    "q95": 3.3685131018363514e-06,
+    "replicates": 4000,
+    "seed": 640064
+  },
+  "candidate_cell_count": 20,
+  "chronological_block_sizes": [
+    333,
+    333,
+    333,
+    333
+  ],
+  "classification": "PASS_PASSIVE_CASH_ACCRUAL_ROBUSTNESS",
+  "core_stress_pass": true,
+  "future_only_validation_eligible": true,
+  "gates": {
+    "G0_CONTRACT_AND_DATA_IDENTITY": true,
+    "G1_BASELINE_RECONSTRUCTION_AND_SUPPORT": true,
+    "G2_PRIMARY_NET_TERMINAL_WEALTH_AND_CAGR": true,
+    "G3_PRIMARY_MAX_DRAWDOWN_NONINFERIORITY": true,
+    "G4_TEMPORAL_RECURRENCE": true,
+    "G5_DEPENDENCE_AWARE_MBB_LCB": true,
+    "G6_CORE_STRESS_ROBUSTNESS": true
+  },
+  "order_submission_authorized": false,
+  "positive_chronological_blocks": 4,
+  "primary": {
+    "annual_spread_fee_bps": 100,
+    "block_relative_log_growth": [
+      0.001811771884783861,
+      0.0009393596103709201,
+      0.0008316514825100622,
+      0.005469409247522643
+    ],
+    "cagr": 0.6557689400699214,
+    "max_drawdown": -0.3366471268083583,
+    "relative_terminal_log_growth": 0.009052192225187487,
+    "terminal_wealth": 62813.41563922909,
+    "total_continuous_fee_return_units": 0.00896023971636961,
+    "total_gross_carry_return_units": 0.018015541729267455,
+    "total_net_cash_contribution_return_units": 0.009055302012897847,
+    "yield_realization": 0.5
+  },
+  "primary_cell_key": "a050_fee100bps",
+  "production_authorized": false,
+  "research_id": "BRRK-IDLE-CASH-PASSIVE-ACCRUAL-ROBUSTNESS-0064",
+  "schema_version": 1,
+  "signature_authorized": false
+}

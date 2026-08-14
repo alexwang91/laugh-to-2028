@@ -1,0 +1,19 @@
+{
+  "attempt_sha256": "b0723ee0b9b661f90ca84a1bcee0f89cf83f8a0a6dff63b68c7fec48d98678af",
+  "boundary_merge_sha": "876fdf657bd11bc4aeb9d0dcd3859886ee099568",
+  "classification": "PASS_PASSIVE_CASH_ACCRUAL_ROBUSTNESS",
+  "evidence_sha256": "4e5fc4c1c54df6f725f69a17772cb7a5a8bd27561ce84a31de90484ff97758bc",
+  "execution_sha256": "65efc24c9388690fd203894294838a8fd6489d10d64987228fa076d034f68373",
+  "historical_input_reads_during_finalize": 0,
+  "order_submission_authorized": false,
+  "production_authorized": false,
+  "research_id": "BRRK-IDLE-CASH-PASSIVE-ACCRUAL-ROBUSTNESS-0064",
+  "result_sha256": "9214b4601e9c194bc055c1e9950a9bacdceaf863207c7489f711177a5a0911c6",
+  "same_id_rerun_allowed": false,
+  "same_id_rescue_allowed": false,
+  "same_id_retune_allowed": false,
+  "schema_version": 1,
+  "scientific_engine_calls_during_finalize": 0,
+  "signature_authorized": false,
+  "status": "VALID_EXECUTION_COMPLETE_CLOSED_TO_SAME_ID_RERUN"
+}
