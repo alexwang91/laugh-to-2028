@@ -344,4 +344,7 @@ def empirical_percentile(values: np.ndarray, reference: np.ndarray) -> np.ndarra
     v = np.asarray(values, dtype=float)
     if len(ref) == 0:
         raise ValueError("empty percentile calibration reference")
-    return np.searchsorted(ref, v, side="right").astype(float) / float(len(ref))
+    out = np.full(v.shape, np.nan, dtype=float)
+    mask = np.isfinite(v)
+    out[mask] = np.searchsorted(ref, v[mask], side="right").astype(float) / float(len(ref))
+    return out
