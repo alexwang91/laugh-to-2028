@@ -5,8 +5,9 @@ Last updated: 2026-08-14
 Authoritative repository: `alexwang91/laugh-to-2028`.
 Merged 0063 closeout: `b7fd66f28c8d7611cd4c71dc04b1c152bc65d62d`.
 Merged 0064 DESIGN: `38b5740cb89ae16b4bc005f3d5bcb4f8e0a0181f`.
+Merged 0064 preregistration: `24021324641df766da307b0ee231bb8b78920b93`.
 0064 owner-first commit: `7a48ebd4b34bb6e04de621fbeb0cabd84d447a6a`.
-Active branch: `research/0064-prereg-v1`.
+Active branch: `research/0064-implementation-v1`.
 
 ## Required closed-research anchors
 
@@ -19,7 +20,7 @@ ID 0043 is closed against result-informed pruning, reweighting, threshold rescue
 
 0062 = `FAIL_NO_SIGNAL_ATLAS_FAMILY_INFORMATION / CLOSED`.
 0063 = `FAIL_IDLE_CASH_SWEEP_PRIMARY_ECONOMICS / CLOSED`.
-0064 = `PREREGISTERED / IMPLEMENTATION ABSENT / CONTROLLED BOUNDARY ABSENT / NOT RUN`.
+0064 = `IMPLEMENTED / CONTROLLED BOUNDARY ABSENT / NOT RUN`.
 0064 research ID = `BRRK-IDLE-CASH-PASSIVE-ACCRUAL-ROBUSTNESS-0064`.
 Mechanism = already-idle residual cash remains continuously interest-bearing; no additional sweep trade.
 Frozen yield-realization grid = 25%, 50%, 75%, 100%.
@@ -28,6 +29,7 @@ Primary conservative cell = 50% yield realization / 100 bps annual spread/fee.
 Core stress neighborhood = 50/75/100% realization x 50/100/150 bps annual fee = 9 cells.
 Frozen chronology = 4 contiguous count-balanced blocks; expected 333/333/333/333 at 1332 rows.
 Frozen MBB = aligned non-circular L60 / 4000 reps / seed 640064 / Type-7 q95 / one-sided LCB > 0.
+Scientific engine is pure/no-I/O and evaluates all 20 cells with no argmax/winner selection.
 Historical 0064 candidate economics = NOT COMPUTED.
 Actual historical variants evaluated = 0.
 RUN_ATTEMPT.marker = ABSENT.
@@ -47,4 +49,4 @@ Phase 6 = NO CHANGE.
 
 ## Exact next step
 
-Run governance/future-enforcement checks on the frozen 0064 preregistration and merge through fresh standing CI. Then implement the frozen 20-cell passive-accrual formulas using synthetic/toy/contract tests only, with no historical 0064 outcome read.
+Run dedicated synthetic-only implementation tests and fresh standing CI. After implementation merge, freeze a separate controlled-execution boundary that pins preregistration, engine, baseline and DTB3 identities before the unique historical attempt.
