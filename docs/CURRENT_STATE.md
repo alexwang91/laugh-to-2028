@@ -13,10 +13,10 @@ Merged 0066 CONTROLLED-EXECUTION BOUNDARY: `b1af358577349c58a8468a3822775152b5aa
 
 ## Required closed-research anchors
 
-BRRK-EXHAUSTION-EVENT-STUDY-0043 — complete diagnostic.
-Workflow run 31381953131 / attempt 1.
-7–14 day exhaustion-ranking signal appears feasible.
-ID 0043 is closed against result-informed pruning, reweighting, threshold rescue.
+BRRK-EXHAUSTION-EVENT-STUDY-0043 — complete diagnostic
+workflow run                         31381953131 / attempt 1
+7–14 day exhaustion-ranking signal appears feasible
+ID 0043 is closed against result-informed pruning, reweighting, threshold rescue
 
 ## Current research state
 
