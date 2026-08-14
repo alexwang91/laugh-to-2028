@@ -1,0 +1,14 @@
+{
+  "attempt_number": 1,
+  "boundary_merge_sha": "8f22db987e08d8f1873d8fefbeb9473d64f5b96d",
+  "created_at_utc": "2026-08-14T09:42:21.322737+00:00",
+  "declared_final_architectures": 8,
+  "declared_total_variants": 71,
+  "declared_validation_tuning_configs": 63,
+  "research_id": "BRRK-MULTI-ARCHITECTURE-GROSS-CONTROLLER-0065",
+  "same_id_rerun_allowed": false,
+  "same_id_rescue_allowed": false,
+  "same_id_retune_allowed": false,
+  "schema_version": 1,
+  "workflow_run_id": "31789144276"
+}
