@@ -35,12 +35,12 @@ jobs:
           test ! -e research/brrk_idle_cash_passive_accrual_robustness_0064/EXECUTION.json
           test ! -e research/brrk_idle_cash_passive_accrual_robustness_0064/RUN_ONCE.marker
       - name: Run committed synthetic contracts only
-        run: pytest -q research/brrk_idle_cash_passive_accrual_robustness_0064/test_contract.py
+        run: PYTHONPATH=. pytest -q research/brrk_idle_cash_passive_accrual_robustness_0064/test_contract.py
       - name: Validate implementation contract and governance
         shell: bash
         run: |
           set -euo pipefail
-          python -m research.governance.validate
+          PYTHONPATH=. python -m research.governance.validate
           python - <<'PY'
           import json
           from pathlib import Path
