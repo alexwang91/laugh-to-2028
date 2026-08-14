@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "research_id": "BRRK-MULTI-ARCHITECTURE-GROSS-CONTROLLER-0065",
+  "stage": "IMPLEMENTATION_ONLY_SYNTHETIC_VALIDATION",
+  "preregistration_merge_sha": "7b71c9f3394be17e5fd10ec08147207d268fc00a",
+  "engine_path": "research/brrk_multi_architecture_gross_controller_0065/engine.py",
+  "engine_git_blob_sha": "762b608dd9eb5feedc06867ce07f02d0de8ea928",
+  "scientific_entrypoint": "evaluate_tournament",
+  "frozen_architecture_count": 8,
+  "frozen_validation_config_count": 63,
+  "declared_variant_budget": 71,
+  "implementation_properties": [
+    "single common feature-target-timing pipeline",
+    "single common gross mapping",
+    "single common portfolio economics and outer turnover cost",
+    "A08 validation-only NNLS stacking over A01-A07",
+    "A07 forward-filtered evaluation regime probabilities without future-state smoothing",
+    "A04 standardized-expanded-basis Hessian diagnostic",
+    "simultaneous dependence-aware bootstrap across all eight final methods",
+    "8-slice 70-split CSCV PBO diagnostic",
+    "no file I/O and no network I/O in scientific engine"
+  ],
+  "historical_portfolio_reads_during_implementation": 0,
+  "historical_0065_CAGR_computed_during_implementation": false,
+  "synthetic_tests_only": true,
+  "production_authorized": false,
+  "signature_authorized": false,
+  "order_submission_authorized": false
+}
