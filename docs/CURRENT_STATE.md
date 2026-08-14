@@ -7,6 +7,13 @@ Merged 0064 PASS closeout: `ad8038af45bad2e25e8a7b88b569b1873635d9c2`.
 Merged 0065 DESIGN: `09f9afc69183387afaabfe540394eb01989df148`.
 0065 owner-first commit: `a717d1d359e1b980a7c727e48ec26a1ffb0fc3a6`.
 
+## Required closed-research anchors
+
+BRRK-EXHAUSTION-EVENT-STUDY-0043 — complete diagnostic
+workflow run                         31381953131 / attempt 1
+7–14 day exhaustion-ranking signal appears feasible
+ID 0043 is closed against result-informed pruning, reweighting, threshold rescue
+
 ## Current research state
 
 0062 = `FAIL_NO_SIGNAL_ATLAS_FAMILY_INFORMATION / CLOSED`.
