@@ -4297,6 +4297,89 @@
         "governance_integrity": "HIGH_EXACTLY_ONCE_HASH_BOUND_FINALIZED_MARKET_READ_1_LOADER_1_ENGINE_1",
         "operational_realism": "CAUSAL_DAILY_SIGNAL_INFORMATION_ATLAS_NO_PORTFOLIO_ECONOMICS_NO_GROSS_TRANSLATION"
       }
+    },
+    {
+      "research_id": "BRRK-IDLE-CASH-SWEEP-ROBUSTNESS-0063",
+      "research_family_id": "IDLE_CASH_CARRY",
+      "research_domain": "RISK_CONTROL",
+      "research_governance_version": 1,
+      "governance_mode": "PROGRAM_GOVERNED_V1",
+      "objective_type": "MECHANISM_TEST",
+      "created_at": "2026-08-14T00:25:00Z",
+      "created_before_result": true,
+      "question": "Does a mechanically yield-bearing idle-cash sleeve on the unchanged canonical BRRK-0011 path retain a positive full-cycle net wealth/CAGR advantage after prospectively frozen conservative yield-realization and sweep-friction stresses without worsening drawdown?",
+      "hypothesis": "The frozen 50%-DTB3-realization/10-bps-sweep-friction primary cell will improve full-cycle net terminal wealth and CAGR versus unchanged BRRK-0011, preserve drawdown, recur temporally, pass a dependence-aware lower-confidence gate, and remain positive across the frozen core stress neighborhood.",
+      "hypothesis_origin": "RESULT_INFORMED_DEVELOPMENT_REPLICATION_OF_F27_R2_NOT_INDEPENDENT_OOS",
+      "economic_mechanism": "Capital already left idle by BRRK-0011 may earn short-duration cash yield without changing directional signals, weights or gross exposure; conservative realization haircuts and explicit cash-sleeve transition friction test whether the uplift is robust rather than a frictionless accounting artifact.",
+      "primary_target": "FULL_CYCLE_NET_TERMINAL_WEALTH_AND_CALENDAR_SPAN_CAGR_VERSUS_UNCHANGED_BRRK_0011",
+      "primary_metric": "PRIMARY_50_PERCENT_DTB3_REALIZATION_10_BPS_SWEEP_FRICTION_PAIRED_RELATIVE_LOG_GROWTH_WITH_ECONOMIC_TEMPORAL_AND_MBB_GATES",
+      "secondary_metrics": [
+        "max_drawdown",
+        "cash_sweep_turnover",
+        "total_sweep_friction",
+        "chronological_block_relative_log_growth",
+        "stress_grid_relative_terminal_wealth"
+      ],
+      "feature_families": [
+        "IDLE_CASH_FRACTION",
+        "FRED_DTB3_SHORT_RATE"
+      ],
+      "horizon": "FULL_COMMITTED_BRRK0011_WINDOW",
+      "universe": [
+        "BTC",
+        "ETH",
+        "SOL",
+        "BNB",
+        "CASH"
+      ],
+      "development_dataset_refs": [
+        "BRRK-WINNER-0001-CANONICAL-HIST-V1"
+      ],
+      "validation_dataset_refs": [],
+      "sealed_dataset_refs": [],
+      "declared_variant_budget": 16,
+      "actual_variants_evaluated": 0,
+      "parameter_candidate_count": 16,
+      "stopping_rule": "Exactly one governed historical execution attempt after preregistration, implementation and controlled-boundary merges; all 16 frozen stress cells are evaluated in one scientific engine call with no result-dependent rerun or rescue.",
+      "success_criteria": "The preregistered conservative primary cell passes data identity, net terminal wealth/CAGR, drawdown, temporal recurrence and dependence-aware MBB gates, and all preregistered core stress-neighborhood cells retain positive relative terminal wealth.",
+      "failure_criteria": "Ordered preregistered failure taxonomy binds at the first failed gate; data-identity failure is inconclusive/invalid rather than economic failure.",
+      "allowed_followup": "A PASS may motivate a NEW-ID future-only validation or integration study; a FAIL may motivate a scientifically distinct NEW-ID mechanism only after immutable closeout.",
+      "forbidden_followup": "No same-ID rate-series substitution, yield/friction-grid change, primary-cell change, BRRK signal/weight/gross modification, favorable-block selection, gate relaxation, rerun, recomputation, retune or rescue after outcome exposure.",
+      "researcher_decisions": "The unchanged BRRK-0011 path, first-valid DTB3 capture contract, 4x4 stress grid, conservative primary cell and minimum robustness substance were frozen at DESIGN before 0063 candidate economics.",
+      "research_process_complexity": {
+        "declared_parameter_candidates": 16,
+        "actual_parameter_candidates_evaluated": 0,
+        "universes_evaluated": 1,
+        "horizons_evaluated": 1,
+        "rebalance_variants": 0,
+        "feature_representations": 2,
+        "special_cases_introduced": 1,
+        "validation_exposure_event_refs": [],
+        "related_family_trials": 1
+      },
+      "lineage_edges": [],
+      "result_status": "PREREGISTERED_NOT_RUN",
+      "failure_reason": null,
+      "promotion_state": "NONE",
+      "evidence_refs": [],
+      "decision_refs": [
+        "research/governance/BRRK_IDLE_CASH_SWEEP_ROBUSTNESS_0063_DESIGN_FREEZE_2026-08-14.md",
+        "research/brrk_idle_cash_sweep_robustness_0063/PREREGISTRATION.json",
+        "research/brrk_idle_cash_sweep_robustness_0063/DATASET_DECLARATION.json",
+        "docs/CURRENT_STATE.md"
+      ],
+      "production_relevance": "DEVELOPMENT cash-carry robustness replication only; no canonical BRRK-0011, Phase-6, production, signer or order-submission authority.",
+      "production_authorized": false,
+      "provenance_status": "FACT",
+      "governed_path_prefixes": [
+        "research/brrk_idle_cash_sweep_robustness_0063/"
+      ],
+      "notes": [
+        "F27 R2 is exposed DEVELOPMENT motivation only and cannot satisfy 0063 gates.",
+        "0063 changes no BRRK-0011 risk-asset signal, target, weight or gross exposure.",
+        "The result-blind DTB3 capture is bound later in formal preregistration because owner-first registry validation cannot reference an unregistered dataset slice.",
+        "All 16 stress cells are reported; only the prospectively frozen primary hypothesis can promote."
+      ]
     }
   ],
   "research_governance_debt": [
