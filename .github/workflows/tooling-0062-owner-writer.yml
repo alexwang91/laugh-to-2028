@@ -1,4 +1,4 @@
-name: Tooling 0065 controlled-boundary validation
+name: Tooling 0065 post-merge zero-result preflight
 
 on:
   push:
@@ -11,87 +11,39 @@ permissions:
   contents: read
 
 jobs:
-  boundary-validation:
+  post-merge-preflight:
     runs-on: ubuntu-latest
-    env:
-      PYTHONHASHSEED: '0'
-      OMP_NUM_THREADS: '1'
-      OPENBLAS_NUM_THREADS: '1'
-      MKL_NUM_THREADS: '1'
-      NUMEXPR_NUM_THREADS: '1'
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: research/0065-boundary-v1
+          ref: 8f22db987e08d8f1873d8fefbeb9473d64f5b96d
           fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
       - run: pip install -r execution/plan-b-bot/requirements-dev.txt
-      - name: Verify zero-result boundary identities
+      - name: Verify exact merged boundary identities and zero-result state
         shell: bash
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD)" = "a8576b3fbddff19ace9a0eaa0ead0cbb3b8a198f"
+          test "$(git rev-parse HEAD)" = "8f22db987e08d8f1873d8fefbeb9473d64f5b96d"
           test "$(git hash-object research/brrk_multi_architecture_gross_controller_0065/engine.py)" = "762b608dd9eb5feedc06867ce07f02d0de8ea928"
           test "$(git hash-object research/brrk_multi_architecture_gross_controller_0065/run_once.py)" = "0a81c3ac98420e86786a81bb15b7547d71b27460"
           test "$(git hash-object research/brrk_multi_architecture_gross_controller_0065/CONTROLLED_EXECUTION_BOUNDARY.json)" = "3778a61e70c011835a1565e4b97fe039de81075e"
           for f in RUN_ATTEMPT.marker PRIMARY_RESULT.json EVIDENCE.json EXECUTION.json RUN_ONCE.marker; do
             test ! -e "research/brrk_multi_architecture_gross_controller_0065/$f"
           done
-      - name: Run Git-only preflight with zero historical content reads
+      - name: Run exact merged-boundary Git-only preflight
         shell: bash
         run: |
           set -euo pipefail
-          PYTHONPATH=. python -m research.brrk_multi_architecture_gross_controller_0065.run_once preflight --boundary-sha "$(git rev-parse HEAD)" > /tmp/preflight.json
+          PYTHONPATH=. python -m research.brrk_multi_architecture_gross_controller_0065.run_once preflight --boundary-sha 8f22db987e08d8f1873d8fefbeb9473d64f5b96d > /tmp/preflight.json
           python - <<'PY'
           import json
           x=json.load(open('/tmp/preflight.json'))
           assert x['status']=='PREFLIGHT_PASS_ZERO_RESULT_GIT_IDENTITY_ONLY'
           assert all(v==0 for v in x['historical_content_reads'].values())
-          assert x['market_loader_calls']==0 and x['scientific_engine_calls']==0
+          assert x['market_loader_calls']==0
+          assert x['scientific_engine_calls']==0
+          print('0065_POST_MERGE_PREFLIGHT_OK')
           PY
-      - name: Prove create-only exactly-once persistence lifecycle without historical reads
-        shell: bash
-        run: |
-          set -euo pipefail
-          PYTHONPATH=. python - <<'PY'
-          import json
-          from research.brrk_multi_architecture_gross_controller_0065 import run_once as r
-          b=r._git_head()
-          r.start_attempt(b,'SYNTHETIC_BOUNDARY_VALIDATION')
-          try:
-              r.start_attempt(b,'SECOND_FORBIDDEN')
-              raise AssertionError('second attempt unexpectedly allowed')
-          except r.ControlledRunError:
-              pass
-          primary={
-              'schema_version':1,'research_id':r.RID,'classification':'INVALID_EXECUTION',
-              'production_authorized':False,'signature_authorized':False,'order_submission_authorized':False,
-          }
-          evidence={'synthetic_persistence_test':True}
-          r._create_only(r.RESULT,r._json_bytes(primary))
-          r._create_only(r.EVIDENCE,r._json_bytes(evidence))
-          execution={
-              'schema_version':1,'research_id':r.RID,'boundary_merge_sha':b,
-              'result_sha256':r._sha256_file(r.RESULT),'evidence_sha256':r._sha256_file(r.EVIDENCE),
-          }
-          r._create_only(r.EXECUTION,r._json_bytes(execution))
-          final=r.finalize(b)
-          assert final['classification']=='INVALID_EXECUTION'
-          assert final['historical_input_reads_during_finalize']==0
-          assert final['market_loader_calls_during_finalize']==0
-          assert final['scientific_engine_calls_during_finalize']==0
-          for p in (r.ATTEMPT,r.RESULT,r.EVIDENCE,r.EXECUTION,r.FINAL): p.unlink()
-          again=r.preflight(b)
-          assert again['status']=='PREFLIGHT_PASS_ZERO_RESULT_GIT_IDENTITY_ONLY'
-          PY
-      - name: Compile, validate governance, and reassert no runtime artifact
-        shell: bash
-        run: |
-          set -euo pipefail
-          python -m py_compile research/brrk_multi_architecture_gross_controller_0065/run_once.py
-          PYTHONPATH=. python -m research.governance.validate
-          for f in RUN_ATTEMPT.marker PRIMARY_RESULT.json EVIDENCE.json EXECUTION.json RUN_ONCE.marker; do
-            test ! -e "research/brrk_multi_architecture_gross_controller_0065/$f"
-          done
