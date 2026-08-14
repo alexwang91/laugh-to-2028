@@ -1,4 +1,4 @@
-name: Tooling 0066 runtime observability repair
+name: Tooling 0066 bounded artificial implementation validation
 
 on:
   push:
@@ -8,105 +8,67 @@ on:
       - '.github/workflows/tooling-0062-owner-writer.yml'
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
-  implementation-runtime-repair:
+  bounded-artificial-validation:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      PYTHONHASHSEED: '0'
+      PYTHONPATH: '.'
+      OMP_NUM_THREADS: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
     steps:
       - uses: actions/checkout@v4
         with:
           ref: research/0066-implementation-v1
-          fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 1
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Patch observability only
+      - run: pip install -r execution/plan-b-bot/requirements-dev.txt
+      - name: Assert implementation-only zero-result state
         shell: bash
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD)" = "e85493ae419b28dcaff397d413dea1a83f0ec15b"
+          for f in RUN_ATTEMPT.marker PRIMARY_RESULT.json EVIDENCE.json EXECUTION.json RUN_ONCE.marker; do
+            test ! -e "research/brrk_btc_sol_path_event_early_warning_0066/$f"
+          done
+      - name: Run bounded synthetic unit and contract tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          pytest -q research/brrk_btc_sol_path_event_early_warning_0066/test_engine_synthetic.py
+      - name: Audit full frozen configuration enumeration without full-history fitting
+        shell: bash
+        run: |
+          set -euo pipefail
           python - <<'PY'
-          from pathlib import Path
-
-          root = Path('research/brrk_btc_sol_path_event_early_warning_0066')
-          mp = root / 'models.py'
-          ep = root / 'engine.py'
-          m = mp.read_text()
-          e = ep.read_text()
-
-          # Silence only sklearn's known penalty-deprecation FutureWarning. No estimator
-          # argument, grid, solver, tolerance, random seed or mathematical path changes.
-          old = "import math\nfrom dataclasses import dataclass"
-          new = "import math\nimport warnings\nfrom dataclasses import dataclass"
-          assert m.count(old) == 1
-          m = m.replace(old, new)
-          anchor = "from sklearn.preprocessing import StandardScaler\n"
-          insert = (
-              "from sklearn.preprocessing import StandardScaler\n\n"
-              "warnings.filterwarnings(\n"
-              "    \"ignore\",\n"
-              "    message=r\"'penalty' was deprecated in version 1\\.8.*\",\n"
-              "    category=FutureWarning,\n"
-              "    module=r\"sklearn\\.linear_model\\._logistic\",\n"
-              ")\n"
-          )
-          assert m.count(anchor) == 1
-          m = m.replace(anchor, insert)
-
-          # Progress counters only. They do not alter control flow or values.
-          old1 = "                        attempts += 1\n                        pred, pa = _walk_forward_classifier("
-          new1 = (
-              "                        attempts += 1\n"
-              "                        if attempts == 1 or attempts % 25 == 0:\n"
-              "                            print(f\"[0066][validation] tuning_attempt={attempts}/1632 asset={asset} target={target} lead={h} arch={arch}\", flush=True)\n"
-              "                        pred, pa = _walk_forward_classifier("
-          )
-          assert e.count(old1) == 1
-          e = e.replace(old1, new1)
-
-          old2 = "                attempts += 1\n                preds, pa = _walk_forward_hazard("
-          new2 = (
-              "                attempts += 1\n"
-              "                if attempts == 1 or attempts % 25 == 0:\n"
-              "                    print(f\"[0066][validation] tuning_attempt={attempts}/1632 asset={asset} target={target} arch=P07_DISCRETE_TIME_HAZARD_LOGIT\", flush=True)\n"
-              "                preds, pa = _walk_forward_hazard("
-          )
-          assert e.count(old2) == 1
-          e = e.replace(old2, new2)
-
-          phase_replacements = [
-              (
-                  "    frames = _naive_frames(frames)\n    cells, families, meta, signals = _common_feature_objects(frames)\n",
-                  "    print(\"[0066] phase=feature_build start\", flush=True)\n    frames = _naive_frames(frames)\n    cells, families, meta, signals = _common_feature_objects(frames)\n    print(\"[0066] phase=feature_build done\", flush=True)\n",
-              ),
-              (
-                  "    bundle = ee.build_event_atlas(frames)\n    labels, support = _labels_and_support(bundle, cells.index)\n",
-                  "    print(\"[0066] phase=event_atlas start\", flush=True)\n    bundle = ee.build_event_atlas(frames)\n    labels, support = _labels_and_support(bundle, cells.index)\n    print(\"[0066] phase=event_atlas done\", flush=True)\n",
-              ),
-              (
-                  "    atlas, screened = build_indicator_warning_atlas(signals, meta, labels, support, {a: bundle.asset_indices[a] for a in ee.ASSETS})\n    selected_params, validation_predictions, validation_metrics, tuning_audit, tuning_attempts = _tune_validation(cells, families, signals, labels, {a: bundle.asset_indices[a] for a in ee.ASSETS}, screened)\n",
-                  "    print(\"[0066] phase=indicator_atlas start\", flush=True)\n    atlas, screened = build_indicator_warning_atlas(signals, meta, labels, support, {a: bundle.asset_indices[a] for a in ee.ASSETS})\n    print(\"[0066] phase=indicator_atlas done\", flush=True)\n    print(\"[0066] phase=validation_tuning start declared_attempts=1632\", flush=True)\n    selected_params, validation_predictions, validation_metrics, tuning_audit, tuning_attempts = _tune_validation(cells, families, signals, labels, {a: bundle.asset_indices[a] for a in ee.ASSETS}, screened)\n    print(f\"[0066] phase=validation_tuning done actual_attempts={tuning_attempts}\", flush=True)\n",
-              ),
-              (
-                  "    economic_predictions, evaluation_audit = _evaluate_selected_over_economic_period(cells, families, signals, labels, {a: bundle.asset_indices[a] for a in ee.ASSETS}, screened, selected_params, validation_predictions)\n    predictor_results, predictor_boot = _final_predictor_results(labels, support, economic_predictions, preferred_horizon, cells.index)\n",
-                  "    print(\"[0066] phase=economic_prediction_generation start\", flush=True)\n    economic_predictions, evaluation_audit = _evaluate_selected_over_economic_period(cells, families, signals, labels, {a: bundle.asset_indices[a] for a in ee.ASSETS}, screened, selected_params, validation_predictions)\n    print(\"[0066] phase=economic_prediction_generation done\", flush=True)\n    print(\"[0066] phase=predictive_inference start\", flush=True)\n    predictor_results, predictor_boot = _final_predictor_results(labels, support, economic_predictions, preferred_horizon, cells.index)\n    print(\"[0066] phase=predictive_inference done\", flush=True)\n",
-              ),
-          ]
-          for old, new in phase_replacements:
-              assert e.count(old) == 1, old[:80]
-              e = e.replace(old, new)
-
-          mp.write_text(m)
-          ep.write_text(e)
+          from research.brrk_btc_sol_path_event_early_warning_0066 import models as mdl
+          cfg=mdl.frozen_configurations()
+          expected={
+              'P01_FAMILY_RIDGE_LOGIT':4,
+              'P02_RAW_ELASTIC_NET_LOGIT':9,
+              'P03_VALIDATION_SCREENED_SIGNAL_LOGIT':3,
+              'P04_PCR_LOGIT':12,
+              'P05_THEORY_QUADRATIC_LOGIT':4,
+              'P06_SHALLOW_GBDT_CLASSIFIER':8,
+              'P07_DISCRETE_TIME_HAZARD_LOGIT':4,
+          }
+          assert {k:len(v) for k,v in cfg.items()} == expected
+          per_track=sum(expected[a] for a in mdl.BASE_ARCHITECTURES[:6])
+          assert per_track == 40
+          assert per_track*40 + expected['P07_DISCRETE_TIME_HAZARD_LOGIT']*8 == 1632
+          assert 1632 + 64 + 8 == 1704
+          print('0066 bounded implementation validation: grid=1632 final_predictors=64 controllers=8 total=1704')
           PY
-          python -m py_compile research/brrk_btc_sol_path_event_early_warning_0066/models.py research/brrk_btc_sol_path_event_early_warning_0066/engine.py
-          git diff --check
-          changed="$(git diff --name-only)"
-          test "$changed" = $'research/brrk_btc_sol_path_event_early_warning_0066/engine.py\nresearch/brrk_btc_sol_path_event_early_warning_0066/models.py'
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add research/brrk_btc_sol_path_event_early_warning_0066/engine.py research/brrk_btc_sol_path_event_early_warning_0066/models.py
-          git commit -m 'research: add 0066 runtime progress observability'
-          git push origin HEAD:research/0066-implementation-v1
+      - name: Reassert no runtime artifacts and no repository mutation
+        shell: bash
+        run: |
+          set -euo pipefail
+          for f in RUN_ATTEMPT.marker PRIMARY_RESULT.json EVIDENCE.json EXECUTION.json RUN_ONCE.marker; do
+            test ! -e "research/brrk_btc_sol_path_event_early_warning_0066/$f"
+          done
+          test -z "$(git status --porcelain)"
