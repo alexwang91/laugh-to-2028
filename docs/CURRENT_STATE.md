@@ -11,6 +11,7 @@ Merged 0065 controlled boundary: `8f22db987e08d8f1873d8fefbeb9473d64f5b96d`.
 0065 durable attempt commit: `f08bf8018994b39769df98fc32349e614fe961bb`.
 0065 immutable result commit: `b2355e1a6c80c3c0454463f238b2a1bf85e3b83f`.
 0065 unique historical workflow run: `31789144276`.
+Merged 0065 immutable closeout: `d1607277593a0c5c35bb0163e10e078f3dc85fc8`.
 
 ## Required closed-research anchors
 
@@ -97,4 +98,4 @@ Phase 6 = NO CHANGE.
 
 ## Exact next step
 
-Finalize the central registry and merge the immutable 0065 result/closeout through fresh standing CI. Do not select A04 for canonical or production use from this DEVELOPMENT result. If further research is desired, the scientifically clean next design is a new, explicitly RESULT_INFORMED quadratic/interactions validation program, preferably on genuinely future data rather than same-history refinement.
+0065 is fully closed and requires no further same-ID work. Do not select A04 for canonical or production use, and do not rerun, prune, retune or rescue 0065. If further research is desired, create a new explicitly RESULT_INFORMED research ID that freezes a quadratic/interactions hypothesis before accessing any new outcome data; genuinely future validation is the preferred higher-evidence path.
