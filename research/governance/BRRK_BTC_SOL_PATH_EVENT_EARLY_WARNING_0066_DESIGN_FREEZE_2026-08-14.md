@@ -10,7 +10,7 @@ Replace one-off return forecasting with an event-first research program:
 
 1. abstract BTC and SOL price paths into objectively defined decline and sideways episodes;
 2. grade episodes primarily by duration and secondarily by path severity;
-3. ask whether the already frozen 0062 indicator universe contains information 1/3/5/10/20 sessions BEFORE episode onset;
+3. ask whether the already frozen 0062 indicator universe contains information that an episode will begin within the next 1/3/5/10/20 sessions;
 4. use a prospectively frozen validation-only selection rule to decide which indicators/models are allowed into multiple economic gross-controller backtests;
 5. compare all controllers in one exactly-once historical tournament against the frozen 0064 passive-cash benchmark.
 
@@ -92,15 +92,17 @@ If multiple horizons qualify, choose the LONGEST qualifying H. Duration grades u
 
 DOWN takes precedence over SIDEWAYS at the same origin. Otherwise the origin is OTHER.
 
-### 4.4 Unique episode onset extraction
+### 4.4 Unique episode onset extraction and risk set
 
 For each asset and event type, a candidate run is contiguous candidate dates of the same duration grade. The episode onset is the first date of the run. After an onset, later same-type candidate onsets are suppressed for `ceil(H*/2)` sessions. A later candidate with a strictly LONGER duration grade may start a new hierarchical episode only after 10 sessions.
+
+Dates inside an already-started event's suppression interval are OUTSIDE the classifier risk set; they are not treated as clean negative examples for predicting a new onset.
 
 This produces an immutable price-only event atlas with onset date, asset, type, duration grade, H*, severity, realized path statistics and episode support counts.
 
 No indicator is read when constructing this atlas.
 
-## 5. Prediction targets and lead times
+## 5. Prediction targets and early-warning horizons
 
 For each asset separately define:
 
@@ -109,26 +111,30 @@ For each asset separately define:
 - T3_ANY_SIDEWAYS: S1-S4
 - T4_LONG_SIDEWAYS: S2-S4
 
-Lead times are exactly `L=[1,3,5,10,20]` sessions. Predictors for an onset at t are measured at t-L.
+Early-warning horizons are exactly `L=[1,3,5,10,20]` sessions.
 
-This yields 2 assets x 4 targets x 5 leads = 40 frozen event/lead tracks.
+For an at-risk prediction date t, binary target `Y_L[t]=1` iff at least one qualifying target onset occurs in the strictly future window `(t, t+L]`; otherwise `Y_L[t]=0`. Therefore a 10D model means "an onset will occur within the next 10 sessions", not "the onset occurs exactly 10 sessions later".
 
-Support gate per track:
+The same unique onset may contribute positive labels to several nested warning horizons; multiplicity/dependence handling therefore treats the five horizons as correlated hypotheses rather than independent samples.
 
-- at least 8 TRAIN+VALIDATION positive onsets;
-- at least 3 FINAL-EVALUATION positive onsets;
+This yields 2 assets x 4 targets x 5 warning horizons = 40 frozen event/horizon tracks.
+
+Support gate per track counts UNIQUE underlying onsets, not positive prediction-date rows:
+
+- at least 8 TRAIN+VALIDATION unique positive onsets;
+- at least 3 FINAL-EVALUATION unique positive onsets;
 - otherwise classification is `LOW_SUPPORT_DESCRIPTIVE_ONLY` and no confirmatory predictive claim is allowed for that track.
 
 D4/S4 episodes are always reported in the atlas even if their dedicated predictive support is insufficient.
 
 ## 6. Frozen temporal protocol
 
-Because labels may use up to 240 future sessions, every fit may use only labels whose complete 240-session maturity window has ended strictly before that fit date.
+Because labels may use up to 240 future sessions, every fit may use only labels whose complete 240-session event-construction window has ended strictly before that fit date.
 
 - Warm-up / expanding training: earliest common 0062 feature support onward.
 - VALIDATION prediction dates: 2023-01-01 through 2023-12-31.
-- FINAL event-prediction evaluation dates: 2024-01-01 through the last origin whose 240-session outcome is fully observed in the frozen panel.
-- ECONOMIC evaluation dates: 2024-01-01 through 2026-08-02; post-label-maturity tail is allowed for economics because predictions require no future outcome data.
+- FINAL event-prediction evaluation dates: 2024-01-01 through the last origin whose 240-session event-construction window is fully observed in the frozen panel.
+- ECONOMIC evaluation dates: 2024-01-01 through 2026-08-02; post-label-maturity tail is allowed for economics because live-style probability generation requires no future event label.
 - refit cadence: every 20 sessions.
 - forecast made after close t may alter only portfolio return row t+1.
 
@@ -142,11 +148,11 @@ Evaluate every frozen 0062 signal unit:
 - 17 family scores
 - total 202 signal units
 
-for every supported asset/target/lead track.
+for every supported asset/target/warning-horizon track.
 
 For each signal:
 
-- freeze orientation from TRAIN only using the sign of train point-biserial correlation with the binary event label;
+- freeze orientation from TRAIN only using the sign of train point-biserial correlation with the binary warning target;
 - on VALIDATION and FINAL EVALUATION report ROC-AUC, PR-AUC, prevalence, PR-AUC lift over prevalence, Brier score, and four chronological block metrics;
 - no evaluation-period sign flipping;
 - multiplicity correction is simultaneous across all reported signal/track hypotheses.
@@ -161,7 +167,7 @@ P01 `FAMILY_RIDGE_LOGIT` — 17 family scores, L2 logistic.
 
 P02 `RAW_ELASTIC_NET_LOGIT` — all 185 cells, elastic-net logistic.
 
-P03 `VALIDATION_SCREENED_SIGNAL_LOGIT` — deterministic validation-only top-signal model. Per asset/target/lead, select at most 12 units by validation PR-AUC lift, requiring positive lift in >=3/4 validation blocks; no more than two selected units per 0062 family; ties by preregistered signal ID. Final evaluation may not change the selected set.
+P03 `VALIDATION_SCREENED_SIGNAL_LOGIT` — deterministic validation-only top-signal model. Per asset/target/horizon, select at most 12 units by validation PR-AUC lift, requiring positive lift in >=3/4 validation blocks; no more than two selected units per 0062 family; ties by preregistered signal ID. Final evaluation may not change the selected set.
 
 P04 `PCR_LOGIT` — PCA on 185 cells followed by L2 logistic.
 
@@ -169,7 +175,7 @@ P05 `THEORY_QUADRATIC_LOGIT` — 17 family linear terms + 17 squares + the same 
 
 P06 `SHALLOW_GBDT_CLASSIFIER` — bounded depth 1/2 gradient boosting.
 
-P07 `DISCRETE_TIME_HAZARD_LOGIT` — pooled event-onset hazard model using family scores plus frozen lead-horizon indicators, causal by construction.
+P07 `DISCRETE_TIME_HAZARD_LOGIT` — pooled nested-horizon event-onset hazard model using family scores plus frozen warning-horizon indicators, causal by construction.
 
 P08 `STACKED_PROBABILITY_ENSEMBLE` — nonnegative convex validation-only stack of P01-P07 probabilities; no final-evaluation reweighting.
 
@@ -180,9 +186,9 @@ All hyperparameter grids and exact solver settings must be numerically frozen in
 For each asset/target:
 
 1. each architecture chooses hyperparameters on VALIDATION only;
-2. choose a preferred lead from [1,3,5,10,20] by highest validation PR-AUC lift, tie-breaking toward the LONGER lead;
+2. choose a preferred warning horizon from [1,3,5,10,20] by highest validation PR-AUC lift, tie-breaking toward the LONGER horizon;
 3. architecture ranking uses validation PR-AUC lift, then ROC-AUC, then lower Brier;
-4. final event evaluation never changes architecture, lead, signal set, calibration or thresholds.
+4. final event evaluation never changes architecture, warning horizon, signal set, calibration or thresholds.
 
 A predictive architecture/target track is confirmatory only if FINAL evaluation satisfies all:
 
@@ -190,7 +196,7 @@ A predictive architecture/target track is confirmatory only if FINAL evaluation 
 - G1 support gate;
 - G2 ROC-AUC > 0.50 and PR-AUC lift > 0;
 - G3 >=3/4 chronological blocks have ROC-AUC >0.50 and PR-AUC above prevalence;
-- G4 preferred lead is >=5 sessions OR an adjacent pair among {3,5},{5,10},{10,20} both satisfy G2;
+- G4 preferred warning horizon is >=5 sessions OR an adjacent pair among {3,5},{5,10},{10,20} both satisfy G2;
 - G5 simultaneous dependence-aware bootstrap LCB for PR-AUC lift is strictly >0.
 
 ## 10. Economic controller tournament
@@ -218,7 +224,7 @@ Probability-to-gross map is frozen by validation probability quantiles, not fina
 - if multiple rules fire, take the minimum g
 - no leverage, no shorting, no smoothing
 
-C06 uses the maximum standardized risk percentile across 3/5/10-day predictions. C03/C05 use the maximum risk percentile across BTC and SOL. C07 applies DOWN first and SIDEWAYS only if no stronger DOWN rule fires.
+C06 uses the maximum standardized risk percentile across 3/5/10-session warning probabilities. C03/C05 use the maximum risk percentile across BTC and SOL. C07 applies DOWN first and SIDEWAYS only if no stronger DOWN rule fires.
 
 Benchmark economics are the frozen 0064 primary passive-cash system. Outer overlay transaction cost = 10 bps per unit change in outer multiplier. Forcing g=1 must reconstruct 0064 within frozen tolerance.
 
@@ -268,7 +274,7 @@ Required order:
 9. exactly one historical execution attempt
 10. immutable CLOSEOUT
 
-Once `RUN_ATTEMPT.marker` is durably persisted, same-ID rerun, retune, rescue, event-threshold change, indicator pruning, lead change, controller change or cost change is permanently forbidden.
+Once `RUN_ATTEMPT.marker` is durably persisted, same-ID rerun, retune, rescue, event-threshold change, indicator pruning, warning-horizon change, controller change or cost change is permanently forbidden.
 
 `production_authorized=false`
 `signature_authorized=false`
