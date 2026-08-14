@@ -3,75 +3,75 @@
 Last updated: 2026-08-14
 
 Authoritative repository: `alexwang91/laugh-to-2028`.
-Merged 0063 closeout: `b7fd66f28c8d7611cd4c71dc04b1c152bc65d62d`.
-Merged 0064 DESIGN: `38b5740cb89ae16b4bc005f3d5bcb4f8e0a0181f`.
-Merged 0064 preregistration: `24021324641df766da307b0ee231bb8b78920b93`.
-Merged 0064 implementation: `7e771dea9355c4170e806af13b35a327beac0466`.
-Merged 0064 controlled boundary: `876fdf657bd11bc4aeb9d0dcd3859886ee099568`.
-0064 durable attempt commit: `51fe15adf20452d90700e9b5afa2313ee8775706`.
-0064 immutable result commit: `d45e7e7e2d1a62f0243c4a1576bc4a60727d90d4`.
 Merged 0064 PASS closeout: `ad8038af45bad2e25e8a7b88b569b1873635d9c2`.
-0065 DESIGN branch: `research/0065-design-v1`.
-0065 DESIGN commit: `530a58c0e5bfb52e5c33d3ccfeb5774351bde193`.
-
-## Required closed-research anchors
-
-BRRK-EXHAUSTION-EVENT-STUDY-0043 — complete diagnostic
-workflow run                         31381953131 / attempt 1
-7–14 day exhaustion-ranking signal appears feasible
-ID 0043 is closed against result-informed pruning, reweighting, threshold rescue
+Merged 0065 DESIGN: `09f9afc69183387afaabfe540394eb01989df148`.
+0065 owner-first commit: `a717d1d359e1b980a7c727e48ec26a1ffb0fc3a6`.
 
 ## Current research state
 
 0062 = `FAIL_NO_SIGNAL_ATLAS_FAMILY_INFORMATION / CLOSED`.
 0063 = `FAIL_IDLE_CASH_SWEEP_PRIMARY_ECONOMICS / CLOSED`.
 0064 = `PASS_PASSIVE_CASH_ACCRUAL_ROBUSTNESS / CLOSED TO SAME-ID RERUN`.
-0065 = `DESIGN ONLY / ARCHITECTURE TOURNAMENT FROZEN / NOT PREREGISTERED / NOT RUN`.
+0065 = `NUMERICAL/DATA PREREGISTRATION FROZEN / IMPLEMENTATION ABSENT / NOT RUN`.
 0065 research ID = `BRRK-MULTI-ARCHITECTURE-GROSS-CONTROLLER-0065`.
 
-0065 changes the research process from sequential one-off strategy trials to one prospectively frozen architecture tournament. It will compare eight structurally distinct combination methods over the complete 0062 Tier-A feature universe, with one common target, one common gross mapping, one common economic baseline/cost model and one exactly-once evaluation batch.
+0065 is one prospectively frozen architecture tournament, not sequential one-off strategy search. Historical 0065 portfolio CAGR/NAV/ranking has not been computed.
 
-Frozen architecture classes at DESIGN:
+### Frozen method set
 
-1. A01 FAMILY_ELASTIC_NET — 17 family scores, additive shrinkage;
-2. A02 RAW_ELASTIC_NET — all 185 cells, correlated raw-feature shrinkage;
-3. A03 PCR_RIDGE — latent principal-component compression then ridge;
-4. A04 THEORY_QUADRATIC_HESSIAN_RIDGE — second-order response surface with fixed theory interaction graph;
-5. A05 GAM_SPLINE_RIDGE — smooth nonlinear family effects without cross-family interactions;
-6. A06 SHALLOW_GBDT — bounded shallow tree interactions;
-7. A07 HMM_REGIME_MIXTURE_RIDGE — latent regime probabilities plus state-conditional ridge;
+1. A01 FAMILY_ELASTIC_NET — 17 family scores;
+2. A02 RAW_ELASTIC_NET — 185 cells;
+3. A03 PCR_RIDGE — PCA latent factors + ridge;
+4. A04 THEORY_QUADRATIC_HESSIAN_RIDGE — 17 linear + 17 squared + 10 theory interactions;
+5. A05 GAM_SPLINE_RIDGE — additive cubic splines + ridge;
+6. A06 SHALLOW_GBDT — bounded depth 1/2 boosting;
+7. A07 HMM_REGIME_MIXTURE_RIDGE — 2/3-state Gaussian HMM + state-specific ridge;
 8. A08 STACKED_ENSEMBLE — validation-only nonnegative convex stack of A01-A07.
 
-Common supervised target at DESIGN = 20-session forward BTC log return, exactly the negative of 0062 T1 cash advantage at 20 sessions.
+Frozen validation tuning config count = 63.
+Frozen final architecture count = 8.
+Declared total research variant budget = 71.
+Actual variants evaluated = 0.
 
-Common outer gross concept at DESIGN = no leverage / no shorting; ordinary or positive forecasts cannot increase risk above baseline, while sufficiently negative standardized forecasts reduce gross. Exact numerical mapping, refit cadence, hyperparameter grids, cost bps, temporal split indices, multiplicity procedure and PBO diagnostics must be frozen in PREREGISTRATION before any 0065 portfolio outcome is computed.
+### Frozen common scientific contract
 
-Feature anti-pruning rule = all eligible 185 cells / 17 family scores remain available according to architecture; no 0062 result-based family/cell deletion or favoritism.
+Feature universe = complete 0062 Tier-A atlas: 185 cells / 17 family scores; no result-informed pruning.
+Target = 20-session forward BTC log return.
+TRAIN origins end = 2021-12-31.
+VALIDATION origins = 2022-01-01 through 2022-11-19.
+Portfolio evaluation = 2022-12-10 through 2026-08-02.
+Validation and evaluation refit cadence = every 20 sessions.
+At every refit, only origins whose 20-session labels have fully matured strictly before the refit date are eligible.
 
-Historical 0065 evaluation-period architecture CAGR/NAV/ranking = NOT COMPUTED.
-Historical 0065 variants evaluated = 0.
+Forecast after close t may affect only next portfolio return row t+1.
+Common gross map = `g=clip(1+0.25*z,0,1)` where z uses fit-sample prediction median and `1.4826*MAD`; no smoothing, leverage or shorting.
+
+Economic benchmark = frozen 0064 primary: 50% DTB3 realization / 100 bps annual continuous cash fee.
+Outer overlay cost = 10 bps per unit outer gross turnover.
+Forcing g=1 must reconstruct 0064 primary within frozen numerical tolerance.
+
+Four count-balanced contiguous evaluation blocks.
+Simultaneous inference = aligned non-circular MBB L60 / 4000 reps / seed 650065 / Type-7 q95 across all valid final architectures.
+PBO diagnostic = 8 contiguous slices / choose 4 = 70 CSCV splits.
+Deflated-Sharpe-style diagnostic uses declared trial count 71 and is diagnostic only.
+
+A scientific winner must beat 0064 in terminal wealth and CAGR, have noninferior MDD, >=3/4 positive blocks, simultaneous one-sided LCB >0, and pass cost/timing/identity contracts.
+
+### Frozen data identities
+
+0062 market payload blob = `64ebf5c6deaf3f34dbeac715378f196ff0f4fafe`; payload SHA256 = `d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193`.
+0062 feature engine blob = `cac8e946998c836d10842b9388e1e3ef345a8c0b`.
+0062 loader blob = `059b55961e279dab41ba29b5b017de0922e4f33c`.
+BRRK equity blob = `82c87f8cb0ff01c728ffd3b717fff17cf5a364f2`.
+BRRK weights blob = `2f6c8d3a8c25d3cafeaa0128f1c425dac248370b`.
+DTB3 blob = `71d50e26f8a9afb6bcb88401d20b97d5fb0a891a`; payload SHA256 = `4d8aee67dbd528ce38ff8482e9bb02dd5ccf2c6cd461f606fe90007151ab6879`.
+0064 economic engine blob = `4060a307be2204c11952cb52e2fc718a5343d8e1`.
+
 RUN_ATTEMPT.marker = ABSENT.
 PRIMARY_RESULT.json = ABSENT.
 EVIDENCE.json = ABSENT.
 EXECUTION.json = ABSENT.
 RUN_ONCE.marker = ABSENT.
-
-## 0064 frozen primary result
-
-Mechanism = already-idle residual cash remains continuously interest-bearing; no additional sweep trade.
-Primary = 50% DTB3 yield realization / 100 bps annual continuous idle-cash spread-fee.
-Baseline terminal wealth = 62247.382312942056.
-Primary terminal wealth = 62813.41563922909.
-Baseline calendar-span CAGR = 0.6516609785339962.
-Primary calendar-span CAGR = 0.6557689400699214.
-CAGR improvement = +0.004107961535925217 absolute = +0.4107961535925217 percentage points.
-Baseline MDD = -0.3371507034657847.
-Primary MDD = -0.3366471268083583, so drawdown did not worsen.
-Primary chronological recurrence = 4 / 4 positive blocks, each 333 rows.
-Dependence-aware MBB = L60 / 4000 reps / seed 640064 / Type-7 q95; one-sided LCB = 3.4274270071632633e-06 > 0.
-Core stress robustness = all 9 preregistered cells positive in relative terminal log growth.
-G0 through G6 = PASS.
-Classification = `PASS_PASSIVE_CASH_ACCRUAL_ROBUSTNESS`.
 
 ## No-drift authority
 
@@ -80,11 +80,10 @@ production_authorized_components = []
 production_authorized = false
 signature_authorized = false
 order_submission_authorized = false
-
 Canonical BRRK-0011 = NO CHANGE.
 0064 = NO CHANGE.
 Phase 6 = NO CHANGE.
 
 ## Exact next step
 
-Merge 0065 DESIGN after fresh standing CI. Then create the 0065 owner-first numerical/data PREREGISTRATION that freezes exact feature/data identities, temporal split indices, eight architecture hyperparameter budgets, deterministic seeds, common forecast-to-gross mapping, 0064 cash/cost economics, simultaneous eight-method inference and backtest-overfitting diagnostics. Do not compute any 0065 evaluation-period CAGR before that preregistration merges.
+Run preregistration validation and fresh standing CI, then merge preregistration. After merge, implement all eight architectures with synthetic/toy tests only; no 0065 historical portfolio read or CAGR is permitted before implementation and controlled-boundary merges.
