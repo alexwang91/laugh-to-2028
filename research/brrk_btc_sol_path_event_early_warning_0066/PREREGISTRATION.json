@@ -1,0 +1,263 @@
+{
+  "schema_version": 1,
+  "research_id": "BRRK-BTC-SOL-PATH-EVENT-EARLY-WARNING-0066",
+  "stage": "NUMERICAL_DATA_PREREGISTRATION_FROZEN_NOT_RUN",
+  "design_merge_sha": "b42f1d9dcc0574f185e04aad3bc8eca61fd2531d",
+  "owner_first_commit_sha": "44f8df24538216b9b83466522fc8efb209b3082a",
+  "evidence_tier": "RESEARCHER_EXPOSED_DEVELOPMENT_NOT_INDEPENDENT_OOS",
+  "scientific_question": "Can objectively labeled BTC/SOL decline and sideways episode onsets be forecast within 1/3/5/10/20 sessions by the frozen 0062 signal atlas, and can validation-frozen warnings improve the closed 0064 passive-cash portfolio under common causal cost semantics?",
+  "event_contract": {
+    "outcome_assets": ["BTC", "SOL"],
+    "scan_horizons_sessions": [10, 15, 20, 30, 45, 60, 90, 120, 180, 240],
+    "price_field": "close",
+    "fit_path": "For each origin t and H, OLS log(close[t+j]) = intercept + beta*j + epsilon for j=0..H; slope t-statistic is a standardized path-shape score only, not an IID significance test.",
+    "past_scale": "sigma60 = ddof=1 standard deviation of daily log returns over preceding 60 sessions, minimum 30, using no future return.",
+    "scale_selection": "H_star = argmax absolute slope_t_stat across frozen H; ties choose shorter H.",
+    "down_candidate": {
+      "slope_t_stat_max": -2.5,
+      "terminal_log_return_rule": "R_H_star <= -1.0*sigma60*sqrt(H_star)",
+      "mae_rule": "MAE_magnitude >= 1.5*sigma60*sqrt(H_star)",
+      "duration_grades": {
+        "D1_SHORT": [10, 15, 20],
+        "D2_MEDIUM": [30, 45, 60],
+        "D3_LONG": [90, 120],
+        "D4_SECULAR": [180, 240]
+      },
+      "severity_z_mae": {
+        "S1": [1.5, 2.5],
+        "S2": [2.5, 4.0],
+        "S3_min": 4.0
+      }
+    },
+    "sideways_candidate": {
+      "abs_slope_t_stat_max": 1.25,
+      "abs_terminal_log_return_rule": "abs(R_H) <= 0.50*sigma60*sqrt(H)",
+      "path_log_range_rule": "range(log_close[t:t+H]) <= 1.75*sigma60*sqrt(H)",
+      "scale_selection": "LONGEST qualifying H",
+      "duration_grades": {
+        "S1_SHORT": [10, 15, 20],
+        "S2_MEDIUM": [30, 45, 60],
+        "S3_LONG": [90, 120],
+        "S4_SECULAR": [180, 240]
+      }
+    },
+    "precedence": "DOWN before SIDEWAYS at same origin; otherwise OTHER",
+    "onset_extraction": "For each asset,event_type,duration_grade, contiguous candidate run onset is first date. Same-type new onsets suppressed ceil(H_star/2) sessions. A strictly longer duration grade may begin a hierarchical new episode only after 10 sessions.",
+    "risk_set": "Dates in an already-started event suppression interval are excluded from classifier risk set and are not negatives.",
+    "indicator_independence": "No predictor value may alter event labels, thresholds, grades, onset extraction or support."
+  },
+  "warning_targets": {
+    "T1_ANY_DOWN": "D1_SHORT or D2_MEDIUM or D3_LONG or D4_SECULAR",
+    "T2_MAJOR_DOWN": "D2_MEDIUM/D3_LONG/D4_SECULAR OR decline severity S2/S3",
+    "T3_ANY_SIDEWAYS": "S1_SHORT/S2_MEDIUM/S3_LONG/S4_SECULAR",
+    "T4_LONG_SIDEWAYS": "S2_MEDIUM/S3_LONG/S4_SECULAR",
+    "warning_horizons_sessions": [1, 3, 5, 10, 20],
+    "binary_label": "For an at-risk prediction date t and horizon L, Y_L[t]=1 iff at least one qualifying unique onset occurs in strictly future window (t,t+L]; else 0.",
+    "track_count": 40,
+    "unique_onset_support_gate": {
+      "train_plus_validation_min": 8,
+      "final_evaluation_min": 3,
+      "insufficient_status": "LOW_SUPPORT_DESCRIPTIVE_ONLY"
+    }
+  },
+  "time_contract": {
+    "calendar": "DAILY_CONTIGUOUS_UTC_SESSIONS",
+    "maximum_event_scan_horizon": 240,
+    "maximum_warning_horizon": 20,
+    "fit_label_maturity_rule": "For warning horizon L, a prediction-origin label may enter a refit only if origin + L + 240 sessions is strictly earlier than the refit date.",
+    "validation_prediction_start": "2023-01-01",
+    "validation_prediction_end": "2023-12-31",
+    "final_event_prediction_start": "2024-01-01",
+    "final_event_prediction_end": "2025-11-15",
+    "final_event_prediction_end_reason": "2026-08-02 frozen market endpoint minus maximum 240-session event scan minus maximum 20-session warning horizon on contiguous daily crypto calendar.",
+    "economic_evaluation_start": "2024-01-01",
+    "economic_evaluation_end": "2026-08-02",
+    "economic_tail_rule": "Probabilities after final label-mature origin remain eligible for live-style economics because prediction generation itself uses only information available at or before t and requires no future label.",
+    "refit_cadence_sessions": 20,
+    "decision_timing": "Features and probability computed after completed close t; resulting outer multiplier may affect only portfolio return row t+1."
+  },
+  "feature_contract": {
+    "builder_path": "research/brrk_btc_risk_signal_atlas_0062/engine.py",
+    "builder_git_blob_sha": "cac8e946998c836d10842b9388e1e3ef345a8c0b",
+    "function": "build_signal_atlas",
+    "raw_cell_count": 185,
+    "family_score_count": 17,
+    "signal_unit_count": 202,
+    "raw_cells_and_families_both_mandatory": true,
+    "result_informed_pruning_allowed": false,
+    "missing_value_rule": "Training-column median at each refit; an all-missing required training column causes the relevant config/track to persist MODEL_FIT_FAILURE rather than substitute a feature."
+  },
+  "indicator_atlas": {
+    "signal_unit_count": 202,
+    "event_warning_track_count": 40,
+    "declared_hypothesis_cell_count": 8080,
+    "orientation": "TRAIN-only sign of point-biserial association with warning label; zero association tie uses +1; no validation/final sign flip.",
+    "metrics": ["ROC_AUC", "PR_AUC", "PREVALENCE", "PR_AUC_LIFT", "BRIER", "FOUR_CHRONOLOGICAL_BLOCK_METRICS"],
+    "selection_use": "Only VALIDATION atlas metrics may drive P03 screening; FINAL atlas is reporting/inference only.",
+    "final_multiplicity": "One simultaneous dependence-aware bootstrap family across every supported FINAL signal/asset/target/horizon hypothesis; fixed scores are not re-oriented or re-selected in bootstrap."
+  },
+  "predictor_architectures": {
+    "P01_FAMILY_RIDGE_LOGIT": {
+      "input": "17 family scores",
+      "estimator": "training-median imputation -> StandardScaler -> sklearn LogisticRegression",
+      "grid": {"C": [0.01, 0.1, 1.0, 10.0], "penalty": "l2", "solver": "lbfgs", "class_weight": "balanced", "max_iter": 5000},
+      "configs_per_track": 4,
+      "track_count": 40,
+      "validation_tuning_executions": 160
+    },
+    "P02_RAW_ELASTIC_NET_LOGIT": {
+      "input": "185 raw cells",
+      "estimator": "training-median imputation -> StandardScaler -> sklearn LogisticRegression",
+      "grid": {"C": [0.01, 0.1, 1.0], "l1_ratio": [0.1, 0.5, 0.9], "penalty": "elasticnet", "solver": "saga", "class_weight": "balanced", "max_iter": 10000, "tol": 1e-6, "random_state": 660066},
+      "configs_per_track": 9,
+      "track_count": 40,
+      "validation_tuning_executions": 360
+    },
+    "P03_VALIDATION_SCREENED_SIGNAL_LOGIT": {
+      "input": "At most 12 of the 202 signal units selected on VALIDATION only",
+      "screen": "Per asset/target/horizon, rank VALIDATION PR-AUC lift descending among signals with positive lift in at least 3/4 validation chronological blocks; maximum 2 signals per 0062 family; ties by frozen signal ID; take at most 12; no FINAL re-screening.",
+      "estimator": "training-median imputation -> StandardScaler -> L2 LogisticRegression",
+      "grid": {"C": [0.1, 1.0, 10.0], "solver": "lbfgs", "class_weight": "balanced", "max_iter": 5000},
+      "configs_per_track": 3,
+      "track_count": 40,
+      "validation_tuning_executions": 120
+    },
+    "P04_PCR_LOGIT": {
+      "input": "185 raw cells",
+      "estimator": "training-median imputation -> StandardScaler -> PCA fit on eligible training only -> L2 LogisticRegression",
+      "grid": {"n_components": [5, 10, 20, 40], "C": [0.1, 1.0, 10.0], "solver": "lbfgs", "class_weight": "balanced", "max_iter": 5000},
+      "configs_per_track": 12,
+      "track_count": 40,
+      "validation_tuning_executions": 480
+    },
+    "P05_THEORY_QUADRATIC_LOGIT": {
+      "result_informed_from_closed_0065": true,
+      "privileged_selection": false,
+      "input": "17 family linear terms + 17 squares + 10 frozen theory cross-products",
+      "fixed_interactions": [["F01_TREND_LEVEL_DIRECTION","F10_VOLATILITY_REGIME"],["F03_TREND_ACCELERATION_DECELERATION","F10_VOLATILITY_REGIME"],["F05_VOL_ADJUSTED_TREND_GUARDS","F11_DOWNSIDE_ASYMMETRY_TAIL"],["F06_MOMENTUM_LEVEL","F13_CROSS_CRYPTO_BREADTH"],["F07_OVERBOUGHT_STRETCH","F08_BEARISH_DIVERGENCE_EXHAUSTION"],["F09_BREAKDOWN_FAILED_BREAK_STRUCTURE","F12_VOLUME_FLOW_CONFIRMATION"],["F14_RELATIVE_CRYPTO_LEADERSHIP","F13_CROSS_CRYPTO_BREADTH"],["F21_SEQUENTIAL_CHANGE_DETECTION","F23_MULTI_TIMESCALE_DISAGREEMENT"],["F01_TREND_LEVEL_DIRECTION","F14_RELATIVE_CRYPTO_LEADERSHIP"],["F11_DOWNSIDE_ASYMMETRY_TAIL","F12_VOLUME_FLOW_CONFIRMATION"]],
+      "estimator": "training-median imputation -> StandardScaler on 44-column expanded matrix -> L2 LogisticRegression",
+      "grid": {"C": [0.001, 0.01, 0.1, 1.0], "solver": "lbfgs", "class_weight": "balanced", "max_iter": 5000},
+      "configs_per_track": 4,
+      "track_count": 40,
+      "validation_tuning_executions": 160
+    },
+    "P06_SHALLOW_GBDT_CLASSIFIER": {
+      "input": "17 family scores",
+      "estimator": "training-median imputation -> sklearn GradientBoostingClassifier",
+      "grid": {"max_depth": [1, 2], "n_estimators": [50, 100], "learning_rate": [0.03, 0.1], "min_samples_leaf": 20, "subsample": 0.8, "random_state": 660066},
+      "configs_per_track": 8,
+      "track_count": 40,
+      "validation_tuning_executions": 320
+    },
+    "P07_DISCRETE_TIME_HAZARD_LOGIT": {
+      "input": "17 family scores plus one-hot warning horizon indicator over pooled nested-horizon risk-set rows",
+      "estimator": "training-median imputation -> StandardScaler continuous features -> pooled L2 LogisticRegression",
+      "grid": {"C": [0.01, 0.1, 1.0, 10.0], "solver": "lbfgs", "class_weight": "balanced", "max_iter": 5000},
+      "configs_per_asset_target": 4,
+      "asset_target_count": 8,
+      "validation_tuning_executions": 32
+    },
+    "P08_STACKED_PROBABILITY_ENSEMBLE": {
+      "input": "Causal VALIDATION probabilities from validation-selected P01-P07",
+      "estimator": "scipy.optimize.nnls against warning labels then normalize nonnegative weights to sum 1",
+      "fallback": "equal 1/7 weights if NNLS weights are all zero or non-finite",
+      "weights_frozen_before_final": true,
+      "validation_tuning_executions": 0
+    }
+  },
+  "validation_selection": {
+    "primary_metric": "PR_AUC_LIFT = PR_AUC - prevalence",
+    "secondary_metric": "ROC_AUC",
+    "tertiary_metric": "lower Brier score",
+    "hyperparameter_tie_break": "lexicographic ascending canonical JSON of hyperparameters",
+    "preferred_warning_horizon": "Within each architecture/asset/target choose horizon with highest VALIDATION PR_AUC_LIFT after hyperparameter selection; ties choose LONGER horizon.",
+    "preferred_architecture": "Within each asset/target choose architecture with highest VALIDATION PR_AUC_LIFT at its preferred horizon; tie ROC_AUC, then lower Brier, then architecture ID.",
+    "final_reselection_forbidden": true,
+    "controller_exact_horizon_resolution": "For controllers whose names specify 5D or 10D, use that exact warning horizon and choose the best architecture on VALIDATION for that exact horizon by the same metric hierarchy. C06 uses separately validation-selected exact 3D,5D,10D models. C07 uses the exact validation-selected target/horizon components required by its DOWN and SIDEWAYS rules. This resolves controller naming without allowing FINAL outcomes to select a horizon."
+  },
+  "predictive_final_gates": {
+    "G0": "Frozen Git/data/event/temporal/model identities exact",
+    "G1": "Unique-onset support gate satisfied",
+    "G2": "FINAL ROC_AUC > 0.50 and FINAL PR_AUC_LIFT > 0",
+    "G3": ">=3/4 count-balanced contiguous FINAL chronological blocks have ROC_AUC >0.50 and PR_AUC > prevalence",
+    "G4": "Preferred warning horizon >=5 sessions OR an adjacent pair among {3,5},{5,10},{10,20} for same architecture/asset/target both satisfies G2",
+    "G5": "Simultaneous one-sided 95% dependence-aware bootstrap LCB of FINAL PR_AUC_LIFT strictly >0"
+  },
+  "controller_contract": {
+    "controllers": ["C01_BTC_ANY_DOWN_5D","C02_SOL_ANY_DOWN_5D","C03_MAX_BTC_SOL_ANY_DOWN_5D","C04_BTC_MAJOR_DOWN_10D","C05_MAX_BTC_SOL_MAJOR_DOWN_10D","C06_MULTILEAD_DOWN_BLEND_3_5_10","C07_DOWN_PLUS_SIDEWAYS","C08_STACKED_EVENT_RISK"],
+    "count": 8,
+    "probability_threshold_calibration": "For each component probability series, empirical risk percentile thresholds are fit on its causal VALIDATION predictions only and frozen before economic evaluation.",
+    "gross_rules": {"below_p90": 1.0, "down_at_or_above_p90": 0.5, "sideways_only_at_or_above_p90": 0.75, "down_at_or_above_p97_5": 0.25, "multiple_rules": "minimum g"},
+    "C03_C05": "maximum VALIDATION-calibrated risk percentile across BTC and SOL",
+    "C06": "maximum VALIDATION-calibrated risk percentile across exact 3D/5D/10D ANY_DOWN components",
+    "C07": "DOWN rule has precedence; SIDEWAYS rule applies only when no stronger DOWN rule fires",
+    "C08": "Uses P08 stacked event-risk probability components with validation-frozen weights and thresholds",
+    "leverage_allowed": false,
+    "shorting_allowed": false,
+    "smoothing": "NONE"
+  },
+  "portfolio_economics": {
+    "benchmark_research_id": "BRRK-IDLE-CASH-PASSIVE-ACCRUAL-ROBUSTNESS-0064",
+    "base_return": "Already-costed BRRK-0011 daily return reconstructed from frozen daily_equity.csv",
+    "base_gross": "sum(abs(frozen BRRK-0011 daily_weights))",
+    "economic_evaluation_window": ["2024-01-01", "2026-08-02"],
+    "cash_yield_realization": 0.5,
+    "annual_cash_fee_bps": 100,
+    "outer_turnover_cost_bps_per_unit_gross": 10,
+    "candidate_return_formula": "r_candidate[D] = g_prev*r_base[D] + (1-g_prev*G_base[D])*(0.5*rf_daily[D]-0.01/365.25) - 0.001*abs(g_prev-g_prevprev)*G_base[D]",
+    "initial_outer_multiplier": 1.0,
+    "benchmark_reconstruction_rule": "Forcing g=1 over 2024-01-01..2026-08-02 must reproduce the corresponding frozen 0064 passive-cash subpath within 1e-12 per-row arithmetic tolerance; comparisons use this identical subwindow, not 0064's longer 2022 start.",
+    "negative_cash_forbidden": true
+  },
+  "economic_gates": {
+    "E0": "Identity, timing, benchmark reconstruction and cost contracts pass",
+    "E1": "Controller terminal wealth and calendar CAGR strictly exceed same-window 0064 benchmark",
+    "E2": "Controller max drawdown >= same-window 0064 benchmark max drawdown - 1e-12",
+    "E3": ">=3/4 count-balanced contiguous economic blocks have positive relative log growth",
+    "E4": "Simultaneous one-sided 95% moving-block-bootstrap LCB of mean relative daily log increment strictly >0 across all valid controllers",
+    "E5": "Dependence, cost, no-lookahead, no-leverage, no-short and nonnegative-cash contracts pass"
+  },
+  "trial_accounting": {
+    "indicator_atlas_hypothesis_cells_separate": 8080,
+    "validation_tuning_executions": 1632,
+    "final_predictor_tracks": 64,
+    "final_economic_controllers": 8,
+    "declared_model_controller_variant_budget": 1704,
+    "actual_variants_evaluated_before_run": 0,
+    "breakdown_validation_tuning": {"P01": 160, "P02": 360, "P03": 120, "P04": 480, "P05": 160, "P06": 320, "P07": 32, "P08": 0},
+    "variant_formula": "1632 validation tuning executions + (8 architectures*2 assets*4 targets =64 final predictor tracks) + 8 final controllers =1704",
+    "no_hidden_grid_trials_allowed": true
+  },
+  "simultaneous_inference": {
+    "bootstrap": "aligned non-circular moving-block bootstrap over contiguous prediction/economic dates",
+    "block_length": 60,
+    "replicates": 4000,
+    "seed": 660066,
+    "quantile": "Type-7 q95",
+    "predictive_bootstrap": "Do not retrain, re-orient, re-screen or recalibrate. Resample aligned FINAL prediction-date blocks; recompute supported hypothesis PR-AUC lift on sampled at-risk rows. Replicates with a degenerate class for a hypothesis are omitted for that hypothesis; a hypothesis with <95% valid replicates is MEASUREMENT_INCONCLUSIVE for G5. One max-stat q95 correction spans all confirmatory predictive architecture/asset/target tracks. Indicator-atlas cells use a separate max-stat family.",
+    "economic_bootstrap": "Use aligned daily relative log increments of all valid controllers versus same-window 0064; same sampled indices for every controller; q95 of max_i(observed_mean_i-bootstrap_mean_i); LCB_i=observed_mean_i-q95.",
+    "strict_pass": "LCB > 0"
+  },
+  "temporal_blocks": {"count": 4, "construction": "count-balanced contiguous eligible rows; earlier blocks receive remainder"},
+  "selection_risk": {"PBO_CSCV_slices": 8, "in_sample_slices": 4, "split_count": 70, "selection_statistic": "controller annualized Sharpe on in-sample slices", "role": "diagnostic_not_primary_gate"},
+  "classification": {
+    "full_pass": "PASS_EVENT_EARLY_WARNING_AND_ECONOMIC_CONTROLLER",
+    "predictive_only_pass": "PASS_EVENT_EARLY_WARNING_ONLY",
+    "predictive_fail": "FAIL_NO_ROBUST_EVENT_EARLY_WARNING",
+    "economic_fail_after_predictive_pass": "FAIL_NO_ROBUST_EVENT_CONTROLLER",
+    "insufficient_support": "MEASUREMENT_INCONCLUSIVE_INSUFFICIENT_EVENT_SUPPORT",
+    "invalid": "INVALID_EXECUTION"
+  },
+  "reporting_contract": {
+    "must_report_price_event_atlas": true,
+    "must_report_all_duration_grades_including_low_support": true,
+    "must_report_indicator_early_warning_atlas": true,
+    "must_report_all_64_final_predictor_tracks": true,
+    "must_report_all_8_controller_CAGR_MDD_terminal_wealth_turnover": true,
+    "must_report_support_and_low_support_tracks": true,
+    "must_report_validation_selected_hyperparameters_and_horizons": true,
+    "must_report_simultaneous_LCBs_and_PBO": true,
+    "must_not_promote_descriptive_best_if_gates_fail": true
+  },
+  "authority": {"production_authorized": false, "signature_authorized": false, "order_submission_authorized": false, "canonical_BRRK_0011": "NO_CHANGE", "0064": "NO_CHANGE", "0065": "NO_CHANGE", "Phase_6": "NO_CHANGE"}
+}
