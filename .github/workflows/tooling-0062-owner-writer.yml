@@ -1,4 +1,4 @@
-name: Tooling 0065 post-merge zero-result preflight
+name: Research 0065 unique historical tournament
 
 on:
   push:
@@ -8,42 +8,178 @@ on:
       - '.github/workflows/tooling-0062-owner-writer.yml'
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
-  post-merge-preflight:
+  unique-historical-tournament:
     runs-on: ubuntu-latest
+    env:
+      PYTHONHASHSEED: '0'
+      OMP_NUM_THREADS: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      NUMEXPR_NUM_THREADS: '1'
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout exact formal result branch
+        uses: actions/checkout@v4
         with:
-          ref: 8f22db987e08d8f1873d8fefbeb9473d64f5b96d
+          ref: research/0065-result-v1
           fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+          cache: pip
+          cache-dependency-path: execution/plan-b-bot/requirements-dev.txt
       - run: pip install -r execution/plan-b-bot/requirements-dev.txt
-      - name: Verify exact merged boundary identities and zero-result state
+      - name: Final zero-result / no-drift preflight before attempt consumption
         shell: bash
+        env:
+          BOUNDARY: 8f22db987e08d8f1873d8fefbeb9473d64f5b96d
+          RESULT_BRANCH: research/0065-result-v1
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD)" = "8f22db987e08d8f1873d8fefbeb9473d64f5b96d"
-          test "$(git hash-object research/brrk_multi_architecture_gross_controller_0065/engine.py)" = "762b608dd9eb5feedc06867ce07f02d0de8ea928"
-          test "$(git hash-object research/brrk_multi_architecture_gross_controller_0065/run_once.py)" = "0a81c3ac98420e86786a81bb15b7547d71b27460"
-          test "$(git hash-object research/brrk_multi_architecture_gross_controller_0065/CONTROLLED_EXECUTION_BOUNDARY.json)" = "3778a61e70c011835a1565e4b97fe039de81075e"
+          git fetch origin main "$RESULT_BRANCH"
+          test "$(git rev-parse HEAD)" = "$BOUNDARY"
+          test "$(git rev-parse origin/main)" = "$BOUNDARY"
+          test "$(git rev-parse origin/$RESULT_BRANCH)" = "$BOUNDARY"
           for f in RUN_ATTEMPT.marker PRIMARY_RESULT.json EVIDENCE.json EXECUTION.json RUN_ONCE.marker; do
             test ! -e "research/brrk_multi_architecture_gross_controller_0065/$f"
           done
-      - name: Run exact merged-boundary Git-only preflight
+          PYTHONPATH=. python -m research.brrk_multi_architecture_gross_controller_0065.run_once preflight --boundary-sha "$BOUNDARY" | tee /tmp/final_preflight.json
+          python - <<'PY'
+          import json
+          p=json.load(open('/tmp/final_preflight.json'))
+          assert p['status']=='PREFLIGHT_PASS_ZERO_RESULT_GIT_IDENTITY_ONLY'
+          assert all(v==0 for v in p['historical_content_reads'].values())
+          assert p['market_loader_calls']==0
+          assert p['scientific_engine_calls']==0
+          PY
+      - name: Consume attempt and durably push marker before any historical content read
+        id: attempt
+        shell: bash
+        env:
+          BOUNDARY: 8f22db987e08d8f1873d8fefbeb9473d64f5b96d
+          RESULT_BRANCH: research/0065-result-v1
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python -m research.brrk_multi_architecture_gross_controller_0065.run_once start --boundary-sha "$BOUNDARY" --workflow-run-id "$GITHUB_RUN_ID"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add research/brrk_multi_architecture_gross_controller_0065/RUN_ATTEMPT.marker
+          test "$(git diff --cached --name-only)" = "research/brrk_multi_architecture_gross_controller_0065/RUN_ATTEMPT.marker"
+          git commit -m 'research: consume 0065 historical tournament attempt'
+          ATTEMPT_COMMIT="$(git rev-parse HEAD)"
+          test "$(git rev-parse HEAD^)" = "$BOUNDARY"
+          git push origin HEAD:"$RESULT_BRANCH"
+          REMOTE="$(git ls-remote origin "refs/heads/$RESULT_BRANCH" | awk '{print $1}')"
+          test "$REMOTE" = "$ATTEMPT_COMMIT"
+          echo "attempt_commit=$ATTEMPT_COMMIT" >> "$GITHUB_OUTPUT"
+          printf 'DURABLE_ATTEMPT_COMMIT=%s\n' "$ATTEMPT_COMMIT"
+          git reset --mixed "$BOUNDARY"
+          test "$(git rev-parse HEAD)" = "$BOUNDARY"
+          test -f research/brrk_multi_architecture_gross_controller_0065/RUN_ATTEMPT.marker
+      - name: Execute all frozen methods in the single scientific call
+        shell: bash
+        env:
+          BOUNDARY: 8f22db987e08d8f1873d8fefbeb9473d64f5b96d
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$BOUNDARY"
+          PYTHONPATH=. python -m research.brrk_multi_architecture_gross_controller_0065.run_once evaluate --boundary-sha "$BOUNDARY" | tee /tmp/evaluate_stdout.json
+          PYTHONPATH=. python -m research.brrk_multi_architecture_gross_controller_0065.run_once finalize --boundary-sha "$BOUNDARY" | tee /tmp/finalize_stdout.json
+      - name: Verify persisted tournament result without recomputation
         shell: bash
         run: |
           set -euo pipefail
-          PYTHONPATH=. python -m research.brrk_multi_architecture_gross_controller_0065.run_once preflight --boundary-sha 8f22db987e08d8f1873d8fefbeb9473d64f5b96d > /tmp/preflight.json
           python - <<'PY'
-          import json
-          x=json.load(open('/tmp/preflight.json'))
-          assert x['status']=='PREFLIGHT_PASS_ZERO_RESULT_GIT_IDENTITY_ONLY'
-          assert all(v==0 for v in x['historical_content_reads'].values())
-          assert x['market_loader_calls']==0
-          assert x['scientific_engine_calls']==0
-          print('0065_POST_MERGE_PREFLIGHT_OK')
+          import json, math
+          from pathlib import Path
+          h=Path('research/brrk_multi_architecture_gross_controller_0065')
+          for n in ['RUN_ATTEMPT.marker','PRIMARY_RESULT.json','EVIDENCE.json','EXECUTION.json','RUN_ONCE.marker']:
+              assert (h/n).exists(), n
+          p=json.loads((h/'PRIMARY_RESULT.json').read_text())
+          x=json.loads((h/'EXECUTION.json').read_text())
+          m=json.loads((h/'RUN_ONCE.marker').read_text())
+          allowed={
+              'PASS_MULTI_ARCHITECTURE_GROSS_CONTROLLER',
+              'FAIL_NO_ROBUST_MULTI_ARCHITECTURE_IMPROVEMENT',
+              'MEASUREMENT_INCONCLUSIVE_MODEL_FIT_FAILURE',
+              'MEASUREMENT_INCONCLUSIVE_DATA_SUPPORT',
+              'INVALID_EXECUTION',
+          }
+          assert p['classification'] in allowed
+          assert p['production_authorized'] is False
+          assert p['signature_authorized'] is False
+          assert p['order_submission_authorized'] is False
+          assert x['input_read_counts']=={'market_evidence':1,'equity':1,'weights':1,'dtb3':1}
+          assert x['market_loader_calls']==1
+          assert x['scientific_engine_calls']==1
+          assert x['network_fetches']==0
+          if p['classification'] in {'PASS_MULTI_ARCHITECTURE_GROSS_CONTROLLER','FAIL_NO_ROBUST_MULTI_ARCHITECTURE_IMPROVEMENT'}:
+              assert p['actual_validation_configs_evaluated']==63
+              assert p['final_architecture_count']==8
+              assert p['actual_variants_evaluated']==71
+              assert len(p['methods'])==8
+              expected=[
+                'A01_FAMILY_ELASTIC_NET','A02_RAW_ELASTIC_NET','A03_PCR_RIDGE',
+                'A04_THEORY_QUADRATIC_HESSIAN_RIDGE','A05_GAM_SPLINE_RIDGE',
+                'A06_SHALLOW_GBDT','A07_HMM_REGIME_MIXTURE_RIDGE','A08_STACKED_ENSEMBLE']
+              assert list(p['methods'])==expected
+              assert p['simultaneous_bootstrap']['block_length']==60
+              assert p['simultaneous_bootstrap']['replicates']==4000
+              assert p['simultaneous_bootstrap']['seed']==650065
+              if p['PBO_CSCV']['status']=='OK': assert p['PBO_CSCV']['split_count']==70
+              for a in expected:
+                  assert math.isfinite(p['methods'][a]['calendar_CAGR'])
+          assert m['classification']==p['classification']
+          assert m['historical_input_reads_during_finalize']==0
+          assert m['market_loader_calls_during_finalize']==0
+          assert m['scientific_engine_calls_during_finalize']==0
+          assert m['same_id_rerun_allowed'] is False
+          compact={
+              'classification':p['classification'],
+              'benchmark_0064':p.get('benchmark_0064'),
+              'descriptive_best_CAGR_method':p.get('descriptive_best_CAGR_method'),
+              'scientific_winners':p.get('scientific_winners'),
+              'PBO_CSCV':{k:v for k,v in p.get('PBO_CSCV',{}).items() if k!='records'},
+              'methods':{a:{
+                  'selected_hyperparameters':v.get('selected_hyperparameters'),
+                  'validation_MSE':v.get('validation_MSE'),
+                  'calendar_CAGR':v.get('calendar_CAGR'),
+                  'terminal_wealth':v.get('terminal_wealth'),
+                  'max_drawdown':v.get('max_drawdown'),
+                  'outer_turnover':v.get('outer_turnover'),
+                  'outer_transaction_cost_return_units':v.get('outer_transaction_cost_return_units'),
+                  'simultaneous_LCB':v.get('simultaneous_LCB'),
+                  'passes_all_scientific_gates':v.get('passes_all_scientific_gates'),
+              } for a,v in p.get('methods',{}).items()}
+          }
+          print(json.dumps(compact,indent=2,sort_keys=True))
           PY
+      - name: Persist complete result as child of durable attempt commit
+        shell: bash
+        env:
+          ATTEMPT_COMMIT: ${{ steps.attempt.outputs.attempt_commit }}
+          RESULT_BRANCH: research/0065-result-v1
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git read-tree "$ATTEMPT_COMMIT"
+          git add \
+            research/brrk_multi_architecture_gross_controller_0065/RUN_ATTEMPT.marker \
+            research/brrk_multi_architecture_gross_controller_0065/PRIMARY_RESULT.json \
+            research/brrk_multi_architecture_gross_controller_0065/EVIDENCE.json \
+            research/brrk_multi_architecture_gross_controller_0065/EXECUTION.json \
+            research/brrk_multi_architecture_gross_controller_0065/RUN_ONCE.marker
+          TREE="$(git write-tree)"
+          FINAL_COMMIT="$(printf '%s\n' 'research: record 0065 unique architecture tournament result' | git commit-tree "$TREE" -p "$ATTEMPT_COMMIT")"
+          test "$(git rev-parse "$FINAL_COMMIT^")" = "$ATTEMPT_COMMIT"
+          for f in RUN_ATTEMPT.marker PRIMARY_RESULT.json EVIDENCE.json EXECUTION.json RUN_ONCE.marker; do
+            git cat-file -e "$FINAL_COMMIT:research/brrk_multi_architecture_gross_controller_0065/$f"
+          done
+          git push origin "$FINAL_COMMIT":"refs/heads/$RESULT_BRANCH"
+          REMOTE="$(git ls-remote origin "refs/heads/$RESULT_BRANCH" | awk '{print $1}')"
+          test "$REMOTE" = "$FINAL_COMMIT"
+          printf 'FINAL_RESULT_COMMIT=%s\n' "$FINAL_COMMIT"
