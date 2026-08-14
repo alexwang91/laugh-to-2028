@@ -11,6 +11,8 @@ Merged 0064 controlled boundary: `876fdf657bd11bc4aeb9d0dcd3859886ee099568`.
 0064 durable attempt commit: `51fe15adf20452d90700e9b5afa2313ee8775706`.
 0064 immutable result commit: `d45e7e7e2d1a62f0243c4a1576bc4a60727d90d4`.
 Merged 0064 PASS closeout: `ad8038af45bad2e25e8a7b88b569b1873635d9c2`.
+0065 DESIGN branch: `research/0065-design-v1`.
+0065 DESIGN commit: `530a58c0e5bfb52e5c33d3ccfeb5774351bde193`.
 
 ## Required closed-research anchors
 
@@ -24,10 +26,35 @@ ID 0043 is closed against result-informed pruning, reweighting, threshold rescue
 0062 = `FAIL_NO_SIGNAL_ATLAS_FAMILY_INFORMATION / CLOSED`.
 0063 = `FAIL_IDLE_CASH_SWEEP_PRIMARY_ECONOMICS / CLOSED`.
 0064 = `PASS_PASSIVE_CASH_ACCRUAL_ROBUSTNESS / CLOSED TO SAME-ID RERUN`.
-0064 research ID = `BRRK-IDLE-CASH-PASSIVE-ACCRUAL-ROBUSTNESS-0064`.
-Unique historical workflow run = `31783619793`.
-Historical attempt count = 1 / 1 consumed.
-Historical variants evaluated = 20 / 20 frozen cells.
+0065 = `DESIGN ONLY / ARCHITECTURE TOURNAMENT FROZEN / NOT PREREGISTERED / NOT RUN`.
+0065 research ID = `BRRK-MULTI-ARCHITECTURE-GROSS-CONTROLLER-0065`.
+
+0065 changes the research process from sequential one-off strategy trials to one prospectively frozen architecture tournament. It will compare eight structurally distinct combination methods over the complete 0062 Tier-A feature universe, with one common target, one common gross mapping, one common economic baseline/cost model and one exactly-once evaluation batch.
+
+Frozen architecture classes at DESIGN:
+
+1. A01 FAMILY_ELASTIC_NET — 17 family scores, additive shrinkage;
+2. A02 RAW_ELASTIC_NET — all 185 cells, correlated raw-feature shrinkage;
+3. A03 PCR_RIDGE — latent principal-component compression then ridge;
+4. A04 THEORY_QUADRATIC_HESSIAN_RIDGE — second-order response surface with fixed theory interaction graph;
+5. A05 GAM_SPLINE_RIDGE — smooth nonlinear family effects without cross-family interactions;
+6. A06 SHALLOW_GBDT — bounded shallow tree interactions;
+7. A07 HMM_REGIME_MIXTURE_RIDGE — latent regime probabilities plus state-conditional ridge;
+8. A08 STACKED_ENSEMBLE — validation-only nonnegative convex stack of A01-A07.
+
+Common supervised target at DESIGN = 20-session forward BTC log return, exactly the negative of 0062 T1 cash advantage at 20 sessions.
+
+Common outer gross concept at DESIGN = no leverage / no shorting; ordinary or positive forecasts cannot increase risk above baseline, while sufficiently negative standardized forecasts reduce gross. Exact numerical mapping, refit cadence, hyperparameter grids, cost bps, temporal split indices, multiplicity procedure and PBO diagnostics must be frozen in PREREGISTRATION before any 0065 portfolio outcome is computed.
+
+Feature anti-pruning rule = all eligible 185 cells / 17 family scores remain available according to architecture; no 0062 result-based family/cell deletion or favoritism.
+
+Historical 0065 evaluation-period architecture CAGR/NAV/ranking = NOT COMPUTED.
+Historical 0065 variants evaluated = 0.
+RUN_ATTEMPT.marker = ABSENT.
+PRIMARY_RESULT.json = ABSENT.
+EVIDENCE.json = ABSENT.
+EXECUTION.json = ABSENT.
+RUN_ONCE.marker = ABSENT.
 
 ## 0064 frozen primary result
 
@@ -46,25 +73,6 @@ Core stress robustness = all 9 preregistered cells positive in relative terminal
 G0 through G6 = PASS.
 Classification = `PASS_PASSIVE_CASH_ACCRUAL_ROBUSTNESS`.
 
-## Execution integrity
-
-Boundary merge = `876fdf657bd11bc4aeb9d0dcd3859886ee099568`.
-Scientific engine blob = `4060a307be2204c11952cb52e2fc718a5343d8e1`.
-Run interface blob = `1289d808bd5da99dd4de295f70360f4673536cee`.
-Result schema blob = `3dd860f51b96f769db75a50e50acf850db35bf19`.
-Exactly-once runner blob = `f9af95b99c862ead8e8907cd06042884c0892b7b`.
-Equity reads = 1; weights reads = 1; DTB3 reads = 1; scientific engine calls = 1; network fetches = 0.
-RUN_ONCE status = `VALID_EXECUTION_COMPLETE_CLOSED_TO_SAME_ID_RERUN`.
-Same-ID rerun = FORBIDDEN.
-Same-ID retune = FORBIDDEN.
-Same-ID rescue = FORBIDDEN.
-
-## Program stop condition
-
-The requested optimization loop has reached its DEVELOPMENT-stage stop condition: a prospectively frozen, full-cycle, net-cost candidate has CAGR strictly above canonical BRRK-0011, non-worse drawdown, temporal recurrence, a positive dependence-aware lower confidence bound, and a positive preregistered core stress neighborhood.
-
-This evidence is researcher-exposed DEVELOPMENT history, not independent OOS. `future_only_validation_eligible=true`; future-only confirmation is the next evidentiary tier, not a reason to rerun or retune 0064.
-
 ## No-drift authority
 
 production gross cap = 1.0
@@ -74,8 +82,9 @@ signature_authorized = false
 order_submission_authorized = false
 
 Canonical BRRK-0011 = NO CHANGE.
+0064 = NO CHANGE.
 Phase 6 = NO CHANGE.
 
 ## Exact next step
 
-The user-requested optimization loop is complete and should remain stopped. Do not open a new optimization ID merely to continue searching, and do not rerun, retune or rescue 0064. If a higher evidentiary tier is desired later, design a separate future-only confirmation study using genuinely future data; such confirmation is optional and does not alter the completed 0064 DEVELOPMENT-stage PASS or confer production authority.
+Merge 0065 DESIGN after fresh standing CI. Then create the 0065 owner-first numerical/data PREREGISTRATION that freezes exact feature/data identities, temporal split indices, eight architecture hyperparameter budgets, deterministic seeds, common forecast-to-gross mapping, 0064 cash/cost economics, simultaneous eight-method inference and backtest-overfitting diagnostics. Do not compute any 0065 evaluation-period CAGR before that preregistration merges.
