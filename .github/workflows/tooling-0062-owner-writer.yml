@@ -1,4 +1,4 @@
-name: Tooling 0062 owner writer fixed artifact
+name: Tooling 0063 owner writer fixed artifact
 
 on:
   push:
@@ -18,7 +18,7 @@ jobs:
       - name: Checkout formal prereg branch
         uses: actions/checkout@v4
         with:
-          ref: research/0062-prereg-v1
+          ref: research/0063-prereg-v1
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/setup-python@v5
@@ -31,44 +31,45 @@ jobs:
       - name: Download exact validated artifact
         uses: actions/download-artifact@v4
         with:
-          name: 0062-clean-prereg-owner
-          path: /tmp/0062-owner-artifact
+          name: 0063-clean-prereg-owner
+          path: /tmp/0063-owner-artifact
           github-token: ${{ secrets.GITHUB_TOKEN }}
           repository: alexwang91/laugh-to-2028
-          run-id: 31751181470
+          run-id: 31757375000
       - name: Verify and apply owner-only registry
         shell: bash
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD)" = "aa3fa9c1814c4113918e0d012636db44a1f89659"
-          test "$(git hash-object /tmp/0062-owner-artifact/research_registry.json)" = "b6c5373a568dac28a897034a3ff8c7672efb0b5e"
+          test "$(git rev-parse HEAD)" = "e1ac320e092e554c283ef6b88aaaa5f65aaf61ab"
+          test "$(git hash-object /tmp/0063-owner-artifact/research_registry.json)" = "fcc6a25dbcb9410ff3eec709eb1bf26a1b9c1896"
           python - <<'PY'
           import json
           from pathlib import Path
-          r = json.loads(Path('/tmp/0062-owner-artifact/BUILD_REPORT.json').read_text())
-          assert r['base_commit_sha'] == 'aa3fa9c1814c4113918e0d012636db44a1f89659'
-          assert r['base_registry_blob_sha'] == 'b8c96a35afe96776e5dc34a93d11bf402c2c8603'
+          r = json.loads(Path('/tmp/0063-owner-artifact/BUILD_REPORT.json').read_text())
+          assert r['base_commit_sha'] == 'e1ac320e092e554c283ef6b88aaaa5f65aaf61ab'
+          assert r['base_registry_blob_sha'] == 'a1e34c10d8dadfeea27cff16310199472a2d1ef7'
           assert r['preexisting_records_unchanged'] is True
-          assert r['base_record_count'] == 34 and r['output_record_count'] == 35
+          assert r['base_record_count'] == 35 and r['output_record_count'] == 36
           assert r['new_owner_has_evidence_scorecard'] is False
           assert r['actual_variants_evaluated'] == 0
           assert r['production_authorized'] is False
           assert r['result_status'] == 'PREREGISTERED_NOT_RUN'
-          owner = json.loads(Path('/tmp/0062-owner-artifact/OWNER.json').read_text())
-          assert owner['research_id'] == 'BRRK-BTC-RISK-SIGNAL-ATLAS-0062'
+          assert r['promotion_state'] == 'NONE'
+          owner = json.loads(Path('/tmp/0063-owner-artifact/OWNER.json').read_text())
+          assert owner['research_id'] == 'BRRK-IDLE-CASH-SWEEP-ROBUSTNESS-0063'
           assert owner['promotion_state'] == 'NONE'
           assert owner['evidence_refs'] == []
           assert owner['lineage_edges'] == []
-          assert 'evidence_scorecard' not in owner
+          for k in ('evidence_scorecard','confidence_level','confidence_components','derived_confidence'):
+              assert k not in owner
           assert owner['actual_variants_evaluated'] == 0
           PY
-          cp /tmp/0062-owner-artifact/research_registry.json config/research_registry.json
+          cp /tmp/0063-owner-artifact/research_registry.json config/research_registry.json
           python -m research.governance.validate
           test "$(git diff --name-only)" = "config/research_registry.json"
-          git diff --exit-code -- docs/CURRENT_STATE.md research/ || true
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add config/research_registry.json
           git diff --cached --name-only | grep -qx 'config/research_registry.json'
-          git commit -m 'research: register 0062 prereg owner'
-          git push origin HEAD:research/0062-prereg-v1
+          git commit -m 'research: register 0063 prereg owner'
+          git push origin HEAD:research/0063-prereg-v1
