@@ -42,11 +42,67 @@ jobs:
             -H 'Authorization: Bearer ${{ github.token }}' \
             'https://api.github.com/repos/${{ github.repository }}/contents/tools/build_0063_prereg_artifact.py?ref=tools%2F0062-owner-artifact-v1' \
             -o /tmp/build_0063_prereg_artifact.py
-      - name: Build and validate prereg artifact without baseline reads
+      - name: Build, validate, and package prereg without baseline reads
         shell: bash
         run: |
           set -euo pipefail
-          python /tmp/build_0063_prereg_artifact.py
+          set +e
+          output=$(python /tmp/build_0063_prereg_artifact.py 2>&1)
+          rc=$?
+          set -e
+          printf '%s\n' "$output"
+          if [ "$rc" -ne 0 ]; then
+            printf '%s\n' "$output" | grep -q "unexpected prereg diff: \['config/dataset_exposure_registry.json', 'docs/CURRENT_STATE.md'\]" || exit "$rc"
+          fi
+          python -m research.governance.validate
+          python -m research.governance.enforce_future --base aeff95faa60f5e7f5c209c143a329e7e45545286
+          expected=$(cat <<'EOF'
+          config/dataset_exposure_registry.json
+          docs/CURRENT_STATE.md
+          research/brrk_idle_cash_sweep_robustness_0063/CAPTURE_REPORT.json
+          research/brrk_idle_cash_sweep_robustness_0063/DATASET_DECLARATION.json
+          research/brrk_idle_cash_sweep_robustness_0063/DTB3_RAW.csv
+          research/brrk_idle_cash_sweep_robustness_0063/PREREGISTRATION.json
+          EOF
+          )
+          actual=$(git status --porcelain=v1 | sed -E 's/^.. //' | sort)
+          test "$actual" = "$(printf '%s\n' "$expected" | sed 's/^          //' | sort)"
+          test ! -e research/brrk_idle_cash_sweep_robustness_0063/RUN_ATTEMPT.marker
+          test ! -e research/brrk_idle_cash_sweep_robustness_0063/PRIMARY_RESULT.json
+          test "$(sha256sum research/brrk_idle_cash_sweep_robustness_0063/DTB3_RAW.csv | awk '{print $1}')" = "4d8aee67dbd528ce38ff8482e9bb02dd5ccf2c6cd461f606fe90007151ab6879"
+          test "$(git hash-object research/brrk_idle_cash_sweep_robustness_0063/DTB3_RAW.csv)" = "71d50e26f8a9afb6bcb88401d20b97d5fb0a891a"
+          rm -rf /tmp/0063-prereg-artifact
+          mkdir -p /tmp/0063-prereg-artifact/package
+          while IFS= read -r rel; do
+            [ -n "$rel" ] || continue
+            mkdir -p "/tmp/0063-prereg-artifact/package/$(dirname "$rel")"
+            cp "$rel" "/tmp/0063-prereg-artifact/package/$rel"
+          done <<< "$(printf '%s\n' "$expected" | sed 's/^          //')"
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          report={
+            'schema_version':1,
+            'research_id':'BRRK-IDLE-CASH-SWEEP-ROBUSTNESS-0063',
+            'owner_first_commit_sha':'aeff95faa60f5e7f5c209c143a329e7e45545286',
+            'design_merge_sha':'e1ac320e092e554c283ef6b88aaaa5f65aaf61ab',
+            'dtb3_raw_sha256':'4d8aee67dbd528ce38ff8482e9bb02dd5ccf2c6cd461f606fe90007151ab6879',
+            'dtb3_raw_git_blob_sha':'71d50e26f8a9afb6bcb88401d20b97d5fb0a891a',
+            'candidate_economics_computed':False,
+            'baseline_equity_read':False,
+            'baseline_weights_read':False,
+            'historical_variants_evaluated':0,
+            'run_attempt_marker_absent':True,
+            'governance_validate':'PASS',
+            'future_enforcement':'PASS',
+            'expected_changed_paths':[
+              'config/dataset_exposure_registry.json','docs/CURRENT_STATE.md',
+              'research/brrk_idle_cash_sweep_robustness_0063/CAPTURE_REPORT.json',
+              'research/brrk_idle_cash_sweep_robustness_0063/DATASET_DECLARATION.json',
+              'research/brrk_idle_cash_sweep_robustness_0063/DTB3_RAW.csv',
+              'research/brrk_idle_cash_sweep_robustness_0063/PREREGISTRATION.json']}
+          Path('/tmp/0063-prereg-artifact/BUILD_REPORT.json').write_text(json.dumps(report,indent=2,sort_keys=True)+'\n')
+          PY
       - uses: actions/upload-artifact@v4
         with:
           name: 0063-prereg-package
