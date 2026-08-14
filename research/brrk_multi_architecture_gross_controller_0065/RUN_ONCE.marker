@@ -1,0 +1,20 @@
+{
+  "attempt_sha256": "2da0859cca685a3d036a9d1809d44a18e724f2bf9f85851abe4faa6799f1407e",
+  "boundary_merge_sha": "8f22db987e08d8f1873d8fefbeb9473d64f5b96d",
+  "classification": "FAIL_NO_ROBUST_MULTI_ARCHITECTURE_IMPROVEMENT",
+  "evidence_sha256": "954547e9b275064ba6e984c730a5a7c8e459c75dd6bfd16e3ea4710ed22b3a35",
+  "execution_sha256": "6a4b3cef03e9c4332e1a7ea7f8e0fe614b737356207fd515fd5ab7a007961309",
+  "historical_input_reads_during_finalize": 0,
+  "market_loader_calls_during_finalize": 0,
+  "order_submission_authorized": false,
+  "production_authorized": false,
+  "research_id": "BRRK-MULTI-ARCHITECTURE-GROSS-CONTROLLER-0065",
+  "result_sha256": "b44091b86181948afb3e8cc9479e884e161d1b2b4b08d0b0c3bfea71f5e45ec4",
+  "same_id_rerun_allowed": false,
+  "same_id_rescue_allowed": false,
+  "same_id_retune_allowed": false,
+  "schema_version": 1,
+  "scientific_engine_calls_during_finalize": 0,
+  "signature_authorized": false,
+  "status": "VALID_EXECUTION_COMPLETE_CLOSED_TO_SAME_ID_RERUN"
+}

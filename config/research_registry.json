@@ -4568,7 +4568,7 @@
       "validation_dataset_refs": [],
       "sealed_dataset_refs": [],
       "declared_variant_budget": 71,
-      "actual_variants_evaluated": 0,
+      "actual_variants_evaluated": 71,
       "parameter_candidate_count": 63,
       "stopping_rule": "Evaluate exactly 63 frozen validation tuning configurations and exactly 8 frozen final architecture paths in one governed research ID; after the first valid 0065 historical portfolio result is observed, stop same-ID architecture search, retuning, rescue, feature pruning, remapping and recomputation permanently.",
       "success_criteria": [
@@ -4590,10 +4590,14 @@
       "forbidden_followup": [
         "No same-ID architecture addition/deletion, feature pruning, target-horizon change, hyperparameter-grid change, cost change, interaction-graph change, gross-map change, rerun, retune, rescue or post-hoc ensemble construction after evaluation-result exposure."
       ],
-      "researcher_decisions": [],
+      "researcher_decisions": [
+        "All 63 validation tuning configurations and all 8 final architectures executed inside the single frozen scientific engine call.",
+        "A04 is recorded as descriptive best only; no post-hoc promotion because G4/G5 failed.",
+        "Same-ID rerun, retune, interaction pruning, Hessian-guided refinement, remapping and rescue are permanently forbidden."
+      ],
       "research_process_complexity": {
         "declared_parameter_candidates": 71,
-        "actual_parameter_candidates_evaluated": 0,
+        "actual_parameter_candidates_evaluated": 71,
         "universes_evaluated": 1,
         "horizons_evaluated": 1,
         "rebalance_variants": 1,
@@ -4612,12 +4616,25 @@
           "ref_research_id": "BRRK-IDLE-CASH-PASSIVE-ACCRUAL-ROBUSTNESS-0064"
         }
       ],
-      "result_status": "PREREGISTERED_NOT_RUN",
-      "failure_reason": null,
-      "promotion_state": "NONE",
-      "evidence_refs": [],
+      "result_status": "FAIL_NO_ROBUST_MULTI_ARCHITECTURE_IMPROVEMENT",
+      "failure_reason": "All eight frozen final architectures were validly evaluated in one exactly-once tournament. Descriptive best A04 THEORY_QUADRATIC_HESSIAN_RIDGE improved CAGR to 0.661265451355094 versus 0064 0.6557689400699214 and improved MDD to -0.2963539206683067, but failed frozen G4 temporal recurrence with only 2/4 positive chronological blocks and failed G5 simultaneous dependence-aware inference with LCB -0.00023941640352518253. No architecture passed the full gate sequence; PBO/CSCV was 0.6285714285714286.",
+      "promotion_state": "NO_PROMOTION",
+      "evidence_refs": [
+        "run:31789144276",
+        "research/brrk_multi_architecture_gross_controller_0065/RUN_ATTEMPT.marker",
+        "research/brrk_multi_architecture_gross_controller_0065/PRIMARY_RESULT.json",
+        "research/brrk_multi_architecture_gross_controller_0065/EVIDENCE.json",
+        "research/brrk_multi_architecture_gross_controller_0065/EXECUTION.json",
+        "research/brrk_multi_architecture_gross_controller_0065/RUN_ONCE.marker",
+        "research/brrk_multi_architecture_gross_controller_0065/CLOSEOUT.json"
+      ],
       "decision_refs": [
-        "research/governance/BRRK_MULTI_ARCHITECTURE_GROSS_CONTROLLER_0065_DESIGN_FREEZE_2026-08-14.md"
+        "research/governance/BRRK_MULTI_ARCHITECTURE_GROSS_CONTROLLER_0065_DESIGN_FREEZE_2026-08-14.md",
+        "research/brrk_multi_architecture_gross_controller_0065/PREREGISTRATION.json",
+        "research/brrk_multi_architecture_gross_controller_0065/DATASET_DECLARATION.json",
+        "research/brrk_multi_architecture_gross_controller_0065/IMPLEMENTATION_CONTRACT.json",
+        "research/brrk_multi_architecture_gross_controller_0065/CONTROLLED_EXECUTION_BOUNDARY.json",
+        "research/brrk_multi_architecture_gross_controller_0065/CLOSEOUT.json"
       ],
       "production_relevance": "DEVELOPMENT architecture tournament only; any PASS means research-stage evidence and does not automatically alter canonical BRRK or production.",
       "production_authorized": false,
@@ -4626,11 +4643,21 @@
         "research/brrk_multi_architecture_gross_controller_0065/"
       ],
       "notes": [
-        "Owner created after merged 0065 DESIGN and before numerical/data preregistration or any 0065 historical portfolio result.",
-        "Declared budget counts 63 validation tuning configurations plus 8 final architecture paths = 71 research variants.",
-        "All 185 eligible 0062 Tier-A cells / 17 family scores remain available according to frozen architecture; no 0062 result-based pruning.",
+        "The method-first tournament evaluated the complete frozen architecture set rather than sequential one-off strategy trials.",
+        "A04 THEORY_QUADRATIC_HESSIAN_RIDGE was the only method with CAGR above 0064, at 66.1265451355094% versus 65.5768940069921%, with MDD -29.6353920668307% versus -33.6647126808358%.",
+        "A04 failed temporal recurrence (2/4 positive blocks) and simultaneous LCB (-0.00023941640352518253), so it has no promotion authority.",
+        "PBO/CSCV=0.6285714285714286 indicates material architecture-selection instability.",
+        "Any continuation must be a new RESULT_INFORMED research ID; future-only validation is preferred for a higher evidentiary tier.",
         "production_authorized=false; signature_authorized=false; order_submission_authorized=false."
-      ]
+      ],
+      "evidence_scorecard": {
+        "temporal_novelty": "RESEARCHER_EXPOSED_DEVELOPMENT_NOT_INDEPENDENT_OOS",
+        "statistical_sufficiency": "0_OF_8_FULL_GATE_PASS;_A04_G2_G3_PASS_BUT_G4_2_OF_4_AND_G5_SIMULTANEOUS_LCB_NEGATIVE;_PBO_0.628571",
+        "governance_integrity": "HIGH_PROSPECTIVE_8_ARCH_63_TUNING_EXACTLY_ONCE_MARKET1_EQUITY1_WEIGHTS1_DTB3_1_LOADER1_ENGINE1_NO_RERUN",
+        "operational_realism": "COMMON_CAUSAL_OUTER_GROSS_MAP_10BPS_TURNOVER_0064_PASSIVE_CASH_NO_LEVERAGE_NO_SHORT",
+        "derived_confidence": "HIGH_FOR_NO_ROBUST_WINNER_ON_FROZEN_DEVELOPMENT_HISTORY",
+        "confidence_rule_ref": "research/brrk_multi_architecture_gross_controller_0065/CLOSEOUT.json"
+      }
     }
   ],
   "research_governance_debt": [
