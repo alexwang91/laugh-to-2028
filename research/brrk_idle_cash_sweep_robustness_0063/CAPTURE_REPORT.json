@@ -1,0 +1,26 @@
+{
+  "baseline_equity_read": false,
+  "baseline_weights_read": false,
+  "candidate_economics_computed": false,
+  "capture_stage": "RESULT_BLIND_RAW_DATA_CAPTURE",
+  "csv_data_row_count": 958,
+  "design_merge_sha": "e1ac320e092e554c283ef6b88aaaa5f65aaf61ab",
+  "first_csv_date": "2022-11-30",
+  "first_valid_date": "2022-11-30",
+  "header": [
+    "observation_date",
+    "DTB3"
+  ],
+  "last_csv_date": "2026-07-31",
+  "last_valid_date": "2026-07-31",
+  "raw_sha256": "4d8aee67dbd528ce38ff8482e9bb02dd5ccf2c6cd461f606fe90007151ab6879",
+  "replacement_allowed": false,
+  "requested_end": "2026-08-02",
+  "requested_start": "2022-11-30",
+  "research_id": "BRRK-IDLE-CASH-SWEEP-ROBUSTNESS-0063",
+  "schema_version": 1,
+  "series_id": "DTB3",
+  "source_provider": "FRED",
+  "source_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DTB3&cosd=2022-11-30&coed=2026-08-02",
+  "valid_observation_count": 917
+}

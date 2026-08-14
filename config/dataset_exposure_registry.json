@@ -281,6 +281,32 @@
         "research/brrk_leadership_intraday_support_0053/MARKET_4H_EVIDENCE.json",
         "research/brrk_leadership_intraday_support_0053/MARKET_4H_PAYLOAD.json"
       ]
+    },
+    {
+      "dataset_slice_id": "BRRK-IDLE-CASH-SWEEP-0063-DTB3-HIST-V1",
+      "dataset_id": "FRED-DTB3-3M-TBILL-BANK-DISCOUNT",
+      "dataset_version": "first-valid-capture-20260814-sha256-4d8aee67dbd528ce38ff8482e9bb02dd5ccf2c6cd461f606fe90007151ab6879",
+      "source": "FRED_DTB3_RESULT_BLIND_FIRST_VALID_CAPTURE_RUN_31757177489",
+      "assets": [
+        "USD_CASH"
+      ],
+      "fields": [
+        "DTB3"
+      ],
+      "resolution": "FRED_BUSINESS_DAY_RAW",
+      "start": "2022-11-30T00:00:00Z",
+      "end": "2026-07-31T00:00:00Z",
+      "transformation": "IDENTITY_RAW_CAPTURE; 0063 downstream conversion to investment basis and causal daily forward-fill is frozen in PREREGISTRATION.json",
+      "pit_publication_semantics": "PUBLIC HISTORICAL FRED OBSERVATIONS CAPTURED RESULT-BLIND AFTER 0063 DESIGN AND BEFORE ANY 0063 CANDIDATE ECONOMICS; captured payload is immutable for this ID; no later replacement or revision may be substituted",
+      "data_budget": "DEVELOPMENT",
+      "contamination_state": "RESEARCHER_EXPOSED_HISTORY",
+      "consumed": true,
+      "researcher_exposed_history": true,
+      "provenance_status": "FACT",
+      "evidence_refs": [
+        "research/brrk_idle_cash_sweep_robustness_0063/CAPTURE_REPORT.json",
+        "research/brrk_idle_cash_sweep_robustness_0063/DTB3_RAW.csv"
+      ]
     }
   ],
   "exposure_events": [
