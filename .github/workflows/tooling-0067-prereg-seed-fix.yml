@@ -24,9 +24,14 @@ jobs:
           from pathlib import Path
           p=Path('research/brrk_btc_sol_path_event_early_warning_runtime_qualified_0067/PREREGISTRATION.json')
           s=p.read_text()
-          assert s.count('660067')==3, s.count('660067')
+          assert s.count('660067')==2, s.count('660067')
+          assert s.count('"seed":670067')==1, s.count('"seed":670067')
           s=s.replace('660067','660066')
-          json.loads(s)
+          s=s.replace('"seed":670067','"seed":660066')
+          obj=json.loads(s)
+          assert obj['architectures']['P02_RAW_ELASTIC_NET_LOGIT']['grid']['random_state']==660066
+          assert obj['architectures']['P06_SHALLOW_GBDT_CLASSIFIER']['grid']['random_state']==660066
+          assert obj['simultaneous_inference']['seed']==660066
           p.write_text(s)
           PY
           git config user.name 'github-actions[bot]'
