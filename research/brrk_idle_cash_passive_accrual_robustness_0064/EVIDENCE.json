@@ -1,0 +1,380 @@
+{
+  "G1_support": {
+    "cagr_actual": 0.6516609785339962,
+    "cagr_anchor_expected": 0.6516609785339953,
+    "end": "2026-08-02",
+    "gross_max": 1.0,
+    "observations": 1332,
+    "passed": true,
+    "reasons": [],
+    "start": "2022-12-10",
+    "terminal_10k_actual": 62247.382312942056,
+    "terminal_10k_anchor_expected": 62247.38231294191
+  },
+  "cells": {
+    "a025_fee000bps": {
+      "annual_spread_fee_bps": 0,
+      "block_relative_log_growth": [
+        0.0015604562714651303,
+        0.000764070880691986,
+        0.0007739429367060106,
+        0.005906916166347956
+      ],
+      "cagr": 0.6557476728676677,
+      "max_drawdown": -0.33674431589829945,
+      "relative_terminal_log_growth": 0.009005386255211084,
+      "terminal_wealth": 62810.475665187296,
+      "total_continuous_fee_return_units": 0.0,
+      "total_gross_carry_return_units": 0.009007770864633727,
+      "total_net_cash_contribution_return_units": 0.009007770864633727,
+      "yield_realization": 0.25
+    },
+    "a025_fee050bps": {
+      "annual_spread_fee_bps": 50,
+      "block_relative_log_growth": [
+        0.000905892297265291,
+        0.00046968261889310844,
+        0.00041582767376346176,
+        0.002734719001041683
+      ],
+      "cagr": 0.6537136953002314,
+      "max_drawdown": -0.33689896137690944,
+      "relative_terminal_log_growth": 0.004526121590963545,
+      "terminal_wealth": 62529.760090026015,
+      "total_continuous_fee_return_units": 0.004480119858184805,
+      "total_gross_carry_return_units": 0.009007770864633727,
+      "total_net_cash_contribution_return_units": 0.004527651006448924,
+      "yield_realization": 0.25
+    },
+    "a025_fee100bps": {
+      "annual_spread_fee_bps": 100,
+      "block_relative_log_growth": [
+        0.0002513211094374933,
+        0.0001752921555389495,
+        5.770953776527033e-05,
+        -0.000437516902462871
+      ],
+      "cagr": 0.6516821932132346,
+      "max_drawdown": -0.3370535719798208,
+      "relative_terminal_log_growth": 4.680590027884211e-05,
+      "terminal_wealth": 62250.29592589781,
+      "total_continuous_fee_return_units": 0.00896023971636961,
+      "total_gross_carry_return_units": 0.009007770864633727,
+      "total_net_cash_contribution_return_units": 4.753114826411877e-05,
+      "yield_realization": 0.25
+    },
+    "a025_fee150bps": {
+      "annual_spread_fee_bps": 150,
+      "block_relative_log_growth": [
+        -0.00040325729219338284,
+        -0.00011910050940388138,
+        -0.000300411471335016,
+        -0.0036097915451520877
+      ],
+      "cagr": 0.6496531636219773,
+      "max_drawdown": -0.33720814771462826,
+      "relative_terminal_log_growth": -0.004432560818084369,
+      "terminal_wealth": 61972.077608253276,
+      "total_continuous_fee_return_units": 0.013440359574554415,
+      "total_gross_carry_return_units": 0.009007770864633727,
+      "total_net_cash_contribution_return_units": -0.004432588709920686,
+      "yield_realization": 0.25
+    },
+    "a025_fee200bps": {
+      "annual_spread_fee_bps": 200,
+      "block_relative_log_growth": [
+        -0.0010578429078022717,
+        -0.0004134953759689274,
+        -0.0006585353535838523,
+        -0.006782104928012238
+      ],
+      "cagr": 0.6476266035453151,
+      "max_drawdown": -0.3373626885889359,
+      "relative_terminal_log_growth": -0.008911978565367289,
+      "terminal_wealth": 61695.09959722229,
+      "total_continuous_fee_return_units": 0.01792047943273922,
+      "total_gross_carry_return_units": 0.009007770864633727,
+      "total_net_cash_contribution_return_units": -0.008912708568105493,
+      "yield_realization": 0.25
+    },
+    "a050_fee000bps": {
+      "annual_spread_fee_bps": 0,
+      "block_relative_log_growth": [
+        0.003120873716403869,
+        0.0015281269004577297,
+        0.0015478724729394106,
+        0.01181369815610813
+      ],
+      "cagr": 0.6598443872092135,
+      "max_drawdown": -0.33633768733836955,
+      "relative_terminal_log_growth": 0.01801057124590914,
+      "terminal_wealth": 63378.65003597219,
+      "total_continuous_fee_return_units": 0.0,
+      "total_gross_carry_return_units": 0.018015541729267455,
+      "total_net_cash_contribution_return_units": 0.018015541729267455,
+      "yield_realization": 0.5
+    },
+    "a050_fee050bps": {
+      "annual_spread_fee_bps": 50,
+      "block_relative_log_growth": [
+        0.002466326407209828,
+        0.0012337443561484614,
+        0.0011897634142024115,
+        0.008641573069997402
+      ],
+      "cagr": 0.6578054228925925,
+      "max_drawdown": -0.33649242452120376,
+      "relative_terminal_log_growth": 0.013531407247558103,
+      "terminal_wealth": 63095.40150035444,
+      "total_continuous_fee_return_units": 0.004480119858184805,
+      "total_gross_carry_return_units": 0.018015541729267455,
+      "total_net_cash_contribution_return_units": 0.013535421871082653,
+      "yield_realization": 0.5
+    },
+    "a050_fee100bps": {
+      "annual_spread_fee_bps": 100,
+      "block_relative_log_growth": [
+        0.001811771884783861,
+        0.0009393596103709201,
+        0.0008316514825100622,
+        0.005469409247522643
+      ],
+      "cagr": 0.6557689400699214,
+      "max_drawdown": -0.3366471268083583,
+      "relative_terminal_log_growth": 0.009052192225187487,
+      "terminal_wealth": 62813.41563922909,
+      "total_continuous_fee_return_units": 0.00896023971636961,
+      "total_gross_carry_return_units": 0.018015541729267455,
+      "total_net_cash_contribution_return_units": 0.009055302012897847,
+      "yield_realization": 0.5
+    },
+    "a050_fee150bps": {
+      "annual_spread_fee_bps": 150,
+      "block_relative_log_growth": [
+        0.0011572101489508275,
+        0.0006449726630917048,
+        0.0004735366778158726,
+        0.002297206687697627
+      ],
+      "cagr": 0.6537349357493187,
+      "max_drawdown": -0.33680179420743483,
+      "relative_terminal_log_growth": 0.004572926177556032,
+      "terminal_wealth": 62532.68683808853,
+      "total_continuous_fee_return_units": 0.013440359574554415,
+      "total_gross_carry_return_units": 0.018015541729267455,
+      "total_net_cash_contribution_return_units": 0.004575182154713043,
+      "yield_realization": 0.5
+    },
+    "a050_fee200bps": {
+      "annual_spread_fee_bps": 200,
+      "block_relative_log_growth": [
+        0.0005026411995355962,
+        0.0003505835142773906,
+        0.00011541900007343101,
+        -0.0008750346104639364
+      ],
+      "cagr": 0.6517034069424705,
+      "max_drawdown": -0.33695642672603465,
+      "relative_terminal_log_growth": 9.360910342248166e-05,
+      "terminal_wealth": 62253.209507325904,
+      "total_continuous_fee_return_units": 0.01792047943273922,
+      "total_gross_carry_return_units": 0.018015541729267455,
+      "total_net_cash_contribution_return_units": 9.506229652823754e-05,
+      "yield_realization": 0.5
+    },
+    "a075_fee000bps": {
+      "annual_spread_fee_bps": 0,
+      "block_relative_log_growth": [
+        0.004681252336877818,
+        0.002292168059886246,
+        0.002321788609167477,
+        0.017720345975632733
+      ],
+      "cagr": 0.6639511459017513,
+      "max_drawdown": -0.33593081764791355,
+      "relative_terminal_log_growth": 0.02701555498156427,
+      "terminal_wealth": 63951.95115831049,
+      "total_continuous_fee_return_units": 0.0,
+      "total_gross_carry_return_units": 0.027023312593901186,
+      "total_net_cash_contribution_return_units": 0.027023312593901186,
+      "yield_realization": 0.75
+    },
+    "a075_fee050bps": {
+      "annual_spread_fee_bps": 50,
+      "block_relative_log_growth": [
+        0.00402672169178898,
+        0.001997791232840251,
+        0.001963685754419604,
+        0.014548292965304882
+      ],
+      "cagr": 0.6619071827215668,
+      "max_drawdown": -0.33608564658751516,
+      "relative_terminal_log_growth": 0.022536491644353715,
+      "terminal_wealth": 63666.14686411939,
+      "total_continuous_fee_return_units": 0.004480119858184805,
+      "total_gross_carry_return_units": 0.027023312593901186,
+      "total_net_cash_contribution_return_units": 0.022543192735716377,
+      "yield_realization": 0.75
+    },
+    "a075_fee100bps": {
+      "annual_spread_fee_bps": 100,
+      "block_relative_log_growth": [
+        0.003372183833864133,
+        0.0017034122044130285,
+        0.0016055800268166033,
+        0.011376201220447137
+      ],
+      "cagr": 0.6598657070633192,
+      "max_drawdown": -0.33624044061144365,
+      "relative_terminal_log_growth": 0.018057377285540903,
+      "terminal_wealth": 63381.61660900341,
+      "total_continuous_fee_return_units": 0.00896023971636961,
+      "total_gross_carry_return_units": 0.027023312593901186,
+      "total_net_cash_contribution_return_units": 0.018063072877531575,
+      "yield_realization": 0.75
+    },
+    "a075_fee150bps": {
+      "annual_spread_fee_bps": 150,
+      "block_relative_log_growth": [
+        0.00271763876292819,
+        0.0014090309745711624,
+        0.0012474714263121032,
+        0.008204070740073375
+      ],
+      "cagr": 0.6578267159279316,
+      "max_drawdown": -0.3363951997273038,
+      "relative_terminal_log_growth": 0.01357821190388483,
+      "terminal_wealth": 63098.354728049824,
+      "total_continuous_fee_return_units": 0.013440359574554415,
+      "total_gross_carry_return_units": 0.027023312593901186,
+      "total_net_cash_contribution_return_units": 0.013582953019346772,
+      "yield_realization": 0.75
+    },
+    "a075_fee200bps": {
+      "annual_spread_fee_bps": 200,
+      "block_relative_log_growth": [
+        0.0020630864788060755,
+        0.0011146475432811346,
+        0.0008893599528595614,
+        0.00503190152319732
+      ],
+      "cagr": 0.6557902063198764,
+      "max_drawdown": -0.3365499239427072,
+      "relative_terminal_log_growth": 0.00909899549814409,
+      "terminal_wealth": 62816.35558146581,
+      "total_continuous_fee_return_units": 0.01792047943273922,
+      "total_gross_carry_return_units": 0.027023312593901186,
+      "total_net_cash_contribution_return_units": 0.009102833161161965,
+      "yield_realization": 0.75
+    },
+    "a100_fee000bps": {
+      "annual_spread_fee_bps": 0,
+      "block_relative_log_growth": [
+        0.006241592134948411,
+        0.003056194359566394,
+        0.0030956913458574722,
+        0.023626859631273436
+      ],
+      "cagr": 0.6680679733470085,
+      "max_drawdown": -0.3355237066887795,
+      "relative_terminal_log_growth": 0.036020337471645715,
+      "terminal_wealth": 64530.425175814366,
+      "total_continuous_fee_return_units": 0.0,
+      "total_gross_carry_return_units": 0.03603108345853491,
+      "total_net_cash_contribution_return_units": 0.03603108345853491,
+      "yield_realization": 1.0
+    },
+    "a100_fee050bps": {
+      "annual_spread_fee_bps": 50,
+      "block_relative_log_growth": [
+        0.005587078153064341,
+        0.0027618232495573544,
+        0.002737594694882218,
+        0.0204548786933161
+      ],
+      "cagr": 0.6660189991597225,
+      "max_drawdown": -0.33567862743771715,
+      "relative_terminal_log_growth": 0.03154137479082002,
+      "terminal_wealth": 64242.042120252736,
+      "total_continuous_fee_return_units": 0.004480119858184805,
+      "total_gross_carry_return_units": 0.03603108345853491,
+      "total_net_cash_contribution_return_units": 0.031550963600350104,
+      "yield_realization": 1.0
+    },
+    "a100_fee100bps": {
+      "annual_spread_fee_bps": 100,
+      "block_relative_log_growth": [
+        0.004932556958739974,
+        0.002467449938254153,
+        0.0023794951711521893,
+        0.0172828590226629
+      ],
+      "cagr": 0.6639725185368686,
+      "max_drawdown": -0.3358335132509792,
+      "relative_terminal_log_growth": 0.027062361090809214,
+      "terminal_wealth": 63954.94457037757,
+      "total_continuous_fee_return_units": 0.00896023971636961,
+      "total_gross_carry_return_units": 0.03603108345853491,
+      "total_net_cash_contribution_return_units": 0.027070843742165306,
+      "yield_realization": 1.0
+    },
+    "a100_fee150bps": {
+      "annual_spread_fee_bps": 150,
+      "block_relative_log_growth": [
+        0.004278028551800523,
+        0.0021730744256232976,
+        0.002021392774620859,
+        0.014110800618327693
+      ],
+      "cagr": 0.6619285284721412,
+      "max_drawdown": -0.3359883641361746,
+      "relative_terminal_log_growth": 0.022583296370372367,
+      "terminal_wealth": 63669.12681041731,
+      "total_continuous_fee_return_units": 0.013440359574554415,
+      "total_gross_carry_return_units": 0.03603108345853491,
+      "total_net_cash_contribution_return_units": 0.0225907238839805,
+      "yield_realization": 1.0
+    },
+    "a100_fee200bps": {
+      "annual_spread_fee_bps": 200,
+      "block_relative_log_growth": [
+        0.003623492932070868,
+        0.0018786967116313526,
+        0.0016632875052418291,
+        0.01093870347932438
+      ],
+      "cagr": 0.6598870259628258,
+      "max_drawdown": -0.33614318010091426,
+      "relative_terminal_log_growth": 0.018104180628268428,
+      "terminal_wealth": 63384.58314994994,
+      "total_continuous_fee_return_units": 0.01792047943273922,
+      "total_gross_carry_return_units": 0.03603108345853491,
+      "total_net_cash_contribution_return_units": 0.018110604025795694,
+      "yield_realization": 1.0
+    }
+  },
+  "core_stress_cell_keys": [
+    "a050_fee050bps",
+    "a050_fee100bps",
+    "a050_fee150bps",
+    "a075_fee050bps",
+    "a075_fee100bps",
+    "a075_fee150bps",
+    "a100_fee050bps",
+    "a100_fee100bps",
+    "a100_fee150bps"
+  ],
+  "data_identity": {
+    "dtb3_payload_sha256": "4d8aee67dbd528ce38ff8482e9bb02dd5ccf2c6cd461f606fe90007151ab6879",
+    "dtb3_payload_sha256_verified": true,
+    "pinned_git_blobs_verified": true
+  },
+  "input_read_counts": {
+    "dtb3": 1,
+    "equity": 1,
+    "weights": 1
+  },
+  "research_id": "BRRK-IDLE-CASH-PASSIVE-ACCRUAL-ROBUSTNESS-0064",
+  "schema_version": 1,
+  "scientific_engine_calls": 1
+}
