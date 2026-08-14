@@ -1,4 +1,4 @@
-name: Tooling 0065 registry closeout
+name: Tooling 0066 owner-first preregistration
 
 on:
   push:
@@ -11,102 +11,112 @@ permissions:
   contents: write
 
 jobs:
-  registry-closeout:
+  owner-first:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: research/0065-result-v1
+          ref: research/0066-prereg-v1
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
       - run: pip install -r execution/plan-b-bot/requirements-dev.txt
-      - name: Update only 0065 released research record
+      - name: Add only 0066 owner record before prereg files
         shell: bash
+        env:
+          DESIGN_MERGE: b42f1d9dcc0574f185e04aad3bc8eca61fd2531d
         run: |
           set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$DESIGN_MERGE"
           cp config/research_registry.json /tmp/research_registry.before.json
           python - <<'PY'
-          import json
+          import copy,json,hashlib
           from pathlib import Path
           p=Path('config/research_registry.json')
           reg=json.loads(p.read_text())
-          rid='BRRK-MULTI-ARCHITECTURE-GROSS-CONTROLLER-0065'
-          matches=[x for x in reg['records'] if x.get('research_id')==rid]
-          assert len(matches)==1
-          r=matches[0]
-          assert r['result_status']=='PREREGISTERED_NOT_RUN'
-          assert r['actual_variants_evaluated']==0
-          assert r['declared_variant_budget']==71
-          r['actual_variants_evaluated']=71
-          r['parameter_candidate_count']=63
-          r['research_process_complexity']['actual_parameter_candidates_evaluated']=71
-          r['result_status']='FAIL_NO_ROBUST_MULTI_ARCHITECTURE_IMPROVEMENT'
-          r['failure_reason']='All eight frozen final architectures were validly evaluated in one exactly-once tournament. Descriptive best A04 THEORY_QUADRATIC_HESSIAN_RIDGE improved CAGR to 0.661265451355094 versus 0064 0.6557689400699214 and improved MDD to -0.2963539206683067, but failed frozen G4 temporal recurrence with only 2/4 positive chronological blocks and failed G5 simultaneous dependence-aware inference with LCB -0.00023941640352518253. No architecture passed the full gate sequence; PBO/CSCV was 0.6285714285714286.'
-          r['promotion_state']='NO_PROMOTION'
-          r['evidence_refs']=[
-            'run:31789144276',
-            'research/brrk_multi_architecture_gross_controller_0065/RUN_ATTEMPT.marker',
-            'research/brrk_multi_architecture_gross_controller_0065/PRIMARY_RESULT.json',
-            'research/brrk_multi_architecture_gross_controller_0065/EVIDENCE.json',
-            'research/brrk_multi_architecture_gross_controller_0065/EXECUTION.json',
-            'research/brrk_multi_architecture_gross_controller_0065/RUN_ONCE.marker',
-            'research/brrk_multi_architecture_gross_controller_0065/CLOSEOUT.json'
-          ]
-          r['decision_refs']=[
-            'research/governance/BRRK_MULTI_ARCHITECTURE_GROSS_CONTROLLER_0065_DESIGN_FREEZE_2026-08-14.md',
-            'research/brrk_multi_architecture_gross_controller_0065/PREREGISTRATION.json',
-            'research/brrk_multi_architecture_gross_controller_0065/DATASET_DECLARATION.json',
-            'research/brrk_multi_architecture_gross_controller_0065/IMPLEMENTATION_CONTRACT.json',
-            'research/brrk_multi_architecture_gross_controller_0065/CONTROLLED_EXECUTION_BOUNDARY.json',
-            'research/brrk_multi_architecture_gross_controller_0065/CLOSEOUT.json'
-          ]
-          r['researcher_decisions']=[
-            'All 63 validation tuning configurations and all 8 final architectures executed inside the single frozen scientific engine call.',
-            'A04 is recorded as descriptive best only; no post-hoc promotion because G4/G5 failed.',
-            'Same-ID rerun, retune, interaction pruning, Hessian-guided refinement, remapping and rescue are permanently forbidden.'
-          ]
-          r['notes']=[
-            'The method-first tournament evaluated the complete frozen architecture set rather than sequential one-off strategy trials.',
-            'A04 THEORY_QUADRATIC_HESSIAN_RIDGE was the only method with CAGR above 0064, at 66.1265451355094% versus 65.5768940069921%, with MDD -29.6353920668307% versus -33.6647126808358%.',
-            'A04 failed temporal recurrence (2/4 positive blocks) and simultaneous LCB (-0.00023941640352518253), so it has no promotion authority.',
-            'PBO/CSCV=0.6285714285714286 indicates material architecture-selection instability.',
-            'Any continuation must be a new RESULT_INFORMED research ID; future-only validation is preferred for a higher evidentiary tier.',
-            'production_authorized=false; signature_authorized=false; order_submission_authorized=false.'
-          ]
-          r['evidence_scorecard']={
-            'temporal_novelty':'RESEARCHER_EXPOSED_DEVELOPMENT_NOT_INDEPENDENT_OOS',
-            'statistical_sufficiency':'0_OF_8_FULL_GATE_PASS;_A04_G2_G3_PASS_BUT_G4_2_OF_4_AND_G5_SIMULTANEOUS_LCB_NEGATIVE;_PBO_0.628571',
-            'governance_integrity':'HIGH_PROSPECTIVE_8_ARCH_63_TUNING_EXACTLY_ONCE_MARKET1_EQUITY1_WEIGHTS1_DTB3_1_LOADER1_ENGINE1_NO_RERUN',
-            'operational_realism':'COMMON_CAUSAL_OUTER_GROSS_MAP_10BPS_TURNOVER_0064_PASSIVE_CASH_NO_LEVERAGE_NO_SHORT',
-            'derived_confidence':'HIGH_FOR_NO_ROBUST_WINNER_ON_FROZEN_DEVELOPMENT_HISTORY',
-            'confidence_rule_ref':'research/brrk_multi_architecture_gross_controller_0065/CLOSEOUT.json'
-          }
+          rid='BRRK-BTC-SOL-PATH-EVENT-EARLY-WARNING-0066'
+          assert not any(x.get('research_id')==rid for x in reg['records'])
+          template=next(x for x in reg['records'] if x.get('research_id')=='BRRK-MULTI-ARCHITECTURE-GROSS-CONTROLLER-0065')
+          r=copy.deepcopy(template)
+          for k in ['evidence_scorecard','confidence_level','confidence_components','derived_confidence']:
+              r.pop(k,None)
+          r.update({
+            'research_id':rid,
+            'research_family_id':'BRRK_PATH_EVENT_EARLY_WARNING',
+            'research_domain':'RISK_CONTROL',
+            'research_governance_version':1,
+            'governance_mode':'PROGRAM_GOVERNED_V1',
+            'objective_type':'PORTFOLIO_INTEGRATION',
+            'created_at':'2026-08-14',
+            'created_before_result':True,
+            'question':'Can price-only BTC/SOL decline and sideways episode onsets be predicted within 1/3/5/10/20 sessions by the frozen 0062 indicator atlas, and can validation-frozen warnings improve the closed 0064 net portfolio economics?',
+            'hypothesis':'Some duration-graded price-path events have prospectively detectable precursor structure in the frozen 0062 signal universe, but any economic benefit must survive temporal recurrence, dependence-aware inference and transaction costs.',
+            'hypothesis_origin':'USER_PROPOSED_EVENT_FIRST_RESEARCH_IDEA_2026_08_14_PLUS_PROSPECTIVE_METHOD_DESIGN; P05 quadratic architecture explicitly RESULT_INFORMED by closed 0065 but not privileged.',
+            'economic_mechanism':'If measurable precursor states precede sustained declines or capital-inefficient sideways regimes, a causal outer gross controller may preserve risk-asset exposure in normal periods while selectively increasing cash before adverse event onset.',
+            'primary_target':'BTC_SOL_PRICE_PATH_EVENT_ONSET_WITHIN_1_3_5_10_20_SESSIONS_AND_0064_RELATIVE_NET_WEALTH',
+            'primary_metric':'PR_AUC_LIFT_WITH_SIMULTANEOUS_LCB_AND_NET_CALENDAR_CAGR_VS_0064',
+            'secondary_metrics':['ROC_AUC','Brier_score','temporal_block_recurrence','terminal_wealth','maximum_drawdown','outer_turnover','PBO_CSCV'],
+            'feature_families':['0062_TIER_A_185_CELLS','0062_17_FAMILY_SCORES'],
+            'horizon':[1,3,5,10,20],
+            'universe':['BTC','SOL'],
+            'development_dataset_refs':['BRRK-LEADERSHIP-ROTATION-0048-EXPOSED-HIST-V1','research/brrk_beta_handoff_0047/evidence/MARKET_EVIDENCE.json'],
+            'validation_dataset_refs':['SAME_FROZEN_RESEARCHER_EXPOSED_DEVELOPMENT_HISTORY_CAUSAL_WALK_FORWARD'],
+            'sealed_dataset_refs':[],
+            'declared_variant_budget':1704,
+            'actual_variants_evaluated':0,
+            'parameter_candidate_count':1632,
+            'stopping_rule':'Exactly one frozen historical execution after DESIGN, owner-first preregistration, implementation-only merge and controlled-boundary merge. No result-informed early stopping, pruning, rerun, retune or rescue.',
+            'success_criteria':'At least one supported predictive track passes G0-G5 and at least one economic controller passes E0-E5 for full PASS; predictive-only pass is separately classified if economics fail.',
+            'failure_criteria':'No supported predictive track passes the frozen early-warning gates, or predictive evidence exists but no controller passes the frozen economic gates.',
+            'allowed_followup':'After immutable closeout, only a new research ID may use exposed 0066 findings as RESULT_INFORMED motivation; genuinely future validation is preferred.',
+            'forbidden_followup':'Same-ID event threshold changes, onset relabeling, signal pruning, warning-horizon changes, model/grid changes, controller remapping, cost changes, rerun, retune or rescue after attempt consumption.',
+            'researcher_decisions':['Event taxonomy is price-only and independent of indicator values.','All 202 signal units are evaluated in the atlas; selection into predictive controllers is validation-only under frozen rules.','P05 quadratic classifier is included without privilege and is explicitly result-informed from closed 0065.'],
+            'lineage_edges':[],
+            'result_status':'PREREGISTERED_NOT_RUN',
+            'failure_reason':None,
+            'promotion_state':'NONE',
+            'evidence_refs':[],
+            'decision_refs':['research/governance/BRRK_BTC_SOL_PATH_EVENT_EARLY_WARNING_0066_DESIGN_FREEZE_2026-08-14.md'],
+            'production_relevance':'Research-only BTC-to-cash outer gross study; no automatic production authority.',
+            'production_authorized':False,
+            'provenance_status':'PROSPECTIVE_FROZEN',
+            'governed_path_prefixes':['research/brrk_btc_sol_path_event_early_warning_0066'],
+            'notes':['Owner-first registration only; no 0066 historical event atlas, model metric or portfolio result exists.','Indicator-atlas hypothesis cells are counted separately from the declared 1704 model/controller variant budget.','production_authorized=false; signature_authorized=false; order_submission_authorized=false.']
+          })
+          rpc=r.get('research_process_complexity',{})
+          rpc.update({
+            'declared_parameter_candidates':1632,
+            'actual_parameter_candidates_evaluated':0,
+            'universes_evaluated':2,
+            'horizons_evaluated':5,
+            'rebalance_variants':8,
+            'feature_representations':8,
+            'special_cases_introduced':0,
+            'validation_exposure_event_refs':0,
+            'related_family_trials':1704
+          })
+          r['research_process_complexity']=rpc
+          reg['records'].append(r)
           p.write_text(json.dumps(reg,indent=2,ensure_ascii=False)+'\n')
-          PY
-          python - <<'PY'
-          import json,hashlib
           before=json.load(open('/tmp/research_registry.before.json'))
-          after=json.load(open('config/research_registry.json'))
-          rid='BRRK-MULTI-ARCHITECTURE-GROSS-CONTROLLER-0065'
           def canon(x): return hashlib.sha256(json.dumps(x,sort_keys=True,separators=(',',':'),ensure_ascii=False).encode()).hexdigest()
-          b={x['research_id']:x for x in before['records']}
-          a={x['research_id']:x for x in after['records']}
-          assert set(a)==set(b)
-          assert all(canon(a[k])==canon(b[k]) for k in b if k!=rid)
-          r=a[rid]
-          assert r['result_status']=='FAIL_NO_ROBUST_MULTI_ARCHITECTURE_IMPROVEMENT'
-          assert r['actual_variants_evaluated']==71
-          assert r['promotion_state']=='NO_PROMOTION'
-          assert len(r['evidence_refs'])==7
-          assert r['production_authorized'] is False
+          assert len(reg['records'])==len(before['records'])+1
+          assert all(canon(a)==canon(b) for a,b in zip(before['records'],reg['records'][:-1]))
+          assert reg['records'][-1]['research_id']==rid
+          assert reg['records'][-1]['result_status']=='PREREGISTERED_NOT_RUN'
+          assert reg['records'][-1]['promotion_state']=='NONE'
+          assert reg['records'][-1]['actual_variants_evaluated']==0
+          assert reg['records'][-1]['declared_variant_budget']==1704
+          assert reg['records'][-1]['production_authorized'] is False
+          assert reg['records'][-1]['lineage_edges']==[]
+          assert 'evidence_scorecard' not in reg['records'][-1]
           PY
           PYTHONPATH=. python -m research.governance.validate
           test "$(git diff --name-only)" = "config/research_registry.json"
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add config/research_registry.json
-          git commit -m 'research: register 0065 tournament closeout'
-          git push origin HEAD:research/0065-result-v1
+          git commit -m 'research: register 0066 preregistration owner'
+          git push origin HEAD:research/0066-prereg-v1
