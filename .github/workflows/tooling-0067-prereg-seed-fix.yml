@@ -1,0 +1,36 @@
+name: Tooling 0067 prereg scientific-seed identity fix
+on:
+  push:
+    branches: [tools/0067-prereg-writer-v1]
+    paths: ['.github/workflows/tooling-0067-prereg-seed-fix.yml']
+permissions:
+  contents: write
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/0067-prereg-v1
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - shell: bash
+        run: |
+          set -euo pipefail
+          P=research/brrk_btc_sol_path_event_early_warning_runtime_qualified_0067/PREREGISTRATION.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('research/brrk_btc_sol_path_event_early_warning_runtime_qualified_0067/PREREGISTRATION.json')
+          s=p.read_text()
+          assert s.count('660067')==3, s.count('660067')
+          s=s.replace('660067','660066')
+          json.loads(s)
+          p.write_text(s)
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add "$P"
+          git commit -m '0067: preserve frozen scientific random seeds'
+          git push origin HEAD:refs/heads/research/0067-prereg-v1
