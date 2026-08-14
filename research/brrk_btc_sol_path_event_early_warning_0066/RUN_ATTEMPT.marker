@@ -1,0 +1,16 @@
+{
+  "attempt_number": 1,
+  "boundary_merge_sha": "b1af358577349c58a8468a3822775152b5aaad34",
+  "created_at_utc": "2026-08-14T13:52:16.097139+00:00",
+  "declared_final_controllers": 8,
+  "declared_final_predictor_tracks": 64,
+  "declared_indicator_atlas_hypothesis_cells": 8080,
+  "declared_model_controller_variants": 1704,
+  "declared_validation_tuning_configs": 1632,
+  "research_id": "BRRK-BTC-SOL-PATH-EVENT-EARLY-WARNING-0066",
+  "same_id_rerun_allowed": false,
+  "same_id_rescue_allowed": false,
+  "same_id_retune_allowed": false,
+  "schema_version": 1,
+  "workflow_run_id": "31806690040"
+}
