@@ -119,7 +119,8 @@ No implementation may use the high-level 1704 variant count as a substitute for 
 Before any 0067 historical `RUN_ATTEMPT.marker` may exist, the exact intended implementation/environment must pass a full-shape nonhistorical qualification.
 
 Frozen environment/limits:
-- GitHub runner label `ubuntu-latest`, x86_64;
+- GitHub runner label `ubuntu-24.04`, x86_64;
+- deterministic process worker count =4;
 - Python 3.12;
 - requirements blobs `df60fe952f573fc6201b16b9de6b6043fbe7dbe2` and `c48550e67350bdc1e640ac8eb5e2ea02986ad83a`;
 - PYTHONHASHSEED=0 and OMP/OPENBLAS/MKL/NUMEXPR threads=1 per worker;

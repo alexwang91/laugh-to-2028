@@ -13,18 +13,32 @@
     "qualification_repetition_before_historical_access_allowed": true
   },
   "environment": {
-    "runner_label": "ubuntu-latest",
+    "runner_label": "ubuntu-24.04",
     "cpu_architecture": "x86_64",
     "python": "3.12",
     "requirements_dev_path": "execution/plan-b-bot/requirements-dev.txt",
     "requirements_dev_blob_sha": "df60fe952f573fc6201b16b9de6b6043fbe7dbe2",
     "requirements_path": "execution/plan-b-bot/requirements.txt",
     "requirements_blob_sha": "c48550e67350bdc1e640ac8eb5e2ea02986ad83a",
-    "pinned_packages": {"numpy":"2.5.1","pandas":"3.0.3","scipy":"1.18.0","scikit-learn":"1.9.0","pytest":"8.4.1"},
-    "env": {"PYTHONHASHSEED":"0","OMP_NUM_THREADS":"1","OPENBLAS_NUM_THREADS":"1","MKL_NUM_THREADS":"1","NUMEXPR_NUM_THREADS":"1"},
+    "pinned_packages": {
+      "numpy": "2.5.1",
+      "pandas": "3.0.3",
+      "scipy": "1.18.0",
+      "scikit-learn": "1.9.0",
+      "pytest": "8.4.1"
+    },
+    "env": {
+      "PYTHONHASHSEED": "0",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "NUMEXPR_NUM_THREADS": "1"
+    },
     "parallelism_rule": "Implementation may use deterministic process-level parallelism across independent frozen configs/tracks only. Each worker inherits one-thread BLAS/OpenMP caps; result ordering is canonical and scheduling cannot alter seeds or reductions.",
     "qualification_job_timeout_minutes": 210,
-    "historical_job_timeout_minutes": 350
+    "historical_job_timeout_minutes": 350,
+    "process_worker_count": 4,
+    "runner_image_policy": "Qualification and historical execution must both use the explicit ubuntu-24.04 label; exact ephemeral runner image versions are recorded in evidence but patch-image drift alone is not scientific drift if pinned Python/dependencies and equivalence checks pass."
   },
   "synthetic_generator": {
     "seed": 670067,
@@ -32,8 +46,20 @@
     "calendar_start": "2020-08-11",
     "calendar_end": "2026-08-02",
     "calendar_frequency": "1D contiguous",
-    "raw_context_assets": ["BTC","ETH","SOL"],
-    "raw_fields": ["open","high","low","close","volume","quote_volume","trades"],
+    "raw_context_assets": [
+      "BTC",
+      "ETH",
+      "SOL"
+    ],
+    "raw_fields": [
+      "open",
+      "high",
+      "low",
+      "close",
+      "volume",
+      "quote_volume",
+      "trades"
+    ],
     "required_feature_cells": 185,
     "required_family_scores": 17,
     "required_signal_units": 202,
@@ -68,9 +94,34 @@
   },
   "reference_equivalence": {
     "reference_path_required": true,
-    "fixtures": ["event_labels_and_onsets","risk_set_masks","maturity_masks","feature_matrices","representative_P01_to_P07_probabilities","P08_weights_and_probabilities","validation_metrics","controller_gross_paths","turnover_costs","bootstrap_statistics","PBO_statistics"],
-    "exact_equality_required": ["event_labels_and_onsets","risk_set_masks","maturity_masks","selected_config_ids","preferred_horizon_ids","preferred_architecture_ids","P08_component_ids","controller_gross_rule_categories","PBO_split_membership"],
-    "floating_equivalence": {"atol": 1e-12, "rtol": 1e-10},
+    "fixtures": [
+      "event_labels_and_onsets",
+      "risk_set_masks",
+      "maturity_masks",
+      "feature_matrices",
+      "representative_P01_to_P07_probabilities",
+      "P08_weights_and_probabilities",
+      "validation_metrics",
+      "controller_gross_paths",
+      "turnover_costs",
+      "bootstrap_statistics",
+      "PBO_statistics"
+    ],
+    "exact_equality_required": [
+      "event_labels_and_onsets",
+      "risk_set_masks",
+      "maturity_masks",
+      "selected_config_ids",
+      "preferred_horizon_ids",
+      "preferred_architecture_ids",
+      "P08_component_ids",
+      "controller_gross_rule_categories",
+      "PBO_split_membership"
+    ],
+    "floating_equivalence": {
+      "atol": 1e-12,
+      "rtol": 1e-10
+    },
     "classification_and_gate_equivalence_exact": true,
     "equivalence_failure_is_qualification_failure": true
   },
@@ -82,15 +133,52 @@
     "minimum_historical_timeout_margin_minutes": 170,
     "maximum_qualification_fraction_of_historical_timeout": 0.5142857142857142,
     "peak_process_tree_rss_max_bytes": 4294967296,
-    "peak_process_tree_rss_max_fraction_of_memtotal": 0.60,
+    "peak_process_tree_rss_max_fraction_of_memtotal": 0.6,
     "swap_or_oom_allowed": false,
     "all_limits_must_pass": true
   },
   "required_evidence": [
-    "qualification_schema_version","research_id","implementation_commit_sha","synthetic_input_sha256","runner_label","runner_os_image","cpu_architecture","cpu_logical_count","mem_total_bytes","python_version","dependency_versions","thread_environment","process_worker_count","deterministic_seeds","historical_content_read_counters","network_fetch_count","declared_and_actual_indicator_atlas_cells","declared_and_actual_validation_configs","declared_and_actual_validation_fit_calls","declared_and_actual_economic_fit_calls","declared_and_actual_total_fit_calls","declared_and_actual_nnls_solves","declared_and_actual_final_tracks","declared_and_actual_controllers","declared_and_actual_predictive_bootstrap_replicates","declared_and_actual_economic_bootstrap_replicates","declared_and_actual_pbo_splits","phase_wall_clock_seconds","total_wall_clock_seconds","peak_process_tree_rss_bytes","peak_rss_fraction_of_memtotal","reference_equivalence_results","qualification_verdict"
+    "qualification_schema_version",
+    "research_id",
+    "implementation_commit_sha",
+    "synthetic_input_sha256",
+    "runner_label",
+    "runner_os_image",
+    "cpu_architecture",
+    "cpu_logical_count",
+    "mem_total_bytes",
+    "python_version",
+    "dependency_versions",
+    "thread_environment",
+    "process_worker_count",
+    "deterministic_seeds",
+    "historical_content_read_counters",
+    "network_fetch_count",
+    "declared_and_actual_indicator_atlas_cells",
+    "declared_and_actual_validation_configs",
+    "declared_and_actual_validation_fit_calls",
+    "declared_and_actual_economic_fit_calls",
+    "declared_and_actual_total_fit_calls",
+    "declared_and_actual_nnls_solves",
+    "declared_and_actual_final_tracks",
+    "declared_and_actual_controllers",
+    "declared_and_actual_predictive_bootstrap_replicates",
+    "declared_and_actual_economic_bootstrap_replicates",
+    "declared_and_actual_pbo_splits",
+    "phase_wall_clock_seconds",
+    "total_wall_clock_seconds",
+    "peak_process_tree_rss_bytes",
+    "peak_rss_fraction_of_memtotal",
+    "reference_equivalence_results",
+    "qualification_verdict"
   ],
   "pass_rule": "PASS only if zero historical/network reads, exact shape/counts, reference equivalence, deterministic environment, total wall-clock <=10800s, peak process-tree RSS <=4GiB and <=60% MemTotal, no swap/OOM, and every required evidence field is present.",
   "failure_rule": "Any violation is QUALIFICATION_FAIL. No controlled historical boundary, RUN_ATTEMPT.marker, historical payload read, or scientific execution is authorized. Synthetic qualification may be repeated after semantic-preserving engineering remediation.",
   "anti_rescue": "Increasing historical timeout, dropping architectures/configs/refits/bootstrap/PBO, changing solver semantics/tolerances, or approximating scientific calculations cannot convert a qualification failure to PASS.",
-  "authority": {"historical_execution_authorized_by_prereg_alone": false, "production_authorized": false, "signature_authorized": false, "order_submission_authorized": false}
+  "authority": {
+    "historical_execution_authorized_by_prereg_alone": false,
+    "production_authorized": false,
+    "signature_authorized": false,
+    "order_submission_authorized": false
+  }
 }
