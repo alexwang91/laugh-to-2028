@@ -1,4 +1,4 @@
-name: Tooling 0063 owner writer fixed artifact
+name: Tooling 0063 prereg writer fixed artifact v2
 
 on:
   push:
@@ -12,13 +12,13 @@ permissions:
   actions: read
 
 jobs:
-  apply-owner:
+  apply-prereg:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout formal prereg branch
+      - name: Checkout clean formal prereg v2 branch
         uses: actions/checkout@v4
         with:
-          ref: research/0063-prereg-v1
+          ref: research/0063-prereg-v2
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/setup-python@v5
@@ -28,48 +28,56 @@ jobs:
           cache-dependency-path: execution/plan-b-bot/requirements-dev.txt
       - name: Install pinned governance runtime
         run: pip install -r execution/plan-b-bot/requirements-dev.txt
-      - name: Download exact validated artifact
+      - name: Download exact validated prereg artifact
         uses: actions/download-artifact@v4
         with:
-          name: 0063-clean-prereg-owner
-          path: /tmp/0063-owner-artifact
+          name: 0063-prereg-package-v2
+          path: /tmp/0063-prereg-artifact
           github-token: ${{ secrets.GITHUB_TOKEN }}
           repository: alexwang91/laugh-to-2028
-          run-id: 31757375000
-      - name: Verify and apply owner-only registry
+          run-id: 31758022864
+      - name: Verify and apply prereg package atomically
         shell: bash
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD)" = "e1ac320e092e554c283ef6b88aaaa5f65aaf61ab"
-          test "$(git hash-object /tmp/0063-owner-artifact/research_registry.json)" = "fcc6a25dbcb9410ff3eec709eb1bf26a1b9c1896"
+          test "$(git rev-parse HEAD)" = "aeff95faa60f5e7f5c209c143a329e7e45545286"
           python - <<'PY'
           import json
           from pathlib import Path
-          r = json.loads(Path('/tmp/0063-owner-artifact/BUILD_REPORT.json').read_text())
-          assert r['base_commit_sha'] == 'e1ac320e092e554c283ef6b88aaaa5f65aaf61ab'
-          assert r['base_registry_blob_sha'] == 'a1e34c10d8dadfeea27cff16310199472a2d1ef7'
-          assert r['preexisting_records_unchanged'] is True
-          assert r['base_record_count'] == 35 and r['output_record_count'] == 36
-          assert r['new_owner_has_evidence_scorecard'] is False
-          assert r['actual_variants_evaluated'] == 0
-          assert r['production_authorized'] is False
-          assert r['result_status'] == 'PREREGISTERED_NOT_RUN'
-          assert r['promotion_state'] == 'NONE'
-          owner = json.loads(Path('/tmp/0063-owner-artifact/OWNER.json').read_text())
-          assert owner['research_id'] == 'BRRK-IDLE-CASH-SWEEP-ROBUSTNESS-0063'
-          assert owner['promotion_state'] == 'NONE'
-          assert owner['evidence_refs'] == []
-          assert owner['lineage_edges'] == []
-          for k in ('evidence_scorecard','confidence_level','confidence_components','derived_confidence'):
-              assert k not in owner
-          assert owner['actual_variants_evaluated'] == 0
+          r=json.loads(Path('/tmp/0063-prereg-artifact/BUILD_REPORT.json').read_text())
+          assert r['research_id']=='BRRK-IDLE-CASH-SWEEP-ROBUSTNESS-0063'
+          assert r['owner_first_commit_sha']=='aeff95faa60f5e7f5c209c143a329e7e45545286'
+          assert r['dtb3_raw_sha256']=='4d8aee67dbd528ce38ff8482e9bb02dd5ccf2c6cd461f606fe90007151ab6879'
+          assert r['candidate_economics_computed'] is False
+          assert r['baseline_equity_read'] is False
+          assert r['baseline_weights_read'] is False
+          assert r['historical_variants_evaluated']==0
+          assert r['run_attempt_marker_absent'] is True
+          assert r['governance_validate']=='PASS'
+          assert r['future_enforcement']=='PASS'
           PY
-          cp /tmp/0063-owner-artifact/research_registry.json config/research_registry.json
+          test "$(sha256sum /tmp/0063-prereg-artifact/package/research/brrk_idle_cash_sweep_robustness_0063/DTB3_RAW.csv | awk '{print $1}')" = "4d8aee67dbd528ce38ff8482e9bb02dd5ccf2c6cd461f606fe90007151ab6879"
+          cp -a /tmp/0063-prereg-artifact/package/. .
           python -m research.governance.validate
-          test "$(git diff --name-only)" = "config/research_registry.json"
+          python -m research.governance.enforce_future --base aeff95faa60f5e7f5c209c143a329e7e45545286
+          test ! -e research/brrk_idle_cash_sweep_robustness_0063/RUN_ATTEMPT.marker
+          test ! -e research/brrk_idle_cash_sweep_robustness_0063/PRIMARY_RESULT.json
+          cat >/tmp/expected <<'EOF'
+          config/dataset_exposure_registry.json
+          docs/CURRENT_STATE.md
+          research/brrk_idle_cash_sweep_robustness_0063/CAPTURE_REPORT.json
+          research/brrk_idle_cash_sweep_robustness_0063/DATASET_DECLARATION.json
+          research/brrk_idle_cash_sweep_robustness_0063/DTB3_RAW.csv
+          research/brrk_idle_cash_sweep_robustness_0063/PREREGISTRATION.json
+          EOF
+          sed -i 's/^          //' /tmp/expected
+          git status --porcelain=v1 --untracked-files=all | sed -E 's/^.. //' | sort >/tmp/actual
+          diff -u <(sort /tmp/expected) /tmp/actual
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add config/research_registry.json
-          git diff --cached --name-only | grep -qx 'config/research_registry.json'
-          git commit -m 'research: register 0063 prereg owner'
-          git push origin HEAD:research/0063-prereg-v1
+          git add -A
+          git diff --cached --name-only | sort >/tmp/staged
+          diff -u <(sort /tmp/expected) /tmp/staged
+          git commit -m 'research: freeze 0063 numerical and data preregistration'
+          test "$(git rev-parse HEAD^)" = "aeff95faa60f5e7f5c209c143a329e7e45545286"
+          git push origin HEAD:research/0063-prereg-v2
