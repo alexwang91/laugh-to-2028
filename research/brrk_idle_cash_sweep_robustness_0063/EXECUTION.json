@@ -1,0 +1,18 @@
+{
+  "attempt_marker_sha256": "940bf4c7e9cf0e9aae454e5cea0a0095bda4fc4c3b0fe819879ee4b02243ac53",
+  "boundary_merge_sha": "e17b96cd3358062ebd9eb88fae050ff865a9fb39",
+  "evidence_sha256": "43a0d59db3d5ee8277965a3a25211910ad24b63bcf09b446027f31b5e9616bb0",
+  "input_read_counts": {
+    "dtb3": 1,
+    "equity": 1,
+    "weights": 1
+  },
+  "network_fetches": 0,
+  "primary_result_sha256": "d05c03f8d062ef618f2b30e1dea1b76ad859af951d6370cdaa848dd12f94e24e",
+  "reruns": 0,
+  "rescues": 0,
+  "research_id": "BRRK-IDLE-CASH-SWEEP-ROBUSTNESS-0063",
+  "retunes": 0,
+  "schema_version": 1,
+  "scientific_engine_calls": 1
+}
