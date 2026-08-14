@@ -1,4 +1,4 @@
-name: Tooling 0065 synthetic implementation
+name: Tooling 0065 controlled-boundary validation
 
 on:
   push:
@@ -11,7 +11,7 @@ permissions:
   contents: read
 
 jobs:
-  synthetic-implementation:
+  boundary-validation:
     runs-on: ubuntu-latest
     env:
       PYTHONHASHSEED: '0'
@@ -22,76 +22,76 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: research/0065-implementation-v1
+          ref: research/0065-boundary-v1
           fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
       - run: pip install -r execution/plan-b-bot/requirements-dev.txt
-      - name: Reassert zero historical result state
+      - name: Verify zero-result boundary identities
         shell: bash
         run: |
           set -euo pipefail
+          test "$(git rev-parse HEAD)" = "a8576b3fbddff19ace9a0eaa0ead0cbb3b8a198f"
+          test "$(git hash-object research/brrk_multi_architecture_gross_controller_0065/engine.py)" = "762b608dd9eb5feedc06867ce07f02d0de8ea928"
+          test "$(git hash-object research/brrk_multi_architecture_gross_controller_0065/run_once.py)" = "0a81c3ac98420e86786a81bb15b7547d71b27460"
+          test "$(git hash-object research/brrk_multi_architecture_gross_controller_0065/CONTROLLED_EXECUTION_BOUNDARY.json)" = "3778a61e70c011835a1565e4b97fe039de81075e"
           for f in RUN_ATTEMPT.marker PRIMARY_RESULT.json EVIDENCE.json EXECUTION.json RUN_ONCE.marker; do
             test ! -e "research/brrk_multi_architecture_gross_controller_0065/$f"
           done
-      - name: Compile and run synthetic method contracts only
+      - name: Run Git-only preflight with zero historical content reads
         shell: bash
         run: |
           set -euo pipefail
-          python -m py_compile research/brrk_multi_architecture_gross_controller_0065/engine.py
-          PYTHONPATH=. pytest -q research/brrk_multi_architecture_gross_controller_0065/test_engine.py
-      - name: Run full synthetic 2020-2026 tournament integration
+          PYTHONPATH=. python -m research.brrk_multi_architecture_gross_controller_0065.run_once preflight --boundary-sha "$(git rev-parse HEAD)" > /tmp/preflight.json
+          python - <<'PY'
+          import json
+          x=json.load(open('/tmp/preflight.json'))
+          assert x['status']=='PREFLIGHT_PASS_ZERO_RESULT_GIT_IDENTITY_ONLY'
+          assert all(v==0 for v in x['historical_content_reads'].values())
+          assert x['market_loader_calls']==0 and x['scientific_engine_calls']==0
+          PY
+      - name: Prove create-only exactly-once persistence lifecycle without historical reads
         shell: bash
         run: |
           set -euo pipefail
           PYTHONPATH=. python - <<'PY'
-          import numpy as np, pandas as pd
-          from research.brrk_multi_architecture_gross_controller_0065.engine import evaluate_tournament, ARCHITECTURES
-          rng=np.random.default_rng(650065)
-          idx=pd.date_range('2020-08-11','2026-08-02',freq='D')
-          frames={}
-          common=rng.normal(0.0005,0.018,len(idx))
-          for j,a in enumerate(['BTC','ETH','SOL']):
-              r=0.55*common+rng.normal(0.0003+0.00005*j,0.014+0.002*j,len(idx))
-              close=(100+40*j)*np.exp(np.cumsum(r))
-              prev=np.r_[close[0],close[:-1]]
-              op=prev*np.exp(rng.normal(0,0.003,len(idx)))
-              hi=np.maximum(op,close)*(1+np.abs(rng.normal(0.006,0.003,len(idx))))
-              lo=np.minimum(op,close)*(1-np.abs(rng.normal(0.006,0.003,len(idx))))
-              lo=np.maximum(lo,1e-6)
-              vol=np.exp(rng.normal(12+0.2*j,0.35,len(idx)))
-              frames[a]=pd.DataFrame({'open':op,'high':hi,'low':lo,'close':close,'volume':vol,'quote_volume':vol*close,'trades':np.maximum(1,np.round(np.exp(rng.normal(10,0.3,len(idx)))))},index=idx)
-          eidx=pd.date_range('2022-12-10','2026-08-02',freq='D')
-          base=pd.Series(rng.normal(0.0012,0.02,len(eidx)),index=eidx)
-          gross=pd.Series(np.clip(0.78+0.15*np.sin(np.linspace(0,12,len(eidx))),0.55,1.0),index=eidx)
-          rf=pd.Series(0.00012,index=eidx)
-          out=evaluate_tournament(frames,base,gross,rf,enforce_historical_anchors=False)
-          p=out['primary_result']
-          assert p['actual_validation_configs_evaluated']==63
-          assert p['actual_variants_evaluated']==71
-          assert set(p['methods'])==set(ARCHITECTURES)
-          assert len(p['methods'])==8
-          assert p['PBO_CSCV']['split_count']==70
-          assert all(np.isfinite(p['methods'][a]['calendar_CAGR']) for a in ARCHITECTURES)
-          print('FULL_SYNTHETIC_0065_OK',p['classification'],p['descriptive_best_CAGR_method'])
+          import json
+          from research.brrk_multi_architecture_gross_controller_0065 import run_once as r
+          b=r._git_head()
+          r.start_attempt(b,'SYNTHETIC_BOUNDARY_VALIDATION')
+          try:
+              r.start_attempt(b,'SECOND_FORBIDDEN')
+              raise AssertionError('second attempt unexpectedly allowed')
+          except r.ControlledRunError:
+              pass
+          primary={
+              'schema_version':1,'research_id':r.RID,'classification':'INVALID_EXECUTION',
+              'production_authorized':False,'signature_authorized':False,'order_submission_authorized':False,
+          }
+          evidence={'synthetic_persistence_test':True}
+          r._create_only(r.RESULT,r._json_bytes(primary))
+          r._create_only(r.EVIDENCE,r._json_bytes(evidence))
+          execution={
+              'schema_version':1,'research_id':r.RID,'boundary_merge_sha':b,
+              'result_sha256':r._sha256_file(r.RESULT),'evidence_sha256':r._sha256_file(r.EVIDENCE),
+          }
+          r._create_only(r.EXECUTION,r._json_bytes(execution))
+          final=r.finalize(b)
+          assert final['classification']=='INVALID_EXECUTION'
+          assert final['historical_input_reads_during_finalize']==0
+          assert final['market_loader_calls_during_finalize']==0
+          assert final['scientific_engine_calls_during_finalize']==0
+          for p in (r.ATTEMPT,r.RESULT,r.EVIDENCE,r.EXECUTION,r.FINAL): p.unlink()
+          again=r.preflight(b)
+          assert again['status']=='PREFLIGHT_PASS_ZERO_RESULT_GIT_IDENTITY_ONLY'
           PY
-      - name: Verify implementation identity and no I/O primitives
+      - name: Compile, validate governance, and reassert no runtime artifact
         shell: bash
         run: |
           set -euo pipefail
-          test "$(git hash-object research/brrk_multi_architecture_gross_controller_0065/engine.py)" = "762b608dd9eb5feedc06867ce07f02d0de8ea928"
-          python - <<'PY'
-          import json
-          p=json.load(open('research/brrk_multi_architecture_gross_controller_0065/PREREGISTRATION.json'))
-          c=json.load(open('research/brrk_multi_architecture_gross_controller_0065/IMPLEMENTATION_CONTRACT.json'))
-          from research.brrk_multi_architecture_gross_controller_0065.engine import frozen_configurations, ARCHITECTURES
-          assert sum(len(v) for v in frozen_configurations().values()) == 63
-          assert len(ARCHITECTURES) == 8
-          assert c['declared_variant_budget'] == 71
-          assert c['historical_portfolio_reads_during_implementation'] == 0
-          assert c['historical_0065_CAGR_computed_during_implementation'] is False
-          assert p['trial_accounting']['declared_variant_budget'] == 71
-          PY
-          ! grep -nE '(^|[^A-Za-z_])(open\(|Path\(|requests\.|urlopen|read_csv|read_json)' research/brrk_multi_architecture_gross_controller_0065/engine.py
+          python -m py_compile research/brrk_multi_architecture_gross_controller_0065/run_once.py
           PYTHONPATH=. python -m research.governance.validate
+          for f in RUN_ATTEMPT.marker PRIMARY_RESULT.json EVIDENCE.json EXECUTION.json RUN_ONCE.marker; do
+            test ! -e "research/brrk_multi_architecture_gross_controller_0065/$f"
+          done
