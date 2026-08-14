@@ -1,4 +1,4 @@
-name: Tooling 0066 bounded artificial implementation validation
+name: Tooling 0066 implementation handoff patch
 
 on:
   push:
@@ -8,67 +8,50 @@ on:
       - '.github/workflows/tooling-0062-owner-writer.yml'
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
-  bounded-artificial-validation:
+  handoff:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
-    env:
-      PYTHONHASHSEED: '0'
-      PYTHONPATH: '.'
-      OMP_NUM_THREADS: '1'
-      OPENBLAS_NUM_THREADS: '1'
-      MKL_NUM_THREADS: '1'
     steps:
       - uses: actions/checkout@v4
         with:
           ref: research/0066-implementation-v1
-          fetch-depth: 1
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-      - run: pip install -r execution/plan-b-bot/requirements-dev.txt
-      - name: Assert implementation-only zero-result state
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Update implementation-only CURRENT_STATE
         shell: bash
         run: |
           set -euo pipefail
-          for f in RUN_ATTEMPT.marker PRIMARY_RESULT.json EVIDENCE.json EXECUTION.json RUN_ONCE.marker; do
-            test ! -e "research/brrk_btc_sol_path_event_early_warning_0066/$f"
-          done
-      - name: Run bounded synthetic unit and contract tests
-        shell: bash
-        run: |
-          set -euo pipefail
-          pytest -q research/brrk_btc_sol_path_event_early_warning_0066/test_engine_synthetic.py
-      - name: Audit full frozen configuration enumeration without full-history fitting
-        shell: bash
-        run: |
-          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "f642240c6c5162dfd8274745b8449490966849b7"
           python - <<'PY'
-          from research.brrk_btc_sol_path_event_early_warning_0066 import models as mdl
-          cfg=mdl.frozen_configurations()
-          expected={
-              'P01_FAMILY_RIDGE_LOGIT':4,
-              'P02_RAW_ELASTIC_NET_LOGIT':9,
-              'P03_VALIDATION_SCREENED_SIGNAL_LOGIT':3,
-              'P04_PCR_LOGIT':12,
-              'P05_THEORY_QUADRATIC_LOGIT':4,
-              'P06_SHALLOW_GBDT_CLASSIFIER':8,
-              'P07_DISCRETE_TIME_HAZARD_LOGIT':4,
-          }
-          assert {k:len(v) for k,v in cfg.items()} == expected
-          per_track=sum(expected[a] for a in mdl.BASE_ARCHITECTURES[:6])
-          assert per_track == 40
-          assert per_track*40 + expected['P07_DISCRETE_TIME_HAZARD_LOGIT']*8 == 1632
-          assert 1632 + 64 + 8 == 1704
-          print('0066 bounded implementation validation: grid=1632 final_predictors=64 controllers=8 total=1704')
+          from pathlib import Path
+          p=Path('docs/CURRENT_STATE.md')
+          s=p.read_text()
+          old="0066 = `PREREGISTERED / IMPLEMENTATION ABSENT / NOT RUN`."
+          new="0066 = `IMPLEMENTED / NOT RUN / CONTROLLED BOUNDARY ABSENT`."
+          assert s.count(old)==1
+          s=s.replace(old,new)
+          anchor="Historical actual variants evaluated = 0 / 1704.\n"
+          insert=(
+              "Historical actual variants evaluated = 0 / 1704.\n"
+              "Implementation-only engine/event/model modules are present on the implementation branch.\n"
+              "Runtime observability commit = `f642240c6c5162dfd8274745b8449490966849b7`; it adds phase/progress logging and suppresses only the sklearn penalty-deprecation FutureWarning without changing any frozen model parameter or mathematical path.\n"
+              "Bounded artificial implementation validation run = `31801841347`; synthetic unit tests, full 1632/64/8 configuration enumeration audit, zero-result assertions and clean-worktree assertions all passed.\n"
+              "The cancelled full-artificial tooling run `31792978620` was implementation-only synthetic validation, not a historical execution attempt, and created no runtime result marker.\n"
+          )
+          assert s.count(anchor)==1
+          s=s.replace(anchor,insert)
+          oldnext="Merge 0066 numerical/data PREREGISTRATION after fresh standing CI. Only then begin IMPLEMENTATION-ONLY using synthetic/artificial data; do not read 0066 historical outcomes or compute event counts, indicator associations, classifier metrics or portfolio economics during implementation."
+          newnext="Open and merge the 0066 IMPLEMENTATION-ONLY PR after fresh standing CI. Then freeze and merge a CONTROLLED-EXECUTION BOUNDARY with exact implementation blobs. Do not create RUN_ATTEMPT.marker or read historical 0066 outcomes before that boundary is merged."
+          assert s.count(oldnext)==1
+          s=s.replace(oldnext,newnext)
+          p.write_text(s)
           PY
-      - name: Reassert no runtime artifacts and no repository mutation
-        shell: bash
-        run: |
-          set -euo pipefail
-          for f in RUN_ATTEMPT.marker PRIMARY_RESULT.json EVIDENCE.json EXECUTION.json RUN_ONCE.marker; do
-            test ! -e "research/brrk_btc_sol_path_event_early_warning_0066/$f"
-          done
-          test -z "$(git status --porcelain)"
+          git diff --check
+          test "$(git diff --name-only)" = "docs/CURRENT_STATE.md"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs/CURRENT_STATE.md
+          git commit -m 'docs: hand off repaired 0066 implementation state'
+          git push origin HEAD:research/0066-implementation-v1
