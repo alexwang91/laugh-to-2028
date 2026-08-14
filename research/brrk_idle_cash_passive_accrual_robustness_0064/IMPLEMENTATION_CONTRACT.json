@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "research_id": "BRRK-IDLE-CASH-PASSIVE-ACCRUAL-ROBUSTNESS-0064",
+  "stage": "IMPLEMENTATION_ONLY_NO_HISTORICAL_READ",
+  "preregistration_ref": "research/brrk_idle_cash_passive_accrual_robustness_0064/PREREGISTRATION.json",
+  "preregistration_merge_sha": "24021324641df766da307b0ee231bb8b78920b93",
+  "candidate_cell_count": 20,
+  "primary_cell": {
+    "yield_realization": 0.5,
+    "annual_spread_fee_bps": 100
+  },
+  "formula_choices_frozen_before_historical_execution": {
+    "dtb3_to_daily": "d=pct/100; BEY=365*d/(360-91*d); rf_daily=BEY/365",
+    "idle_cash": "clip(1-sum(abs(risk_asset_weights)),0,1)",
+    "cash_net": "yield_realization*rf_daily-(annual_spread_fee_bps/10000)/365.25",
+    "candidate_return": "baseline_return+idle_cash*cash_net",
+    "cash_net_floor": null,
+    "sweep_turnover_cost": 0.0,
+    "calendar_span_cagr": "prod(1+r)**(1/((last-first).days/365.25))-1",
+    "max_drawdown": "min(nav/cummax(nav)-1)",
+    "relative_log_increment": "log1p(candidate)-log1p(baseline)",
+    "chronological_blocks": "four count-balanced contiguous blocks; remainder allocated to earlier blocks",
+    "moving_block_bootstrap": "aligned non-circular overlapping source blocks L60; 4000 reps; seed 640064; Type-7 q95 of mu_obs-mu_boot; LCB=mu_obs-q95"
+  },
+  "implementation_invariants": {
+    "network_access": false,
+    "file_io_in_scientific_engine": false,
+    "historical_dataset_read_in_implementation_tests": false,
+    "historical_outcome_computation_in_implementation_tests": false,
+    "parameter_selection_or_argmax": false,
+    "winner_selection": false,
+    "risk_asset_signal_change": false,
+    "risk_asset_weight_change": false,
+    "gross_change": false,
+    "cash_timing_rule": false,
+    "cash_yield_floor": false,
+    "sweep_transaction_cost": false,
+    "leverage": false,
+    "shorting": false,
+    "production_authorized": false,
+    "signature_authorized": false,
+    "order_submission_authorized": false
+  },
+  "historical_execution_attempt_budget": 1,
+  "actual_variants_evaluated": 0,
+  "run_attempt_marker_required_absent_at_implementation": true
+}
