@@ -1,0 +1,262 @@
+{
+  "schema_version": 1,
+  "research_id": "BRRK-MULTI-ARCHITECTURE-GROSS-CONTROLLER-0065",
+  "stage": "NUMERICAL_DATA_PREREGISTRATION_FROZEN_NOT_RUN",
+  "design_merge_sha": "09f9afc69183387afaabfe540394eb01989df148",
+  "owner_first_commit_sha": "a717d1d359e1b980a7c727e48ec26a1ffb0fc3a6",
+  "scientific_question": "Which of eight prospectively frozen multivariate combination architectures, evaluated under one common target, causal timing rule, gross mapping, cash economics and cost model, can robustly improve full-cycle net CAGR versus closed 0064?",
+  "trial_accounting": {
+    "validation_tuning_config_count": 63,
+    "final_architecture_count": 8,
+    "declared_variant_budget": 71,
+    "actual_variants_evaluated_before_run": 0,
+    "architecture_set_may_change_after_prereg": false
+  },
+  "feature_contract": {
+    "builder_path": "research/brrk_btc_risk_signal_atlas_0062/engine.py",
+    "builder_git_blob_sha": "cac8e946998c836d10842b9388e1e3ef345a8c0b",
+    "function": "build_signal_atlas",
+    "cell_count": 185,
+    "family_count": 17,
+    "use_all_eligible_features_per_architecture": true,
+    "result_informed_pruning_allowed": false,
+    "missing_feature_imputation": "TRAINING_COLUMN_MEDIAN_FROZEN_AT_EACH_REFIT; if a column is all-missing in eligible fit data the architecture fit fails for that refit/config rather than substituting another feature"
+  },
+  "target_contract": {
+    "name": "Y20_BTC_FORWARD_LOG_RETURN",
+    "formula": "log(BTC_close[t+20]/BTC_close[t])",
+    "source_equivalence": "negative of 0062 T1_CASH_ADVANTAGE@20",
+    "horizon_sessions": 20,
+    "other_target_horizons_evaluated": false
+  },
+  "time_contract": {
+    "crypto_calendar": "DAILY_CONTIGUOUS_UTC_SESSIONS",
+    "train_origin_end_inclusive": "2021-12-31",
+    "validation_origin_start_inclusive": "2022-01-01",
+    "validation_origin_end_inclusive": "2022-11-19",
+    "validation_label_maturity_rule": "origin_plus_20_session_endpoint_must_be_strictly_before_2022-12-10",
+    "portfolio_evaluation_start": "2022-12-10",
+    "portfolio_evaluation_end": "2026-08-02",
+    "validation_refit_cadence_sessions": 20,
+    "evaluation_refit_cadence_sessions": 20,
+    "refit_label_eligibility": "At refit date t, training may include only origins whose t+20 target endpoint is strictly earlier than t.",
+    "decision_timing": "Features and model forecast computed after completed UTC close t. The resulting outer multiplier g[t] is applied only to the next portfolio return row t+1; same-row return use is forbidden.",
+    "last_evaluation_forecast_origin": "2026-08-01"
+  },
+  "validation_selection_metric": {
+    "metric": "MEAN_SQUARED_ERROR_OF_CAUSAL_WALK_FORWARD_20_SESSION_TARGET_PREDICTIONS",
+    "direction": "MINIMIZE",
+    "tie_break": "lexicographic ascending serialized hyperparameter tuple",
+    "walk_forward": true,
+    "refit_cadence_sessions": 20,
+    "evaluation_period_metrics_may_select_hyperparameters": false
+  },
+  "architectures": {
+    "A01_FAMILY_ELASTIC_NET": {
+      "inputs": "17 family scores",
+      "estimator": "StandardScaler fit on eligible training data then sklearn ElasticNet",
+      "grid": {
+        "alpha": [0.0001, 0.001, 0.01, 0.1],
+        "l1_ratio": [0.1, 0.5, 0.9],
+        "fit_intercept": true,
+        "max_iter": 20000,
+        "tol": 1e-7,
+        "selection": "cyclic"
+      },
+      "config_count": 12
+    },
+    "A02_RAW_ELASTIC_NET": {
+      "inputs": "all 185 signal cells",
+      "estimator": "training-median imputation then StandardScaler then sklearn ElasticNet",
+      "grid": {
+        "alpha": [0.0001, 0.001, 0.01, 0.1],
+        "l1_ratio": [0.1, 0.5, 0.9],
+        "fit_intercept": true,
+        "max_iter": 20000,
+        "tol": 1e-7,
+        "selection": "cyclic"
+      },
+      "config_count": 12
+    },
+    "A03_PCR_RIDGE": {
+      "inputs": "all 185 signal cells",
+      "estimator": "training-median imputation then StandardScaler then PCA fit on training only then Ridge",
+      "grid": {
+        "n_components": [5, 10, 20, 40],
+        "ridge_alpha": [0.1, 1.0, 10.0]
+      },
+      "config_count": 12
+    },
+    "A04_THEORY_QUADRATIC_HESSIAN_RIDGE": {
+      "inputs": "17 family scores + 17 squared terms + 10 fixed cross-family products",
+      "estimator": "training-median imputation then StandardScaler on expanded matrix then Ridge",
+      "ridge_alpha": [1.0, 10.0, 100.0, 1000.0],
+      "fixed_interactions": [
+        ["F01_TREND_LEVEL_DIRECTION", "F10_VOLATILITY_REGIME"],
+        ["F03_TREND_ACCELERATION_DECELERATION", "F10_VOLATILITY_REGIME"],
+        ["F05_VOL_ADJUSTED_TREND_GUARDS", "F11_DOWNSIDE_ASYMMETRY_TAIL"],
+        ["F06_MOMENTUM_LEVEL", "F13_CROSS_CRYPTO_BREADTH"],
+        ["F07_OVERBOUGHT_STRETCH", "F08_BEARISH_DIVERGENCE_EXHAUSTION"],
+        ["F09_BREAKDOWN_FAILED_BREAK_STRUCTURE", "F12_VOLUME_FLOW_CONFIRMATION"],
+        ["F14_RELATIVE_CRYPTO_LEADERSHIP", "F13_CROSS_CRYPTO_BREADTH"],
+        ["F21_SEQUENTIAL_CHANGE_DETECTION", "F23_MULTI_TIMESCALE_DISAGREEMENT"],
+        ["F01_TREND_LEVEL_DIRECTION", "F14_RELATIVE_CRYPTO_LEADERSHIP"],
+        ["F11_DOWNSIDE_ASYMMETRY_TAIL", "F12_VOLUME_FLOW_CONFIRMATION"]
+      ],
+      "required_diagnostics": ["linear_coefficients", "square_coefficients", "interaction_coefficients", "symmetric_quadratic_Hessian"],
+      "config_count": 4
+    },
+    "A05_GAM_SPLINE_RIDGE": {
+      "inputs": "17 family scores",
+      "estimator": "training-median imputation then sklearn SplineTransformer per full matrix with degree=3 include_bias=false then StandardScaler then Ridge",
+      "grid": {
+        "n_knots": [3, 5, 7],
+        "degree": 3,
+        "ridge_alpha": [1.0, 10.0, 100.0]
+      },
+      "cross_family_interactions": false,
+      "config_count": 9
+    },
+    "A06_SHALLOW_GBDT": {
+      "inputs": "17 family scores",
+      "estimator": "training-median imputation then sklearn GradientBoostingRegressor",
+      "grid": {
+        "max_depth": [1, 2],
+        "n_estimators": [50, 100],
+        "learning_rate": [0.03, 0.1],
+        "min_samples_leaf": 20,
+        "subsample": 0.8,
+        "loss": "squared_error",
+        "random_state": 650065
+      },
+      "config_count": 8
+    },
+    "A07_HMM_REGIME_MIXTURE_RIDGE": {
+      "inputs": "4 theory meta-factors for Gaussian HMM plus 17 family scores for state-specific Ridge",
+      "meta_factor_blocks": {
+        "TREND_STRUCTURE": ["F01_TREND_LEVEL_DIRECTION","F02_TREND_SPREAD_DISAGREEMENT","F03_TREND_ACCELERATION_DECELERATION","F04_TREND_CROSS_TRANSITION","F05_VOL_ADJUSTED_TREND_GUARDS","F09_BREAKDOWN_FAILED_BREAK_STRUCTURE","F21_SEQUENTIAL_CHANGE_DETECTION","F23_MULTI_TIMESCALE_DISAGREEMENT"],
+        "MOMENTUM_EXHAUSTION": ["F06_MOMENTUM_LEVEL","F07_OVERBOUGHT_STRETCH","F08_BEARISH_DIVERGENCE_EXHAUSTION"],
+        "VOL_TAIL": ["F10_VOLATILITY_REGIME","F11_DOWNSIDE_ASYMMETRY_TAIL"],
+        "BREADTH_FLOW_RELATIVE": ["F12_VOLUME_FLOW_CONFIRMATION","F13_CROSS_CRYPTO_BREADTH","F14_RELATIVE_CRYPTO_LEADERSHIP","F24_FIXED_LOW_ORDER_INTERACTIONS"]
+      },
+      "meta_factor_formula": "equal-weight arithmetic mean of available frozen family scores in each block after training-median imputation",
+      "grid": {
+        "n_components": [2, 3],
+        "ridge_alpha": [1.0, 10.0, 100.0],
+        "covariance_type": "diag",
+        "n_iter": 200,
+        "tol": 0.0001,
+        "random_state": 650065
+      },
+      "state_regression": "For each state, fit Ridge to 17 standardized family scores with sample_weight equal to HMM posterior state probability; prediction is posterior-probability-weighted mixture of state-specific Ridge predictions.",
+      "method_fit_failure_rule": "A failed config is persisted as MODEL_FIT_FAILURE and is never retried with altered semantics. If all six validation configs fail, A07 final status is MODEL_FIT_FAILURE and no evaluation CAGR is fabricated.",
+      "config_count": 6
+    },
+    "A08_STACKED_ENSEMBLE": {
+      "inputs": "causal validation predictions from validation-selected A01-A07",
+      "estimator": "scipy.optimize.nnls on validation prediction matrix vs Y20 target; normalize nonnegative weights to sum one",
+      "fallback": "if NNLS weights are all zero or non-finite, use equal 1/7 weights",
+      "weights_frozen_before_evaluation": true,
+      "new_base_learners_after_evaluation_forbidden": true,
+      "config_count": 0
+    }
+  },
+  "gross_mapping": {
+    "calibration_sample": "eligible fit sample at each refit",
+    "prediction_location": "median of model fitted predictions on eligible fit sample",
+    "prediction_scale": "1.4826 * median absolute deviation of model fitted predictions on eligible fit sample",
+    "invalid_scale_rule": "z=0",
+    "z_formula": "(current_prediction - location) / scale",
+    "outer_multiplier_formula": "g = clip(1 + 0.25*z, 0, 1)",
+    "leverage_allowed": false,
+    "shorting_allowed": false,
+    "architecture_specific_thresholds_allowed": false,
+    "smoothing": "NONE"
+  },
+  "portfolio_economics": {
+    "base_return": "already-costed BRRK-0011 daily return reconstructed from frozen daily_equity.csv",
+    "base_gross": "sum(abs(frozen BRRK-0011 daily_weights))",
+    "benchmark": "0064 primary path",
+    "cash_yield_realization": 0.5,
+    "annual_cash_fee_bps": 100,
+    "outer_turnover_cost_bps_per_unit_gross": 10,
+    "decision_and_return_alignment": "forecast after close t creates g[t]; portfolio return row t+1 uses g[t]",
+    "candidate_return_formula": "r_candidate[D] = g_prev * r_base[D] + (1 - g_prev*G_base[D]) * (0.5*rf_daily[D] - 0.01/365.25) - 0.001*abs(g_prev-g_prevprev)*G_base[D]",
+    "initial_outer_multiplier_before_evaluation": 1.0,
+    "benchmark_reconstruction_rule": "forcing every g=1 must reproduce frozen 0064 primary path within 1e-12 per-row arithmetic tolerance and terminal/CAGR/MDD anchor tolerance",
+    "negative_cash_forbidden": true
+  },
+  "evaluation_gates": {
+    "G0_CONTRACT_AND_DATA_IDENTITY": "all frozen Git blobs, payload hashes, architecture count, config count and formulas exact",
+    "G1_SUPPORT_AND_BASELINE_RECONSTRUCTION": "evaluation dates exactly 2022-12-10..2026-08-02, baseline 0064 anchors reconstruct, and all required prediction rows are causally available",
+    "G2_NET_WEALTH_AND_CAGR": "method terminal wealth > 0064 terminal wealth AND method calendar CAGR > 0064 calendar CAGR",
+    "G3_MAX_DRAWDOWN_NONINFERIORITY": "method max drawdown >= 0064 max drawdown - 1e-12",
+    "G4_TEMPORAL_RECURRENCE": "at least 3 of 4 count-balanced contiguous evaluation blocks have positive relative log growth versus 0064",
+    "G5_SIMULTANEOUS_DEPENDENCE_AWARE_LCB": "method simultaneous one-sided 95% LCB of mean relative log increment versus 0064 strictly > 0 after correction across all valid final architectures",
+    "G6_COST_AND_TURNOVER_REALISM": "all outer turnover costs are included by frozen formula; no negative cash, leverage, shorting or architecture-specific cost waiver"
+  },
+  "simultaneous_inference": {
+    "series": "daily relative log increment for each valid final architecture versus 0064",
+    "bootstrap": "aligned non-circular moving-block bootstrap",
+    "block_length": 60,
+    "replicates": 4000,
+    "seed": 650065,
+    "quantile": "Type-7 q95",
+    "correction": "For each replicate compute all valid method mean relative-log increments on the same sampled indices. q95 is Type-7 95th percentile of max_i(observed_mean_i - bootstrap_mean_i). LCB_i=observed_mean_i-q95.",
+    "strict_pass": "LCB_i > 0"
+  },
+  "temporal_blocks": {
+    "count": 4,
+    "construction": "count-balanced contiguous evaluation rows, earlier blocks receive remainder",
+    "expected_if_1332_rows": [333,333,333,333]
+  },
+  "selection_risk_diagnostics": {
+    "PBO_CSCV": {
+      "evaluation_slices": 8,
+      "slice_construction": "count-balanced contiguous rows",
+      "in_sample_slice_count": 4,
+      "split_count": 70,
+      "selection_statistic": "annualized Sharpe computed from candidate daily returns within in-sample slices; risk-free subtraction omitted because identical selection comparison uses net candidate returns",
+      "oos_rank": "rank selected in-sample winner by OOS Sharpe among valid final architectures with average ties",
+      "PBO": "fraction of 70 splits where selected in-sample winner has OOS rank at or below the median valid architecture rank",
+      "role": "diagnostic_not_primary_gate"
+    },
+    "DEFLATED_SHARPE": {
+      "role": "diagnostic_not_primary_gate",
+      "trial_count_for_selection_adjustment": 71,
+      "implementation": "deterministic Bailey-Lopez-de-Prado-style deflated Sharpe diagnostic using observed skew/kurtosis, sample length and 71 declared trials; if numerical assumptions fail report NOT_WELL_DEFINED rather than substituting another metric"
+    }
+  },
+  "classification": {
+    "pass": "PASS_MULTI_ARCHITECTURE_GROSS_CONTROLLER if at least one final architecture passes G0-G6 and G5 simultaneous LCB",
+    "fail": "FAIL_NO_ROBUST_MULTI_ARCHITECTURE_IMPROVEMENT if G0/G1 pass, all available final methods are evaluated under frozen semantics, and none passes all G2-G6",
+    "invalid": "INVALID_EXECUTION for core identity, causal timing, variant-budget, common-map, cost, exactly-once or persistence violation",
+    "measurement_inconclusive": "MEASUREMENT_INCONCLUSIVE if frozen data/support cannot satisfy G1 without substitution"
+  },
+  "reporting_contract": {
+    "must_report_all_final_architectures": true,
+    "per_method_fields": [
+      "status","selected_hyperparameters","validation_MSE","terminal_wealth","calendar_CAGR","max_drawdown",
+      "average_outer_multiplier","average_total_gross","average_cash_fraction","outer_turnover","outer_transaction_cost_return_units",
+      "four_block_relative_log_growth","positive_block_count","simultaneous_LCB","G2","G3","G4","G5","G6"
+    ],
+    "descriptive_best_CAGR_must_be_identified": true,
+    "scientific_winner_requires_all_gates": true
+  },
+  "exactly_once": {
+    "historical_attempt_budget": 1,
+    "all_63_tuning_configs_and_8_final_architectures_in_one_authorized_batch": true,
+    "same_id_rerun_allowed_after_RUN_ATTEMPT": false,
+    "same_id_retune_allowed_after_RUN_ATTEMPT": false,
+    "same_id_rescue_allowed_after_RUN_ATTEMPT": false,
+    "marker_only_recovery": "allowed only from complete persisted result/evidence/execution hashes without historical reread"
+  },
+  "authorization": {
+    "canonical_BRRK_0011": "NO_CHANGE",
+    "0064": "NO_CHANGE",
+    "Phase_6": "NO_CHANGE",
+    "production_authorized": false,
+    "signature_authorized": false,
+    "order_submission_authorized": false
+  }
+}
