@@ -1,0 +1,11 @@
+{
+  "attempt_number": 1,
+  "boundary_merge_sha": "e17b96cd3358062ebd9eb88fae050ff865a9fb39",
+  "created_at_utc": "2026-08-14T01:01:25.944968+00:00",
+  "research_id": "BRRK-IDLE-CASH-SWEEP-ROBUSTNESS-0063",
+  "same_id_rerun_allowed": false,
+  "same_id_rescue_allowed": false,
+  "same_id_retune_allowed": false,
+  "schema_version": 1,
+  "workflow_run_id": "31759258964"
+}
