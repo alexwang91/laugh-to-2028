@@ -1,4 +1,4 @@
-name: Tooling 0066 prereg atlas multiplicity patch
+name: Tooling 0066 implementation synthetic validation
 
 on:
   push:
@@ -11,51 +11,60 @@ permissions:
   contents: write
 
 jobs:
-  prereg-patch:
+  implementation-validation:
     runs-on: ubuntu-latest
+    env:
+      PYTHONHASHSEED: '0'
+      OMP_NUM_THREADS: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: research/0066-prereg-v1
+          ref: research/0066-implementation-v1
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Replace only preregistered indicator-atlas multiplicity procedure
+      - run: pip install -r execution/plan-b-bot/requirements-dev.txt
+      - name: Patch NaN-safe validation percentile implementation
         shell: bash
         run: |
           set -euo pipefail
           python - <<'PY'
-          import json
           from pathlib import Path
-          p=Path('research/brrk_btc_sol_path_event_early_warning_0066/PREREGISTRATION.json')
-          x=json.loads(p.read_text())
-          assert x['stage']=='NUMERICAL_DATA_PREREGISTRATION_FROZEN_NOT_RUN'
-          assert x['trial_accounting']['actual_variants_evaluated_before_run']==0
-          x['indicator_atlas']['final_multiplicity']=(
-              'Across all supported FINAL signal/asset/target/horizon cells, compute a one-sided Mann-Whitney U test '
-              'equivalent to testing TRAIN-oriented ROC-AUC > 0.50, then apply Holm-Bonferroni step-down correction '
-              'at familywise alpha=0.05 across the entire supported atlas family. PR-AUC, PR-AUC lift, Brier and block '
-              'metrics remain mandatory descriptive outputs. No FINAL re-orientation, screening or cell deletion is allowed.'
-          )
-          x['simultaneous_inference']['indicator_atlas_correction']=(
-              'Holm-Bonferroni familywise correction of one-sided Mann-Whitney U / ROC-AUC>0.50 p-values across all '
-              'supported FINAL indicator-atlas cells; this is separate from the 4000-replicate MBB used for confirmatory '
-              'predictor tracks and economic controllers.'
-          )
-          x['simultaneous_inference']['predictive_bootstrap']=(
-              'Do not retrain, re-orient, re-screen or recalibrate. Resample aligned FINAL prediction-date blocks and '
-              'recompute each supported final predictor track PR-AUC lift. Replicates with a degenerate class for a track '
-              'are omitted for that track; a track with <95% valid replicates is MEASUREMENT_INCONCLUSIVE for G5. '
-              'One max-stat q95 correction spans all confirmatory predictive architecture/asset/target tracks.'
-          )
-          p.write_text(json.dumps(x,indent=2,ensure_ascii=False)+'\n')
+          p=Path('research/brrk_btc_sol_path_event_early_warning_0066/models.py')
+          s=p.read_text()
+          old='''def empirical_percentile(values: np.ndarray, reference: np.ndarray) -> np.ndarray:\n    ref = np.sort(np.asarray(reference, dtype=float)[np.isfinite(reference)])\n    v = np.asarray(values, dtype=float)\n    if len(ref) == 0:\n        raise ValueError("empty percentile calibration reference")\n    return np.searchsorted(ref, v, side="right").astype(float) / float(len(ref))\n'''
+          new='''def empirical_percentile(values: np.ndarray, reference: np.ndarray) -> np.ndarray:\n    ref = np.sort(np.asarray(reference, dtype=float)[np.isfinite(reference)])\n    v = np.asarray(values, dtype=float)\n    if len(ref) == 0:\n        raise ValueError("empty percentile calibration reference")\n    out = np.full(v.shape, np.nan, dtype=float)\n    mask = np.isfinite(v)\n    out[mask] = np.searchsorted(ref, v[mask], side="right").astype(float) / float(len(ref))\n    return out\n'''
+          assert old in s
+          p.write_text(s.replace(old,new,1))
           PY
           git diff --check
-          test "$(git diff --name-only)" = "research/brrk_btc_sol_path_event_early_warning_0066/PREREGISTRATION.json"
+      - name: Compile implementation-only modules
+        run: |
+          python -m py_compile \
+            research/brrk_btc_sol_path_event_early_warning_0066/event_engine.py \
+            research/brrk_btc_sol_path_event_early_warning_0066/models.py \
+            research/brrk_btc_sol_path_event_early_warning_0066/engine.py \
+            research/brrk_btc_sol_path_event_early_warning_0066/test_engine_synthetic.py
+      - name: Run synthetic-only unit contracts
+        run: pytest -q research/brrk_btc_sol_path_event_early_warning_0066/test_engine_synthetic.py
+      - name: Assert historical runtime artifacts absent
+        shell: bash
+        run: |
+          set -euo pipefail
+          for f in RUN_ATTEMPT.marker PRIMARY_RESULT.json EVIDENCE.json EXECUTION.json RUN_ONCE.marker; do
+            test ! -e "research/brrk_btc_sol_path_event_early_warning_0066/$f"
+          done
+      - name: Persist patch only after tests pass
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git diff --name-only)" = "research/brrk_btc_sol_path_event_early_warning_0066/models.py"
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add research/brrk_btc_sol_path_event_early_warning_0066/PREREGISTRATION.json
-          git commit -m 'research: freeze efficient 0066 atlas multiplicity correction'
-          git push origin HEAD:research/0066-prereg-v1
+          git add research/brrk_btc_sol_path_event_early_warning_0066/models.py
+          git commit -m 'research: make 0066 validation percentiles NaN-safe'
+          git push origin HEAD:research/0066-implementation-v1
