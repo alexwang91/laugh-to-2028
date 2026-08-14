@@ -1,0 +1,40 @@
+name: Tooling 0067 prereg environment pin
+on:
+  push:
+    branches: [tools/0067-prereg-writer-v1]
+    paths: ['.github/workflows/tooling-0067-prereg-env-pin.yml']
+permissions:
+  contents: write
+jobs:
+  pin:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/0067-prereg-v1
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          q=Path('research/brrk_btc_sol_path_event_early_warning_runtime_qualified_0067/QUALIFICATION_PREREGISTRATION.json')
+          o=json.loads(q.read_text())
+          assert o['environment']['runner_label']=='ubuntu-latest'
+          o['environment']['runner_label']='ubuntu-24.04'
+          o['environment']['process_worker_count']=4
+          o['environment']['runner_image_policy']='Qualification and historical execution must both use the explicit ubuntu-24.04 label; exact ephemeral runner image versions are recorded in evidence but patch-image drift alone is not scientific drift if pinned Python/dependencies and equivalence checks pass.'
+          q.write_text(json.dumps(o,indent=2,ensure_ascii=False)+'\n')
+          s=Path('docs/CURRENT_STATE.md')
+          t=s.read_text().replace('GitHub runner label `ubuntu-latest`, x86_64;','GitHub runner label `ubuntu-24.04`, x86_64;\n- deterministic process worker count =4;')
+          assert t!=s.read_text()
+          s.write_text(t)
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add research/brrk_btc_sol_path_event_early_warning_runtime_qualified_0067/QUALIFICATION_PREREGISTRATION.json docs/CURRENT_STATE.md
+          git commit -m '0067: pin qualification runner and worker count'
+          git push origin HEAD:refs/heads/research/0067-prereg-v1
