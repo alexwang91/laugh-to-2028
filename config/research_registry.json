@@ -4507,6 +4507,130 @@
         "governance_integrity": "HIGH_EXACTLY_ONCE_HASH_BOUND_FINALIZED_EQUITY1_WEIGHTS1_DTB3_1_ENGINE1_DURABLE_ATTEMPT_PARENT_NO_RERUN",
         "operational_realism": "UNCHANGED_BRRK0011_RISK_ASSET_PATH_PASSIVE_IDLE_CASH_CARRY_WITH_50PCT_DTB3_REALIZATION_AND_100BPS_ANNUAL_CONTINUOUS_ACCOUNT_COST_NO_SWEEP_COST"
       }
+    },
+    {
+      "research_id": "BRRK-MULTI-ARCHITECTURE-GROSS-CONTROLLER-0065",
+      "research_family_id": "BRRK_BTC_TO_CASH_GROSS_RISK",
+      "research_domain": "RISK_CONTROL",
+      "research_governance_version": 1,
+      "governance_mode": "PROGRAM_GOVERNED_V1",
+      "objective_type": "PORTFOLIO_INTEGRATION",
+      "created_at": "2026-08-14T08:58:00Z",
+      "created_before_result": true,
+      "question": "Can a prospectively frozen tournament of eight structurally different multivariate combination architectures over the complete 0062 Tier-A signal universe produce a robust outer BTC-to-Cash gross controller that improves full-cycle net CAGR versus the closed 0064 passive-cash baseline?",
+      "hypothesis": "Broad technical-state information may be weak family-by-family yet economically useful jointly when regularization, latent-factor compression, smooth curvature, threshold interactions, regime dependence and model averaging are compared under one common target and one common gross mapping. At least one frozen architecture may improve 0064 net CAGR without worsening drawdown and survive temporal and simultaneous dependence-aware gates.",
+      "hypothesis_origin": "USER_REQUESTED_METHOD_FIRST_ARCHITECTURE_TOURNAMENT_PLUS_RESULT_INFORMED_0062_SIGNAL_ATLAS_AND_0064_ECONOMIC_BASELINE_WITH_EXTERNAL_METHOD_PRIORS_FROM_ELASTIC_NET_DIMENSION_REDUCTION_NONLINEAR_INTERACTION_REGIME_SWITCHING_AND_BACKTEST_OVERFIT_LITERATURE",
+      "economic_mechanism": "0065 does not alter BRRK risk-asset selection. It uses causal multivariate market-state forecasts to apply a common no-leverage no-short outer gross multiplier to the already-costed BRRK-0011 portfolio, with 0064 passive cash accrual retained unchanged and an explicit outer-overlay turnover cost.",
+      "primary_target": "20_SESSION_FORWARD_BTC_LOG_RETURN_FOR_COMMON_FORECAST_THEN_CAUSALLY_LAGGED_OUTER_GROSS_PORTFOLIO_ECONOMICS",
+      "primary_metric": "FULL_EVALUATION_PERIOD_NET_CALENDAR_CAGR_AND_TERMINAL_WEALTH_VERSUS_0064_WITH_SIMULTANEOUS_DEPENDENCE_AWARE_LCB_ACROSS_8_FINAL_ARCHITECTURES",
+      "secondary_metrics": [
+        "MAX_DRAWDOWN",
+        "FOUR_FIXED_CHRONOLOGICAL_BLOCK_RELATIVE_LOG_GROWTH",
+        "OUTER_GROSS_TURNOVER_AND_COST",
+        "AVERAGE_GROSS_AND_CASH_FRACTION",
+        "CALENDAR_YEAR_RETURNS",
+        "PBO_CSCV_SELECTION_RISK_DIAGNOSTIC",
+        "DEFLATED_SHARPE_STYLE_DIAGNOSTIC",
+        "METHOD_LEVEL_FIT_STATUS"
+      ],
+      "feature_families": [
+        "F01_TREND_LEVEL_DIRECTION",
+        "F02_TREND_SPREAD_DISAGREEMENT",
+        "F03_TREND_ACCELERATION_DECELERATION",
+        "F04_TREND_CROSS_TRANSITION",
+        "F05_VOL_ADJUSTED_TREND_GUARDS",
+        "F06_MOMENTUM_LEVEL",
+        "F07_OVERBOUGHT_STRETCH",
+        "F08_BEARISH_DIVERGENCE_EXHAUSTION",
+        "F09_BREAKDOWN_FAILED_BREAK_STRUCTURE",
+        "F10_VOLATILITY_REGIME",
+        "F11_DOWNSIDE_ASYMMETRY_TAIL",
+        "F12_VOLUME_FLOW_CONFIRMATION",
+        "F13_CROSS_CRYPTO_BREADTH",
+        "F14_RELATIVE_CRYPTO_LEADERSHIP",
+        "F21_SEQUENTIAL_CHANGE_DETECTION",
+        "F23_MULTI_TIMESCALE_DISAGREEMENT",
+        "F24_FIXED_LOW_ORDER_INTERACTIONS"
+      ],
+      "horizon": "SUPERVISED_TARGET_20_CRYPTO_SESSIONS; PORTFOLIO_EVALUATION_2022-12-10_THROUGH_2026-08-02",
+      "universe": [
+        "BTC",
+        "ETH",
+        "SOL",
+        "BRRK0011_BASELINE",
+        "USD_CASH"
+      ],
+      "development_dataset_refs": [
+        "BRRK-LEADERSHIP-ROTATION-0048-EXPOSED-HIST-V1",
+        "BRRK-WINNER-0001-CANONICAL-HIST-V1",
+        "BRRK-IDLE-CASH-SWEEP-0063-DTB3-HIST-V1"
+      ],
+      "validation_dataset_refs": [],
+      "sealed_dataset_refs": [],
+      "declared_variant_budget": 71,
+      "actual_variants_evaluated": 0,
+      "parameter_candidate_count": 63,
+      "stopping_rule": "Evaluate exactly 63 frozen validation tuning configurations and exactly 8 frozen final architecture paths in one governed research ID; after the first valid 0065 historical portfolio result is observed, stop same-ID architecture search, retuning, rescue, feature pruning, remapping and recomputation permanently.",
+      "success_criteria": [
+        "At least one of the eight frozen final architectures has net terminal wealth and calendar CAGR strictly above frozen 0064.",
+        "That architecture has max drawdown noninferior to 0064 within numerical tolerance.",
+        "At least three of four fixed chronological blocks have positive relative log growth versus 0064.",
+        "Its simultaneous one-sided 95% moving-block-bootstrap lower confidence bound across all eight final architectures is strictly positive.",
+        "All identity, causal timing, variant-accounting, cost, exactly-once and persistence contracts pass."
+      ],
+      "failure_criteria": [
+        "If all eight final architectures are validly evaluated and none passes all frozen gates, close as no robust multivariate architecture improvement.",
+        "Any core data identity, feature identity, causal timing, common gross-map, variant-budget, exactly-once or persistence violation invalidates the execution.",
+        "A method-level numerical fit failure cannot be rescued by changing its frozen method or grid after evaluation begins."
+      ],
+      "allowed_followup": [
+        "A robust 0065 PASS may motivate a separately designed future-only confirmation study on genuinely future data.",
+        "The complete eight-method result table may be used as exposed DEVELOPMENT evidence for a scientifically distinct new hypothesis only under a new research ID."
+      ],
+      "forbidden_followup": [
+        "No same-ID architecture addition/deletion, feature pruning, target-horizon change, hyperparameter-grid change, cost change, interaction-graph change, gross-map change, rerun, retune, rescue or post-hoc ensemble construction after evaluation-result exposure."
+      ],
+      "researcher_decisions": [],
+      "research_process_complexity": {
+        "declared_parameter_candidates": 71,
+        "actual_parameter_candidates_evaluated": 0,
+        "universes_evaluated": 1,
+        "horizons_evaluated": 1,
+        "rebalance_variants": 1,
+        "feature_representations": 8,
+        "special_cases_introduced": 0,
+        "validation_exposure_event_refs": [],
+        "related_family_trials": 1
+      },
+      "lineage_edges": [
+        {
+          "relation": "RESULT_INFORMED",
+          "ref_research_id": "BRRK-BTC-RISK-SIGNAL-ATLAS-0062"
+        },
+        {
+          "relation": "RESULT_INFORMED",
+          "ref_research_id": "BRRK-IDLE-CASH-PASSIVE-ACCRUAL-ROBUSTNESS-0064"
+        }
+      ],
+      "result_status": "PREREGISTERED_NOT_RUN",
+      "failure_reason": null,
+      "promotion_state": "NONE",
+      "evidence_refs": [],
+      "decision_refs": [
+        "research/governance/BRRK_MULTI_ARCHITECTURE_GROSS_CONTROLLER_0065_DESIGN_FREEZE_2026-08-14.md"
+      ],
+      "production_relevance": "DEVELOPMENT architecture tournament only; any PASS means research-stage evidence and does not automatically alter canonical BRRK or production.",
+      "production_authorized": false,
+      "provenance_status": "FACT",
+      "governed_path_prefixes": [
+        "research/brrk_multi_architecture_gross_controller_0065/"
+      ],
+      "notes": [
+        "Owner created after merged 0065 DESIGN and before numerical/data preregistration or any 0065 historical portfolio result.",
+        "Declared budget counts 63 validation tuning configurations plus 8 final architecture paths = 71 research variants.",
+        "All 185 eligible 0062 Tier-A cells / 17 family scores remain available according to frozen architecture; no 0062 result-based pruning.",
+        "production_authorized=false; signature_authorized=false; order_submission_authorized=false."
+      ]
     }
   ],
   "research_governance_debt": [
