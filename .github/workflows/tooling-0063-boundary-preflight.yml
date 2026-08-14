@@ -1,0 +1,40 @@
+name: Tooling 0063 zero-result boundary preflight
+
+on:
+  push:
+    branches: [tools/0062-owner-artifact-v1]
+    paths: ['.github/workflows/tooling-0063-boundary-preflight.yml']
+
+permissions:
+  contents: read
+
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: f632bdb146571c1b7580ab1e4571512d1fab9366
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: execution/plan-b-bot/requirements-dev.txt
+      - run: pip install -r execution/plan-b-bot/requirements-dev.txt
+      - name: Assert zero-result state
+        shell: bash
+        run: |
+          set -euo pipefail
+          test ! -e research/brrk_idle_cash_sweep_robustness_0063/RUN_ATTEMPT.marker
+          test ! -e research/brrk_idle_cash_sweep_robustness_0063/PRIMARY_RESULT.json
+          test ! -e research/brrk_idle_cash_sweep_robustness_0063/EVIDENCE.json
+          test ! -e research/brrk_idle_cash_sweep_robustness_0063/EXECUTION.json
+          test ! -e research/brrk_idle_cash_sweep_robustness_0063/RUN_ONCE.marker
+      - name: Preflight pinned Git identities only
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m research.brrk_idle_cash_sweep_robustness_0063.run_once preflight --boundary-sha f632bdb146571c1b7580ab1e4571512d1fab9366 | tee /tmp/preflight.json
+          grep -q 'PREFLIGHT_PASS_ZERO_RESULT_GIT_IDENTITY_ONLY' /tmp/preflight.json
+          git status --porcelain | grep -q '^' && test -z "$(git status --porcelain)"
