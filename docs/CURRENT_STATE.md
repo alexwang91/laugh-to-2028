@@ -7,6 +7,7 @@ Merged 0064 PASS closeout: `ad8038af45bad2e25e8a7b88b569b1873635d9c2`.
 Merged 0065 immutable closeout: `d1607277593a0c5c35bb0163e10e078f3dc85fc8`.
 Merged 0066 DESIGN: `b42f1d9dcc0574f185e04aad3bc8eca61fd2531d`.
 0066 owner-first registry commit: `44f8df24538216b9b83466522fc8efb209b3082a`.
+Merged 0066 IMPLEMENTATION: `aa55a5625f59e1f0221bf972104c96e5b709511a`.
 
 ## Required closed-research anchors
 
@@ -21,7 +22,7 @@ ID 0043 is closed against result-informed pruning, reweighting, threshold rescue
 0063 = `FAIL_IDLE_CASH_SWEEP_PRIMARY_ECONOMICS / CLOSED`.
 0064 = `PASS_PASSIVE_CASH_ACCRUAL_ROBUSTNESS / CLOSED TO SAME-ID RERUN`.
 0065 = `FAIL_NO_ROBUST_MULTI_ARCHITECTURE_IMPROVEMENT / CLOSED TO SAME-ID RERUN`.
-0066 = `IMPLEMENTED / NOT RUN / CONTROLLED BOUNDARY ABSENT`.
+0066 = `CONTROLLED EXECUTION BOUNDARY FROZEN / NOT RUN`.
 0066 research ID = `BRRK-BTC-SOL-PATH-EVENT-EARLY-WARNING-0066`.
 
 ## 0066 frozen event-first program
@@ -97,10 +98,12 @@ Historical 0066 indicator/event association computed = false.
 Historical 0066 classifier metrics computed = false.
 Historical 0066 controller CAGR/NAV/MDD computed = false.
 Historical actual variants evaluated = 0 / 1704.
-Implementation-only engine/event/model modules are present on the implementation branch.
+Implementation-only engine/event/model modules are merged and immutable for the controlled boundary.
 Runtime observability commit = `f642240696edeb109d06f38202a4a326083ac038`; it adds phase/progress logging and suppresses only the sklearn penalty-deprecation FutureWarning without changing any frozen model parameter or mathematical path.
 Bounded artificial implementation validation run = `31801841347`; synthetic unit tests, full 1632/64/8 configuration enumeration audit, zero-result assertions and clean-worktree assertions all passed.
 The cancelled full-artificial tooling run `31792978620` was implementation-only synthetic validation, not a historical execution attempt, and created no runtime result marker.
+Controlled boundary branch = `research/0066-controlled-boundary-v1`; it freezes RUN_INTERFACE, RESULT_SCHEMA, exactly-once run_once and exact scientific/data blob identities.
+Boundary preflight is Git-identity-only: historical content reads=0, market loader calls=0, scientific engine calls=0.
 RUN_ATTEMPT.marker = ABSENT.
 PRIMARY_RESULT.json = ABSENT.
 EVIDENCE.json = ABSENT.
@@ -133,4 +136,4 @@ Phase 6 = NO CHANGE.
 
 ## Exact next step
 
-Open and merge the 0066 IMPLEMENTATION-ONLY PR after fresh standing CI. Then freeze and merge a CONTROLLED-EXECUTION BOUNDARY with exact implementation blobs. Do not create RUN_ATTEMPT.marker or read historical 0066 outcomes before that boundary is merged.
+Open and merge the zero-result 0066 CONTROLLED-EXECUTION BOUNDARY after fresh standing CI. After boundary merge, run exact-merged-SHA Git-only preflight; only then durably persist the unique RUN_ATTEMPT.marker before any historical content read, execute the frozen 0066 program exactly once, persist PRIMARY_RESULT/EVIDENCE/EXECUTION create-only, and finalize RUN_ONCE without remeasurement.
