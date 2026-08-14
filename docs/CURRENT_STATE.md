@@ -5,7 +5,10 @@ Last updated: 2026-08-14
 Authoritative repository: `alexwang91/laugh-to-2028`.
 Merged 0064 PASS closeout: `ad8038af45bad2e25e8a7b88b569b1873635d9c2`.
 Merged 0065 DESIGN: `09f9afc69183387afaabfe540394eb01989df148`.
+Merged 0065 preregistration: `7b71c9f3394be17e5fd10ec08147207d268fc00a`.
 0065 owner-first commit: `a717d1d359e1b980a7c727e48ec26a1ffb0fc3a6`.
+0065 scientific engine blob: `762b608dd9eb5feedc06867ce07f02d0de8ea928`.
+0065 full synthetic tournament validation run: `31787644804`.
 
 ## Required closed-research anchors
 
@@ -19,12 +22,12 @@ ID 0043 is closed against result-informed pruning, reweighting, threshold rescue
 0062 = `FAIL_NO_SIGNAL_ATLAS_FAMILY_INFORMATION / CLOSED`.
 0063 = `FAIL_IDLE_CASH_SWEEP_PRIMARY_ECONOMICS / CLOSED`.
 0064 = `PASS_PASSIVE_CASH_ACCRUAL_ROBUSTNESS / CLOSED TO SAME-ID RERUN`.
-0065 = `NUMERICAL/DATA PREREGISTRATION FROZEN / IMPLEMENTATION ABSENT / NOT RUN`.
+0065 = `IMPLEMENTED / SYNTHETIC FULL-TOURNAMENT VALIDATED / NOT RUN`.
 0065 research ID = `BRRK-MULTI-ARCHITECTURE-GROSS-CONTROLLER-0065`.
 
 0065 is one prospectively frozen architecture tournament, not sequential one-off strategy search. Historical 0065 portfolio CAGR/NAV/ranking has not been computed.
 
-### Frozen method set
+### Frozen and implemented method set
 
 1. A01 FAMILY_ELASTIC_NET — 17 family scores;
 2. A02 RAW_ELASTIC_NET — 185 cells;
@@ -32,13 +35,13 @@ ID 0043 is closed against result-informed pruning, reweighting, threshold rescue
 4. A04 THEORY_QUADRATIC_HESSIAN_RIDGE — 17 linear + 17 squared + 10 theory interactions;
 5. A05 GAM_SPLINE_RIDGE — additive cubic splines + ridge;
 6. A06 SHALLOW_GBDT — bounded depth 1/2 boosting;
-7. A07 HMM_REGIME_MIXTURE_RIDGE — 2/3-state Gaussian HMM + state-specific ridge;
-8. A08 STACKED_ENSEMBLE — validation-only nonnegative convex stack of A01-A07.
+7. A07 HMM_REGIME_MIXTURE_RIDGE — 2/3-state Gaussian HMM + state-specific ridge with causal forward-filtered evaluation probabilities;
+8. A08 STACKED_ENSEMBLE — validation-only nonnegative convex NNLS stack of A01-A07.
 
 Frozen validation tuning config count = 63.
 Frozen final architecture count = 8.
 Declared total research variant budget = 71.
-Actual variants evaluated = 0.
+Actual historical variants evaluated = 0.
 
 ### Frozen common scientific contract
 
@@ -49,20 +52,24 @@ VALIDATION origins = 2022-01-01 through 2022-11-19.
 Portfolio evaluation = 2022-12-10 through 2026-08-02.
 Validation and evaluation refit cadence = every 20 sessions.
 At every refit, only origins whose 20-session labels have fully matured strictly before the refit date are eligible.
-
 Forecast after close t may affect only next portfolio return row t+1.
 Common gross map = `g=clip(1+0.25*z,0,1)` where z uses fit-sample prediction median and `1.4826*MAD`; no smoothing, leverage or shorting.
-
 Economic benchmark = frozen 0064 primary: 50% DTB3 realization / 100 bps annual continuous cash fee.
 Outer overlay cost = 10 bps per unit outer gross turnover.
 Forcing g=1 must reconstruct 0064 primary within frozen numerical tolerance.
-
 Four count-balanced contiguous evaluation blocks.
 Simultaneous inference = aligned non-circular MBB L60 / 4000 reps / seed 650065 / Type-7 q95 across all valid final architectures.
 PBO diagnostic = 8 contiguous slices / choose 4 = 70 CSCV splits.
 Deflated-Sharpe-style diagnostic uses declared trial count 71 and is diagnostic only.
 
 A scientific winner must beat 0064 in terminal wealth and CAGR, have noninferior MDD, >=3/4 positive blocks, simultaneous one-sided LCB >0, and pass cost/timing/identity contracts.
+
+### Implementation validation
+
+Dedicated synthetic unit suite passed for all seven base model fit/predict interfaces, 44-column quadratic/Hessian expansion, causal HMM filtering, NNLS stack, common gross map, outer-turnover cost, g=1 passive-cash reconstruction algebra, simultaneous MBB determinism, 70-split PBO and deflated-Sharpe diagnostic.
+Full synthetic 2020-08-11..2026-08-02 tournament integration run `31787644804` completed the entire 185-cell construction -> 63 validation tuning configurations -> 8 final methods -> evaluation gross paths -> portfolio economics -> simultaneous inference/PBO pipeline successfully on artificial data.
+Historical 0065 portfolio content reads during implementation = 0.
+Historical 0065 CAGR computed during implementation = false.
 
 ### Frozen data identities
 
@@ -93,4 +100,4 @@ Phase 6 = NO CHANGE.
 
 ## Exact next step
 
-Run preregistration validation and fresh standing CI, then merge preregistration. After merge, implement all eight architectures with synthetic/toy tests only; no 0065 historical portfolio read or CAGR is permitted before implementation and controlled-boundary merges.
+Run fresh standing CI and merge implementation. Then freeze a controlled-execution boundary pinning all implementation/data identities plus exactly-once persistence. Only after boundary merge and a zero-result Git-only preflight may the single historical tournament attempt begin; all 63 tuning configs and all 8 final architectures must execute in that one batch.
