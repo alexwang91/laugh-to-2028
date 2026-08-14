@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "research_id": "BRRK-MULTI-ARCHITECTURE-GROSS-CONTROLLER-0065",
+  "required_primary_fields": [
+    "schema_version",
+    "research_id",
+    "classification",
+    "actual_validation_configs_evaluated",
+    "final_architecture_count",
+    "actual_variants_evaluated",
+    "benchmark_0064",
+    "methods",
+    "descriptive_best_CAGR_method",
+    "scientific_winners",
+    "simultaneous_bootstrap",
+    "PBO_CSCV",
+    "stack_weights",
+    "production_authorized",
+    "signature_authorized",
+    "order_submission_authorized"
+  ],
+  "method_enum": [
+    "A01_FAMILY_ELASTIC_NET",
+    "A02_RAW_ELASTIC_NET",
+    "A03_PCR_RIDGE",
+    "A04_THEORY_QUADRATIC_HESSIAN_RIDGE",
+    "A05_GAM_SPLINE_RIDGE",
+    "A06_SHALLOW_GBDT",
+    "A07_HMM_REGIME_MIXTURE_RIDGE",
+    "A08_STACKED_ENSEMBLE"
+  ],
+  "required_method_fields": [
+    "status",
+    "selected_hyperparameters",
+    "validation_MSE",
+    "terminal_wealth",
+    "calendar_CAGR",
+    "max_drawdown",
+    "average_outer_multiplier",
+    "average_total_gross",
+    "average_cash_fraction",
+    "outer_turnover",
+    "outer_transaction_cost_return_units",
+    "four_block_relative_log_growth",
+    "positive_block_count",
+    "relative_terminal_log_growth",
+    "simultaneous_LCB",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6",
+    "passes_all_scientific_gates"
+  ],
+  "classification_enum": [
+    "PASS_MULTI_ARCHITECTURE_GROSS_CONTROLLER",
+    "FAIL_NO_ROBUST_MULTI_ARCHITECTURE_IMPROVEMENT",
+    "MEASUREMENT_INCONCLUSIVE_MODEL_FIT_FAILURE",
+    "MEASUREMENT_INCONCLUSIVE_DATA_SUPPORT",
+    "INVALID_EXECUTION"
+  ],
+  "frozen_counts": {
+    "validation_tuning_configs": 63,
+    "final_architectures": 8,
+    "actual_variants_if_complete": 71
+  },
+  "frozen_benchmark": {
+    "terminal_wealth": 62813.41563922909,
+    "cagr": 0.6557689400699214,
+    "max_drawdown": -0.3366471268083583
+  },
+  "authorization": {
+    "production_authorized": false,
+    "signature_authorized": false,
+    "order_submission_authorized": false
+  }
+}

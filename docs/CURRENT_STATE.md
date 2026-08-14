@@ -6,8 +6,10 @@ Authoritative repository: `alexwang91/laugh-to-2028`.
 Merged 0064 PASS closeout: `ad8038af45bad2e25e8a7b88b569b1873635d9c2`.
 Merged 0065 DESIGN: `09f9afc69183387afaabfe540394eb01989df148`.
 Merged 0065 preregistration: `7b71c9f3394be17e5fd10ec08147207d268fc00a`.
+Merged 0065 implementation: `c3305eec933bb4d48ca14ec40765b798d50f836f`.
 0065 owner-first commit: `a717d1d359e1b980a7c727e48ec26a1ffb0fc3a6`.
 0065 scientific engine blob: `762b608dd9eb5feedc06867ce07f02d0de8ea928`.
+0065 exactly-once runner blob: `0a81c3ac98420e86786a81bb15b7547d71b27460`.
 0065 full synthetic tournament validation run: `31787644804`.
 
 ## Required closed-research anchors
@@ -22,7 +24,7 @@ ID 0043 is closed against result-informed pruning, reweighting, threshold rescue
 0062 = `FAIL_NO_SIGNAL_ATLAS_FAMILY_INFORMATION / CLOSED`.
 0063 = `FAIL_IDLE_CASH_SWEEP_PRIMARY_ECONOMICS / CLOSED`.
 0064 = `PASS_PASSIVE_CASH_ACCRUAL_ROBUSTNESS / CLOSED TO SAME-ID RERUN`.
-0065 = `IMPLEMENTED / SYNTHETIC FULL-TOURNAMENT VALIDATED / NOT RUN`.
+0065 = `IMPLEMENTED / CONTROLLED EXECUTION BOUNDARY FROZEN / NOT RUN`.
 0065 research ID = `BRRK-MULTI-ARCHITECTURE-GROSS-CONTROLLER-0065`.
 
 0065 is one prospectively frozen architecture tournament, not sequential one-off strategy search. Historical 0065 portfolio CAGR/NAV/ranking has not been computed.
@@ -64,6 +66,21 @@ Deflated-Sharpe-style diagnostic uses declared trial count 71 and is diagnostic 
 
 A scientific winner must beat 0064 in terminal wealth and CAGR, have noninferior MDD, >=3/4 positive blocks, simultaneous one-sided LCB >0, and pass cost/timing/identity contracts.
 
+### Controlled execution boundary
+
+RUN_INTERFACE blob = `0e13a536ca4ee2bc9de4cdf2bcbfe8cd1392b18b`.
+RESULT_SCHEMA blob = `05dd87cd6f820a8573ff434d8cda21656fa164fd`.
+run_once.py blob = `0a81c3ac98420e86786a81bb15b7547d71b27460`.
+PREREGISTRATION blob = `5e98ae3c384d75a970b87f5ceb9fb893e3967acd`.
+DATASET_DECLARATION blob = `031ed9a5d00526029825ad82b0183a09db8e6149`.
+IMPLEMENTATION_CONTRACT blob = `508c909eedeff79796fec05fbbb125d1015fe962`.
+
+Preflight is Git-identity + runtime-artifact absence only: historical content reads=0, loader calls=0, engine calls=0.
+Unique execution requires a durable RUN_ATTEMPT commit before any historical content read.
+Unique execution budget: market/equity/weights/DTB3 each read once; market loader once; scientific engine once; network fetches=0.
+All 63 tuning configs and all 8 final architectures execute inside that one scientific engine call.
+Partial-result automatic recomputation is forbidden. Finalize has zero historical reads and zero scientific calls.
+
 ### Implementation validation
 
 Dedicated synthetic unit suite passed for all seven base model fit/predict interfaces, 44-column quadratic/Hessian expansion, causal HMM filtering, NNLS stack, common gross map, outer-turnover cost, g=1 passive-cash reconstruction algebra, simultaneous MBB determinism, 70-split PBO and deflated-Sharpe diagnostic.
@@ -100,4 +117,4 @@ Phase 6 = NO CHANGE.
 
 ## Exact next step
 
-Run fresh standing CI and merge implementation. Then freeze a controlled-execution boundary pinning all implementation/data identities plus exactly-once persistence. Only after boundary merge and a zero-result Git-only preflight may the single historical tournament attempt begin; all 63 tuning configs and all 8 final architectures must execute in that one batch.
+Run zero-result boundary validation plus synthetic exactly-once persistence tests and fresh standing CI. After controlled-boundary merge, rerun Git-only preflight on the exact merged boundary SHA. Only if it passes may the single historical tournament attempt create and durably persist RUN_ATTEMPT.marker, then read the four frozen historical inputs exactly once and call the tournament engine exactly once.

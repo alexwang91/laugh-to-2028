@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "research_id": "BRRK-MULTI-ARCHITECTURE-GROSS-CONTROLLER-0065",
+  "stage": "CONTROLLED_EXECUTION_INTERFACE",
+  "entrypoint": "python -m research.brrk_multi_architecture_gross_controller_0065.run_once",
+  "commands": {
+    "preflight": "preflight --boundary-sha <MERGED_BOUNDARY_SHA>",
+    "start_attempt": "start --boundary-sha <MERGED_BOUNDARY_SHA> --workflow-run-id <RUN_ID>",
+    "evaluate": "evaluate --boundary-sha <MERGED_BOUNDARY_SHA>",
+    "finalize": "finalize --boundary-sha <MERGED_BOUNDARY_SHA>"
+  },
+  "preflight_permissions": {
+    "git_identity_reads": true,
+    "runtime_artifact_existence_checks": true,
+    "historical_content_reads": 0,
+    "loader_calls": 0,
+    "scientific_engine_calls": 0
+  },
+  "unique_attempt": {
+    "attempt_number": 1,
+    "durable_RUN_ATTEMPT_before_historical_content_read": true,
+    "historical_inputs_read_once_each": ["market_evidence", "equity", "weights", "dtb3"],
+    "market_loader_calls": 1,
+    "scientific_engine_calls": 1,
+    "contained_validation_tuning_configs": 63,
+    "contained_final_architectures": 8,
+    "same_id_rerun_allowed": false,
+    "same_id_retune_allowed": false,
+    "same_id_rescue_allowed": false
+  },
+  "persistence": {
+    "create_only": true,
+    "runtime_artifacts": ["RUN_ATTEMPT.marker", "PRIMARY_RESULT.json", "EVIDENCE.json", "EXECUTION.json", "RUN_ONCE.marker"],
+    "finalize_historical_content_reads": 0,
+    "finalize_scientific_engine_calls": 0,
+    "marker_only_recovery": "allowed only when complete PRIMARY_RESULT/EVIDENCE/EXECUTION hashes already persist; no historical reread"
+  },
+  "authorization": {
+    "production_authorized": false,
+    "signature_authorized": false,
+    "order_submission_authorized": false
+  }
+}

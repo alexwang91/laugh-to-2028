@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "research_id": "BRRK-MULTI-ARCHITECTURE-GROSS-CONTROLLER-0065",
+  "stage": "CONTROLLED_EXECUTION_BOUNDARY_FROZEN_NOT_RUN",
+  "implementation_merge_sha": "c3305eec933bb4d48ca14ec40765b798d50f836f",
+  "frozen_blobs": {
+    "PREREGISTRATION.json": "5e98ae3c384d75a970b87f5ceb9fb893e3967acd",
+    "DATASET_DECLARATION.json": "031ed9a5d00526029825ad82b0183a09db8e6149",
+    "IMPLEMENTATION_CONTRACT.json": "508c909eedeff79796fec05fbbb125d1015fe962",
+    "engine.py": "762b608dd9eb5feedc06867ce07f02d0de8ea928",
+    "RUN_INTERFACE.json": "0e13a536ca4ee2bc9de4cdf2bcbfe8cd1392b18b",
+    "RESULT_SCHEMA.json": "05dd87cd6f820a8573ff434d8cda21656fa164fd",
+    "run_once.py": "0a81c3ac98420e86786a81bb15b7547d71b27460",
+    "0062_feature_engine": "cac8e946998c836d10842b9388e1e3ef345a8c0b",
+    "0047_market_loader": "059b55961e279dab41ba29b5b017de0922e4f33c",
+    "market_evidence": "64ebf5c6deaf3f34dbeac715378f196ff0f4fafe",
+    "BRRK0011_equity": "82c87f8cb0ff01c728ffd3b717fff17cf5a364f2",
+    "BRRK0011_weights": "2f6c8d3a8c25d3cafeaa0128f1c425dac248370b",
+    "DTB3": "71d50e26f8a9afb6bcb88401d20b97d5fb0a891a",
+    "0064_cash_engine": "4060a307be2204c11952cb52e2fc718a5343d8e1"
+  },
+  "payload_hashes": {
+    "market_evidence_payload_sha256": "d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193",
+    "DTB3_payload_sha256": "4d8aee67dbd528ce38ff8482e9bb02dd5ccf2c6cd461f606fe90007151ab6879"
+  },
+  "frozen_scientific_counts": {
+    "validation_tuning_configs": 63,
+    "final_architectures": 8,
+    "total_research_variants": 71,
+    "historical_attempt_budget": 1
+  },
+  "preflight": {
+    "must_run_on_exact_merged_boundary_sha": true,
+    "checks": ["Git blob identities", "payload identities by pinned declarations", "absence of all runtime artifacts"],
+    "historical_content_reads": 0,
+    "market_loader_calls": 0,
+    "scientific_engine_calls": 0
+  },
+  "attempt_consumption": {
+    "RUN_ATTEMPT_must_be_create_only": true,
+    "RUN_ATTEMPT_must_be_durably_pushed_before_any_historical_content_read": true,
+    "same_id_rerun_allowed_after_attempt": false,
+    "same_id_retune_allowed_after_attempt": false,
+    "same_id_rescue_allowed_after_attempt": false
+  },
+  "unique_historical_execution": {
+    "market_evidence_reads": 1,
+    "equity_reads": 1,
+    "weights_reads": 1,
+    "DTB3_reads": 1,
+    "market_loader_calls": 1,
+    "scientific_engine_calls": 1,
+    "network_fetches": 0,
+    "all_63_tuning_configs_and_8_final_architectures_inside_single_engine_call": true
+  },
+  "persistence": {
+    "create_only": true,
+    "result_artifacts": ["PRIMARY_RESULT.json", "EVIDENCE.json", "EXECUTION.json"],
+    "final_marker": "RUN_ONCE.marker",
+    "finalize_historical_content_reads": 0,
+    "finalize_market_loader_calls": 0,
+    "finalize_scientific_engine_calls": 0,
+    "partial_artifact_auto_recompute_allowed": false,
+    "marker_only_recovery": "Only if complete persisted result/evidence/execution hashes already exist; historical reread forbidden."
+  },
+  "no_drift": {
+    "canonical_BRRK_0011": "NO_CHANGE",
+    "0064": "NO_CHANGE",
+    "Phase_6": "NO_CHANGE",
+    "production_authorized": false,
+    "signature_authorized": false,
+    "order_submission_authorized": false
+  }
+}
