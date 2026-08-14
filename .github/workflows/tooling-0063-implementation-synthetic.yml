@@ -1,0 +1,52 @@
+name: Tooling 0063 implementation synthetic-only
+
+on:
+  push:
+    branches: [tools/0062-owner-artifact-v1]
+    paths: ['.github/workflows/tooling-0063-implementation-synthetic.yml']
+
+permissions:
+  contents: read
+
+jobs:
+  synthetic-only:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ec8a67ac9f03996fe4581da0616afa08f394e88e
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: execution/plan-b-bot/requirements-dev.txt
+      - run: pip install -r execution/plan-b-bot/requirements-dev.txt
+      - name: Assert zero historical execution artifacts
+        shell: bash
+        run: |
+          test ! -e research/brrk_idle_cash_sweep_robustness_0063/RUN_ATTEMPT.marker
+          test ! -e research/brrk_idle_cash_sweep_robustness_0063/PRIMARY_RESULT.json
+          test ! -e research/brrk_idle_cash_sweep_robustness_0063/EXECUTION.json
+      - name: Run committed synthetic contracts only
+        run: |
+          python -m pytest -q \
+            research/brrk_idle_cash_sweep_robustness_0063/test_contract.py \
+            research/brrk_idle_cash_sweep_robustness_0063/test_causality.py
+      - name: Run extra frozen statistical toy assertions
+        shell: bash
+        run: |
+          python - <<'PY'
+          import numpy as np
+          from research.brrk_idle_cash_sweep_robustness_0063 import engine as e
+          ids=e.count_balanced_blocks(11,4)
+          assert [(ids==i).sum() for i in range(4)] == [3,3,3,2]
+          x=np.array([9.,1.,5.,2.,8.,3.])
+          assert abs(e.type7_quantile(x,.95)-np.quantile(x,.95,method='linear')) < 1e-15
+          d=np.full(120,.0001)
+          a=e.mbb_lcb(d,reps=100,seed=630063); b=e.mbb_lcb(d,reps=100,seed=630063)
+          assert a == b and a['lcb'] > 0
+          r=np.array([.01,-.02,.03]); eq=10000*np.cumprod(1+r)
+          assert np.allclose(e.reconstruct_returns(eq,10000),r)
+          print('0063 SYNTHETIC_ONLY_PASS')
+          PY
