@@ -7,10 +7,10 @@ Merged 0064 PASS closeout: `ad8038af45bad2e25e8a7b88b569b1873635d9c2`.
 Merged 0065 DESIGN: `09f9afc69183387afaabfe540394eb01989df148`.
 Merged 0065 preregistration: `7b71c9f3394be17e5fd10ec08147207d268fc00a`.
 Merged 0065 implementation: `c3305eec933bb4d48ca14ec40765b798d50f836f`.
-0065 owner-first commit: `a717d1d359e1b980a7c727e48ec26a1ffb0fc3a6`.
-0065 scientific engine blob: `762b608dd9eb5feedc06867ce07f02d0de8ea928`.
-0065 exactly-once runner blob: `0a81c3ac98420e86786a81bb15b7547d71b27460`.
-0065 full synthetic tournament validation run: `31787644804`.
+Merged 0065 controlled boundary: `8f22db987e08d8f1873d8fefbeb9473d64f5b96d`.
+0065 durable attempt commit: `f08bf8018994b39769df98fc32349e614fe961bb`.
+0065 immutable result commit: `b2355e1a6c80c3c0454463f238b2a1bf85e3b83f`.
+0065 unique historical workflow run: `31789144276`.
 
 ## Required closed-research anchors
 
@@ -24,85 +24,65 @@ ID 0043 is closed against result-informed pruning, reweighting, threshold rescue
 0062 = `FAIL_NO_SIGNAL_ATLAS_FAMILY_INFORMATION / CLOSED`.
 0063 = `FAIL_IDLE_CASH_SWEEP_PRIMARY_ECONOMICS / CLOSED`.
 0064 = `PASS_PASSIVE_CASH_ACCRUAL_ROBUSTNESS / CLOSED TO SAME-ID RERUN`.
-0065 = `IMPLEMENTED / CONTROLLED EXECUTION BOUNDARY FROZEN / NOT RUN`.
+0065 = `FAIL_NO_ROBUST_MULTI_ARCHITECTURE_IMPROVEMENT / CLOSED TO SAME-ID RERUN`.
 0065 research ID = `BRRK-MULTI-ARCHITECTURE-GROSS-CONTROLLER-0065`.
 
-0065 is one prospectively frozen architecture tournament, not sequential one-off strategy search. Historical 0065 portfolio CAGR/NAV/ranking has not been computed.
+Historical attempt = 1 / 1 consumed.
+Validation tuning configurations evaluated = 63 / 63.
+Final architectures evaluated = 8 / 8.
+Total actual variants evaluated = 71 / 71.
 
-### Frozen and implemented method set
+## 0065 tournament result
 
-1. A01 FAMILY_ELASTIC_NET — 17 family scores;
-2. A02 RAW_ELASTIC_NET — 185 cells;
-3. A03 PCR_RIDGE — PCA latent factors + ridge;
-4. A04 THEORY_QUADRATIC_HESSIAN_RIDGE — 17 linear + 17 squared + 10 theory interactions;
-5. A05 GAM_SPLINE_RIDGE — additive cubic splines + ridge;
-6. A06 SHALLOW_GBDT — bounded depth 1/2 boosting;
-7. A07 HMM_REGIME_MIXTURE_RIDGE — 2/3-state Gaussian HMM + state-specific ridge with causal forward-filtered evaluation probabilities;
-8. A08 STACKED_ENSEMBLE — validation-only nonnegative convex NNLS stack of A01-A07.
+Frozen benchmark = 0064 primary: CAGR `0.6557689400699214`, terminal wealth `62813.41563922909`, MDD `-0.3366471268083583`.
 
-Frozen validation tuning config count = 63.
-Frozen final architecture count = 8.
-Declared total research variant budget = 71.
-Actual historical variants evaluated = 0.
+Final method CAGRs:
 
-### Frozen common scientific contract
+1. A01 FAMILY_ELASTIC_NET = `0.6557689400699214`.
+2. A02 RAW_ELASTIC_NET = `0.6344356897390435`.
+3. A03 PCR_RIDGE = `0.6547758829891572`.
+4. A04 THEORY_QUADRATIC_HESSIAN_RIDGE = `0.661265451355094`.
+5. A05 GAM_SPLINE_RIDGE = `0.6029612393012411`.
+6. A06 SHALLOW_GBDT = `0.63870174828745`.
+7. A07 HMM_REGIME_MIXTURE_RIDGE = `0.6291194761159626`.
+8. A08 STACKED_ENSEMBLE = `0.6334063138258086`.
 
-Feature universe = complete 0062 Tier-A atlas: 185 cells / 17 family scores; no result-informed pruning.
-Target = 20-session forward BTC log return.
-TRAIN origins end = 2021-12-31.
-VALIDATION origins = 2022-01-01 through 2022-11-19.
-Portfolio evaluation = 2022-12-10 through 2026-08-02.
-Validation and evaluation refit cadence = every 20 sessions.
-At every refit, only origins whose 20-session labels have fully matured strictly before the refit date are eligible.
-Forecast after close t may affect only next portfolio return row t+1.
-Common gross map = `g=clip(1+0.25*z,0,1)` where z uses fit-sample prediction median and `1.4826*MAD`; no smoothing, leverage or shorting.
-Economic benchmark = frozen 0064 primary: 50% DTB3 realization / 100 bps annual continuous cash fee.
-Outer overlay cost = 10 bps per unit outer gross turnover.
-Forcing g=1 must reconstruct 0064 primary within frozen numerical tolerance.
-Four count-balanced contiguous evaluation blocks.
-Simultaneous inference = aligned non-circular MBB L60 / 4000 reps / seed 650065 / Type-7 q95 across all valid final architectures.
-PBO diagnostic = 8 contiguous slices / choose 4 = 70 CSCV splits.
-Deflated-Sharpe-style diagnostic uses declared trial count 71 and is diagnostic only.
+Descriptive best = A04 THEORY_QUADRATIC_HESSIAN_RIDGE.
+A04 CAGR advantage versus 0064 = `+0.549651128517259` percentage points.
+A04 terminal wealth = `63576.606019763145`.
+A04 MDD = `-0.2963539206683067`, materially better than 0064.
+A04 selected ridge alpha = `1000.0`.
 
-A scientific winner must beat 0064 in terminal wealth and CAGR, have noninferior MDD, >=3/4 positive blocks, simultaneous one-sided LCB >0, and pass cost/timing/identity contracts.
+A04 nevertheless fails the frozen robustness gates:
+- four chronological block relative log growth = `[-0.012261224493538014, 0.028019864802351573, -0.025462841386824885, 0.02178109839203702]`;
+- positive blocks = 2 / 4, so G4 fails;
+- simultaneous L60/4000/seed650065 LCB = `-0.00023941640352518253`, so G5 fails.
 
-### Controlled execution boundary
+Scientific winners = `[]`.
+Classification = `FAIL_NO_ROBUST_MULTI_ARCHITECTURE_IMPROVEMENT`.
+PBO/CSCV = `0.6285714285714286` over 70 frozen splits, reinforcing high model-selection instability and the decision not to cherry-pick A04.
 
-RUN_INTERFACE blob = `0e13a536ca4ee2bc9de4cdf2bcbfe8cd1392b18b`.
-RESULT_SCHEMA blob = `05dd87cd6f820a8573ff434d8cda21656fa164fd`.
-run_once.py blob = `0a81c3ac98420e86786a81bb15b7547d71b27460`.
-PREREGISTRATION blob = `5e98ae3c384d75a970b87f5ceb9fb893e3967acd`.
-DATASET_DECLARATION blob = `031ed9a5d00526029825ad82b0183a09db8e6149`.
-IMPLEMENTATION_CONTRACT blob = `508c909eedeff79796fec05fbbb125d1015fe962`.
+## Methodological interpretation
 
-Preflight is Git-identity + runtime-artifact absence only: historical content reads=0, loader calls=0, engine calls=0.
-Unique execution requires a durable RUN_ATTEMPT commit before any historical content read.
-Unique execution budget: market/equity/weights/DTB3 each read once; market loader once; scientific engine once; network fetches=0.
-All 63 tuning configs and all 8 final architectures execute inside that one scientific engine call.
-Partial-result automatic recomputation is forbidden. Finalize has zero historical reads and zero scientific calls.
+The method-first tournament was more informative than sequential one-off trials. Broad unstructured complexity was not rewarded: raw elastic net, additive splines, shallow GBDT, HMM regime mixture and validation-only stacking all reduced CAGR versus 0064. PCR was close but slightly below 0064. Family elastic net collapsed to the baseline/no-overlay path.
 
-### Implementation validation
+The only architecture with positive full-cycle economic improvement was the theory-guided quadratic/Hessian model. This is evidence that low-order curvature and prespecified interactions are more promising than generic nonlinear complexity on the exposed DEVELOPMENT history. It is not sufficient evidence for promotion because temporal recurrence and simultaneous inference fail.
 
-Dedicated synthetic unit suite passed for all seven base model fit/predict interfaces, 44-column quadratic/Hessian expansion, causal HMM filtering, NNLS stack, common gross map, outer-turnover cost, g=1 passive-cash reconstruction algebra, simultaneous MBB determinism, 70-split PBO and deflated-Sharpe diagnostic.
-Full synthetic 2020-08-11..2026-08-02 tournament integration run `31787644804` completed the entire 185-cell construction -> 63 validation tuning configurations -> 8 final methods -> evaluation gross paths -> portfolio economics -> simultaneous inference/PBO pipeline successfully on artificial data.
-Historical 0065 portfolio content reads during implementation = 0.
-Historical 0065 CAGR computed during implementation = false.
+No same-ID interaction pruning, Hessian-guided local refinement, new cross terms, gross-map retuning or post-hoc ensemble rescue is allowed. Any continuation must use a new research ID and explicitly mark the A04 result as RESULT_INFORMED. A genuinely higher-evidence confirmation should freeze the quadratic/interactions hypothesis before future data arrive.
 
-### Frozen data identities
+## Execution integrity
 
-0062 market payload blob = `64ebf5c6deaf3f34dbeac715378f196ff0f4fafe`; payload SHA256 = `d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193`.
-0062 feature engine blob = `cac8e946998c836d10842b9388e1e3ef345a8c0b`.
-0062 loader blob = `059b55961e279dab41ba29b5b017de0922e4f33c`.
-BRRK equity blob = `82c87f8cb0ff01c728ffd3b717fff17cf5a364f2`.
-BRRK weights blob = `2f6c8d3a8c25d3cafeaa0128f1c425dac248370b`.
-DTB3 blob = `71d50e26f8a9afb6bcb88401d20b97d5fb0a891a`; payload SHA256 = `4d8aee67dbd528ce38ff8482e9bb02dd5ccf2c6cd461f606fe90007151ab6879`.
-0064 economic engine blob = `4060a307be2204c11952cb52e2fc718a5343d8e1`.
-
-RUN_ATTEMPT.marker = ABSENT.
-PRIMARY_RESULT.json = ABSENT.
-EVIDENCE.json = ABSENT.
-EXECUTION.json = ABSENT.
-RUN_ONCE.marker = ABSENT.
+Market evidence reads = 1.
+Equity reads = 1.
+Weights reads = 1.
+DTB3 reads = 1.
+Market loader calls = 1.
+Scientific engine calls = 1.
+Network fetches = 0.
+RUN_ONCE = finalized.
+Same-ID rerun = FORBIDDEN.
+Same-ID retune = FORBIDDEN.
+Same-ID rescue = FORBIDDEN.
 
 ## No-drift authority
 
@@ -117,4 +97,4 @@ Phase 6 = NO CHANGE.
 
 ## Exact next step
 
-Run zero-result boundary validation plus synthetic exactly-once persistence tests and fresh standing CI. After controlled-boundary merge, rerun Git-only preflight on the exact merged boundary SHA. Only if it passes may the single historical tournament attempt create and durably persist RUN_ATTEMPT.marker, then read the four frozen historical inputs exactly once and call the tournament engine exactly once.
+Finalize the central registry and merge the immutable 0065 result/closeout through fresh standing CI. Do not select A04 for canonical or production use from this DEVELOPMENT result. If further research is desired, the scientifically clean next design is a new, explicitly RESULT_INFORMED quadratic/interactions validation program, preferably on genuinely future data rather than same-history refinement.
