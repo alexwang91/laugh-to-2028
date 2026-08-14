@@ -61,8 +61,8 @@ jobs:
             'feature_families':['0062_TIER_A_185_CELLS','0062_17_FAMILY_SCORES'],
             'horizon':[1,3,5,10,20],
             'universe':['BTC','SOL'],
-            'development_dataset_refs':['BRRK-LEADERSHIP-ROTATION-0048-EXPOSED-HIST-V1','research/brrk_beta_handoff_0047/evidence/MARKET_EVIDENCE.json'],
-            'validation_dataset_refs':['SAME_FROZEN_RESEARCHER_EXPOSED_DEVELOPMENT_HISTORY_CAUSAL_WALK_FORWARD'],
+            'development_dataset_refs':['BRRK-LEADERSHIP-ROTATION-0048-EXPOSED-HIST-V1'],
+            'validation_dataset_refs':['BRRK-LEADERSHIP-ROTATION-0048-EXPOSED-HIST-V1'],
             'sealed_dataset_refs':[],
             'declared_variant_budget':1704,
             'actual_variants_evaluated':0,
@@ -83,20 +83,10 @@ jobs:
             'production_authorized':False,
             'provenance_status':'PROSPECTIVE_FROZEN',
             'governed_path_prefixes':['research/brrk_btc_sol_path_event_early_warning_0066'],
-            'notes':['Owner-first registration only; no 0066 historical event atlas, model metric or portfolio result exists.','Indicator-atlas hypothesis cells are counted separately from the declared 1704 model/controller variant budget.','production_authorized=false; signature_authorized=false; order_submission_authorized=false.']
+            'notes':['Owner-first registration only; no 0066 historical event atlas, model metric or portfolio result exists.','Development and validation reference the same frozen researcher-exposed dataset slice and are not independent OOS.','Indicator-atlas hypothesis cells are counted separately from the declared 1704 model/controller variant budget.','production_authorized=false; signature_authorized=false; order_submission_authorized=false.']
           })
           rpc=r.get('research_process_complexity',{})
-          rpc.update({
-            'declared_parameter_candidates':1632,
-            'actual_parameter_candidates_evaluated':0,
-            'universes_evaluated':2,
-            'horizons_evaluated':5,
-            'rebalance_variants':8,
-            'feature_representations':8,
-            'special_cases_introduced':0,
-            'validation_exposure_event_refs':0,
-            'related_family_trials':1704
-          })
+          rpc.update({'declared_parameter_candidates':1632,'actual_parameter_candidates_evaluated':0,'universes_evaluated':2,'horizons_evaluated':5,'rebalance_variants':8,'feature_representations':8,'special_cases_introduced':0,'validation_exposure_event_refs':0,'related_family_trials':1704})
           r['research_process_complexity']=rpc
           reg['records'].append(r)
           p.write_text(json.dumps(reg,indent=2,ensure_ascii=False)+'\n')
@@ -104,14 +94,17 @@ jobs:
           def canon(x): return hashlib.sha256(json.dumps(x,sort_keys=True,separators=(',',':'),ensure_ascii=False).encode()).hexdigest()
           assert len(reg['records'])==len(before['records'])+1
           assert all(canon(a)==canon(b) for a,b in zip(before['records'],reg['records'][:-1]))
-          assert reg['records'][-1]['research_id']==rid
-          assert reg['records'][-1]['result_status']=='PREREGISTERED_NOT_RUN'
-          assert reg['records'][-1]['promotion_state']=='NONE'
-          assert reg['records'][-1]['actual_variants_evaluated']==0
-          assert reg['records'][-1]['declared_variant_budget']==1704
-          assert reg['records'][-1]['production_authorized'] is False
-          assert reg['records'][-1]['lineage_edges']==[]
-          assert 'evidence_scorecard' not in reg['records'][-1]
+          owner=reg['records'][-1]
+          assert owner['research_id']==rid
+          assert owner['result_status']=='PREREGISTERED_NOT_RUN'
+          assert owner['promotion_state']=='NONE'
+          assert owner['actual_variants_evaluated']==0
+          assert owner['declared_variant_budget']==1704
+          assert owner['development_dataset_refs']==['BRRK-LEADERSHIP-ROTATION-0048-EXPOSED-HIST-V1']
+          assert owner['validation_dataset_refs']==['BRRK-LEADERSHIP-ROTATION-0048-EXPOSED-HIST-V1']
+          assert owner['production_authorized'] is False
+          assert owner['lineage_edges']==[]
+          assert 'evidence_scorecard' not in owner
           PY
           PYTHONPATH=. python -m research.governance.validate
           test "$(git diff --name-only)" = "config/research_registry.json"
