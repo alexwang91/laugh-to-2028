@@ -27,7 +27,7 @@ The marker was durably pushed before the historical evaluation was allowed to pr
 
 ## Verified execution failure
 
-The historical workflow job configured `timeout-minutes: 350` and `cancel-in-progress: false`.
+The historical workflow job configured `timeout-minutes: 350` and `cancel-in-progress: false`. The exact workflow source is `.github/workflows/tooling-0062-owner-writer.yml` at trigger commit `671542f84a9c2d8b072d33e448038d7bebb5eff4`.
 
 The job started at approximately `2026-08-14T13:51:43Z`. The frozen historical execution step began after successful setup and preflight and was cancelled at approximately `2026-08-14T19:41:47Z`, at the configured job timeout boundary. The terminal workflow conclusion was `cancelled`, and the execution step ended with `The operation was canceled.`
 
