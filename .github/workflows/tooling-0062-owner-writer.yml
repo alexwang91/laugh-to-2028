@@ -1,4 +1,4 @@
-name: Tooling 0066 full artificial tournament validation
+name: Tooling 0066 runtime observability repair
 
 on:
   push:
@@ -8,100 +8,105 @@ on:
       - '.github/workflows/tooling-0062-owner-writer.yml'
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
-  full-artificial-tournament:
+  implementation-runtime-repair:
     runs-on: ubuntu-latest
-    env:
-      PYTHONHASHSEED: '0'
-      PYTHONPATH: '.'
-      OMP_NUM_THREADS: '1'
-      OPENBLAS_NUM_THREADS: '1'
-      MKL_NUM_THREADS: '1'
     steps:
       - uses: actions/checkout@v4
         with:
           ref: research/0066-implementation-v1
-          fetch-depth: 1
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - run: pip install -r execution/plan-b-bot/requirements-dev.txt
-      - name: Assert implementation-only zero-result state
+      - name: Patch observability only
         shell: bash
         run: |
           set -euo pipefail
-          for f in RUN_ATTEMPT.marker PRIMARY_RESULT.json EVIDENCE.json EXECUTION.json RUN_ONCE.marker; do
-            test ! -e "research/brrk_btc_sol_path_event_early_warning_0066/$f"
-          done
-      - name: Execute all frozen 0066 paths on artificial data only
-        shell: bash
-        run: |
-          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "e85493ae419b28dcaff397d413dea1a83f0ec15b"
           python - <<'PY'
-          import json
-          import numpy as np
-          import pandas as pd
-          from research.brrk_btc_sol_path_event_early_warning_0066.engine import evaluate_program
+          from pathlib import Path
 
-          seed=660066
-          rng=np.random.default_rng(seed)
-          idx=pd.date_range('2020-01-01','2026-08-02',freq='D')
-          n=len(idx)
-          frames={}
-          # Purely artificial cyclic regimes: repeated falls, flats and recoveries.
-          for j,asset in enumerate(('BTC','ETH','SOL')):
-              r=rng.normal(0.00055-0.00005*j,0.014+0.0025*j,n)
-              for start in range(380+j*7,n-260,310):
-                  r[start:start+18] += -0.0085*(1+0.12*j)
-                  r[start+70:start+115] *= 0.10
-                  r[start+160:start+205] += 0.0045
-              close=100.0*np.exp(np.cumsum(r))
-              op=close*np.exp(rng.normal(0,0.0015,n))
-              high=np.maximum(op,close)*(1+np.abs(rng.normal(0.004,0.0015,n)))
-              low=np.minimum(op,close)*(1-np.abs(rng.normal(0.004,0.0015,n)))
-              vol=np.exp(rng.normal(10.0+0.1*j,0.35,n))*(1+3*np.abs(r))
-              frames[asset]=pd.DataFrame({
-                  'open':op,'high':high,'low':low,'close':close,
-                  'volume':vol,'quote_volume':vol*close,
-                  'trades':np.maximum(10.0,vol/1200.0),
-              },index=idx)
+          root = Path('research/brrk_btc_sol_path_event_early_warning_0066')
+          mp = root / 'models.py'
+          ep = root / 'engine.py'
+          m = mp.read_text()
+          e = ep.read_text()
 
-          pidx=pd.date_range('2024-01-01','2026-08-02',freq='D')
-          m=len(pidx)
-          base_r=pd.Series(rng.normal(0.0015,0.017,m),index=pidx)
-          base_gross=pd.Series(np.clip(rng.normal(0.74,0.04,m),0.55,0.90),index=pidx)
-          rf=pd.Series(np.full(m,0.00011),index=pidx)
-          out=evaluate_program(frames,base_r,base_gross,rf,bootstrap_replicates=4000)
-          p=out['primary_result']
-          assert p['indicator_atlas_hypothesis_cells']==8080
-          assert p['actual_validation_tuning_configs_evaluated']==1632
-          assert p['final_predictor_track_count']==64
-          assert p['final_controller_count']==8
-          assert p['actual_variants_evaluated']==1704
-          assert len(p['controllers'])==8
-          assert p['production_authorized'] is False
-          assert p['signature_authorized'] is False
-          assert p['order_submission_authorized'] is False
-          assert len(out['evidence']['indicator_warning_atlas']['cells'])==8080
-          print(json.dumps({
-              'ARTIFICIAL_ONLY':True,
-              'classification':p['classification'],
-              'event_onset_count':p['event_onset_count'],
-              'indicator_cells':p['indicator_atlas_hypothesis_cells'],
-              'tuning_configs':p['actual_validation_tuning_configs_evaluated'],
-              'predictor_tracks':p['final_predictor_track_count'],
-              'controllers':p['final_controller_count'],
-              'variant_budget':p['actual_variants_evaluated'],
-              'controller_statuses':{k:v.get('status') for k,v in p['controllers'].items()},
-          },indent=2,sort_keys=True))
+          # Silence only sklearn's known penalty-deprecation FutureWarning. No estimator
+          # argument, grid, solver, tolerance, random seed or mathematical path changes.
+          old = "import math\nfrom dataclasses import dataclass"
+          new = "import math\nimport warnings\nfrom dataclasses import dataclass"
+          assert m.count(old) == 1
+          m = m.replace(old, new)
+          anchor = "from sklearn.preprocessing import StandardScaler\n"
+          insert = (
+              "from sklearn.preprocessing import StandardScaler\n\n"
+              "warnings.filterwarnings(\n"
+              "    \"ignore\",\n"
+              "    message=r\"'penalty' was deprecated in version 1\\.8.*\",\n"
+              "    category=FutureWarning,\n"
+              "    module=r\"sklearn\\.linear_model\\._logistic\",\n"
+              ")\n"
+          )
+          assert m.count(anchor) == 1
+          m = m.replace(anchor, insert)
+
+          # Progress counters only. They do not alter control flow or values.
+          old1 = "                        attempts += 1\n                        pred, pa = _walk_forward_classifier("
+          new1 = (
+              "                        attempts += 1\n"
+              "                        if attempts == 1 or attempts % 25 == 0:\n"
+              "                            print(f\"[0066][validation] tuning_attempt={attempts}/1632 asset={asset} target={target} lead={h} arch={arch}\", flush=True)\n"
+              "                        pred, pa = _walk_forward_classifier("
+          )
+          assert e.count(old1) == 1
+          e = e.replace(old1, new1)
+
+          old2 = "                attempts += 1\n                preds, pa = _walk_forward_hazard("
+          new2 = (
+              "                attempts += 1\n"
+              "                if attempts == 1 or attempts % 25 == 0:\n"
+              "                    print(f\"[0066][validation] tuning_attempt={attempts}/1632 asset={asset} target={target} arch=P07_DISCRETE_TIME_HAZARD_LOGIT\", flush=True)\n"
+              "                preds, pa = _walk_forward_hazard("
+          )
+          assert e.count(old2) == 1
+          e = e.replace(old2, new2)
+
+          phase_replacements = [
+              (
+                  "    frames = _naive_frames(frames)\n    cells, families, meta, signals = _common_feature_objects(frames)\n",
+                  "    print(\"[0066] phase=feature_build start\", flush=True)\n    frames = _naive_frames(frames)\n    cells, families, meta, signals = _common_feature_objects(frames)\n    print(\"[0066] phase=feature_build done\", flush=True)\n",
+              ),
+              (
+                  "    bundle = ee.build_event_atlas(frames)\n    labels, support = _labels_and_support(bundle, cells.index)\n",
+                  "    print(\"[0066] phase=event_atlas start\", flush=True)\n    bundle = ee.build_event_atlas(frames)\n    labels, support = _labels_and_support(bundle, cells.index)\n    print(\"[0066] phase=event_atlas done\", flush=True)\n",
+              ),
+              (
+                  "    atlas, screened = build_indicator_warning_atlas(signals, meta, labels, support, {a: bundle.asset_indices[a] for a in ee.ASSETS})\n    selected_params, validation_predictions, validation_metrics, tuning_audit, tuning_attempts = _tune_validation(cells, families, signals, labels, {a: bundle.asset_indices[a] for a in ee.ASSETS}, screened)\n",
+                  "    print(\"[0066] phase=indicator_atlas start\", flush=True)\n    atlas, screened = build_indicator_warning_atlas(signals, meta, labels, support, {a: bundle.asset_indices[a] for a in ee.ASSETS})\n    print(\"[0066] phase=indicator_atlas done\", flush=True)\n    print(\"[0066] phase=validation_tuning start declared_attempts=1632\", flush=True)\n    selected_params, validation_predictions, validation_metrics, tuning_audit, tuning_attempts = _tune_validation(cells, families, signals, labels, {a: bundle.asset_indices[a] for a in ee.ASSETS}, screened)\n    print(f\"[0066] phase=validation_tuning done actual_attempts={tuning_attempts}\", flush=True)\n",
+              ),
+              (
+                  "    economic_predictions, evaluation_audit = _evaluate_selected_over_economic_period(cells, families, signals, labels, {a: bundle.asset_indices[a] for a in ee.ASSETS}, screened, selected_params, validation_predictions)\n    predictor_results, predictor_boot = _final_predictor_results(labels, support, economic_predictions, preferred_horizon, cells.index)\n",
+                  "    print(\"[0066] phase=economic_prediction_generation start\", flush=True)\n    economic_predictions, evaluation_audit = _evaluate_selected_over_economic_period(cells, families, signals, labels, {a: bundle.asset_indices[a] for a in ee.ASSETS}, screened, selected_params, validation_predictions)\n    print(\"[0066] phase=economic_prediction_generation done\", flush=True)\n    print(\"[0066] phase=predictive_inference start\", flush=True)\n    predictor_results, predictor_boot = _final_predictor_results(labels, support, economic_predictions, preferred_horizon, cells.index)\n    print(\"[0066] phase=predictive_inference done\", flush=True)\n",
+              ),
+          ]
+          for old, new in phase_replacements:
+              assert e.count(old) == 1, old[:80]
+              e = e.replace(old, new)
+
+          mp.write_text(m)
+          ep.write_text(e)
           PY
-      - name: Reassert no historical runtime artifacts were created
-        shell: bash
-        run: |
-          set -euo pipefail
-          for f in RUN_ATTEMPT.marker PRIMARY_RESULT.json EVIDENCE.json EXECUTION.json RUN_ONCE.marker; do
-            test ! -e "research/brrk_btc_sol_path_event_early_warning_0066/$f"
-          done
-          test -z "$(git status --porcelain)"
+          python -m py_compile research/brrk_btc_sol_path_event_early_warning_0066/models.py research/brrk_btc_sol_path_event_early_warning_0066/engine.py
+          git diff --check
+          changed="$(git diff --name-only)"
+          test "$changed" = $'research/brrk_btc_sol_path_event_early_warning_0066/engine.py\nresearch/brrk_btc_sol_path_event_early_warning_0066/models.py'
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add research/brrk_btc_sol_path_event_early_warning_0066/engine.py research/brrk_btc_sol_path_event_early_warning_0066/models.py
+          git commit -m 'research: add 0066 runtime progress observability'
+          git push origin HEAD:research/0066-implementation-v1
