@@ -4443,7 +4443,7 @@
       "validation_dataset_refs": [],
       "sealed_dataset_refs": [],
       "declared_variant_budget": 20,
-      "actual_variants_evaluated": 0,
+      "actual_variants_evaluated": 20,
       "parameter_candidate_count": 20,
       "stopping_rule": "Exactly one governed historical execution attempt after preregistration, implementation and controlled-boundary merges; all 20 frozen stress cells are evaluated in one scientific engine call with no result-dependent rerun or rescue.",
       "success_criteria": "The prospectively frozen primary 50%-realization/100-bps annual-fee cell passes data identity, terminal wealth/CAGR, drawdown, temporal recurrence and dependence-aware MBB gates, and all nine frozen core stress cells retain positive relative terminal log growth.",
@@ -4453,7 +4453,7 @@
       "researcher_decisions": "0064 DESIGN prospectively froze passive residual-cash accrual, the 4x5 realization/annual-fee grid, the 50%/100-bps primary cell, nine-cell core neighborhood, no zero-yield floor and no per-change sweep cost before 0064 candidate economics.",
       "research_process_complexity": {
         "declared_parameter_candidates": 20,
-        "actual_parameter_candidates_evaluated": 0,
+        "actual_parameter_candidates_evaluated": 20,
         "universes_evaluated": 1,
         "horizons_evaluated": 1,
         "rebalance_variants": 0,
@@ -4463,15 +4463,28 @@
         "related_family_trials": 2
       },
       "lineage_edges": [],
-      "result_status": "PREREGISTERED_NOT_RUN",
+      "result_status": "PASS_PASSIVE_CASH_ACCRUAL_ROBUSTNESS",
       "failure_reason": null,
-      "promotion_state": "NONE",
-      "evidence_refs": [],
+      "promotion_state": "NO_PROMOTION",
+      "evidence_refs": [
+        "run:31783619793",
+        "research/brrk_idle_cash_passive_accrual_robustness_0064/RUN_ATTEMPT.marker",
+        "research/brrk_idle_cash_passive_accrual_robustness_0064/PRIMARY_RESULT.json",
+        "research/brrk_idle_cash_passive_accrual_robustness_0064/EVIDENCE.json",
+        "research/brrk_idle_cash_passive_accrual_robustness_0064/EXECUTION.json",
+        "research/brrk_idle_cash_passive_accrual_robustness_0064/RUN_ONCE.marker",
+        "research/brrk_idle_cash_passive_accrual_robustness_0064/CLOSEOUT.json"
+      ],
       "decision_refs": [
         "research/governance/BRRK_IDLE_CASH_PASSIVE_ACCRUAL_ROBUSTNESS_0064_DESIGN_FREEZE_2026-08-14.md",
-        "docs/CURRENT_STATE.md"
+        "docs/CURRENT_STATE.md",
+        "research/brrk_idle_cash_passive_accrual_robustness_0064/PREREGISTRATION.json",
+        "research/brrk_idle_cash_passive_accrual_robustness_0064/DATASET_DECLARATION.json",
+        "research/brrk_idle_cash_passive_accrual_robustness_0064/IMPLEMENTATION_CONTRACT.json",
+        "research/brrk_idle_cash_passive_accrual_robustness_0064/CONTROLLED_EXECUTION_BOUNDARY.json",
+        "research/brrk_idle_cash_passive_accrual_robustness_0064/CLOSEOUT.json"
       ],
-      "production_relevance": "DEVELOPMENT mechanism test only; no canonical, Phase-6 or production authority.",
+      "production_relevance": "DEVELOPMENT PASS satisfying the requested reliable full-cycle net-CAGR-above-BRRK-0011 stop condition; future-only validation eligible; no automatic canonical or production authority.",
       "production_authorized": false,
       "provenance_status": "FACT",
       "governed_path_prefixes": [
@@ -4482,8 +4495,18 @@
         "0064 changes no BRRK-0011 risk-asset signal, target, weight or gross exposure.",
         "The already frozen and registered 0063 DTB3 payload is reused by immutable identity with no new network capture.",
         "All 20 stress cells must be reported; only the prospectively frozen primary hypothesis can satisfy the program stop condition.",
-        "Historical 0064 candidate economics have not been computed; RUN_ATTEMPT.marker is absent."
-      ]
+        "Unique historical attempt run 31783619793 completed exactly once on frozen boundary 876fdf657bd11bc4aeb9d0dcd3859886ee099568.",
+        "Frozen primary 50% DTB3 realization / 100-bps annual fee passed all G0-G6 gates: CAGR 0.6557689400699214 > baseline 0.6516609785339962; MDD noninferior; 4/4 blocks positive; MBB LCB positive; 9/9 core stresses positive.",
+        "The DEVELOPMENT-stage optimization stop condition is satisfied. 0064 is permanently closed to same-ID rerun, recomputation, retune and rescue.",
+        "Evidence remains researcher-exposed DEVELOPMENT history rather than independent OOS; future-only confirmation is eligible and separate.",
+        "production_authorized=false; signature_authorized=false; order_submission_authorized=false."
+      ],
+      "evidence_scorecard": {
+        "temporal_novelty": "RESEARCHER_EXPOSED_DEVELOPMENT_NOT_INDEPENDENT_OOS_FUTURE_ONLY_CONFIRMATION_ELIGIBLE",
+        "statistical_sufficiency": "G0_G6_ALL_PASS_PRIMARY_CAGR_PLUS_0_4108PP_MDD_NONINFERIOR_4_OF_4_BLOCKS_POSITIVE_MBB_L60_4000_LCB_POSITIVE_CORE_STRESS_9_OF_9",
+        "governance_integrity": "HIGH_EXACTLY_ONCE_HASH_BOUND_FINALIZED_EQUITY1_WEIGHTS1_DTB3_1_ENGINE1_DURABLE_ATTEMPT_PARENT_NO_RERUN",
+        "operational_realism": "UNCHANGED_BRRK0011_RISK_ASSET_PATH_PASSIVE_IDLE_CASH_CARRY_WITH_50PCT_DTB3_REALIZATION_AND_100BPS_ANNUAL_CONTINUOUS_ACCOUNT_COST_NO_SWEEP_COST"
+      }
     }
   ],
   "research_governance_debt": [
