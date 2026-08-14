@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "research_id": "BRRK-IDLE-CASH-SWEEP-ROBUSTNESS-0063",
+  "stage": "IMPLEMENTATION_ONLY_NO_HISTORICAL_READ",
+  "preregistration_merge_sha": "42bd7ef1d8dde65c15e9c0ec5ace07a6d548c564",
+  "engine_git_blob_sha": "94dec1f3071ce80b859c9558556cdb4f1ffd26c8",
+  "frozen_candidate_cells": 16,
+  "primary_cell": {
+    "yield_realization": 0.5,
+    "sweep_friction_bps": 10
+  },
+  "formula_contract": {
+    "baseline_return": "pct_change with first return = first_equity/10000-1",
+    "gross": "sum(abs(weights),axis=1)",
+    "idle_cash": "clip(1-gross,0,1)",
+    "dtb3": "d=percent/100; BEY=365*d/(360-91*d); rf_daily=BEY/365",
+    "alignment": "union strategy/source dates, causal forward fill only, then exact strategy-date reindex; no backfill",
+    "candidate": "baseline + idle_cash*yield_realization*rf_daily - friction*abs(delta idle_cash)",
+    "first_turnover": 0,
+    "cagr_year_days": 365.25,
+    "max_drawdown": "realized NAV / realized NAV cumulative max - 1, matching repository frozen metric semantics",
+    "relative_log_increment": "log1p(candidate)-log1p(baseline)",
+    "chronological_blocks": "4 count-balanced contiguous blocks; remainder allocated to earlier blocks",
+    "mbb": "aligned non-circular moving blocks; L60; 4000 reps; seed630063; starts uniform 0..N-L; concatenate/truncate N; Type-7 q95 of mu_obs-mu_b; LCB=mu_obs-q95"
+  },
+  "stage_separation": {
+    "engine_file_or_network_io": false,
+    "historical_baseline_read_in_implementation_tests": false,
+    "historical_dtb3_read_in_implementation_tests": false,
+    "historical_candidate_economics_in_implementation_tests": false,
+    "G0_git_and_payload_identity_owned_by_controlled_runner": true,
+    "G1_exact_baseline_anchor_validation_owned_by_controlled_runner": true,
+    "engine_classification_begins_after_G1": true
+  },
+  "implementation_invariants": {
+    "parameter_selection_or_argmax": false,
+    "signal_or_target_change": false,
+    "risk_asset_weight_or_gross_change": false,
+    "cash_timing_rule": false,
+    "reentry_rule": false,
+    "network_access": false,
+    "production_authorized": false,
+    "signature_authorized": false,
+    "order_submission_authorized": false
+  }
+}
