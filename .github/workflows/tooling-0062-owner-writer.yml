@@ -1,4 +1,4 @@
-name: Tooling 0066 exact merged boundary preflight
+name: Tooling 0066 unique historical execution
 
 on:
   push:
@@ -8,11 +8,16 @@ on:
       - '.github/workflows/tooling-0062-owner-writer.yml'
 
 permissions:
-  contents: read
+  contents: write
+
+concurrency:
+  group: brrk-0066-unique-historical-execution
+  cancel-in-progress: false
 
 jobs:
-  exact-merge-preflight:
+  execute-once:
     runs-on: ubuntu-latest
+    timeout-minutes: 350
     env:
       PYTHONHASHSEED: '0'
       PYTHONPATH: '.'
@@ -23,29 +28,112 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: b1af358577349c58a8468a3822775152b5aaad34
-          fetch-depth: 1
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
       - run: pip install -r execution/plan-b-bot/requirements-dev.txt
-      - name: Exact merged boundary zero-result preflight
+      - name: Execute frozen 0066 exactly once
         shell: bash
         run: |
           set -euo pipefail
           BOUNDARY_SHA=b1af358577349c58a8468a3822775152b5aaad34
+          RESULT_BRANCH=research/0066-result-v1
+          D=research/brrk_btc_sol_path_event_early_warning_0066
+
           test "$(git rev-parse HEAD)" = "$BOUNDARY_SHA"
+          if git ls-remote --exit-code --heads origin "refs/heads/$RESULT_BRANCH" >/dev/null 2>&1; then
+            echo "RESULT_BRANCH_ALREADY_EXISTS; refusing second 0066 start"
+            exit 1
+          fi
           for f in RUN_ATTEMPT.marker PRIMARY_RESULT.json EVIDENCE.json EXECUTION.json RUN_ONCE.marker; do
-            test ! -e "research/brrk_btc_sol_path_event_early_warning_0066/$f"
+            test ! -e "$D/$f"
           done
+
           python -m research.brrk_btc_sol_path_event_early_warning_0066.run_once preflight --boundary-sha "$BOUNDARY_SHA" | tee /tmp/0066-preflight.json
           python - <<'PY'
           import json
           p=json.load(open('/tmp/0066-preflight.json'))
           assert p['status']=='PREFLIGHT_PASS_ZERO_RESULT_GIT_IDENTITY_ONLY'
-          assert p['boundary_sha']=='b1af358577349c58a8468a3822775152b5aaad34'
-          assert p['market_loader_calls']==0
-          assert p['scientific_engine_calls']==0
           assert all(v==0 for v in p['historical_content_reads'].values())
-          assert p['runtime_artifacts_present']==[]
+          assert p['market_loader_calls']==0 and p['scientific_engine_calls']==0
           PY
-          test -z "$(git status --porcelain)"
+
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+
+          # Irreversible boundary: create marker locally, then durably push marker-only commit
+          # while keeping the scientific worktree detached at the exact boundary SHA.
+          python -m research.brrk_btc_sol_path_event_early_warning_0066.run_once start \
+            --boundary-sha "$BOUNDARY_SHA" --workflow-run-id "$GITHUB_RUN_ID" | tee /tmp/0066-attempt.json
+          test -f "$D/RUN_ATTEMPT.marker"
+          git add "$D/RUN_ATTEMPT.marker"
+          ATTEMPT_TREE="$(git write-tree)"
+          ATTEMPT_COMMIT="$(printf '%s\n' '0066: persist unique RUN_ATTEMPT before historical read' | git commit-tree "$ATTEMPT_TREE" -p "$BOUNDARY_SHA")"
+          git push origin "$ATTEMPT_COMMIT:refs/heads/$RESULT_BRANCH"
+          REMOTE_ATTEMPT="$(git ls-remote origin "refs/heads/$RESULT_BRANCH" | cut -f1)"
+          test "$REMOTE_ATTEMPT" = "$ATTEMPT_COMMIT"
+          test "$(git rev-parse HEAD)" = "$BOUNDARY_SHA"
+          echo "[0066] durable_attempt_commit=$ATTEMPT_COMMIT"
+          echo "[0066] durable RUN_ATTEMPT confirmed; same-ID rerun/retune/rescue is now permanently forbidden"
+
+          # Exactly one historical scientific execution. engine.py emits phase/tuning progress.
+          python - <<'PY'
+          from research.brrk_btc_sol_path_event_early_warning_0066 import run_once
+          boundary='b1af358577349c58a8468a3822775152b5aaad34'
+          out=run_once.evaluate(boundary)
+          p=out['primary_result']
+          x=out['execution']
+          print('[0066] historical_evaluate_complete')
+          print('[0066] classification='+str(p.get('classification')))
+          print('[0066] actual_validation_tuning_configs_evaluated='+str(p.get('actual_validation_tuning_configs_evaluated')))
+          print('[0066] actual_variants_evaluated='+str(p.get('actual_variants_evaluated')))
+          print('[0066] market_loader_calls='+str(x.get('market_loader_calls')))
+          print('[0066] scientific_engine_calls='+str(x.get('scientific_engine_calls')))
+          PY
+
+          test -f "$D/PRIMARY_RESULT.json"
+          test -f "$D/EVIDENCE.json"
+          test -f "$D/EXECUTION.json"
+          git add "$D/PRIMARY_RESULT.json" "$D/EVIDENCE.json" "$D/EXECUTION.json"
+          RESULT_TREE="$(git write-tree)"
+          RESULT_COMMIT="$(printf '%s\n' '0066: persist immutable unique historical result bundle' | git commit-tree "$RESULT_TREE" -p "$ATTEMPT_COMMIT")"
+          git push origin "$RESULT_COMMIT:refs/heads/$RESULT_BRANCH"
+          REMOTE_RESULT="$(git ls-remote origin "refs/heads/$RESULT_BRANCH" | cut -f1)"
+          test "$REMOTE_RESULT" = "$RESULT_COMMIT"
+          test "$(git rev-parse HEAD)" = "$BOUNDARY_SHA"
+          echo "[0066] durable_result_commit=$RESULT_COMMIT"
+
+          # Marker-only finalization. No historical read, loader call, or scientific remeasurement.
+          python -m research.brrk_btc_sol_path_event_early_warning_0066.run_once finalize --boundary-sha "$BOUNDARY_SHA" | tee /tmp/0066-finalize.json
+          test -f "$D/RUN_ONCE.marker"
+          git add "$D/RUN_ONCE.marker"
+          FINAL_TREE="$(git write-tree)"
+          FINAL_COMMIT="$(printf '%s\n' '0066: finalize exactly-once historical execution' | git commit-tree "$FINAL_TREE" -p "$RESULT_COMMIT")"
+          git push origin "$FINAL_COMMIT:refs/heads/$RESULT_BRANCH"
+          REMOTE_FINAL="$(git ls-remote origin "refs/heads/$RESULT_BRANCH" | cut -f1)"
+          test "$REMOTE_FINAL" = "$FINAL_COMMIT"
+          test "$(git rev-parse HEAD)" = "$BOUNDARY_SHA"
+          echo "[0066] durable_final_commit=$FINAL_COMMIT"
+
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=Path('research/brrk_btc_sol_path_event_early_warning_0066')
+          p=json.loads((d/'PRIMARY_RESULT.json').read_text())
+          x=json.loads((d/'EXECUTION.json').read_text())
+          m=json.loads((d/'RUN_ONCE.marker').read_text())
+          assert x['market_loader_calls'] in (0,1)
+          assert x['scientific_engine_calls'] in (0,1)
+          assert x['network_fetches']==0
+          assert m['historical_content_reads_during_finalize']==0
+          assert m['market_loader_calls_during_finalize']==0
+          assert m['scientific_engine_calls_during_finalize']==0
+          assert p['production_authorized'] is False
+          assert p['signature_authorized'] is False
+          assert p['order_submission_authorized'] is False
+          print('[0066] FINAL_CLASSIFICATION='+str(p['classification']))
+          print('[0066] FINAL_VARIANTS='+str(p.get('actual_variants_evaluated')))
+          print('[0066] EXECUTION_CLOSED_TO_SAME_ID_RERUN=true')
+          PY
