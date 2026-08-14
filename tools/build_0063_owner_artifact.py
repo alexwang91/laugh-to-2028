@@ -38,20 +38,11 @@ def owner() -> dict:
         "economic_mechanism": "Capital already left idle by BRRK-0011 may earn short-duration cash yield without changing directional signals, weights or gross exposure; conservative realization haircuts and explicit cash-sleeve transition friction test whether the uplift is robust rather than a frictionless accounting artifact.",
         "primary_target": "FULL_CYCLE_NET_TERMINAL_WEALTH_AND_CALENDAR_SPAN_CAGR_VERSUS_UNCHANGED_BRRK_0011",
         "primary_metric": "PRIMARY_50_PERCENT_DTB3_REALIZATION_10_BPS_SWEEP_FRICTION_PAIRED_RELATIVE_LOG_GROWTH_WITH_ECONOMIC_TEMPORAL_AND_MBB_GATES",
-        "secondary_metrics": [
-            "max_drawdown",
-            "cash_sweep_turnover",
-            "total_sweep_friction",
-            "chronological_block_relative_log_growth",
-            "stress_grid_relative_terminal_wealth",
-        ],
+        "secondary_metrics": ["max_drawdown", "cash_sweep_turnover", "total_sweep_friction", "chronological_block_relative_log_growth", "stress_grid_relative_terminal_wealth"],
         "feature_families": ["IDLE_CASH_FRACTION", "FRED_DTB3_SHORT_RATE"],
         "horizon": "FULL_COMMITTED_BRRK0011_WINDOW",
         "universe": ["BTC", "ETH", "SOL", "BNB", "CASH"],
-        "development_dataset_refs": [
-            "PIT-DISP-0015-BRRK0011-COMMITTED-PATH",
-            "FRED-DTB3-0063-FIRST-VALID-CAPTURE",
-        ],
+        "development_dataset_refs": ["BRRK-WINNER-0001-CANONICAL-HIST-V1"],
         "validation_dataset_refs": [],
         "sealed_dataset_refs": [],
         "declared_variant_budget": 16,
@@ -72,19 +63,14 @@ def owner() -> dict:
             "feature_representations": 2,
             "special_cases_introduced": 1,
             "validation_exposure_event_refs": [],
-            "related_family_trials": 1,
+            "related_family_trials": 1
         },
         "lineage_edges": [],
         "result_status": "PREREGISTERED_NOT_RUN",
         "failure_reason": None,
         "promotion_state": "NONE",
         "evidence_refs": [],
-        "decision_refs": [
-            DESIGN,
-            "research/brrk_idle_cash_sweep_robustness_0063/PREREGISTRATION.json",
-            "research/brrk_idle_cash_sweep_robustness_0063/DATASET_DECLARATION.json",
-            "docs/CURRENT_STATE.md",
-        ],
+        "decision_refs": [DESIGN, "research/brrk_idle_cash_sweep_robustness_0063/PREREGISTRATION.json", "research/brrk_idle_cash_sweep_robustness_0063/DATASET_DECLARATION.json", "docs/CURRENT_STATE.md"],
         "production_relevance": "DEVELOPMENT cash-carry robustness replication only; no canonical BRRK-0011, Phase-6, production, signer or order-submission authority.",
         "production_authorized": False,
         "provenance_status": "FACT",
@@ -92,9 +78,9 @@ def owner() -> dict:
         "notes": [
             "F27 R2 is exposed DEVELOPMENT motivation only and cannot satisfy 0063 gates.",
             "0063 changes no BRRK-0011 risk-asset signal, target, weight or gross exposure.",
-            "The first-valid DTB3 raw capture is immutable and replacement is forbidden.",
-            "All 16 stress cells are reported; only the prospectively frozen primary hypothesis can promote.",
-        ],
+            "The result-blind DTB3 capture is bound later in formal preregistration because owner-first registry validation cannot reference an unregistered dataset slice.",
+            "All 16 stress cells are reported; only the prospectively frozen primary hypothesis can promote."
+        ]
     }
 
 
@@ -135,7 +121,7 @@ def main() -> None:
         "result_status": clean["result_status"],
         "promotion_state": clean["promotion_state"],
         "actual_variants_evaluated": clean["actual_variants_evaluated"],
-        "production_authorized": clean["production_authorized"],
+        "production_authorized": clean["production_authorized"]
     }
     (OUT / "research_registry.json").write_bytes(REG.read_bytes())
     (OUT / "OWNER.json").write_text(json.dumps(clean, indent=2, ensure_ascii=False, allow_nan=False) + "\n", encoding="utf-8")
