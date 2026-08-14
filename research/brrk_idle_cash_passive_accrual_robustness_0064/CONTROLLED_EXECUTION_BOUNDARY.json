@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "research_id": "BRRK-IDLE-CASH-PASSIVE-ACCRUAL-ROBUSTNESS-0064",
+  "stage": "CONTROLLED_EXECUTION_BOUNDARY_FROZEN_NOT_RUN",
+  "implementation_merge_sha": "7e771dea9355c4170e806af13b35a327beac0466",
+  "run_interface": {
+    "path": "research/brrk_idle_cash_passive_accrual_robustness_0064/RUN_INTERFACE.json",
+    "git_blob_sha": "1289d808bd5da99dd4de295f70360f4673536cee"
+  },
+  "result_schema": {
+    "path": "research/brrk_idle_cash_passive_accrual_robustness_0064/RESULT_SCHEMA.json",
+    "git_blob_sha": "3dd860f51b96f769db75a50e50acf850db35bf19"
+  },
+  "runner": {
+    "path": "research/brrk_idle_cash_passive_accrual_robustness_0064/run_once.py",
+    "git_blob_sha": "f9af95b99c862ead8e8907cd06042884c0892b7b",
+    "preflight_reads_historical_csv_content": false,
+    "preflight_scientific_engine_calls": 0,
+    "historical_inputs_read_exactly_once_after_attempt": ["equity","weights","dtb3"],
+    "scientific_engine_call_budget": 1,
+    "automatic_recompute_after_partial_result": false,
+    "marker_only_recovery": true
+  },
+  "historical_execution": {
+    "attempt_budget": 1,
+    "must_start_after_boundary_merge": true,
+    "must_run_on_exact_merged_boundary_head": true,
+    "candidate_cells_in_unique_engine_call": 20,
+    "same_id_rerun_allowed": false,
+    "same_id_retune_allowed": false,
+    "same_id_rescue_allowed": false
+  },
+  "pre_attempt_state": {
+    "actual_variants_evaluated": 0,
+    "RUN_ATTEMPT.marker": "ABSENT",
+    "PRIMARY_RESULT.json": "ABSENT",
+    "EVIDENCE.json": "ABSENT",
+    "EXECUTION.json": "ABSENT",
+    "RUN_ONCE.marker": "ABSENT"
+  },
+  "data_identity": {
+    "equity_git_blob_sha": "82c87f8cb0ff01c728ffd3b717fff17cf5a364f2",
+    "weights_git_blob_sha": "2f6c8d3a8c25d3cafeaa0128f1c425dac248370b",
+    "dtb3_git_blob_sha": "71d50e26f8a9afb6bcb88401d20b97d5fb0a891a",
+    "dtb3_sha256": "4d8aee67dbd528ce38ff8482e9bb02dd5ccf2c6cd461f606fe90007151ab6879",
+    "network_fetch_allowed": false,
+    "replacement_allowed": false
+  },
+  "failure_semantics": {
+    "git_or_boundary_identity_failure_before_attempt": "NO_ATTEMPT_CONSUMED",
+    "input_identity_or_support_failure_after_attempt": "MEASUREMENT_INCONCLUSIVE_DATA_IDENTITY_AND_SAME_ID_CLOSED",
+    "runtime_exception_after_attempt_before_complete_result": "INVALID_EXECUTION_AND_SAME_ID_CLOSED_NO_AUTOMATIC_RERUN",
+    "complete_result_without_final_marker": "MARKER_ONLY_RECOVERY_FROM_EXISTING_HASHES_ALLOWED_WITHOUT_HISTORICAL_READ"
+  },
+  "authorization": {
+    "canonical_BRRK_0011": "NO_CHANGE",
+    "Phase_6": "NO_CHANGE",
+    "production_authorized": false,
+    "signature_authorized": false,
+    "order_submission_authorized": false
+  }
+}
