@@ -4791,12 +4791,16 @@
         "BTC",
         "SOL"
       ],
-      "development_dataset_refs": [],
-      "validation_dataset_refs": [],
+      "development_dataset_refs": [
+        "BRRK-LEADERSHIP-ROTATION-0048-EXPOSED-HIST-V1"
+      ],
+      "validation_dataset_refs": [
+        "BRRK-LEADERSHIP-ROTATION-0048-EXPOSED-HIST-V1"
+      ],
       "sealed_dataset_refs": [],
-      "declared_variant_budget": 0,
+      "declared_variant_budget": 1704,
       "actual_variants_evaluated": 0,
-      "parameter_candidate_count": 0,
+      "parameter_candidate_count": 1632,
       "stopping_rule": "No 0067 historical execution before DESIGN, owner-first numerical/data preregistration, implementation-only merge, exact full-shape nonhistorical qualification PASS, and controlled-boundary merge. After a historical RUN_ATTEMPT marker, no same-ID rerun, retune, rescue, or recomputation.",
       "success_criteria": "Scientific success/failure gates and exact execution-qualification limits are frozen in numerical/data PREREGISTRATION; DESIGN creates no historical result authority.",
       "failure_criteria": "A pre-historical compute-qualification failure blocks historical execution without consuming a historical attempt; post-marker execution failure is execution invalidation rather than scientific rejection.",
@@ -4808,7 +4812,7 @@
         "Runtime engineering must preserve prospectively frozen scientific semantics and pass reference-equivalence tests."
       ],
       "research_process_complexity": {
-        "declared_parameter_candidates": 0,
+        "declared_parameter_candidates": 1632,
         "actual_parameter_candidates_evaluated": 0,
         "universes_evaluated": 2,
         "horizons_evaluated": 5,
@@ -4816,14 +4820,18 @@
         "feature_representations": 8,
         "special_cases_introduced": 1,
         "validation_exposure_event_refs": 0,
-        "related_family_trials": 0
+        "related_family_trials": 1704
       },
       "lineage_edges": [],
       "result_status": "PREREGISTERED_NOT_RUN",
       "failure_reason": null,
       "promotion_state": "NONE",
       "evidence_refs": [],
-      "decision_refs": [],
+      "decision_refs": [
+        "research/brrk_btc_sol_path_event_early_warning_runtime_qualified_0067/PREREGISTRATION.json",
+        "research/brrk_btc_sol_path_event_early_warning_runtime_qualified_0067/DATASET_DECLARATION.json",
+        "research/brrk_btc_sol_path_event_early_warning_runtime_qualified_0067/QUALIFICATION_PREREGISTRATION.json"
+      ],
       "production_relevance": "Research-only defensive gross study; compute qualification and any later scientific PASS confer no automatic production authority.",
       "production_authorized": false,
       "provenance_status": "PROSPECTIVE_FROZEN",
@@ -4831,9 +4839,9 @@
         "research/brrk_btc_sol_path_event_early_warning_runtime_qualified_0067"
       ],
       "notes": [
-        "Owner-first registration precedes introduction of the 0067 formal research path.",
-        "Exact historical data refs, scientific counts, and runtime/memory acceptance limits are intentionally deferred to numerical/data PREREGISTRATION.",
-        "declared_variant_budget=0 is an owner-registration placeholder and must be prospectively replaced by the exact preregistered budget before implementation.",
+        "Owner-first registration preceded the formal 0067 path.",
+        "0067 scientific numerical contract preserves 0066 semantics; 0066 timeout supplies process information only.",
+        "Full-shape nonhistorical qualification is mandatory before any historical attempt marker.",
         "production_authorized=false; signature_authorized=false; order_submission_authorized=false."
       ]
     }
