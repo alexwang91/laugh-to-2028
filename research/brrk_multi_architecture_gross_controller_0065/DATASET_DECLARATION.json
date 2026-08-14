@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "research_id": "BRRK-MULTI-ARCHITECTURE-GROSS-CONTROLLER-0065",
+  "stage": "NUMERICAL_DATA_PREREGISTRATION_FROZEN_NOT_RUN",
+  "design_merge_sha": "09f9afc69183387afaabfe540394eb01989df148",
+  "development_only": true,
+  "independent_oos": false,
+  "feature_market_data": {
+    "dataset_slice_id": "BRRK-LEADERSHIP-ROTATION-0048-EXPOSED-HIST-V1",
+    "path": "research/brrk_beta_handoff_0047/evidence/MARKET_EVIDENCE.json",
+    "git_blob_sha": "64ebf5c6deaf3f34dbeac715378f196ff0f4fafe",
+    "payload_sha256": "d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193",
+    "assets_exact": ["BTC", "ETH", "SOL"],
+    "fields_exact": ["open", "high", "low", "close", "volume", "quote_volume", "trades"],
+    "history_start": "2020-08-11T00:00:00Z",
+    "history_end": "2026-08-02T00:00:00Z",
+    "common_rows": 2183,
+    "resolution": "1D",
+    "source_loader_module": "research.brrk_beta_handoff_0047.engine",
+    "source_loader_function": "frames_from_market_evidence",
+    "source_loader_git_blob_sha": "059b55961e279dab41ba29b5b017de0922e4f33c"
+  },
+  "feature_builder": {
+    "path": "research/brrk_btc_risk_signal_atlas_0062/engine.py",
+    "git_blob_sha": "cac8e946998c836d10842b9388e1e3ef345a8c0b",
+    "function": "build_signal_atlas",
+    "required_cell_count": 185,
+    "required_family_count": 17,
+    "anti_pruning": true
+  },
+  "portfolio_baseline": {
+    "dataset_slice_id": "BRRK-WINNER-0001-CANONICAL-HIST-V1",
+    "equity_path": "research/results/pit_disp_0015/daily_equity.csv",
+    "equity_git_blob_sha": "82c87f8cb0ff01c728ffd3b717fff17cf5a364f2",
+    "weights_path": "research/results/pit_disp_0015/daily_weights.csv",
+    "weights_git_blob_sha": "2f6c8d3a8c25d3cafeaa0128f1c425dac248370b",
+    "variant": "BRRK0011_BASELINE",
+    "expected_evaluation_window": ["2022-12-10", "2026-08-02"]
+  },
+  "cash_rate": {
+    "dataset_slice_id": "BRRK-IDLE-CASH-SWEEP-0063-DTB3-HIST-V1",
+    "path": "research/brrk_idle_cash_sweep_robustness_0063/DTB3_RAW.csv",
+    "git_blob_sha": "71d50e26f8a9afb6bcb88401d20b97d5fb0a891a",
+    "payload_sha256": "4d8aee67dbd528ce38ff8482e9bb02dd5ccf2c6cd461f606fe90007151ab6879",
+    "first_valid_date": "2022-11-30",
+    "last_valid_date": "2026-07-31",
+    "source": "FRED DTB3"
+  },
+  "economic_reference": {
+    "research_id": "BRRK-IDLE-CASH-PASSIVE-ACCRUAL-ROBUSTNESS-0064",
+    "engine_path": "research/brrk_idle_cash_passive_accrual_robustness_0064/engine.py",
+    "engine_git_blob_sha": "4060a307be2204c11952cb52e2fc718a5343d8e1",
+    "primary_yield_realization": 0.5,
+    "primary_annual_cash_fee_bps": 100,
+    "baseline_terminal_wealth": 62813.41563922909,
+    "baseline_calendar_cagr": 0.6557689400699214,
+    "baseline_max_drawdown": -0.3366471268083583
+  },
+  "network_fetch_allowed": false,
+  "replacement_allowed": false,
+  "post_result_substitution_allowed": false,
+  "exposure_status": "RESEARCHER_EXPOSED_DEVELOPMENT_NOT_INDEPENDENT_OOS"
+}
