@@ -7,8 +7,22 @@
   "evidence_tier": "RESEARCHER_EXPOSED_DEVELOPMENT_NOT_INDEPENDENT_OOS",
   "scientific_question": "Can objectively labeled BTC/SOL decline and sideways episode onsets be forecast within 1/3/5/10/20 sessions by the frozen 0062 signal atlas, and can validation-frozen warnings improve the closed 0064 passive-cash portfolio under common causal cost semantics?",
   "event_contract": {
-    "outcome_assets": ["BTC", "SOL"],
-    "scan_horizons_sessions": [10, 15, 20, 30, 45, 60, 90, 120, 180, 240],
+    "outcome_assets": [
+      "BTC",
+      "SOL"
+    ],
+    "scan_horizons_sessions": [
+      10,
+      15,
+      20,
+      30,
+      45,
+      60,
+      90,
+      120,
+      180,
+      240
+    ],
     "price_field": "close",
     "fit_path": "For each origin t and H, OLS log(close[t+j]) = intercept + beta*j + epsilon for j=0..H; slope t-statistic is a standardized path-shape score only, not an IID significance test.",
     "past_scale": "sigma60 = ddof=1 standard deviation of daily log returns over preceding 60 sessions, minimum 30, using no future return.",
@@ -18,14 +32,34 @@
       "terminal_log_return_rule": "R_H_star <= -1.0*sigma60*sqrt(H_star)",
       "mae_rule": "MAE_magnitude >= 1.5*sigma60*sqrt(H_star)",
       "duration_grades": {
-        "D1_SHORT": [10, 15, 20],
-        "D2_MEDIUM": [30, 45, 60],
-        "D3_LONG": [90, 120],
-        "D4_SECULAR": [180, 240]
+        "D1_SHORT": [
+          10,
+          15,
+          20
+        ],
+        "D2_MEDIUM": [
+          30,
+          45,
+          60
+        ],
+        "D3_LONG": [
+          90,
+          120
+        ],
+        "D4_SECULAR": [
+          180,
+          240
+        ]
       },
       "severity_z_mae": {
-        "S1": [1.5, 2.5],
-        "S2": [2.5, 4.0],
+        "S1": [
+          1.5,
+          2.5
+        ],
+        "S2": [
+          2.5,
+          4.0
+        ],
         "S3_min": 4.0
       }
     },
@@ -35,10 +69,24 @@
       "path_log_range_rule": "range(log_close[t:t+H]) <= 1.75*sigma60*sqrt(H)",
       "scale_selection": "LONGEST qualifying H",
       "duration_grades": {
-        "S1_SHORT": [10, 15, 20],
-        "S2_MEDIUM": [30, 45, 60],
-        "S3_LONG": [90, 120],
-        "S4_SECULAR": [180, 240]
+        "S1_SHORT": [
+          10,
+          15,
+          20
+        ],
+        "S2_MEDIUM": [
+          30,
+          45,
+          60
+        ],
+        "S3_LONG": [
+          90,
+          120
+        ],
+        "S4_SECULAR": [
+          180,
+          240
+        ]
       }
     },
     "precedence": "DOWN before SIDEWAYS at same origin; otherwise OTHER",
@@ -51,7 +99,13 @@
     "T2_MAJOR_DOWN": "D2_MEDIUM/D3_LONG/D4_SECULAR OR decline severity S2/S3",
     "T3_ANY_SIDEWAYS": "S1_SHORT/S2_MEDIUM/S3_LONG/S4_SECULAR",
     "T4_LONG_SIDEWAYS": "S2_MEDIUM/S3_LONG/S4_SECULAR",
-    "warning_horizons_sessions": [1, 3, 5, 10, 20],
+    "warning_horizons_sessions": [
+      1,
+      3,
+      5,
+      10,
+      20
+    ],
     "binary_label": "For an at-risk prediction date t and horizon L, Y_L[t]=1 iff at least one qualifying unique onset occurs in strictly future window (t,t+L]; else 0.",
     "track_count": 40,
     "unique_onset_support_gate": {
@@ -92,15 +146,33 @@
     "event_warning_track_count": 40,
     "declared_hypothesis_cell_count": 8080,
     "orientation": "TRAIN-only sign of point-biserial association with warning label; zero association tie uses +1; no validation/final sign flip.",
-    "metrics": ["ROC_AUC", "PR_AUC", "PREVALENCE", "PR_AUC_LIFT", "BRIER", "FOUR_CHRONOLOGICAL_BLOCK_METRICS"],
+    "metrics": [
+      "ROC_AUC",
+      "PR_AUC",
+      "PREVALENCE",
+      "PR_AUC_LIFT",
+      "BRIER",
+      "FOUR_CHRONOLOGICAL_BLOCK_METRICS"
+    ],
     "selection_use": "Only VALIDATION atlas metrics may drive P03 screening; FINAL atlas is reporting/inference only.",
-    "final_multiplicity": "One simultaneous dependence-aware bootstrap family across every supported FINAL signal/asset/target/horizon hypothesis; fixed scores are not re-oriented or re-selected in bootstrap."
+    "final_multiplicity": "Across all supported FINAL signal/asset/target/horizon cells, compute a one-sided Mann-Whitney U test equivalent to testing TRAIN-oriented ROC-AUC > 0.50, then apply Holm-Bonferroni step-down correction at familywise alpha=0.05 across the entire supported atlas family. PR-AUC, PR-AUC lift, Brier and block metrics remain mandatory descriptive outputs. No FINAL re-orientation, screening or cell deletion is allowed."
   },
   "predictor_architectures": {
     "P01_FAMILY_RIDGE_LOGIT": {
       "input": "17 family scores",
       "estimator": "training-median imputation -> StandardScaler -> sklearn LogisticRegression",
-      "grid": {"C": [0.01, 0.1, 1.0, 10.0], "penalty": "l2", "solver": "lbfgs", "class_weight": "balanced", "max_iter": 5000},
+      "grid": {
+        "C": [
+          0.01,
+          0.1,
+          1.0,
+          10.0
+        ],
+        "penalty": "l2",
+        "solver": "lbfgs",
+        "class_weight": "balanced",
+        "max_iter": 5000
+      },
       "configs_per_track": 4,
       "track_count": 40,
       "validation_tuning_executions": 160
@@ -108,7 +180,24 @@
     "P02_RAW_ELASTIC_NET_LOGIT": {
       "input": "185 raw cells",
       "estimator": "training-median imputation -> StandardScaler -> sklearn LogisticRegression",
-      "grid": {"C": [0.01, 0.1, 1.0], "l1_ratio": [0.1, 0.5, 0.9], "penalty": "elasticnet", "solver": "saga", "class_weight": "balanced", "max_iter": 10000, "tol": 1e-6, "random_state": 660066},
+      "grid": {
+        "C": [
+          0.01,
+          0.1,
+          1.0
+        ],
+        "l1_ratio": [
+          0.1,
+          0.5,
+          0.9
+        ],
+        "penalty": "elasticnet",
+        "solver": "saga",
+        "class_weight": "balanced",
+        "max_iter": 10000,
+        "tol": 1e-06,
+        "random_state": 660066
+      },
       "configs_per_track": 9,
       "track_count": 40,
       "validation_tuning_executions": 360
@@ -117,7 +206,16 @@
       "input": "At most 12 of the 202 signal units selected on VALIDATION only",
       "screen": "Per asset/target/horizon, rank VALIDATION PR-AUC lift descending among signals with positive lift in at least 3/4 validation chronological blocks; maximum 2 signals per 0062 family; ties by frozen signal ID; take at most 12; no FINAL re-screening.",
       "estimator": "training-median imputation -> StandardScaler -> L2 LogisticRegression",
-      "grid": {"C": [0.1, 1.0, 10.0], "solver": "lbfgs", "class_weight": "balanced", "max_iter": 5000},
+      "grid": {
+        "C": [
+          0.1,
+          1.0,
+          10.0
+        ],
+        "solver": "lbfgs",
+        "class_weight": "balanced",
+        "max_iter": 5000
+      },
       "configs_per_track": 3,
       "track_count": 40,
       "validation_tuning_executions": 120
@@ -125,7 +223,22 @@
     "P04_PCR_LOGIT": {
       "input": "185 raw cells",
       "estimator": "training-median imputation -> StandardScaler -> PCA fit on eligible training only -> L2 LogisticRegression",
-      "grid": {"n_components": [5, 10, 20, 40], "C": [0.1, 1.0, 10.0], "solver": "lbfgs", "class_weight": "balanced", "max_iter": 5000},
+      "grid": {
+        "n_components": [
+          5,
+          10,
+          20,
+          40
+        ],
+        "C": [
+          0.1,
+          1.0,
+          10.0
+        ],
+        "solver": "lbfgs",
+        "class_weight": "balanced",
+        "max_iter": 5000
+      },
       "configs_per_track": 12,
       "track_count": 40,
       "validation_tuning_executions": 480
@@ -134,9 +247,60 @@
       "result_informed_from_closed_0065": true,
       "privileged_selection": false,
       "input": "17 family linear terms + 17 squares + 10 frozen theory cross-products",
-      "fixed_interactions": [["F01_TREND_LEVEL_DIRECTION","F10_VOLATILITY_REGIME"],["F03_TREND_ACCELERATION_DECELERATION","F10_VOLATILITY_REGIME"],["F05_VOL_ADJUSTED_TREND_GUARDS","F11_DOWNSIDE_ASYMMETRY_TAIL"],["F06_MOMENTUM_LEVEL","F13_CROSS_CRYPTO_BREADTH"],["F07_OVERBOUGHT_STRETCH","F08_BEARISH_DIVERGENCE_EXHAUSTION"],["F09_BREAKDOWN_FAILED_BREAK_STRUCTURE","F12_VOLUME_FLOW_CONFIRMATION"],["F14_RELATIVE_CRYPTO_LEADERSHIP","F13_CROSS_CRYPTO_BREADTH"],["F21_SEQUENTIAL_CHANGE_DETECTION","F23_MULTI_TIMESCALE_DISAGREEMENT"],["F01_TREND_LEVEL_DIRECTION","F14_RELATIVE_CRYPTO_LEADERSHIP"],["F11_DOWNSIDE_ASYMMETRY_TAIL","F12_VOLUME_FLOW_CONFIRMATION"]],
+      "fixed_interactions": [
+        [
+          "F01_TREND_LEVEL_DIRECTION",
+          "F10_VOLATILITY_REGIME"
+        ],
+        [
+          "F03_TREND_ACCELERATION_DECELERATION",
+          "F10_VOLATILITY_REGIME"
+        ],
+        [
+          "F05_VOL_ADJUSTED_TREND_GUARDS",
+          "F11_DOWNSIDE_ASYMMETRY_TAIL"
+        ],
+        [
+          "F06_MOMENTUM_LEVEL",
+          "F13_CROSS_CRYPTO_BREADTH"
+        ],
+        [
+          "F07_OVERBOUGHT_STRETCH",
+          "F08_BEARISH_DIVERGENCE_EXHAUSTION"
+        ],
+        [
+          "F09_BREAKDOWN_FAILED_BREAK_STRUCTURE",
+          "F12_VOLUME_FLOW_CONFIRMATION"
+        ],
+        [
+          "F14_RELATIVE_CRYPTO_LEADERSHIP",
+          "F13_CROSS_CRYPTO_BREADTH"
+        ],
+        [
+          "F21_SEQUENTIAL_CHANGE_DETECTION",
+          "F23_MULTI_TIMESCALE_DISAGREEMENT"
+        ],
+        [
+          "F01_TREND_LEVEL_DIRECTION",
+          "F14_RELATIVE_CRYPTO_LEADERSHIP"
+        ],
+        [
+          "F11_DOWNSIDE_ASYMMETRY_TAIL",
+          "F12_VOLUME_FLOW_CONFIRMATION"
+        ]
+      ],
       "estimator": "training-median imputation -> StandardScaler on 44-column expanded matrix -> L2 LogisticRegression",
-      "grid": {"C": [0.001, 0.01, 0.1, 1.0], "solver": "lbfgs", "class_weight": "balanced", "max_iter": 5000},
+      "grid": {
+        "C": [
+          0.001,
+          0.01,
+          0.1,
+          1.0
+        ],
+        "solver": "lbfgs",
+        "class_weight": "balanced",
+        "max_iter": 5000
+      },
       "configs_per_track": 4,
       "track_count": 40,
       "validation_tuning_executions": 160
@@ -144,7 +308,23 @@
     "P06_SHALLOW_GBDT_CLASSIFIER": {
       "input": "17 family scores",
       "estimator": "training-median imputation -> sklearn GradientBoostingClassifier",
-      "grid": {"max_depth": [1, 2], "n_estimators": [50, 100], "learning_rate": [0.03, 0.1], "min_samples_leaf": 20, "subsample": 0.8, "random_state": 660066},
+      "grid": {
+        "max_depth": [
+          1,
+          2
+        ],
+        "n_estimators": [
+          50,
+          100
+        ],
+        "learning_rate": [
+          0.03,
+          0.1
+        ],
+        "min_samples_leaf": 20,
+        "subsample": 0.8,
+        "random_state": 660066
+      },
       "configs_per_track": 8,
       "track_count": 40,
       "validation_tuning_executions": 320
@@ -152,7 +332,17 @@
     "P07_DISCRETE_TIME_HAZARD_LOGIT": {
       "input": "17 family scores plus one-hot warning horizon indicator over pooled nested-horizon risk-set rows",
       "estimator": "training-median imputation -> StandardScaler continuous features -> pooled L2 LogisticRegression",
-      "grid": {"C": [0.01, 0.1, 1.0, 10.0], "solver": "lbfgs", "class_weight": "balanced", "max_iter": 5000},
+      "grid": {
+        "C": [
+          0.01,
+          0.1,
+          1.0,
+          10.0
+        ],
+        "solver": "lbfgs",
+        "class_weight": "balanced",
+        "max_iter": 5000
+      },
       "configs_per_asset_target": 4,
       "asset_target_count": 8,
       "validation_tuning_executions": 32
@@ -184,10 +374,25 @@
     "G5": "Simultaneous one-sided 95% dependence-aware bootstrap LCB of FINAL PR_AUC_LIFT strictly >0"
   },
   "controller_contract": {
-    "controllers": ["C01_BTC_ANY_DOWN_5D","C02_SOL_ANY_DOWN_5D","C03_MAX_BTC_SOL_ANY_DOWN_5D","C04_BTC_MAJOR_DOWN_10D","C05_MAX_BTC_SOL_MAJOR_DOWN_10D","C06_MULTILEAD_DOWN_BLEND_3_5_10","C07_DOWN_PLUS_SIDEWAYS","C08_STACKED_EVENT_RISK"],
+    "controllers": [
+      "C01_BTC_ANY_DOWN_5D",
+      "C02_SOL_ANY_DOWN_5D",
+      "C03_MAX_BTC_SOL_ANY_DOWN_5D",
+      "C04_BTC_MAJOR_DOWN_10D",
+      "C05_MAX_BTC_SOL_MAJOR_DOWN_10D",
+      "C06_MULTILEAD_DOWN_BLEND_3_5_10",
+      "C07_DOWN_PLUS_SIDEWAYS",
+      "C08_STACKED_EVENT_RISK"
+    ],
     "count": 8,
     "probability_threshold_calibration": "For each component probability series, empirical risk percentile thresholds are fit on its causal VALIDATION predictions only and frozen before economic evaluation.",
-    "gross_rules": {"below_p90": 1.0, "down_at_or_above_p90": 0.5, "sideways_only_at_or_above_p90": 0.75, "down_at_or_above_p97_5": 0.25, "multiple_rules": "minimum g"},
+    "gross_rules": {
+      "below_p90": 1.0,
+      "down_at_or_above_p90": 0.5,
+      "sideways_only_at_or_above_p90": 0.75,
+      "down_at_or_above_p97_5": 0.25,
+      "multiple_rules": "minimum g"
+    },
     "C03_C05": "maximum VALIDATION-calibrated risk percentile across BTC and SOL",
     "C06": "maximum VALIDATION-calibrated risk percentile across exact 3D/5D/10D ANY_DOWN components",
     "C07": "DOWN rule has precedence; SIDEWAYS rule applies only when no stronger DOWN rule fires",
@@ -200,7 +405,10 @@
     "benchmark_research_id": "BRRK-IDLE-CASH-PASSIVE-ACCRUAL-ROBUSTNESS-0064",
     "base_return": "Already-costed BRRK-0011 daily return reconstructed from frozen daily_equity.csv",
     "base_gross": "sum(abs(frozen BRRK-0011 daily_weights))",
-    "economic_evaluation_window": ["2024-01-01", "2026-08-02"],
+    "economic_evaluation_window": [
+      "2024-01-01",
+      "2026-08-02"
+    ],
     "cash_yield_realization": 0.5,
     "annual_cash_fee_bps": 100,
     "outer_turnover_cost_bps_per_unit_gross": 10,
@@ -224,7 +432,16 @@
     "final_economic_controllers": 8,
     "declared_model_controller_variant_budget": 1704,
     "actual_variants_evaluated_before_run": 0,
-    "breakdown_validation_tuning": {"P01": 160, "P02": 360, "P03": 120, "P04": 480, "P05": 160, "P06": 320, "P07": 32, "P08": 0},
+    "breakdown_validation_tuning": {
+      "P01": 160,
+      "P02": 360,
+      "P03": 120,
+      "P04": 480,
+      "P05": 160,
+      "P06": 320,
+      "P07": 32,
+      "P08": 0
+    },
     "variant_formula": "1632 validation tuning executions + (8 architectures*2 assets*4 targets =64 final predictor tracks) + 8 final controllers =1704",
     "no_hidden_grid_trials_allowed": true
   },
@@ -234,12 +451,22 @@
     "replicates": 4000,
     "seed": 660066,
     "quantile": "Type-7 q95",
-    "predictive_bootstrap": "Do not retrain, re-orient, re-screen or recalibrate. Resample aligned FINAL prediction-date blocks; recompute supported hypothesis PR-AUC lift on sampled at-risk rows. Replicates with a degenerate class for a hypothesis are omitted for that hypothesis; a hypothesis with <95% valid replicates is MEASUREMENT_INCONCLUSIVE for G5. One max-stat q95 correction spans all confirmatory predictive architecture/asset/target tracks. Indicator-atlas cells use a separate max-stat family.",
+    "predictive_bootstrap": "Do not retrain, re-orient, re-screen or recalibrate. Resample aligned FINAL prediction-date blocks and recompute each supported final predictor track PR-AUC lift. Replicates with a degenerate class for a track are omitted for that track; a track with <95% valid replicates is MEASUREMENT_INCONCLUSIVE for G5. One max-stat q95 correction spans all confirmatory predictive architecture/asset/target tracks.",
     "economic_bootstrap": "Use aligned daily relative log increments of all valid controllers versus same-window 0064; same sampled indices for every controller; q95 of max_i(observed_mean_i-bootstrap_mean_i); LCB_i=observed_mean_i-q95.",
-    "strict_pass": "LCB > 0"
+    "strict_pass": "LCB > 0",
+    "indicator_atlas_correction": "Holm-Bonferroni familywise correction of one-sided Mann-Whitney U / ROC-AUC>0.50 p-values across all supported FINAL indicator-atlas cells; this is separate from the 4000-replicate MBB used for confirmatory predictor tracks and economic controllers."
   },
-  "temporal_blocks": {"count": 4, "construction": "count-balanced contiguous eligible rows; earlier blocks receive remainder"},
-  "selection_risk": {"PBO_CSCV_slices": 8, "in_sample_slices": 4, "split_count": 70, "selection_statistic": "controller annualized Sharpe on in-sample slices", "role": "diagnostic_not_primary_gate"},
+  "temporal_blocks": {
+    "count": 4,
+    "construction": "count-balanced contiguous eligible rows; earlier blocks receive remainder"
+  },
+  "selection_risk": {
+    "PBO_CSCV_slices": 8,
+    "in_sample_slices": 4,
+    "split_count": 70,
+    "selection_statistic": "controller annualized Sharpe on in-sample slices",
+    "role": "diagnostic_not_primary_gate"
+  },
   "classification": {
     "full_pass": "PASS_EVENT_EARLY_WARNING_AND_ECONOMIC_CONTROLLER",
     "predictive_only_pass": "PASS_EVENT_EARLY_WARNING_ONLY",
@@ -259,5 +486,13 @@
     "must_report_simultaneous_LCBs_and_PBO": true,
     "must_not_promote_descriptive_best_if_gates_fail": true
   },
-  "authority": {"production_authorized": false, "signature_authorized": false, "order_submission_authorized": false, "canonical_BRRK_0011": "NO_CHANGE", "0064": "NO_CHANGE", "0065": "NO_CHANGE", "Phase_6": "NO_CHANGE"}
+  "authority": {
+    "production_authorized": false,
+    "signature_authorized": false,
+    "order_submission_authorized": false,
+    "canonical_BRRK_0011": "NO_CHANGE",
+    "0064": "NO_CHANGE",
+    "0065": "NO_CHANGE",
+    "Phase_6": "NO_CHANGE"
+  }
 }
