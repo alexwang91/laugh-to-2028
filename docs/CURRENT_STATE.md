@@ -10,7 +10,7 @@ Merged 0064 implementation: `7e771dea9355c4170e806af13b35a327beac0466`.
 Merged 0064 controlled boundary: `876fdf657bd11bc4aeb9d0dcd3859886ee099568`.
 0064 durable attempt commit: `51fe15adf20452d90700e9b5afa2313ee8775706`.
 0064 immutable result commit: `d45e7e7e2d1a62f0243c4a1576bc4a60727d90d4`.
-Active branch: `research/0064-result-v1`.
+Merged 0064 PASS closeout: `ad8038af45bad2e25e8a7b88b569b1873635d9c2`.
 
 ## Required closed-research anchors
 
@@ -78,4 +78,4 @@ Phase 6 = NO CHANGE.
 
 ## Exact next step
 
-Finalize central registry and merge the immutable 0064 result/closeout through fresh standing CI. Do not open a new optimization ID merely to continue searching: the user-requested reliable-CAGR stop condition is satisfied. A separate future-only confirmation study may be designed later if a higher evidentiary tier is desired.
+The user-requested optimization loop is complete and should remain stopped. Do not open a new optimization ID merely to continue searching, and do not rerun, retune or rescue 0064. If a higher evidentiary tier is desired later, design a separate future-only confirmation study using genuinely future data; such confirmation is optional and does not alter the completed 0064 DEVELOPMENT-stage PASS or confer production authority.
