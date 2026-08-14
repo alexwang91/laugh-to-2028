@@ -1,4 +1,4 @@
-name: Tooling 0064 implementation synthetic-only
+name: Tooling 0064 controlled boundary synthetic-only
 
 on:
   push:
@@ -11,12 +11,12 @@ permissions:
   contents: read
 
 jobs:
-  synthetic-only:
+  boundary-synthetic:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: research/0064-implementation-v1
+          ref: research/0064-boundary-v1
           fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
@@ -24,35 +24,64 @@ jobs:
           cache: pip
           cache-dependency-path: execution/plan-b-bot/requirements-dev.txt
       - run: pip install -r execution/plan-b-bot/requirements-dev.txt
-      - name: Assert implementation zero-result boundary
+      - name: Verify exact boundary head and frozen file identities
         shell: bash
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD)" = "85086ef04d684c08a1a15ae39bd40b60f2b16b05"
-          test ! -e research/brrk_idle_cash_passive_accrual_robustness_0064/RUN_ATTEMPT.marker
-          test ! -e research/brrk_idle_cash_passive_accrual_robustness_0064/PRIMARY_RESULT.json
-          test ! -e research/brrk_idle_cash_passive_accrual_robustness_0064/EVIDENCE.json
-          test ! -e research/brrk_idle_cash_passive_accrual_robustness_0064/EXECUTION.json
-          test ! -e research/brrk_idle_cash_passive_accrual_robustness_0064/RUN_ONCE.marker
-      - name: Run committed synthetic contracts only
-        run: PYTHONPATH=. pytest -q research/brrk_idle_cash_passive_accrual_robustness_0064/test_contract.py
-      - name: Validate implementation contract and governance
+          test "$(git rev-parse HEAD)" = "9ac01e07f24790c5340eda24212c86d7e24d8bce"
+          test "$(git rev-parse HEAD:research/brrk_idle_cash_passive_accrual_robustness_0064/RUN_INTERFACE.json)" = "1289d808bd5da99dd4de295f70360f4673536cee"
+          test "$(git rev-parse HEAD:research/brrk_idle_cash_passive_accrual_robustness_0064/RESULT_SCHEMA.json)" = "3dd860f51b96f769db75a50e50acf850db35bf19"
+          test "$(git rev-parse HEAD:research/brrk_idle_cash_passive_accrual_robustness_0064/run_once.py)" = "f9af95b99c862ead8e8907cd06042884c0892b7b"
+          test "$(git rev-parse HEAD:research/brrk_idle_cash_passive_accrual_robustness_0064/engine.py)" = "4060a307be2204c11952cb52e2fc718a5343d8e1"
+          test "$(git rev-parse HEAD:research/results/pit_disp_0015/daily_equity.csv)" = "82c87f8cb0ff01c728ffd3b717fff17cf5a364f2"
+          test "$(git rev-parse HEAD:research/results/pit_disp_0015/daily_weights.csv)" = "2f6c8d3a8c25d3cafeaa0128f1c425dac248370b"
+          test "$(git rev-parse HEAD:research/brrk_idle_cash_sweep_robustness_0063/DTB3_RAW.csv)" = "71d50e26f8a9afb6bcb88401d20b97d5fb0a891a"
+      - name: Assert zero historical runtime artifacts
         shell: bash
         run: |
           set -euo pipefail
+          for f in RUN_ATTEMPT.marker PRIMARY_RESULT.json EVIDENCE.json EXECUTION.json RUN_ONCE.marker; do
+            test ! -e "research/brrk_idle_cash_passive_accrual_robustness_0064/$f"
+          done
+      - name: Compile runner and run Git-only preflight
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python -m py_compile research/brrk_idle_cash_passive_accrual_robustness_0064/run_once.py
+          PYTHONPATH=. python research/brrk_idle_cash_passive_accrual_robustness_0064/run_once.py preflight --boundary-sha "$(git rev-parse HEAD)" | tee /tmp/preflight.json
+          python - <<'PY'
+          import json
+          p=json.load(open('/tmp/preflight.json'))
+          assert p['status']=='PREFLIGHT_PASS_ZERO_RESULT_GIT_IDENTITY_ONLY'
+          assert p['historical_csv_content_reads']==0
+          assert p['scientific_engine_calls']==0
+          assert p['runtime_artifacts_present']==[]
+          PY
+      - name: Run scientific and exactly-once synthetic contracts
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. pytest -q \
+            research/brrk_idle_cash_passive_accrual_robustness_0064/test_contract.py \
+            research/brrk_idle_cash_passive_accrual_robustness_0064/test_run_once_contract.py
+      - name: Reassert zero repo runtime artifacts and governance
+        shell: bash
+        run: |
+          set -euo pipefail
+          for f in RUN_ATTEMPT.marker PRIMARY_RESULT.json EVIDENCE.json EXECUTION.json RUN_ONCE.marker; do
+            test ! -e "research/brrk_idle_cash_passive_accrual_robustness_0064/$f"
+          done
           PYTHONPATH=. python -m research.governance.validate
           python - <<'PY'
           import json
           from pathlib import Path
-          c=json.loads(Path('research/brrk_idle_cash_passive_accrual_robustness_0064/IMPLEMENTATION_CONTRACT.json').read_text())
-          assert c['research_id']=='BRRK-IDLE-CASH-PASSIVE-ACCRUAL-ROBUSTNESS-0064'
-          assert c['candidate_cell_count']==20
-          assert c['primary_cell']=={'yield_realization':0.5,'annual_spread_fee_bps':100}
-          assert c['actual_variants_evaluated']==0
-          assert c['implementation_invariants']['network_access'] is False
-          assert c['implementation_invariants']['file_io_in_scientific_engine'] is False
-          assert c['implementation_invariants']['historical_dataset_read_in_implementation_tests'] is False
-          assert c['implementation_invariants']['historical_outcome_computation_in_implementation_tests'] is False
-          assert c['implementation_invariants']['cash_yield_floor'] is False
-          assert c['implementation_invariants']['sweep_transaction_cost'] is False
+          b=json.loads(Path('research/brrk_idle_cash_passive_accrual_robustness_0064/CONTROLLED_EXECUTION_BOUNDARY.json').read_text())
+          assert b['stage']=='CONTROLLED_EXECUTION_BOUNDARY_FROZEN_NOT_RUN'
+          assert b['historical_execution']['attempt_budget']==1
+          assert b['pre_attempt_state']['actual_variants_evaluated']==0
+          assert b['runner']['preflight_reads_historical_csv_content'] is False
+          assert b['runner']['scientific_engine_call_budget']==1
+          assert b['authorization']['production_authorized'] is False
+          assert b['authorization']['signature_authorized'] is False
+          assert b['authorization']['order_submission_authorized'] is False
           PY
