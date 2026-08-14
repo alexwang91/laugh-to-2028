@@ -1,4 +1,4 @@
-name: Tooling 0066 owner-first preregistration
+name: Tooling 0066 prereg atlas multiplicity patch
 
 on:
   push:
@@ -11,7 +11,7 @@ permissions:
   contents: write
 
 jobs:
-  owner-first:
+  prereg-patch:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -22,94 +22,40 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - run: pip install -r execution/plan-b-bot/requirements-dev.txt
-      - name: Add only 0066 owner record before prereg files
+      - name: Replace only preregistered indicator-atlas multiplicity procedure
         shell: bash
-        env:
-          DESIGN_MERGE: b42f1d9dcc0574f185e04aad3bc8eca61fd2531d
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD)" = "$DESIGN_MERGE"
-          cp config/research_registry.json /tmp/research_registry.before.json
           python - <<'PY'
-          import copy,json,hashlib
+          import json
           from pathlib import Path
-          p=Path('config/research_registry.json')
-          reg=json.loads(p.read_text())
-          rid='BRRK-BTC-SOL-PATH-EVENT-EARLY-WARNING-0066'
-          assert not any(x.get('research_id')==rid for x in reg['records'])
-          template=next(x for x in reg['records'] if x.get('research_id')=='BRRK-MULTI-ARCHITECTURE-GROSS-CONTROLLER-0065')
-          r=copy.deepcopy(template)
-          for k in ['evidence_scorecard','confidence_level','confidence_components','derived_confidence']:
-              r.pop(k,None)
-          r.update({
-            'research_id':rid,
-            'research_family_id':'BRRK_PATH_EVENT_EARLY_WARNING',
-            'research_domain':'RISK_CONTROL',
-            'research_governance_version':1,
-            'governance_mode':'PROGRAM_GOVERNED_V1',
-            'objective_type':'PORTFOLIO_INTEGRATION',
-            'created_at':'2026-08-14',
-            'created_before_result':True,
-            'question':'Can price-only BTC/SOL decline and sideways episode onsets be predicted within 1/3/5/10/20 sessions by the frozen 0062 indicator atlas, and can validation-frozen warnings improve the closed 0064 net portfolio economics?',
-            'hypothesis':'Some duration-graded price-path events have prospectively detectable precursor structure in the frozen 0062 signal universe, but any economic benefit must survive temporal recurrence, dependence-aware inference and transaction costs.',
-            'hypothesis_origin':'USER_PROPOSED_EVENT_FIRST_RESEARCH_IDEA_2026_08_14_PLUS_PROSPECTIVE_METHOD_DESIGN; P05 quadratic architecture explicitly RESULT_INFORMED by closed 0065 but not privileged.',
-            'economic_mechanism':'If measurable precursor states precede sustained declines or capital-inefficient sideways regimes, a causal outer gross controller may preserve risk-asset exposure in normal periods while selectively increasing cash before adverse event onset.',
-            'primary_target':'BTC_SOL_PRICE_PATH_EVENT_ONSET_WITHIN_1_3_5_10_20_SESSIONS_AND_0064_RELATIVE_NET_WEALTH',
-            'primary_metric':'PR_AUC_LIFT_WITH_SIMULTANEOUS_LCB_AND_NET_CALENDAR_CAGR_VS_0064',
-            'secondary_metrics':['ROC_AUC','Brier_score','temporal_block_recurrence','terminal_wealth','maximum_drawdown','outer_turnover','PBO_CSCV'],
-            'feature_families':['0062_TIER_A_185_CELLS','0062_17_FAMILY_SCORES'],
-            'horizon':[1,3,5,10,20],
-            'universe':['BTC','SOL'],
-            'development_dataset_refs':['BRRK-LEADERSHIP-ROTATION-0048-EXPOSED-HIST-V1'],
-            'validation_dataset_refs':['BRRK-LEADERSHIP-ROTATION-0048-EXPOSED-HIST-V1'],
-            'sealed_dataset_refs':[],
-            'declared_variant_budget':1704,
-            'actual_variants_evaluated':0,
-            'parameter_candidate_count':1632,
-            'stopping_rule':'Exactly one frozen historical execution after DESIGN, owner-first preregistration, implementation-only merge and controlled-boundary merge. No result-informed early stopping, pruning, rerun, retune or rescue.',
-            'success_criteria':'At least one supported predictive track passes G0-G5 and at least one economic controller passes E0-E5 for full PASS; predictive-only pass is separately classified if economics fail.',
-            'failure_criteria':'No supported predictive track passes the frozen early-warning gates, or predictive evidence exists but no controller passes the frozen economic gates.',
-            'allowed_followup':'After immutable closeout, only a new research ID may use exposed 0066 findings as RESULT_INFORMED motivation; genuinely future validation is preferred.',
-            'forbidden_followup':'Same-ID event threshold changes, onset relabeling, signal pruning, warning-horizon changes, model/grid changes, controller remapping, cost changes, rerun, retune or rescue after attempt consumption.',
-            'researcher_decisions':['Event taxonomy is price-only and independent of indicator values.','All 202 signal units are evaluated in the atlas; selection into predictive controllers is validation-only under frozen rules.','P05 quadratic classifier is included without privilege and is explicitly result-informed from closed 0065.'],
-            'lineage_edges':[],
-            'result_status':'PREREGISTERED_NOT_RUN',
-            'failure_reason':None,
-            'promotion_state':'NONE',
-            'evidence_refs':[],
-            'decision_refs':['research/governance/BRRK_BTC_SOL_PATH_EVENT_EARLY_WARNING_0066_DESIGN_FREEZE_2026-08-14.md'],
-            'production_relevance':'Research-only BTC-to-cash outer gross study; no automatic production authority.',
-            'production_authorized':False,
-            'provenance_status':'PROSPECTIVE_FROZEN',
-            'governed_path_prefixes':['research/brrk_btc_sol_path_event_early_warning_0066'],
-            'notes':['Owner-first registration only; no 0066 historical event atlas, model metric or portfolio result exists.','Development and validation reference the same frozen researcher-exposed dataset slice and are not independent OOS.','Indicator-atlas hypothesis cells are counted separately from the declared 1704 model/controller variant budget.','production_authorized=false; signature_authorized=false; order_submission_authorized=false.']
-          })
-          rpc=r.get('research_process_complexity',{})
-          rpc.update({'declared_parameter_candidates':1632,'actual_parameter_candidates_evaluated':0,'universes_evaluated':2,'horizons_evaluated':5,'rebalance_variants':8,'feature_representations':8,'special_cases_introduced':0,'validation_exposure_event_refs':0,'related_family_trials':1704})
-          r['research_process_complexity']=rpc
-          reg['records'].append(r)
-          p.write_text(json.dumps(reg,indent=2,ensure_ascii=False)+'\n')
-          before=json.load(open('/tmp/research_registry.before.json'))
-          def canon(x): return hashlib.sha256(json.dumps(x,sort_keys=True,separators=(',',':'),ensure_ascii=False).encode()).hexdigest()
-          assert len(reg['records'])==len(before['records'])+1
-          assert all(canon(a)==canon(b) for a,b in zip(before['records'],reg['records'][:-1]))
-          owner=reg['records'][-1]
-          assert owner['research_id']==rid
-          assert owner['result_status']=='PREREGISTERED_NOT_RUN'
-          assert owner['promotion_state']=='NONE'
-          assert owner['actual_variants_evaluated']==0
-          assert owner['declared_variant_budget']==1704
-          assert owner['development_dataset_refs']==['BRRK-LEADERSHIP-ROTATION-0048-EXPOSED-HIST-V1']
-          assert owner['validation_dataset_refs']==['BRRK-LEADERSHIP-ROTATION-0048-EXPOSED-HIST-V1']
-          assert owner['production_authorized'] is False
-          assert owner['lineage_edges']==[]
-          assert 'evidence_scorecard' not in owner
+          p=Path('research/brrk_btc_sol_path_event_early_warning_0066/PREREGISTRATION.json')
+          x=json.loads(p.read_text())
+          assert x['stage']=='NUMERICAL_DATA_PREREGISTRATION_FROZEN_NOT_RUN'
+          assert x['trial_accounting']['actual_variants_evaluated_before_run']==0
+          x['indicator_atlas']['final_multiplicity']=(
+              'Across all supported FINAL signal/asset/target/horizon cells, compute a one-sided Mann-Whitney U test '
+              'equivalent to testing TRAIN-oriented ROC-AUC > 0.50, then apply Holm-Bonferroni step-down correction '
+              'at familywise alpha=0.05 across the entire supported atlas family. PR-AUC, PR-AUC lift, Brier and block '
+              'metrics remain mandatory descriptive outputs. No FINAL re-orientation, screening or cell deletion is allowed.'
+          )
+          x['simultaneous_inference']['indicator_atlas_correction']=(
+              'Holm-Bonferroni familywise correction of one-sided Mann-Whitney U / ROC-AUC>0.50 p-values across all '
+              'supported FINAL indicator-atlas cells; this is separate from the 4000-replicate MBB used for confirmatory '
+              'predictor tracks and economic controllers.'
+          )
+          x['simultaneous_inference']['predictive_bootstrap']=(
+              'Do not retrain, re-orient, re-screen or recalibrate. Resample aligned FINAL prediction-date blocks and '
+              'recompute each supported final predictor track PR-AUC lift. Replicates with a degenerate class for a track '
+              'are omitted for that track; a track with <95% valid replicates is MEASUREMENT_INCONCLUSIVE for G5. '
+              'One max-stat q95 correction spans all confirmatory predictive architecture/asset/target tracks.'
+          )
+          p.write_text(json.dumps(x,indent=2,ensure_ascii=False)+'\n')
           PY
-          PYTHONPATH=. python -m research.governance.validate
-          test "$(git diff --name-only)" = "config/research_registry.json"
+          git diff --check
+          test "$(git diff --name-only)" = "research/brrk_btc_sol_path_event_early_warning_0066/PREREGISTRATION.json"
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add config/research_registry.json
-          git commit -m 'research: register 0066 preregistration owner'
+          git add research/brrk_btc_sol_path_event_early_warning_0066/PREREGISTRATION.json
+          git commit -m 'research: freeze efficient 0066 atlas multiplicity correction'
           git push origin HEAD:research/0066-prereg-v1
