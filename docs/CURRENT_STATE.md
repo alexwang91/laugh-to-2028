@@ -21,7 +21,7 @@ ID 0043 is closed against result-informed pruning, reweighting, threshold rescue
 0063 = `FAIL_IDLE_CASH_SWEEP_PRIMARY_ECONOMICS / CLOSED`.
 0064 = `PASS_PASSIVE_CASH_ACCRUAL_ROBUSTNESS / CLOSED TO SAME-ID RERUN`.
 0065 = `FAIL_NO_ROBUST_MULTI_ARCHITECTURE_IMPROVEMENT / CLOSED TO SAME-ID RERUN`.
-0066 = `PREREGISTERED / IMPLEMENTATION ABSENT / NOT RUN`.
+0066 = `IMPLEMENTED / NOT RUN / CONTROLLED BOUNDARY ABSENT`.
 0066 research ID = `BRRK-BTC-SOL-PATH-EVENT-EARLY-WARNING-0066`.
 
 ## 0066 frozen event-first program
@@ -97,6 +97,10 @@ Historical 0066 indicator/event association computed = false.
 Historical 0066 classifier metrics computed = false.
 Historical 0066 controller CAGR/NAV/MDD computed = false.
 Historical actual variants evaluated = 0 / 1704.
+Implementation-only engine/event/model modules are present on the implementation branch.
+Runtime observability commit = `f642240696edeb109d06f38202a4a326083ac038`; it adds phase/progress logging and suppresses only the sklearn penalty-deprecation FutureWarning without changing any frozen model parameter or mathematical path.
+Bounded artificial implementation validation run = `31801841347`; synthetic unit tests, full 1632/64/8 configuration enumeration audit, zero-result assertions and clean-worktree assertions all passed.
+The cancelled full-artificial tooling run `31792978620` was implementation-only synthetic validation, not a historical execution attempt, and created no runtime result marker.
 RUN_ATTEMPT.marker = ABSENT.
 PRIMARY_RESULT.json = ABSENT.
 EVIDENCE.json = ABSENT.
@@ -129,4 +133,4 @@ Phase 6 = NO CHANGE.
 
 ## Exact next step
 
-Merge 0066 numerical/data PREREGISTRATION after fresh standing CI. Only then begin IMPLEMENTATION-ONLY using synthetic/artificial data; do not read 0066 historical outcomes or compute event counts, indicator associations, classifier metrics or portfolio economics during implementation.
+Open and merge the 0066 IMPLEMENTATION-ONLY PR after fresh standing CI. Then freeze and merge a CONTROLLED-EXECUTION BOUNDARY with exact implementation blobs. Do not create RUN_ATTEMPT.marker or read historical 0066 outcomes before that boundary is merged.

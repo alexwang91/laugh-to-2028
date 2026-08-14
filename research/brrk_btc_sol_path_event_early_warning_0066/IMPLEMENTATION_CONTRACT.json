@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "research_id": "BRRK-BTC-SOL-PATH-EVENT-EARLY-WARNING-0066",
+  "stage": "IMPLEMENTATION_ONLY_NOT_RUN",
+  "preregistration_merge_sha": "74d6b7641ceb75f0fb5a66f4cf05d17421c4c623",
+  "historical_measurement_allowed": false,
+  "implementation_validation_data": "SYNTHETIC_ARTIFICIAL_ONLY",
+  "modules": {
+    "event_engine.py": "Price-only multi-scale event candidates, duration/severity grades, hierarchical unique onset extraction, type-specific risk sets, nested warning labels and unique-onset support.",
+    "models.py": "Frozen P01-P08 estimator interfaces, exact parameter grids, validation ranking, quadratic basis, pooled hazard model, NNLS stack, indicator metrics, Holm correction and validation percentile calibration.",
+    "engine.py": "One pure in-memory top-level scientific orchestration from frozen frames and portfolio inputs through 8080 indicator atlas cells, 1632 validation tuning executions, 64 final preferred predictor tracks, eight controller paths, simultaneous inference, PBO and final classification. Performs no file/network/signer/order I/O.",
+    "test_engine_synthetic.py": "Artificial OHLCV/features only; verifies price-only event labeling, nested warning windows, model interfaces, quadratic width, hazard/stack, Holm, NaN-safe calibration, portfolio arithmetic and frozen trial accounting."
+  },
+  "frozen_scientific_dimensions": {
+    "indicator_hypothesis_cells": 8080,
+    "validation_tuning_executions": 1632,
+    "final_predictor_tracks": 64,
+    "final_economic_controllers": 8,
+    "model_controller_variant_budget": 1704,
+    "warning_horizons": [1, 3, 5, 10, 20],
+    "scan_horizons": [10, 15, 20, 30, 45, 60, 90, 120, 180, 240],
+    "predictor_architecture_count": 8,
+    "controller_count": 8
+  },
+  "implementation_invariants": [
+    "Event construction receives only BTC/SOL price frames and cannot inspect predictor values.",
+    "All 185 raw 0062 cells and all 17 frozen family scores remain available; result-informed feature pruning is forbidden.",
+    "P03 screening uses VALIDATION metrics only; FINAL data cannot re-screen signals.",
+    "All hyperparameter selection uses VALIDATION only and follows the preregistered metric hierarchy.",
+    "P08 weights are learned from VALIDATION probabilities only and frozen before FINAL/economic evaluation.",
+    "The 2024+ event-prediction evaluation cannot alter hyperparameters, signal sets, probability thresholds or controller definitions.",
+    "Decision after close t may affect only portfolio return row t+1.",
+    "No leverage, no shorting, no production/signer/order path exists in the implementation.",
+    "Historical file I/O belongs only to a later exactly-once controlled runner after controlled-boundary merge."
+  ],
+  "runtime_artifacts_required_absent_during_implementation": [
+    "RUN_ATTEMPT.marker",
+    "PRIMARY_RESULT.json",
+    "EVIDENCE.json",
+    "EXECUTION.json",
+    "RUN_ONCE.marker"
+  ],
+  "actual_historical_variants_evaluated": 0,
+  "historical_event_atlas_computed": false,
+  "historical_indicator_associations_computed": false,
+  "historical_predictor_metrics_computed": false,
+  "historical_controller_economics_computed": false,
+  "network_fetches": 0,
+  "production_authorized": false,
+  "signature_authorized": false,
+  "order_submission_authorized": false,
+  "canonical_BRRK_0011": "NO_CHANGE",
+  "0064": "NO_CHANGE",
+  "0065": "NO_CHANGE",
+  "Phase_6": "NO_CHANGE"
+}
