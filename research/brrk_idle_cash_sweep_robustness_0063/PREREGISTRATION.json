@@ -1,0 +1,213 @@
+{
+  "schema_version": 1,
+  "research_id": "BRRK-IDLE-CASH-SWEEP-ROBUSTNESS-0063",
+  "stage": "NUMERICAL_DATA_PREREGISTRATION_FROZEN_NOT_RUN",
+  "design_ref": "research/governance/BRRK_IDLE_CASH_SWEEP_ROBUSTNESS_0063_DESIGN_FREEZE_2026-08-14.md",
+  "design_merge_sha": "e1ac320e092e554c283ef6b88aaaa5f65aaf61ab",
+  "owner_first_commit_sha": "aeff95faa60f5e7f5c209c143a329e7e45545286",
+  "hypothesis_origin": "RESULT_INFORMED_DEVELOPMENT_REPLICATION_OF_F27_R2_NOT_INDEPENDENT_OOS",
+  "scientific_scope": "Mechanical idle-cash carry overlay on the unchanged committed BRRK-0011 path; no signal, target, risk-asset weight, gross, timing, re-entry, leverage or short modification.",
+  "prior_exposure": {
+    "F27_R2_status": "EXPOSED_DEVELOPMENT_MOTIVATION_ONLY",
+    "F27_R2_ref": "research/results/idle_cash_credit_0027r2.json",
+    "F27_R2_may_satisfy_0063_gate": false,
+    "independent_oos": false
+  },
+  "baseline_contract": {
+    "equity_path": "research/results/pit_disp_0015/daily_equity.csv",
+    "equity_git_blob_sha": "82c87f8cb0ff01c728ffd3b717fff17cf5a364f2",
+    "weights_path": "research/results/pit_disp_0015/daily_weights.csv",
+    "weights_git_blob_sha": "2f6c8d3a8c25d3cafeaa0128f1c425dac248370b",
+    "variant": "BRRK0011_BASELINE",
+    "weight_prefix": "BRRK0011_BASELINE__",
+    "known_starting_capital_usd": 10000.0,
+    "expected_start": "2022-12-10",
+    "expected_end": "2026-08-02",
+    "expected_observations": 1332,
+    "expected_calendar_span_days": 1331,
+    "calendar_span_cagr_anchor": 0.6516609785339953,
+    "calendar_span_cagr_abs_tolerance": 1e-06,
+    "final_10k_anchor": 62247.38231294191,
+    "final_10k_abs_tolerance": 1e-06,
+    "return_reconstruction": "pct_change; first_return=first_equity/10000-1",
+    "gross_formula": "sum(abs(BRRK0011_BASELINE__* weights), axis=1)",
+    "gross_upper_bound": 1.000001,
+    "idle_cash_formula": "clip(1-gross,0,1)",
+    "strategy_refit_allowed": false,
+    "weight_or_gross_change_allowed": false
+  },
+  "dtb3_contract": {
+    "dataset_slice_id": "BRRK-IDLE-CASH-SWEEP-0063-DTB3-HIST-V1",
+    "raw_path": "research/brrk_idle_cash_sweep_robustness_0063/DTB3_RAW.csv",
+    "raw_git_blob_sha": "71d50e26f8a9afb6bcb88401d20b97d5fb0a891a",
+    "raw_sha256": "4d8aee67dbd528ce38ff8482e9bb02dd5ccf2c6cd461f606fe90007151ab6879",
+    "capture_report_path": "research/brrk_idle_cash_sweep_robustness_0063/CAPTURE_REPORT.json",
+    "capture_report_git_blob_sha": "37f52f0025285d3300cdbec487a2c5e75c7f2494",
+    "capture_workflow_run": 31757177489,
+    "capture_artifact_id": 9203157766,
+    "source_provider": "FRED",
+    "series_id": "DTB3",
+    "requested_start": "2022-11-30",
+    "requested_end": "2026-08-02",
+    "first_valid_date": "2022-11-30",
+    "last_valid_date": "2026-07-31",
+    "raw_row_count": 958,
+    "valid_observation_count": 917,
+    "scientific_run_network_fetch_allowed": false,
+    "replacement_allowed": false,
+    "independent_oos": false,
+    "bank_discount_to_investment_basis": "d=DTB3_percent/100; BEY=365*d/(360-91*d)",
+    "daily_return": "BEY/365",
+    "calendarization": "reindex_to_exact_baseline_dates_then_causal_forward_fill_from_latest_valid_source_observation",
+    "backfill_inside_strategy_window_allowed": false
+  },
+  "candidate_geometry": {
+    "yield_realization": [
+      0.25,
+      0.5,
+      0.75,
+      1.0
+    ],
+    "sweep_friction_bps": [
+      0,
+      5,
+      10,
+      20
+    ],
+    "cell_count": 16,
+    "primary_cell": {
+      "yield_realization": 0.5,
+      "sweep_friction_bps": 10
+    },
+    "core_stress_cells": {
+      "yield_realization": [
+        0.5,
+        0.75,
+        1.0
+      ],
+      "sweep_friction_bps": [
+        0,
+        5,
+        10
+      ],
+      "cell_count": 9
+    },
+    "all_cells_losslessly_reported": true,
+    "historical_argmax_authority": false,
+    "multiple_testing_note": "Exactly one prospectively designated inferential primary hypothesis exists. The other 15 cells are deterministic robustness stresses and cannot promote independently."
+  },
+  "candidate_return_formula": "r_candidate[t]=r_baseline[t]+idle_cash[t]*yield_realization*rf_daily[t]-(sweep_friction_bps/10000)*abs(idle_cash[t]-idle_cash[t-1])",
+  "first_observation_sweep_turnover": 0.0,
+  "candidate_return_validity": "every daily return must be finite and strictly greater than -1",
+  "metric_contract": {
+    "calendar_year_days": 365.25,
+    "cagr": "end_multiple**(1/((last_date-first_date).days/365.25))-1",
+    "terminal_wealth": "10000*prod(1+r)",
+    "max_drawdown": "min(nav/cummax(nav)-1)",
+    "relative_log_increment": "d[t]=log1p(r_candidate[t])-log1p(r_baseline[t])",
+    "relative_terminal_log_growth": "sum(d[t])",
+    "primary_priority": [
+      "net_terminal_wealth",
+      "net_CAGR",
+      "max_drawdown",
+      "temporal_recurrence",
+      "dependence_robustness",
+      "stress_robustness"
+    ]
+  },
+  "common_support": {
+    "exact_baseline_dates_required": true,
+    "minimum_observations": 1332,
+    "missing_preceding_DTB3_policy": "G0_DATA_IDENTITY_FAIL",
+    "baseline_date_drop_allowed": false
+  },
+  "chronological_blocks": {
+    "count": 4,
+    "construction": "after common-support filtering, split ordered rows into count-balanced contiguous blocks; remainder rows allocated one each to earlier blocks",
+    "block_statistic": "sum(relative_log_increment)",
+    "pass_rule": "at least 3 of 4 block statistics strictly > 0"
+  },
+  "moving_block_bootstrap": {
+    "series": "primary-cell relative_log_increment d[t]",
+    "aligned": true,
+    "circular": false,
+    "overlapping_source_blocks": true,
+    "block_length_sessions": 60,
+    "replicates": 4000,
+    "seed": 630063,
+    "sampling": "for each replicate draw start indices uniformly with replacement from integers 0..N-L; concatenate contiguous length-L blocks until length>=N; truncate to N",
+    "observed_statistic": "mu_obs=mean(d)",
+    "bootstrap_statistic": "mu_b=mean(resampled_d)",
+    "error": "mu_obs-mu_b",
+    "quantile": "Type-7 linear 95th percentile of bootstrap errors",
+    "lcb": "mu_obs-q95",
+    "pass_rule": "LCB strictly > 0",
+    "rerank_or_refit_in_resample": false
+  },
+  "gate_order": [
+    "G0_CONTRACT_AND_DATA_IDENTITY",
+    "G1_BASELINE_RECONSTRUCTION_AND_SUPPORT",
+    "G2_PRIMARY_NET_TERMINAL_WEALTH_AND_CAGR",
+    "G3_PRIMARY_MAX_DRAWDOWN_NONINFERIORITY",
+    "G4_TEMPORAL_RECURRENCE",
+    "G5_DEPENDENCE_AWARE_MBB_LCB",
+    "G6_CORE_STRESS_ROBUSTNESS"
+  ],
+  "gates": {
+    "G0_CONTRACT_AND_DATA_IDENTITY": "all pinned Git blobs/SHA256, capture metadata, no-network/no-replacement rules and finite schemas match exactly",
+    "G1_BASELINE_RECONSTRUCTION_AND_SUPPORT": "exact window/1332 observations, CAGR anchor within 1e-6, final_10k anchor within 1e-6, gross<=1.000001, and every baseline date has a causally available DTB3 rate",
+    "G2_PRIMARY_NET_TERMINAL_WEALTH_AND_CAGR": "primary terminal wealth > baseline terminal wealth AND primary CAGR > baseline CAGR",
+    "G3_PRIMARY_MAX_DRAWDOWN_NONINFERIORITY": "primary MDD >= baseline MDD - 1e-12",
+    "G4_TEMPORAL_RECURRENCE": "at least 3/4 chronological block relative log-growth sums strictly >0",
+    "G5_DEPENDENCE_AWARE_MBB_LCB": "primary moving-block-bootstrap one-sided LCB strictly >0",
+    "G6_CORE_STRESS_ROBUSTNESS": "all 9 core stress cells have relative terminal log-growth strictly >0"
+  },
+  "classification_precedence": [
+    "INVALID_EXECUTION",
+    "MEASUREMENT_INCONCLUSIVE_DATA_IDENTITY",
+    "FAIL_IDLE_CASH_SWEEP_PRIMARY_ECONOMICS",
+    "FAIL_IDLE_CASH_SWEEP_DRAWDOWN",
+    "FAIL_IDLE_CASH_SWEEP_TEMPORAL_ROBUSTNESS",
+    "FAIL_IDLE_CASH_SWEEP_DEPENDENCE_ROBUSTNESS",
+    "FAIL_IDLE_CASH_SWEEP_STRESS_ROBUSTNESS",
+    "PASS_IDLE_CASH_SWEEP_ROBUSTNESS"
+  ],
+  "classification_rules": {
+    "INVALID_EXECUTION": "implementation, persistence, exactly-once, frozen-contract or boundary violation",
+    "MEASUREMENT_INCONCLUSIVE_DATA_IDENTITY": "G0 or G1 cannot establish frozen input identity/support; no economic FAIL conclusion",
+    "FAIL_IDLE_CASH_SWEEP_PRIMARY_ECONOMICS": "G0-G1 pass; G2 fails",
+    "FAIL_IDLE_CASH_SWEEP_DRAWDOWN": "G0-G2 pass; G3 fails",
+    "FAIL_IDLE_CASH_SWEEP_TEMPORAL_ROBUSTNESS": "G0-G3 pass; G4 fails",
+    "FAIL_IDLE_CASH_SWEEP_DEPENDENCE_ROBUSTNESS": "G0-G4 pass; G5 fails",
+    "FAIL_IDLE_CASH_SWEEP_STRESS_ROBUSTNESS": "G0-G5 pass; G6 fails",
+    "PASS_IDLE_CASH_SWEEP_ROBUSTNESS": "G0 through G6 all pass"
+  },
+  "execution_budget": {
+    "historical_attempts": 1,
+    "scientific_engine_calls": 1,
+    "frozen_stress_cells_inside_engine_call": 16,
+    "actual_variants_evaluated_before_execution": 0,
+    "same_id_rerun_allowed": false,
+    "same_id_retune_allowed": false,
+    "same_id_rescue_allowed": false,
+    "marker_only_recovery": "allowed only when complete PRIMARY_RESULT.json and EXECUTION.json are already durably persisted and final marker alone is missing"
+  },
+  "forbidden": [
+    "network fetch during scientific execution",
+    "DTB3 replacement or alternate rate series",
+    "yield/friction grid or primary-cell change",
+    "BRRK-0011 signal/target/risk-asset weight/gross/window change",
+    "cash timing or re-entry rule",
+    "favorable-block or stress-cell pruning",
+    "bootstrap/gate relaxation after outcome access",
+    "same-ID rerun/recompute/retune/rescue",
+    "production/signature/order authority"
+  ],
+  "authorization": {
+    "canonical_BRRK_0011": "NO_CHANGE",
+    "Phase_6": "NO_CHANGE",
+    "production_authorized": false,
+    "signature_authorized": false,
+    "order_submission_authorized": false
+  }
+}

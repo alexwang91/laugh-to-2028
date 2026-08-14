@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "research_id": "BRRK-IDLE-CASH-SWEEP-ROBUSTNESS-0063",
+  "development_only": true,
+  "independent_oos": false,
+  "baseline": {
+    "dataset_slice_id": "BRRK-WINNER-0001-CANONICAL-HIST-V1",
+    "equity_path": "research/results/pit_disp_0015/daily_equity.csv",
+    "equity_git_blob_sha": "82c87f8cb0ff01c728ffd3b717fff17cf5a364f2",
+    "weights_path": "research/results/pit_disp_0015/daily_weights.csv",
+    "weights_git_blob_sha": "2f6c8d3a8c25d3cafeaa0128f1c425dac248370b",
+    "variant": "BRRK0011_BASELINE",
+    "expected_window": [
+      "2022-12-10",
+      "2026-08-02"
+    ],
+    "replacement_allowed": false
+  },
+  "cash_rate": {
+    "dataset_slice_id": "BRRK-IDLE-CASH-SWEEP-0063-DTB3-HIST-V1",
+    "path": "research/brrk_idle_cash_sweep_robustness_0063/DTB3_RAW.csv",
+    "git_blob_sha": "71d50e26f8a9afb6bcb88401d20b97d5fb0a891a",
+    "payload_sha256": "4d8aee67dbd528ce38ff8482e9bb02dd5ccf2c6cd461f606fe90007151ab6879",
+    "capture_report_path": "research/brrk_idle_cash_sweep_robustness_0063/CAPTURE_REPORT.json",
+    "capture_report_git_blob_sha": "37f52f0025285d3300cdbec487a2c5e75c7f2494",
+    "capture_run": 31757177489,
+    "capture_artifact_id": 9203157766,
+    "source": "FRED DTB3",
+    "first_valid_date": "2022-11-30",
+    "last_valid_date": "2026-07-31",
+    "network_fetch_allowed": false,
+    "replacement_allowed": false
+  },
+  "exposure_status": "RESEARCHER_EXPOSED_DEVELOPMENT_NOT_INDEPENDENT_OOS",
+  "post_capture_substitution_allowed": false
+}
