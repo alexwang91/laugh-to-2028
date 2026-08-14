@@ -41,7 +41,7 @@ Total asset/target/horizon tracks = 40.
 Support is counted by unique underlying onsets: >=8 TRAIN+VALIDATION and >=3 FINAL required for confirmatory status.
 
 Complete frozen 0062 Tier-A predictor universe remains mandatory: 185 raw cells + 17 family scores = 202 signal units.
-Indicator-atlas hypothesis cell count = 202 * 40 = 8080, with separate simultaneous correction and no FINAL sign flip or post-hoc screen.
+Indicator-atlas hypothesis cell count = 202 * 40 = 8080. FINAL atlas multiplicity uses one-sided Mann-Whitney U tests for TRAIN-oriented ROC-AUC >0.50 with Holm-Bonferroni FWER=0.05 across all supported cells; PR-AUC lift, Brier and block metrics remain mandatory outputs. No FINAL sign flip or post-hoc screen.
 
 Frozen predictor architectures:
 1. P01 FAMILY_RIDGE_LOGIT;
@@ -89,7 +89,7 @@ Probability thresholds are calibrated on VALIDATION probabilities only: below p9
 Outer turnover cost = 10 bps per unit change in outer multiplier.
 Benchmark = closed 0064 passive-cash path reconstructed on common economic subwindow 2024-01-01..2026-08-02.
 
-Simultaneous inference = aligned non-circular MBB L60 / 4000 reps / seed660066 / Type-7 q95, separately for indicator-atlas hypotheses, confirmatory predictive tracks and economic controllers.
+Confirmatory predictor and economic simultaneous inference = aligned non-circular MBB L60 / 4000 reps / seed660066 / Type-7 q95. Indicator-atlas multiplicity is the separate Holm-Bonferroni family described above.
 PBO diagnostic = 8 contiguous slices / choose 4 = 70 splits across the 8 controllers where support permits.
 
 Historical 0066 event atlas computed = false.
