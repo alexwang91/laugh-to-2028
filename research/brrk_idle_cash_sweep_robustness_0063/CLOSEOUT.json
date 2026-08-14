@@ -1,0 +1,104 @@
+{
+  "schema_version": 1,
+  "research_id": "BRRK-IDLE-CASH-SWEEP-ROBUSTNESS-0063",
+  "closeout_status": "FAIL_IDLE_CASH_SWEEP_PRIMARY_ECONOMICS_CLOSED",
+  "scientific_boundary_merge_sha": "e17b96cd3358062ebd9eb88fae050ff865a9fb39",
+  "result_branch_final_sha": "868bddfdee72f3b06cf3df275debc681c382e8c6",
+  "execution_workflow_run_id": 31759258964,
+  "classification": "FAIL_IDLE_CASH_SWEEP_PRIMARY_ECONOMICS",
+  "binding_gate": "G2_PRIMARY_NET_TERMINAL_WEALTH_AND_CAGR",
+  "baseline": {
+    "terminal_wealth": 62247.382312942056,
+    "cagr": 0.6516609785339962,
+    "max_drawdown": -0.3371507034657847
+  },
+  "primary_cell": {
+    "yield_realization": 0.5,
+    "sweep_friction_bps": 10,
+    "terminal_wealth": 61940.70591694873,
+    "cagr": 0.6494239573667522,
+    "max_drawdown": -0.33978817065676337,
+    "relative_terminal_log_growth": -0.004938911996425733,
+    "cash_sweep_turnover": 22.9757546716,
+    "total_carry_return_units": 0.018015541729267455,
+    "total_sweep_friction_return_units": 0.0229757546716,
+    "positive_chronological_blocks": 1,
+    "block_relative_log_growth": [-0.0031067278401201836,-0.005322700713641648,-0.001005165706544642,0.004495682263880739]
+  },
+  "gate_summary": {
+    "G0_CONTRACT_AND_DATA_IDENTITY": true,
+    "G1_BASELINE_RECONSTRUCTION_AND_SUPPORT": true,
+    "G2_PRIMARY_NET_TERMINAL_WEALTH_AND_CAGR": false,
+    "G3_PRIMARY_MAX_DRAWDOWN_NONINFERIORITY": false,
+    "G4_TEMPORAL_RECURRENCE": false,
+    "G5_DEPENDENCE_AWARE_MBB_LCB": false,
+    "G6_CORE_STRESS_ROBUSTNESS": false,
+    "chronological_block_sizes": [333,333,333,333],
+    "mbb_mu_obs": -0.0000037078918892085084,
+    "mbb_q95": 0.000011110677619772619,
+    "mbb_lcb": -0.000014818569508981128
+  },
+  "descriptive_development_only": {
+    "zero_sweep_row": {
+      "a025_f00bps_cagr": 0.6557476728676677,
+      "a050_f00bps_cagr": 0.6598443872092135,
+      "a075_f00bps_cagr": 0.6639511459017513,
+      "a100_f00bps_cagr": 0.6680679733470085,
+      "all_four_cells_relative_terminal_log_growth_positive": true,
+      "all_four_cells_each_have_four_positive_chronological_blocks": true,
+      "authority": "RESULT_INFORMED_DEVELOPMENT_MOTIVATION_ONLY_NOT_0063_PROMOTION"
+    },
+    "interpretation": "The frozen 10-bps-per-cash-sleeve-change primary implementation charged cumulative sweep friction larger than its 50%-realized carry and failed primary economics. Descriptively, passive no-extra-sweep-cost carry remained positive across the frozen yield-realization row, motivating only a separately governed new-ID implementation-mechanism study."
+  },
+  "scientific_interpretation": [
+    "0063 rejects the prospectively frozen implementation that combines 50% DTB3 realization with an additional 10 bps cost on every L1 change in the idle-cash sleeve.",
+    "This does not reject cash carry in general; the study was designed to separate carry from an explicit transaction-like sweep-friction model.",
+    "The zero-sweep and lower-friction cells are exposed post-result diagnostics only. They cannot rescue 0063, alter its classification, or be selected as same-ID winners.",
+    "Any study of passive interest-bearing cash, custody spread, money-market fee or another cost model requires a new research ID with prospectively frozen economics and robustness gates."
+  ],
+  "exactly_once": {
+    "historical_execution_attempts": 1,
+    "equity_content_reads": 1,
+    "weights_content_reads": 1,
+    "dtb3_content_reads": 1,
+    "scientific_engine_calls": 1,
+    "network_fetches": 0,
+    "actual_variants_evaluated": 16,
+    "finalize_market_content_reads": 0,
+    "finalize_scientific_engine_calls": 0,
+    "reruns": 0,
+    "retunes": 0,
+    "rescues": 0,
+    "same_id_rerun_allowed": false,
+    "same_id_recompute_allowed": false,
+    "same_id_retune_allowed": false,
+    "same_id_rescue_allowed": false
+  },
+  "same_id_forbidden_followup": [
+    "change primary sweep friction from 10 bps after seeing the result",
+    "promote the 0-bps or 5-bps cells within 0063",
+    "change yield realization from the frozen 50% primary after seeing the result",
+    "drop G2, G3, G4, G5 or G6",
+    "redefine sweep turnover or charge timing",
+    "rerun 0063 on the same history"
+  ],
+  "new_id_followup_allowed": [
+    "A separately governed result-informed DEVELOPMENT study may test passive interest-bearing idle cash with a continuous annual spread/fee rather than transaction-like sweep friction.",
+    "The new-ID study must freeze its primary cost model before outcome computation and cannot treat 0063 zero-sweep cells as independent validation.",
+    "Independent confirmation still requires future-only validation after any DEVELOPMENT pass."
+  ],
+  "future_only_validation_eligible": false,
+  "state_to_canonical_integration_eligible": false,
+  "canonical_brrk_change": false,
+  "phase6_change": false,
+  "production_authorized": false,
+  "signature_authorized": false,
+  "order_submission_authorized": false,
+  "immutable_evidence": {
+    "RUN_ATTEMPT.marker_sha256": "940bf4c7e9cf0e9aae454e5cea0a0095bda4fc4c3b0fe819879ee4b02243ac53",
+    "PRIMARY_RESULT.json_sha256": "d05c03f8d062ef618f2b30e1dea1b76ad859af951d6370cdaa848dd12f94e24e",
+    "EVIDENCE.json_sha256": "43a0d59db3d5ee8277965a3a25211910ad24b63bcf09b446027f31b5e9616bb0",
+    "EXECUTION.json_sha256": "bedcc9951c323f7fc5e27325908e2f05ce814b2ddf2028ab8ee00dd4801398bb",
+    "RUN_ONCE.marker_git_blob_sha": "db35216a3ce36ae06d8f39f5edfbfb683c756dbd"
+  }
+}
