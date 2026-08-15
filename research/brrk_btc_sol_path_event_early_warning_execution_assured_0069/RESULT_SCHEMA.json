@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "research_id": "BRRK-BTC-SOL-PATH-EVENT-EARLY-WARNING-EXECUTION-ASSURED-0069",
+  "required_runtime_artifacts": ["RUN_ATTEMPT.marker","PRIMARY_RESULT.json","EVIDENCE.json","EXECUTION.json","RUN_ONCE.marker"],
+  "primary_result_required": {
+    "classification": "one frozen 0067 classification enum value",
+    "predictive_summary": "supported final track metrics and gate outcomes",
+    "controller_summary": "eligible controller economics and gate outcomes",
+    "economic_summary": "terminal wealth, CAGR, max drawdown, relative growth and simultaneous inference where defined",
+    "selection_risk": "PBO diagnostics where supported"
+  },
+  "execution_required": {
+    "manifest_sha256": true,
+    "manifest_unit_count": true,
+    "terminal_trace_count": true,
+    "validation_fit_calls_expected": true,
+    "validation_fit_calls_observed": true,
+    "economic_fit_calls_expected_manifest_derived": true,
+    "economic_fit_calls_observed": true,
+    "p08_nnls_expected_manifest_derived": true,
+    "p08_nnls_observed": true,
+    "process_worker_count": true,
+    "historical_input_read_counters": true,
+    "market_loader_calls": true,
+    "scientific_engine_calls": true,
+    "network_fetches": true
+  },
+  "valid_execution_rule": "validation observed=expected=31008; economic observed=manifest-derived expected; P08 NNLS observed=manifest-derived expected; every manifest unit terminal exactly once; complete manifest consumed before inference; historical I/O exactly as boundary permits; otherwise classification must be INVALID_EXECUTION",
+  "hash_chain_required": true,
+  "same_id_rerun_after_attempt_forbidden": true,
+  "authority": {"production_authorized":false,"signature_authorized":false,"order_submission_authorized":false}
+}
