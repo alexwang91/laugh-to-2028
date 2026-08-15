@@ -5,13 +5,12 @@ Last updated: 2026-08-14
 Authoritative repository: `alexwang91/laugh-to-2028`.
 Merged 0064 PASS closeout: `ad8038af45bad2e25e8a7b88b569b1873635d9c2`.
 Merged 0065 immutable closeout: `d1607277593a0c5c35bb0163e10e078f3dc85fc8`.
-Merged 0066 DESIGN: `b42f1d9dcc0574f185e04aad3bc8eca61fd2531d`.
-0066 owner-first registry commit: `44f8df24538216b9b83466522fc8efb209b3082a`.
 Merged 0066 IMPLEMENTATION: `aa55a5625f59e1f0221bf972104c96e5b709511a`.
 Merged 0066 CONTROLLED-EXECUTION BOUNDARY: `b1af358577349c58a8468a3822775152b5aaad34`.
 0066 unique RUN_ATTEMPT marker commit: `03e6f5a099c9163ff14c3387d4d06f0dff4f368a`.
 Merged 0066 immutable execution-timeout closeout: `9a45bb5e778e21dfd30d7abc4ff7d9889542b495`.
 0067 owner-first registry commit: `e584003ed04c92322c6cde87714d5cce4995b12e`.
+Merged 0067 DESIGN: `f3e5adc14631d9a3ae13ba686388b7a3c189e867`.
 
 ## Required closed-research anchors
 
@@ -27,132 +26,130 @@ ID 0043 is closed against result-informed pruning, reweighting, threshold rescue
 0064 = `PASS_PASSIVE_CASH_ACCRUAL_ROBUSTNESS / CLOSED TO SAME-ID RERUN`.
 0065 = `FAIL_NO_ROBUST_MULTI_ARCHITECTURE_IMPROVEMENT / CLOSED TO SAME-ID RERUN`.
 0066 = `INVALID_EXECUTION / CLOSED TO SAME-ID RERUN`.
-0066 research ID = `BRRK-BTC-SOL-PATH-EVENT-EARLY-WARNING-0066`.
-0067 = `DESIGN FROZEN / NOT PREREGISTERED / NOT IMPLEMENTED / NOT RUN`.
+0067 = `NUMERICAL_DATA_PREREGISTRATION_FROZEN / NOT IMPLEMENTED / NOT QUALIFIED / NOT RUN`.
 0067 research ID = `BRRK-BTC-SOL-PATH-EVENT-EARLY-WARNING-RUNTIME-QUALIFIED-0067`.
+0067 is `PROCESS_INFORMED_BY_0066_TIMEOUT / NOT_RESULT_INFORMED_BY_0066`.
 
-0067 is a new research ID, not a rerun/rescue/recovery of 0066. It is `PROCESS_INFORMED_BY_0066_TIMEOUT / NOT_RESULT_INFORMED_BY_0066` because 0066 produced no complete historical result bundle.
+## 0066 immutable execution finding
 
-## 0066 immutable execution closeout
+0066 historical workflow run `31806690040`, job `94787213750`, had `timeout-minutes: 350` and `cancel-in-progress: false`. Attempt 1/1 was consumed and the evaluate step was cancelled at the configured wall-clock boundary before a complete result bundle persisted.
 
-Historical workflow run = `31806690040`.
-Historical workflow job = `94787213750`.
-Configured workflow timeout = `350 minutes`.
-Concurrency cancellation = disabled (`cancel-in-progress: false`).
-Terminal workflow conclusion = `cancelled`.
-Direct execution failure = configured wall-clock timeout during the frozen `evaluate` step.
+0066 artifacts remain:
+- `RUN_ATTEMPT.marker` PRESENT and immutable;
+- `PRIMARY_RESULT.json` ABSENT;
+- `EVIDENCE.json` ABSENT;
+- `EXECUTION.json` ABSENT;
+- `RUN_ONCE.marker` ABSENT.
 
-Exactly-once 0066 attempt accounting:
-- authorized historical attempts = 1;
-- consumed historical attempts = 1;
-- remaining same-ID historical attempts = 0;
-- same-ID rerun = forbidden;
-- same-ID retune = forbidden;
-- same-ID rescue = forbidden.
+0066 same-ID rerun/retune/rescue/recomputation is forbidden. No 0066 scientific inference exists.
 
-0066 persisted artifact state:
-- `RUN_ATTEMPT.marker` = PRESENT and immutable;
-- `PRIMARY_RESULT.json` = ABSENT;
-- `EVIDENCE.json` = ABSENT;
-- `EXECUTION.json` = ABSENT;
-- `RUN_ONCE.marker` = ABSENT and must remain absent.
+## 0067 frozen scientific preregistration
 
-Marker-only finalize recovery is ineligible because the complete three-file result bundle does not exist. Historical recomputation may not be used to manufacture it. No scientific inference may be drawn from 0066.
+Scientific semantics preserve the frozen 0066 program rather than redesigning it after the timeout:
+- outcome assets BTC/SOL; BTC/ETH/SOL predictor context;
+- price-only DOWN/SIDEWAYS event construction over 10/15/20/30/45/60/90/120/180/240 sessions;
+- duration grades SHORT 10–20 / MEDIUM 30–60 / LONG 90–120 / SECULAR 180–240;
+- targets ANY_DOWN / MAJOR_DOWN / ANY_SIDEWAYS / LONG_SIDEWAYS;
+- warning leads 1/3/5/10/20; strictly future `(t,t+L]` onset label;
+- 40 asset/target/lead tracks;
+- unique-onset support >=8 TRAIN+VALIDATION and >=3 FINAL;
+- predictor universe 185 raw cells + 17 family scores = 202 units;
+- indicator atlas 8080 hypotheses;
+- P03 screening VALIDATION-only: positive PR-AUC lift, >=3/4 positive blocks, max2/family, max12;
+- P01 FAMILY_RIDGE_LOGIT;
+- P02 RAW_ELASTIC_NET_LOGIT;
+- P03 VALIDATION_SCREENED_SIGNAL_LOGIT;
+- P04 PCR_LOGIT;
+- P05 THEORY_QUADRATIC_LOGIT, RESULT_INFORMED from closed 0065 only, no privilege;
+- P06 SHALLOW_GBDT_CLASSIFIER;
+- P07 DISCRETE_TIME_HAZARD_LOGIT;
+- P08 STACKED_PROBABILITY_ENSEMBLE;
+- validation tuning configs = 1632;
+- final predictor tracks = 64;
+- final controllers = 8;
+- declared model/controller variant budget = 1704;
+- validation predictions 2023-01-01..2023-12-31;
+- FINAL event prediction evaluation 2024-01-01..2025-11-15;
+- economic evaluation 2024-01-01..2026-08-02;
+- refit every 20 sessions;
+- label maturity origin + L + 240 sessions strictly before refit;
+- prediction after close t affects return t+1 only;
+- controller thresholds frozen on VALIDATION: below p90 g=1, DOWN p90 g=.50, SIDEWAYS-only p90 g=.75, DOWN p97.5 g=.25, multiple=min g;
+- no leverage, no short, no smoothing;
+- outer turnover cost = 10 bps per unit multiplier change;
+- benchmark = closed 0064 passive-cash path on common window;
+- aligned non-circular MBB L60 / 4000 reps / scientific seed 660066 / Type-7 q95;
+- PBO = 8 slices choose4 =70 where supported.
 
-## 0067 runtime-qualified event-first design
+The frozen exact event thresholds/formulas, model grids, validation selection, predictive/economic gates, controller definitions, multiplicity handling, and classification enum are in `PREREGISTRATION.json`.
 
-Scientific abstraction remains event-first:
-- outcome assets = BTC / SOL;
-- ETH may remain predictor context only;
-- event classes = DOWN / SIDEWAYS;
-- multi-scale price-path event construction remains price-only;
-- duration structure = SHORT / MEDIUM / LONG / SECULAR;
-- conceptual warning targets per asset = ANY_DOWN / MAJOR_DOWN / ANY_SIDEWAYS / LONG_SIDEWAYS;
-- conceptual warning leads = 1 / 3 / 5 / 10 / 20 sessions;
-- already-active event suppression dates remain outside the classifier risk set;
-- intended predictor universe remains the complete frozen 0062 Tier-A universe plus family scores;
-- intended architecture families remain FAMILY_RIDGE_LOGIT / RAW_ELASTIC_NET_LOGIT / VALIDATION_SCREENED_SIGNAL_LOGIT / PCR_LOGIT / THEORY_QUADRATIC_LOGIT / SHALLOW_GBDT_CLASSIFIER / DISCRETE_TIME_HAZARD_LOGIT / STACKED_PROBABILITY_ENSEMBLE;
-- theory quadratic remains RESULT_INFORMED from closed 0065 only and has no privilege;
-- intended economic layer remains eight defensive outer-controller concepts with no leverage and no shorting;
-- benchmark remains closed 0064 passive-cash economics;
-- confirmatory multiplicity/resampling inference remains mandatory;
-- researcher-exposed DEVELOPMENT history remains non-independent OOS.
+## 0067 frozen historical data identities
 
-Exact event thresholds, data/code blob identities, model grids, configuration counts, windows, maturity rules, support gates, controller thresholds/costs, inference counts/seeds, persistence schemas, and compute-qualification limits belong to numerical/data PREREGISTRATION after DESIGN merge.
+Market slice = `BRRK-LEADERSHIP-ROTATION-0048-EXPOSED-HIST-V1`.
+Market evidence blob = `64ebf5c6deaf3f34dbeac715378f196ff0f4fafe`; payload SHA256 = `d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193`.
+0062 feature engine blob = `cac8e946998c836d10842b9388e1e3ef345a8c0b`.
+0047 loader blob = `059b55961e279dab41ba29b5b017de0922e4f33c`.
+BRRK equity blob = `82c87f8cb0ff01c728ffd3b717fff17cf5a364f2`.
+BRRK weights blob = `2f6c8d3a8c25d3cafeaa0128f1c425dac248370b`.
+DTB3 blob = `71d50e26f8a9afb6bcb88401d20b97d5fb0a891a`; payload SHA256 = `4d8aee67dbd528ce38ff8482e9bb02dd5ccf2c6cd461f606fe90007151ab6879`.
+0064 economic engine blob = `4060a307be2204c11952cb52e2fc718a5343d8e1`.
+Network fetch/replacement forbidden. DEVELOPMENT history is researcher-exposed and not independent OOS.
 
-## 0067 mandatory full-shape compute qualification
+## 0067 physical compute accounting
 
-Before any 0067 historical `RUN_ATTEMPT.marker` may be created, the exact intended implementation/environment must pass a full-shape synthetic/nonhistorical computational qualification.
+The preregistered workload exposes the physical estimator-fit graph explicitly:
+- validation rows 365; refit blocks 19;
+- nonhazard validation configs 1600;
+- pooled hazard configs 32;
+- validation estimator fit calls = 31,008;
+- economic prediction rows 945; refit blocks 48;
+- nonhazard selected asset/target/lead series 240;
+- pooled hazard asset/target series 8;
+- economic estimator fit calls = 11,904;
+- total estimator fit calls = 42,912;
+- P08 NNLS solves = 40;
+- predictive bootstrap replicates = 4000;
+- economic bootstrap replicates = 4000;
+- PBO splits = 70.
 
-The qualification must not read/materialize historical market evidence, BRRK equity, BRRK weights, DTB3, or any other historical outcome payload. Git identity checks without historical content reads are allowed.
+No implementation may use the high-level 1704 variant count as a substitute for this runtime load accounting.
 
-The qualification must reproduce the intended historical compute shape, including the preregistered:
-- time-axis/load geometry;
-- predictor dimensionality;
-- event/target/lead track counts;
-- architecture/configuration counts;
-- walk-forward refit geometry and resulting estimator-fit count;
-- final predictor/controller workload;
-- bootstrap workload;
-- PBO workload where supported;
-- pinned Python/dependency/runner/thread environment.
+## 0067 full-shape qualification gate
 
-Required machine-readable qualification evidence includes total and phase wall-clock, peak RSS, fit/config/track/controller/bootstrap/PBO counts, process/thread environment, dependency/runner identities, synthetic input hash, implementation SHA, deterministic seeds, zero-historical-read counters, and verdict.
+Before any 0067 historical `RUN_ATTEMPT.marker` may exist, the exact intended implementation/environment must pass a full-shape nonhistorical qualification.
 
-Exact runtime limit, peak-memory limit, and safety margin to runner hard timeout are frozen only in PREREGISTRATION.
+Frozen environment/limits:
+- GitHub runner label `ubuntu-24.04`, x86_64;
+- deterministic process worker count =4;
+- Python 3.12;
+- requirements blobs `df60fe952f573fc6201b16b9de6b6043fbe7dbe2` and `c48550e67350bdc1e640ac8eb5e2ea02986ad83a`;
+- PYTHONHASHSEED=0 and OMP/OPENBLAS/MKL/NUMEXPR threads=1 per worker;
+- synthetic qualification seed = 670067;
+- synthetic calendar rows =2183 with the same temporal/load geometry but no historical values;
+- all 42,912 estimator fit calls, 40 NNLS solves, 4000+4000 bootstrap replicates, and 70 PBO splits must execute; no shape reduction;
+- qualification job timeout =210 minutes;
+- PASS wall-clock <=180 minutes;
+- historical job hard timeout remains 350 minutes;
+- required margin >=170 minutes;
+- process-tree peak RSS <=4 GiB AND <=60% of MemTotal;
+- swap/OOM forbidden;
+- zero historical payload reads, zero historical market loader calls, zero historical equity/weights/DTB3 reads, zero network fetches;
+- exact/canonical reference equivalence required; floating tolerance atol 1e-12, rtol 1e-10 where exact equality is not prospectively required.
 
-If qualification fails, no controlled historical boundary may authorize execution and no historical marker may be created. A smaller smoke test cannot override a failed full-shape test. Increasing timeout alone is not a remedy.
-
-## 0067 engineering/science boundary
-
-Potential semantic-preserving engineering transformations include immutable mask/design-matrix caching, exact transformation reuse, NumPy/vectorized metrics, deterministic parallel execution across independent configs/tracks, read-only shared arrays/memory maps, exact bootstrap/PBO vectorization, stable ordering, explicit thread caps, and resource instrumentation.
-
-Scientific changes are not runtime optimizations. They include changing event labels/thresholds, predictor membership, samples/windows/maturity, refit cadence, model families/grids, solver semantics that alter estimates, selection rules, approximation/early stopping, controller mappings/costs/timing, bootstrap/PBO definitions/counts/seeds, or dropping slow architectures/configs/tracks/refits/replicates. Such changes must be prospectively declared/frozen before historical access.
-
-The optimized implementation must retain a reference path and prospective equivalence tests on nonhistorical fixtures.
-
-## 0067 exactly-once execution order
-
-1. DESIGN merge.
-2. Numerical/data PREREGISTRATION merge.
-3. IMPLEMENTATION-ONLY merge.
-4. Full-shape nonhistorical qualification on exact intended implementation/environment.
-5. CONTROLLED-EXECUTION BOUNDARY merge.
-6. Exact merged-boundary Git-only preflight with zero historical content reads.
-7. Durable unique `RUN_ATTEMPT.marker` before historical content read.
-8. Frozen historical inputs read under the run interface.
-9. Scientific engine invoked exactly once.
-10. Result/evidence/execution bundle persisted create-only.
-11. `RUN_ONCE.marker` finalized without remeasurement.
-12. Immutable CLOSEOUT.
-
-Once a 0067 historical marker exists, same-ID rerun/retune/rescue is forbidden even after infrastructure failure.
+Qualification failure blocks historical access without consuming the unique historical attempt. Semantic-preserving engineering remediation may repeat synthetic qualification. Raising timeout, dropping scientific workload, loosening solver semantics, or approximation cannot turn a failure into PASS.
 
 ## 0067 zero-result assertions
 
-Historical 0067 event atlas computed = false.
-Historical 0067 indicator/event association computed = false.
-Historical 0067 classifier metrics computed = false.
-Historical 0067 controller CAGR/NAV/MDD computed = false.
-Historical 0067 validation tuning configs evaluated = 0.
-Historical 0067 model/controller variants evaluated = 0.
+Historical event atlas computed = false.
+Historical classifier metrics computed = false.
+Historical controller economics computed = false.
+Historical validation configs evaluated = 0.
+Historical model/controller variants evaluated = 0.
 0067 `RUN_ATTEMPT.marker` = ABSENT.
 0067 `PRIMARY_RESULT.json` = ABSENT.
 0067 `EVIDENCE.json` = ABSENT.
 0067 `EXECUTION.json` = ABSENT.
 0067 `RUN_ONCE.marker` = ABSENT.
-
-## Frozen historical data identities from closed 0066 — not yet 0067 prereg authority
-
-Closed-0066 market slice = `BRRK-LEADERSHIP-ROTATION-0048-EXPOSED-HIST-V1`.
-Closed-0066 market evidence blob = `64ebf5c6deaf3f34dbeac715378f196ff0f4fafe`; payload SHA256 = `d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193`.
-Closed-0066 0062 feature engine blob = `cac8e946998c836d10842b9388e1e3ef345a8c0b`.
-Closed-0066 loader blob = `059b55961e279dab41ba29b5b017de0922e4f33c`.
-Closed-0066 BRRK equity blob = `82c87f8cb0ff01c728ffd3b717fff17cf5a364f2`.
-Closed-0066 BRRK weights blob = `2f6c8d3a8c25d3cafeaa0128f1c425dac248370b`.
-Closed-0066 DTB3 blob = `71d50e26f8a9afb6bcb88401d20b97d5fb0a891a`; payload SHA256 = `4d8aee67dbd528ce38ff8482e9bb02dd5ccf2c6cd461f606fe90007151ab6879`.
-Closed-0066 0064 economic engine blob = `4060a307be2204c11952cb52e2fc718a5343d8e1`.
-These are historical record only until 0067 PREREGISTRATION explicitly pins 0067 data/code authority.
 
 ## No-drift authority
 
@@ -169,4 +166,4 @@ Phase 6 = NO CHANGE.
 
 ## Exact next step
 
-Open and merge the 0067 DESIGN-only PR after fresh standing CI. Then create numerical/data PREREGISTRATION freezing exact scientific parameters, exact variant accounting, exact data/code identities, exact full-shape synthetic qualification workload, exact runtime/memory/safety limits, exact environment/equivalence requirements, and exactly-once schemas before any implementation or 0067 historical measurement.
+Merge the 0067 numerical/data/qualification PREREGISTRATION after fresh standing CI. Then enter IMPLEMENTATION-ONLY. Implementation may optimize only semantics-preserving execution and must build both the reference-equivalence suite and the full-shape qualification runner before any historical boundary is authorized.
