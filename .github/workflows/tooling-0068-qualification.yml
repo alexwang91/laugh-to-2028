@@ -1,0 +1,69 @@
+name: Tooling 0068 exact implementation qualification
+
+on:
+  push:
+    branches:
+      - tools/0068-qualification-v1
+    paths:
+      - '.github/workflows/tooling-0068-qualification.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: brrk-0068-exact-qualification
+  cancel-in-progress: false
+
+jobs:
+  qualify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      PYTHONHASHSEED: '0'
+      OMP_NUM_THREADS: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      NUMEXPR_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 205628d25b70849dfacb840944c67336c1464821
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install bounded test runtime
+        run: python -m pip install pytest==8.4.1
+      - name: Verify exact implementation identity and isolation
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "205628d25b70849dfacb840944c67336c1464821"
+          test ! -e research/brrk_btc_sol_path_event_execution_equivalence_0068/RUN_ATTEMPT.marker
+          test ! -e research/brrk_btc_sol_path_event_execution_equivalence_0068/PRIMARY_RESULT.json
+          test ! -e research/brrk_btc_sol_path_event_execution_equivalence_0068/EVIDENCE.json
+          test ! -e research/brrk_btc_sol_path_event_execution_equivalence_0068/EXECUTION.json
+          test ! -e research/brrk_btc_sol_path_event_execution_equivalence_0068/RUN_ONCE.marker
+      - name: Run bounded implementation tests
+        run: python -m pytest -q research/brrk_btc_sol_path_event_execution_equivalence_0068/test_execution_graph.py
+      - name: Run five-regime nonhistorical qualification
+        run: python -m research.brrk_btc_sol_path_event_execution_equivalence_0068.qualification > /tmp/0068-qualification.json
+      - name: Verify frozen qualification outputs
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r = json.loads(Path('/tmp/0068-qualification.json').read_text())
+          assert r['research_id'] == 'BRRK-BTC-SOL-PATH-EVENT-EXECUTION-EQUIVALENCE-0068'
+          assert r['qualification_verdict'] == 'PASS'
+          assert r['validation_fit_calls'] == 31008
+          assert r['historical_reads'] == 0
+          assert r['network_fetches'] == 0
+          assert len(r['regimes']) == 5
+          full = next(x for x in r['regimes'] if x['regime'] == 'FULL_SUPPORT')
+          assert full['economic_fit_calls'] == 11904
+          assert full['p08_nnls_solves'] == 40
+          assert all(x['manifest_byte_identical'] for x in r['regimes'])
+          assert all(x['terminal_trace_complete'] for x in r['regimes'])
+          print(json.dumps(r, indent=2, sort_keys=True))
+          PY
