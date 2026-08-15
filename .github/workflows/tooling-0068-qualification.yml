@@ -27,7 +27,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: 205628d25b70849dfacb840944c67336c1464821
+          ref: 70c7d148d11aebb324536dde5a041a3252d02dfb
           fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
@@ -38,7 +38,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD)" = "205628d25b70849dfacb840944c67336c1464821"
+          test "$(git rev-parse HEAD)" = "70c7d148d11aebb324536dde5a041a3252d02dfb"
           test ! -e research/brrk_btc_sol_path_event_execution_equivalence_0068/RUN_ATTEMPT.marker
           test ! -e research/brrk_btc_sol_path_event_execution_equivalence_0068/PRIMARY_RESULT.json
           test ! -e research/brrk_btc_sol_path_event_execution_equivalence_0068/EVIDENCE.json
