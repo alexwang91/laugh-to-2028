@@ -1,0 +1,52 @@
+name: Tooling 0068 implementation governance fix
+
+on:
+  push:
+    branches:
+      - tools/0068-implementation-fix-v1
+    paths:
+      - '.github/workflows/tooling-0068-implementation-fix.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: brrk-0068-implementation-fix
+  cancel-in-progress: false
+
+jobs:
+  fix-implementation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/0068-implementation-v1
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Remove unauthorized workflow and update handoff
+        shell: bash
+        run: |
+          set -euo pipefail
+          git rm .github/workflows/0068-execution-equivalence.yml
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('docs/CURRENT_STATE.md')
+          s = p.read_text(encoding='utf-8')
+          old = "State = `PREREGISTERED / NOT IMPLEMENTED / NOT QUALIFIED / NO HISTORICAL AUTHORITY`."
+          new = "State = `IMPLEMENTATION BUILT / NOT QUALIFIED / NO HISTORICAL AUTHORITY`."
+          assert old in s
+          s = s.replace(old, new, 1)
+          old_step = "Exact next step: after PREREGISTRATION merges with all standing CI green, create a separate IMPLEMENTATION-ONLY stage. Implement the canonical graph builder, per-unit physical-action accounting, terminal traces and multi-regime synthetic qualification without changing frozen science or reading historical content."
+          new_step = "Implementation branch = `research/0068-implementation-v1`. The branch implements the canonical graph builder, deterministic canonical manifest/SHA256, per-unit expected physical actions, exactly-one terminal traces, physical fit/NNLS accounting, and all five preregistered synthetic eligibility regimes. Qualification has not passed yet. The first implementation CI attempt failed before scientific qualification because its PR-local workflow omitted the test-runtime install, and repository no-drift governance forbids adding that workflow path. This is an execution-tooling defect only; no historical content was read and no frozen scientific semantics changed.\n\nExact next step: run bounded tests and the five-regime qualification from a separate non-merged tooling workflow that checks out the exact implementation branch, installs the pinned test runtime, and reads no historical inputs. Repair only execution-assurance defects until qualification passes; merge IMPLEMENTATION-ONLY only after standing CI is green and qualification evidence is durable."
+          assert old_step in s
+          s = s.replace(old_step, new_step, 1)
+          p.write_text(s, encoding='utf-8')
+          PY
+          python -m research.governance.validate
+          python -m research.governance.enforce_future --base 60746a7d96c7b55df5384c4e9f54e3d7fd4b833f
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs/CURRENT_STATE.md
+          git commit -m 'research: fix 0068 implementation governance handoff'
+          git push origin HEAD:refs/heads/research/0068-implementation-v1
