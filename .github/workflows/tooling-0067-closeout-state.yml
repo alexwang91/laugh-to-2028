@@ -1,0 +1,50 @@
+name: Tooling 0067 immutable closeout state
+on:
+  push:
+    branches: [tools/0067-closeout-state-writer-v1]
+    paths: ['.github/workflows/tooling-0067-closeout-state.yml']
+permissions:
+  contents: write
+jobs:
+  state:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/0067-immutable-closeout-v1
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('docs/CURRENT_STATE.md')
+          s=p.read_text()
+          anchor='Merged 0067 QUALIFICATION EVIDENCE: `f9f50be07b628e62754cbfef58e314761bf25c2a`.'
+          repl=anchor+'\nMerged 0067 CONTROLLED-EXECUTION BOUNDARY: `d5c7938f0e0bb62368c0b6ce5330088c0fda817c`.\n0067 immutable result branch head: `85c9f4124c308f7fb283c3f015a60e282f2792d5`.'
+          assert anchor in s
+          s=s.replace(anchor,repl,1)
+          old='0067 = `CONTROLLED BOUNDARY BUILT / NOT MERGED / NOT RUN`.'
+          new='0067 = `INVALID_EXECUTION / CLOSED TO SAME-ID RERUN`.'
+          assert old in s
+          s=s.replace(old,new,1)
+          a=s.index('## 0067 zero-result assertions')
+          b=s.index('## No-drift authority',a)
+          terminal='''## 0067 immutable historical execution closeout\n\nHistorical workflow run `31882271904`, job `95006404891`, completed its workflow lifecycle successfully and persisted all five exactly-once runtime artifacts. The scientific classification is nevertheless `INVALID_EXECUTION` because the historical physical-compute accounting diverged from the prospectively frozen controlled boundary.\n\nExactly-once state:\n- authorized attempts = 1; consumed attempts = 1; remaining same-ID attempts = 0;\n- `RUN_ATTEMPT.marker` = PRESENT;\n- `PRIMARY_RESULT.json` = PRESENT;\n- `EVIDENCE.json` = PRESENT;\n- `EXECUTION.json` = PRESENT;\n- `RUN_ONCE.marker` = PRESENT;\n- same-ID rerun/retune/rescue/recomputation = forbidden.\n\nHistorical I/O and call accounting:\n- market evidence / BRRK equity / BRRK weights / DTB3 reads = 1 / 1 / 1 / 1;\n- market loader calls = 1;\n- top-level scientific engine calls = 1;\n- network fetches = 0;\n- finalize historical reads = 0;\n- finalize loader calls = 0;\n- finalize scientific engine calls = 0.\n\nFrozen-vs-actual physical accounting:\n- validation estimator fits = 31,008 / 31,008 MATCH;\n- economic estimator fits = 5,808 / 11,904 MISMATCH;\n- total estimator fits = 36,816 / 42,912 MISMATCH;\n- P08 stacking NNLS solves = 20 / 40 MISMATCH;\n- process workers = 4 / 4 MATCH.\n\nThe runner therefore correctly persisted `INVALID_EXECUTION`. No 0067 scientific PASS/FAIL, predictive winner, controller economics, CAGR/NAV/MDD, bootstrap, PBO, or promotion inference is admissible. Values computed before invalidation are diagnostic execution traces only. The result/evidence/execution/final-marker hash chain and zero-production-authority checks completed successfully in the terminal workflow verification step.\n\nAny further measurement must use a new research ID and a new prospectively frozen lifecycle. The 0067 mismatch may inform execution engineering only; it may not tune scientific semantics.\n\n'''
+          s=s[:a]+terminal+s[b:]
+          stale='No historical runtime artifact exists yet and no historical content has been read.'
+          assert stale in s
+          s=s.replace(stale,'Historical attempt 1/1 is complete and immutably closed as `INVALID_EXECUTION`; all five runtime artifacts are present and same-ID rerun/retune/rescue is forbidden.',1)
+          old_next='''## Exact next step\n\nValidate the controlled boundary without historical content reads, then open and merge the separate CONTROLLED-EXECUTION BOUNDARY with standing CI green. After merge, run an exact merged-boundary zero-result preflight. Only after that preflight passes may the unique 0067 historical attempt 1/1 be durably marked before any historical read.\n'''
+          new_next='''## Exact next step\n\nMerge the immutable 0067 closeout without historical remeasurement. No same-ID execution action remains legal. Any continuation of the path-event early-warning question must use a new research ID with new preregistration, implementation/boundary, full-shape nonhistorical qualification, and prospectively authorized historical attempt.\n'''
+          assert old_next in s
+          s=s.replace(old_next,new_next,1)
+          p.write_text(s)
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs/CURRENT_STATE.md
+          git commit -m '0067: record immutable invalid-execution closeout'
+          git push origin HEAD:refs/heads/research/0067-immutable-closeout-v1
