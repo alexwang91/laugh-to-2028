@@ -11,6 +11,7 @@ Merged 0066 CONTROLLED-EXECUTION BOUNDARY: `b1af358577349c58a8468a3822775152b5aa
 Merged 0066 immutable execution-timeout closeout: `9a45bb5e778e21dfd30d7abc4ff7d9889542b495`.
 0067 owner-first registry commit: `e584003ed04c92322c6cde87714d5cce4995b12e`.
 Merged 0067 DESIGN: `f3e5adc14631d9a3ae13ba686388b7a3c189e867`.
+Merged 0067 PREREGISTRATION: `062eb06c186cc54a729f0f65ae3888db0f4d2300`.
 
 ## Required closed-research anchors
 
@@ -26,7 +27,7 @@ ID 0043 is closed against result-informed pruning, reweighting, threshold rescue
 0064 = `PASS_PASSIVE_CASH_ACCRUAL_ROBUSTNESS / CLOSED TO SAME-ID RERUN`.
 0065 = `FAIL_NO_ROBUST_MULTI_ARCHITECTURE_IMPROVEMENT / CLOSED TO SAME-ID RERUN`.
 0066 = `INVALID_EXECUTION / CLOSED TO SAME-ID RERUN`.
-0067 = `NUMERICAL_DATA_PREREGISTRATION_FROZEN / NOT IMPLEMENTED / NOT QUALIFIED / NOT RUN`.
+0067 = `IMPLEMENTATION BUILT / QUICK EQUIVALENCE PASS / NOT FULL-SHAPE QUALIFIED / NOT RUN`.
 0067 research ID = `BRRK-BTC-SOL-PATH-EVENT-EARLY-WARNING-RUNTIME-QUALIFIED-0067`.
 0067 is `PROCESS_INFORMED_BY_0066_TIMEOUT / NOT_RESULT_INFORMED_BY_0066`.
 
@@ -164,6 +165,17 @@ Canonical BRRK-0011 = NO CHANGE.
 0066 = NO CHANGE.
 Phase 6 = NO CHANGE.
 
+## 0067 implementation-only status
+
+Implementation branch = `research/0067-implementation-v1`.
+Scientific reference = immutable closed-0066 engine/model/event semantics; 0066 historical recomputation remains forbidden.
+Runtime-only implementation changes = maturity-mask caching, pooled-hazard schedule caching, deterministic four-process validation/economic prediction execution, predictive-bootstrap parallel reduction with parent-generated frozen RNG draws, and exact economic-bootstrap vectorization.
+Full-shape qualification runner = `research/brrk_btc_sol_path_event_early_warning_runtime_qualified_0067/qualification.py`.
+Historical payload access remains forbidden and no 0067 historical attempt marker exists.
+
+Quick nonhistorical reference-equivalence workflow = `31867425779`; verdict = `PASS`; 8080 indicator cells reported and all reference-equivalence fixtures passed.
+Bounded implementation test workflow = `31867565008`; verdict = `PASS`.
+
 ## Exact next step
 
-Merge the 0067 numerical/data/qualification PREREGISTRATION after fresh standing CI. Then enter IMPLEMENTATION-ONLY. Implementation may optimize only semantics-preserving execution and must build both the reference-equivalence suite and the full-shape qualification runner before any historical boundary is authorized.
+Open and merge IMPLEMENTATION-ONLY after standing CI is green. Only after implementation merge may the exact merged implementation run the preregistered full-shape nonhistorical qualification. A historical controlled-execution boundary remains forbidden until a full-shape qualification PASS is durably recorded.
