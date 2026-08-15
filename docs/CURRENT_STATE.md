@@ -91,7 +91,7 @@ The frozen exact event thresholds/formulas, model grids, validation selection, p
 Market slice = `BRRK-LEADERSHIP-ROTATION-0048-EXPOSED-HIST-V1`.
 Market evidence blob = `64ebf5c6deaf3f34dbeac715378f196ff0f4fafe`; payload SHA256 = `d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193`.
 0062 feature engine blob = `cac8e946998c836d10842b9388e1e3ef345a8c0b`.
-0047 loader blob = `059b55961e279dab41ba29b5b0170e0922e4f33c`.
+0047 loader blob = `059b55961e279dab41ba29b5b017de0922e4f33c`.
 BRRK equity blob = `82c87f8cb0ff01c728ffd3b717fff17cf5a364f2`.
 BRRK weights blob = `2f6c8d3a8c25d3cafeaa0128f1c425dac248370b`.
 DTB3 blob = `71d50e26f8a9afb6bcb88401d20b97d5fb0a891a`; payload SHA256 = `4d8aee67dbd528ce38ff8482e9bb02dd5ccf2c6cd461f606fe90007151ab6879`.
