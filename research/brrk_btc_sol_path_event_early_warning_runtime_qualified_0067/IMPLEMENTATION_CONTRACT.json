@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "research_id": "BRRK-BTC-SOL-PATH-EVENT-EARLY-WARNING-RUNTIME-QUALIFIED-0067",
+  "stage": "IMPLEMENTATION_ONLY_NOT_RUN",
+  "preregistration_merge_sha": "062eb06c186cc54a729f0f65ae3888db0f4d2300",
+  "historical_measurement_allowed": false,
+  "implementation_validation_data": "SYNTHETIC_NONHISTORICAL_ONLY",
+  "scientific_reference": {
+    "closed_0066_engine_blob": "79320c83d0ce89c2c952fd0a4f7a9b7452a8e0ae",
+    "closed_0066_event_engine_blob": "651ebb824b9dc1390ed0170a4eab07a3870786aa",
+    "closed_0066_models_blob": "6b255b887f2cd8f1741086a7bf27e6254288e836",
+    "use": "Immutable reference semantics only; 0066 result is absent and no 0066 historical recomputation is permitted."
+  },
+  "runtime_transformations": [
+    "Cache label-maturity training indices once per asset/target/lead/refit instead of recomputing them per hyperparameter configuration.",
+    "Cache pooled-hazard eligibility/prepared labels once per asset/target/refit.",
+    "Execute independent validation configurations with exactly four deterministic forked processes on ubuntu-24.04 while preserving canonical task/result ordering.",
+    "Execute independent selected economic prediction series with the same four-process deterministic schedule.",
+    "Parallelize predictive moving-block-bootstrap replicates after generating bootstrap block starts in the parent with the frozen RNG seed and original sequential draw order.",
+    "Vectorize economic moving-block-bootstrap reductions while preserving the frozen RNG draw sequence, Type-7 quantile and max-stat definition.",
+    "Record physical estimator-fit attempts, NNLS count, worker process identity and worker max RSS."
+  ],
+  "scientific_semantics_unchanged": [
+    "Event definitions, thresholds, duration/severity grades, onset extraction, suppression and risk sets.",
+    "185 raw cells + 17 family scores and all 8080 indicator-atlas hypotheses.",
+    "All P01-P08 architectures, grids, sklearn/scipy estimator semantics, solver tolerances and random_state=660066 where frozen.",
+    "All 1632 validation tuning configurations and 1704 high-level model/controller variants.",
+    "Validation-only P03 screening, hyperparameter/horizon/architecture selection and P08 stacking.",
+    "Validation/final/economic windows, 20-session refit cadence and label-maturity rule.",
+    "Eight controllers, validation percentiles, no-leverage/no-short/no-smoothing rules and 10bp outer-turnover cost.",
+    "Predictive and economic moving-block bootstrap block length 60, 4000 replicates, scientific seed 660066 and Type-7 q95.",
+    "PBO 8 slices choose 4 and controller Sharpe selection statistic.",
+    "Classification gates and production/signature/order prohibitions."
+  ],
+  "physical_compute_contract": {
+    "validation_tuning_configs": 1632,
+    "validation_estimator_fit_calls": 31008,
+    "economic_estimator_fit_calls": 11904,
+    "total_estimator_fit_calls": 42912,
+    "stacking_nnls_solves": 40,
+    "final_predictor_tracks": 64,
+    "controllers": 8,
+    "predictive_bootstrap_replicates": 4000,
+    "economic_bootstrap_replicates": 4000,
+    "pbo_splits": 70,
+    "process_worker_count": 4
+  },
+  "qualification_runner": "qualification.py",
+  "qualification_must_pass_before_controlled_boundary": true,
+  "runtime_artifacts_required_absent_during_implementation": [
+    "RUN_ATTEMPT.marker",
+    "PRIMARY_RESULT.json",
+    "EVIDENCE.json",
+    "EXECUTION.json",
+    "RUN_ONCE.marker"
+  ],
+  "actual_historical_variants_evaluated": 0,
+  "historical_event_atlas_computed": false,
+  "historical_indicator_associations_computed": false,
+  "historical_predictor_metrics_computed": false,
+  "historical_controller_economics_computed": false,
+  "network_fetches": 0,
+  "production_authorized": false,
+  "signature_authorized": false,
+  "order_submission_authorized": false,
+  "canonical_BRRK_0011": "NO_CHANGE",
+  "0064": "NO_CHANGE",
+  "0065": "NO_CHANGE",
+  "0066": "NO_CHANGE",
+  "Phase_6": "NO_CHANGE"
+}
