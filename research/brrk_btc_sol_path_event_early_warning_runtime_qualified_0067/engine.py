@@ -183,6 +183,9 @@ def _validation_worker(task: tuple[Any, ...]) -> tuple[Any, ...]:
         )
         m = ref._metrics_for_prediction(lab, pred, s["prediction_index"])
         rk = mdl.validation_rank_key(m, params)
+        import resource as _resource
+        pa["worker_pid"] = os.getpid()
+        pa["worker_maxrss_kb"] = int(_resource.getrusage(_resource.RUSAGE_SELF).ru_maxrss)
         return (kind, seq, asset, target, h, arch, dict(params), pred, pa, m, rk)
 
     if kind == "hazard":
@@ -209,6 +212,9 @@ def _validation_worker(task: tuple[Any, ...]) -> tuple[Any, ...]:
         else:
             aggregate = {"status": "NOT_WELL_DEFINED"}
         rk = mdl.validation_rank_key(aggregate, params)
+        import resource as _resource
+        pa["worker_pid"] = os.getpid()
+        pa["worker_maxrss_kb"] = int(_resource.getrusage(_resource.RUSAGE_SELF).ru_maxrss)
         return (kind, seq, asset, target, dict(params), preds, pa, metrics, rk)
     raise RuntimeError(f"unknown validation task kind {kind}")
 
@@ -374,6 +380,9 @@ def _economic_worker(task: tuple[Any, ...]) -> tuple[Any, ...]:
             if arch == "P03_VALIDATION_SCREENED_SIGNAL_LOGIT"
             else None,
         )
+        import resource as _resource
+        pa["worker_pid"] = os.getpid()
+        pa["worker_maxrss_kb"] = int(_resource.getrusage(_resource.RUSAGE_SELF).ru_maxrss)
         return (kind, seq, asset, target, h, arch, p, pa)
     if kind == "hazard":
         _, seq, asset, target, params = task
@@ -383,6 +392,9 @@ def _economic_worker(task: tuple[Any, ...]) -> tuple[Any, ...]:
             s["prediction_index"],
             s["hazard_schedules"][(asset, target)],
         )
+        import resource as _resource
+        pa["worker_pid"] = os.getpid()
+        pa["worker_maxrss_kb"] = int(_resource.getrusage(_resource.RUSAGE_SELF).ru_maxrss)
         return (kind, seq, asset, target, preds, pa)
     raise RuntimeError(f"unknown economic task kind {kind}")
 
