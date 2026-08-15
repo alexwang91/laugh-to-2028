@@ -34,7 +34,6 @@ jobs:
           python - <<'PY'
           import json
           from pathlib import Path
-
           path = Path('config/research_registry.json')
           reg = json.loads(path.read_text(encoding='utf-8'))
           rid = 'BRRK-BTC-SOL-PATH-EVENT-EXECUTION-EQUIVALENCE-0068'
@@ -45,7 +44,7 @@ jobs:
             'research_domain': 'RISK_CONTROL',
             'research_governance_version': 1,
             'governance_mode': 'PROGRAM_GOVERNED_V1',
-            'objective_type': 'PROCESS_VALIDATION',
+            'objective_type': 'PORTFOLIO_INTEGRATION',
             'created_at': '2026-08-15',
             'created_before_result': True,
             'question': 'Can qualification and controlled execution be made graph-equivalent when frozen validation eligibility lawfully contracts downstream economic and P08 work?',
