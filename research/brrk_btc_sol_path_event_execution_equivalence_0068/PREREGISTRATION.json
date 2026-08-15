@@ -1,0 +1,101 @@
+{
+  "schema_version": 1,
+  "research_id": "BRRK-BTC-SOL-PATH-EVENT-EXECUTION-EQUIVALENCE-0068",
+  "stage": "PREREGISTRATION_ONLY_NOT_RUN",
+  "purpose": "Diagnose and eliminate qualification-vs-controlled-execution graph divergence before any successor historical measurement.",
+  "parent_closed_research": "BRRK-BTC-SOL-PATH-EVENT-EARLY-WARNING-RUNTIME-QUALIFIED-0067",
+  "parent_status": "INVALID_EXECUTION / CLOSED TO SAME-ID RERUN",
+  "historical_measurement_allowed": false,
+  "historical_attempt_budget": 0,
+  "historical_content_read_allowed": false,
+  "network_fetch_allowed": false,
+  "scientific_semantics": "FROZEN_TO_0067",
+  "permitted_changes": [
+    "execution graph construction",
+    "ordered work-manifest accounting",
+    "execution trace instrumentation and hashing",
+    "qualification branch-coverage regimes",
+    "pre-inference completeness gates"
+  ],
+  "forbidden_changes": [
+    "event definitions or thresholds",
+    "features or indicator atlas",
+    "P01-P08 model semantics or hyperparameter grids",
+    "validation selection rules",
+    "warning horizons",
+    "controller definitions or economics",
+    "bootstrap or PBO definitions",
+    "scientific classification gates",
+    "production/signature/order authority"
+  ],
+  "execution_assurance_contract": {
+    "single_graph_builder": true,
+    "same_graph_builder_for_qualification_and_controlled_runner": true,
+    "ordered_manifest_required": true,
+    "manifest_work_unit_fields": [
+      "stage",
+      "sequence",
+      "asset",
+      "target",
+      "horizon",
+      "architecture",
+      "canonical_params",
+      "eligibility_reason",
+      "expected_action"
+    ],
+    "trace_fields": [
+      "sequence",
+      "work_unit_hash",
+      "branch_decision",
+      "fit_attempted",
+      "fit_completed",
+      "nnls_attempted",
+      "nnls_completed",
+      "output_status"
+    ],
+    "manifest_hash_algorithm": "SHA256",
+    "trace_hash_algorithm": "SHA256",
+    "all_manifest_units_must_have_terminal_trace_record": true,
+    "inference_forbidden_before_manifest_complete": true
+  },
+  "accounting_rule": {
+    "validation_structural_count": 31008,
+    "economic_fit_count": "DATA_DEPENDENT_FROM_FROZEN_VALIDATION_ELIGIBILITY_RULES; must equal consumed eligible economic manifest fit units, not a synthetic full-support constant",
+    "p08_nnls_count": "DATA_DEPENDENT_FROM_FROZEN_BASE-PREDICTION-ELIGIBILITY_RULES; must equal consumed eligible P08 manifest units, not a synthetic full-support constant",
+    "total_fit_count": "validation_structural_count + realized eligible economic manifest fit units",
+    "fixed_full_support_reference": {
+      "validation_fit_calls": 31008,
+      "economic_fit_calls": 11904,
+      "total_fit_calls": 42912,
+      "p08_nnls_solves": 40
+    }
+  },
+  "qualification_regimes_required": [
+    "FULL_SUPPORT",
+    "PARTIAL_SUPPORT",
+    "SINGLE_CLASS_UNDEFINED_TRACKS",
+    "MISSING_BASE_PREDICTIONS",
+    "MIXED_P07_P08_ELIGIBILITY"
+  ],
+  "qualification_pass_gates": [
+    "No historical content reads.",
+    "No network fetches.",
+    "Same graph-builder entry point used by qualification and controlled execution.",
+    "For each synthetic regime, independently generated qualification and controlled-mode dry-run manifests are byte-identical after canonical serialization.",
+    "For each regime, manifest SHA256 matches and execution trace terminates every manifest work unit exactly once.",
+    "Observed physical fits and NNLS solves equal eligible manifest actions for that regime.",
+    "Full-support regime reproduces 31,008 + 11,904 = 42,912 fits and 40 NNLS solves.",
+    "Partial/undefined regimes demonstrate lawful lower downstream counts without execution invalidation when every eligible manifest unit is consumed.",
+    "Standing CI passes."
+  ],
+  "successor_historical_rule": "0068 itself never reads historical data. Only after 0068 is closed PASS may a new research ID copy the frozen 0067 scientific program and authorize a new exactly-once historical attempt under the 0068 execution-assurance contract.",
+  "production_authorized": false,
+  "signature_authorized": false,
+  "order_submission_authorized": false,
+  "canonical_BRRK_0011": "NO_CHANGE",
+  "0064": "NO_CHANGE",
+  "0065": "NO_CHANGE",
+  "0066": "NO_CHANGE",
+  "0067": "CLOSED_NO_CHANGE",
+  "Phase_6": "NO_CHANGE"
+}
