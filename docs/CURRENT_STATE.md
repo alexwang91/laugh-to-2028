@@ -257,3 +257,9 @@ Merged qualification evidence = `f5a82702c34c1d3d123404aa598777d7c95fe401`. Immu
 Merge the immutable 0068 PASS closeout after standing CI is green. Only then register a new successor historical research ID owner-first. The successor must carry forward the frozen 0067 scientific program plus the 0068 canonical manifest/accounting contract, complete new preregistration, implementation/boundary, nonhistorical qualification/preflight, and then consume at most one prospectively authorized historical attempt.
 
 No-drift authority remains unchanged: `production_authorized=false`; `signature_authorized=false`; `order_submission_authorized=false`; canonical BRRK-0011, closed 0064/0065/0066/0067 and Phase 6 are unchanged.
+## 0069 execution-assured historical successor DESIGN
+
+0069 research ID = `BRRK-BTC-SOL-PATH-EVENT-EARLY-WARNING-EXECUTION-ASSURED-0069`.
+Owner-first registry commit = `dfd3f0a95e7245a4103637aaca1745bf3b2c8e03`.
+State = `DESIGN / NOT PREREGISTERED / NOT IMPLEMENTED / NOT QUALIFIED / NOT RUN`.
+Scientific semantics are frozen to 0067 and execution assurance to immutable 0068. No historical content has been read and no 0069 runtime/result artifact exists. Production/signature/order authority remain false.
