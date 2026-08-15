@@ -1,0 +1,171 @@
+{
+  "cpu_architecture": "x86_64",
+  "cpu_logical_count": 4,
+  "declared_and_actual_controllers": {
+    "actual": 8,
+    "declared": 8
+  },
+  "declared_and_actual_economic_bootstrap_replicates": {
+    "actual": 4000,
+    "declared": 4000
+  },
+  "declared_and_actual_economic_fit_calls": {
+    "actual": 11904,
+    "declared": 11904
+  },
+  "declared_and_actual_final_tracks": {
+    "actual": 64,
+    "declared": 64
+  },
+  "declared_and_actual_indicator_atlas_cells": {
+    "actual": 8080,
+    "declared": 8080
+  },
+  "declared_and_actual_nnls_solves": {
+    "actual": 40,
+    "declared": 40
+  },
+  "declared_and_actual_pbo_splits": {
+    "actual": 70,
+    "declared": 70
+  },
+  "declared_and_actual_predictive_bootstrap_replicates": {
+    "actual": 4000,
+    "declared": 4000
+  },
+  "declared_and_actual_total_fit_calls": {
+    "actual": 42912,
+    "declared": 42912
+  },
+  "declared_and_actual_validation_configs": {
+    "actual": 1632,
+    "declared": 1632
+  },
+  "declared_and_actual_validation_fit_calls": {
+    "actual": 31008,
+    "declared": 31008
+  },
+  "dependency_versions": {
+    "numpy": "2.5.1",
+    "pandas": "3.0.3",
+    "scikit-learn": "1.9.0",
+    "scipy": "1.18.0"
+  },
+  "deterministic_seeds": {
+    "qualification_synthetic": 670067,
+    "scientific": 660066
+  },
+  "historical_content_read_counters": {
+    "historical_dtb3_reads": 0,
+    "historical_equity_reads": 0,
+    "historical_payload_reads": 0,
+    "historical_weights_reads": 0,
+    "market_loader_calls": 0,
+    "network_fetches": 0
+  },
+  "implementation_commit_sha": "56f683b9593fd22cf752a1553906379067227995",
+  "mem_total_bytes": 16765378560,
+  "network_fetch_count": 0,
+  "order_submission_authorized": false,
+  "peak_process_tree_rss_bytes": 2548195328,
+  "peak_rss_fraction_of_memtotal": 0.15199151745249945,
+  "phase_wall_clock_seconds": {
+    "economic_bootstrap_pbo": 0.3675495450006565,
+    "economic_prediction_generation": 381.79662121100046,
+    "predictive_bootstrap": 65.12761964399942,
+    "reference_equivalence": 8.74571376299997,
+    "synthetic_feature_event_atlas": 146.730795355,
+    "validation_tuning": 4184.288736955
+  },
+  "process_worker_count": 4,
+  "production_authorized": false,
+  "python_version": "3.12.13",
+  "qualification_schema_version": 1,
+  "qualification_verdict": "PASS",
+  "reference_equivalence_results": {
+    "P08_weights_and_probabilities": {
+      "mode": "SHARED_IMMUTABLE_REFERENCE_CODE",
+      "pass": true
+    },
+    "PBO_statistics": {
+      "mode": "SHARED_IMMUTABLE_REFERENCE_CODE",
+      "pass": true
+    },
+    "all_pass": true,
+    "bootstrap_statistics": {
+      "pass": true
+    },
+    "controller_gross_paths": {
+      "mode": "SHARED_IMMUTABLE_REFERENCE_CODE",
+      "pass": true
+    },
+    "economic_bootstrap_statistics": {
+      "pass": true
+    },
+    "event_labels_and_onsets": {
+      "mode": "SHARED_IMMUTABLE_REFERENCE_CODE",
+      "pass": true
+    },
+    "feature_matrices": {
+      "mode": "SHARED_IMMUTABLE_REFERENCE_CODE",
+      "pass": true
+    },
+    "maturity_masks": {
+      "mode": "REFERENCE_FUNCTION_USED_FOR_SCHEDULE_CACHE",
+      "pass": true
+    },
+    "representative_P01_to_P06_probabilities": {
+      "by_architecture": {
+        "P01_FAMILY_RIDGE_LOGIT": true,
+        "P02_RAW_ELASTIC_NET_LOGIT": true,
+        "P03_VALIDATION_SCREENED_SIGNAL_LOGIT": true,
+        "P04_PCR_LOGIT": true,
+        "P05_THEORY_QUADRATIC_LOGIT": true,
+        "P06_SHALLOW_GBDT_CLASSIFIER": true
+      },
+      "pass": true
+    },
+    "representative_P07_probabilities": {
+      "pass": true
+    },
+    "risk_set_masks": {
+      "mode": "SHARED_IMMUTABLE_REFERENCE_CODE",
+      "pass": true
+    },
+    "turnover_costs": {
+      "mode": "SHARED_IMMUTABLE_REFERENCE_CODE",
+      "pass": true
+    },
+    "validation_metrics": {
+      "mode": "SHARED_IMMUTABLE_REFERENCE_CODE",
+      "pass": true
+    }
+  },
+  "research_id": "BRRK-BTC-SOL-PATH-EVENT-EARLY-WARNING-RUNTIME-QUALIFIED-0067",
+  "rss_components_bytes": {
+    "2189": 230096896,
+    "2190": 230268928,
+    "2191": 230195200,
+    "2192": 230105088,
+    "2790": 322740224,
+    "2791": 322633728,
+    "2792": 322412544,
+    "2793": 322678784,
+    "parent": 337063936
+  },
+  "rss_measurement_method": "conservative upper bound = parent lifetime maxrss + sum of each observed worker lifetime maxrss",
+  "runner_label": "ubuntu-24.04",
+  "runner_os_image": "20260810.271.1",
+  "signature_authorized": false,
+  "swap_or_oom_observed": false,
+  "synthetic_event_onset_count": 148,
+  "synthetic_input_sha256": "1d3880d0389ad6f9f8927ed2fb8a74785ada0eb47576f6242edb9d8f3cd8aa9c",
+  "thread_environment": {
+    "MKL_NUM_THREADS": "1",
+    "NUMEXPR_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "PYTHONHASHSEED": "0"
+  },
+  "total_wall_clock_seconds": 4787.060044652
+}
