@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "0068 Ordered Work Manifest",
+  "type": "object",
+  "required": ["research_id", "mode", "regime", "work_units", "manifest_sha256"],
+  "properties": {
+    "research_id": {"const": "BRRK-BTC-SOL-PATH-EVENT-EXECUTION-EQUIVALENCE-0068"},
+    "mode": {"enum": ["qualification", "controlled_dry_run"]},
+    "regime": {"type": "string"},
+    "work_units": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["stage", "sequence", "asset", "target", "horizon", "architecture", "canonical_params", "eligibility_reason", "expected_action"],
+        "properties": {
+          "stage": {"enum": ["validation_fit", "economic_fit", "p08_nnls"]},
+          "sequence": {"type": "integer", "minimum": 1},
+          "asset": {"type": ["string", "null"]},
+          "target": {"type": ["string", "null"]},
+          "horizon": {"type": ["integer", "null"]},
+          "architecture": {"type": ["string", "null"]},
+          "canonical_params": {},
+          "eligibility_reason": {"type": "string"},
+          "expected_action": {"enum": ["FIT", "NNLS", "SKIP_NOT_ELIGIBLE"]}
+        },
+        "additionalProperties": false
+      }
+    },
+    "manifest_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "additionalProperties": false
+}
