@@ -1,0 +1,41 @@
+name: Tooling 0067 controlled boundary preflight
+on:
+  push:
+    branches: [tools/0067-boundary-preflight-v1]
+    paths: ['.github/workflows/tooling-0067-boundary-preflight.yml']
+permissions:
+  contents: read
+jobs:
+  preflight:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      PYTHONHASHSEED: '0'
+      PYTHONPATH: .
+      OMP_NUM_THREADS: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      NUMEXPR_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: c7501d9b6c501a11c112448e69f64c60a8a1eaf6
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r execution/plan-b-bot/requirements-dev.txt
+      - name: Verify exact head and compile boundary runner
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "c7501d9b6c501a11c112448e69f64c60a8a1eaf6"
+          python -m py_compile research/brrk_btc_sol_path_event_early_warning_runtime_qualified_0067/run_once.py
+      - name: Zero-result git-identity-only preflight
+        run: python -m research.brrk_btc_sol_path_event_early_warning_runtime_qualified_0067.run_once preflight --boundary-sha c7501d9b6c501a11c112448e69f64c60a8a1eaf6
+      - name: Reassert zero historical runtime artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+          D=research/brrk_btc_sol_path_event_early_warning_runtime_qualified_0067
+          for f in RUN_ATTEMPT.marker PRIMARY_RESULT.json EVIDENCE.json EXECUTION.json RUN_ONCE.marker; do test ! -e "$D/$f"; done
