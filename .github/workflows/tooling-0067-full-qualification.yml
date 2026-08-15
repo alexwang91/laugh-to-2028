@@ -1,0 +1,105 @@
+name: Tooling 0067 full-shape qualification
+on:
+  push:
+    branches: [tools/0067-full-qualification-v1]
+    paths: ['.github/workflows/tooling-0067-full-qualification.yml']
+permissions:
+  contents: write
+concurrency:
+  group: brrk-0067-full-shape-qualification
+  cancel-in-progress: false
+jobs:
+  qualify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 210
+    env:
+      PYTHONHASHSEED: '0'
+      PYTHONPATH: '.'
+      OMP_NUM_THREADS: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      NUMEXPR_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 56f683b9593fd22cf752a1553906379067227995
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r execution/plan-b-bot/requirements-dev.txt
+      - name: Exact implementation and zero-historical-artifact preflight
+        shell: bash
+        run: |
+          set -euo pipefail
+          IMPL=56f683b9593fd22cf752a1553906379067227995
+          D=research/brrk_btc_sol_path_event_early_warning_runtime_qualified_0067
+          test "$(git rev-parse HEAD)" = "$IMPL"
+          for f in RUN_ATTEMPT.marker PRIMARY_RESULT.json EVIDENCE.json EXECUTION.json RUN_ONCE.marker QUALIFICATION_RESULT.json; do
+            test ! -e "$D/$f"
+          done
+          test "$(git status --porcelain)" = ""
+          python -m py_compile "$D/engine.py" "$D/qualification.py"
+      - name: Execute complete nonhistorical workload
+        shell: bash
+        run: |
+          set -euo pipefail
+          D=research/brrk_btc_sol_path_event_early_warning_runtime_qualified_0067
+          python -m research.brrk_btc_sol_path_event_early_warning_runtime_qualified_0067.qualification full --output /tmp/0067-qualification.json | tee /tmp/0067-qualification.log
+          python - <<'PY'
+          import json, subprocess
+          from pathlib import Path
+          p=Path('/tmp/0067-qualification.json')
+          q=json.loads(p.read_text())
+          head=subprocess.check_output(['git','rev-parse','HEAD'], text=True).strip()
+          assert head=='56f683b9593fd22cf752a1553906379067227995'
+          q['implementation_commit_sha']=head
+          assert q['qualification_verdict']=='PASS'
+          assert q['declared_and_actual_indicator_atlas_cells']=={'declared':8080,'actual':8080}
+          assert q['declared_and_actual_validation_configs']=={'declared':1632,'actual':1632}
+          assert q['declared_and_actual_validation_fit_calls']=={'declared':31008,'actual':31008}
+          assert q['declared_and_actual_economic_fit_calls']=={'declared':11904,'actual':11904}
+          assert q['declared_and_actual_total_fit_calls']=={'declared':42912,'actual':42912}
+          assert q['declared_and_actual_nnls_solves']=={'declared':40,'actual':40}
+          assert q['declared_and_actual_final_tracks']=={'declared':64,'actual':64}
+          assert q['declared_and_actual_controllers']=={'declared':8,'actual':8}
+          assert q['declared_and_actual_predictive_bootstrap_replicates']=={'declared':4000,'actual':4000}
+          assert q['declared_and_actual_economic_bootstrap_replicates']=={'declared':4000,'actual':4000}
+          assert q['declared_and_actual_pbo_splits']=={'declared':70,'actual':70}
+          assert all(int(v)==0 for v in q['historical_content_read_counters'].values())
+          assert q['network_fetch_count']==0
+          assert q['reference_equivalence_results']['all_pass'] is True
+          assert float(q['total_wall_clock_seconds']) <= 10800
+          assert int(q['peak_process_tree_rss_bytes']) <= 4294967296
+          assert float(q['peak_rss_fraction_of_memtotal']) <= 0.60
+          assert q['production_authorized'] is False
+          assert q['signature_authorized'] is False
+          assert q['order_submission_authorized'] is False
+          p.write_text(json.dumps(q,indent=2,sort_keys=True)+'\n')
+          print('[0067] FULL_SHAPE_QUALIFICATION_PASS')
+          print('[0067] wall_clock_seconds='+str(q['total_wall_clock_seconds']))
+          print('[0067] peak_process_tree_rss_bytes='+str(q['peak_process_tree_rss_bytes']))
+          PY
+      - name: Durably persist qualification evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          IMPL=56f683b9593fd22cf752a1553906379067227995
+          RESULT_BRANCH=research/0067-qualification-v1
+          D=research/brrk_btc_sol_path_event_early_warning_runtime_qualified_0067
+          if git ls-remote --exit-code --heads origin "refs/heads/$RESULT_BRANCH" >/dev/null 2>&1; then
+            echo QUALIFICATION_BRANCH_ALREADY_EXISTS
+            exit 1
+          fi
+          cp /tmp/0067-qualification.json "$D/QUALIFICATION_RESULT.json"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add "$D/QUALIFICATION_RESULT.json"
+          TREE="$(git write-tree)"
+          COMMIT="$(printf '%s\n' '0067: persist exact merged full-shape qualification PASS' | git commit-tree "$TREE" -p "$IMPL")"
+          git push origin "$COMMIT:refs/heads/$RESULT_BRANCH"
+          REMOTE="$(git ls-remote origin "refs/heads/$RESULT_BRANCH" | cut -f1)"
+          test "$REMOTE" = "$COMMIT"
+          test "$(git rev-parse HEAD)" = "$IMPL"
+          echo "[0067] qualification_commit=$COMMIT"
