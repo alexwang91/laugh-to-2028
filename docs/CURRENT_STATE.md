@@ -229,7 +229,7 @@ Merge the immutable 0067 closeout without historical remeasurement. No same-ID e
 0068 research ID = `BRRK-BTC-SOL-PATH-EVENT-EXECUTION-EQUIVALENCE-0068`.
 Owner-first registry commit = `d135bb830c30377c4e69943a2a55974a08ad1e62`.
 Merged DESIGN = `e9a3124061e614bff5bc66e004941d8ab7d3c33d`.
-State = `PREREGISTERED / NOT IMPLEMENTED / NOT QUALIFIED / NO HISTORICAL AUTHORITY`.
+State = `IMPLEMENTATION BUILT / NOT QUALIFIED / NO HISTORICAL AUTHORITY`.
 Historical attempt budget = 0; historical content reads are forbidden in 0068.
 0068 uses closed 0067 physical-accounting mismatch only as engineering/process evidence. No invalidated 0067 scientific metric is admissible.
 Scientific semantics remain frozen to 0067: event definitions, feature universe, P01-P08 semantics/grids, validation selection, horizons, controllers/economics, bootstrap/PBO and classification gates are unchanged.
@@ -254,6 +254,8 @@ Frozen deterministic nonhistorical qualification regimes:
 4. `MISSING_BASE_PREDICTIONS`;
 5. `MIXED_P07_P08_ELIGIBILITY`.
 
-Exact next step: after PREREGISTRATION merges with all standing CI green, create a separate IMPLEMENTATION-ONLY stage. Implement the canonical graph builder, per-unit physical-action accounting, terminal traces and multi-regime synthetic qualification without changing frozen science or reading historical content.
+Implementation branch = `research/0068-implementation-v1`. The branch implements the canonical graph builder, deterministic canonical manifest/SHA256, per-unit expected physical actions, exactly-one terminal traces, physical fit/NNLS accounting, and all five preregistered synthetic eligibility regimes. Qualification has not passed yet. The first implementation CI attempt failed before scientific qualification because its PR-local workflow omitted the test-runtime install, and repository no-drift governance forbids adding that workflow path. This is an execution-tooling defect only; no historical content was read and no frozen scientific semantics changed.
+
+Exact next step: run bounded tests and the five-regime qualification from a separate non-merged tooling workflow that checks out the exact implementation branch, installs the pinned test runtime, and reads no historical inputs. Repair only execution-assurance defects until qualification passes; merge IMPLEMENTATION-ONLY only after standing CI is green and qualification evidence is durable.
 
 No-drift authority remains unchanged: `production_authorized=false`; `signature_authorized=false`; `order_submission_authorized=false`; canonical BRRK-0011, closed 0064/0065/0066/0067 and Phase 6 are unchanged.
