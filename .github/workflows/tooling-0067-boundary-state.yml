@@ -1,0 +1,41 @@
+name: Tooling 0067 controlled boundary state handoff
+on:
+  push:
+    branches: [tools/0067-boundary-state-writer-v1]
+    paths: ['.github/workflows/tooling-0067-boundary-state.yml']
+permissions:
+  contents: write
+jobs:
+  state:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/0067-controlled-boundary-v1
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('docs/CURRENT_STATE.md')
+          s=p.read_text()
+          s=s.replace('0067 full-shape qualification evidence commit: `a3b686ebb9c99f37f0c4375c6a7e19ba7e1eb146`.', '0067 full-shape qualification evidence commit: `a3b686ebb9c99f37f0c4375c6a7e19ba7e1eb146`.\nMerged 0067 QUALIFICATION EVIDENCE: `f9f50be07b628e62754cbfef58e314761bf25c2a`.')
+          s=s.replace('0067 = `FULL-SHAPE QUALIFICATION PASS / CONTROLLED BOUNDARY NOT YET MERGED / NOT RUN`.', '0067 = `CONTROLLED BOUNDARY BUILT / NOT MERGED / NOT RUN`.')
+          marker='Full-shape nonhistorical qualification workflow = `31867786428`; verdict = `PASS`.\n'
+          insert='''Full-shape nonhistorical qualification workflow = `31867786428`; verdict = `PASS`.\n\n## 0067 controlled-execution boundary status\n\nBoundary branch = `research/0067-controlled-boundary-v1`, based exactly on merged qualification evidence `f9f50be07b628e62754cbfef58e314761bf25c2a`.\nBoundary files = `RUN_INTERFACE.json`, `RESULT_SCHEMA.json`, `CONTROLLED_EXECUTION_BOUNDARY.json`, and `run_once.py`.\nThe boundary pins the qualified implementation, qualification result, frozen 0067 preregistration/data/implementation blobs, immutable 0066 reference science, upstream historical identities, and pinned Python dependency blobs.\nHistorical runner requires exact boundary HEAD, durable create-only `RUN_ATTEMPT.marker` before any historical content read, each of four historical inputs read once, one market-loader call, one top-level scientific-engine call, frozen 4000+4000 inference, and physical runtime accounting 31,008 validation fits + 11,904 economic fits = 42,912 total fits, 40 NNLS, four workers.\nAny post-attempt execution or accounting failure is persisted as `INVALID_EXECUTION`; same-ID rerun/retune/rescue remains forbidden. Marker-only recovery remains limited to a complete durable result/evidence/execution bundle missing only `RUN_ONCE.marker`.\nNo historical runtime artifact exists yet and no historical content has been read.\n'''
+          assert marker in s
+          s=s.replace(marker,insert)
+          old='''## Exact next step\n\nMerge the 0067 full-shape qualification evidence after governance CI is green. Then create a separate CONTROLLED-EXECUTION BOUNDARY pinned to the merged qualification evidence, exact implementation and frozen historical identities. Run an exact-boundary zero-result preflight with zero historical content reads. Only after the boundary is merged and preflight passes may the unique 0067 historical attempt marker be durably created before any historical read.\n'''
+          new='''## Exact next step\n\nValidate the controlled boundary without historical content reads, then open and merge the separate CONTROLLED-EXECUTION BOUNDARY with standing CI green. After merge, run an exact merged-boundary zero-result preflight. Only after that preflight passes may the unique 0067 historical attempt 1/1 be durably marked before any historical read.\n'''
+          assert old in s
+          s=s.replace(old,new)
+          p.write_text(s)
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs/CURRENT_STATE.md
+          git commit -m '0067: hand off controlled boundary state'
+          git push origin HEAD:refs/heads/research/0067-controlled-boundary-v1
