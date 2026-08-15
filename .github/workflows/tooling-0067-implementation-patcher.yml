@@ -1,46 +1,38 @@
-name: Tooling 0067 implementation patcher
+name: Tooling 0067 implementation quick equivalence
 on:
   push:
     branches: [tools/0067-implementation-patcher-v1]
     paths: ['.github/workflows/tooling-0067-implementation-patcher.yml']
 permissions:
-  contents: write
+  contents: read
 jobs:
-  patch:
+  quick-equivalence:
     runs-on: ubuntu-24.04
-    timeout-minutes: 20
+    timeout-minutes: 60
+    env:
+      PYTHONHASHSEED: '0'
+      PYTHONPATH: '.'
+      OMP_NUM_THREADS: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      NUMEXPR_NUM_THREADS: '1'
     steps:
       - uses: actions/checkout@v4
         with:
           ref: research/0067-implementation-v1
           fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Patch and syntax-check
+      - run: pip install -r execution/plan-b-bot/requirements-dev.txt
+      - name: Verify implementation-only isolation
         shell: bash
         run: |
           set -euo pipefail
-          P=research/brrk_btc_sol_path_event_early_warning_runtime_qualified_0067/engine.py
-          python - <<'PY'
-          from pathlib import Path
-          p=Path('research/brrk_btc_sol_path_event_early_warning_runtime_qualified_0067/engine.py')
-          s=p.read_text()
-          repl={
-          '        return (kind, seq, asset, target, h, arch, dict(params), pred, pa, m, rk)': '        import resource as _resource\n        pa["worker_pid"] = os.getpid()\n        pa["worker_maxrss_kb"] = int(_resource.getrusage(_resource.RUSAGE_SELF).ru_maxrss)\n        return (kind, seq, asset, target, h, arch, dict(params), pred, pa, m, rk)',
-          '        return (kind, seq, asset, target, dict(params), preds, pa, metrics, rk)': '        import resource as _resource\n        pa["worker_pid"] = os.getpid()\n        pa["worker_maxrss_kb"] = int(_resource.getrusage(_resource.RUSAGE_SELF).ru_maxrss)\n        return (kind, seq, asset, target, dict(params), preds, pa, metrics, rk)',
-          '        return (kind, seq, asset, target, h, arch, p, pa)': '        import resource as _resource\n        pa["worker_pid"] = os.getpid()\n        pa["worker_maxrss_kb"] = int(_resource.getrusage(_resource.RUSAGE_SELF).ru_maxrss)\n        return (kind, seq, asset, target, h, arch, p, pa)',
-          '        return (kind, seq, asset, target, preds, pa)': '        import resource as _resource\n        pa["worker_pid"] = os.getpid()\n        pa["worker_maxrss_kb"] = int(_resource.getrusage(_resource.RUSAGE_SELF).ru_maxrss)\n        return (kind, seq, asset, target, preds, pa)',
-          }
-          for old,new in repl.items():
-              assert s.count(old)==1, (old, s.count(old))
-              s=s.replace(old,new)
-          p.write_text(s)
-          PY
-          python -m py_compile "$P" research/brrk_btc_sol_path_event_early_warning_runtime_qualified_0067/qualification.py
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add "$P"
-          git commit -m '0067: instrument worker memory without scientific drift'
-          git push origin HEAD:refs/heads/research/0067-implementation-v1
+          D=research/brrk_btc_sol_path_event_early_warning_runtime_qualified_0067
+          for f in RUN_ATTEMPT.marker PRIMARY_RESULT.json EVIDENCE.json EXECUTION.json RUN_ONCE.marker QUALIFICATION_RESULT.json; do
+            test ! -e "$D/$f"
+          done
+          python -m py_compile "$D/engine.py" "$D/qualification.py"
+      - name: Run quick reference equivalence
+        run: python -m research.brrk_btc_sol_path_event_early_warning_runtime_qualified_0067.qualification quick
