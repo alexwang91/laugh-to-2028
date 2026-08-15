@@ -1,0 +1,14 @@
+{
+  "error_message": "physical compute accounting drift: {'economic_fit_call_attempts': {'expected': 11904, 'actual': 5808}, 'total_fit_call_attempts': {'expected': 42912, 'actual': 36816}, 'stacking_nnls_solves': {'expected': 40, 'actual': 20}}",
+  "error_type": "ControlledRunError",
+  "failure_stage": "result_validation",
+  "input_read_counts": {
+    "dtb3": 1,
+    "equity": 1,
+    "market_evidence": 1,
+    "weights": 1
+  },
+  "market_loader_calls": 1,
+  "same_id_recomputation_allowed": false,
+  "scientific_engine_calls": 1
+}

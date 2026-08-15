@@ -1,0 +1,43 @@
+{
+  "PBO_CSCV": {
+    "status": "NOT_EVALUATED"
+  },
+  "actual_validation_tuning_configs_evaluated": null,
+  "actual_variants_evaluated": null,
+  "benchmark_0064_same_window": {},
+  "classification": "INVALID_EXECUTION",
+  "controller_error": {
+    "error_message": "physical compute accounting drift: {'economic_fit_call_attempts': {'expected': 11904, 'actual': 5808}, 'total_fit_call_attempts': {'expected': 42912, 'actual': 36816}, 'stacking_nnls_solves': {'expected': 40, 'actual': 20}}",
+    "error_type": "ControlledRunError",
+    "failure_stage": "result_validation"
+  },
+  "controllers": {},
+  "economic_simultaneous_bootstrap": {
+    "block_length": 60,
+    "q95": null,
+    "replicates": 4000,
+    "seed": 660066
+  },
+  "event_counts_by_asset_type_grade": {},
+  "event_onset_count": null,
+  "final_controller_count": 8,
+  "final_predictor_track_count": 64,
+  "indicator_atlas_holm_rejections": 0,
+  "indicator_atlas_hypothesis_cells": 8080,
+  "indicator_atlas_supported_holm_family_size": 0,
+  "order_submission_authorized": false,
+  "predictive_winners": [],
+  "predictor_simultaneous_bootstrap": {
+    "block_length": 60,
+    "q95": null,
+    "replicates": 4000,
+    "seed": 660066
+  },
+  "predictor_tracks": {},
+  "production_authorized": false,
+  "research_id": "BRRK-BTC-SOL-PATH-EVENT-EARLY-WARNING-RUNTIME-QUALIFIED-0067",
+  "schema_version": 1,
+  "signature_authorized": false,
+  "validation_preferred_architectures": {},
+  "validation_preferred_horizons": {}
+}
