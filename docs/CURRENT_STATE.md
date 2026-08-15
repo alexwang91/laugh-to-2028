@@ -1,6 +1,6 @@
 # BRRK Current State
 
-Last updated: 2026-08-14
+Last updated: 2026-08-15
 
 Authoritative repository: `alexwang91/laugh-to-2028`.
 Merged 0064 PASS closeout: `ad8038af45bad2e25e8a7b88b569b1873635d9c2`.
@@ -12,6 +12,8 @@ Merged 0066 immutable execution-timeout closeout: `9a45bb5e778e21dfd30d7abc4ff7d
 0067 owner-first registry commit: `e584003ed04c92322c6cde87714d5cce4995b12e`.
 Merged 0067 DESIGN: `f3e5adc14631d9a3ae13ba686388b7a3c189e867`.
 Merged 0067 PREREGISTRATION: `062eb06c186cc54a729f0f65ae3888db0f4d2300`.
+Merged 0067 IMPLEMENTATION: `56f683b9593fd22cf752a1553906379067227995`.
+0067 full-shape qualification evidence commit: `a3b686ebb9c99f37f0c4375c6a7e19ba7e1eb146`.
 
 ## Required closed-research anchors
 
@@ -27,7 +29,7 @@ ID 0043 is closed against result-informed pruning, reweighting, threshold rescue
 0064 = `PASS_PASSIVE_CASH_ACCRUAL_ROBUSTNESS / CLOSED TO SAME-ID RERUN`.
 0065 = `FAIL_NO_ROBUST_MULTI_ARCHITECTURE_IMPROVEMENT / CLOSED TO SAME-ID RERUN`.
 0066 = `INVALID_EXECUTION / CLOSED TO SAME-ID RERUN`.
-0067 = `IMPLEMENTATION BUILT / QUICK EQUIVALENCE PASS / NOT FULL-SHAPE QUALIFIED / NOT RUN`.
+0067 = `FULL-SHAPE QUALIFICATION PASS / CONTROLLED BOUNDARY NOT YET MERGED / NOT RUN`.
 0067 research ID = `BRRK-BTC-SOL-PATH-EVENT-EARLY-WARNING-RUNTIME-QUALIFIED-0067`.
 0067 is `PROCESS_INFORMED_BY_0066_TIMEOUT / NOT_RESULT_INFORMED_BY_0066`.
 
@@ -89,7 +91,7 @@ The frozen exact event thresholds/formulas, model grids, validation selection, p
 Market slice = `BRRK-LEADERSHIP-ROTATION-0048-EXPOSED-HIST-V1`.
 Market evidence blob = `64ebf5c6deaf3f34dbeac715378f196ff0f4fafe`; payload SHA256 = `d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193`.
 0062 feature engine blob = `cac8e946998c836d10842b9388e1e3ef345a8c0b`.
-0047 loader blob = `059b55961e279dab41ba29b5b017de0922e4f33c`.
+0047 loader blob = `059b55961e279dab41ba29b5b0170e0922e4f33c`.
 BRRK equity blob = `82c87f8cb0ff01c728ffd3b717fff17cf5a364f2`.
 BRRK weights blob = `2f6c8d3a8c25d3cafeaa0128f1c425dac248370b`.
 DTB3 blob = `71d50e26f8a9afb6bcb88401d20b97d5fb0a891a`; payload SHA256 = `4d8aee67dbd528ce38ff8482e9bb02dd5ccf2c6cd461f606fe90007151ab6879`.
@@ -139,6 +141,15 @@ Frozen environment/limits:
 
 Qualification failure blocks historical access without consuming the unique historical attempt. Semantic-preserving engineering remediation may repeat synthetic qualification. Raising timeout, dropping scientific workload, loosening solver semantics, or approximation cannot turn a failure into PASS.
 
+### Full-shape qualification result
+
+Workflow run `31867786428` = `PASS` on exact merged implementation `56f683b9593fd22cf752a1553906379067227995`.
+Qualification evidence blob = `6409a558c0c800f363699c67fe28b39faf8f3bff` on `research/0067-qualification-v1`.
+Actual counts exactly matched frozen declarations: 8080 atlas cells, 1632 validation configs, 31,008 validation fits, 11,904 economic fits, 42,912 total fits, 64 final tracks, 8 controllers, 40 NNLS solves, 4000 predictive bootstrap reps, 4000 economic bootstrap reps, and 70 PBO splits.
+Total wall clock = 4787.060044652 seconds, below the frozen 180-minute PASS limit and preserving more than the required 170-minute margin to the 350-minute historical hard timeout.
+Peak process-tree RSS = 2,548,195,328 bytes = 15.199151745249945% of MemTotal, below both frozen memory limits; no swap/OOM observed.
+Reference-equivalence aggregate = PASS. Historical payload/equity/weights/DTB3 reads = 0; market loader calls = 0; network fetches = 0.
+
 ## 0067 zero-result assertions
 
 Historical event atlas computed = false.
@@ -175,7 +186,8 @@ Historical payload access remains forbidden and no 0067 historical attempt marke
 
 Quick nonhistorical reference-equivalence workflow = `31867425779`; verdict = `PASS`; 8080 indicator cells reported and all reference-equivalence fixtures passed.
 Bounded implementation test workflow = `31867565008`; verdict = `PASS`.
+Full-shape nonhistorical qualification workflow = `31867786428`; verdict = `PASS`.
 
 ## Exact next step
 
-Open and merge IMPLEMENTATION-ONLY after standing CI is green. Only after implementation merge may the exact merged implementation run the preregistered full-shape nonhistorical qualification. A historical controlled-execution boundary remains forbidden until a full-shape qualification PASS is durably recorded.
+Merge the 0067 full-shape qualification evidence after governance CI is green. Then create a separate CONTROLLED-EXECUTION BOUNDARY pinned to the merged qualification evidence, exact implementation and frozen historical identities. Run an exact-boundary zero-result preflight with zero historical content reads. Only after the boundary is merged and preflight passes may the unique 0067 historical attempt marker be durably created before any historical read.
