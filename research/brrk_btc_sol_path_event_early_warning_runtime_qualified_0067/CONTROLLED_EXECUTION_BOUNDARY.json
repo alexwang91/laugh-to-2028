@@ -1,0 +1,79 @@
+{
+  "schema_version": 1,
+  "research_id": "BRRK-BTC-SOL-PATH-EVENT-EARLY-WARNING-RUNTIME-QUALIFIED-0067",
+  "stage": "CONTROLLED_EXECUTION_BOUNDARY",
+  "qualification_evidence_merge_sha": "f9f50be07b628e62754cbfef58e314761bf25c2a",
+  "qualified_implementation_merge_sha": "56f683b9593fd22cf752a1553906379067227995",
+  "qualification_workflow_run_id": "31867786428",
+  "qualification_result_blob": "6409a558c0c800f363699c67fe28b39faf8f3bff",
+  "qualification_verdict": "PASS",
+  "run_interface_blob": "ff0e835468fef04e3a0b62ac5cc2fabfcfff1c38",
+  "result_schema_blob": "d9846be31acb7c894662555f50b1ebc74ceca699",
+  "scientific_program": {
+    "preregistration_blob": "398e4a238229282582bbdbe4eed944d779c51ab3",
+    "dataset_declaration_blob": "4cbf84841a07c97dbd62bb6639c198e7bbba6128",
+    "qualification_preregistration_blob": "4ec87ce4604ec526a0043d48882568bad102b3f3",
+    "implementation_contract_blob": "34c858c1672149a2a89a6554348ba69f75234eeb",
+    "optimized_engine_blob": "482868d45ccdeaa5fbad8033f122a8fcfde79ca6",
+    "reference_0066_engine_blob": "79320c83d0ce89c2c952fd0a4f7a9b7452a8e0ae",
+    "reference_0066_event_engine_blob": "651ebb824b9dc1390ed0170a4eab07a3870786aa",
+    "reference_0066_models_blob": "6b255b887f2cd8f1741086a7bf27e6254288e836"
+  },
+  "historical_inputs": {
+    "market_evidence_blob": "64ebf5c6deaf3f34dbeac715378f196ff0f4fafe",
+    "market_payload_sha256": "d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193",
+    "feature_engine_0062_blob": "cac8e946998c836d10842b9388e1e3ef345a8c0b",
+    "market_loader_0047_blob": "059b55961e279dab41ba29b5b017de0922e4f33c",
+    "brrk_equity_blob": "82c87f8cb0ff01c728ffd3b717fff17cf5a364f2",
+    "brrk_weights_blob": "2f6c8d3a8c25d3cafeaa0128f1c425dac248370b",
+    "dtb3_blob": "71d50e26f8a9afb6bcb88401d20b97d5fb0a891a",
+    "dtb3_payload_sha256": "4d8aee67dbd528ce38ff8482e9bb02dd5ccf2c6cd461f606fe90007151ab6879",
+    "cash_engine_0064_blob": "4060a307be2204c11952cb52e2fc718a5343d8e1",
+    "network_fetch_or_replacement_allowed": false
+  },
+  "frozen_execution_shape": {
+    "indicator_atlas_hypothesis_cells": 8080,
+    "validation_tuning_configs": 1632,
+    "final_predictor_tracks": 64,
+    "final_controllers": 8,
+    "model_controller_variants": 1704,
+    "validation_estimator_fit_calls": 31008,
+    "economic_estimator_fit_calls": 11904,
+    "total_estimator_fit_calls": 42912,
+    "stacking_nnls_solves": 40,
+    "predictive_bootstrap_replicates": 4000,
+    "economic_bootstrap_replicates": 4000,
+    "pbo_max_splits": 70,
+    "process_worker_count": 4
+  },
+  "environment": {
+    "runner_label": "ubuntu-24.04",
+    "python": "3.12",
+    "historical_job_timeout_minutes": 350,
+    "PYTHONHASHSEED": "0",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "NUMEXPR_NUM_THREADS": "1"
+  },
+  "exactly_once": {
+    "historical_attempt_budget": 1,
+    "RUN_ATTEMPT_must_be_durable_before_historical_read": true,
+    "same_id_rerun_allowed": false,
+    "same_id_retune_allowed": false,
+    "same_id_rescue_allowed": false,
+    "marker_only_recovery": "only if PRIMARY_RESULT.json, EVIDENCE.json and EXECUTION.json already durably persist and only RUN_ONCE.marker is absent"
+  },
+  "pre_boundary_runtime_artifacts": {
+    "RUN_ATTEMPT.marker": "ABSENT",
+    "PRIMARY_RESULT.json": "ABSENT",
+    "EVIDENCE.json": "ABSENT",
+    "EXECUTION.json": "ABSENT",
+    "RUN_ONCE.marker": "ABSENT"
+  },
+  "authorization": {
+    "production_authorized": false,
+    "signature_authorized": false,
+    "order_submission_authorized": false
+  }
+}

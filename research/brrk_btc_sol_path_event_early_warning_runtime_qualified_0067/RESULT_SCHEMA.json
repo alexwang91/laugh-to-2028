@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "research_id": "BRRK-BTC-SOL-PATH-EVENT-EARLY-WARNING-RUNTIME-QUALIFIED-0067",
+  "required_primary_fields": [
+    "schema_version",
+    "research_id",
+    "classification",
+    "event_onset_count",
+    "event_counts_by_asset_type_grade",
+    "indicator_atlas_hypothesis_cells",
+    "indicator_atlas_supported_holm_family_size",
+    "indicator_atlas_holm_rejections",
+    "actual_validation_tuning_configs_evaluated",
+    "final_predictor_track_count",
+    "final_controller_count",
+    "actual_variants_evaluated",
+    "predictor_tracks",
+    "predictive_winners",
+    "predictor_simultaneous_bootstrap",
+    "benchmark_0064_same_window",
+    "controllers",
+    "economic_simultaneous_bootstrap",
+    "PBO_CSCV",
+    "controller_error",
+    "validation_preferred_horizons",
+    "validation_preferred_architectures",
+    "production_authorized",
+    "signature_authorized",
+    "order_submission_authorized"
+  ],
+  "classification_enum": [
+    "PASS_EVENT_EARLY_WARNING_AND_ECONOMIC_CONTROLLER",
+    "PASS_EVENT_EARLY_WARNING_ONLY",
+    "FAIL_NO_ROBUST_EVENT_CONTROLLER",
+    "FAIL_NO_ROBUST_EVENT_EARLY_WARNING",
+    "MEASUREMENT_INCONCLUSIVE_INSUFFICIENT_EVENT_SUPPORT",
+    "INVALID_EXECUTION"
+  ],
+  "frozen_counts": {
+    "indicator_atlas_hypothesis_cells": 8080,
+    "validation_tuning_configs": 1632,
+    "final_predictor_tracks": 64,
+    "final_controllers": 8,
+    "actual_variants_if_complete": 1704,
+    "historical_attempt_budget": 1
+  },
+  "frozen_physical_compute": {
+    "validation_estimator_fit_calls": 31008,
+    "economic_estimator_fit_calls": 11904,
+    "total_estimator_fit_calls": 42912,
+    "stacking_nnls_solves": 40,
+    "process_worker_count": 4
+  },
+  "frozen_inference": {
+    "predictive_block_length": 60,
+    "predictive_bootstrap_replicates": 4000,
+    "economic_block_length": 60,
+    "economic_bootstrap_replicates": 4000,
+    "seed": 660066,
+    "pbo_slices": 8,
+    "pbo_max_splits": 70
+  },
+  "qualification_binding": {
+    "implementation_merge_sha": "56f683b9593fd22cf752a1553906379067227995",
+    "qualification_workflow_run_id": "31867786428",
+    "qualification_result_blob": "6409a558c0c800f363699c67fe28b39faf8f3bff",
+    "qualification_verdict": "PASS"
+  },
+  "authorization": {
+    "production_authorized": false,
+    "signature_authorized": false,
+    "order_submission_authorized": false
+  }
+}
