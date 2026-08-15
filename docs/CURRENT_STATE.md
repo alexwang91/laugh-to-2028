@@ -259,3 +259,21 @@ Implementation branch = `research/0068-implementation-v1`. The branch implements
 Exact next step: run bounded tests and the five-regime qualification from a separate non-merged tooling workflow that checks out the exact implementation branch, installs the pinned test runtime, and reads no historical inputs. Repair only execution-assurance defects until qualification passes; merge IMPLEMENTATION-ONLY only after standing CI is green and qualification evidence is durable.
 
 No-drift authority remains unchanged: `production_authorized=false`; `signature_authorized=false`; `order_submission_authorized=false`; canonical BRRK-0011, closed 0064/0065/0066/0067 and Phase 6 are unchanged.
+
+
+## 0068 nonhistorical execution-equivalence qualification PASS
+
+0068 research ID = `BRRK-BTC-SOL-PATH-EVENT-EXECUTION-EQUIVALENCE-0068`.
+Merged IMPLEMENTATION = `369beb6db6fd3bd828773e65609745866bf4bce1`; exact qualified implementation head = `70c7d148d11aebb324536dde5a041a3252d02dfb`.
+Tooling qualification workflow run `31908496207`, job `95069911134` = `PASS`. Bounded tests = 5 passed.
+
+The five preregistered nonhistorical regimes all passed canonical graph equivalence, exact physical-action accounting, byte-identical qualification/control manifests, and complete exactly-once terminal traces:
+- FULL_SUPPORT: 31,008 validation fits; 11,904 economic fits; 40 P08 NNLS.
+- PARTIAL_SUPPORT: 31,008 validation fits; 5,952 economic fits; 20 P08 NNLS.
+- SINGLE_CLASS_UNDEFINED_TRACKS: 31,008 validation fits; 8,928 economic fits; 30 P08 NNLS.
+- MISSING_BASE_PREDICTIONS: 31,008 validation fits; 11,904 economic fits; 20 P08 NNLS.
+- MIXED_P07_P08_ELIGIBILITY: 31,008 validation fits; 7,872 economic fits; 10 P08 NNLS.
+
+Qualification historical reads = 0; network fetches = 0. No 0067 rerun/rescue/recomputation occurred. Frozen 0067 scientific semantics and all production/signature/order authority remain unchanged. 0068 historical attempt budget remains zero.
+
+Exact next step: merge immutable 0068 qualification evidence after standing CI is green, then create a separate immutable 0068 PASS closeout. Only after 0068 is closed PASS may a new successor historical research ID be registered owner-first.
