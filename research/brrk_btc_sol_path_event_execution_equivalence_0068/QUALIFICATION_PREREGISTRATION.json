@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "research_id": "BRRK-BTC-SOL-PATH-EVENT-EXECUTION-EQUIVALENCE-0068",
+  "purpose": "Mandatory nonhistorical execution-equivalence qualification for a data-dependent downstream graph. 0068 itself never authorizes historical measurement.",
+  "historical_isolation": {
+    "historical_payload_reads_allowed": false,
+    "market_loader_calls_allowed": 0,
+    "historical_equity_reads_allowed": 0,
+    "historical_weights_reads_allowed": 0,
+    "historical_dtb3_reads_allowed": 0,
+    "network_fetches_allowed": 0,
+    "qualification_repetition_allowed": true
+  },
+  "environment": {
+    "runner_label": "ubuntu-24.04",
+    "cpu_architecture": "x86_64",
+    "python": "3.12",
+    "process_worker_count": 4,
+    "env": {"PYTHONHASHSEED":"0","OMP_NUM_THREADS":"1","OPENBLAS_NUM_THREADS":"1","MKL_NUM_THREADS":"1","NUMEXPR_NUM_THREADS":"1"}
+  },
+  "regimes": {
+    "FULL_SUPPORT": {
+      "required": true,
+      "expected_validation_fit_calls": 31008,
+      "expected_economic_fit_calls": 11904,
+      "expected_p08_nnls_solves": 40,
+      "purpose": "Reproduce the historical 0067 qualification full-support reference shape without historical values."
+    },
+    "PARTIAL_SUPPORT": {
+      "required": true,
+      "expected_relation": "validation remains 31008; downstream counts contract deterministically through frozen eligibility only"
+    },
+    "SINGLE_CLASS_UNDEFINED_TRACKS": {
+      "required": true,
+      "expected_relation": "tracks made undefined by deterministic single-class support are excluded through the same canonical graph builder and receive terminal ELIGIBILITY_EXCLUDED traces"
+    },
+    "MISSING_BASE_PREDICTIONS": {
+      "required": true,
+      "expected_relation": "P08 locations lacking required eligible base predictions produce no NNLS work unit and are deterministically traceable"
+    },
+    "MIXED_P07_P08_ELIGIBILITY": {
+      "required": true,
+      "expected_relation": "pooled P07 and location-level P08 eligibility may differ, and manifest counts must match the frozen eligibility logic exactly"
+    }
+  },
+  "graph_equivalence": {
+    "single_graph_builder_entry_point_required": true,
+    "qualification_and_controlled_dry_run_must_call_same_entry_point": true,
+    "identical_synthetic_input_requires_byte_identical_manifest": true,
+    "manifest_sha256_equality_required": true,
+    "canonical_order_required": true
+  },
+  "physical_action_accounting": {
+    "expected_fit_calls_per_work_unit_required": true,
+    "expected_nnls_per_work_unit_required": true,
+    "observed_fit_attempts_must_equal_manifest_sum": true,
+    "observed_nnls_attempts_must_equal_manifest_sum": true,
+    "exactly_one_terminal_trace_per_manifest_unit": true,
+    "inference_before_complete_manifest_consumption_forbidden": true
+  },
+  "required_evidence": [
+    "research_id",
+    "implementation_commit_sha",
+    "regime_id",
+    "synthetic_input_sha256",
+    "manifest_sha256",
+    "controlled_dry_run_manifest_sha256",
+    "manifest_byte_equivalence",
+    "declared_validation_fit_calls",
+    "observed_validation_fit_calls",
+    "manifest_expected_economic_fit_calls",
+    "observed_economic_fit_calls",
+    "manifest_expected_nnls_solves",
+    "observed_nnls_solves",
+    "terminal_trace_count",
+    "manifest_unit_count",
+    "duplicate_terminal_trace_count",
+    "missing_terminal_trace_count",
+    "historical_content_read_counters",
+    "network_fetch_count",
+    "qualification_verdict"
+  ],
+  "pass_rule": "PASS only if all five frozen nonhistorical regimes pass with zero historical/network reads, byte-identical qualification/control manifests for identical inputs, exact manifest-to-physical accounting, exactly one terminal trace per manifest unit, and FULL_SUPPORT reproduces 31008 validation fits, 11904 economic fits, and 40 NNLS solves.",
+  "failure_rule": "Any violation is QUALIFICATION_FAIL. Semantic-preserving execution-assurance engineering may be modified and requalified under 0068, but no historical measurement is allowed under this research ID.",
+  "anti_rescue": "Do not change scientific semantics, eligibility rules, estimator/model grids, horizons, controllers, bootstrap/PBO, or classification gates to make qualification pass.",
+  "authority": {"historical_execution_authorized":false,"production_authorized":false,"signature_authorized":false,"order_submission_authorized":false}
+}
