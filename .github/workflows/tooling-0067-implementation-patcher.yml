@@ -1,4 +1,4 @@
-name: Tooling 0067 implementation quick equivalence
+name: Tooling 0067 bounded implementation tests
 on:
   push:
     branches: [tools/0067-implementation-patcher-v1]
@@ -6,9 +6,9 @@ on:
 permissions:
   contents: read
 jobs:
-  quick-equivalence:
+  bounded-tests:
     runs-on: ubuntu-24.04
-    timeout-minutes: 60
+    timeout-minutes: 30
     env:
       PYTHONHASHSEED: '0'
       PYTHONPATH: '.'
@@ -25,7 +25,7 @@ jobs:
         with:
           python-version: '3.12'
       - run: pip install -r execution/plan-b-bot/requirements-dev.txt
-      - name: Verify implementation-only isolation
+      - name: Verify zero historical result artifacts
         shell: bash
         run: |
           set -euo pipefail
@@ -33,6 +33,6 @@ jobs:
           for f in RUN_ATTEMPT.marker PRIMARY_RESULT.json EVIDENCE.json EXECUTION.json RUN_ONCE.marker QUALIFICATION_RESULT.json; do
             test ! -e "$D/$f"
           done
-          python -m py_compile "$D/engine.py" "$D/qualification.py"
-      - name: Run quick reference equivalence
-        run: python -m research.brrk_btc_sol_path_event_early_warning_runtime_qualified_0067.qualification quick
+          python -m py_compile "$D/engine.py" "$D/qualification.py" "$D/test_implementation_contract.py"
+      - name: Run bounded implementation contract tests
+        run: pytest -q research/brrk_btc_sol_path_event_early_warning_runtime_qualified_0067/test_implementation_contract.py
