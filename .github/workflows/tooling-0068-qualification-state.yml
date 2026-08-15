@@ -1,0 +1,66 @@
+name: Tooling 0068 qualification state handoff
+
+on:
+  push:
+    branches:
+      - tools/0068-qualification-v1
+
+permissions:
+  contents: write
+
+jobs:
+  handoff:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/0068-qualification-v1
+          fetch-depth: 0
+      - name: Verify qualification evidence branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f research/brrk_btc_sol_path_event_execution_equivalence_0068/QUALIFICATION_RESULT.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('research/brrk_btc_sol_path_event_execution_equivalence_0068/QUALIFICATION_RESULT.json')
+          r=json.loads(p.read_text())
+          assert r['research_id']=='BRRK-BTC-SOL-PATH-EVENT-EXECUTION-EQUIVALENCE-0068'
+          assert r['qualification_verdict']=='PASS'
+          assert r['implementation_sha']=='70c7d148d11aebb324536dde5a041a3252d02dfb'
+          assert r['workflow_run_id']==31908496207
+          assert r['historical_reads']==0 and r['network_fetches']==0
+          assert r['validation_fit_calls']==31008
+          assert len(r['regimes'])==5
+          full=next(x for x in r['regimes'] if x['regime']=='FULL_SUPPORT')
+          assert full['economic_fit_calls']==11904 and full['p08_nnls_solves']==40
+          assert all(x['manifest_byte_identical'] for x in r['regimes'])
+          assert all(x['terminal_trace_complete'] for x in r['regimes'])
+          PY
+      - name: Update CURRENT_STATE qualification handoff
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('docs/CURRENT_STATE.md')
+          s=p.read_text()
+          marker='## 0068 nonhistorical execution-equivalence qualification PASS'
+          if marker not in s:
+              s += '''\n\n## 0068 nonhistorical execution-equivalence qualification PASS\n\n0068 research ID = `BRRK-BTC-SOL-PATH-EVENT-EXECUTION-EQUIVALENCE-0068`.\nMerged IMPLEMENTATION = `369beb6db6fd3bd828773e65609745866bf4bce1`; exact qualified implementation head = `70c7d148d11aebb324536dde5a041a3252d02dfb`.\nTooling qualification workflow run `31908496207`, job `95069911134` = `PASS`. Bounded tests = 5 passed.\n\nThe five preregistered nonhistorical regimes all passed canonical graph equivalence, exact physical-action accounting, byte-identical qualification/control manifests, and complete exactly-once terminal traces:\n- FULL_SUPPORT: 31,008 validation fits; 11,904 economic fits; 40 P08 NNLS.\n- PARTIAL_SUPPORT: 31,008 validation fits; 5,952 economic fits; 20 P08 NNLS.\n- SINGLE_CLASS_UNDEFINED_TRACKS: 31,008 validation fits; 8,928 economic fits; 30 P08 NNLS.\n- MISSING_BASE_PREDICTIONS: 31,008 validation fits; 11,904 economic fits; 20 P08 NNLS.\n- MIXED_P07_P08_ELIGIBILITY: 31,008 validation fits; 7,872 economic fits; 10 P08 NNLS.\n\nQualification historical reads = 0; network fetches = 0. No 0067 rerun/rescue/recomputation occurred. Frozen 0067 scientific semantics and all production/signature/order authority remain unchanged. 0068 historical attempt budget remains zero.\n\nExact next step: merge immutable 0068 qualification evidence after standing CI is green, then create a separate immutable 0068 PASS closeout. Only after 0068 is closed PASS may a new successor historical research ID be registered owner-first.\n'''
+              p.write_text(s)
+          PY
+      - name: Commit qualification handoff
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- docs/CURRENT_STATE.md; then
+            echo 'CURRENT_STATE already contains qualification handoff'
+            exit 0
+          fi
+          git config user.name 'Y_Wang'
+          git config user.email '40142450+alexwang91@users.noreply.github.com'
+          git add docs/CURRENT_STATE.md
+          git commit -m 'docs: record 0068 qualification PASS handoff'
+          git push origin HEAD:research/0068-qualification-v1
