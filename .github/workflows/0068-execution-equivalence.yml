@@ -1,0 +1,49 @@
+name: 0068 execution-equivalence qualification
+
+on:
+  pull_request:
+    paths:
+      - 'research/brrk_btc_sol_path_event_execution_equivalence_0068/**'
+      - '.github/workflows/0068-execution-equivalence.yml'
+      - 'docs/CURRENT_STATE.md'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  implementation-and-qualification:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      PYTHONHASHSEED: '0'
+      OMP_NUM_THREADS: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      NUMEXPR_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run bounded implementation tests
+        run: python -m pytest -q research/brrk_btc_sol_path_event_execution_equivalence_0068/test_execution_graph.py
+      - name: Run five-regime nonhistorical qualification
+        run: python -m research.brrk_btc_sol_path_event_execution_equivalence_0068.qualification > /tmp/0068-qualification.json
+      - name: Verify frozen qualification outputs
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r = json.loads(Path('/tmp/0068-qualification.json').read_text())
+          assert r['qualification_verdict'] == 'PASS'
+          assert r['validation_fit_calls'] == 31008
+          assert r['historical_reads'] == 0
+          assert r['network_fetches'] == 0
+          full = next(x for x in r['regimes'] if x['regime'] == 'FULL_SUPPORT')
+          assert full['economic_fit_calls'] == 11904
+          assert full['p08_nnls_solves'] == 40
+          assert all(x['manifest_byte_identical'] for x in r['regimes'])
+          assert all(x['terminal_trace_complete'] for x in r['regimes'])
+          print(json.dumps(r, indent=2, sort_keys=True))
+          PY
