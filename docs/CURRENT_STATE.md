@@ -14,6 +14,7 @@ Merged 0067 DESIGN: `f3e5adc14631d9a3ae13ba686388b7a3c189e867`.
 Merged 0067 PREREGISTRATION: `062eb06c186cc54a729f0f65ae3888db0f4d2300`.
 Merged 0067 IMPLEMENTATION: `56f683b9593fd22cf752a1553906379067227995`.
 0067 full-shape qualification evidence commit: `a3b686ebb9c99f37f0c4375c6a7e19ba7e1eb146`.
+Merged 0067 QUALIFICATION EVIDENCE: `f9f50be07b628e62754cbfef58e314761bf25c2a`.
 
 ## Required closed-research anchors
 
@@ -29,7 +30,7 @@ ID 0043 is closed against result-informed pruning, reweighting, threshold rescue
 0064 = `PASS_PASSIVE_CASH_ACCRUAL_ROBUSTNESS / CLOSED TO SAME-ID RERUN`.
 0065 = `FAIL_NO_ROBUST_MULTI_ARCHITECTURE_IMPROVEMENT / CLOSED TO SAME-ID RERUN`.
 0066 = `INVALID_EXECUTION / CLOSED TO SAME-ID RERUN`.
-0067 = `FULL-SHAPE QUALIFICATION PASS / CONTROLLED BOUNDARY NOT YET MERGED / NOT RUN`.
+0067 = `CONTROLLED BOUNDARY BUILT / NOT MERGED / NOT RUN`.
 0067 research ID = `BRRK-BTC-SOL-PATH-EVENT-EARLY-WARNING-RUNTIME-QUALIFIED-0067`.
 0067 is `PROCESS_INFORMED_BY_0066_TIMEOUT / NOT_RESULT_INFORMED_BY_0066`.
 
@@ -188,6 +189,15 @@ Quick nonhistorical reference-equivalence workflow = `31867425779`; verdict = `P
 Bounded implementation test workflow = `31867565008`; verdict = `PASS`.
 Full-shape nonhistorical qualification workflow = `31867786428`; verdict = `PASS`.
 
+## 0067 controlled-execution boundary status
+
+Boundary branch = `research/0067-controlled-boundary-v1`, based exactly on merged qualification evidence `f9f50be07b628e62754cbfef58e314761bf25c2a`.
+Boundary files = `RUN_INTERFACE.json`, `RESULT_SCHEMA.json`, `CONTROLLED_EXECUTION_BOUNDARY.json`, and `run_once.py`.
+The boundary pins the qualified implementation, qualification result, frozen 0067 preregistration/data/implementation blobs, immutable 0066 reference science, upstream historical identities, and pinned Python dependency blobs.
+Historical runner requires exact boundary HEAD, durable create-only `RUN_ATTEMPT.marker` before any historical content read, each of four historical inputs read once, one market-loader call, one top-level scientific-engine call, frozen 4000+4000 inference, and physical runtime accounting 31,008 validation fits + 11,904 economic fits = 42,912 total fits, 40 NNLS, four workers.
+Any post-attempt execution or accounting failure is persisted as `INVALID_EXECUTION`; same-ID rerun/retune/rescue remains forbidden. Marker-only recovery remains limited to a complete durable result/evidence/execution bundle missing only `RUN_ONCE.marker`.
+No historical runtime artifact exists yet and no historical content has been read.
+
 ## Exact next step
 
-Merge the 0067 full-shape qualification evidence after governance CI is green. Then create a separate CONTROLLED-EXECUTION BOUNDARY pinned to the merged qualification evidence, exact implementation and frozen historical identities. Run an exact-boundary zero-result preflight with zero historical content reads. Only after the boundary is merged and preflight passes may the unique 0067 historical attempt marker be durably created before any historical read.
+Validate the controlled boundary without historical content reads, then open and merge the separate CONTROLLED-EXECUTION BOUNDARY with standing CI green. After merge, run an exact merged-boundary zero-result preflight. Only after that preflight passes may the unique 0067 historical attempt 1/1 be durably marked before any historical read.
