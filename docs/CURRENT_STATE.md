@@ -15,6 +15,8 @@ Merged 0067 PREREGISTRATION: `062eb06c186cc54a729f0f65ae3888db0f4d2300`.
 Merged 0067 IMPLEMENTATION: `56f683b9593fd22cf752a1553906379067227995`.
 0067 full-shape qualification evidence commit: `a3b686ebb9c99f37f0c4375c6a7e19ba7e1eb146`.
 Merged 0067 QUALIFICATION EVIDENCE: `f9f50be07b628e62754cbfef58e314761bf25c2a`.
+Merged 0067 CONTROLLED-EXECUTION BOUNDARY: `d5c7938f0e0bb62368c0b6ce5330088c0fda817c`.
+0067 immutable result branch head: `85c9f4124c308f7fb283c3f015a60e282f2792d5`.
 
 ## Required closed-research anchors
 
@@ -30,7 +32,7 @@ ID 0043 is closed against result-informed pruning, reweighting, threshold rescue
 0064 = `PASS_PASSIVE_CASH_ACCRUAL_ROBUSTNESS / CLOSED TO SAME-ID RERUN`.
 0065 = `FAIL_NO_ROBUST_MULTI_ARCHITECTURE_IMPROVEMENT / CLOSED TO SAME-ID RERUN`.
 0066 = `INVALID_EXECUTION / CLOSED TO SAME-ID RERUN`.
-0067 = `CONTROLLED BOUNDARY BUILT / NOT MERGED / NOT RUN`.
+0067 = `INVALID_EXECUTION / CLOSED TO SAME-ID RERUN`.
 0067 research ID = `BRRK-BTC-SOL-PATH-EVENT-EARLY-WARNING-RUNTIME-QUALIFIED-0067`.
 0067 is `PROCESS_INFORMED_BY_0066_TIMEOUT / NOT_RESULT_INFORMED_BY_0066`.
 
@@ -151,18 +153,38 @@ Total wall clock = 4787.060044652 seconds, below the frozen 180-minute PASS limi
 Peak process-tree RSS = 2,548,195,328 bytes = 15.199151745249945% of MemTotal, below both frozen memory limits; no swap/OOM observed.
 Reference-equivalence aggregate = PASS. Historical payload/equity/weights/DTB3 reads = 0; market loader calls = 0; network fetches = 0.
 
-## 0067 zero-result assertions
+## 0067 immutable historical execution closeout
 
-Historical event atlas computed = false.
-Historical classifier metrics computed = false.
-Historical controller economics computed = false.
-Historical validation configs evaluated = 0.
-Historical model/controller variants evaluated = 0.
-0067 `RUN_ATTEMPT.marker` = ABSENT.
-0067 `PRIMARY_RESULT.json` = ABSENT.
-0067 `EVIDENCE.json` = ABSENT.
-0067 `EXECUTION.json` = ABSENT.
-0067 `RUN_ONCE.marker` = ABSENT.
+Historical workflow run `31882271904`, job `95006404891`, completed its workflow lifecycle successfully and persisted all five exactly-once runtime artifacts. The scientific classification is nevertheless `INVALID_EXECUTION` because the historical physical-compute accounting diverged from the prospectively frozen controlled boundary.
+
+Exactly-once state:
+- authorized attempts = 1; consumed attempts = 1; remaining same-ID attempts = 0;
+- `RUN_ATTEMPT.marker` = PRESENT;
+- `PRIMARY_RESULT.json` = PRESENT;
+- `EVIDENCE.json` = PRESENT;
+- `EXECUTION.json` = PRESENT;
+- `RUN_ONCE.marker` = PRESENT;
+- same-ID rerun/retune/rescue/recomputation = forbidden.
+
+Historical I/O and call accounting:
+- market evidence / BRRK equity / BRRK weights / DTB3 reads = 1 / 1 / 1 / 1;
+- market loader calls = 1;
+- top-level scientific engine calls = 1;
+- network fetches = 0;
+- finalize historical reads = 0;
+- finalize loader calls = 0;
+- finalize scientific engine calls = 0.
+
+Frozen-vs-actual physical accounting:
+- validation estimator fits = 31,008 / 31,008 MATCH;
+- economic estimator fits = 5,808 / 11,904 MISMATCH;
+- total estimator fits = 36,816 / 42,912 MISMATCH;
+- P08 stacking NNLS solves = 20 / 40 MISMATCH;
+- process workers = 4 / 4 MATCH.
+
+The runner therefore correctly persisted `INVALID_EXECUTION`. No 0067 scientific PASS/FAIL, predictive winner, controller economics, CAGR/NAV/MDD, bootstrap, PBO, or promotion inference is admissible. Values computed before invalidation are diagnostic execution traces only. The result/evidence/execution/final-marker hash chain and zero-production-authority checks completed successfully in the terminal workflow verification step.
+
+Any further measurement must use a new research ID and a new prospectively frozen lifecycle. The 0067 mismatch may inform execution engineering only; it may not tune scientific semantics.
 
 ## No-drift authority
 
@@ -196,8 +218,8 @@ Boundary files = `RUN_INTERFACE.json`, `RESULT_SCHEMA.json`, `CONTROLLED_EXECUTI
 The boundary pins the qualified implementation, qualification result, frozen 0067 preregistration/data/implementation blobs, immutable 0066 reference science, upstream historical identities, and pinned Python dependency blobs.
 Historical runner requires exact boundary HEAD, durable create-only `RUN_ATTEMPT.marker` before any historical content read, each of four historical inputs read once, one market-loader call, one top-level scientific-engine call, frozen 4000+4000 inference, and physical runtime accounting 31,008 validation fits + 11,904 economic fits = 42,912 total fits, 40 NNLS, four workers.
 Any post-attempt execution or accounting failure is persisted as `INVALID_EXECUTION`; same-ID rerun/retune/rescue remains forbidden. Marker-only recovery remains limited to a complete durable result/evidence/execution bundle missing only `RUN_ONCE.marker`.
-No historical runtime artifact exists yet and no historical content has been read.
+Historical attempt 1/1 is complete and immutably closed as `INVALID_EXECUTION`; all five runtime artifacts are present and same-ID rerun/retune/rescue is forbidden.
 
 ## Exact next step
 
-Validate the controlled boundary without historical content reads, then open and merge the separate CONTROLLED-EXECUTION BOUNDARY with standing CI green. After merge, run an exact merged-boundary zero-result preflight. Only after that preflight passes may the unique 0067 historical attempt 1/1 be durably marked before any historical read.
+Merge the immutable 0067 closeout without historical remeasurement. No same-ID execution action remains legal. Any continuation of the path-event early-warning question must use a new research ID with new preregistration, implementation/boundary, full-shape nonhistorical qualification, and prospectively authorized historical attempt.
