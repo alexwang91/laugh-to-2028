@@ -1,0 +1,77 @@
+{
+  "research_id": "BRRK-BTC-SOL-PATH-EVENT-EXECUTION-EQUIVALENCE-0068",
+  "qualification_verdict": "PASS",
+  "implementation_sha": "70c7d148d11aebb324536dde5a041a3252d02dfb",
+  "implementation_merge_sha": "369beb6db6fd3bd828773e65609745866bf4bce1",
+  "workflow_run_id": 31908496207,
+  "workflow_job_id": 95069911134,
+  "historical_reads": 0,
+  "network_fetches": 0,
+  "validation_fit_calls": 31008,
+  "bounded_tests": {
+    "passed": 5,
+    "failed": 0
+  },
+  "regimes": [
+    {
+      "regime": "FULL_SUPPORT",
+      "economic_fit_calls": 11904,
+      "p08_nnls_solves": 40,
+      "manifest_byte_identical": true,
+      "terminal_trace_complete": true,
+      "manifest_sha256": "6807a5c48e92fa34d37c3d0cf92647efb658f10687fef2ef7b80d245afb74a36",
+      "trace_sha256": "123d0d1397bbceb5a5bf88b1f49708a5f7da0155c9bd0c88dc330f27011139d2"
+    },
+    {
+      "regime": "PARTIAL_SUPPORT",
+      "economic_fit_calls": 5952,
+      "p08_nnls_solves": 20,
+      "manifest_byte_identical": true,
+      "terminal_trace_complete": true,
+      "manifest_sha256": "cf8cbb68f0d3204c1b992fee7f1ab8b833fe10dfca8632a802d2647eb7016365",
+      "trace_sha256": "98e0cbb2bc895cea91adab8bcd5a5d76f21309a72c49f89c70477e63320ed665"
+    },
+    {
+      "regime": "SINGLE_CLASS_UNDEFINED_TRACKS",
+      "economic_fit_calls": 8928,
+      "p08_nnls_solves": 30,
+      "manifest_byte_identical": true,
+      "terminal_trace_complete": true,
+      "manifest_sha256": "f45828f916567ca1cb5193730d2f01fd06f236326d6280ca6ef6e2a330c69eeb",
+      "trace_sha256": "f3fc105ff53c25de23314ec67e5067f51d65f582d7412f8559bd49ab2a984191"
+    },
+    {
+      "regime": "MISSING_BASE_PREDICTIONS",
+      "economic_fit_calls": 11904,
+      "p08_nnls_solves": 20,
+      "manifest_byte_identical": true,
+      "terminal_trace_complete": true,
+      "manifest_sha256": "8677d063d7f090e538b43b15fa8436ce9dff4e58f5f1ae4c86e7ded73e8bd872",
+      "trace_sha256": "fa26c8ecc71fc140322331f59f1e9c14f48258eb423537318039e082a4cba4ab"
+    },
+    {
+      "regime": "MIXED_P07_P08_ELIGIBILITY",
+      "economic_fit_calls": 7872,
+      "p08_nnls_solves": 10,
+      "manifest_byte_identical": true,
+      "terminal_trace_complete": true,
+      "manifest_sha256": "1803735e004788964b042fa2f50d566eacc2cb76dac834adb9854a22159cd7a9",
+      "trace_sha256": "2c49950474ba26f4e223af10ae24bdd55a5827415da4918fb5c82eaaee75b51c"
+    }
+  ],
+  "qualification_invariants": {
+    "all_five_regimes_present": true,
+    "full_support_matches_frozen_counts": true,
+    "all_manifests_byte_identical_between_qualification_and_controlled_dry_run": true,
+    "all_terminal_traces_complete_exactly_once": true,
+    "physical_fit_accounting_exact": true,
+    "physical_nnls_accounting_exact": true,
+    "inference_before_complete_manifest_consumption": false,
+    "historical_access": false,
+    "network_access": false
+  },
+  "scientific_semantics_changed": false,
+  "production_authorized": false,
+  "signature_authorized": false,
+  "order_submission_authorized": false
+}
