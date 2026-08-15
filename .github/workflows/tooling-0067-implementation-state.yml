@@ -1,4 +1,4 @@
-name: Tooling 0067 implementation state handoff
+name: Tooling 0067 implementation state finalize
 on:
   push:
     branches: [tools/0067-implementation-state-writer-v1]
@@ -22,17 +22,14 @@ jobs:
           from pathlib import Path
           p=Path('docs/CURRENT_STATE.md')
           s=p.read_text()
-          s=s.replace('0067 = `NUMERICAL_DATA_PREREGISTRATION_FROZEN / NOT IMPLEMENTED / NOT QUALIFIED / NOT RUN`.', '0067 = `IMPLEMENTATION BUILT / QUICK EQUIVALENCE PENDING / NOT FULL-SHAPE QUALIFIED / NOT RUN`.')
-          s=s.replace('Merged 0067 DESIGN: `f3e5adc14631d9a3ae13ba686388b7a3c189e867`.', 'Merged 0067 DESIGN: `f3e5adc14631d9a3ae13ba686388b7a3c189e867`.\nMerged 0067 PREREGISTRATION: `062eb06c186cc54a729f0f65ae3888db0f4d2300`.')
-          old='## Exact next step\n\nMerge the 0067 numerical/data/qualification PREREGISTRATION after fresh standing CI. Then enter IMPLEMENTATION-ONLY. Implementation may optimize only semantics-preserving execution and must build both the reference-equivalence suite and the full-shape qualification runner before any historical boundary is authorized.\n'
-          new='''## 0067 implementation-only status\n\nImplementation branch = `research/0067-implementation-v1`.\nScientific reference = immutable closed-0066 engine/model/event semantics; 0066 historical recomputation remains forbidden.\nRuntime-only implementation changes = maturity-mask caching, pooled-hazard schedule caching, deterministic four-process validation/economic prediction execution, predictive-bootstrap parallel reduction with parent-generated frozen RNG draws, and exact economic-bootstrap vectorization.\nFull-shape qualification runner = `research/brrk_btc_sol_path_event_early_warning_runtime_qualified_0067/qualification.py`.\nHistorical payload access remains forbidden and no 0067 historical attempt marker exists.\n\nQuick nonhistorical reference-equivalence workflow = `31867425779`; current verdict is PENDING until that workflow terminates.\n\n## Exact next step\n\nRequire quick nonhistorical equivalence PASS on the implementation, run bounded implementation tests on the final implementation head, then open/merge IMPLEMENTATION-ONLY with standing CI green. Only after implementation merge may the exact merged implementation run the preregistered full-shape nonhistorical qualification. A historical controlled-execution boundary remains forbidden until a full-shape qualification PASS is durably recorded.\n'''
-          assert old in s
-          s=s.replace(old,new)
+          s=s.replace('0067 = `IMPLEMENTATION BUILT / QUICK EQUIVALENCE PENDING / NOT FULL-SHAPE QUALIFIED / NOT RUN`.', '0067 = `IMPLEMENTATION BUILT / QUICK EQUIVALENCE PASS / NOT FULL-SHAPE QUALIFIED / NOT RUN`.')
+          s=s.replace('Quick nonhistorical reference-equivalence workflow = `31867425779`; current verdict is PENDING until that workflow terminates.', 'Quick nonhistorical reference-equivalence workflow = `31867425779`; verdict = `PASS`; 8080 indicator cells reported and all reference-equivalence fixtures passed.\nBounded implementation test workflow = `31867565008`; verdict = `PASS`.')
+          s=s.replace('Require quick nonhistorical equivalence PASS on the implementation, run bounded implementation tests on the final implementation head, then open/merge IMPLEMENTATION-ONLY with standing CI green. Only after implementation merge may the exact merged implementation run the preregistered full-shape nonhistorical qualification. A historical controlled-execution boundary remains forbidden until a full-shape qualification PASS is durably recorded.', 'Open and merge IMPLEMENTATION-ONLY after standing CI is green. Only after implementation merge may the exact merged implementation run the preregistered full-shape nonhistorical qualification. A historical controlled-execution boundary remains forbidden until a full-shape qualification PASS is durably recorded.')
           assert 'workflow run                         31381953131 / attempt 1' in s
           p.write_text(s)
           PY
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add docs/CURRENT_STATE.md
-          git commit -m '0067: hand off implementation-only current state'
+          git commit -m '0067: record quick equivalence and bounded-test PASS'
           git push origin HEAD:refs/heads/research/0067-implementation-v1
