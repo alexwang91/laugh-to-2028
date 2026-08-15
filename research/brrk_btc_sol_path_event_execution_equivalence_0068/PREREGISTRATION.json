@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "research_id": "BRRK-BTC-SOL-PATH-EVENT-EXECUTION-EQUIVALENCE-0068",
+  "stage": "EXECUTION_ASSURANCE_PREREGISTRATION",
+  "historical_measurement_allowed": false,
+  "historical_attempt_budget": 0,
+  "scientific_semantics_source": "BRRK-BTC-SOL-PATH-EVENT-EARLY-WARNING-RUNTIME-QUALIFIED-0067",
+  "scientific_semantics_change_allowed": false,
+  "objective": "Prove that qualification and controlled-mode dry run use one canonical downstream execution-graph construction law under data-dependent eligibility, with complete physical-action accounting and no historical content access.",
+  "frozen_execution_law": {
+    "validation_fit_calls": 31008,
+    "validation_count_is_structural": true,
+    "economic_fit_calls_are_data_dependent": true,
+    "p08_nnls_solves_are_data_dependent": true,
+    "economic_eligibility_rule": "Only validation-selected downstream tasks may enter economic evaluation, preserving the frozen 0067 selection semantics.",
+    "p08_eligibility_rule": "Only locations with the frozen required eligible base predictions may enter P08 stacking, preserving the frozen 0067 P08 semantics.",
+    "full_support_reference_economic_fit_calls": 11904,
+    "full_support_reference_p08_nnls_solves": 40
+  },
+  "canonical_manifest": {
+    "single_graph_builder_required": true,
+    "builder_must_be_shared_by": ["qualification", "controlled_mode_dry_run"],
+    "canonical_order_required": true,
+    "canonical_serialization": "UTF-8 JSON, sorted object keys, deterministic list ordering, separators comma/colon, newline-terminated",
+    "sha256_required": true,
+    "unit_fields_required": ["unit_id", "stage", "asset", "target", "horizon", "architecture", "refit_block", "eligibility_reason", "expected_fit_calls", "expected_nnls_solves"],
+    "duplicate_unit_ids_forbidden": true,
+    "inference_before_complete_manifest_consumption_forbidden": true
+  },
+  "trace_contract": {
+    "exactly_one_terminal_trace_per_manifest_unit": true,
+    "terminal_states": ["EXECUTED", "ELIGIBILITY_EXCLUDED", "FAILED"],
+    "duplicate_terminal_trace_forbidden": true,
+    "missing_terminal_trace_forbidden": true,
+    "physical_fit_accounting_rule": "sum(expected_fit_calls for executable manifest units) must equal observed estimator fit attempts",
+    "physical_nnls_accounting_rule": "sum(expected_nnls_solves for executable manifest units) must equal observed NNLS attempts",
+    "manifest_sha256_must_bind_trace": true
+  },
+  "frozen_nonhistorical_regimes": [
+    "FULL_SUPPORT",
+    "PARTIAL_SUPPORT",
+    "SINGLE_CLASS_UNDEFINED_TRACKS",
+    "MISSING_BASE_PREDICTIONS",
+    "MIXED_P07_P08_ELIGIBILITY"
+  ],
+  "full_support_acceptance": {
+    "validation_fit_calls": 31008,
+    "economic_fit_calls": 11904,
+    "p08_nnls_solves": 40
+  },
+  "partial_support_acceptance": "Downstream economic and P08 counts may contract only through the frozen eligibility law; contracted counts are valid when manifest, trace and physical-action accounting agree exactly.",
+  "forbidden_changes": [
+    "event definitions",
+    "feature universe",
+    "P01-P08 scientific semantics or grids",
+    "validation selection rules",
+    "warning horizons",
+    "controllers or economic rules",
+    "bootstrap or PBO definitions",
+    "scientific classification gates",
+    "0067 rerun, rescue or recomputation",
+    "production, signature or order authority"
+  ],
+  "authority": {
+    "historical_execution_authorized": false,
+    "production_authorized": false,
+    "signature_authorized": false,
+    "order_submission_authorized": false
+  }
+}
