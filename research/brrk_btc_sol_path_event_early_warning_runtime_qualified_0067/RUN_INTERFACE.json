@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "research_id": "BRRK-BTC-SOL-PATH-EVENT-EARLY-WARNING-RUNTIME-QUALIFIED-0067",
+  "stage": "CONTROLLED_EXECUTION_INTERFACE",
+  "entrypoint": "python -m research.brrk_btc_sol_path_event_early_warning_runtime_qualified_0067.run_once",
+  "commands": {
+    "preflight": "preflight --boundary-sha <MERGED_BOUNDARY_SHA>",
+    "start_attempt": "start --boundary-sha <MERGED_BOUNDARY_SHA> --workflow-run-id <RUN_ID>",
+    "evaluate": "evaluate --boundary-sha <MERGED_BOUNDARY_SHA>",
+    "finalize": "finalize --boundary-sha <MERGED_BOUNDARY_SHA>"
+  },
+  "qualification_gate": {
+    "required": true,
+    "implementation_merge_sha": "56f683b9593fd22cf752a1553906379067227995",
+    "qualification_evidence_merge_sha": "f9f50be07b628e62754cbfef58e314761bf25c2a",
+    "qualification_workflow_run_id": "31867786428",
+    "qualification_result_blob": "6409a558c0c800f363699c67fe28b39faf8f3bff",
+    "qualification_verdict": "PASS"
+  },
+  "preflight_permissions": {
+    "git_identity_reads": true,
+    "runtime_artifact_existence_checks": true,
+    "historical_content_reads": 0,
+    "loader_calls": 0,
+    "scientific_engine_calls": 0
+  },
+  "unique_attempt": {
+    "attempt_number": 1,
+    "durable_RUN_ATTEMPT_before_historical_content_read": true,
+    "historical_inputs_read_once_each": ["market_evidence", "equity", "weights", "dtb3"],
+    "market_loader_calls": 1,
+    "scientific_engine_calls": 1,
+    "contained_indicator_atlas_cells": 8080,
+    "contained_validation_tuning_configs": 1632,
+    "contained_final_predictor_tracks": 64,
+    "contained_final_controllers": 8,
+    "declared_model_controller_variants": 1704,
+    "declared_validation_estimator_fit_calls": 31008,
+    "declared_economic_estimator_fit_calls": 11904,
+    "declared_total_estimator_fit_calls": 42912,
+    "declared_stacking_nnls_solves": 40,
+    "process_worker_count": 4,
+    "same_id_rerun_allowed": false,
+    "same_id_retune_allowed": false,
+    "same_id_rescue_allowed": false
+  },
+  "environment": {
+    "runner_label": "ubuntu-24.04",
+    "python": "3.12",
+    "historical_job_timeout_minutes": 350,
+    "PYTHONHASHSEED": "0",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "NUMEXPR_NUM_THREADS": "1"
+  },
+  "persistence": {
+    "create_only": true,
+    "runtime_artifacts": ["RUN_ATTEMPT.marker", "PRIMARY_RESULT.json", "EVIDENCE.json", "EXECUTION.json", "RUN_ONCE.marker"],
+    "finalize_historical_content_reads": 0,
+    "finalize_scientific_engine_calls": 0,
+    "marker_only_recovery": "allowed only when complete PRIMARY_RESULT/EVIDENCE/EXECUTION hashes already persist; no historical reread or scientific remeasurement"
+  },
+  "authorization": {
+    "production_authorized": false,
+    "signature_authorized": false,
+    "order_submission_authorized": false
+  }
+}
