@@ -1,0 +1,98 @@
+name: Tooling 0068 owner-first registry writer
+
+on:
+  push:
+    branches:
+      - tools/0068-owner-writer-v1
+    paths:
+      - '.github/workflows/tooling-0068-owner-writer.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: brrk-0068-owner-first-registry
+  cancel-in-progress: false
+
+jobs:
+  register-owner:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 81a368c9f52069028cbfedef07b04bc52d96c6b4
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Append prospective 0068 owner and create owner-first design branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          path = Path('config/research_registry.json')
+          reg = json.loads(path.read_text(encoding='utf-8'))
+          rid = 'BRRK-BTC-SOL-PATH-EVENT-EXECUTION-EQUIVALENCE-0068'
+          assert all(x.get('research_id') != rid for x in reg['records'])
+          reg['records'].append({
+            'research_id': rid,
+            'research_family_id': 'BRRK_PATH_EVENT_EXECUTION_EQUIVALENCE',
+            'research_domain': 'RISK_CONTROL',
+            'research_governance_version': 1,
+            'governance_mode': 'PROGRAM_GOVERNED_V1',
+            'objective_type': 'PROCESS_VALIDATION',
+            'created_at': '2026-08-15',
+            'created_before_result': True,
+            'question': 'Can qualification and controlled execution be made graph-equivalent when frozen validation eligibility lawfully contracts downstream economic and P08 work?',
+            'hypothesis': '0067 was invalidated because a data-dependent downstream execution graph was incorrectly governed by full-support synthetic fixed counts; a single canonical graph builder and manifest-completeness contract can eliminate that execution-assurance defect without changing scientific semantics.',
+            'hypothesis_origin': 'PROCESS_INFORMED_BY_CLOSED_0067_EXECUTION_ACCOUNTING_ONLY; NO_0067_SCIENTIFIC_RESULT_USED; SCIENTIFIC_SEMANTICS_FROZEN_TO_0067.',
+            'economic_mechanism': 'UNCHANGED_FROM_0067; 0068 does not estimate economic effects and exists only to qualify execution-graph governance.',
+            'primary_target': 'QUALIFICATION_CONTROLLED_EXECUTION_GRAPH_EQUIVALENCE',
+            'primary_metric': 'CANONICAL_MANIFEST_AND_PHYSICAL_ACTION_ACCOUNTING_EQUIVALENCE',
+            'secondary_metrics': ['manifest_sha256','trace_sha256','eligible_economic_fit_calls','eligible_p08_nnls_solves','terminal_trace_completeness'],
+            'feature_families': ['0062_TIER_A_SIGNAL_UNIVERSE','0062_FAMILY_SCORES'],
+            'horizon': [1,3,5,10,20],
+            'universe': ['BTC','SOL'],
+            'development_dataset_refs': [],
+            'validation_dataset_refs': [],
+            'sealed_dataset_refs': [],
+            'declared_variant_budget': 0,
+            'actual_variants_evaluated': 0,
+            'parameter_candidate_count': 0,
+            'stopping_rule': '0068 has zero historical-attempt budget and may use only synthetic/nonhistorical qualification. It closes only after all preregistered eligibility regimes pass identical graph-builder, manifest, trace and physical-action accounting gates.',
+            'success_criteria': 'Qualification and controlled-mode dry run use one graph builder and produce byte-identical canonical manifests for each frozen synthetic regime; every manifest unit receives exactly one terminal trace; physical fit/NNLS attempts equal manifest expectations; full support reproduces the 0067 full-support reference while partial support lawfully contracts downstream counts.',
+            'failure_criteria': 'Any graph-builder divergence, manifest/hash mismatch, unconsumed/duplicate work unit, physical-action mismatch, historical content read, network fetch, or scientific-semantic drift.',
+            'allowed_followup': 'Semantics-preserving execution-assurance engineering and repeated nonhistorical qualification under 0068. Only after immutable 0068 PASS may a new research ID preregister a historical scientific attempt.',
+            'forbidden_followup': 'No 0067 rerun/rescue/recomputation; no historical read in 0068; no changes to event definitions, features, P01-P08 semantics/grids, validation selection, horizons, controllers/economics, bootstrap/PBO or scientific classification gates.',
+            'researcher_decisions': ['Treat 0067 accounting only as engineering/process evidence.','Freeze the eligibility rule and graph-construction law rather than a universal full-support downstream count.','Require one canonical graph builder for qualification and future controlled execution.','Require per-work-unit expected physical fit counts and exactly-once terminal traces.'],
+            'research_process_complexity': {'declared_parameter_candidates':0,'actual_parameter_candidates_evaluated':0,'universes_evaluated':2,'horizons_evaluated':5,'rebalance_variants':0,'feature_representations':0,'special_cases_introduced':5,'validation_exposure_event_refs':0,'related_family_trials':0},
+            'lineage_edges': [],
+            'result_status': 'PREREGISTERED_NOT_RUN',
+            'failure_reason': None,
+            'promotion_state': 'NONE',
+            'evidence_refs': [],
+            'decision_refs': [],
+            'production_relevance': 'Execution-assurance research only; no scientific or production authority.',
+            'production_authorized': False,
+            'provenance_status': 'PROSPECTIVE_FROZEN',
+            'governed_path_prefixes': ['research/brrk_btc_sol_path_event_execution_equivalence_0068'],
+            'notes': ['Owner-first registration precedes introduction of the formal 0068 path.','0068 historical_measurement_allowed=false and historical_attempt_budget=0.','Scientific semantics are frozen to 0067; only execution assurance may change.','production_authorized=false; signature_authorized=false; order_submission_authorized=false.']
+          })
+          path.write_text(json.dumps(reg, indent=2, ensure_ascii=False) + '\n', encoding='utf-8')
+          PY
+          python -m research.governance.validate
+          python -m research.governance.enforce_future --base 81a368c9f52069028cbfedef07b04bc52d96c6b4 --changed-path config/research_registry.json
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add config/research_registry.json
+          git commit -m 'research: register 0068 prospective owner'
+          OWNER_SHA="$(git rev-parse HEAD)"
+          git push --force origin "$OWNER_SHA:refs/heads/research/0068-execution-equivalence-design-v1"
+          REMOTE_SHA="$(git ls-remote origin refs/heads/research/0068-execution-equivalence-design-v1 | cut -f1)"
+          test "$REMOTE_SHA" = "$OWNER_SHA"
+          echo "OWNER_SHA=$OWNER_SHA"
