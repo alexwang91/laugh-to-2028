@@ -22,6 +22,10 @@ Every manifest unit includes `expected_fit_calls` and `expected_nnls_solves`. Co
 
 The implementation exercises all preregistered regimes: `FULL_SUPPORT`, `PARTIAL_SUPPORT`, `SINGLE_CLASS_UNDEFINED_TRACKS`, `MISSING_BASE_PREDICTIONS`, and `MIXED_P07_P08_ELIGIBILITY`. The fixtures alter eligibility only. They do not alter event definitions, features, architectures, grids, validation selection semantics, horizons, controllers/economics, bootstrap/PBO definitions, or scientific classification gates.
 
+## Qualification execution
+
+The mergeable implementation branch contains no new `.github/workflows/**` path. Repository no-drift governance treats workflow changes as separately governed tooling. Bounded tests and five-regime qualification therefore run from a non-merged tooling workflow that checks out the exact implementation commit, installs the test runtime, executes only synthetic/nonhistorical fixtures, and records zero historical reads and zero network fetches. Qualification evidence must bind the exact implementation SHA before this stage can merge or support any successor lifecycle.
+
 ## Authority
 
 `historical_execution_authorized=false`; `production_authorized=false`; `signature_authorized=false`; `order_submission_authorized=false`.
