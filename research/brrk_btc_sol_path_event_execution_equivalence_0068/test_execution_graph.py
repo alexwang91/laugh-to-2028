@@ -1,5 +1,11 @@
-from .execution_graph import all_nonhazard_keys, all_p07_keys, all_p08_keys, build_downstream_manifest, consume_manifest
-from .qualification import qualify, regime_inputs, run_mode
+from research.brrk_btc_sol_path_event_execution_equivalence_0068.execution_graph import (
+    all_nonhazard_keys,
+    all_p07_keys,
+    all_p08_keys,
+    build_downstream_manifest,
+    consume_manifest,
+)
+from research.brrk_btc_sol_path_event_execution_equivalence_0068.qualification import qualify, run_mode
 
 
 def test_full_support_counts():
