@@ -27,7 +27,7 @@ ID 0043 is closed against result-informed pruning, reweighting, threshold rescue
 0064 = `PASS_PASSIVE_CASH_ACCRUAL_ROBUSTNESS / CLOSED TO SAME-ID RERUN`.
 0065 = `FAIL_NO_ROBUST_MULTI_ARCHITECTURE_IMPROVEMENT / CLOSED TO SAME-ID RERUN`.
 0066 = `INVALID_EXECUTION / CLOSED TO SAME-ID RERUN`.
-0067 = `IMPLEMENTATION BUILT / QUICK EQUIVALENCE PENDING / NOT FULL-SHAPE QUALIFIED / NOT RUN`.
+0067 = `IMPLEMENTATION BUILT / QUICK EQUIVALENCE PASS / NOT FULL-SHAPE QUALIFIED / NOT RUN`.
 0067 research ID = `BRRK-BTC-SOL-PATH-EVENT-EARLY-WARNING-RUNTIME-QUALIFIED-0067`.
 0067 is `PROCESS_INFORMED_BY_0066_TIMEOUT / NOT_RESULT_INFORMED_BY_0066`.
 
@@ -173,8 +173,9 @@ Runtime-only implementation changes = maturity-mask caching, pooled-hazard sched
 Full-shape qualification runner = `research/brrk_btc_sol_path_event_early_warning_runtime_qualified_0067/qualification.py`.
 Historical payload access remains forbidden and no 0067 historical attempt marker exists.
 
-Quick nonhistorical reference-equivalence workflow = `31867425779`; current verdict is PENDING until that workflow terminates.
+Quick nonhistorical reference-equivalence workflow = `31867425779`; verdict = `PASS`; 8080 indicator cells reported and all reference-equivalence fixtures passed.
+Bounded implementation test workflow = `31867565008`; verdict = `PASS`.
 
 ## Exact next step
 
-Require quick nonhistorical equivalence PASS on the implementation, run bounded implementation tests on the final implementation head, then open/merge IMPLEMENTATION-ONLY with standing CI green. Only after implementation merge may the exact merged implementation run the preregistered full-shape nonhistorical qualification. A historical controlled-execution boundary remains forbidden until a full-shape qualification PASS is durably recorded.
+Open and merge IMPLEMENTATION-ONLY after standing CI is green. Only after implementation merge may the exact merged implementation run the preregistered full-shape nonhistorical qualification. A historical controlled-execution boundary remains forbidden until a full-shape qualification PASS is durably recorded.
