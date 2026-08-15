@@ -223,3 +223,10 @@ Historical attempt 1/1 is complete and immutably closed as `INVALID_EXECUTION`; 
 ## Exact next step
 
 Merge the immutable 0067 closeout without historical remeasurement. No same-ID execution action remains legal. Any continuation of the path-event early-warning question must use a new research ID with new preregistration, implementation/boundary, full-shape nonhistorical qualification, and prospectively authorized historical attempt.
+
+## 0068 execution-equivalence DESIGN
+
+0068 research ID = `BRRK-BTC-SOL-PATH-EVENT-EXECUTION-EQUIVALENCE-0068`.
+Owner-first registry commit = `d135bb830c30377c4e69943a2a55974a08ad1e62`.
+State = `DESIGN / NOT PREREGISTERED / NOT IMPLEMENTED / NOT QUALIFIED / NO HISTORICAL AUTHORITY`.
+0068 uses closed 0067 accounting only as engineering process evidence. Historical attempt budget = 0. Scientific semantics remain frozen to 0067; canonical BRRK-0011, 0064/0065/0066/0067, Phase 6 and production/signature/order authority remain unchanged.
