@@ -4928,6 +4928,95 @@
         "Scientific semantics are frozen to 0067; only execution assurance may change.",
         "production_authorized=false; signature_authorized=false; order_submission_authorized=false."
       ]
+    },
+    {
+      "research_id": "BRRK-BTC-SOL-PATH-EVENT-EARLY-WARNING-EXECUTION-ASSURED-0069",
+      "research_family_id": "BRRK_PATH_EVENT_EARLY_WARNING",
+      "research_domain": "RISK_CONTROL",
+      "research_governance_version": 1,
+      "governance_mode": "PROGRAM_GOVERNED_V1",
+      "objective_type": "PORTFOLIO_INTEGRATION",
+      "created_at": "2026-08-16",
+      "created_before_result": true,
+      "question": "Under the frozen 0067 scientific program and the 0068 manifest-derived execution-assurance contract, does the BTC/SOL path-event early-warning system produce an admissible historical predictive and controller result?",
+      "hypothesis": "The frozen 0067 event-first early-warning program can be executed once with correct data-dependent downstream eligibility accounting, producing an admissible scientific classification rather than an execution-integrity invalidation.",
+      "hypothesis_origin": "SCIENTIFIC_PROGRAM_FROZEN_FROM_0067; EXECUTION_ASSURANCE_FROZEN_FROM_IMMUTABLE_0068_PASS; NO_0067_INVALIDATED_SCIENTIFIC_OUTPUT_USED.",
+      "economic_mechanism": "UNCHANGED_FROM_0067: validated event-warning probabilities may reduce BRRK gross exposure under frozen controller thresholds to improve after-cost downside-adjusted compounding versus the closed 0064 passive-cash benchmark.",
+      "primary_target": "FROZEN_0067_PATH_EVENT_EARLY_WARNING_SCIENTIFIC_CLASSIFICATION_WITH_0068_EXECUTION_ASSURANCE",
+      "primary_metric": "PREREGISTERED_0067_PREDICTIVE_AND_CONTROLLER_CLASSIFICATION_GATES_WITH_MANIFEST_DERIVED_EXECUTION_INTEGRITY",
+      "secondary_metrics": [
+        "predictive_track_metrics",
+        "controller_economics",
+        "CAGR",
+        "terminal_wealth",
+        "MDD",
+        "bootstrap_inference",
+        "PBO",
+        "manifest_sha256",
+        "physical_fit_calls",
+        "p08_nnls_solves"
+      ],
+      "feature_families": [
+        "0062_TIER_A_SIGNAL_UNIVERSE",
+        "0062_FAMILY_SCORES"
+      ],
+      "horizon": [
+        1,
+        3,
+        5,
+        10,
+        20
+      ],
+      "universe": [
+        "BTC",
+        "SOL"
+      ],
+      "development_dataset_refs": [],
+      "validation_dataset_refs": [],
+      "sealed_dataset_refs": [],
+      "declared_variant_budget": 1704,
+      "actual_variants_evaluated": 0,
+      "parameter_candidate_count": 1632,
+      "stopping_rule": "After owner-first DESIGN, numerical/data preregistration, implementation/boundary, full nonhistorical qualification and exact zero-result preflight, authorize at most one historical attempt. A durable RUN_ATTEMPT.marker must precede any historical read. Any consumed attempt permanently closes same-ID rerun/retune/rescue.",
+      "success_criteria": "All frozen 0067 scientific integrity, predictive, controller, bootstrap and PBO gates are evaluated exactly once under the 0068 canonical manifest/terminal-trace accounting contract, with historical I/O and physical actions matching the realized manifest and a complete immutable result bundle.",
+      "failure_criteria": "Scientific failure follows only the frozen 0067 classification gates. Any data/hash/timing/manifest/terminal-trace/physical-accounting/exactly-once breach is INVALID_EXECUTION rather than a scientific result.",
+      "allowed_followup": "Only preregistered semantics-preserving execution engineering before attempt consumption; after terminal result, only a new research ID may continue. No same-ID rescue.",
+      "forbidden_followup": "No changes to event definitions, features, P01-P08 semantics/grids, validation selection, horizons, controllers/economics, bootstrap/PBO or scientific classification gates; no use of invalidated 0067 scientific outputs; no fixed universal economic/NNLS count in place of realized manifest accounting; no historical read before durable attempt marker.",
+      "researcher_decisions": [
+        "Freeze all scientific semantics to 0067.",
+        "Carry forward 0068 one-builder canonical manifest and exactly-once terminal-trace contract.",
+        "Derive economic-fit and P08 NNLS expectations from realized eligibility manifest.",
+        "Require nonhistorical multi-regime/full-shape qualification and exact preflight before the unique historical attempt."
+      ],
+      "research_process_complexity": {
+        "declared_parameter_candidates": 1632,
+        "actual_parameter_candidates_evaluated": 0,
+        "universes_evaluated": 2,
+        "horizons_evaluated": 5,
+        "rebalance_variants": 8,
+        "feature_representations": 202,
+        "special_cases_introduced": 0,
+        "validation_exposure_event_refs": 0,
+        "related_family_trials": 2
+      },
+      "lineage_edges": [],
+      "result_status": "PREREGISTERED_NOT_RUN",
+      "failure_reason": null,
+      "promotion_state": "NONE",
+      "evidence_refs": [],
+      "decision_refs": [],
+      "production_relevance": "Historical scientific research only; no automatic production authority.",
+      "production_authorized": false,
+      "provenance_status": "PROSPECTIVE_FROZEN",
+      "governed_path_prefixes": [
+        "research/brrk_btc_sol_path_event_early_warning_execution_assured_0069"
+      ],
+      "notes": [
+        "Owner-first registration precedes introduction of the formal 0069 path.",
+        "0069 may receive at most one prospectively authorized historical attempt after all pre-historical gates pass.",
+        "Scientific semantics are frozen to 0067 and execution assurance to immutable 0068.",
+        "production_authorized=false; signature_authorized=false; order_submission_authorized=false."
+      ]
     }
   ],
   "research_governance_debt": [
