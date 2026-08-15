@@ -1,0 +1,67 @@
+name: Tooling 0068 design writer
+on:
+  push:
+    branches: [tools/0068-design-writer-v1]
+    paths: ['.github/workflows/tooling-0068-design-writer.yml']
+permissions:
+  contents: write
+jobs:
+  write-design:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: d135bb830c30377c4e69943a2a55974a08ad1e62
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Materialize DESIGN-only package
+        shell: bash
+        run: |
+          set -euo pipefail
+          D=research/brrk_btc_sol_path_event_execution_equivalence_0068
+          mkdir -p "$D"
+          cat > "$D/DESIGN.md" <<'EOF'
+          # 0068 Execution-Equivalence DESIGN
+
+          Research ID: `BRRK-BTC-SOL-PATH-EVENT-EXECUTION-EQUIVALENCE-0068`
+
+          ## Purpose
+          0068 is a nonhistorical execution-assurance study motivated only by the closed 0067 execution-accounting mismatch. It does not reinterpret or recompute 0067 science. Historical attempt budget is zero.
+
+          ## Engineering finding to falsify
+          0067 validation work is structurally fixed, but downstream economic and P08 work is generated only for validation-eligible tracks. The prior qualification forced full support and then treated its downstream count as invariant. 0068 tests whether freezing the graph-construction rule, rather than one full-support count, removes this false invalidation while retaining strict physical accounting.
+
+          ## Frozen no-drift boundary
+          Event definitions, 202-signal universe, P01-P08 semantics and grids, validation selection/status rules, horizons, refit cadence, controllers, costs, bootstrap/PBO definitions, scientific gates and all production prohibitions remain identical to 0067. Only graph construction, manifest accounting, trace instrumentation and nonhistorical qualification coverage may change.
+
+          ## Required execution assurance
+          Qualification and future controlled execution must call one canonical graph builder. It emits ordered work units with eligibility reason and per-unit expected physical fit/NNLS actions. Canonical serialization and SHA256 bind the manifest. Every unit must receive exactly one terminal trace record before inference. Physical attempts must equal manifest expectations.
+
+          ## Qualification regimes
+          Numerical preregistration must freeze deterministic nonhistorical regimes covering FULL_SUPPORT, PARTIAL_SUPPORT, SINGLE_CLASS_UNDEFINED_TRACKS, MISSING_BASE_PREDICTIONS and MIXED_P07_P08_ELIGIBILITY. Full support must reproduce the 0067 reference shape; contracted regimes must prove lawful smaller downstream graphs without execution invalidation when all eligible work is consumed.
+
+          ## Lifecycle
+          DESIGN -> numerical/execution PREREGISTRATION -> IMPLEMENTATION-ONLY -> nonhistorical multi-regime qualification -> immutable 0068 closeout. Only a later new research ID may authorize a historical scientific attempt after 0068 PASS.
+          EOF
+          cat > "$D/FORENSICS_0067.md" <<'EOF'
+          # 0067 Execution-Path Forensics
+
+          Engineering-only observation: historical validation fits were 31,008/31,008, economic fits 5,808/11,904, P08 NNLS 20/40. Source inspection shows validation-selected parameters gate downstream economic tasks (`params is None -> continue`) and P08 is solved only where eligible base predictions exist. Full-support qualification constructed all tracks as supported/two-class. Thus downstream physical graph size is data-dependent under frozen scientific rules. This is process evidence only and creates no admissible 0067 scientific inference.
+          EOF
+          cat >> docs/CURRENT_STATE.md <<'EOF'
+
+          ## 0068 execution-equivalence DESIGN
+
+          0068 research ID = `BRRK-BTC-SOL-PATH-EVENT-EXECUTION-EQUIVALENCE-0068`.
+          Owner-first registry commit = `d135bb830c30377c4e69943a2a55974a08ad1e62`.
+          State = `DESIGN / NOT PREREGISTERED / NOT IMPLEMENTED / NOT QUALIFIED / NO HISTORICAL AUTHORITY`.
+          0068 uses closed 0067 accounting only as engineering process evidence. Historical attempt budget = 0. Scientific semantics remain frozen to 0067; canonical BRRK-0011, 0064/0065/0066/0067, Phase 6 and production/signature/order authority remain unchanged.
+          EOF
+          python -m research.governance.validate
+          python -m research.governance.enforce_future --base 81a368c9f52069028cbfedef07b04bc52d96c6b4
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add "$D" docs/CURRENT_STATE.md
+          git commit -m 'research: add 0068 execution-equivalence DESIGN'
+          git push --force origin HEAD:refs/heads/research/0068-execution-equivalence-design-v1
