@@ -1,0 +1,20 @@
+{
+  "attempt_number": 1,
+  "attempt_sha256": "895444dbc9e70b4091be6ef5ee19b50bf5856c3535079476d6b6118dee402a62",
+  "boundary_merge_sha": "d5c7938f0e0bb62368c0b6ce5330088c0fda817c",
+  "classification": "INVALID_EXECUTION",
+  "created_at_utc": "2026-08-15T14:18:18.522654+00:00",
+  "evidence_sha256": "9d4758f0c2193a404e4360d32ea5b159f296501408c5c0e78d5a4ab26327aab0",
+  "execution_sha256": "2e4b509e7e102c7043a34ecf1324ea5a35bcf214c2f91d8b06b88c6c2f57675f",
+  "historical_content_reads_during_finalize": 0,
+  "market_loader_calls_during_finalize": 0,
+  "primary_result_sha256": "4062454e2f77197ed1874cd2dacf4ba66ca608afcebaa2fb7f4ff3ce153f423e",
+  "qualification_result_blob": "6409a558c0c800f363699c67fe28b39faf8f3bff",
+  "research_id": "BRRK-BTC-SOL-PATH-EVENT-EARLY-WARNING-RUNTIME-QUALIFIED-0067",
+  "same_id_rerun_allowed": false,
+  "same_id_rescue_allowed": false,
+  "same_id_retune_allowed": false,
+  "schema_version": 1,
+  "scientific_engine_calls_during_finalize": 0,
+  "status": "VALID_OR_INVALID_EXECUTION_COMPLETE_CLOSED_TO_SAME_ID_RERUN"
+}
