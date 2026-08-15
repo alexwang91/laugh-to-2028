@@ -1,0 +1,41 @@
+name: Tooling 0067 merged boundary preflight
+on:
+  push:
+    branches: [tools/0067-merged-boundary-preflight-v1]
+    paths: ['.github/workflows/tooling-0067-merged-boundary-preflight.yml']
+permissions:
+  contents: read
+jobs:
+  preflight:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      PYTHONHASHSEED: '0'
+      PYTHONPATH: .
+      OMP_NUM_THREADS: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      NUMEXPR_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: d5c7938f0e0bb62368c0b6ce5330088c0fda817c
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r execution/plan-b-bot/requirements-dev.txt
+      - name: Verify exact merged boundary and compile
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "d5c7938f0e0bb62368c0b6ce5330088c0fda817c"
+          python -m py_compile research/brrk_btc_sol_path_event_early_warning_runtime_qualified_0067/run_once.py
+      - name: Exact merged-boundary zero-result preflight
+        run: python -m research.brrk_btc_sol_path_event_early_warning_runtime_qualified_0067.run_once preflight --boundary-sha d5c7938f0e0bb62368c0b6ce5330088c0fda817c
+      - name: Reassert zero historical runtime artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+          D=research/brrk_btc_sol_path_event_early_warning_runtime_qualified_0067
+          for f in RUN_ATTEMPT.marker PRIMARY_RESULT.json EVIDENCE.json EXECUTION.json RUN_ONCE.marker; do test ! -e "$D/$f"; done
