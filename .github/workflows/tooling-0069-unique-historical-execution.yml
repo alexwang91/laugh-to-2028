@@ -1,0 +1,139 @@
+name: Tooling 0069 unique historical execution
+on:
+  push:
+    branches: [tools/0069-unique-historical-execution-v1]
+    paths: ['.github/workflows/tooling-0069-unique-historical-execution.yml']
+permissions:
+  contents: write
+concurrency:
+  group: brrk-0069-unique-historical-execution
+  cancel-in-progress: false
+jobs:
+  execute-once:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 350
+    env:
+      BOUNDARY: 1665bda502cff9ac962b176ef0ed817a725f3134
+      RESULT_BRANCH: research/0069-result-v1
+      D: research/brrk_btc_sol_path_event_early_warning_execution_assured_0069
+      PYTHONHASHSEED: '0'
+      PYTHONPATH: .
+      OMP_NUM_THREADS: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      NUMEXPR_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 1665bda502cff9ac962b176ef0ed817a725f3134
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r execution/plan-b-bot/requirements-dev.txt
+      - name: Final zero-result preflight and result-branch exclusion
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$BOUNDARY"
+          if git ls-remote --exit-code --heads origin "refs/heads/$RESULT_BRANCH" >/dev/null 2>&1; then
+            echo "Result branch already exists; unique attempt start forbidden" >&2
+            exit 1
+          fi
+          python -m research.brrk_btc_sol_path_event_early_warning_execution_assured_0069.run_once preflight --boundary-sha "$BOUNDARY"
+          for f in RUN_ATTEMPT.marker PRIMARY_RESULT.json EVIDENCE.json EXECUTION.json RUN_ONCE.marker; do test ! -e "$D/$f"; done
+      - name: Durably persist unique RUN_ATTEMPT before historical read
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          python -m research.brrk_btc_sol_path_event_early_warning_execution_assured_0069.run_once start --boundary-sha "$BOUNDARY" --workflow-run-id "$GITHUB_RUN_ID"
+          test "$(git rev-parse HEAD)" = "$BOUNDARY"
+          git add "$D/RUN_ATTEMPT.marker"
+          tree=$(git write-tree)
+          marker_commit=$(printf '%s\n' '0069: persist unique RUN_ATTEMPT before historical read' | git commit-tree "$tree" -p "$BOUNDARY")
+          git push origin "$marker_commit:refs/heads/$RESULT_BRANCH"
+          git fetch origin "+refs/heads/$RESULT_BRANCH:refs/remotes/origin/$RESULT_BRANCH"
+          test "$(git rev-parse refs/remotes/origin/$RESULT_BRANCH)" = "$marker_commit"
+          git cat-file -e "refs/remotes/origin/$RESULT_BRANCH:$D/RUN_ATTEMPT.marker"
+          test "$(git rev-parse HEAD)" = "$BOUNDARY"
+          echo "MARKER_COMMIT=$marker_commit" >> "$GITHUB_ENV"
+          echo "0069 attempt 1/1 durable marker commit: $marker_commit"
+      - name: Execute frozen 0069 exactly once
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$BOUNDARY"
+          python -m research.brrk_btc_sol_path_event_early_warning_execution_assured_0069.run_once evaluate --boundary-sha "$BOUNDARY"
+          test "$(git rev-parse HEAD)" = "$BOUNDARY"
+          test -f "$D/PRIMARY_RESULT.json"
+          test -f "$D/EVIDENCE.json"
+          test -f "$D/EXECUTION.json"
+      - name: Durably persist immutable result bundle
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$MARKER_COMMIT"
+          git add "$D/RUN_ATTEMPT.marker" "$D/PRIMARY_RESULT.json" "$D/EVIDENCE.json" "$D/EXECUTION.json"
+          tree=$(git write-tree)
+          result_commit=$(printf '%s\n' '0069: persist immutable unique historical result bundle' | git commit-tree "$tree" -p "$MARKER_COMMIT")
+          git push origin "$result_commit:refs/heads/$RESULT_BRANCH"
+          git fetch origin "+refs/heads/$RESULT_BRANCH:refs/remotes/origin/$RESULT_BRANCH"
+          test "$(git rev-parse refs/remotes/origin/$RESULT_BRANCH)" = "$result_commit"
+          for f in RUN_ATTEMPT.marker PRIMARY_RESULT.json EVIDENCE.json EXECUTION.json; do git cat-file -e "refs/remotes/origin/$RESULT_BRANCH:$D/$f"; done
+          test "$(git rev-parse HEAD)" = "$BOUNDARY"
+          echo "RESULT_COMMIT=$result_commit" >> "$GITHUB_ENV"
+      - name: Marker-only finalize with zero historical reread
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$RESULT_COMMIT"
+          test "$(git rev-parse HEAD)" = "$BOUNDARY"
+          python -m research.brrk_btc_sol_path_event_early_warning_execution_assured_0069.run_once finalize --boundary-sha "$BOUNDARY"
+          test -f "$D/RUN_ONCE.marker"
+          test "$(git rev-parse HEAD)" = "$BOUNDARY"
+      - name: Durably persist final RUN_ONCE marker
+        shell: bash
+        run: |
+          set -euo pipefail
+          git add "$D/RUN_ONCE.marker"
+          tree=$(git write-tree)
+          final_commit=$(printf '%s\n' '0069: finalize exactly-once historical execution' | git commit-tree "$tree" -p "$RESULT_COMMIT")
+          git push origin "$final_commit:refs/heads/$RESULT_BRANCH"
+          git fetch origin "+refs/heads/$RESULT_BRANCH:refs/remotes/origin/$RESULT_BRANCH"
+          test "$(git rev-parse refs/remotes/origin/$RESULT_BRANCH)" = "$final_commit"
+          git cat-file -e "refs/remotes/origin/$RESULT_BRANCH:$D/RUN_ONCE.marker"
+          test "$(git rev-parse HEAD)" = "$BOUNDARY"
+          echo "FINAL_COMMIT=$final_commit" >> "$GITHUB_ENV"
+      - name: Verify immutable execution and zero production authority
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=Path('research/brrk_btc_sol_path_event_early_warning_execution_assured_0069')
+          p=json.loads((d/'PRIMARY_RESULT.json').read_text())
+          e=json.loads((d/'EXECUTION.json').read_text())
+          f=json.loads((d/'RUN_ONCE.marker').read_text())
+          assert p['production_authorized'] is False
+          assert p['signature_authorized'] is False
+          assert p['order_submission_authorized'] is False
+          assert e['historical_input_read_counters']=={'market_evidence':1,'equity':1,'weights':1,'dtb3':1}
+          assert e['market_loader_calls']==1
+          assert e['scientific_engine_calls']==1
+          assert e['network_fetches']==0
+          assert e['validation_fit_calls_expected']==e['validation_fit_calls_observed']==31008
+          assert e['economic_fit_calls_expected_manifest_derived']==e['economic_fit_calls_observed']
+          assert e['p08_nnls_expected_manifest_derived']==e['p08_nnls_observed']
+          assert e['terminal_trace_count']==e['manifest_unit_count']
+          assert e['terminal_trace_complete'] is True
+          assert e['inference_barrier_released'] is True
+          assert e['process_worker_count']==4
+          assert f['finalize_historical_content_reads']==0
+          assert f['finalize_market_loader_calls']==0
+          assert f['finalize_scientific_engine_calls']==0
+          print('0069 immutable exactly-once verification PASS', p['classification'])
+          PY
