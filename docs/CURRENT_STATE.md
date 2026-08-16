@@ -125,30 +125,43 @@ Production/signature/order authority remains zero.
 
 Research ID = `BRRK-SOL-LONG-SIDEWAYS-EARLY-WARNING-EPISODE-ROBUSTNESS-0070`.
 
-State = `OWNER-FIRST + DESIGN IN BRANCH / NOT PREREGISTERED / NOT IMPLEMENTED / NOT RUN`.
+State = `DESIGN MERGED / PREREGISTRATION FROZEN IN BRANCH / NOT IMPLEMENTED / NOT RUN`.
 
-Owner-first registry commit = `28be2794f8471e400fe70196460eed744cce694c`.
-
-0070 is a result-informed new-ID robustness study prompted only by the immutable 0069 predictive result. It is intentionally narrower than 0069 and remains DEVELOPMENT-history evidence, not independent OOS.
+Lifecycle anchors:
+- owner-first registry commit `28be2794f8471e400fe70196460eed744cce694c`;
+- DESIGN merge `828e90fa4b48ecb2ddc297d3b798e918601af2e9`;
+- preregistration branch `research/0070-sol-long-sideways-episode-robustness-design-v1`.
 
 Frozen primary signal:
 - `P02_RAW_ELASTIC_NET_LOGIT|SOL|T4_LONG_SIDEWAYS`;
 - warning lead exactly 10 sessions;
-- frozen 0069 PR-AUC lift `0.34195752682783037`, ROC-AUC `0.7913043478260869`;
-- seven final unique onsets.
+- frozen 0069 PR-AUC `0.7974030713822858`, prevalence `0.45544554455445546`, PR-AUC lift `0.34195752682783037`, ROC-AUC `0.7913043478260869`;
+- exactly seven final unique onsets.
 
 Dependent corroborative cluster:
 - `P03_VALIDATION_SCREENED_SIGNAL_LOGIT|SOL|T4_LONG_SIDEWAYS`;
 - `P08_STACKED_PROBABILITY_ENSEMBLE|SOL|T4_LONG_SIDEWAYS`;
-- P03/P08 count as one dependent corroborative cluster, not two independent confirmations.
+- P03/P08 count as one dependent corroborative cluster.
 
-Prospective 0070 robustness rule is frozen in DESIGN before the controlled 0070 evidence read: reconstruct exact frozen predictions, deterministically map positive 10-session warning rows to the earliest qualifying unique onset, build seven leave-one-onset-out folds with no retraining/reselection, and require P02 positive PR-AUC lift and ROC-AUC>0.50 in every fold, median lift-retention >=0.75, at least 6/7 folds retention >=0.50, plus one dependent-cluster member with all positive fold lifts and median retention >=0.50.
+Frozen source identities for the future controlled attempt:
+- 0069 PRIMARY_RESULT blob `df00901c77d8d334d61c7c65a14b8d127e9ca8b6`;
+- 0069 EVIDENCE blob `6266e6a11205e21592766546342ca5bca1dd97f0`;
+- market blob `64ebf5c6deaf3f34dbeac715378f196ff0f4fafe`, payload SHA256 `d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193`;
+- loader blob `059b55961e279dab41ba29b5b017de0922e4f33c`;
+- feature builder blob `cac8e946998c836d10842b9388e1e3ef345a8c0b`;
+- aggregate reproduction absolute tolerance `1e-12`.
 
-No economics/controllers are evaluated. The 0069 controller-unavailable path is outside 0070. Production/signature/order authority remains zero.
+Frozen robustness rule: positive Y10 rows map to the earliest qualifying SOL T4 onset in `(t,t+10]`; seven LOEO folds each remove all positive rows assigned to one onset while retaining all other rows. No retraining/reselection/recalibration/threshold or hyperparameter changes are allowed.
+
+PASS requires P02 positive PR-AUC lift and ROC-AUC>0.50 in every fold, median retention >=0.75, at least 6/7 folds retention >=0.50, plus at least one member of the P03/P08 dependent cluster with all positive fold lifts and median retention >=0.50. Exact identity/full-window reproduction and seven defined onsets/folds are prerequisites.
+
+Frozen qualification regimes: EXACT_PASS; SINGLE_EPISODE_DOMINANT; CLUSTER_FAIL; INSUFFICIENT_EPISODES; UNDEFINED_FOLD; IDENTITY_OR_REPRODUCTION_MISMATCH. Qualification is nonhistorical and must read zero 0069/market payloads.
+
+No economics/controllers are evaluated. Production/signature/order authority remains zero.
 
 ## Exact next step
 
-Run standing CI on the 0070 DESIGN branch and merge only when governance is green. Then freeze a separate numerical/data/analysis PREREGISTRATION pinning exact 0069 result/evidence and market/loader/feature blobs, exact reproduction tolerances, episode assignment/fold semantics, classification gates, synthetic qualification, zero-result preflight and exactly-once attempt rules. No 0070 evidence/history content may be read before the controlled attempt marker.
+Run standing CI on the 0070 PREREGISTRATION diff and merge only when governance is green. Then implement the frozen episode-assignment, metric and classification engine with deterministic synthetic qualification and zero historical/evidence reads. No controlled source payload may be read before the durable attempt marker after merged implementation, qualification, controlled boundary and zero-result preflight.
 
 ## No-drift authority
 
