@@ -8,6 +8,8 @@ Authoritative repository: `alexwang91/laugh-to-2028`.
 
 - BRRK-EXHAUSTION-EVENT-STUDY-0043 — complete diagnostic; historical diagnostic state remains closed and unchanged.
   workflow run                         31381953131 / attempt 1
+  7–14 day exhaustion-ranking signal appears feasible
+  ID 0043 is closed against result-informed pruning, reweighting, threshold rescue
 - 0064 = `PASS_PASSIVE_CASH_ACCRUAL_ROBUSTNESS / CLOSED TO SAME-ID RERUN`; merged closeout `ad8038af45bad2e25e8a7b88b569b1873635d9c2`.
 - 0065 = `FAIL_NO_ROBUST_MULTI_ARCHITECTURE_IMPROVEMENT / CLOSED TO SAME-ID RERUN`; merged closeout `d1607277593a0c5c35bb0163e10e078f3dc85fc8`.
 - 0066 = `INVALID_EXECUTION / CLOSED TO SAME-ID RERUN`; merged immutable timeout closeout `9a45bb5e778e21dfd30d7abc4ff7d9889542b495`.
