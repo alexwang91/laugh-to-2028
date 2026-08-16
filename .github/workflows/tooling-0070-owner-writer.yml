@@ -1,0 +1,97 @@
+name: Tooling 0070 owner-first registry writer
+
+on:
+  push:
+    branches:
+      - tools/0070-owner-writer-v1
+    paths:
+      - '.github/workflows/tooling-0070-owner-writer.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: brrk-0070-owner-first-registry
+  cancel-in-progress: false
+
+jobs:
+  register-owner:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: b80a441a24f91e4dc7b5eaf960f5cea55c443e01
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Append prospective 0070 owner and create owner-first design branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          path = Path('config/research_registry.json')
+          reg = json.loads(path.read_text(encoding='utf-8'))
+          rid = 'BRRK-SOL-LONG-SIDEWAYS-EARLY-WARNING-EPISODE-ROBUSTNESS-0070'
+          assert all(x.get('research_id') != rid for x in reg['records'])
+          reg['records'].append({
+            'research_id': rid,
+            'research_family_id': 'BRRK_PATH_EVENT_EARLY_WARNING',
+            'research_domain': 'RISK_CONTROL',
+            'research_governance_version': 1,
+            'governance_mode': 'PROGRAM_GOVERNED_V1',
+            'objective_type': 'PORTFOLIO_INTEGRATION',
+            'created_at': '2026-08-16',
+            'created_before_result': True,
+            'question': 'Does the closed-0069 SOL T4_LONG_SIDEWAYS 10-session early-warning finding remain robust when the frozen primary predictor is stress-tested episode by episode without any signal, target, horizon, architecture, feature, threshold or hyperparameter reselection?',
+            'hypothesis': 'The frozen 0069 primary P02 SOL T4_LONG_SIDEWAYS 10-session warning retains positive discrimination after removing each unique final event onset in turn, and the dependent P03/P08 corroborative cluster remains directionally supportive.',
+            'hypothesis_origin': 'RESULT_INFORMED_FROM_IMMUTABLY_CLOSED_0069_AS_A_NEW_RESEARCH_ID; DEVELOPMENT_HISTORY_ROBUSTNESS_ONLY; NOT_INDEPENDENT_OOS.',
+            'economic_mechanism': 'NONE_IN_THIS_SECTION: signal robustness only; no controller, portfolio, CAGR, NAV, drawdown or production claim is evaluated.',
+            'primary_target': 'P02_RAW_ELASTIC_NET_LOGIT|SOL|T4_LONG_SIDEWAYS|LEAD_10_EPISODE_ROBUSTNESS',
+            'primary_metric': 'LOCKED_LEAVE_ONE_UNIQUE_ONSET_OUT_PR_AUC_LIFT_RETENTION',
+            'secondary_metrics': ['LOEO_ROC_AUC','LOEO_PR_AUC_LIFT','jackknife_retention_ratio','P03_P08_dependent_cluster_corroboration','exact_0069_metric_reproduction','episode_support_count','artifact_sha256','exactly_once_artifact_read'],
+            'feature_families': ['0062_TIER_A_SIGNAL_UNIVERSE','0062_FAMILY_SCORES'],
+            'horizon': [10],
+            'universe': ['SOL'],
+            'development_dataset_refs': ['0069_PRIMARY_RESULT_BLOB_df00901c77d8d334d61c7c65a14b8d127e9ca8b6','0069_EVIDENCE_BLOB_6266e6a11205e21592766546342ca5bca1dd97f0'],
+            'validation_dataset_refs': [],
+            'sealed_dataset_refs': [],
+            'declared_variant_budget': 3,
+            'actual_variants_evaluated': 0,
+            'parameter_candidate_count': 0,
+            'stopping_rule': 'Owner-first DESIGN -> numerical/data/analysis preregistration -> implementation -> synthetic qualification -> exact zero-result preflight -> at most one durable read attempt of the pinned 0069 result/evidence artifacts -> immutable result -> immutable closeout. After durable attempt creation, no same-ID rerun, rescue, threshold relaxation or alternate robustness definition is allowed.',
+            'success_criteria': 'Primary P02 exactly reproduces its frozen 0069 full-window metrics and support; all leave-one-unique-onset-out folds remain defined with PR_AUC_LIFT>0 and ROC_AUC>0.50; median PR-lift retention versus the frozen 0069 baseline is >=0.75 and at least 6/7 folds retain >=0.50. The P03/P08 pair is treated as one dependent corroborative cluster, not two independent confirmations; at least one cluster member must have all defined LOEO PR lifts >0 and median retention >=0.50. No economic inference is part of PASS.',
+            'failure_criteria': 'FAIL if valid execution completes but the primary P02 episode-robustness gates fail or the corroborative cluster gate fails. INCONCLUSIVE if unique-onset support is below the preregistered requirement or any required fold is mathematically undefined. INVALID_EXECUTION for identity/hash/read-count/row-mapping/fold-construction/persistence drift.',
+            'allowed_followup': 'Before attempt consumption, semantics-preserving implementation and synthetic-test fixes only. After terminal result, any new threshold, model, target, lead, economic controller or independent-OOS test requires a new owner-first research ID.',
+            'forbidden_followup': 'No new atlas search; no BTC or downside target; no lead other than 10; no architecture other than frozen P02 primary and P03/P08 dependent corroborative cluster; no hyperparameter or feature reselection; no threshold tuning after artifact read; no controller/economic evaluation; no claim of independent OOS; no same-ID rerun/rescue after attempt consumption.',
+            'researcher_decisions': ['Treat closed 0069 only as hypothesis-generating DEVELOPMENT evidence.','Freeze SOL T4_LONG_SIDEWAYS and lead 10 before any 0070 evidence read.','Freeze P02 as the sole primary architecture; treat P03/P08 as one dependent corroborative cluster.','Use leave-one-unique-onset-out jackknife robustness to address the seven-event concentration risk identified in 0069.','Do not evaluate economics/controllers in this section.'],
+            'research_process_complexity': {'declared_parameter_candidates':0,'actual_parameter_candidates_evaluated':0,'universes_evaluated':1,'horizons_evaluated':1,'rebalance_variants':0,'feature_representations':3,'special_cases_introduced':1,'validation_exposure_event_refs':1,'related_family_trials':1},
+            'lineage_edges': [],
+            'result_status': 'PREREGISTERED_NOT_RUN',
+            'failure_reason': None,
+            'promotion_state': 'NONE',
+            'evidence_refs': [],
+            'decision_refs': [],
+            'production_relevance': 'Development-history signal-robustness research only; no production, signature or order authority.',
+            'production_authorized': False,
+            'provenance_status': 'PROSPECTIVE_FROZEN',
+            'governed_path_prefixes': ['research/brrk_sol_long_sideways_early_warning_episode_robustness_0070'],
+            'notes': ['Owner-first registration precedes introduction of the formal 0070 path.','0070 is intentionally narrow and result-informed only from immutably closed 0069.','Evidence remains researcher-exposed DEVELOPMENT history, not independent OOS.','production_authorized=false; signature_authorized=false; order_submission_authorized=false.']
+          })
+          path.write_text(json.dumps(reg, indent=2, ensure_ascii=False) + '\n', encoding='utf-8')
+          PY
+          python -m research.governance.validate
+          python -m research.governance.enforce_future --base b80a441a24f91e4dc7b5eaf960f5cea55c443e01 --changed-path config/research_registry.json
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add config/research_registry.json
+          git commit -m 'research: register 0070 prospective owner'
+          OWNER_SHA="$(git rev-parse HEAD)"
+          git push --force origin "$OWNER_SHA:refs/heads/research/0070-sol-long-sideways-episode-robustness-design-v1"
+          REMOTE_SHA="$(git ls-remote origin refs/heads/research/0070-sol-long-sideways-episode-robustness-design-v1 | cut -f1)"
+          test "$REMOTE_SHA" = "$OWNER_SHA"
+          echo "OWNER_SHA=$OWNER_SHA"
