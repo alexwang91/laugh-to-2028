@@ -14,6 +14,13 @@ Authoritative repository: `alexwang91/laugh-to-2028`.
 - Canonical BRRK-0011 = NO CHANGE.
 - Phase 6 = NO CHANGE.
 
+## Required closed-research anchors
+
+BRRK-EXHAUSTION-EVENT-STUDY-0043 — complete diagnostic
+workflow run                         31381953131 / attempt 1
+7–14 day exhaustion-ranking signal appears feasible
+ID 0043 is closed against result-informed pruning, reweighting, threshold rescue
+
 ## 0067 scientific program frozen for successor use
 
 0067 research ID = `BRRK-BTC-SOL-PATH-EVENT-EARLY-WARNING-RUNTIME-QUALIFIED-0067`.
@@ -87,4 +94,15 @@ Historical authority remains absent. No 0069 historical payload has been read. N
 
 Merge 0069 PREREGISTRATION only after standing CI is green. Then create a separate IMPLEMENTATION/CONTROLLED-BOUNDARY lifecycle stage pinned to the merged preregistration, immutable 0067 science and immutable 0068 graph contract. Run bounded tests plus all five nonhistorical eligibility regimes and an exact-boundary zero-result preflight. Only after those pass may the unique 0069 historical attempt 1/1 be durably marked before any historical read.
 
-No-drift authority remains unchanged: `production_authorized=false`; `signature_authorized=false`; `order_submission_authorized=false`; production authorized components remain empty.
+## No-drift authority
+
+production gross cap = 1.0
+production_authorized_components = []
+production_authorized = false
+signature_authorized = false
+order_submission_authorized = false
+Canonical BRRK-0011 = NO CHANGE.
+0064 = NO CHANGE.
+0065 = NO CHANGE.
+0066 = NO CHANGE.
+Phase 6 = NO CHANGE.
