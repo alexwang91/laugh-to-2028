@@ -11,6 +11,17 @@
   ],
   "corroborative_independence_count": 1,
   "warning_horizon_sessions": 10,
+  "source_identities": {
+    "0069_PRIMARY_RESULT_blob": "df00901c77d8d334d61c7c65a14b8d127e9ca8b6",
+    "0069_EVIDENCE_blob": "6266e6a11205e21592766546342ca5bca1dd97f0",
+    "market_dataset_slice_id": "BRRK-LEADERSHIP-ROTATION-0048-EXPOSED-HIST-V1",
+    "market_blob": "64ebf5c6deaf3f34dbeac715378f196ff0f4fafe",
+    "market_payload_sha256": "d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193",
+    "market_history_end": "2026-08-02T00:00:00Z",
+    "market_loader_blob": "059b55961e279dab41ba29b5b017de0922e4f33c",
+    "feature_builder_blob": "cac8e946998c836d10842b9388e1e3ef345a8c0b",
+    "equity_weights_DTB3_controller_inputs_allowed": false
+  },
   "frozen_0069_reference": {
     "P02_PR_AUC": 0.7974030713822858,
     "P02_prevalence": 0.45544554455445546,
@@ -66,6 +77,21 @@
     "MEASUREMENT_INCONCLUSIVE_INSUFFICIENT_EPISODE_SUPPORT": "identity/reproduction is valid but unique-onset support is not exactly 7 or any required LOEO fold/metric is mathematically undefined",
     "INVALID_EXECUTION": "source identity/hash/read-count, aggregate reproduction, deterministic assignment, fold-construction, persistence or exactly-once boundary drift"
   },
+  "qualification_regimes": {
+    "EXACT_PASS": "must classify PASS_LOCKED_EPISODE_ROBUSTNESS_REPLICATION",
+    "SINGLE_EPISODE_DOMINANT": "must classify FAIL_LOCKED_EPISODE_ROBUSTNESS_REPLICATION",
+    "CLUSTER_FAIL": "must classify FAIL_LOCKED_EPISODE_ROBUSTNESS_REPLICATION",
+    "INSUFFICIENT_EPISODES": "must classify MEASUREMENT_INCONCLUSIVE_INSUFFICIENT_EPISODE_SUPPORT",
+    "UNDEFINED_FOLD": "must classify MEASUREMENT_INCONCLUSIVE_INSUFFICIENT_EPISODE_SUPPORT",
+    "IDENTITY_OR_REPRODUCTION_MISMATCH": "must classify INVALID_EXECUTION"
+  },
+  "qualification_historical_reads": 0,
+  "result_schema_required_fields": [
+    "research_id", "classification", "execution_valid", "evidence_tier", "full_window_reproduction",
+    "unique_onsets", "P02_folds", "P02_median_retention", "P02_retention_gte_0_50_count",
+    "corroborative_cluster", "source_read_counts", "network_fetches",
+    "production_authorized", "signature_authorized", "order_submission_authorized"
+  ],
   "forbidden": [
     "new atlas search",
     "BTC target",
@@ -84,6 +110,11 @@
   ],
   "attempt_budget": 1,
   "durable_marker_precedes_any_permitted_source_content_read": true,
+  "permitted_source_reads": {
+    "0069_PRIMARY_RESULT": 1,
+    "0069_EVIDENCE": 1,
+    "MARKET_EVIDENCE": 1
+  },
   "network_fetch_allowed": false,
   "production_authorized": false,
   "signature_authorized": false,
