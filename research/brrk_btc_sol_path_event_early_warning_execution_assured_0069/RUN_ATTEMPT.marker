@@ -1,0 +1,16 @@
+{
+  "attempt_number": 1,
+  "boundary_merge_sha": "1665bda502cff9ac962b176ef0ed817a725f3134",
+  "created_at_utc": "2026-08-16T13:12:26.335020+00:00",
+  "declared_process_worker_count": 4,
+  "economic_estimator_fit_calls": "manifest-derived",
+  "p08_nnls_solves": "manifest-derived",
+  "qualification_result_blob": "6a652faf66db4ef96edae4e3857e285816ca61da",
+  "research_id": "BRRK-BTC-SOL-PATH-EVENT-EARLY-WARNING-EXECUTION-ASSURED-0069",
+  "same_id_rerun_allowed": false,
+  "same_id_rescue_allowed": false,
+  "same_id_retune_allowed": false,
+  "schema_version": 1,
+  "validation_estimator_fit_calls_structural": 31008,
+  "workflow_run_id": "31949133425"
+}
