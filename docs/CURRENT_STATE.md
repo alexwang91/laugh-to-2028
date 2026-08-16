@@ -121,9 +121,34 @@ The realized 5,808 economic fits and 20 NNLS are valid under the preregistered 0
 
 Production/signature/order authority remains zero.
 
+## 0070 locked SOL long-sideways episode robustness
+
+Research ID = `BRRK-SOL-LONG-SIDEWAYS-EARLY-WARNING-EPISODE-ROBUSTNESS-0070`.
+
+State = `OWNER-FIRST + DESIGN IN BRANCH / NOT PREREGISTERED / NOT IMPLEMENTED / NOT RUN`.
+
+Owner-first registry commit = `28be2794f8471e400fe70196460eed744cce694c`.
+
+0070 is a result-informed new-ID robustness study prompted only by the immutable 0069 predictive result. It is intentionally narrower than 0069 and remains DEVELOPMENT-history evidence, not independent OOS.
+
+Frozen primary signal:
+- `P02_RAW_ELASTIC_NET_LOGIT|SOL|T4_LONG_SIDEWAYS`;
+- warning lead exactly 10 sessions;
+- frozen 0069 PR-AUC lift `0.34195752682783037`, ROC-AUC `0.7913043478260869`;
+- seven final unique onsets.
+
+Dependent corroborative cluster:
+- `P03_VALIDATION_SCREENED_SIGNAL_LOGIT|SOL|T4_LONG_SIDEWAYS`;
+- `P08_STACKED_PROBABILITY_ENSEMBLE|SOL|T4_LONG_SIDEWAYS`;
+- P03/P08 count as one dependent corroborative cluster, not two independent confirmations.
+
+Prospective 0070 robustness rule is frozen in DESIGN before the controlled 0070 evidence read: reconstruct exact frozen predictions, deterministically map positive 10-session warning rows to the earliest qualifying unique onset, build seven leave-one-onset-out folds with no retraining/reselection, and require P02 positive PR-AUC lift and ROC-AUC>0.50 in every fold, median lift-retention >=0.75, at least 6/7 folds retention >=0.50, plus one dependent-cluster member with all positive fold lifts and median retention >=0.50.
+
+No economics/controllers are evaluated. The 0069 controller-unavailable path is outside 0070. Production/signature/order authority remains zero.
+
 ## Exact next step
 
-No same-ID execution action remains legal for 0069. Preserve the immutable result bundle and closeout without rerun, retune, rescue, recomputation, or scientific reinterpretation. Any future investigation of the three SOL long-sideways predictive winners or the unavailable controller path must use a new owner-first research ID with new prospective preregistration and authority.
+Run standing CI on the 0070 DESIGN branch and merge only when governance is green. Then freeze a separate numerical/data/analysis PREREGISTRATION pinning exact 0069 result/evidence and market/loader/feature blobs, exact reproduction tolerances, episode assignment/fold semantics, classification gates, synthetic qualification, zero-result preflight and exactly-once attempt rules. No 0070 evidence/history content may be read before the controlled attempt marker.
 
 ## No-drift authority
 
@@ -138,4 +163,5 @@ Canonical BRRK-0011 = NO CHANGE.
 0066 = NO CHANGE.
 0067 = NO CHANGE.
 0068 = NO CHANGE.
+0069 = NO CHANGE.
 Phase 6 = NO CHANGE.
