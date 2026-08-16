@@ -83,16 +83,19 @@ Frozen execution assurance:
 0069 research ID = `BRRK-BTC-SOL-PATH-EVENT-EARLY-WARNING-EXECUTION-ASSURED-0069`.
 Owner-first registry commit = `dfd3f0a95e7245a4103637aaca1745bf3b2c8e03`.
 Merged DESIGN = `51d734bc510aed4ff5ba7c5eb9fbac686ddc2e13`.
-Current branch = `research/0069-prereg-v1`.
-State = `NUMERICAL/DATA/EXECUTION PREREGISTRATION FROZEN IN BRANCH / NOT IMPLEMENTED / NOT QUALIFIED / NOT RUN`.
+Merged PREREGISTRATION = `f9d1d95ec87ac9e86e2ed25a1340be3c725737f8`.
+Current branch = `research/0069-implementation-v1`.
+State = `IMPLEMENTATION BUILT IN BRANCH / NOT QUALIFIED / CONTROLLED BOUNDARY NOT BUILT / NOT RUN`.
 
-0069 carries forward 0067 science byte-level by pinned preregistration blob and carries forward 0068 execution assurance by pinned canonical graph-builder blob. New preregistration freezes the same historical identities, one-attempt exactly-once contract, manifest-derived physical accounting, result schema and five-regime nonhistorical qualification gate.
+0069 carries forward 0067 science byte-level by pinned preregistration blob and carries forward 0068 execution assurance by pinned canonical graph-builder blob. The implementation reuses the immutable 0067 optimized validation/economic mechanics, derives the canonical downstream manifest from realized selected P01-P08 eligibility, and enforces validation/economic/NNLS physical equality plus complete terminal traces before predictive or economic inference.
+
+Bounded implementation tests cover FULL_SUPPORT geometry, partial-support contraction, exact accounting/barrier release and fail-closed mismatch handling. Full-shape nonhistorical qualification has not yet run on the exact implementation SHA.
 
 Historical authority remains absent. No 0069 historical payload has been read. No `RUN_ATTEMPT.marker`, `PRIMARY_RESULT.json`, `EVIDENCE.json`, `EXECUTION.json` or `RUN_ONCE.marker` exists for 0069.
 
 ## Exact next step
 
-Merge 0069 PREREGISTRATION only after standing CI is green. Then create a separate IMPLEMENTATION/CONTROLLED-BOUNDARY lifecycle stage pinned to the merged preregistration, immutable 0067 science and immutable 0068 graph contract. Run bounded tests plus all five nonhistorical eligibility regimes and an exact-boundary zero-result preflight. Only after those pass may the unique 0069 historical attempt 1/1 be durably marked before any historical read.
+Run standing CI and bounded tests on the implementation PR. Then run a separate non-merged qualification workflow pinned to the exact implementation SHA: all five 0068 eligibility regimes plus full-shape synthetic execution using 0069 engine, with zero historical/network reads and manifest-derived physical equality. Only after qualification PASS may a separate CONTROLLED-EXECUTION BOUNDARY be created and exact-boundary zero-result preflight run. Historical attempt 1/1 remains forbidden until then.
 
 ## No-drift authority
 
