@@ -84,18 +84,27 @@ Frozen execution assurance:
 Owner-first registry commit = `dfd3f0a95e7245a4103637aaca1745bf3b2c8e03`.
 Merged DESIGN = `51d734bc510aed4ff5ba7c5eb9fbac686ddc2e13`.
 Merged PREREGISTRATION = `f9d1d95ec87ac9e86e2ed25a1340be3c725737f8`.
-Current branch = `research/0069-implementation-v1`.
-State = `IMPLEMENTATION BUILT IN BRANCH / NOT QUALIFIED / CONTROLLED BOUNDARY NOT BUILT / NOT RUN`.
+Merged IMPLEMENTATION = `bd3952a47af80ee49dd2d99e501f23631be3ba67`; exact qualified implementation head = `c11101d8c454d71e918bed163fbd188934910670`.
+Current branch = `research/0069-qualification-v1`.
+State = `FULL-SHAPE QUALIFICATION PASS / CONTROLLED BOUNDARY NOT BUILT / NOT RUN`.
 
-0069 carries forward 0067 science byte-level by pinned preregistration blob and carries forward 0068 execution assurance by pinned canonical graph-builder blob. The implementation reuses the immutable 0067 optimized validation/economic mechanics, derives the canonical downstream manifest from realized selected P01-P08 eligibility, and enforces validation/economic/NNLS physical equality plus complete terminal traces before predictive or economic inference.
-
-Bounded implementation tests cover FULL_SUPPORT geometry, partial-support contraction, exact accounting/barrier release and fail-closed mismatch handling. Full-shape nonhistorical qualification has not yet run on the exact implementation SHA.
+0069 full-shape nonhistorical qualification workflow `31925562942`, job `95127222823` = PASS on exact implementation `c11101d8c454d71e918bed163fbd188934910670`.
+- validation configs 1,632/1,632; validation fits 31,008/31,008;
+- manifest-derived economic fits 11,904 expected / 11,904 observed;
+- manifest-derived P08 NNLS 40 expected / 40 observed;
+- manifest units 11,944 and terminal traces 11,944, complete exactly once;
+- inference barrier released only after exact accounting match;
+- final predictor tracks 64; controllers 8; predictive bootstrap 4,000; economic bootstrap 4,000; PBO splits 70;
+- all five 0068 regimes reproduced with byte-identical qualification/control manifests and complete terminal traces;
+- historical market/equity/weights/DTB3 reads = 0/0/0/0; market loader calls = 0; network fetches = 0;
+- four process workers; total wall clock 7,890.425 s; peak process-tree RSS 2,568,081,408 bytes = 15.32% MemTotal; no swap/OOM;
+- qualification-only synthetic scientific classification `FAIL_NO_ROBUST_EVENT_CONTROLLER` is explicitly ignored and has no historical evidentiary authority.
 
 Historical authority remains absent. No 0069 historical payload has been read. No `RUN_ATTEMPT.marker`, `PRIMARY_RESULT.json`, `EVIDENCE.json`, `EXECUTION.json` or `RUN_ONCE.marker` exists for 0069.
 
 ## Exact next step
 
-Run standing CI and bounded tests on the implementation PR. Then run a separate non-merged qualification workflow pinned to the exact implementation SHA: all five 0068 eligibility regimes plus full-shape synthetic execution using 0069 engine, with zero historical/network reads and manifest-derived physical equality. Only after qualification PASS may a separate CONTROLLED-EXECUTION BOUNDARY be created and exact-boundary zero-result preflight run. Historical attempt 1/1 remains forbidden until then.
+Merge immutable 0069 qualification evidence after standing CI is green. Then create a separate CONTROLLED-EXECUTION BOUNDARY pinned to the merged implementation, qualification evidence, frozen 0067 science and 0068 graph-builder contract. Run exact-boundary zero-result preflight with zero historical content reads. Only after boundary merge and preflight PASS may durable historical attempt 1/1 be created before any historical read.
 
 ## No-drift authority
 
