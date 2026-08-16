@@ -1,0 +1,125 @@
+name: Tooling 0069 exact implementation qualification
+
+on:
+  push:
+    branches:
+      - tools/0069-qualification-v1
+    paths:
+      - '.github/workflows/tooling-0069-qualification.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: brrk-0069-exact-qualification
+  cancel-in-progress: false
+
+jobs:
+  qualify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 210
+    env:
+      PYTHONHASHSEED: '0'
+      OMP_NUM_THREADS: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      NUMEXPR_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 9019d8fc05912170d43b75b7d81a9c391b42ddd5
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: execution/plan-b-bot/requirements-dev.txt
+      - name: Install pinned qualification runtime
+        run: python -m pip install -r execution/plan-b-bot/requirements-dev.txt
+      - name: Verify exact implementation identity and zero-result isolation
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "9019d8fc05912170d43b75b7d81a9c391b42ddd5"
+          test ! -e research/brrk_btc_sol_path_event_early_warning_execution_assured_0069/RUN_ATTEMPT.marker
+          test ! -e research/brrk_btc_sol_path_event_early_warning_execution_assured_0069/PRIMARY_RESULT.json
+          test ! -e research/brrk_btc_sol_path_event_early_warning_execution_assured_0069/EVIDENCE.json
+          test ! -e research/brrk_btc_sol_path_event_early_warning_execution_assured_0069/EXECUTION.json
+          test ! -e research/brrk_btc_sol_path_event_early_warning_execution_assured_0069/RUN_ONCE.marker
+      - name: Run 0069 bounded execution-assurance tests
+        run: python -m unittest research.brrk_btc_sol_path_event_early_warning_execution_assured_0069.test_execution_assurance -v
+      - name: Re-run immutable 0068 five-regime graph qualification
+        run: python -m research.brrk_btc_sol_path_event_execution_equivalence_0068.qualification > /tmp/0068-regimes.json
+      - name: Run full-shape nonhistorical 0069 execution
+        run: |
+          python - <<'PY'
+          import json, time
+          import numpy as np
+          import pandas as pd
+          from pathlib import Path
+          from research.brrk_btc_sol_path_event_early_warning_runtime_qualified_0067 import qualification as q67
+          from research.brrk_btc_sol_path_event_early_warning_execution_assured_0069 import engine as e69
+
+          frames = q67._synthetic_frames(seed=670067)
+          idx = pd.date_range('2022-12-10', '2026-08-02', freq='D')
+          x = np.arange(len(idx), dtype=float)
+          baseline_returns = pd.Series(0.00035 + 0.004*np.sin(x/17.0) + 0.002*np.cos(x/31.0), index=idx)
+          baseline_gross = pd.Series(0.72 + 0.08*np.sin(x/43.0), index=idx).clip(0.55,0.9)
+          rf_daily = pd.Series(0.00012 + 0.00001*np.cos(x/29.0), index=idx)
+          t0=time.perf_counter()
+          with q67.isolation_guard() as counters:
+              result=e69.evaluate_program(frames, baseline_returns, baseline_gross, rf_daily, bootstrap_replicates=4000)
+          wall=time.perf_counter()-t0
+          assurance=result['evidence']['0069_execution_assurance']
+          primary=result['primary_result']
+          out={
+            'research_id': e69.RID,
+            'qualification_verdict':'PASS',
+            'implementation_commit_sha':'9019d8fc05912170d43b75b7d81a9c391b42ddd5',
+            'historical_content_read_counters':counters,
+            'network_fetch_count':int(counters['network_fetches']),
+            'total_wall_clock_seconds':wall,
+            'indicator_atlas_hypothesis_cells':primary['indicator_atlas_hypothesis_cells'],
+            'validation_tuning_configs':primary['actual_validation_tuning_configs_evaluated'],
+            'final_predictor_tracks':primary['final_predictor_track_count'],
+            'controllers':primary['final_controller_count'],
+            'execution_assurance':assurance,
+            'synthetic_classification':primary['classification'],
+            'production_authorized':False,
+            'signature_authorized':False,
+            'order_submission_authorized':False,
+          }
+          assert all(int(v)==0 for v in counters.values()), counters
+          assert primary['indicator_atlas_hypothesis_cells']==8080
+          assert primary['actual_validation_tuning_configs_evaluated']==1632
+          assert primary['final_predictor_track_count']==64
+          assert primary['final_controller_count']==8
+          assert assurance['validation_fit_calls_observed']==31008
+          assert assurance['validation_fit_calls_expected']==31008
+          assert assurance['economic_fit_calls_observed']==assurance['economic_fit_calls_expected_manifest_derived']
+          assert assurance['p08_nnls_observed']==assurance['p08_nnls_expected_manifest_derived']
+          assert assurance['terminal_trace_complete'] is True
+          assert assurance['terminal_trace_count']==assurance['manifest_unit_count']
+          assert assurance['inference_barrier_released'] is True
+          assert wall <= 10800
+          Path('/tmp/0069-full-qualification.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+      - name: Verify five-regime and full-shape outputs
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r68=json.loads(Path('/tmp/0068-regimes.json').read_text())
+          assert r68['qualification_verdict']=='PASS'
+          assert r68['validation_fit_calls']==31008
+          assert len(r68['regimes'])==5
+          assert all(x['manifest_byte_identical'] for x in r68['regimes'])
+          assert all(x['terminal_trace_complete'] for x in r68['regimes'])
+          r69=json.loads(Path('/tmp/0069-full-qualification.json').read_text())
+          assert r69['qualification_verdict']=='PASS'
+          assert r69['implementation_commit_sha']=='9019d8fc05912170d43b75b7d81a9c391b42ddd5'
+          assert r69['network_fetch_count']==0
+          assert all(int(v)==0 for v in r69['historical_content_read_counters'].values())
+          print(json.dumps({'five_regimes':r68['regimes'],'full_shape':r69},indent=2,sort_keys=True))
+          PY
