@@ -1,0 +1,18 @@
+{
+  "attempt_number": 1,
+  "attempt_sha256": "2ce61a95344c443f4eac63ba034bcd2ec39275e9da6c787039532cc9ae8c0e29",
+  "boundary_merge_sha": "1665bda502cff9ac962b176ef0ed817a725f3134",
+  "classification": "PASS_EVENT_EARLY_WARNING_ONLY",
+  "created_at_utc": "2026-08-16T15:59:32.925368+00:00",
+  "evidence_sha256": "cd8b971bbb9f21fb5376a5a172227ad485040a8c7cb26775b1e5e1e80df716bf",
+  "execution_sha256": "8badc0f29715aacf5474e87c2f2640eb25a6ef293b7da58fdf95281710bfcabb",
+  "finalize_historical_content_reads": 0,
+  "finalize_market_loader_calls": 0,
+  "finalize_scientific_engine_calls": 0,
+  "primary_result_sha256": "25ac6b3a5d9835e038039d96d87bfe20500158fc019d756b3fe22c0f5c4d5bff",
+  "research_id": "BRRK-BTC-SOL-PATH-EVENT-EARLY-WARNING-EXECUTION-ASSURED-0069",
+  "same_id_rerun_allowed": false,
+  "same_id_rescue_allowed": false,
+  "same_id_retune_allowed": false,
+  "schema_version": 1
+}
