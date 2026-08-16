@@ -15,6 +15,7 @@ Authoritative repository: `alexwang91/laugh-to-2028`.
 - 0066 = `INVALID_EXECUTION / CLOSED TO SAME-ID RERUN`; merged immutable timeout closeout `9a45bb5e778e21dfd30d7abc4ff7d9889542b495`.
 - 0067 = `INVALID_EXECUTION / CLOSED TO SAME-ID RERUN`; attempt 1/1 consumed. Its physical mismatch was validation 31,008/31,008, economic 5,808/11,904 and P08 NNLS 20/40. No 0067 scientific result is admissible.
 - 0068 = `PASS_EXECUTION_EQUIVALENCE / CLOSED`; immutable closeout `585308444719914028ac4410fba86948a5505a13`.
+- 0069 = `PASS_EVENT_EARLY_WARNING_ONLY / CLOSED TO SAME-ID RERUN`; attempt 1/1 consumed; merged immutable historical result bundle `911b68225310ec7621e9937ff698e7dff84f9ae8`.
 - Canonical BRRK-0011 = NO CHANGE.
 - Phase 6 = NO CHANGE.
 
@@ -62,7 +63,9 @@ Lifecycle anchors:
 - CONTROLLED-EXECUTION BOUNDARY merge `1665bda502cff9ac962b176ef0ed817a725f3134`;
 - exact merged-boundary zero-result preflight workflow `31949044088` = PASS;
 - unique historical workflow `31949133425`, job `95169748781` = PASS;
-- result branch `research/0069-result-v1`, finalized head `105cdc5d78125251085ed6118a9bf5d4980af548`.
+- result branch `research/0069-result-v1`, finalized head `105cdc5d78125251085ed6118a9bf5d4980af548`;
+- immutable historical result bundle merge `911b68225310ec7621e9937ff698e7dff84f9ae8`;
+- immutable closeout file `research/brrk_btc_sol_path_event_early_warning_execution_assured_0069/CLOSEOUT.md`.
 
 Full-shape nonhistorical qualification workflow `31925562942`, job `95127222823` = PASS:
 - validation configs 1,632/1,632;
@@ -78,9 +81,9 @@ Full-shape nonhistorical qualification workflow `31925562942`, job `95127222823`
 
 The qualification-only synthetic classification `FAIL_NO_ROBUST_EVENT_CONTROLLER` is ignored by contract and has no historical evidentiary authority.
 
-## 0069 unique historical result
+## 0069 immutable terminal result
 
-State = `HISTORICAL RESULT PERSISTED / RESULT PR OPEN / CLOSEOUT NOT YET MERGED`.
+State = `PASS_EVENT_EARLY_WARNING_ONLY / CLOSED TO SAME-ID RERUN`.
 
 The prospectively authorized unique attempt 1/1 completed exactly once. `RUN_ATTEMPT.marker` was durably persisted before any historical read. Final artifacts are `RUN_ATTEMPT.marker`, `PRIMARY_RESULT.json`, `EVIDENCE.json`, `EXECUTION.json`, and `RUN_ONCE.marker`.
 
@@ -112,7 +115,7 @@ Execution assurance:
 - historical input reads market/equity/weights/DTB3 = 1/1/1/1;
 - market loader calls = 1; scientific engine calls = 1; network fetches = 0;
 - process workers = 4;
-- same-ID rerun, retune and rescue are forbidden.
+- same-ID rerun, retune, rescue and recomputation are forbidden.
 
 The realized 5,808 economic fits and 20 NNLS are valid under the preregistered 0068/0069 manifest-derived accounting contract. They are not compared against FULL_SUPPORT constants for execution validity.
 
@@ -120,7 +123,7 @@ Production/signature/order authority remains zero.
 
 ## Exact next step
 
-Pass standing CI and merge result PR #277 without modifying scientific content. Then create a separate immutable 0069 CLOSEOUT that records `PASS_EVENT_EARLY_WARNING_ONLY / CLOSED TO SAME-ID RERUN`, attempt 1/1 consumed, the three predictive winners, zero controller winners/component-unavailable economic path, exact execution-valid accounting and zero production authority. Do not rerun, retune, rescue or recompute 0069.
+No same-ID execution action remains legal for 0069. Preserve the immutable result bundle and closeout without rerun, retune, rescue, recomputation, or scientific reinterpretation. Any future investigation of the three SOL long-sideways predictive winners or the unavailable controller path must use a new owner-first research ID with new prospective preregistration and authority.
 
 ## No-drift authority
 
@@ -133,4 +136,6 @@ Canonical BRRK-0011 = NO CHANGE.
 0064 = NO CHANGE.
 0065 = NO CHANGE.
 0066 = NO CHANGE.
+0067 = NO CHANGE.
+0068 = NO CHANGE.
 Phase 6 = NO CHANGE.
