@@ -24,10 +24,11 @@ jobs:
       OPENBLAS_NUM_THREADS: '1'
       MKL_NUM_THREADS: '1'
       NUMEXPR_NUM_THREADS: '1'
+      QUALIFIED_IMPLEMENTATION_SHA: 'c11101d8c454d71e918bed163fbd188934910670'
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: 9019d8fc05912170d43b75b7d81a9c391b42ddd5
+          ref: c11101d8c454d71e918bed163fbd188934910670
           fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
@@ -40,7 +41,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD)" = "9019d8fc05912170d43b75b7d81a9c391b42ddd5"
+          test "$(git rev-parse HEAD)" = "c11101d8c454d71e918bed163fbd188934910670"
           test ! -e research/brrk_btc_sol_path_event_early_warning_execution_assured_0069/RUN_ATTEMPT.marker
           test ! -e research/brrk_btc_sol_path_event_early_warning_execution_assured_0069/PRIMARY_RESULT.json
           test ! -e research/brrk_btc_sol_path_event_early_warning_execution_assured_0069/EVIDENCE.json
@@ -48,78 +49,58 @@ jobs:
           test ! -e research/brrk_btc_sol_path_event_early_warning_execution_assured_0069/RUN_ONCE.marker
       - name: Run 0069 bounded execution-assurance tests
         run: python -m unittest research.brrk_btc_sol_path_event_early_warning_execution_assured_0069.test_execution_assurance -v
-      - name: Re-run immutable 0068 five-regime graph qualification
-        run: python -m research.brrk_btc_sol_path_event_execution_equivalence_0068.qualification > /tmp/0068-regimes.json
-      - name: Run full-shape nonhistorical 0069 execution
-        run: |
-          python - <<'PY'
-          import json, time
-          import numpy as np
-          import pandas as pd
-          from pathlib import Path
-          from research.brrk_btc_sol_path_event_early_warning_runtime_qualified_0067 import qualification as q67
-          from research.brrk_btc_sol_path_event_early_warning_execution_assured_0069 import engine as e69
-
-          frames = q67._synthetic_frames(seed=670067)
-          idx = pd.date_range('2022-12-10', '2026-08-02', freq='D')
-          x = np.arange(len(idx), dtype=float)
-          baseline_returns = pd.Series(0.00035 + 0.004*np.sin(x/17.0) + 0.002*np.cos(x/31.0), index=idx)
-          baseline_gross = pd.Series(0.72 + 0.08*np.sin(x/43.0), index=idx).clip(0.55,0.9)
-          rf_daily = pd.Series(0.00012 + 0.00001*np.cos(x/29.0), index=idx)
-          t0=time.perf_counter()
-          with q67.isolation_guard() as counters:
-              result=e69.evaluate_program(frames, baseline_returns, baseline_gross, rf_daily, bootstrap_replicates=4000)
-          wall=time.perf_counter()-t0
-          assurance=result['evidence']['0069_execution_assurance']
-          primary=result['primary_result']
-          out={
-            'research_id': e69.RID,
-            'qualification_verdict':'PASS',
-            'implementation_commit_sha':'9019d8fc05912170d43b75b7d81a9c391b42ddd5',
-            'historical_content_read_counters':counters,
-            'network_fetch_count':int(counters['network_fetches']),
-            'total_wall_clock_seconds':wall,
-            'indicator_atlas_hypothesis_cells':primary['indicator_atlas_hypothesis_cells'],
-            'validation_tuning_configs':primary['actual_validation_tuning_configs_evaluated'],
-            'final_predictor_tracks':primary['final_predictor_track_count'],
-            'controllers':primary['final_controller_count'],
-            'execution_assurance':assurance,
-            'synthetic_classification':primary['classification'],
-            'production_authorized':False,
-            'signature_authorized':False,
-            'order_submission_authorized':False,
-          }
-          assert all(int(v)==0 for v in counters.values()), counters
-          assert primary['indicator_atlas_hypothesis_cells']==8080
-          assert primary['actual_validation_tuning_configs_evaluated']==1632
-          assert primary['final_predictor_track_count']==64
-          assert primary['final_controller_count']==8
-          assert assurance['validation_fit_calls_observed']==31008
-          assert assurance['validation_fit_calls_expected']==31008
-          assert assurance['economic_fit_calls_observed']==assurance['economic_fit_calls_expected_manifest_derived']
-          assert assurance['p08_nnls_observed']==assurance['p08_nnls_expected_manifest_derived']
-          assert assurance['terminal_trace_complete'] is True
-          assert assurance['terminal_trace_count']==assurance['manifest_unit_count']
-          assert assurance['inference_barrier_released'] is True
-          assert wall <= 10800
-          Path('/tmp/0069-full-qualification.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
-          print(json.dumps(out,indent=2,sort_keys=True))
-          PY
-      - name: Verify five-regime and full-shape outputs
+      - name: Run exact full-shape nonhistorical qualification
+        run: python -m research.brrk_btc_sol_path_event_early_warning_execution_assured_0069.qualification --output /tmp/0069-full-qualification.json
+      - name: Verify frozen qualification outputs
         run: |
           python - <<'PY'
           import json
           from pathlib import Path
-          r68=json.loads(Path('/tmp/0068-regimes.json').read_text())
-          assert r68['qualification_verdict']=='PASS'
-          assert r68['validation_fit_calls']==31008
-          assert len(r68['regimes'])==5
-          assert all(x['manifest_byte_identical'] for x in r68['regimes'])
-          assert all(x['terminal_trace_complete'] for x in r68['regimes'])
-          r69=json.loads(Path('/tmp/0069-full-qualification.json').read_text())
-          assert r69['qualification_verdict']=='PASS'
-          assert r69['implementation_commit_sha']=='9019d8fc05912170d43b75b7d81a9c391b42ddd5'
-          assert r69['network_fetch_count']==0
-          assert all(int(v)==0 for v in r69['historical_content_read_counters'].values())
-          print(json.dumps({'five_regimes':r68['regimes'],'full_shape':r69},indent=2,sort_keys=True))
+          r=json.loads(Path('/tmp/0069-full-qualification.json').read_text())
+          assert r['research_id']=='BRRK-BTC-SOL-PATH-EVENT-EARLY-WARNING-EXECUTION-ASSURED-0069'
+          assert r['qualification_verdict']=='PASS'
+          assert r['implementation_commit_sha']=='c11101d8c454d71e918bed163fbd188934910670'
+          assert r['network_fetch_count']==0
+          assert all(int(v)==0 for v in r['historical_content_read_counters'].values())
+          assert r['declared_and_actual_validation_configs']=={'declared':1632,'actual':1632}
+          assert r['declared_and_actual_validation_fit_calls']=={'declared':31008,'actual':31008}
+          assert r['declared_and_actual_final_tracks']=={'declared':64,'actual':64}
+          assert r['declared_and_actual_controllers']=={'declared':8,'actual':8}
+          assert r['declared_and_actual_predictive_bootstrap_replicates']=={'declared':4000,'actual':4000}
+          assert r['declared_and_actual_economic_bootstrap_replicates']=={'declared':4000,'actual':4000}
+          assert r['declared_and_actual_pbo_splits']=={'declared':70,'actual':70}
+          assert len(r['required_regimes'])==5
+          expected={
+            'FULL_SUPPORT':(11904,40),
+            'PARTIAL_SUPPORT':(5952,20),
+            'SINGLE_CLASS_UNDEFINED_TRACKS':(8928,30),
+            'MISSING_BASE_PREDICTIONS':(11904,20),
+            'MIXED_P07_P08_ELIGIBILITY':(7872,10),
+          }
+          by={x['regime']:x for x in r['required_regimes']}
+          assert set(by)==set(expected)
+          for name,(fits,nnls) in expected.items():
+              assert by[name]['economic_fit_calls']==fits
+              assert by[name]['p08_nnls_solves']==nnls
+              assert by[name]['manifest_byte_identical'] is True
+              assert by[name]['terminal_trace_complete'] is True
+          a=r['execution_assurance']
+          assert a['validation_fit_calls_expected']==a['validation_fit_calls_observed']==31008
+          assert a['economic_fit_calls_expected_manifest_derived']==a['economic_fit_calls_observed']
+          assert a['p08_nnls_expected_manifest_derived']==a['p08_nnls_observed']
+          assert a['terminal_trace_complete'] is True
+          assert a['terminal_trace_count']==a['manifest_unit_count']
+          assert a['inference_barrier_released'] is True
+          assert a['process_worker_count']==4
+          assert r['total_wall_clock_seconds'] <= 10800
+          assert r['peak_process_tree_rss_bytes'] <= 4294967296
+          assert r['peak_rss_fraction_of_memtotal'] <= 0.60
+          assert r['swap_or_oom_observed'] is False
+          print(json.dumps(r,indent=2,sort_keys=True))
           PY
+      - name: Upload qualification evidence artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: brrk-0069-qualification-c11101d8
+          path: /tmp/0069-full-qualification.json
+          if-no-files-found: error
