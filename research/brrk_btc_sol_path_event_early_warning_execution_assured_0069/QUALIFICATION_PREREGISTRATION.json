@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "research_id": "BRRK-BTC-SOL-PATH-EVENT-EARLY-WARNING-EXECUTION-ASSURED-0069",
+  "purpose": "Mandatory pre-historical nonhistorical qualification and controlled-mode dry-run equivalence gate for the exact 0069 implementation and boundary.",
+  "historical_isolation": {
+    "historical_payload_reads_allowed": false,
+    "market_loader_calls_allowed": 0,
+    "historical_equity_reads_allowed": 0,
+    "historical_weights_reads_allowed": 0,
+    "historical_dtb3_reads_allowed": 0,
+    "network_fetches_allowed": 0,
+    "git_identity_only_checks_allowed": true,
+    "qualification_repetition_before_historical_access_allowed": true
+  },
+  "environment": {
+    "runner_label": "ubuntu-24.04",
+    "cpu_architecture": "x86_64",
+    "python": "3.12",
+    "requirements_dev_path": "execution/plan-b-bot/requirements-dev.txt",
+    "requirements_dev_blob_sha": "df60fe952f573fc6201b16b9de6b6043fbe7dbe2",
+    "requirements_path": "execution/plan-b-bot/requirements.txt",
+    "requirements_blob_sha": "c48550e67350bdc1e640ac8eb5e2ea02986ad83a",
+    "process_worker_count": 4,
+    "thread_environment": {"PYTHONHASHSEED":"0","OMP_NUM_THREADS":"1","OPENBLAS_NUM_THREADS":"1","MKL_NUM_THREADS":"1","NUMEXPR_NUM_THREADS":"1"},
+    "qualification_job_timeout_minutes": 210,
+    "historical_job_timeout_minutes": 350
+  },
+  "frozen_scientific_shape": {
+    "indicator_atlas_cells": 8080,
+    "validation_tuning_configs": 1632,
+    "validation_estimator_fit_calls": 31008,
+    "final_predictor_tracks": 64,
+    "controllers": 8,
+    "predictive_bootstrap_replicates": 4000,
+    "economic_bootstrap_replicates": 4000,
+    "pbo_slices": 8,
+    "pbo_splits": 70,
+    "no_shape_reduction_allowed": true
+  },
+  "execution_equivalence_contract": {
+    "canonical_graph_builder_path": "research/brrk_btc_sol_path_event_execution_equivalence_0068/execution_graph.py",
+    "canonical_graph_builder_blob_sha": "56e910f787d96d572c570661359fc7005529925f",
+    "qualification_and_controlled_dry_run_same_entry_point": true,
+    "manifest_byte_identity_required_for_identical_inputs": true,
+    "validation_fit_calls_exact": 31008,
+    "economic_fit_calls": "manifest-derived from realized eligibility",
+    "p08_nnls_solves": "manifest-derived from realized eligibility",
+    "full_support_reference": {"economic_fit_calls":11904,"p08_nnls_solves":40},
+    "terminal_trace_exactly_once_per_manifest_unit": true,
+    "physical_fit_accounting_exact": true,
+    "physical_nnls_accounting_exact": true,
+    "inference_before_complete_manifest_consumption_forbidden": true
+  },
+  "required_synthetic_regimes": [
+    "FULL_SUPPORT",
+    "PARTIAL_SUPPORT",
+    "SINGLE_CLASS_UNDEFINED_TRACKS",
+    "MISSING_BASE_PREDICTIONS",
+    "MIXED_P07_P08_ELIGIBILITY"
+  ],
+  "required_regime_reference_counts": {
+    "FULL_SUPPORT": {"validation_fit_calls":31008,"economic_fit_calls":11904,"p08_nnls_solves":40},
+    "PARTIAL_SUPPORT": {"validation_fit_calls":31008,"economic_fit_calls":5952,"p08_nnls_solves":20},
+    "SINGLE_CLASS_UNDEFINED_TRACKS": {"validation_fit_calls":31008,"economic_fit_calls":8928,"p08_nnls_solves":30},
+    "MISSING_BASE_PREDICTIONS": {"validation_fit_calls":31008,"economic_fit_calls":11904,"p08_nnls_solves":20},
+    "MIXED_P07_P08_ELIGIBILITY": {"validation_fit_calls":31008,"economic_fit_calls":7872,"p08_nnls_solves":10}
+  },
+  "resource_acceptance": {
+    "total_wall_clock_pass_max_seconds": 10800,
+    "peak_process_tree_rss_max_bytes": 4294967296,
+    "peak_process_tree_rss_max_fraction_of_memtotal": 0.6,
+    "swap_or_oom_allowed": false
+  },
+  "pass_rule": "PASS only if all five regimes pass, zero historical/network reads, canonical manifests and terminal traces are complete, manifest-derived physical actions exactly equal observed actions, frozen scientific shape remains intact, and resource limits pass.",
+  "failure_rule": "Any violation blocks controlled historical execution. Qualification may repeat only after semantics-preserving engineering remediation and before any RUN_ATTEMPT marker.",
+  "authority": {"historical_execution_authorized_by_qualification_alone":false,"production_authorized":false,"signature_authorized":false,"order_submission_authorized":false}
+}

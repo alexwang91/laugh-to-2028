@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "research_id": "BRRK-BTC-SOL-PATH-EVENT-EARLY-WARNING-EXECUTION-ASSURED-0069",
+  "stage": "NUMERICAL_DATA_EXECUTION_PREREGISTRATION_FROZEN_NOT_RUN",
+  "design_merge_sha": "51d734bc510aed4ff5ba7c5eb9fbac686ddc2e13",
+  "owner_first_commit_sha": "dfd3f0a95e7245a4103637aaca1745bf3b2c8e03",
+  "scientific_semantics": {
+    "source_research_id": "BRRK-BTC-SOL-PATH-EVENT-EARLY-WARNING-RUNTIME-QUALIFIED-0067",
+    "source_preregistration_path": "research/brrk_btc_sol_path_event_early_warning_runtime_qualified_0067/PREREGISTRATION.json",
+    "source_preregistration_blob_sha": "398e4a238229282582bbdbe4eed944d779c51ab3",
+    "freeze_rule": "ALL event definitions, feature universe, P01-P08 architectures and grids, validation selection, horizons, support rules, controllers/economics, bootstrap/PBO, gates, seeds and classification enum are byte-level inherited from the immutable 0067 preregistration; 0069 may not reinterpret or tune them.",
+    "scientific_seed": 660066,
+    "validation_tuning_executions": 1632,
+    "indicator_atlas_hypothesis_cells": 8080,
+    "final_predictor_tracks": 64,
+    "final_economic_controllers": 8,
+    "declared_model_controller_variant_budget": 1704
+  },
+  "execution_assurance": {
+    "source_research_id": "BRRK-BTC-SOL-PATH-EVENT-EXECUTION-EQUIVALENCE-0068",
+    "source_closeout_merge_sha": "585308444719914028ac4410fba86948a5505a13",
+    "canonical_graph_builder_path": "research/brrk_btc_sol_path_event_execution_equivalence_0068/execution_graph.py",
+    "canonical_graph_builder_blob_sha": "56e910f787d96d572c570661359fc7005529925f",
+    "validation_fit_calls_structural": 31008,
+    "economic_fit_calls_rule": "manifest-derived from realized eligibility under frozen 0067 rules; never hard-code 11904 unless realized regime is FULL_SUPPORT",
+    "p08_nnls_rule": "manifest-derived from realized P08 eligibility under frozen 0067 rules; never hard-code 40 unless realized regime is FULL_SUPPORT",
+    "manifest_rule": "single canonical ordered manifest, deterministic canonical JSON, SHA256-bound; qualification, preflight dry run and historical execution use the same graph-builder entry point",
+    "terminal_trace_rule": "every manifest unit receives exactly one terminal trace before inference",
+    "physical_accounting_rule": "sum(expected_fit_calls)==observed estimator fit attempts and sum(expected_nnls)==observed NNLS solves; any mismatch is INVALID_EXECUTION",
+    "inference_barrier": "predictive/economic inference is forbidden until complete manifest consumption and physical-accounting equality"
+  },
+  "time_and_economic_contract": {
+    "validation_prediction_window": ["2023-01-01", "2023-12-31"],
+    "final_event_prediction_window": ["2024-01-01", "2025-11-15"],
+    "economic_evaluation_window": ["2024-01-01", "2026-08-02"],
+    "refit_cadence_sessions": 20,
+    "decision_timing": "prediction after completed close t may affect only portfolio return row t+1",
+    "economic_reference_research_id": "BRRK-IDLE-CASH-PASSIVE-ACCRUAL-ROBUSTNESS-0064"
+  },
+  "inference_contract": {
+    "predictive_bootstrap_replicates": 4000,
+    "economic_bootstrap_replicates": 4000,
+    "moving_block_length": 60,
+    "pbo_slices": 8,
+    "pbo_splits": 70,
+    "classification_enum": ["PASS_EVENT_EARLY_WARNING_AND_ECONOMIC_CONTROLLER","PASS_EVENT_EARLY_WARNING_ONLY","FAIL_NO_ROBUST_EVENT_CONTROLLER","FAIL_NO_ROBUST_EVENT_EARLY_WARNING","MEASUREMENT_INCONCLUSIVE_INSUFFICIENT_EVENT_SUPPORT","INVALID_EXECUTION"]
+  },
+  "exactly_once": {
+    "historical_attempts_authorized": 1,
+    "durable_run_attempt_before_any_historical_read": true,
+    "same_id_rerun": false,
+    "same_id_retune": false,
+    "same_id_rescue": false,
+    "marker_only_recovery": "only if complete PRIMARY_RESULT+EVIDENCE+EXECUTION already durably persist and only RUN_ONCE.marker is missing"
+  },
+  "qualification_required_before_historical_marker": true,
+  "historical_execution_authorized_by_preregistration_alone": false,
+  "authority": {"production_authorized": false, "signature_authorized": false, "order_submission_authorized": false}
+}
