@@ -1,0 +1,91 @@
+{
+  "schema_version": 1,
+  "research_id": "BRRK-SOL-LONG-SIDEWAYS-EARLY-WARNING-EPISODE-ROBUSTNESS-0070",
+  "stage": "NUMERICAL_DATA_ANALYSIS_PREREGISTRATION_FROZEN_NOT_RUN",
+  "evidence_tier": "RESEARCHER_EXPOSED_DEVELOPMENT_NOT_INDEPENDENT_OOS",
+  "historical_or_0069_evidence_content_read_during_preregistration": false,
+  "primary_track": "P02_RAW_ELASTIC_NET_LOGIT|SOL|T4_LONG_SIDEWAYS",
+  "corroborative_cluster": [
+    "P03_VALIDATION_SCREENED_SIGNAL_LOGIT|SOL|T4_LONG_SIDEWAYS",
+    "P08_STACKED_PROBABILITY_ENSEMBLE|SOL|T4_LONG_SIDEWAYS"
+  ],
+  "corroborative_independence_count": 1,
+  "warning_horizon_sessions": 10,
+  "frozen_0069_reference": {
+    "P02_PR_AUC": 0.7974030713822858,
+    "P02_prevalence": 0.45544554455445546,
+    "P02_PR_AUC_LIFT": 0.34195752682783037,
+    "P02_ROC_AUC": 0.7913043478260869,
+    "P03_PR_AUC_LIFT": 0.28384632505003554,
+    "P03_ROC_AUC": 0.8027667984189722,
+    "P08_PR_AUC_LIFT": 0.28384632505003554,
+    "P08_ROC_AUC": 0.8027667984189722,
+    "final_unique_onsets": 7,
+    "train_validation_unique_onsets": 15
+  },
+  "aggregate_reproduction_absolute_tolerance": 1e-12,
+  "episode_assignment": {
+    "eligible_rows": "exact frozen 0069 final-window rows for SOL|T4_LONG_SIDEWAYS at lead 10",
+    "positive_row_definition": "Y_10 == 1",
+    "assignment_interval": "strictly future (t, t+10]",
+    "assignment_rule": "assign each positive row to the earliest qualifying unique SOL T4_LONG_SIDEWAYS onset in chronological order",
+    "expected_unique_onsets": 7,
+    "ties": "chronological order",
+    "negative_rows": "never assigned to an onset and retained in every LOEO fold"
+  },
+  "loeo_fold_rule": {
+    "fold_count": 7,
+    "fold_i": "remove every positive warning row assigned to onset_i; retain every other eligible row unchanged",
+    "retraining": false,
+    "feature_reselection": false,
+    "rescreening": false,
+    "reorientation": false,
+    "recalibration": false,
+    "threshold_change": false,
+    "hyperparameter_change": false,
+    "metrics": ["ROC_AUC", "PR_AUC", "prevalence", "PR_AUC_LIFT"],
+    "primary_retention": "LOEO_PR_AUC_LIFT / frozen_0069_P02_PR_AUC_LIFT"
+  },
+  "pass_gates": {
+    "G0_exact_identity_and_full_window_reproduction": true,
+    "G1_exactly_7_unique_onsets_and_7_defined_folds": true,
+    "G2_P02_each_fold_PR_AUC_LIFT_gt_0_and_ROC_AUC_gt_0_50": true,
+    "G3_P02_median_retention_gte": 0.75,
+    "G4_P02_folds_retention_gte_0_50_at_least": 6,
+    "G5_cluster": "at least one of P03/P08 has PR_AUC_LIFT>0 in every defined fold and median retention>=0.50 versus its own frozen 0069 lift"
+  },
+  "classification_enum": [
+    "PASS_LOCKED_EPISODE_ROBUSTNESS_REPLICATION",
+    "FAIL_LOCKED_EPISODE_ROBUSTNESS_REPLICATION",
+    "MEASUREMENT_INCONCLUSIVE_INSUFFICIENT_EPISODE_SUPPORT",
+    "INVALID_EXECUTION"
+  ],
+  "classification_rules": {
+    "PASS_LOCKED_EPISODE_ROBUSTNESS_REPLICATION": "valid execution and every G0-G5 gate passes",
+    "FAIL_LOCKED_EPISODE_ROBUSTNESS_REPLICATION": "valid execution with sufficient defined support, but one or more scientific robustness gates G2-G5 fail",
+    "MEASUREMENT_INCONCLUSIVE_INSUFFICIENT_EPISODE_SUPPORT": "identity/reproduction is valid but unique-onset support is not exactly 7 or any required LOEO fold/metric is mathematically undefined",
+    "INVALID_EXECUTION": "source identity/hash/read-count, aggregate reproduction, deterministic assignment, fold-construction, persistence or exactly-once boundary drift"
+  },
+  "forbidden": [
+    "new atlas search",
+    "BTC target",
+    "DOWN target",
+    "alternate sideways target",
+    "lead other than 10",
+    "architecture other than frozen P02 primary and P03/P08 dependent cluster",
+    "feature-family change",
+    "hyperparameter reselection",
+    "screening reselection",
+    "threshold relaxation after evidence",
+    "controller/economic/CAGR/NAV/MDD/PBO evaluation",
+    "0069 controller KeyError repair",
+    "production/signature/order authority",
+    "same-ID rerun/rescue/retune after RUN_ATTEMPT.marker"
+  ],
+  "attempt_budget": 1,
+  "durable_marker_precedes_any_permitted_source_content_read": true,
+  "network_fetch_allowed": false,
+  "production_authorized": false,
+  "signature_authorized": false,
+  "order_submission_authorized": false
+}
