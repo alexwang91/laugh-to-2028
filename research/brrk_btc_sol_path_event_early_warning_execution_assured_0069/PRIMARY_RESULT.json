@@ -1,0 +1,2360 @@
+{
+  "PBO_CSCV": {
+    "status": "NOT_EVALUATED"
+  },
+  "actual_validation_tuning_configs_evaluated": 1632,
+  "actual_variants_evaluated": 1704,
+  "benchmark_0064_same_window": {},
+  "classification": "PASS_EVENT_EARLY_WARNING_ONLY",
+  "controller_error": {
+    "error_message": "('BTC', 'T1_ANY_DOWN', 5)",
+    "error_type": "KeyError"
+  },
+  "controller_summary": {
+    "winner_count": 0,
+    "winners": []
+  },
+  "controllers": {
+    "C01_BTC_ANY_DOWN_5D": {
+      "passes_all_economic_gates": false,
+      "status": "COMPONENT_UNAVAILABLE"
+    },
+    "C02_SOL_ANY_DOWN_5D": {
+      "passes_all_economic_gates": false,
+      "status": "COMPONENT_UNAVAILABLE"
+    },
+    "C03_MAX_BTC_SOL_ANY_DOWN_5D": {
+      "passes_all_economic_gates": false,
+      "status": "COMPONENT_UNAVAILABLE"
+    },
+    "C04_BTC_MAJOR_DOWN_10D": {
+      "passes_all_economic_gates": false,
+      "status": "COMPONENT_UNAVAILABLE"
+    },
+    "C05_MAX_BTC_SOL_MAJOR_DOWN_10D": {
+      "passes_all_economic_gates": false,
+      "status": "COMPONENT_UNAVAILABLE"
+    },
+    "C06_MULTILEAD_DOWN_BLEND_3_5_10": {
+      "passes_all_economic_gates": false,
+      "status": "COMPONENT_UNAVAILABLE"
+    },
+    "C07_DOWN_PLUS_SIDEWAYS": {
+      "passes_all_economic_gates": false,
+      "status": "COMPONENT_UNAVAILABLE"
+    },
+    "C08_STACKED_EVENT_RISK": {
+      "passes_all_economic_gates": false,
+      "status": "COMPONENT_UNAVAILABLE"
+    }
+  },
+  "economic_simultaneous_bootstrap": {
+    "block_length": 60,
+    "q95": null,
+    "replicates": 4000,
+    "seed": 660066
+  },
+  "economic_summary": {
+    "benchmark": {},
+    "controllers": {
+      "C01_BTC_ANY_DOWN_5D": {
+        "passes_all_economic_gates": false,
+        "status": "COMPONENT_UNAVAILABLE"
+      },
+      "C02_SOL_ANY_DOWN_5D": {
+        "passes_all_economic_gates": false,
+        "status": "COMPONENT_UNAVAILABLE"
+      },
+      "C03_MAX_BTC_SOL_ANY_DOWN_5D": {
+        "passes_all_economic_gates": false,
+        "status": "COMPONENT_UNAVAILABLE"
+      },
+      "C04_BTC_MAJOR_DOWN_10D": {
+        "passes_all_economic_gates": false,
+        "status": "COMPONENT_UNAVAILABLE"
+      },
+      "C05_MAX_BTC_SOL_MAJOR_DOWN_10D": {
+        "passes_all_economic_gates": false,
+        "status": "COMPONENT_UNAVAILABLE"
+      },
+      "C06_MULTILEAD_DOWN_BLEND_3_5_10": {
+        "passes_all_economic_gates": false,
+        "status": "COMPONENT_UNAVAILABLE"
+      },
+      "C07_DOWN_PLUS_SIDEWAYS": {
+        "passes_all_economic_gates": false,
+        "status": "COMPONENT_UNAVAILABLE"
+      },
+      "C08_STACKED_EVENT_RISK": {
+        "passes_all_economic_gates": false,
+        "status": "COMPONENT_UNAVAILABLE"
+      }
+    },
+    "simultaneous_bootstrap": {
+      "block_length": 60,
+      "q95": null,
+      "replicates": 4000,
+      "seed": 660066
+    }
+  },
+  "economic_winners": [],
+  "event_counts_by_asset_type_grade": {
+    "BTC|DOWN|D1_SHORT": 0,
+    "BTC|DOWN|D2_MEDIUM": 1,
+    "BTC|DOWN|D3_LONG": 1,
+    "BTC|DOWN|D4_SECULAR": 3,
+    "BTC|SIDEWAYS|S1_SHORT": 21,
+    "BTC|SIDEWAYS|S2_MEDIUM": 13,
+    "BTC|SIDEWAYS|S3_LONG": 5,
+    "BTC|SIDEWAYS|S4_SECULAR": 7,
+    "SOL|DOWN|D1_SHORT": 0,
+    "SOL|DOWN|D2_MEDIUM": 2,
+    "SOL|DOWN|D3_LONG": 2,
+    "SOL|DOWN|D4_SECULAR": 3,
+    "SOL|SIDEWAYS|S1_SHORT": 28,
+    "SOL|SIDEWAYS|S2_MEDIUM": 16,
+    "SOL|SIDEWAYS|S3_LONG": 6,
+    "SOL|SIDEWAYS|S4_SECULAR": 5
+  },
+  "event_onset_count": 113,
+  "final_controller_count": 8,
+  "final_predictor_track_count": 64,
+  "indicator_atlas_holm_rejections": 149,
+  "indicator_atlas_hypothesis_cells": 8080,
+  "indicator_atlas_supported_holm_family_size": 4040,
+  "order_submission_authorized": false,
+  "predictive_summary": {
+    "winner_count": 3,
+    "winners": [
+      "P02_RAW_ELASTIC_NET_LOGIT|SOL|T4_LONG_SIDEWAYS",
+      "P03_VALIDATION_SCREENED_SIGNAL_LOGIT|SOL|T4_LONG_SIDEWAYS",
+      "P08_STACKED_PROBABILITY_ENSEMBLE|SOL|T4_LONG_SIDEWAYS"
+    ]
+  },
+  "predictive_winners": [
+    "P02_RAW_ELASTIC_NET_LOGIT|SOL|T4_LONG_SIDEWAYS",
+    "P03_VALIDATION_SCREENED_SIGNAL_LOGIT|SOL|T4_LONG_SIDEWAYS",
+    "P08_STACKED_PROBABILITY_ENSEMBLE|SOL|T4_LONG_SIDEWAYS"
+  ],
+  "predictor_simultaneous_bootstrap": {
+    "block_length": 60,
+    "q95": 0.2668322318425197,
+    "replicates": 4000,
+    "seed": 660066,
+    "valid_track_count": 32
+  },
+  "predictor_tracks": {
+    "P01_FAMILY_RIDGE_LOGIT|BTC|T1_ANY_DOWN": {
+      "passes_all_predictive_gates": false,
+      "status": "MODEL_UNAVAILABLE"
+    },
+    "P01_FAMILY_RIDGE_LOGIT|BTC|T2_MAJOR_DOWN": {
+      "passes_all_predictive_gates": false,
+      "status": "MODEL_UNAVAILABLE"
+    },
+    "P01_FAMILY_RIDGE_LOGIT|BTC|T3_ANY_SIDEWAYS": {
+      "G0_identity": true,
+      "G1_support": true,
+      "G2_auc_and_pr_lift": true,
+      "G3_temporal_recurrence": true,
+      "G4_early_warning_horizon": true,
+      "G5_simultaneous_pr_lift_lcb": false,
+      "architecture": "P01_FAMILY_RIDGE_LOGIT",
+      "asset": "BTC",
+      "bootstrap_valid_replicates": 3952,
+      "final_metrics": {
+        "Brier": 0.2443387721746046,
+        "PR_AUC": 0.6788983999347828,
+        "PR_AUC_LIFT": 0.24948663522890052,
+        "ROC_AUC": 0.7350656686908629,
+        "chronological_blocks": [
+          {
+            "PR_AUC": 0.9202090508598703,
+            "PR_AUC_LIFT": 0.12951137644126565,
+            "ROC_AUC": 0.7516339869281046,
+            "n": 43,
+            "prevalence": 0.7906976744186046,
+            "status": "OK"
+          },
+          {
+            "PR_AUC": 0.8351940895665461,
+            "PR_AUC_LIFT": 0.1607754849153833,
+            "ROC_AUC": 0.7142857142857142,
+            "n": 43,
+            "prevalence": 0.6744186046511628,
+            "status": "OK"
+          },
+          {
+            "n": 42,
+            "prevalence": 0.0,
+            "status": "NOT_WELL_DEFINED"
+          },
+          {
+            "PR_AUC": 0.3635209819420345,
+            "PR_AUC_LIFT": 0.12542574384679644,
+            "ROC_AUC": 0.696875,
+            "n": 42,
+            "prevalence": 0.23809523809523808,
+            "status": "OK"
+          }
+        ],
+        "n": 170,
+        "positives": 73,
+        "prevalence": 0.4294117647058823,
+        "status": "OK"
+      },
+      "passes_all_predictive_gates": false,
+      "positive_metric_blocks": 3,
+      "preferred_warning_horizon": 10,
+      "simultaneous_LCB": -0.017345596613619174,
+      "status": "EVALUATED",
+      "support": {
+        "final_unique_onsets": 13,
+        "support_pass": true,
+        "train_validation_unique_onsets": 24
+      },
+      "target": "T3_ANY_SIDEWAYS"
+    },
+    "P01_FAMILY_RIDGE_LOGIT|BTC|T4_LONG_SIDEWAYS": {
+      "G0_identity": true,
+      "G1_support": true,
+      "G2_auc_and_pr_lift": true,
+      "G3_temporal_recurrence": false,
+      "G4_early_warning_horizon": true,
+      "G5_simultaneous_pr_lift_lcb": false,
+      "architecture": "P01_FAMILY_RIDGE_LOGIT",
+      "asset": "BTC",
+      "bootstrap_valid_replicates": 3999,
+      "final_metrics": {
+        "Brier": 0.3261042074437393,
+        "PR_AUC": 0.3988777185202895,
+        "PR_AUC_LIFT": 0.10476007146146599,
+        "ROC_AUC": 0.5716666666666667,
+        "chronological_blocks": [
+          {
+            "PR_AUC": 0.4099972314486462,
+            "PR_AUC_LIFT": -0.10163067552809801,
+            "ROC_AUC": 0.24025974025974026,
+            "n": 43,
+            "prevalence": 0.5116279069767442,
+            "status": "OK"
+          },
+          {
+            "PR_AUC": 0.7493076638702809,
+            "PR_AUC_LIFT": 0.3307030127074902,
+            "ROC_AUC": 0.7288888888888889,
+            "n": 43,
+            "prevalence": 0.4186046511627907,
+            "status": "OK"
+          },
+          {
+            "n": 42,
+            "prevalence": 0.0,
+            "status": "NOT_WELL_DEFINED"
+          },
+          {
+            "PR_AUC": 0.21601155733372385,
+            "PR_AUC_LIFT": -0.022083680761514235,
+            "ROC_AUC": 0.428125,
+            "n": 42,
+            "prevalence": 0.23809523809523808,
+            "status": "OK"
+          }
+        ],
+        "n": 170,
+        "positives": 50,
+        "prevalence": 0.29411764705882354,
+        "status": "OK"
+      },
+      "passes_all_predictive_gates": false,
+      "positive_metric_blocks": 1,
+      "preferred_warning_horizon": 10,
+      "simultaneous_LCB": -0.1620721603810537,
+      "status": "EVALUATED",
+      "support": {
+        "final_unique_onsets": 8,
+        "support_pass": true,
+        "train_validation_unique_onsets": 10
+      },
+      "target": "T4_LONG_SIDEWAYS"
+    },
+    "P01_FAMILY_RIDGE_LOGIT|SOL|T1_ANY_DOWN": {
+      "passes_all_predictive_gates": false,
+      "status": "MODEL_UNAVAILABLE"
+    },
+    "P01_FAMILY_RIDGE_LOGIT|SOL|T2_MAJOR_DOWN": {
+      "passes_all_predictive_gates": false,
+      "status": "MODEL_UNAVAILABLE"
+    },
+    "P01_FAMILY_RIDGE_LOGIT|SOL|T3_ANY_SIDEWAYS": {
+      "G0_identity": true,
+      "G1_support": true,
+      "G2_auc_and_pr_lift": true,
+      "G3_temporal_recurrence": false,
+      "G4_early_warning_horizon": true,
+      "G5_simultaneous_pr_lift_lcb": false,
+      "architecture": "P01_FAMILY_RIDGE_LOGIT",
+      "asset": "SOL",
+      "bootstrap_valid_replicates": 4000,
+      "final_metrics": {
+        "Brier": 0.2510137837616637,
+        "PR_AUC": 0.3933950134591861,
+        "PR_AUC_LIFT": 0.046860359993839584,
+        "ROC_AUC": 0.5463203463203463,
+        "chronological_blocks": [
+          {
+            "PR_AUC": 0.5257798190664323,
+            "PR_AUC_LIFT": 0.06424135752797078,
+            "ROC_AUC": 0.48214285714285715,
+            "n": 26,
+            "prevalence": 0.46153846153846156,
+            "status": "OK"
+          },
+          {
+            "PR_AUC": 0.6958537571360389,
+            "PR_AUC_LIFT": 0.13585375713603887,
+            "ROC_AUC": 0.6038961038961039,
+            "n": 25,
+            "prevalence": 0.56,
+            "status": "OK"
+          },
+          {
+            "PR_AUC": 0.08696969696969697,
+            "PR_AUC_LIFT": -0.03303030303030302,
+            "ROC_AUC": 0.07575757575757576,
+            "n": 25,
+            "prevalence": 0.12,
+            "status": "OK"
+          },
+          {
+            "PR_AUC": 0.7158260233918128,
+            "PR_AUC_LIFT": 0.4758260233918128,
+            "ROC_AUC": 0.7719298245614035,
+            "n": 25,
+            "prevalence": 0.24,
+            "status": "OK"
+          }
+        ],
+        "n": 101,
+        "positives": 35,
+        "prevalence": 0.3465346534653465,
+        "status": "OK"
+      },
+      "passes_all_predictive_gates": false,
+      "positive_metric_blocks": 2,
+      "preferred_warning_horizon": 3,
+      "simultaneous_LCB": -0.2199718718486801,
+      "status": "EVALUATED",
+      "support": {
+        "final_unique_onsets": 12,
+        "support_pass": true,
+        "train_validation_unique_onsets": 31
+      },
+      "target": "T3_ANY_SIDEWAYS"
+    },
+    "P01_FAMILY_RIDGE_LOGIT|SOL|T4_LONG_SIDEWAYS": {
+      "G0_identity": true,
+      "G1_support": true,
+      "G2_auc_and_pr_lift": false,
+      "G3_temporal_recurrence": false,
+      "G4_early_warning_horizon": false,
+      "G5_simultaneous_pr_lift_lcb": false,
+      "architecture": "P01_FAMILY_RIDGE_LOGIT",
+      "asset": "SOL",
+      "bootstrap_valid_replicates": 3996,
+      "final_metrics": {
+        "Brier": 0.2077366251250541,
+        "PR_AUC": 0.08278875048677029,
+        "PR_AUC_LIFT": 0.013481819793700972,
+        "ROC_AUC": 0.4513677811550152,
+        "chronological_blocks": [
+          {
+            "PR_AUC": 0.20512820512820512,
+            "PR_AUC_LIFT": 0.1282051282051282,
+            "ROC_AUC": 0.4583333333333333,
+            "n": 26,
+            "prevalence": 0.07692307692307693,
+            "status": "OK"
+          },
+          {
+            "PR_AUC": 0.10666666666666666,
+            "PR_AUC_LIFT": -0.013333333333333336,
+            "ROC_AUC": 0.2575757575757575,
+            "n": 25,
+            "prevalence": 0.12,
+            "status": "OK"
+          },
+          {
+            "PR_AUC": 0.047619047619047616,
+            "PR_AUC_LIFT": 0.007619047619047616,
+            "ROC_AUC": 0.16666666666666663,
+            "n": 25,
+            "prevalence": 0.04,
+            "status": "OK"
+          },
+          {
+            "PR_AUC": 0.5,
+            "PR_AUC_LIFT": 0.46,
+            "ROC_AUC": 0.9583333333333334,
+            "n": 25,
+            "prevalence": 0.04,
+            "status": "OK"
+          }
+        ],
+        "n": 101,
+        "positives": 7,
+        "prevalence": 0.06930693069306931,
+        "status": "OK"
+      },
+      "passes_all_predictive_gates": false,
+      "positive_metric_blocks": 1,
+      "preferred_warning_horizon": 1,
+      "simultaneous_LCB": -0.2533504120488187,
+      "status": "EVALUATED",
+      "support": {
+        "final_unique_onsets": 7,
+        "support_pass": true,
+        "train_validation_unique_onsets": 15
+      },
+      "target": "T4_LONG_SIDEWAYS"
+    },
+    "P02_RAW_ELASTIC_NET_LOGIT|BTC|T1_ANY_DOWN": {
+      "passes_all_predictive_gates": false,
+      "status": "MODEL_UNAVAILABLE"
+    },
+    "P02_RAW_ELASTIC_NET_LOGIT|BTC|T2_MAJOR_DOWN": {
+      "passes_all_predictive_gates": false,
+      "status": "MODEL_UNAVAILABLE"
+    },
+    "P02_RAW_ELASTIC_NET_LOGIT|BTC|T3_ANY_SIDEWAYS": {
+      "G0_identity": true,
+      "G1_support": true,
+      "G2_auc_and_pr_lift": false,
+      "G3_temporal_recurrence": false,
+      "G4_early_warning_horizon": true,
+      "G5_simultaneous_pr_lift_lcb": false,
+      "architecture": "P02_RAW_ELASTIC_NET_LOGIT",
+      "asset": "BTC",
+      "bootstrap_valid_replicates": 3952,
+      "final_metrics": {
+        "Brier": 0.25012230279441566,
+        "PR_AUC": 0.43660694108747683,
+        "PR_AUC_LIFT": 0.007195176381594504,
+        "ROC_AUC": 0.28032763733935884,
+        "chronological_blocks": [
+          {
+            "PR_AUC": 0.7611491108071134,
+            "PR_AUC_LIFT": -0.029548563611491163,
+            "ROC_AUC": 0.35294117647058826,
+            "n": 43,
+            "prevalence": 0.7906976744186046,
+            "status": "OK"
+          },
+          {
+            "PR_AUC": 0.7569338826977849,
+            "PR_AUC_LIFT": 0.08251527804662218,
+            "ROC_AUC": 0.43349753694581283,
+            "n": 43,
+            "prevalence": 0.6744186046511628,
+            "status": "OK"
+          },
+          {
+            "n": 42,
+            "prevalence": 0.0,
+            "status": "NOT_WELL_DEFINED"
+          },
+          {
+            "PR_AUC": 0.23809523809523808,
+            "PR_AUC_LIFT": 0.0,
+            "ROC_AUC": 0.5,
+            "n": 42,
+            "prevalence": 0.23809523809523808,
+            "status": "OK"
+          }
+        ],
+        "n": 170,
+        "positives": 73,
+        "prevalence": 0.4294117647058823,
+        "status": "OK"
+      },
+      "passes_all_predictive_gates": false,
+      "positive_metric_blocks": 0,
+      "preferred_warning_horizon": 10,
+      "simultaneous_LCB": -0.2596370554609252,
+      "status": "EVALUATED",
+      "support": {
+        "final_unique_onsets": 13,
+        "support_pass": true,
+        "train_validation_unique_onsets": 24
+      },
+      "target": "T3_ANY_SIDEWAYS"
+    },
+    "P02_RAW_ELASTIC_NET_LOGIT|BTC|T4_LONG_SIDEWAYS": {
+      "G0_identity": true,
+      "G1_support": true,
+      "G2_auc_and_pr_lift": true,
+      "G3_temporal_recurrence": false,
+      "G4_early_warning_horizon": true,
+      "G5_simultaneous_pr_lift_lcb": false,
+      "architecture": "P02_RAW_ELASTIC_NET_LOGIT",
+      "asset": "BTC",
+      "bootstrap_valid_replicates": 4000,
+      "final_metrics": {
+        "Brier": 0.16240422932600893,
+        "PR_AUC": 0.34331373259652387,
+        "PR_AUC_LIFT": 0.1550784384788768,
+        "ROC_AUC": 0.7373188405797101,
+        "chronological_blocks": [
+          {
+            "PR_AUC": 0.4021113045182365,
+            "PR_AUC_LIFT": 0.006762467308934206,
+            "ROC_AUC": 0.48642533936651583,
+            "n": 43,
+            "prevalence": 0.3953488372093023,
+            "status": "OK"
+          },
+          {
+            "PR_AUC": 0.47949579831932776,
+            "PR_AUC_LIFT": 0.24693765878444404,
+            "ROC_AUC": 0.793939393939394,
+            "n": 43,
+            "prevalence": 0.23255813953488372,
+            "status": "OK"
+          },
+          {
+            "n": 42,
+            "prevalence": 0.0,
+            "status": "NOT_WELL_DEFINED"
+          },
+          {
+            "PR_AUC": 0.1965734989648033,
+            "PR_AUC_LIFT": 0.07752587991718426,
+            "ROC_AUC": 0.681081081081081,
+            "n": 42,
+            "prevalence": 0.11904761904761904,
+            "status": "OK"
+          }
+        ],
+        "n": 170,
+        "positives": 32,
+        "prevalence": 0.18823529411764706,
+        "status": "OK"
+      },
+      "passes_all_predictive_gates": false,
+      "positive_metric_blocks": 2,
+      "preferred_warning_horizon": 5,
+      "simultaneous_LCB": -0.11175379336364288,
+      "status": "EVALUATED",
+      "support": {
+        "final_unique_onsets": 7,
+        "support_pass": true,
+        "train_validation_unique_onsets": 9
+      },
+      "target": "T4_LONG_SIDEWAYS"
+    },
+    "P02_RAW_ELASTIC_NET_LOGIT|SOL|T1_ANY_DOWN": {
+      "passes_all_predictive_gates": false,
+      "status": "MODEL_UNAVAILABLE"
+    },
+    "P02_RAW_ELASTIC_NET_LOGIT|SOL|T2_MAJOR_DOWN": {
+      "passes_all_predictive_gates": false,
+      "status": "MODEL_UNAVAILABLE"
+    },
+    "P02_RAW_ELASTIC_NET_LOGIT|SOL|T3_ANY_SIDEWAYS": {
+      "G0_identity": true,
+      "G1_support": true,
+      "G2_auc_and_pr_lift": true,
+      "G3_temporal_recurrence": false,
+      "G4_early_warning_horizon": true,
+      "G5_simultaneous_pr_lift_lcb": false,
+      "architecture": "P02_RAW_ELASTIC_NET_LOGIT",
+      "asset": "SOL",
+      "bootstrap_valid_replicates": 2671,
+      "final_metrics": {
+        "Brier": 0.250190661148874,
+        "PR_AUC": 0.8515104639633218,
+        "PR_AUC_LIFT": 0.07923323624054945,
+        "ROC_AUC": 0.576923076923077,
+        "chronological_blocks": [
+          {
+            "n": 26,
+            "prevalence": 1.0,
+            "status": "NOT_WELL_DEFINED"
+          },
+          {
+            "n": 25,
+            "prevalence": 1.0,
+            "status": "NOT_WELL_DEFINED"
+          },
+          {
+            "PR_AUC": 0.78,
+            "PR_AUC_LIFT": 0.21999999999999997,
+            "ROC_AUC": 0.75,
+            "n": 25,
+            "prevalence": 0.56,
+            "status": "OK"
+          },
+          {
+            "PR_AUC": 0.52,
+            "PR_AUC_LIFT": 0.0,
+            "ROC_AUC": 0.5,
+            "n": 25,
+            "prevalence": 0.52,
+            "status": "OK"
+          }
+        ],
+        "n": 101,
+        "positives": 78,
+        "prevalence": 0.7722772277227723,
+        "status": "OK"
+      },
+      "passes_all_predictive_gates": false,
+      "positive_metric_blocks": 1,
+      "preferred_warning_horizon": 10,
+      "simultaneous_LCB": null,
+      "status": "EVALUATED",
+      "support": {
+        "final_unique_onsets": 12,
+        "support_pass": true,
+        "train_validation_unique_onsets": 34
+      },
+      "target": "T3_ANY_SIDEWAYS"
+    },
+    "P02_RAW_ELASTIC_NET_LOGIT|SOL|T4_LONG_SIDEWAYS": {
+      "G0_identity": true,
+      "G1_support": true,
+      "G2_auc_and_pr_lift": true,
+      "G3_temporal_recurrence": true,
+      "G4_early_warning_horizon": true,
+      "G5_simultaneous_pr_lift_lcb": true,
+      "architecture": "P02_RAW_ELASTIC_NET_LOGIT",
+      "asset": "SOL",
+      "bootstrap_valid_replicates": 3970,
+      "final_metrics": {
+        "Brier": 0.21950335942397667,
+        "PR_AUC": 0.7974030713822858,
+        "PR_AUC_LIFT": 0.34195752682783037,
+        "ROC_AUC": 0.7913043478260869,
+        "chronological_blocks": [
+          {
+            "PR_AUC": 0.6958746936956035,
+            "PR_AUC_LIFT": 0.1958746936956035,
+            "ROC_AUC": 0.6627218934911243,
+            "n": 26,
+            "prevalence": 0.5,
+            "status": "OK"
+          },
+          {
+            "PR_AUC": 0.9609375,
+            "PR_AUC_LIFT": 0.3209375,
+            "ROC_AUC": 0.9097222222222223,
+            "n": 25,
+            "prevalence": 0.64,
+            "status": "OK"
+          },
+          {
+            "PR_AUC": 1.0,
+            "PR_AUC_LIFT": 0.72,
+            "ROC_AUC": 1.0,
+            "n": 25,
+            "prevalence": 0.28,
+            "status": "OK"
+          },
+          {
+            "PR_AUC": 0.5610854341736695,
+            "PR_AUC_LIFT": 0.1610854341736695,
+            "ROC_AUC": 0.7533333333333333,
+            "n": 25,
+            "prevalence": 0.4,
+            "status": "OK"
+          }
+        ],
+        "n": 101,
+        "positives": 46,
+        "prevalence": 0.45544554455445546,
+        "status": "OK"
+      },
+      "passes_all_predictive_gates": true,
+      "positive_metric_blocks": 4,
+      "preferred_warning_horizon": 10,
+      "simultaneous_LCB": 0.07512529498531068,
+      "status": "EVALUATED",
+      "support": {
+        "final_unique_onsets": 7,
+        "support_pass": true,
+        "train_validation_unique_onsets": 15
+      },
+      "target": "T4_LONG_SIDEWAYS"
+    },
+    "P03_VALIDATION_SCREENED_SIGNAL_LOGIT|BTC|T1_ANY_DOWN": {
+      "passes_all_predictive_gates": false,
+      "status": "MODEL_UNAVAILABLE"
+    },
+    "P03_VALIDATION_SCREENED_SIGNAL_LOGIT|BTC|T2_MAJOR_DOWN": {
+      "passes_all_predictive_gates": false,
+      "status": "MODEL_UNAVAILABLE"
+    },
+    "P03_VALIDATION_SCREENED_SIGNAL_LOGIT|BTC|T3_ANY_SIDEWAYS": {
+      "G0_identity": true,
+      "G1_support": true,
+      "G2_auc_and_pr_lift": true,
+      "G3_temporal_recurrence": true,
+      "G4_early_warning_horizon": true,
+      "G5_simultaneous_pr_lift_lcb": false,
+      "architecture": "P03_VALIDATION_SCREENED_SIGNAL_LOGIT",
+      "asset": "BTC",
+      "bootstrap_valid_replicates": 3952,
+      "final_metrics": {
+        "Brier": 0.266056218595136,
+        "PR_AUC": 0.5182545488200532,
+        "PR_AUC_LIFT": 0.08884278411417085,
+        "ROC_AUC": 0.6254766275949725,
+        "chronological_blocks": [
+          {
+            "PR_AUC": 0.8715132126329498,
+            "PR_AUC_LIFT": 0.08081553821434517,
+            "ROC_AUC": 0.7287581699346405,
+            "n": 43,
+            "prevalence": 0.7906976744186046,
+            "status": "OK"
+          },
+          {
+            "PR_AUC": 0.7306863649106851,
+            "PR_AUC_LIFT": 0.05626776025952229,
+            "ROC_AUC": 0.5123152709359606,
+            "n": 43,
+            "prevalence": 0.6744186046511628,
+            "status": "OK"
+          },
+          {
+            "n": 42,
+            "prevalence": 0.0,
+            "status": "NOT_WELL_DEFINED"
+          },
+          {
+            "PR_AUC": 0.2604714970774588,
+            "PR_AUC_LIFT": 0.02237625898222073,
+            "ROC_AUC": 0.5625,
+            "n": 42,
+            "prevalence": 0.23809523809523808,
+            "status": "OK"
+          }
+        ],
+        "n": 170,
+        "positives": 73,
+        "prevalence": 0.4294117647058823,
+        "status": "OK"
+      },
+      "passes_all_predictive_gates": false,
+      "positive_metric_blocks": 3,
+      "preferred_warning_horizon": 10,
+      "simultaneous_LCB": -0.17798944772834885,
+      "status": "EVALUATED",
+      "support": {
+        "final_unique_onsets": 13,
+        "support_pass": true,
+        "train_validation_unique_onsets": 24
+      },
+      "target": "T3_ANY_SIDEWAYS"
+    },
+    "P03_VALIDATION_SCREENED_SIGNAL_LOGIT|BTC|T4_LONG_SIDEWAYS": {
+      "G0_identity": true,
+      "G1_support": true,
+      "G2_auc_and_pr_lift": false,
+      "G3_temporal_recurrence": false,
+      "G4_early_warning_horizon": true,
+      "G5_simultaneous_pr_lift_lcb": false,
+      "architecture": "P03_VALIDATION_SCREENED_SIGNAL_LOGIT",
+      "asset": "BTC",
+      "bootstrap_valid_replicates": 3954,
+      "final_metrics": {
+        "Brier": 0.32814758114539117,
+        "PR_AUC": 0.4225497054179107,
+        "PR_AUC_LIFT": -0.03627382399385398,
+        "ROC_AUC": 0.4456521739130434,
+        "chronological_blocks": [
+          {
+            "PR_AUC": 0.6952962483108645,
+            "PR_AUC_LIFT": -0.025633984247275032,
+            "ROC_AUC": 0.3118279569892473,
+            "n": 43,
+            "prevalence": 0.7209302325581395,
+            "status": "OK"
+          },
+          {
+            "PR_AUC": 0.5804552367816781,
+            "PR_AUC_LIFT": -0.047451739962507955,
+            "ROC_AUC": 0.4375,
+            "n": 43,
+            "prevalence": 0.627906976744186,
+            "status": "OK"
+          },
+          {
+            "n": 42,
+            "prevalence": 0.0,
+            "status": "NOT_WELL_DEFINED"
+          },
+          {
+            "PR_AUC": 0.3369178680440185,
+            "PR_AUC_LIFT": -0.13927260814645764,
+            "ROC_AUC": 0.18409090909090908,
+            "n": 42,
+            "prevalence": 0.47619047619047616,
+            "status": "OK"
+          }
+        ],
+        "n": 170,
+        "positives": 78,
+        "prevalence": 0.4588235294117647,
+        "status": "OK"
+      },
+      "passes_all_predictive_gates": false,
+      "positive_metric_blocks": 0,
+      "preferred_warning_horizon": 20,
+      "simultaneous_LCB": -0.3031060558363737,
+      "status": "EVALUATED",
+      "support": {
+        "final_unique_onsets": 9,
+        "support_pass": true,
+        "train_validation_unique_onsets": 12
+      },
+      "target": "T4_LONG_SIDEWAYS"
+    },
+    "P03_VALIDATION_SCREENED_SIGNAL_LOGIT|SOL|T1_ANY_DOWN": {
+      "passes_all_predictive_gates": false,
+      "status": "MODEL_UNAVAILABLE"
+    },
+    "P03_VALIDATION_SCREENED_SIGNAL_LOGIT|SOL|T2_MAJOR_DOWN": {
+      "passes_all_predictive_gates": false,
+      "status": "MODEL_UNAVAILABLE"
+    },
+    "P03_VALIDATION_SCREENED_SIGNAL_LOGIT|SOL|T3_ANY_SIDEWAYS": {
+      "G0_identity": true,
+      "G1_support": true,
+      "G2_auc_and_pr_lift": true,
+      "G3_temporal_recurrence": false,
+      "G4_early_warning_horizon": true,
+      "G5_simultaneous_pr_lift_lcb": false,
+      "architecture": "P03_VALIDATION_SCREENED_SIGNAL_LOGIT",
+      "asset": "SOL",
+      "bootstrap_valid_replicates": 2671,
+      "final_metrics": {
+        "Brier": 0.22169203857761724,
+        "PR_AUC": 0.9601330421249821,
+        "PR_AUC_LIFT": 0.18785581440220978,
+        "ROC_AUC": 0.8968784838350056,
+        "chronological_blocks": [
+          {
+            "n": 26,
+            "prevalence": 1.0,
+            "status": "NOT_WELL_DEFINED"
+          },
+          {
+            "n": 25,
+            "prevalence": 1.0,
+            "status": "NOT_WELL_DEFINED"
+          },
+          {
+            "PR_AUC": 0.8362847469990328,
+            "PR_AUC_LIFT": 0.2762847469990327,
+            "ROC_AUC": 0.8441558441558441,
+            "n": 25,
+            "prevalence": 0.56,
+            "status": "OK"
+          },
+          {
+            "PR_AUC": 0.9185353108430032,
+            "PR_AUC_LIFT": 0.3985353108430032,
+            "ROC_AUC": 0.8846153846153847,
+            "n": 25,
+            "prevalence": 0.52,
+            "status": "OK"
+          }
+        ],
+        "n": 101,
+        "positives": 78,
+        "prevalence": 0.7722772277227723,
+        "status": "OK"
+      },
+      "passes_all_predictive_gates": false,
+      "positive_metric_blocks": 2,
+      "preferred_warning_horizon": 10,
+      "simultaneous_LCB": null,
+      "status": "EVALUATED",
+      "support": {
+        "final_unique_onsets": 12,
+        "support_pass": true,
+        "train_validation_unique_onsets": 34
+      },
+      "target": "T3_ANY_SIDEWAYS"
+    },
+    "P03_VALIDATION_SCREENED_SIGNAL_LOGIT|SOL|T4_LONG_SIDEWAYS": {
+      "G0_identity": true,
+      "G1_support": true,
+      "G2_auc_and_pr_lift": true,
+      "G3_temporal_recurrence": true,
+      "G4_early_warning_horizon": true,
+      "G5_simultaneous_pr_lift_lcb": true,
+      "architecture": "P03_VALIDATION_SCREENED_SIGNAL_LOGIT",
+      "asset": "SOL",
+      "bootstrap_valid_replicates": 3970,
+      "final_metrics": {
+        "Brier": 0.225791097823595,
+        "PR_AUC": 0.739291869604491,
+        "PR_AUC_LIFT": 0.28384632505003554,
+        "ROC_AUC": 0.8027667984189722,
+        "chronological_blocks": [
+          {
+            "PR_AUC": 0.8483913403418046,
+            "PR_AUC_LIFT": 0.34839134034180463,
+            "ROC_AUC": 0.7869822485207101,
+            "n": 26,
+            "prevalence": 0.5,
+            "status": "OK"
+          },
+          {
+            "PR_AUC": 0.8864481894940024,
+            "PR_AUC_LIFT": 0.24644818949400238,
+            "ROC_AUC": 0.798611111111111,
+            "n": 25,
+            "prevalence": 0.64,
+            "status": "OK"
+          },
+          {
+            "PR_AUC": 0.46637629410738657,
+            "PR_AUC_LIFT": 0.18637629410738654,
+            "ROC_AUC": 0.7063492063492063,
+            "n": 25,
+            "prevalence": 0.28,
+            "status": "OK"
+          },
+          {
+            "PR_AUC": 0.6295269926152279,
+            "PR_AUC_LIFT": 0.2295269926152279,
+            "ROC_AUC": 0.8,
+            "n": 25,
+            "prevalence": 0.4,
+            "status": "OK"
+          }
+        ],
+        "n": 101,
+        "positives": 46,
+        "prevalence": 0.45544554455445546,
+        "status": "OK"
+      },
+      "passes_all_predictive_gates": true,
+      "positive_metric_blocks": 4,
+      "preferred_warning_horizon": 10,
+      "simultaneous_LCB": 0.017014093207515846,
+      "status": "EVALUATED",
+      "support": {
+        "final_unique_onsets": 7,
+        "support_pass": true,
+        "train_validation_unique_onsets": 15
+      },
+      "target": "T4_LONG_SIDEWAYS"
+    },
+    "P04_PCR_LOGIT|BTC|T1_ANY_DOWN": {
+      "passes_all_predictive_gates": false,
+      "status": "MODEL_UNAVAILABLE"
+    },
+    "P04_PCR_LOGIT|BTC|T2_MAJOR_DOWN": {
+      "passes_all_predictive_gates": false,
+      "status": "MODEL_UNAVAILABLE"
+    },
+    "P04_PCR_LOGIT|BTC|T3_ANY_SIDEWAYS": {
+      "G0_identity": true,
+      "G1_support": true,
+      "G2_auc_and_pr_lift": true,
+      "G3_temporal_recurrence": true,
+      "G4_early_warning_horizon": true,
+      "G5_simultaneous_pr_lift_lcb": false,
+      "architecture": "P04_PCR_LOGIT",
+      "asset": "BTC",
+      "bootstrap_valid_replicates": 3952,
+      "final_metrics": {
+        "Brier": 0.22644504049472453,
+        "PR_AUC": 0.6256267869452727,
+        "PR_AUC_LIFT": 0.1962150222393904,
+        "ROC_AUC": 0.7018782657816693,
+        "chronological_blocks": [
+          {
+            "PR_AUC": 0.9706584850320128,
+            "PR_AUC_LIFT": 0.17996081061340818,
+            "ROC_AUC": 0.892156862745098,
+            "n": 43,
+            "prevalence": 0.7906976744186046,
+            "status": "OK"
+          },
+          {
+            "PR_AUC": 0.8210751545429698,
+            "PR_AUC_LIFT": 0.146656549891807,
+            "ROC_AUC": 0.6428571428571429,
+            "n": 43,
+            "prevalence": 0.6744186046511628,
+            "status": "OK"
+          },
+          {
+            "n": 42,
+            "prevalence": 0.0,
+            "status": "NOT_WELL_DEFINED"
+          },
+          {
+            "PR_AUC": 0.3685628844839371,
+            "PR_AUC_LIFT": 0.130467646388699,
+            "ROC_AUC": 0.70625,
+            "n": 42,
+            "prevalence": 0.23809523809523808,
+            "status": "OK"
+          }
+        ],
+        "n": 170,
+        "positives": 73,
+        "prevalence": 0.4294117647058823,
+        "status": "OK"
+      },
+      "passes_all_predictive_gates": false,
+      "positive_metric_blocks": 3,
+      "preferred_warning_horizon": 10,
+      "simultaneous_LCB": -0.07061720960312928,
+      "status": "EVALUATED",
+      "support": {
+        "final_unique_onsets": 13,
+        "support_pass": true,
+        "train_validation_unique_onsets": 24
+      },
+      "target": "T3_ANY_SIDEWAYS"
+    },
+    "P04_PCR_LOGIT|BTC|T4_LONG_SIDEWAYS": {
+      "G0_identity": true,
+      "G1_support": true,
+      "G2_auc_and_pr_lift": true,
+      "G3_temporal_recurrence": false,
+      "G4_early_warning_horizon": true,
+      "G5_simultaneous_pr_lift_lcb": false,
+      "architecture": "P04_PCR_LOGIT",
+      "asset": "BTC",
+      "bootstrap_valid_replicates": 4000,
+      "final_metrics": {
+        "Brier": 0.29209926362044464,
+        "PR_AUC": 0.23328710918713472,
+        "PR_AUC_LIFT": 0.04505181506948766,
+        "ROC_AUC": 0.5690670289855073,
+        "chronological_blocks": [
+          {
+            "PR_AUC": 0.37851540115139726,
+            "PR_AUC_LIFT": -0.01683343605790505,
+            "ROC_AUC": 0.36877828054298645,
+            "n": 43,
+            "prevalence": 0.3953488372093023,
+            "status": "OK"
+          },
+          {
+            "PR_AUC": 0.47880772005772,
+            "PR_AUC_LIFT": 0.24624958052283627,
+            "ROC_AUC": 0.7787878787878787,
+            "n": 43,
+            "prevalence": 0.23255813953488372,
+            "status": "OK"
+          },
+          {
+            "n": 42,
+            "prevalence": 0.0,
+            "status": "NOT_WELL_DEFINED"
+          },
+          {
+            "PR_AUC": 0.1307532076432506,
+            "PR_AUC_LIFT": 0.01170558859563156,
+            "ROC_AUC": 0.48108108108108105,
+            "n": 42,
+            "prevalence": 0.11904761904761904,
+            "status": "OK"
+          }
+        ],
+        "n": 170,
+        "positives": 32,
+        "prevalence": 0.18823529411764706,
+        "status": "OK"
+      },
+      "passes_all_predictive_gates": false,
+      "positive_metric_blocks": 1,
+      "preferred_warning_horizon": 5,
+      "simultaneous_LCB": -0.22178041677303204,
+      "status": "EVALUATED",
+      "support": {
+        "final_unique_onsets": 7,
+        "support_pass": true,
+        "train_validation_unique_onsets": 9
+      },
+      "target": "T4_LONG_SIDEWAYS"
+    },
+    "P04_PCR_LOGIT|SOL|T1_ANY_DOWN": {
+      "passes_all_predictive_gates": false,
+      "status": "MODEL_UNAVAILABLE"
+    },
+    "P04_PCR_LOGIT|SOL|T2_MAJOR_DOWN": {
+      "passes_all_predictive_gates": false,
+      "status": "MODEL_UNAVAILABLE"
+    },
+    "P04_PCR_LOGIT|SOL|T3_ANY_SIDEWAYS": {
+      "G0_identity": true,
+      "G1_support": true,
+      "G2_auc_and_pr_lift": true,
+      "G3_temporal_recurrence": false,
+      "G4_early_warning_horizon": true,
+      "G5_simultaneous_pr_lift_lcb": false,
+      "architecture": "P04_PCR_LOGIT",
+      "asset": "SOL",
+      "bootstrap_valid_replicates": 2671,
+      "final_metrics": {
+        "Brier": 0.2279215199036726,
+        "PR_AUC": 0.9621477407656747,
+        "PR_AUC_LIFT": 0.18987051304290237,
+        "ROC_AUC": 0.8790412486064659,
+        "chronological_blocks": [
+          {
+            "n": 26,
+            "prevalence": 1.0,
+            "status": "NOT_WELL_DEFINED"
+          },
+          {
+            "n": 25,
+            "prevalence": 1.0,
+            "status": "NOT_WELL_DEFINED"
+          },
+          {
+            "PR_AUC": 0.682003677437114,
+            "PR_AUC_LIFT": 0.12200367743711393,
+            "ROC_AUC": 0.7402597402597402,
+            "n": 25,
+            "prevalence": 0.56,
+            "status": "OK"
+          },
+          {
+            "PR_AUC": 0.9945054945054945,
+            "PR_AUC_LIFT": 0.4745054945054945,
+            "ROC_AUC": 0.9935897435897436,
+            "n": 25,
+            "prevalence": 0.52,
+            "status": "OK"
+          }
+        ],
+        "n": 101,
+        "positives": 78,
+        "prevalence": 0.7722772277227723,
+        "status": "OK"
+      },
+      "passes_all_predictive_gates": false,
+      "positive_metric_blocks": 2,
+      "preferred_warning_horizon": 10,
+      "simultaneous_LCB": null,
+      "status": "EVALUATED",
+      "support": {
+        "final_unique_onsets": 12,
+        "support_pass": true,
+        "train_validation_unique_onsets": 34
+      },
+      "target": "T3_ANY_SIDEWAYS"
+    },
+    "P04_PCR_LOGIT|SOL|T4_LONG_SIDEWAYS": {
+      "G0_identity": true,
+      "G1_support": true,
+      "G2_auc_and_pr_lift": false,
+      "G3_temporal_recurrence": false,
+      "G4_early_warning_horizon": true,
+      "G5_simultaneous_pr_lift_lcb": false,
+      "architecture": "P04_PCR_LOGIT",
+      "asset": "SOL",
+      "bootstrap_valid_replicates": 3997,
+      "final_metrics": {
+        "Brier": 0.26715945545765085,
+        "PR_AUC": 0.1842943386886048,
+        "PR_AUC_LIFT": -0.013725463291593243,
+        "ROC_AUC": 0.4537037037037037,
+        "chronological_blocks": [
+          {
+            "PR_AUC": 0.26602206273258905,
+            "PR_AUC_LIFT": 0.035252831963358267,
+            "ROC_AUC": 0.475,
+            "n": 26,
+            "prevalence": 0.23076923076923078,
+            "status": "OK"
+          },
+          {
+            "PR_AUC": 0.32253635006634235,
+            "PR_AUC_LIFT": 0.002536350066342341,
+            "ROC_AUC": 0.48529411764705876,
+            "n": 25,
+            "prevalence": 0.32,
+            "status": "OK"
+          },
+          {
+            "PR_AUC": 0.08292929292929292,
+            "PR_AUC_LIFT": -0.037070707070707073,
+            "ROC_AUC": 0.015151515151515138,
+            "n": 25,
+            "prevalence": 0.12,
+            "status": "OK"
+          },
+          {
+            "PR_AUC": 0.17513227513227514,
+            "PR_AUC_LIFT": 0.055132275132275144,
+            "ROC_AUC": 0.5909090909090909,
+            "n": 25,
+            "prevalence": 0.12,
+            "status": "OK"
+          }
+        ],
+        "n": 101,
+        "positives": 20,
+        "prevalence": 0.19801980198019803,
+        "status": "OK"
+      },
+      "passes_all_predictive_gates": false,
+      "positive_metric_blocks": 1,
+      "preferred_warning_horizon": 3,
+      "simultaneous_LCB": -0.28055769513411294,
+      "status": "EVALUATED",
+      "support": {
+        "final_unique_onsets": 7,
+        "support_pass": true,
+        "train_validation_unique_onsets": 15
+      },
+      "target": "T4_LONG_SIDEWAYS"
+    },
+    "P05_THEORY_QUADRATIC_LOGIT|BTC|T1_ANY_DOWN": {
+      "passes_all_predictive_gates": false,
+      "status": "MODEL_UNAVAILABLE"
+    },
+    "P05_THEORY_QUADRATIC_LOGIT|BTC|T2_MAJOR_DOWN": {
+      "passes_all_predictive_gates": false,
+      "status": "MODEL_UNAVAILABLE"
+    },
+    "P05_THEORY_QUADRATIC_LOGIT|BTC|T3_ANY_SIDEWAYS": {
+      "G0_identity": true,
+      "G1_support": true,
+      "G2_auc_and_pr_lift": true,
+      "G3_temporal_recurrence": false,
+      "G4_early_warning_horizon": true,
+      "G5_simultaneous_pr_lift_lcb": false,
+      "architecture": "P05_THEORY_QUADRATIC_LOGIT",
+      "asset": "BTC",
+      "bootstrap_valid_replicates": 3952,
+      "final_metrics": {
+        "Brier": 0.3386931490701607,
+        "PR_AUC": 0.5591597412697138,
+        "PR_AUC_LIFT": 0.12974797656383147,
+        "ROC_AUC": 0.5790142635221015,
+        "chronological_blocks": [
+          {
+            "PR_AUC": 0.9025348920709784,
+            "PR_AUC_LIFT": 0.11183721765237375,
+            "ROC_AUC": 0.7745098039215687,
+            "n": 43,
+            "prevalence": 0.7906976744186046,
+            "status": "OK"
+          },
+          {
+            "PR_AUC": 0.7105480094945298,
+            "PR_AUC_LIFT": 0.03612940484336702,
+            "ROC_AUC": 0.4236453201970443,
+            "n": 43,
+            "prevalence": 0.6744186046511628,
+            "status": "OK"
+          },
+          {
+            "n": 42,
+            "prevalence": 0.0,
+            "status": "NOT_WELL_DEFINED"
+          },
+          {
+            "PR_AUC": 0.33002452619843925,
+            "PR_AUC_LIFT": 0.09192928810320117,
+            "ROC_AUC": 0.671875,
+            "n": 42,
+            "prevalence": 0.23809523809523808,
+            "status": "OK"
+          }
+        ],
+        "n": 170,
+        "positives": 73,
+        "prevalence": 0.4294117647058823,
+        "status": "OK"
+      },
+      "passes_all_predictive_gates": false,
+      "positive_metric_blocks": 2,
+      "preferred_warning_horizon": 10,
+      "simultaneous_LCB": -0.13708425527868823,
+      "status": "EVALUATED",
+      "support": {
+        "final_unique_onsets": 13,
+        "support_pass": true,
+        "train_validation_unique_onsets": 24
+      },
+      "target": "T3_ANY_SIDEWAYS"
+    },
+    "P05_THEORY_QUADRATIC_LOGIT|BTC|T4_LONG_SIDEWAYS": {
+      "G0_identity": true,
+      "G1_support": true,
+      "G2_auc_and_pr_lift": false,
+      "G3_temporal_recurrence": false,
+      "G4_early_warning_horizon": true,
+      "G5_simultaneous_pr_lift_lcb": false,
+      "architecture": "P05_THEORY_QUADRATIC_LOGIT",
+      "asset": "BTC",
+      "bootstrap_valid_replicates": 3999,
+      "final_metrics": {
+        "Brier": 0.21774928016742034,
+        "PR_AUC": 0.12196731676977134,
+        "PR_AUC_LIFT": -0.0015620949949345514,
+        "ROC_AUC": 0.48801534036433364,
+        "chronological_blocks": [
+          {
+            "PR_AUC": 0.3392669911787559,
+            "PR_AUC_LIFT": 0.060197223736895455,
+            "ROC_AUC": 0.5698924731182795,
+            "n": 43,
+            "prevalence": 0.27906976744186046,
+            "status": "OK"
+          },
+          {
+            "PR_AUC": 0.11427013006584369,
+            "PR_AUC_LIFT": -0.02526475365508654,
+            "ROC_AUC": 0.31531531531531526,
+            "n": 43,
+            "prevalence": 0.13953488372093023,
+            "status": "OK"
+          },
+          {
+            "n": 42,
+            "prevalence": 0.0,
+            "status": "NOT_WELL_DEFINED"
+          },
+          {
+            "PR_AUC": 0.8666666666666667,
+            "PR_AUC_LIFT": 0.7952380952380953,
+            "ROC_AUC": 0.9829059829059829,
+            "n": 42,
+            "prevalence": 0.07142857142857142,
+            "status": "OK"
+          }
+        ],
+        "n": 170,
+        "positives": 21,
+        "prevalence": 0.12352941176470589,
+        "status": "OK"
+      },
+      "passes_all_predictive_gates": false,
+      "positive_metric_blocks": 2,
+      "preferred_warning_horizon": 3,
+      "simultaneous_LCB": -0.26839432683745423,
+      "status": "EVALUATED",
+      "support": {
+        "final_unique_onsets": 7,
+        "support_pass": true,
+        "train_validation_unique_onsets": 9
+      },
+      "target": "T4_LONG_SIDEWAYS"
+    },
+    "P05_THEORY_QUADRATIC_LOGIT|SOL|T1_ANY_DOWN": {
+      "passes_all_predictive_gates": false,
+      "status": "MODEL_UNAVAILABLE"
+    },
+    "P05_THEORY_QUADRATIC_LOGIT|SOL|T2_MAJOR_DOWN": {
+      "passes_all_predictive_gates": false,
+      "status": "MODEL_UNAVAILABLE"
+    },
+    "P05_THEORY_QUADRATIC_LOGIT|SOL|T3_ANY_SIDEWAYS": {
+      "G0_identity": true,
+      "G1_support": true,
+      "G2_auc_and_pr_lift": false,
+      "G3_temporal_recurrence": false,
+      "G4_early_warning_horizon": true,
+      "G5_simultaneous_pr_lift_lcb": false,
+      "architecture": "P05_THEORY_QUADRATIC_LOGIT",
+      "asset": "SOL",
+      "bootstrap_valid_replicates": 4000,
+      "final_metrics": {
+        "Brier": 0.23088244574230976,
+        "PR_AUC": 0.12526191391714517,
+        "PR_AUC_LIFT": 0.0064500327290263615,
+        "ROC_AUC": 0.4953183520599251,
+        "chronological_blocks": [
+          {
+            "PR_AUC": 0.1588815789473684,
+            "PR_AUC_LIFT": 0.005035425101214547,
+            "ROC_AUC": 0.4318181818181818,
+            "n": 26,
+            "prevalence": 0.15384615384615385,
+            "status": "OK"
+          },
+          {
+            "PR_AUC": 0.20490683229813667,
+            "PR_AUC_LIFT": 0.004906832298136654,
+            "ROC_AUC": 0.38999999999999996,
+            "n": 25,
+            "prevalence": 0.2,
+            "status": "OK"
+          },
+          {
+            "PR_AUC": 0.06666666666666667,
+            "PR_AUC_LIFT": 0.026666666666666665,
+            "ROC_AUC": 0.41666666666666663,
+            "n": 25,
+            "prevalence": 0.04,
+            "status": "OK"
+          },
+          {
+            "PR_AUC": 0.15476190476190477,
+            "PR_AUC_LIFT": 0.07476190476190477,
+            "ROC_AUC": 0.6521739130434783,
+            "n": 25,
+            "prevalence": 0.08,
+            "status": "OK"
+          }
+        ],
+        "n": 101,
+        "positives": 12,
+        "prevalence": 0.1188118811881188,
+        "status": "OK"
+      },
+      "passes_all_predictive_gates": false,
+      "positive_metric_blocks": 1,
+      "preferred_warning_horizon": 1,
+      "simultaneous_LCB": -0.26038219911349336,
+      "status": "EVALUATED",
+      "support": {
+        "final_unique_onsets": 12,
+        "support_pass": true,
+        "train_validation_unique_onsets": 31
+      },
+      "target": "T3_ANY_SIDEWAYS"
+    },
+    "P05_THEORY_QUADRATIC_LOGIT|SOL|T4_LONG_SIDEWAYS": {
+      "G0_identity": true,
+      "G1_support": true,
+      "G2_auc_and_pr_lift": false,
+      "G3_temporal_recurrence": false,
+      "G4_early_warning_horizon": true,
+      "G5_simultaneous_pr_lift_lcb": false,
+      "architecture": "P05_THEORY_QUADRATIC_LOGIT",
+      "asset": "SOL",
+      "bootstrap_valid_replicates": 3996,
+      "final_metrics": {
+        "Brier": 0.2357115393408951,
+        "PR_AUC": 0.08555372475923789,
+        "PR_AUC_LIFT": 0.01624679406616858,
+        "ROC_AUC": 0.35714285714285715,
+        "chronological_blocks": [
+          {
+            "PR_AUC": 0.07886904761904762,
+            "PR_AUC_LIFT": 0.001945970695970689,
+            "ROC_AUC": 0.2916666666666667,
+            "n": 26,
+            "prevalence": 0.07692307692307693,
+            "status": "OK"
+          },
+          {
+            "PR_AUC": 0.15711462450592883,
+            "PR_AUC_LIFT": 0.03711462450592884,
+            "ROC_AUC": 0.3484848484848485,
+            "n": 25,
+            "prevalence": 0.12,
+            "status": "OK"
+          },
+          {
+            "PR_AUC": 0.0625,
+            "PR_AUC_LIFT": 0.0225,
+            "ROC_AUC": 0.375,
+            "n": 25,
+            "prevalence": 0.04,
+            "status": "OK"
+          },
+          {
+            "PR_AUC": 0.05263157894736842,
+            "PR_AUC_LIFT": 0.012631578947368417,
+            "ROC_AUC": 0.25,
+            "n": 25,
+            "prevalence": 0.04,
+            "status": "OK"
+          }
+        ],
+        "n": 101,
+        "positives": 7,
+        "prevalence": 0.06930693069306931,
+        "status": "OK"
+      },
+      "passes_all_predictive_gates": false,
+      "positive_metric_blocks": 0,
+      "preferred_warning_horizon": 1,
+      "simultaneous_LCB": -0.2505854377763511,
+      "status": "EVALUATED",
+      "support": {
+        "final_unique_onsets": 7,
+        "support_pass": true,
+        "train_validation_unique_onsets": 15
+      },
+      "target": "T4_LONG_SIDEWAYS"
+    },
+    "P06_SHALLOW_GBDT_CLASSIFIER|BTC|T1_ANY_DOWN": {
+      "passes_all_predictive_gates": false,
+      "status": "MODEL_UNAVAILABLE"
+    },
+    "P06_SHALLOW_GBDT_CLASSIFIER|BTC|T2_MAJOR_DOWN": {
+      "passes_all_predictive_gates": false,
+      "status": "MODEL_UNAVAILABLE"
+    },
+    "P06_SHALLOW_GBDT_CLASSIFIER|BTC|T3_ANY_SIDEWAYS": {
+      "G0_identity": true,
+      "G1_support": true,
+      "G2_auc_and_pr_lift": false,
+      "G3_temporal_recurrence": false,
+      "G4_early_warning_horizon": true,
+      "G5_simultaneous_pr_lift_lcb": false,
+      "architecture": "P06_SHALLOW_GBDT_CLASSIFIER",
+      "asset": "BTC",
+      "bootstrap_valid_replicates": 4000,
+      "final_metrics": {
+        "Brier": 0.2068999417650808,
+        "PR_AUC": 0.1864074823655782,
+        "PR_AUC_LIFT": -0.007710164693245342,
+        "ROC_AUC": 0.42103516921035167,
+        "chronological_blocks": [
+          {
+            "PR_AUC": 0.4850064463358412,
+            "PR_AUC_LIFT": 0.0664017951730505,
+            "ROC_AUC": 0.5355555555555556,
+            "n": 43,
+            "prevalence": 0.4186046511627907,
+            "status": "OK"
+          },
+          {
+            "PR_AUC": 0.234050874187875,
+            "PR_AUC_LIFT": -0.04501889325398545,
+            "ROC_AUC": 0.3077956989247312,
+            "n": 43,
+            "prevalence": 0.27906976744186046,
+            "status": "OK"
+          },
+          {
+            "n": 42,
+            "prevalence": 0.0,
+            "status": "NOT_WELL_DEFINED"
+          },
+          {
+            "PR_AUC": 0.11530964162543109,
+            "PR_AUC_LIFT": 0.04388107019685966,
+            "ROC_AUC": 0.6239316239316239,
+            "n": 42,
+            "prevalence": 0.07142857142857142,
+            "status": "OK"
+          }
+        ],
+        "n": 170,
+        "positives": 33,
+        "prevalence": 0.19411764705882353,
+        "status": "OK"
+      },
+      "passes_all_predictive_gates": false,
+      "positive_metric_blocks": 2,
+      "preferred_warning_horizon": 3,
+      "simultaneous_LCB": -0.27454239653576507,
+      "status": "EVALUATED",
+      "support": {
+        "final_unique_onsets": 12,
+        "support_pass": true,
+        "train_validation_unique_onsets": 21
+      },
+      "target": "T3_ANY_SIDEWAYS"
+    },
+    "P06_SHALLOW_GBDT_CLASSIFIER|BTC|T4_LONG_SIDEWAYS": {
+      "G0_identity": true,
+      "G1_support": true,
+      "G2_auc_and_pr_lift": true,
+      "G3_temporal_recurrence": true,
+      "G4_early_warning_horizon": true,
+      "G5_simultaneous_pr_lift_lcb": false,
+      "architecture": "P06_SHALLOW_GBDT_CLASSIFIER",
+      "asset": "BTC",
+      "bootstrap_valid_replicates": 3999,
+      "final_metrics": {
+        "Brier": 0.1355356646054054,
+        "PR_AUC": 0.14014859527544882,
+        "PR_AUC_LIFT": 0.01661918351074293,
+        "ROC_AUC": 0.535953978906999,
+        "chronological_blocks": [
+          {
+            "PR_AUC": 0.3182698395048417,
+            "PR_AUC_LIFT": 0.03920007206298126,
+            "ROC_AUC": 0.5860215053763441,
+            "n": 43,
+            "prevalence": 0.27906976744186046,
+            "status": "OK"
+          },
+          {
+            "PR_AUC": 0.17040555352575815,
+            "PR_AUC_LIFT": 0.030870669804827916,
+            "ROC_AUC": 0.5405405405405406,
+            "n": 43,
+            "prevalence": 0.13953488372093023,
+            "status": "OK"
+          },
+          {
+            "n": 42,
+            "prevalence": 0.0,
+            "status": "NOT_WELL_DEFINED"
+          },
+          {
+            "PR_AUC": 0.21746031746031746,
+            "PR_AUC_LIFT": 0.14603174603174604,
+            "ROC_AUC": 0.811965811965812,
+            "n": 42,
+            "prevalence": 0.07142857142857142,
+            "status": "OK"
+          }
+        ],
+        "n": 170,
+        "positives": 21,
+        "prevalence": 0.12352941176470589,
+        "status": "OK"
+      },
+      "passes_all_predictive_gates": false,
+      "positive_metric_blocks": 3,
+      "preferred_warning_horizon": 3,
+      "simultaneous_LCB": -0.25021304833177677,
+      "status": "EVALUATED",
+      "support": {
+        "final_unique_onsets": 7,
+        "support_pass": true,
+        "train_validation_unique_onsets": 9
+      },
+      "target": "T4_LONG_SIDEWAYS"
+    },
+    "P06_SHALLOW_GBDT_CLASSIFIER|SOL|T1_ANY_DOWN": {
+      "passes_all_predictive_gates": false,
+      "status": "MODEL_UNAVAILABLE"
+    },
+    "P06_SHALLOW_GBDT_CLASSIFIER|SOL|T2_MAJOR_DOWN": {
+      "passes_all_predictive_gates": false,
+      "status": "MODEL_UNAVAILABLE"
+    },
+    "P06_SHALLOW_GBDT_CLASSIFIER|SOL|T3_ANY_SIDEWAYS": {
+      "G0_identity": true,
+      "G1_support": true,
+      "G2_auc_and_pr_lift": true,
+      "G3_temporal_recurrence": false,
+      "G4_early_warning_horizon": false,
+      "G5_simultaneous_pr_lift_lcb": false,
+      "architecture": "P06_SHALLOW_GBDT_CLASSIFIER",
+      "asset": "SOL",
+      "bootstrap_valid_replicates": 4000,
+      "final_metrics": {
+        "Brier": 0.12058733408345298,
+        "PR_AUC": 0.13810690991756483,
+        "PR_AUC_LIFT": 0.019295028729446023,
+        "ROC_AUC": 0.5449438202247191,
+        "chronological_blocks": [
+          {
+            "PR_AUC": 0.1760635198135198,
+            "PR_AUC_LIFT": 0.022217365967365954,
+            "ROC_AUC": 0.4772727272727273,
+            "n": 26,
+            "prevalence": 0.15384615384615385,
+            "status": "OK"
+          },
+          {
+            "PR_AUC": 0.166010101010101,
+            "PR_AUC_LIFT": -0.033989898989899014,
+            "ROC_AUC": 0.30000000000000004,
+            "n": 25,
+            "prevalence": 0.2,
+            "status": "OK"
+          },
+          {
+            "PR_AUC": 0.25,
+            "PR_AUC_LIFT": 0.21,
+            "ROC_AUC": 0.875,
+            "n": 25,
+            "prevalence": 0.04,
+            "status": "OK"
+          },
+          {
+            "PR_AUC": 0.26666666666666666,
+            "PR_AUC_LIFT": 0.18666666666666665,
+            "ROC_AUC": 0.8260869565217391,
+            "n": 25,
+            "prevalence": 0.08,
+            "status": "OK"
+          }
+        ],
+        "n": 101,
+        "positives": 12,
+        "prevalence": 0.1188118811881188,
+        "status": "OK"
+      },
+      "passes_all_predictive_gates": false,
+      "positive_metric_blocks": 2,
+      "preferred_warning_horizon": 1,
+      "simultaneous_LCB": -0.24753720311307367,
+      "status": "EVALUATED",
+      "support": {
+        "final_unique_onsets": 12,
+        "support_pass": true,
+        "train_validation_unique_onsets": 31
+      },
+      "target": "T3_ANY_SIDEWAYS"
+    },
+    "P06_SHALLOW_GBDT_CLASSIFIER|SOL|T4_LONG_SIDEWAYS": {
+      "G0_identity": true,
+      "G1_support": true,
+      "G2_auc_and_pr_lift": false,
+      "G3_temporal_recurrence": true,
+      "G4_early_warning_horizon": true,
+      "G5_simultaneous_pr_lift_lcb": false,
+      "architecture": "P06_SHALLOW_GBDT_CLASSIFIER",
+      "asset": "SOL",
+      "bootstrap_valid_replicates": 3970,
+      "final_metrics": {
+        "Brier": 0.30833297903896684,
+        "PR_AUC": 0.48637631681723653,
+        "PR_AUC_LIFT": 0.03093077226278107,
+        "ROC_AUC": 0.4972332015810277,
+        "chronological_blocks": [
+          {
+            "PR_AUC": 0.3629195080282037,
+            "PR_AUC_LIFT": -0.13708049197179628,
+            "ROC_AUC": 0.04733727810650888,
+            "n": 26,
+            "prevalence": 0.5,
+            "status": "OK"
+          },
+          {
+            "PR_AUC": 0.7612696953781513,
+            "PR_AUC_LIFT": 0.12126969537815124,
+            "ROC_AUC": 0.6736111111111112,
+            "n": 25,
+            "prevalence": 0.64,
+            "status": "OK"
+          },
+          {
+            "PR_AUC": 0.6083333333333333,
+            "PR_AUC_LIFT": 0.32833333333333325,
+            "ROC_AUC": 0.8333333333333334,
+            "n": 25,
+            "prevalence": 0.28,
+            "status": "OK"
+          },
+          {
+            "PR_AUC": 0.6176763815894251,
+            "PR_AUC_LIFT": 0.21767638158942504,
+            "ROC_AUC": 0.62,
+            "n": 25,
+            "prevalence": 0.4,
+            "status": "OK"
+          }
+        ],
+        "n": 101,
+        "positives": 46,
+        "prevalence": 0.45544554455445546,
+        "status": "OK"
+      },
+      "passes_all_predictive_gates": false,
+      "positive_metric_blocks": 3,
+      "preferred_warning_horizon": 10,
+      "simultaneous_LCB": -0.23590145957973863,
+      "status": "EVALUATED",
+      "support": {
+        "final_unique_onsets": 7,
+        "support_pass": true,
+        "train_validation_unique_onsets": 15
+      },
+      "target": "T4_LONG_SIDEWAYS"
+    },
+    "P07_DISCRETE_TIME_HAZARD_LOGIT|BTC|T1_ANY_DOWN": {
+      "passes_all_predictive_gates": false,
+      "status": "MODEL_UNAVAILABLE"
+    },
+    "P07_DISCRETE_TIME_HAZARD_LOGIT|BTC|T2_MAJOR_DOWN": {
+      "passes_all_predictive_gates": false,
+      "status": "MODEL_UNAVAILABLE"
+    },
+    "P07_DISCRETE_TIME_HAZARD_LOGIT|BTC|T3_ANY_SIDEWAYS": {
+      "G0_identity": true,
+      "G1_support": true,
+      "G2_auc_and_pr_lift": true,
+      "G3_temporal_recurrence": true,
+      "G4_early_warning_horizon": true,
+      "G5_simultaneous_pr_lift_lcb": false,
+      "architecture": "P07_DISCRETE_TIME_HAZARD_LOGIT",
+      "asset": "BTC",
+      "bootstrap_valid_replicates": 3952,
+      "final_metrics": {
+        "Brier": 0.2449166620556307,
+        "PR_AUC": 0.5853147689696088,
+        "PR_AUC_LIFT": 0.15590300426372644,
+        "ROC_AUC": 0.6332438921056348,
+        "chronological_blocks": [
+          {
+            "PR_AUC": 0.8322511769881352,
+            "PR_AUC_LIFT": 0.04155350256953061,
+            "ROC_AUC": 0.5751633986928104,
+            "n": 43,
+            "prevalence": 0.7906976744186046,
+            "status": "OK"
+          },
+          {
+            "PR_AUC": 0.823229110412566,
+            "PR_AUC_LIFT": 0.1488105057614032,
+            "ROC_AUC": 0.6748768472906405,
+            "n": 43,
+            "prevalence": 0.6744186046511628,
+            "status": "OK"
+          },
+          {
+            "n": 42,
+            "prevalence": 0.0,
+            "status": "NOT_WELL_DEFINED"
+          },
+          {
+            "PR_AUC": 0.3403990453990454,
+            "PR_AUC_LIFT": 0.10230380730380734,
+            "ROC_AUC": 0.68125,
+            "n": 42,
+            "prevalence": 0.23809523809523808,
+            "status": "OK"
+          }
+        ],
+        "n": 170,
+        "positives": 73,
+        "prevalence": 0.4294117647058823,
+        "status": "OK"
+      },
+      "passes_all_predictive_gates": false,
+      "positive_metric_blocks": 3,
+      "preferred_warning_horizon": 10,
+      "simultaneous_LCB": -0.11092922757879325,
+      "status": "EVALUATED",
+      "support": {
+        "final_unique_onsets": 13,
+        "support_pass": true,
+        "train_validation_unique_onsets": 24
+      },
+      "target": "T3_ANY_SIDEWAYS"
+    },
+    "P07_DISCRETE_TIME_HAZARD_LOGIT|BTC|T4_LONG_SIDEWAYS": {
+      "G0_identity": true,
+      "G1_support": true,
+      "G2_auc_and_pr_lift": true,
+      "G3_temporal_recurrence": false,
+      "G4_early_warning_horizon": true,
+      "G5_simultaneous_pr_lift_lcb": false,
+      "architecture": "P07_DISCRETE_TIME_HAZARD_LOGIT",
+      "asset": "BTC",
+      "bootstrap_valid_replicates": 3999,
+      "final_metrics": {
+        "Brier": 0.28917448578606675,
+        "PR_AUC": 0.36566745765099795,
+        "PR_AUC_LIFT": 0.07154981059217441,
+        "ROC_AUC": 0.5751666666666667,
+        "chronological_blocks": [
+          {
+            "PR_AUC": 0.4415257608263343,
+            "PR_AUC_LIFT": -0.07010214615040988,
+            "ROC_AUC": 0.29004329004329005,
+            "n": 43,
+            "prevalence": 0.5116279069767442,
+            "status": "OK"
+          },
+          {
+            "PR_AUC": 0.7460196275450107,
+            "PR_AUC_LIFT": 0.32741497638222,
+            "ROC_AUC": 0.7711111111111111,
+            "n": 43,
+            "prevalence": 0.4186046511627907,
+            "status": "OK"
+          },
+          {
+            "n": 42,
+            "prevalence": 0.0,
+            "status": "NOT_WELL_DEFINED"
+          },
+          {
+            "PR_AUC": 0.2328506232598304,
+            "PR_AUC_LIFT": -0.005244614835407668,
+            "ROC_AUC": 0.47500000000000003,
+            "n": 42,
+            "prevalence": 0.23809523809523808,
+            "status": "OK"
+          }
+        ],
+        "n": 170,
+        "positives": 50,
+        "prevalence": 0.29411764705882354,
+        "status": "OK"
+      },
+      "passes_all_predictive_gates": false,
+      "positive_metric_blocks": 1,
+      "preferred_warning_horizon": 10,
+      "simultaneous_LCB": -0.19528242125034528,
+      "status": "EVALUATED",
+      "support": {
+        "final_unique_onsets": 8,
+        "support_pass": true,
+        "train_validation_unique_onsets": 10
+      },
+      "target": "T4_LONG_SIDEWAYS"
+    },
+    "P07_DISCRETE_TIME_HAZARD_LOGIT|SOL|T1_ANY_DOWN": {
+      "passes_all_predictive_gates": false,
+      "status": "MODEL_UNAVAILABLE"
+    },
+    "P07_DISCRETE_TIME_HAZARD_LOGIT|SOL|T2_MAJOR_DOWN": {
+      "passes_all_predictive_gates": false,
+      "status": "MODEL_UNAVAILABLE"
+    },
+    "P07_DISCRETE_TIME_HAZARD_LOGIT|SOL|T3_ANY_SIDEWAYS": {
+      "G0_identity": true,
+      "G1_support": true,
+      "G2_auc_and_pr_lift": true,
+      "G3_temporal_recurrence": false,
+      "G4_early_warning_horizon": true,
+      "G5_simultaneous_pr_lift_lcb": false,
+      "architecture": "P07_DISCRETE_TIME_HAZARD_LOGIT",
+      "asset": "SOL",
+      "bootstrap_valid_replicates": 4000,
+      "final_metrics": {
+        "Brier": 0.22881520702879457,
+        "PR_AUC": 0.45325020386839504,
+        "PR_AUC_LIFT": 0.10671555040304853,
+        "ROC_AUC": 0.6008658008658009,
+        "chronological_blocks": [
+          {
+            "PR_AUC": 0.5059324746031402,
+            "PR_AUC_LIFT": 0.044394013064678606,
+            "ROC_AUC": 0.47023809523809523,
+            "n": 26,
+            "prevalence": 0.46153846153846156,
+            "status": "OK"
+          },
+          {
+            "PR_AUC": 0.8006846917395347,
+            "PR_AUC_LIFT": 0.24068469173953466,
+            "ROC_AUC": 0.6493506493506493,
+            "n": 25,
+            "prevalence": 0.56,
+            "status": "OK"
+          },
+          {
+            "PR_AUC": 0.09135387488328664,
+            "PR_AUC_LIFT": -0.028646125116713356,
+            "ROC_AUC": 0.13636363636363635,
+            "n": 25,
+            "prevalence": 0.12,
+            "status": "OK"
+          },
+          {
+            "PR_AUC": 0.5789682539682539,
+            "PR_AUC_LIFT": 0.3389682539682539,
+            "ROC_AUC": 0.8070175438596492,
+            "n": 25,
+            "prevalence": 0.24,
+            "status": "OK"
+          }
+        ],
+        "n": 101,
+        "positives": 35,
+        "prevalence": 0.3465346534653465,
+        "status": "OK"
+      },
+      "passes_all_predictive_gates": false,
+      "positive_metric_blocks": 2,
+      "preferred_warning_horizon": 3,
+      "simultaneous_LCB": -0.16011668143947116,
+      "status": "EVALUATED",
+      "support": {
+        "final_unique_onsets": 12,
+        "support_pass": true,
+        "train_validation_unique_onsets": 31
+      },
+      "target": "T3_ANY_SIDEWAYS"
+    },
+    "P07_DISCRETE_TIME_HAZARD_LOGIT|SOL|T4_LONG_SIDEWAYS": {
+      "G0_identity": true,
+      "G1_support": true,
+      "G2_auc_and_pr_lift": true,
+      "G3_temporal_recurrence": false,
+      "G4_early_warning_horizon": true,
+      "G5_simultaneous_pr_lift_lcb": false,
+      "architecture": "P07_DISCRETE_TIME_HAZARD_LOGIT",
+      "asset": "SOL",
+      "bootstrap_valid_replicates": 3335,
+      "final_metrics": {
+        "Brier": 0.24557682261078234,
+        "PR_AUC": 0.7703031222619681,
+        "PR_AUC_LIFT": 0.07723381533127505,
+        "ROC_AUC": 0.5276497695852534,
+        "chronological_blocks": [
+          {
+            "PR_AUC": 0.7284781014628572,
+            "PR_AUC_LIFT": 0.036170409155164895,
+            "ROC_AUC": 0.36111111111111116,
+            "n": 26,
+            "prevalence": 0.6923076923076923,
+            "status": "OK"
+          },
+          {
+            "n": 25,
+            "prevalence": 1.0,
+            "status": "NOT_WELL_DEFINED"
+          },
+          {
+            "PR_AUC": 0.21362944387241062,
+            "PR_AUC_LIFT": -0.06637055612758941,
+            "ROC_AUC": 0.25396825396825395,
+            "n": 25,
+            "prevalence": 0.28,
+            "status": "OK"
+          },
+          {
+            "PR_AUC": 0.807416688217856,
+            "PR_AUC_LIFT": 0.007416688217855905,
+            "ROC_AUC": 0.36,
+            "n": 25,
+            "prevalence": 0.8,
+            "status": "OK"
+          }
+        ],
+        "n": 101,
+        "positives": 70,
+        "prevalence": 0.693069306930693,
+        "status": "OK"
+      },
+      "passes_all_predictive_gates": false,
+      "positive_metric_blocks": 0,
+      "preferred_warning_horizon": 20,
+      "simultaneous_LCB": null,
+      "status": "EVALUATED",
+      "support": {
+        "final_unique_onsets": 9,
+        "support_pass": true,
+        "train_validation_unique_onsets": 16
+      },
+      "target": "T4_LONG_SIDEWAYS"
+    },
+    "P08_STACKED_PROBABILITY_ENSEMBLE|BTC|T1_ANY_DOWN": {
+      "passes_all_predictive_gates": false,
+      "status": "MODEL_UNAVAILABLE"
+    },
+    "P08_STACKED_PROBABILITY_ENSEMBLE|BTC|T2_MAJOR_DOWN": {
+      "passes_all_predictive_gates": false,
+      "status": "MODEL_UNAVAILABLE"
+    },
+    "P08_STACKED_PROBABILITY_ENSEMBLE|BTC|T3_ANY_SIDEWAYS": {
+      "G0_identity": true,
+      "G1_support": true,
+      "G2_auc_and_pr_lift": true,
+      "G3_temporal_recurrence": true,
+      "G4_early_warning_horizon": true,
+      "G5_simultaneous_pr_lift_lcb": false,
+      "architecture": "P08_STACKED_PROBABILITY_ENSEMBLE",
+      "asset": "BTC",
+      "bootstrap_valid_replicates": 3952,
+      "final_metrics": {
+        "Brier": 0.2596770543373011,
+        "PR_AUC": 0.5182545488200532,
+        "PR_AUC_LIFT": 0.08884278411417085,
+        "ROC_AUC": 0.6254766275949725,
+        "chronological_blocks": [
+          {
+            "PR_AUC": 0.8715132126329498,
+            "PR_AUC_LIFT": 0.08081553821434517,
+            "ROC_AUC": 0.7287581699346405,
+            "n": 43,
+            "prevalence": 0.7906976744186046,
+            "status": "OK"
+          },
+          {
+            "PR_AUC": 0.7306863649106851,
+            "PR_AUC_LIFT": 0.05626776025952229,
+            "ROC_AUC": 0.5123152709359606,
+            "n": 43,
+            "prevalence": 0.6744186046511628,
+            "status": "OK"
+          },
+          {
+            "n": 42,
+            "prevalence": 0.0,
+            "status": "NOT_WELL_DEFINED"
+          },
+          {
+            "PR_AUC": 0.2604714970774588,
+            "PR_AUC_LIFT": 0.02237625898222073,
+            "ROC_AUC": 0.5625,
+            "n": 42,
+            "prevalence": 0.23809523809523808,
+            "status": "OK"
+          }
+        ],
+        "n": 170,
+        "positives": 73,
+        "prevalence": 0.4294117647058823,
+        "status": "OK"
+      },
+      "passes_all_predictive_gates": false,
+      "positive_metric_blocks": 3,
+      "preferred_warning_horizon": 10,
+      "simultaneous_LCB": -0.17798944772834885,
+      "status": "EVALUATED",
+      "support": {
+        "final_unique_onsets": 13,
+        "support_pass": true,
+        "train_validation_unique_onsets": 24
+      },
+      "target": "T3_ANY_SIDEWAYS"
+    },
+    "P08_STACKED_PROBABILITY_ENSEMBLE|BTC|T4_LONG_SIDEWAYS": {
+      "G0_identity": true,
+      "G1_support": true,
+      "G2_auc_and_pr_lift": true,
+      "G3_temporal_recurrence": false,
+      "G4_early_warning_horizon": true,
+      "G5_simultaneous_pr_lift_lcb": false,
+      "architecture": "P08_STACKED_PROBABILITY_ENSEMBLE",
+      "asset": "BTC",
+      "bootstrap_valid_replicates": 3999,
+      "final_metrics": {
+        "Brier": 0.1868176806283156,
+        "PR_AUC": 0.15317796899002578,
+        "PR_AUC_LIFT": 0.029648557225319894,
+        "ROC_AUC": 0.5011185682326622,
+        "chronological_blocks": [
+          {
+            "PR_AUC": 0.2345602721590658,
+            "PR_AUC_LIFT": -0.04450949528279466,
+            "ROC_AUC": 0.3682795698924731,
+            "n": 43,
+            "prevalence": 0.27906976744186046,
+            "status": "OK"
+          },
+          {
+            "PR_AUC": 0.16528814431120897,
+            "PR_AUC_LIFT": 0.025753260590278743,
+            "ROC_AUC": 0.5270270270270271,
+            "n": 43,
+            "prevalence": 0.13953488372093023,
+            "status": "OK"
+          },
+          {
+            "n": 42,
+            "prevalence": 0.0,
+            "status": "NOT_WELL_DEFINED"
+          },
+          {
+            "PR_AUC": 0.7222222222222222,
+            "PR_AUC_LIFT": 0.6507936507936508,
+            "ROC_AUC": 0.9658119658119658,
+            "n": 42,
+            "prevalence": 0.07142857142857142,
+            "status": "OK"
+          }
+        ],
+        "n": 170,
+        "positives": 21,
+        "prevalence": 0.12352941176470589,
+        "status": "OK"
+      },
+      "passes_all_predictive_gates": false,
+      "positive_metric_blocks": 2,
+      "preferred_warning_horizon": 3,
+      "simultaneous_LCB": -0.2371836746171998,
+      "status": "EVALUATED",
+      "support": {
+        "final_unique_onsets": 7,
+        "support_pass": true,
+        "train_validation_unique_onsets": 9
+      },
+      "target": "T4_LONG_SIDEWAYS"
+    },
+    "P08_STACKED_PROBABILITY_ENSEMBLE|SOL|T1_ANY_DOWN": {
+      "passes_all_predictive_gates": false,
+      "status": "MODEL_UNAVAILABLE"
+    },
+    "P08_STACKED_PROBABILITY_ENSEMBLE|SOL|T2_MAJOR_DOWN": {
+      "passes_all_predictive_gates": false,
+      "status": "MODEL_UNAVAILABLE"
+    },
+    "P08_STACKED_PROBABILITY_ENSEMBLE|SOL|T3_ANY_SIDEWAYS": {
+      "G0_identity": true,
+      "G1_support": true,
+      "G2_auc_and_pr_lift": true,
+      "G3_temporal_recurrence": false,
+      "G4_early_warning_horizon": true,
+      "G5_simultaneous_pr_lift_lcb": false,
+      "architecture": "P08_STACKED_PROBABILITY_ENSEMBLE",
+      "asset": "SOL",
+      "bootstrap_valid_replicates": 2671,
+      "final_metrics": {
+        "Brier": 0.22169203857761724,
+        "PR_AUC": 0.9601330421249821,
+        "PR_AUC_LIFT": 0.18785581440220978,
+        "ROC_AUC": 0.8968784838350056,
+        "chronological_blocks": [
+          {
+            "n": 26,
+            "prevalence": 1.0,
+            "status": "NOT_WELL_DEFINED"
+          },
+          {
+            "n": 25,
+            "prevalence": 1.0,
+            "status": "NOT_WELL_DEFINED"
+          },
+          {
+            "PR_AUC": 0.8362847469990328,
+            "PR_AUC_LIFT": 0.2762847469990327,
+            "ROC_AUC": 0.8441558441558441,
+            "n": 25,
+            "prevalence": 0.56,
+            "status": "OK"
+          },
+          {
+            "PR_AUC": 0.9185353108430032,
+            "PR_AUC_LIFT": 0.3985353108430032,
+            "ROC_AUC": 0.8846153846153847,
+            "n": 25,
+            "prevalence": 0.52,
+            "status": "OK"
+          }
+        ],
+        "n": 101,
+        "positives": 78,
+        "prevalence": 0.7722772277227723,
+        "status": "OK"
+      },
+      "passes_all_predictive_gates": false,
+      "positive_metric_blocks": 2,
+      "preferred_warning_horizon": 10,
+      "simultaneous_LCB": null,
+      "status": "EVALUATED",
+      "support": {
+        "final_unique_onsets": 12,
+        "support_pass": true,
+        "train_validation_unique_onsets": 34
+      },
+      "target": "T3_ANY_SIDEWAYS"
+    },
+    "P08_STACKED_PROBABILITY_ENSEMBLE|SOL|T4_LONG_SIDEWAYS": {
+      "G0_identity": true,
+      "G1_support": true,
+      "G2_auc_and_pr_lift": true,
+      "G3_temporal_recurrence": true,
+      "G4_early_warning_horizon": true,
+      "G5_simultaneous_pr_lift_lcb": true,
+      "architecture": "P08_STACKED_PROBABILITY_ENSEMBLE",
+      "asset": "SOL",
+      "bootstrap_valid_replicates": 3970,
+      "final_metrics": {
+        "Brier": 0.225791097823595,
+        "PR_AUC": 0.739291869604491,
+        "PR_AUC_LIFT": 0.28384632505003554,
+        "ROC_AUC": 0.8027667984189722,
+        "chronological_blocks": [
+          {
+            "PR_AUC": 0.8483913403418046,
+            "PR_AUC_LIFT": 0.34839134034180463,
+            "ROC_AUC": 0.7869822485207101,
+            "n": 26,
+            "prevalence": 0.5,
+            "status": "OK"
+          },
+          {
+            "PR_AUC": 0.8864481894940024,
+            "PR_AUC_LIFT": 0.24644818949400238,
+            "ROC_AUC": 0.798611111111111,
+            "n": 25,
+            "prevalence": 0.64,
+            "status": "OK"
+          },
+          {
+            "PR_AUC": 0.46637629410738657,
+            "PR_AUC_LIFT": 0.18637629410738654,
+            "ROC_AUC": 0.7063492063492063,
+            "n": 25,
+            "prevalence": 0.28,
+            "status": "OK"
+          },
+          {
+            "PR_AUC": 0.6295269926152279,
+            "PR_AUC_LIFT": 0.2295269926152279,
+            "ROC_AUC": 0.8,
+            "n": 25,
+            "prevalence": 0.4,
+            "status": "OK"
+          }
+        ],
+        "n": 101,
+        "positives": 46,
+        "prevalence": 0.45544554455445546,
+        "status": "OK"
+      },
+      "passes_all_predictive_gates": true,
+      "positive_metric_blocks": 4,
+      "preferred_warning_horizon": 10,
+      "simultaneous_LCB": 0.017014093207515846,
+      "status": "EVALUATED",
+      "support": {
+        "final_unique_onsets": 7,
+        "support_pass": true,
+        "train_validation_unique_onsets": 15
+      },
+      "target": "T4_LONG_SIDEWAYS"
+    }
+  },
+  "production_authorized": false,
+  "research_id": "BRRK-BTC-SOL-PATH-EVENT-EARLY-WARNING-EXECUTION-ASSURED-0069",
+  "schema_version": 1,
+  "selection_risk": {
+    "status": "NOT_EVALUATED"
+  },
+  "signature_authorized": false,
+  "validation_preferred_architectures": {
+    "BTC|T3_ANY_SIDEWAYS": "P03_VALIDATION_SCREENED_SIGNAL_LOGIT",
+    "BTC|T4_LONG_SIDEWAYS": "P05_THEORY_QUADRATIC_LOGIT",
+    "SOL|T3_ANY_SIDEWAYS": "P03_VALIDATION_SCREENED_SIGNAL_LOGIT",
+    "SOL|T4_LONG_SIDEWAYS": "P03_VALIDATION_SCREENED_SIGNAL_LOGIT"
+  },
+  "validation_preferred_horizons": {
+    "P01_FAMILY_RIDGE_LOGIT|BTC|T3_ANY_SIDEWAYS": 10,
+    "P01_FAMILY_RIDGE_LOGIT|BTC|T4_LONG_SIDEWAYS": 10,
+    "P01_FAMILY_RIDGE_LOGIT|SOL|T3_ANY_SIDEWAYS": 3,
+    "P01_FAMILY_RIDGE_LOGIT|SOL|T4_LONG_SIDEWAYS": 1,
+    "P02_RAW_ELASTIC_NET_LOGIT|BTC|T3_ANY_SIDEWAYS": 10,
+    "P02_RAW_ELASTIC_NET_LOGIT|BTC|T4_LONG_SIDEWAYS": 5,
+    "P02_RAW_ELASTIC_NET_LOGIT|SOL|T3_ANY_SIDEWAYS": 10,
+    "P02_RAW_ELASTIC_NET_LOGIT|SOL|T4_LONG_SIDEWAYS": 10,
+    "P03_VALIDATION_SCREENED_SIGNAL_LOGIT|BTC|T3_ANY_SIDEWAYS": 10,
+    "P03_VALIDATION_SCREENED_SIGNAL_LOGIT|BTC|T4_LONG_SIDEWAYS": 20,
+    "P03_VALIDATION_SCREENED_SIGNAL_LOGIT|SOL|T3_ANY_SIDEWAYS": 10,
+    "P03_VALIDATION_SCREENED_SIGNAL_LOGIT|SOL|T4_LONG_SIDEWAYS": 10,
+    "P04_PCR_LOGIT|BTC|T3_ANY_SIDEWAYS": 10,
+    "P04_PCR_LOGIT|BTC|T4_LONG_SIDEWAYS": 5,
+    "P04_PCR_LOGIT|SOL|T3_ANY_SIDEWAYS": 10,
+    "P04_PCR_LOGIT|SOL|T4_LONG_SIDEWAYS": 3,
+    "P05_THEORY_QUADRATIC_LOGIT|BTC|T3_ANY_SIDEWAYS": 10,
+    "P05_THEORY_QUADRATIC_LOGIT|BTC|T4_LONG_SIDEWAYS": 3,
+    "P05_THEORY_QUADRATIC_LOGIT|SOL|T3_ANY_SIDEWAYS": 1,
+    "P05_THEORY_QUADRATIC_LOGIT|SOL|T4_LONG_SIDEWAYS": 1,
+    "P06_SHALLOW_GBDT_CLASSIFIER|BTC|T3_ANY_SIDEWAYS": 3,
+    "P06_SHALLOW_GBDT_CLASSIFIER|BTC|T4_LONG_SIDEWAYS": 3,
+    "P06_SHALLOW_GBDT_CLASSIFIER|SOL|T3_ANY_SIDEWAYS": 1,
+    "P06_SHALLOW_GBDT_CLASSIFIER|SOL|T4_LONG_SIDEWAYS": 10,
+    "P07_DISCRETE_TIME_HAZARD_LOGIT|BTC|T3_ANY_SIDEWAYS": 10,
+    "P07_DISCRETE_TIME_HAZARD_LOGIT|BTC|T4_LONG_SIDEWAYS": 10,
+    "P07_DISCRETE_TIME_HAZARD_LOGIT|SOL|T3_ANY_SIDEWAYS": 3,
+    "P07_DISCRETE_TIME_HAZARD_LOGIT|SOL|T4_LONG_SIDEWAYS": 20,
+    "P08_STACKED_PROBABILITY_ENSEMBLE|BTC|T3_ANY_SIDEWAYS": 10,
+    "P08_STACKED_PROBABILITY_ENSEMBLE|BTC|T4_LONG_SIDEWAYS": 3,
+    "P08_STACKED_PROBABILITY_ENSEMBLE|SOL|T3_ANY_SIDEWAYS": 10,
+    "P08_STACKED_PROBABILITY_ENSEMBLE|SOL|T4_LONG_SIDEWAYS": 10
+  }
+}

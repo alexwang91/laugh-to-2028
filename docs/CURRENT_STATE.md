@@ -58,7 +58,11 @@ Lifecycle anchors:
 - PREREGISTRATION merge `f9d1d95ec87ac9e86e2ed25a1340be3c725737f8`;
 - IMPLEMENTATION merge `bd3952a47af80ee49dd2d99e501f23631be3ba67`, exact qualified head `c11101d8c454d71e918bed163fbd188934910670`;
 - QUALIFICATION EVIDENCE merge `90e0aff461538d14cdf037bc57583ef6ac2b31ae`;
-- qualification result blob `6a652faf66db4ef96edae4e3857e285816ca61da`.
+- qualification result blob `6a652faf66db4ef96edae4e3857e285816ca61da`;
+- CONTROLLED-EXECUTION BOUNDARY merge `1665bda502cff9ac962b176ef0ed817a725f3134`;
+- exact merged-boundary zero-result preflight workflow `31949044088` = PASS;
+- unique historical workflow `31949133425`, job `95169748781` = PASS;
+- result branch `research/0069-result-v1`, finalized head `105cdc5d78125251085ed6118a9bf5d4980af548`.
 
 Full-shape nonhistorical qualification workflow `31925562942`, job `95127222823` = PASS:
 - validation configs 1,632/1,632;
@@ -74,21 +78,49 @@ Full-shape nonhistorical qualification workflow `31925562942`, job `95127222823`
 
 The qualification-only synthetic classification `FAIL_NO_ROBUST_EVENT_CONTROLLER` is ignored by contract and has no historical evidentiary authority.
 
-## 0069 controlled boundary now in branch
+## 0069 unique historical result
 
-Current branch = `research/0069-controlled-boundary-v1`.
-State = `CONTROLLED BOUNDARY BUILT IN BRANCH / NOT MERGED / NOT HISTORICALLY RUN`.
+State = `HISTORICAL RESULT PERSISTED / RESULT PR OPEN / CLOSEOUT NOT YET MERGED`.
 
-The branch adds:
-- `RUN_INTERFACE.json` with exact preflight/start/evaluate/finalize commands and one-attempt authority;
-- `CONTROLLED_EXECUTION_BOUNDARY.json` pinned to frozen 0067 science, 0068 graph-builder, merged 0069 implementation and qualification evidence;
-- `run_once.py` with create-only runtime artifacts, durable `RUN_ATTEMPT.marker` before any historical read, exactly-once market/equity/weights/DTB3 reads, one market loader call, one scientific engine call, manifest-derived physical accounting, fail-closed `INVALID_EXECUTION`, hash-chain persistence and marker-only finalization.
+The prospectively authorized unique attempt 1/1 completed exactly once. `RUN_ATTEMPT.marker` was durably persisted before any historical read. Final artifacts are `RUN_ATTEMPT.marker`, `PRIMARY_RESULT.json`, `EVIDENCE.json`, `EXECUTION.json`, and `RUN_ONCE.marker`.
 
-No 0069 `RUN_ATTEMPT.marker`, `PRIMARY_RESULT.json`, `EVIDENCE.json`, `EXECUTION.json` or `RUN_ONCE.marker` exists. Historical content has not been read by this boundary stage.
+Persisted scientific classification = `PASS_EVENT_EARLY_WARNING_ONLY`.
+
+Predictive evidence:
+- indicator atlas hypotheses = 8,080; Holm rejections = 149; supported Holm family size = 4,040;
+- final predictor tracks = 64; bootstrap-valid tracks = 32;
+- predictive simultaneous bootstrap = 4,000 replicates, MBB block length 60, q95 = 0.2668322318425197;
+- predictive winners = 3, all on `SOL|T4_LONG_SIDEWAYS`:
+  - `P02_RAW_ELASTIC_NET_LOGIT|SOL|T4_LONG_SIDEWAYS`;
+  - `P03_VALIDATION_SCREENED_SIGNAL_LOGIT|SOL|T4_LONG_SIDEWAYS`;
+  - `P08_STACKED_PROBABILITY_ENSEMBLE|SOL|T4_LONG_SIDEWAYS`.
+
+Controller/economic evidence:
+- final controller count = 8;
+- controller winners = 0;
+- all controller outputs are persisted `COMPONENT_UNAVAILABLE` after frozen-path `KeyError ('BTC', 'T1_ANY_DOWN', 5)`;
+- economic simultaneous bootstrap remains schema-complete at 4,000 replicates but q95 is null because the controller component is unavailable;
+- PBO status = `NOT_EVALUATED`.
+
+Execution assurance:
+- `execution_valid=true`;
+- validation fits expected/observed = 31,008/31,008;
+- manifest-derived economic fits expected/observed = 5,808/5,808;
+- manifest-derived P08 NNLS expected/observed = 20/20;
+- manifest units = 11,944; terminal traces = 11,944; terminal trace complete = true;
+- inference barrier released = true;
+- historical input reads market/equity/weights/DTB3 = 1/1/1/1;
+- market loader calls = 1; scientific engine calls = 1; network fetches = 0;
+- process workers = 4;
+- same-ID rerun, retune and rescue are forbidden.
+
+The realized 5,808 economic fits and 20 NNLS are valid under the preregistered 0068/0069 manifest-derived accounting contract. They are not compared against FULL_SUPPORT constants for execution validity.
+
+Production/signature/order authority remains zero.
 
 ## Exact next step
 
-Open and pass standing CI for the CONTROLLED-EXECUTION BOUNDARY. Merge only with green governance. Then run exact merged-boundary zero-result preflight with zero historical content reads. Only after preflight PASS may durable historical attempt 1/1 be created before any historical read. Historical execution must use the frozen environment, four workers, 4,000/4,000 bootstrap reps, 70 PBO splits and manifest-derived execution accounting. No cancellation, retrigger, rerun, retune or rescue is allowed after the durable attempt marker.
+Pass standing CI and merge result PR #277 without modifying scientific content. Then create a separate immutable 0069 CLOSEOUT that records `PASS_EVENT_EARLY_WARNING_ONLY / CLOSED TO SAME-ID RERUN`, attempt 1/1 consumed, the three predictive winners, zero controller winners/component-unavailable economic path, exact execution-valid accounting and zero production authority. Do not rerun, retune, rescue or recompute 0069.
 
 ## No-drift authority
 
