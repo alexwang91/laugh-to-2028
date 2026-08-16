@@ -1,0 +1,65 @@
+name: Tooling 0069 exact merged-boundary preflight
+
+on:
+  push:
+    branches:
+      - tools/0069-merged-boundary-preflight-v1
+    paths:
+      - '.github/workflows/tooling-0069-merged-boundary-preflight.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: brrk-0069-merged-boundary-preflight
+  cancel-in-progress: false
+
+jobs:
+  preflight:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      PYTHONHASHSEED: '0'
+      OMP_NUM_THREADS: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      NUMEXPR_NUM_THREADS: '1'
+      MERGED_BOUNDARY_SHA: '1665bda502cff9ac962b176ef0ed817a725f3134'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 1665bda502cff9ac962b176ef0ed817a725f3134
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: execution/plan-b-bot/requirements-dev.txt
+      - name: Install pinned runtime
+        run: python -m pip install -r execution/plan-b-bot/requirements-dev.txt
+      - name: Verify exact merged boundary identity
+        shell: bash
+        run: test "$(git rev-parse HEAD)" = "$MERGED_BOUNDARY_SHA"
+      - name: Run exact zero-result preflight
+        run: python -m research.brrk_btc_sol_path_event_early_warning_execution_assured_0069.run_once preflight --boundary-sha "$MERGED_BOUNDARY_SHA" | tee /tmp/0069-preflight.json
+      - name: Verify preflight output
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r=json.loads(Path('/tmp/0069-preflight.json').read_text())
+          assert r['research_id']=='BRRK-BTC-SOL-PATH-EVENT-EARLY-WARNING-EXECUTION-ASSURED-0069'
+          assert r['status']=='PREFLIGHT_PASS_ZERO_RESULT_GIT_IDENTITY_ONLY'
+          assert r['boundary_sha']=='1665bda502cff9ac962b176ef0ed817a725f3134'
+          assert r['historical_content_reads']=={'market_evidence':0,'equity':0,'weights':0,'dtb3':0}
+          assert r['market_loader_calls']==0
+          assert r['scientific_engine_calls']==0
+          assert r['runtime_artifacts_present']==[]
+          print(json.dumps(r,indent=2,sort_keys=True))
+          PY
+      - name: Upload preflight evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: brrk-0069-preflight-1665bda5
+          path: /tmp/0069-preflight.json
+          if-no-files-found: error
