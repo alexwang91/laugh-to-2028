@@ -1,0 +1,14 @@
+{
+  "attempt_number": 1,
+  "boundary_merge_sha": "0c5a6affc2243a0fdaf621f7801e1870657f1254",
+  "created_at_utc": "2026-08-17T14:48:42.914154+00:00",
+  "loeo_fold_count": 7,
+  "qualification_result_blob": "8ad8cc764407f954da7c82e06ad5fa0cb3b97ca1",
+  "research_id": "BRRK-SOL-LONG-SIDEWAYS-EARLY-WARNING-EPISODE-ROBUSTNESS-0070",
+  "same_id_rerun_allowed": false,
+  "same_id_rescue_allowed": false,
+  "same_id_retune_allowed": false,
+  "schema_version": 1,
+  "warning_horizon_sessions": 10,
+  "workflow_run_id": "32040286477"
+}
