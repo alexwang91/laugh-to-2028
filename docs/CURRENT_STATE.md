@@ -67,15 +67,17 @@ Execution assurance: `execution_valid=true`; validation 31,008/31,008; manifest-
 
 Research ID = `BRRK-SOL-LONG-SIDEWAYS-EARLY-WARNING-EPISODE-ROBUSTNESS-0070`.
 
-State = `IMPLEMENTATION MERGED / NONHISTORICAL QUALIFICATION PASS / QUALIFICATION EVIDENCE IN PR / CONTROLLED ATTEMPT NOT AUTHORIZED / NOT RUN`.
+State = `QUALIFICATION EVIDENCE MERGED / CONTROLLED BOUNDARY IN PR #283 / ZERO-RESULT PREFLIGHT NOT RUN / CONTROLLED ATTEMPT 0/1`.
 
 Lifecycle anchors:
 - owner-first registry commit `28be2794f8471e400fe70196460eed744cce694c`;
 - DESIGN merge `828e90fa4b48ecb2ddc297d3b798e918601af2e9`;
 - PREREGISTRATION merge `b00dd5e50401fd0b35c57d962d0625fa5790792f`;
 - IMPLEMENTATION merge `378c0a0098d9a508c20a0e0bb891a503e2357f2e`;
-- qualification evidence branch `research/0070-qualification-v1`;
-- qualification evidence PR #282.
+- qualification evidence merge `709903bf5443cbb3b1fbd9d2c588db94b5566c6a`;
+- qualification result blob `8ad8cc764407f954da7c82e06ad5fa0cb3b97ca1`;
+- CONTROLLED-EXECUTION BOUNDARY branch `research/0070-controlled-boundary-v1`;
+- CONTROLLED-EXECUTION BOUNDARY PR #283.
 
 Nonhistorical qualification = PASS. All six preregistered synthetic regimes and four hardened implementation checks pass. Qualification read zero 0069/market payloads and performed zero network fetches. Controlled attempt consumption remains 0/1.
 
@@ -98,15 +100,15 @@ Frozen source identities for the future controlled attempt:
 - feature builder blob `cac8e946998c836d10842b9388e1e3ef345a8c0b`;
 - aggregate reproduction absolute tolerance `1e-12`.
 
-Frozen robustness rule: positive Y10 rows map to the earliest qualifying SOL T4 onset in `(t,t+10]`; seven LOEO folds each remove all positive rows assigned to one onset while retaining all other rows. No retraining, reselection, recalibration, threshold or hyperparameter changes are allowed.
+Frozen robustness rule: positive Y10 rows map to the earliest qualifying SOL T4 onset in `(t,t+10]`; seven LOEO folds each remove all positive rows assigned to one onset while retaining all other rows. No retraining, reselection, recalibration, threshold or hyperparameter changes are allowed inside LOEO robustness evaluation. Frozen prediction reconstruction may replay only the already-selected 0069 parameters/screens; validation tuning and model reselection remain zero.
 
 PASS requires P02 positive PR-AUC lift and ROC-AUC>0.50 in every fold, median retention >=0.75, at least 6/7 folds retention >=0.50, plus at least one member of the P03/P08 dependent cluster with all positive fold lifts and median retention >=0.50. Exact identity/full-window reproduction and seven defined onsets/folds are prerequisites.
 
-No economics/controllers are evaluated in 0070. Controlled attempt consumption remains 0/1. Production/signature/order authority remains zero.
+No economics/controllers are evaluated in 0070. Controlled attempt consumption remains 0/1. No `RUN_ATTEMPT.marker` exists. Production/signature/order authority remains zero.
 
 ## Exact next step
 
-Run standing CI on qualification evidence PR #282. Merge #282 only after every required workflow on the exact head succeeds. Then create the separate controlled-execution boundary, pass exact zero-result preflight, and only then authorize the unique development-history attempt with a durable `RUN_ATTEMPT` marker before any permitted historical read.
+Run standing CI on CONTROLLED-EXECUTION BOUNDARY PR #283. Merge #283 only after every required workflow on the exact head succeeds. Then run the exact merged-boundary zero-result preflight with zero 0069/history reads. Only after that preflight passes may the unique development-history attempt be separately authorized and a durable `RUN_ATTEMPT.marker` be created before any permitted source read.
 
 ## No-drift authority
 
