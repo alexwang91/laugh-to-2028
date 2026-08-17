@@ -5137,13 +5137,16 @@
         "Deflated_Sharpe_Ratio",
         "PBO_if_supported",
         "exact_0070_signal_reproduction",
-        "exactly_once_artifact_read"
+        "exactly_once_artifact_read",
+        "matched_signal_off_overlay_comparison",
+        "idle_cash_accrual_contribution"
       ],
       "feature_families": [
         "LOCKED_0070_P02_RISK_SCORE",
         "SOL_PRICE_RETURN_ECONOMIC_ACCOUNTING",
         "LAGGED_SOL_REALIZED_VOLATILITY",
-        "LAGGED_CONTROLLER_DRAWDOWN_STATE"
+        "LAGGED_CONTROLLER_DRAWDOWN_STATE",
+        "FROZEN_0064_DTB3_PASSIVE_CASH_ACCRUAL"
       ],
       "horizon": [
         10
@@ -5158,10 +5161,10 @@
       "actual_variants_evaluated": 0,
       "parameter_candidate_count": 6,
       "stopping_rule": "Owner-first DESIGN -> numerical/data/analysis preregistration -> implementation -> nonhistorical synthetic qualification -> separate controlled boundary -> exact merged-boundary zero-result preflight -> stop for explicit user authorization -> at most one durable controlled development-history attempt -> immutable result -> immutable closeout. The six controller families are the complete candidate-family ceiling. A durable RUN_ATTEMPT.marker must precede any controlled historical/evidence-content read. After durable attempt creation, no same-ID rerun, rescue, retune, threshold relaxation, alternate cost rule, alternate benchmark or alternate controller is allowed.",
-      "success_criteria": "PASS only if exact locked 0070 signal reproduction succeeds and at least one preregistered fixed controller candidate satisfies the prospectively frozen net economic Pareto/non-inferiority gates versus the frozen SOL benchmark under realistic costs, survives the preregistered stressed-cost/robustness/concentration checks, and satisfies the declared multiple-testing controls. Exact numerical controller parameters, transaction-cost assumptions, bootstrap/PBO/DSR definitions and PASS thresholds must be frozen in PREREGISTRATION before implementation and before any controlled history/evidence-content read.",
+      "success_criteria": "PASS only if exact locked 0070 signal reproduction succeeds and at least one preregistered fixed controller candidate satisfies the prospectively frozen net economic Pareto/non-inferiority gates versus the frozen SOL benchmark under realistic costs, survives the preregistered stressed-cost/robustness/concentration checks, and satisfies the declared multiple-testing controls. Exact numerical controller parameters, transaction-cost assumptions, bootstrap/PBO/DSR definitions and PASS thresholds must be frozen in PREREGISTRATION before implementation and before any controlled history/evidence-content read. For VOL_ADJUSTED and DRAWDOWN_AWARE, any claimed incremental P02 value must also pass the prospectively frozen matched signal-off overlay comparison; overlay-only economics cannot satisfy the P02 integration claim.",
       "failure_criteria": "FAIL if valid execution completes but no preregistered controller passes the frozen net economic and robustness gates. INCONCLUSIVE applies only to prospectively defined insufficient-support or mathematically undefined inference conditions. INVALID_EXECUTION applies to identity/hash/read-count/lookahead/controller-construction/cost-accounting/candidate-count/result-persistence drift.",
       "allowed_followup": "Before attempt consumption, only semantics-preserving implementation and synthetic-qualification fixes that do not alter the frozen DESIGN/PREREGISTRATION contract. After terminal result, any new signal, threshold family, controller, cost model, benchmark, leverage/short rule, independent-OOS evaluation or portfolio extension requires a new owner-first research ID.",
-      "forbidden_followup": "No retraining or reselection of P02; no target or lead other than locked SOL T4_LONG_SIDEWAYS lead 10; no P03/P08 input in 0071; no new predictive feature search; no leverage; no short SOL; no result-informed controller parameter addition; no final-period Sharpe maximization; no post-read cost relaxation; no claim of independent OOS; no same-ID rerun/retune/rescue after attempt consumption.",
+      "forbidden_followup": "No retraining or reselection of P02; no target or lead other than locked SOL T4_LONG_SIDEWAYS lead 10; no P03/P08 input in 0071; no new predictive feature search; no leverage; no short SOL; no result-informed controller parameter addition; no final-period Sharpe maximization; no post-read cost relaxation; no claim of independent OOS; no same-ID rerun/retune/rescue after attempt consumption. No zero-return cash substitution and no omission or post-result alteration of preregistered matched signal-off overlay controls.",
       "researcher_decisions": [
         "Treat closed 0070 only as hypothesis-generating DEVELOPMENT evidence for a new economic-integration ID.",
         "Use locked P02 as the sole predictive warning input; exclude the dependent P03/P08 corroborative cluster from 0071 controller construction.",
@@ -5169,7 +5172,11 @@
         "Restrict target SOL exposure to the preregistered long-or-cash interval with no leverage and no shorting.",
         "Evaluate C0 theoretical, C1 realistic and C2 stressed cost states plus preregistered cost-multiplier sensitivity; C0 alone can never establish PASS.",
         "Select by frozen Pareto/non-inferiority logic across return retention, drawdown/tail improvement and turnover/cost rather than maximizing observed Sharpe.",
-        "Persist and count every evaluated controller candidate, including failed or invalid candidates."
+        "Persist and count every evaluated controller candidate, including failed or invalid candidates.",
+        "Accrue the uninvested long-or-cash fraction using the frozen 0064 passive-cash primary semantics: causally aligned pinned DTB3, 50% yield realization, and 100 bps annual continuous idle-cash spread/fee; identical cash accounting applies to every controller, the frozen SOL benchmark where cash exists, and every matched signal-off comparator.",
+        "For VOL_ADJUSTED, include a matched signal-off volatility-only comparator using identical volatility estimator, cap, cash accrual and cost accounting; this comparator is a diagnostic control and is not an additional selectable controller candidate.",
+        "For DRAWDOWN_AWARE, include a matched signal-off drawdown-only comparator using identical drawdown state, cap, cash accrual and cost accounting; this comparator is a diagnostic control and is not an additional selectable controller candidate.",
+        "Attribute incremental P02 value only relative to the appropriate matched baseline when a controller family contains an independently economic risk overlay; do not credit overlay-only improvement to P02."
       ],
       "research_process_complexity": {
         "declared_parameter_candidates": 6,
@@ -5177,7 +5184,7 @@
         "universes_evaluated": 1,
         "horizons_evaluated": 1,
         "rebalance_variants": 1,
-        "feature_representations": 4,
+        "feature_representations": 5,
         "special_cases_introduced": 6,
         "validation_exposure_event_refs": 1,
         "related_family_trials": 1
@@ -5199,7 +5206,8 @@
         "0071 begins only after immutable 0070 closeout and governed 0071-0082 roadmap merge.",
         "The broad roadmap authorization does not authorize the future irreversible attempt 1/1; separate explicit user authorization is required after zero-result preflight PASS.",
         "Evidence remains researcher-exposed DEVELOPMENT history, not independent OOS.",
-        "production_authorized=false; signature_authorized=false; order_submission_authorized=false."
+        "production_authorized=false; signature_authorized=false; order_submission_authorized=false.",
+        "PREREGISTRATION must pin the exact 0064 cash-engine blob 4060a307be2204c11952cb52e2fc718a5343d8e1, DTB3 blob 71d50e26f8a9afb6bcb88401d20b97d5fb0a891a and DTB3 payload SHA256 4d8aee67dbd528ce38ff8482e9bb02dd5ccf2c6cd461f606fe90007151ab6879; no substituted rate series or altered cash realization/fee convention is allowed in 0071."
       ]
     }
   ],
