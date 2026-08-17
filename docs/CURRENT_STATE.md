@@ -114,17 +114,40 @@ Execution assurance:
 
 Evidence scope: researcher-exposed DEVELOPMENT-history episode robustness only; not independent OOS; no controller/economic inference. Production/signature/order authority remains zero.
 
-## Prospective multi-strategy research program
+## Governed multi-strategy research program
 
-Roadmap document under governance review: `research/governance/CRYPTO_MULTI_STRATEGY_RESEARCH_PROGRAM_0071_0082.md`.
+Roadmap merge = `169d9adf6531dc099a43541df413fef079322adf`.
+Roadmap = `research/governance/CRYPTO_MULTI_STRATEGY_RESEARCH_PROGRAM_0071_0082.md`.
 
-The roadmap serializes prospective IDs 0071–0082 and requires every eligible ID to independently traverse the same ten formal lifecycle stages used by 0069/0070. It defines point-in-time and anti-lookahead rules, ordered economic accounting, realistic/stressed cost treatment, trial counting, DSR/PBO/bootstrap requirements where applicable, concentration/capacity/stress tests, explicit stop/gating rules, and zero production authority.
+The merged roadmap serializes prospective IDs 0071–0082 and requires every eligible ID to independently traverse the same ten formal lifecycle stages used by 0069/0070. It defines point-in-time and anti-lookahead rules, ordered economic accounting, realistic/stressed cost treatment, trial counting, DSR/PBO/bootstrap requirements where applicable, concentration/capacity/stress tests, explicit stop/gating rules, and zero production authority.
 
-The roadmap itself does not register 0071 and does not authorize any controlled historical attempt.
+The roadmap merge does not itself authorize any controlled development-history attempt.
+
+## 0071 prospective owner-first
+
+Research ID = `BRRK-SOL-LONG-SIDEWAYS-CONTROLLER-INTEGRATION-0071`.
+State = `OWNER-FIRST IN PR / DESIGN NOT STARTED / CONTROLLED ATTEMPT 0/1`.
+
+Prospective owner record branch commit = `2bebe53092c83a336f925562844e9bc3dc878d2b`.
+Base = exact roadmap merge `169d9adf6531dc099a43541df413fef079322adf`.
+
+Owner-first freezes before any governed 0071 research path or controlled scientific/economic history read:
+- locked predictive input = 0070 P02 SOL T4_LONG_SIDEWAYS warning, lead exactly 10 sessions;
+- universe = SOL only;
+- six complete controller-family ceiling = `BINARY_RISK_OFF`, `LINEAR_DERISK`, `PIECEWISE_DERISK`, `VOL_ADJUSTED`, `DRAWDOWN_AWARE`, `HYSTERESIS`;
+- long-or-cash only, no leverage and no short SOL;
+- P03/P08 excluded from 0071 controller construction;
+- C0 theoretical, C1 realistic and C2 stressed economic accounting required; C0 alone cannot PASS;
+- selection by prospectively frozen net Pareto/non-inferiority logic, not observed-Sharpe maximization;
+- all evaluated controller candidates must be persisted/counted;
+- exact numerical controller parameters, costs, bootstrap/PBO/DSR definitions and PASS gates must be frozen later in PREREGISTRATION before implementation and before controlled history/evidence-content access;
+- future irreversible attempt 1/1 requires a separate explicit authorization after exact merged-boundary zero-result preflight PASS.
+
+No 0071 governed research path exists yet. No 0071 controlled history/evidence payload has been read. No controller economic result exists. `controlled_attempt_consumed=0`.
 
 ## Exact next step
 
-Run standing CI on the post-0070-closeout roadmap PR built from exact main `d87607070cf03ccbbc318065f8c4c14ec6c6a50b`. Merge the roadmap only if the exact head is green. After roadmap merge, begin `BRRK-SOL-LONG-SIDEWAYS-CONTROLLER-INTEGRATION-0071` through a new OWNER-FIRST registry entry before creating any governed 0071 research path. Continue 0071 serially through DESIGN, PREREGISTRATION, IMPLEMENTATION, NONHISTORICAL QUALIFICATION, CONTROLLED BOUNDARY and ZERO-RESULT PREFLIGHT. At that point stop and request separate explicit user authorization before the irreversible controlled development-history attempt 1/1.
+Run standing CI on the 0071 OWNER-FIRST PR and merge only if the exact head is green. After OWNER-FIRST merge, introduce the governed path `research/brrk_sol_long_sideways_controller_integration_0071` only in a separate DESIGN PR. DESIGN must specify the economic question, upstream immutable lineage, allowed data families, exactly six controller families, benchmark/exposure semantics, cost framework, metrics, robustness families, evidence tier, classification vocabulary, failure/stop rules and zero production authority without reporting new historical performance. Continue serially only after each prior stage merges. Stop after exact merged-boundary ZERO-RESULT PREFLIGHT PASS for separate explicit user authorization before attempt 1/1.
 
 ## No-drift authority
 
@@ -141,4 +164,5 @@ Canonical BRRK-0011 = NO CHANGE.
 0068 = NO CHANGE.
 0069 = NO CHANGE.
 0070 = CLOSED / NO SAME-ID ACTION.
+0071 = OWNER-FIRST ONLY / ATTEMPT 0/1.
 Phase 6 = NO CHANGE.
