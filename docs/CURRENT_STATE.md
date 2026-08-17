@@ -114,17 +114,47 @@ Execution assurance:
 
 Evidence scope: researcher-exposed DEVELOPMENT-history episode robustness only; not independent OOS; no controller/economic inference. Production/signature/order authority remains zero.
 
-## Prospective multi-strategy research program
+## Governed multi-strategy research program
 
-Roadmap document under governance review: `research/governance/CRYPTO_MULTI_STRATEGY_RESEARCH_PROGRAM_0071_0082.md`.
+Roadmap merge = `169d9adf6531dc099a43541df413fef079322adf`.
+Roadmap = `research/governance/CRYPTO_MULTI_STRATEGY_RESEARCH_PROGRAM_0071_0082.md`.
 
-The roadmap serializes prospective IDs 0071–0082 and requires every eligible ID to independently traverse the same ten formal lifecycle stages used by 0069/0070. It defines point-in-time and anti-lookahead rules, ordered economic accounting, realistic/stressed cost treatment, trial counting, DSR/PBO/bootstrap requirements where applicable, concentration/capacity/stress tests, explicit stop/gating rules, and zero production authority.
+The merged roadmap serializes prospective IDs 0071–0082 and requires every eligible ID to independently traverse the same ten formal lifecycle stages used by 0069/0070. It defines point-in-time and anti-lookahead rules, ordered economic accounting, realistic/stressed cost treatment, trial counting, DSR/PBO/bootstrap requirements where applicable, concentration/capacity/stress tests, explicit stop/gating rules, and zero production authority.
 
-The roadmap itself does not register 0071 and does not authorize any controlled historical attempt.
+The roadmap merge does not itself authorize any controlled development-history attempt.
+
+## 0071 prospective owner-first
+
+Research ID = `BRRK-SOL-LONG-SIDEWAYS-CONTROLLER-INTEGRATION-0071`.
+State = `OWNER-FIRST IN PR / DESIGN NOT STARTED / CONTROLLED ATTEMPT 0/1`.
+
+Prospective owner record original commit = `2bebe53092c83a336f925562844e9bc3dc878d2b`.
+Prospective owner cash/matched-control refinement commit = `62326bed33b48fb4931602b778dd4392963b5e3a`.
+Base = exact roadmap merge `169d9adf6531dc099a43541df413fef079322adf`.
+
+Owner-first freezes before any governed 0071 research path or controlled scientific/economic history read:
+- locked predictive input = 0070 P02 SOL T4_LONG_SIDEWAYS warning, lead exactly 10 sessions;
+- universe = SOL only;
+- six complete selectable controller-family ceiling = `BINARY_RISK_OFF`, `LINEAR_DERISK`, `PIECEWISE_DERISK`, `VOL_ADJUSTED`, `DRAWDOWN_AWARE`, `HYSTERESIS`;
+- long-or-cash only, no leverage and no short SOL;
+- P03/P08 excluded from 0071 controller construction;
+- uninvested cash fraction must use frozen 0064 passive-accrual primary semantics: causally aligned pinned DTB3, 50% yield realization and 100 bps annual continuous idle-cash spread/fee;
+- exact reusable 0064/DTB3 identities to be pinned in PREREGISTRATION: cash engine blob `4060a307be2204c11952cb52e2fc718a5343d8e1`, DTB3 blob `71d50e26f8a9afb6bcb88401d20b97d5fb0a891a`, DTB3 payload SHA256 `4d8aee67dbd528ce38ff8482e9bb02dd5ccf2c6cd461f606fe90007151ab6879`;
+- `VOL_ADJUSTED` requires a matched signal-off volatility-only comparator with identical volatility estimator, cap, cash accrual and cost accounting;
+- `DRAWDOWN_AWARE` requires a matched signal-off drawdown-only comparator with identical drawdown state, cap, cash accrual and cost accounting;
+- matched signal-off comparators are diagnostic attribution controls, not additional selectable controller candidates and do not increase the six-candidate ceiling;
+- incremental P02 value for overlay-bearing families must be established relative to their matched signal-off comparator so overlay-only improvement cannot be credited to P02;
+- C0 theoretical, C1 realistic and C2 stressed economic accounting required; C0 alone cannot PASS;
+- selection by prospectively frozen net Pareto/non-inferiority logic, not observed-Sharpe maximization;
+- all evaluated controller candidates must be persisted/counted;
+- exact numerical controller parameters, costs, benchmark/exposure semantics, bootstrap/PBO/DSR definitions and PASS gates must be frozen later in PREREGISTRATION before implementation and before controlled history/evidence-content access;
+- future irreversible attempt 1/1 requires a separate explicit authorization after exact merged-boundary zero-result preflight PASS.
+
+No 0071 governed research path exists yet. No 0071 controlled history/evidence payload has been read. No controller economic result exists. `controlled_attempt_consumed=0`.
 
 ## Exact next step
 
-Run standing CI on the post-0070-closeout roadmap PR built from exact main `d87607070cf03ccbbc318065f8c4c14ec6c6a50b`. Merge the roadmap only if the exact head is green. After roadmap merge, begin `BRRK-SOL-LONG-SIDEWAYS-CONTROLLER-INTEGRATION-0071` through a new OWNER-FIRST registry entry before creating any governed 0071 research path. Continue 0071 serially through DESIGN, PREREGISTRATION, IMPLEMENTATION, NONHISTORICAL QUALIFICATION, CONTROLLED BOUNDARY and ZERO-RESULT PREFLIGHT. At that point stop and request separate explicit user authorization before the irreversible controlled development-history attempt 1/1.
+Run fresh standing CI on the refined 0071 OWNER-FIRST PR and merge only if the exact head is green. After OWNER-FIRST merge, introduce the governed path `research/brrk_sol_long_sideways_controller_integration_0071` only in a separate DESIGN PR. DESIGN must specify the economic question, upstream immutable lineage, allowed data families, exactly six selectable controller families plus matched signal-off attribution controls, SOL/cash benchmark and exposure semantics, frozen 0064 cash-accrual mechanism, cost framework, metrics, robustness families, evidence tier, classification vocabulary, failure/stop rules and zero production authority without reporting new historical performance. Continue serially only after each prior stage merges. Stop after exact merged-boundary ZERO-RESULT PREFLIGHT PASS for separate explicit user authorization before attempt 1/1.
 
 ## No-drift authority
 
@@ -141,4 +171,5 @@ Canonical BRRK-0011 = NO CHANGE.
 0068 = NO CHANGE.
 0069 = NO CHANGE.
 0070 = CLOSED / NO SAME-ID ACTION.
+0071 = OWNER-FIRST ONLY / ATTEMPT 0/1.
 Phase 6 = NO CHANGE.
