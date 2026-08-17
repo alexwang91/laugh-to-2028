@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "research_id": "BRRK-SOL-LONG-SIDEWAYS-EARLY-WARNING-EPISODE-ROBUSTNESS-0070",
+  "stage": "CONTROLLED_EXECUTION_BOUNDARY",
+  "qualification_evidence_merge_sha": "709903bf5443cbb3b1fbd9d2c588db94b5566c6a",
+  "qualified_implementation_merge_sha": "378c0a0098d9a508c20a0e0bb891a503e2357f2e",
+  "qualified_implementation_head_sha": "204134c4666559b8de4b7c0e65a1507177f3cd1b",
+  "qualification_result_blob": "8ad8cc764407f954da7c82e06ad5fa0cb3b97ca1",
+  "qualification_verdict": "PASS",
+  "run_interface_blob": "38c898f4b6b6af36551c8016684e94956b1bb5da",
+  "scientific_program": {
+    "0070_preregistration_blob": "b2618ea6e0c2bc2b321e280e8ae2611e106e909f",
+    "0070_engine_blob": "d0c02600c7f5abd3edb91caadfd38a547cf5bd22",
+    "0067_runtime_engine_blob": "482868d45ccdeaa5fbad8033f122a8fcfde79ca6",
+    "0066_scientific_engine_blob": "79320c83d0ce89c2c952fd0a4f7a9b7452a8e0ae",
+    "0066_event_engine_blob": "651ebb824b9dc1390ed0170a4eab07a3870786aa",
+    "0066_models_blob": "6b255b887f2cd8f1741086a7bf27e6254288e836",
+    "feature_builder_0062_blob": "cac8e946998c836d10842b9388e1e3ef345a8c0b",
+    "market_loader_0047_blob": "059b55961e279dab41ba29b5b017de0922e4f33c"
+  },
+  "historical_inputs": {
+    "0069_PRIMARY_RESULT_blob": "df00901c77d8d334d61c7c65a14b8d127e9ca8b6",
+    "0069_EVIDENCE_blob": "6266e6a11205e21592766546342ca5bca1dd97f0",
+    "market_evidence_blob": "64ebf5c6deaf3f34dbeac715378f196ff0f4fafe",
+    "market_payload_sha256": "d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193",
+    "network_fetch_or_replacement_allowed": false
+  },
+  "frozen_measurement": {
+    "primary_track": "P02_RAW_ELASTIC_NET_LOGIT|SOL|T4_LONG_SIDEWAYS",
+    "corroborative_cluster": [
+      "P03_VALIDATION_SCREENED_SIGNAL_LOGIT|SOL|T4_LONG_SIDEWAYS",
+      "P08_STACKED_PROBABILITY_ENSEMBLE|SOL|T4_LONG_SIDEWAYS"
+    ],
+    "warning_horizon_sessions": 10,
+    "final_unique_onsets": 7,
+    "aggregate_reproduction_absolute_tolerance": 1e-12,
+    "loeo_fold_count": 7,
+    "prediction_reconstruction": "replay frozen 0069 selected hyperparameters/screens only; no validation retuning or model reselection; LOEO folds never retrain/reselect/recalibrate",
+    "controller_or_economic_evaluation": false
+  },
+  "execution_validity": {
+    "source_blob_identity_required": true,
+    "market_payload_sha256_required": true,
+    "full_window_aggregate_reproduction_required": true,
+    "exactly_seven_defined_onsets_and_folds_required_for_PASS": true,
+    "source_read_count_rule": "0069 PRIMARY_RESULT, 0069 EVIDENCE and MARKET_EVIDENCE each exactly once during the unique attempt",
+    "market_loader_call_rule": "exactly once",
+    "frozen_prediction_reconstruction_call_rule": "exactly once",
+    "network_fetch_rule": "zero",
+    "mismatch_classification": "INVALID_EXECUTION"
+  },
+  "exactly_once": {
+    "historical_attempt_budget": 1,
+    "RUN_ATTEMPT_must_be_durable_before_any_permitted_content_read": true,
+    "same_id_rerun_allowed": false,
+    "same_id_retune_allowed": false,
+    "same_id_rescue_allowed": false,
+    "marker_only_recovery": "only if PRIMARY_RESULT.json, EVIDENCE.json and EXECUTION.json already durably persist and only RUN_ONCE.marker is absent"
+  },
+  "pre_boundary_runtime_artifacts": {
+    "RUN_ATTEMPT.marker": "ABSENT",
+    "PRIMARY_RESULT.json": "ABSENT",
+    "EVIDENCE.json": "ABSENT",
+    "EXECUTION.json": "ABSENT",
+    "RUN_ONCE.marker": "ABSENT"
+  },
+  "authorization": {
+    "production_authorized": false,
+    "signature_authorized": false,
+    "order_submission_authorized": false
+  }
+}
