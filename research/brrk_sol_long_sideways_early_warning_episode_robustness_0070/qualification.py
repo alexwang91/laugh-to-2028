@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from datetime import date, timedelta
 from pathlib import Path
 from typing import Any
 
@@ -36,15 +37,61 @@ def _fixture(kind: str) -> dict[str, Any]:
             for t in range(o - 3, o):
                 y[times.index(t)] = 1
     if kind == "UNDEFINED_FOLD":
-        y[:] = 0
-        for o in onsets:
-            y[times.index(o - 1)] = 1
-        # All positives belong to the first onset so its removal leaves one class.
         onsets = [20, 21, 22, 23, 24, 25, 26]
         y[:] = 0
         for t in range(10, 20):
             y[times.index(t)] = 1
-    return {"times": times, "y": y.tolist(), "onsets": onsets, "predictions": {engine.PRIMARY: p.tolist(), engine.CLUSTER[0]: p03.tolist(), engine.CLUSTER[1]: p08.tolist()}}
+    return {
+        "times": times,
+        "y": y.tolist(),
+        "onsets": onsets,
+        "predictions": {
+            engine.PRIMARY: p.tolist(),
+            engine.CLUSTER[0]: p03.tolist(),
+            engine.CLUSTER[1]: p08.tolist(),
+        },
+    }
+
+
+def _exact_reproduction() -> dict[str, dict[str, float]]:
+    return {k: dict(v) for k, v in engine.FROZEN.items()}
+
+
+def _datetime_session_axis_check() -> bool:
+    f = _fixture("EXACT_PASS")
+    start = date(2025, 1, 1)
+    dated_times = [start + timedelta(days=i) for i in range(len(f["times"]))]
+    remap = dict(zip(f["times"], dated_times))
+    got = engine.evaluate_locked_predictions(
+        times=dated_times,
+        session_axis=dated_times,
+        y=f["y"],
+        onsets=[remap[o] for o in f["onsets"]],
+        predictions=f["predictions"],
+        reproduced=_exact_reproduction(),
+    )
+    return got["classification"] == engine.PASS and got["execution_valid"] is True
+
+
+def _strict_reproduction_checks() -> dict[str, bool]:
+    f = _fixture("EXACT_PASS")
+    missing_all = engine.evaluate_locked_predictions(**f, reproduced=None)
+
+    missing_metric = _exact_reproduction()
+    del missing_metric[engine.PRIMARY]["ROC_AUC"]
+    missing_one = engine.evaluate_locked_predictions(**f, reproduced=missing_metric)
+
+    bad_length = dict(f)
+    bad_predictions = {k: list(v) for k, v in f["predictions"].items()}
+    bad_predictions[engine.PRIMARY] = bad_predictions[engine.PRIMARY][:-1]
+    bad_length["predictions"] = bad_predictions
+    bad_len_result = engine.evaluate_locked_predictions(**bad_length, reproduced=_exact_reproduction())
+
+    return {
+        "missing_reproduction_rejected": missing_all["classification"] == engine.INVALID,
+        "missing_reproduction_metric_rejected": missing_one["classification"] == engine.INVALID,
+        "prediction_length_mismatch_rejected": bad_len_result["classification"] == engine.INVALID,
+    }
 
 
 def qualify() -> dict[str, Any]:
@@ -59,17 +106,33 @@ def qualify() -> dict[str, Any]:
     rows = []
     for name, wanted in expected.items():
         f = _fixture("EXACT_PASS" if name == "IDENTITY_OR_REPRODUCTION_MISMATCH" else name)
-        reproduced = None
+        reproduced = _exact_reproduction()
         if name == "IDENTITY_OR_REPRODUCTION_MISMATCH":
-            reproduced = {k: dict(v) for k, v in engine.FROZEN.items()}
             reproduced[engine.PRIMARY]["PR_AUC_LIFT"] += 1e-6
         got = engine.evaluate_locked_predictions(**f, reproduced=reproduced)
-        rows.append({"regime": name, "expected": wanted, "observed": got["classification"], "pass": got["classification"] == wanted})
-    verdict = "PASS" if all(x["pass"] for x in rows) else "QUALIFICATION_FAIL"
+        expected_execution_valid = wanted != engine.INVALID
+        rows.append(
+            {
+                "regime": name,
+                "expected": wanted,
+                "observed": got["classification"],
+                "execution_valid": got["execution_valid"],
+                "expected_execution_valid": expected_execution_valid,
+                "pass": got["classification"] == wanted
+                and got["execution_valid"] is expected_execution_valid,
+            }
+        )
+
+    implementation_checks = {
+        "session_horizon_uses_ordered_sessions_not_calendar_arithmetic": _datetime_session_axis_check(),
+        **_strict_reproduction_checks(),
+    }
+    verdict = "PASS" if all(x["pass"] for x in rows) and all(implementation_checks.values()) else "QUALIFICATION_FAIL"
     return {
         "research_id": engine.RID,
         "qualification_verdict": verdict,
         "regimes": rows,
+        "implementation_checks": implementation_checks,
         "historical_or_0069_evidence_reads": 0,
         "network_fetches": 0,
         "production_authorized": False,
