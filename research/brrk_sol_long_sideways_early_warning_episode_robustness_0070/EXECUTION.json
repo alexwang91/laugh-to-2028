@@ -1,0 +1,27 @@
+{
+  "attempt_sha256": "ff85e0fae9e6d6d37204cd17e54290beffc29b18a90825333257bee2a99bbf87",
+  "boundary_merge_sha": "0c5a6affc2243a0fdaf621f7801e1870657f1254",
+  "classification": "PASS_LOCKED_EPISODE_ROBUSTNESS_REPLICATION",
+  "controlled_source_read_counters": {
+    "0069_EVIDENCE": 1,
+    "0069_PRIMARY_RESULT": 1,
+    "MARKET_EVIDENCE": 1
+  },
+  "evidence_sha256": "812d49854e168d35a651d60dbb20cd83bb0e696c3529f682bf39b7074baf202b",
+  "execution_valid": true,
+  "frozen_prediction_reconstruction_calls": 1,
+  "loeo_retrain_calls": 0,
+  "market_loader_calls": 1,
+  "model_reselection_calls": 0,
+  "network_fetches": 0,
+  "order_submission_authorized": false,
+  "primary_result_sha256": "b43d5ded394450fdb4d28f30758a1e0c0bd219299519535d028e4f95ba389558",
+  "production_authorized": false,
+  "research_id": "BRRK-SOL-LONG-SIDEWAYS-EARLY-WARNING-EPISODE-ROBUSTNESS-0070",
+  "same_id_rerun_allowed": false,
+  "same_id_rescue_allowed": false,
+  "same_id_retune_allowed": false,
+  "schema_version": 1,
+  "signature_authorized": false,
+  "validation_tuning_calls": 0
+}

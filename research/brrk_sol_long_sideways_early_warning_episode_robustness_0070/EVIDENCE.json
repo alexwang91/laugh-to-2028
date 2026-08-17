@@ -1,0 +1,326 @@
+{
+  "P02_folds": [
+    {
+      "PR_AUC": 0.8160716384292591,
+      "PR_AUC_LIFT": 0.4074694878916247,
+      "ROC_AUC": 0.8167464114832537,
+      "n": 93,
+      "onset": "2024-02-24T00:00:00",
+      "positives": 38,
+      "prevalence": 0.40860215053763443,
+      "retention": 1.1915792340397247
+    },
+    {
+      "PR_AUC": 0.7629976371008453,
+      "PR_AUC_LIFT": 0.335914303767512,
+      "ROC_AUC": 0.7720620842572062,
+      "n": 96,
+      "onset": "2024-08-01T00:00:00",
+      "positives": 41,
+      "prevalence": 0.4270833333333333,
+      "retention": 0.9823275623836144
+    },
+    {
+      "PR_AUC": 0.7950409969486815,
+      "PR_AUC_LIFT": 0.35059655250423705,
+      "ROC_AUC": 0.790909090909091,
+      "n": 99,
+      "onset": "2024-12-29T00:00:00",
+      "positives": 44,
+      "prevalence": 0.4444444444444444,
+      "retention": 1.0252634464769546
+    },
+    {
+      "PR_AUC": 0.7571746440455864,
+      "PR_AUC_LIFT": 0.32418495332393693,
+      "ROC_AUC": 0.7714285714285715,
+      "n": 97,
+      "onset": "2025-05-29T00:00:00",
+      "positives": 42,
+      "prevalence": 0.4329896907216495,
+      "retention": 0.9480269562458217
+    },
+    {
+      "PR_AUC": 0.7105971355048215,
+      "PR_AUC_LIFT": 0.30842322246134324,
+      "ROC_AUC": 0.7464373464373465,
+      "n": 92,
+      "onset": "2025-07-12T00:00:00",
+      "positives": 37,
+      "prevalence": 0.40217391304347827,
+      "retention": 0.9019342996261315
+    },
+    {
+      "PR_AUC": 0.7346929580332936,
+      "PR_AUC_LIFT": 0.32609080749565916,
+      "ROC_AUC": 0.7574162679425838,
+      "n": 93,
+      "onset": "2025-08-05T00:00:00",
+      "positives": 38,
+      "prevalence": 0.40860215053763443,
+      "retention": 0.9536003214219062
+    },
+    {
+      "PR_AUC": 0.8587944113414481,
+      "PR_AUC_LIFT": 0.4631900157370525,
+      "ROC_AUC": 0.8919191919191919,
+      "n": 91,
+      "onset": "2025-11-13T00:00:00",
+      "positives": 36,
+      "prevalence": 0.3956043956043956,
+      "retention": 1.3545249903806345
+    }
+  ],
+  "P02_median_retention": 0.9823275623836144,
+  "P02_retention_gte_0_50_count": 7,
+  "corroborative_cluster": {
+    "P03_VALIDATION_SCREENED_SIGNAL_LOGIT|SOL|T4_LONG_SIDEWAYS": [
+      {
+        "PR_AUC": 0.6671720946239549,
+        "PR_AUC_LIFT": 0.25856994408632045,
+        "ROC_AUC": 0.7722488038277512,
+        "n": 93,
+        "onset": "2024-02-24T00:00:00",
+        "positives": 38,
+        "prevalence": 0.40860215053763443,
+        "retention": 0.9109504730798983
+      },
+      {
+        "PR_AUC": 0.7556571665578337,
+        "PR_AUC_LIFT": 0.32857383322450034,
+        "ROC_AUC": 0.8434589800443459,
+        "n": 96,
+        "onset": "2024-08-01T00:00:00",
+        "positives": 41,
+        "prevalence": 0.4270833333333333,
+        "retention": 1.1575764920210976
+      },
+      {
+        "PR_AUC": 0.7231683908026645,
+        "PR_AUC_LIFT": 0.27872394635822006,
+        "ROC_AUC": 0.7958677685950414,
+        "n": 99,
+        "onset": "2024-12-29T00:00:00",
+        "positives": 44,
+        "prevalence": 0.4444444444444444,
+        "retention": 0.9819536902902917
+      },
+      {
+        "PR_AUC": 0.6948868599527964,
+        "PR_AUC_LIFT": 0.2618971692311469,
+        "ROC_AUC": 0.7857142857142857,
+        "n": 97,
+        "onset": "2025-05-29T00:00:00",
+        "positives": 42,
+        "prevalence": 0.4329896907216495,
+        "retention": 0.9226723974142717
+      },
+      {
+        "PR_AUC": 0.7213984048224543,
+        "PR_AUC_LIFT": 0.31922449177897605,
+        "ROC_AUC": 0.8083538083538084,
+        "n": 92,
+        "onset": "2025-07-12T00:00:00",
+        "positives": 37,
+        "prevalence": 0.40217391304347827,
+        "retention": 1.1246384525947417
+      },
+      {
+        "PR_AUC": 0.7352072847198673,
+        "PR_AUC_LIFT": 0.32660513418223286,
+        "ROC_AUC": 0.8224880382775119,
+        "n": 93,
+        "onset": "2025-08-05T00:00:00",
+        "positives": 38,
+        "prevalence": 0.40860215053763443,
+        "retention": 1.150640700120602
+      },
+      {
+        "PR_AUC": 0.6780858696201567,
+        "PR_AUC_LIFT": 0.2824814740157611,
+        "ROC_AUC": 0.7904040404040404,
+        "n": 91,
+        "onset": "2025-11-13T00:00:00",
+        "positives": 36,
+        "prevalence": 0.3956043956043956,
+        "retention": 0.9951915846222993
+      }
+    ],
+    "P08_STACKED_PROBABILITY_ENSEMBLE|SOL|T4_LONG_SIDEWAYS": [
+      {
+        "PR_AUC": 0.6671720946239549,
+        "PR_AUC_LIFT": 0.25856994408632045,
+        "ROC_AUC": 0.7722488038277512,
+        "n": 93,
+        "onset": "2024-02-24T00:00:00",
+        "positives": 38,
+        "prevalence": 0.40860215053763443,
+        "retention": 0.9109504730798983
+      },
+      {
+        "PR_AUC": 0.7556571665578337,
+        "PR_AUC_LIFT": 0.32857383322450034,
+        "ROC_AUC": 0.8434589800443459,
+        "n": 96,
+        "onset": "2024-08-01T00:00:00",
+        "positives": 41,
+        "prevalence": 0.4270833333333333,
+        "retention": 1.1575764920210976
+      },
+      {
+        "PR_AUC": 0.7231683908026645,
+        "PR_AUC_LIFT": 0.27872394635822006,
+        "ROC_AUC": 0.7958677685950414,
+        "n": 99,
+        "onset": "2024-12-29T00:00:00",
+        "positives": 44,
+        "prevalence": 0.4444444444444444,
+        "retention": 0.9819536902902917
+      },
+      {
+        "PR_AUC": 0.6948868599527964,
+        "PR_AUC_LIFT": 0.2618971692311469,
+        "ROC_AUC": 0.7857142857142857,
+        "n": 97,
+        "onset": "2025-05-29T00:00:00",
+        "positives": 42,
+        "prevalence": 0.4329896907216495,
+        "retention": 0.9226723974142717
+      },
+      {
+        "PR_AUC": 0.7213984048224543,
+        "PR_AUC_LIFT": 0.31922449177897605,
+        "ROC_AUC": 0.8083538083538084,
+        "n": 92,
+        "onset": "2025-07-12T00:00:00",
+        "positives": 37,
+        "prevalence": 0.40217391304347827,
+        "retention": 1.1246384525947417
+      },
+      {
+        "PR_AUC": 0.7352072847198673,
+        "PR_AUC_LIFT": 0.32660513418223286,
+        "ROC_AUC": 0.8224880382775119,
+        "n": 93,
+        "onset": "2025-08-05T00:00:00",
+        "positives": 38,
+        "prevalence": 0.40860215053763443,
+        "retention": 1.150640700120602
+      },
+      {
+        "PR_AUC": 0.6780858696201567,
+        "PR_AUC_LIFT": 0.2824814740157611,
+        "ROC_AUC": 0.7904040404040404,
+        "n": 91,
+        "onset": "2025-11-13T00:00:00",
+        "positives": 36,
+        "prevalence": 0.3956043956043956,
+        "retention": 0.9951915846222993
+      }
+    ]
+  },
+  "corroborative_cluster_pass": true,
+  "full_window_reproduction": {
+    "P02_RAW_ELASTIC_NET_LOGIT|SOL|T4_LONG_SIDEWAYS": {
+      "PR_AUC": 0.7974030713822858,
+      "PR_AUC_LIFT": 0.34195752682783037,
+      "ROC_AUC": 0.7913043478260869,
+      "prevalence": 0.45544554455445546
+    },
+    "P03_VALIDATION_SCREENED_SIGNAL_LOGIT|SOL|T4_LONG_SIDEWAYS": {
+      "PR_AUC_LIFT": 0.28384632505003554,
+      "ROC_AUC": 0.8027667984189722
+    },
+    "P08_STACKED_PROBABILITY_ENSEMBLE|SOL|T4_LONG_SIDEWAYS": {
+      "PR_AUC_LIFT": 0.28384632505003554,
+      "ROC_AUC": 0.8027667984189722
+    }
+  },
+  "replay_audit": {
+    "P01_FAMILY_RIDGE_LOGIT|SOL|T4_LONG_SIDEWAYS|L10": {
+      "fit_call_attempts": 48,
+      "fit_failures": [],
+      "refit_count": 48,
+      "worker_maxrss_kb": 243668,
+      "worker_pid": 2343
+    },
+    "P02_RAW_ELASTIC_NET_LOGIT|SOL|T4_LONG_SIDEWAYS|L10": {
+      "fit_call_attempts": 48,
+      "fit_failures": [],
+      "refit_count": 48,
+      "worker_maxrss_kb": 243208,
+      "worker_pid": 2344
+    },
+    "P03_VALIDATION_SCREENED_SIGNAL_LOGIT|SOL|T4_LONG_SIDEWAYS|L10": {
+      "fit_call_attempts": 48,
+      "fit_failures": [],
+      "refit_count": 48,
+      "worker_maxrss_kb": 243688,
+      "worker_pid": 2345
+    },
+    "P04_PCR_LOGIT|SOL|T4_LONG_SIDEWAYS|L10": {
+      "fit_call_attempts": 48,
+      "fit_failures": [],
+      "refit_count": 48,
+      "worker_maxrss_kb": 253576,
+      "worker_pid": 2346
+    },
+    "P05_THEORY_QUADRATIC_LOGIT|SOL|T4_LONG_SIDEWAYS|L10": {
+      "fit_call_attempts": 48,
+      "fit_failures": [],
+      "refit_count": 48,
+      "worker_maxrss_kb": 244868,
+      "worker_pid": 2345
+    },
+    "P06_SHALLOW_GBDT_CLASSIFIER|SOL|T4_LONG_SIDEWAYS|L10": {
+      "fit_call_attempts": 48,
+      "fit_failures": [],
+      "refit_count": 48,
+      "worker_maxrss_kb": 245708,
+      "worker_pid": 2343
+    },
+    "P07_DISCRETE_TIME_HAZARD_LOGIT|SOL|T4_LONG_SIDEWAYS|POOLED": {
+      "fit_call_attempts": 48,
+      "fit_failures": [],
+      "refit_count": 48,
+      "worker_maxrss_kb": 253704,
+      "worker_pid": 2346
+    },
+    "__runtime__": {
+      "fit_call_attempts": 336,
+      "worker_count": 4
+    }
+  },
+  "research_id": "BRRK-SOL-LONG-SIDEWAYS-EARLY-WARNING-EPISODE-ROBUSTNESS-0070",
+  "schema_version": 1,
+  "source_reference": {
+    "P02_RAW_ELASTIC_NET_LOGIT|SOL|T4_LONG_SIDEWAYS": {
+      "PR_AUC": 0.7974030713822858,
+      "PR_AUC_LIFT": 0.34195752682783037,
+      "ROC_AUC": 0.7913043478260869,
+      "prevalence": 0.45544554455445546
+    },
+    "P03_VALIDATION_SCREENED_SIGNAL_LOGIT|SOL|T4_LONG_SIDEWAYS": {
+      "PR_AUC_LIFT": 0.28384632505003554,
+      "ROC_AUC": 0.8027667984189722
+    },
+    "P08_STACKED_PROBABILITY_ENSEMBLE|SOL|T4_LONG_SIDEWAYS": {
+      "PR_AUC_LIFT": 0.28384632505003554,
+      "ROC_AUC": 0.8027667984189722
+    }
+  },
+  "support": {
+    "final_unique_onsets": 7,
+    "support_pass": true,
+    "train_validation_unique_onsets": 15
+  },
+  "unique_onsets": [
+    "2024-02-24T00:00:00",
+    "2024-08-01T00:00:00",
+    "2024-12-29T00:00:00",
+    "2025-05-29T00:00:00",
+    "2025-07-12T00:00:00",
+    "2025-08-05T00:00:00",
+    "2025-11-13T00:00:00"
+  ]
+}
