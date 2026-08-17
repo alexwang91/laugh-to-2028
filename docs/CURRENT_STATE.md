@@ -126,16 +126,16 @@ The roadmap does not relax any per-ID lifecycle or evidence gate.
 ## 0071 controller integration
 
 Research ID = `BRRK-SOL-LONG-SIDEWAYS-CONTROLLER-INTEGRATION-0071`.
-State = `OWNER-FIRST + DESIGN MERGED / PREREGISTRATION FROZEN IN PR / IMPLEMENTATION NOT STARTED / CONTROLLED ATTEMPT 0/1`.
+State = `OWNER-FIRST + DESIGN + PREREGISTRATION MERGED / IMPLEMENTATION IN PR / CONTROLLED ATTEMPT 0/1`.
 
 Lifecycle anchors:
 - roadmap merge `169d9adf6531dc099a43541df413fef079322adf`;
 - OWNER-FIRST merge `4b8762f8046000c1bd414fb60b9232917251e579`;
 - DESIGN merge `0f86341d40516e0ed90d09baaa17e149c64671f6`;
-- PREREGISTRATION branch `research/0071-prereg-v1`;
-- frozen files: `PREREGISTRATION.json`, `ECONOMIC_ANALYSIS_CONTRACT.json`, `QUALIFICATION_PREREGISTRATION.json`, `RESULT_SCHEMA.json`.
+- PREREGISTRATION merge `34ccffa6ecedffb5076b88cf86222c2fb142560c`;
+- IMPLEMENTATION branch `research/0071-implementation-v1`.
 
-Frozen preregistration now fixes before any controlled read:
+Frozen preregistration fixes before any controlled read:
 - common causal support and minimum 252 rows;
 - exact six controller formulas and two nonselectable matched controls;
 - t-close information first applies to t->t+1 return;
@@ -149,11 +149,13 @@ Frozen preregistration now fixes before any controlled read:
 - exact candidate G0-G10 gates, Pareto tie-break and terminal classification meanings;
 - controlled read/call budgets, create-only result chain and one-attempt rules.
 
-No 0071 controlled history/evidence/market/DTB3 content has been read by this stage. No controller has been evaluated. `controlled_attempt_consumed=0`.
+Implementation now encodes only the frozen contract in `engine.py`, `qualification.py` and `IMPLEMENTATION_CONTRACT.json`: deterministic six-candidate/two-control exposure construction, long-or-cash bounds, t-to-t+1 economic interface, frozen cash input interface, initial establishment turnover, C0/C1/C2 one-way costs, NAV/performance/tail metrics, cost break-even, deterministic synchronized MBB, six-trial DSR, matched-overlay attribution and frozen gate evaluation. Synthetic qualification fixtures contain no controlled historical/economic source reads.
+
+No 0071 controlled 0069/0070/market/DTB3 content has been read by implementation. No controller has been historically evaluated. `controlled_attempt_consumed=0`.
 
 ## Exact next step
 
-Run standing CI on the exact PREREGISTRATION head and merge automatically only when every required exact-head workflow succeeds. Then implement only the frozen contract with deterministic ordering, counters, create-only result writers and synthetic fixtures. Historical/economic controlled reads remain forbidden until later CONTROLLED BOUNDARY + exact merged-boundary ZERO-RESULT PREFLIGHT.
+Run exact-head standing CI on the IMPLEMENTATION PR and merge automatically only if green. Then execute/persist the preregistered NONHISTORICAL QUALIFICATION with zero controlled-content reads and attempt 0/1. Only after qualification PASS may a separate CONTROLLED BOUNDARY be created.
 
 ## No-drift authority
 
@@ -170,5 +172,5 @@ Canonical BRRK-0011 = NO CHANGE.
 0068 = NO CHANGE.
 0069 = NO CHANGE.
 0070 = CLOSED / NO SAME-ID ACTION.
-0071 = DESIGN MERGED / PREREGISTRATION IN PR / ATTEMPT 0/1.
+0071 = PREREGISTRATION MERGED / IMPLEMENTATION IN PR / ATTEMPT 0/1.
 Phase 6 = NO CHANGE.
