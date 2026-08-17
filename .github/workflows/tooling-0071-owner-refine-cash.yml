@@ -1,0 +1,98 @@
+name: Tooling 0071 owner cash and matched-control refinement
+on:
+  push:
+    branches: [tools/0071-owner-refine-cash-v1]
+    paths: ['.github/workflows/tooling-0071-owner-refine-cash.yml']
+permissions:
+  contents: write
+concurrency:
+  group: brrk-0071-owner-cash-refinement
+  cancel-in-progress: false
+jobs:
+  refine-owner:
+    runs-on: ubuntu-24.04
+    env:
+      EXPECTED_OWNER_HEAD: 0b008fd76a69737ab8bbb567eeb25e2c515b63ca
+      TARGET_BRANCH: research/0071-owner-first-v1
+      RID: BRRK-SOL-LONG-SIDEWAYS-CONTROLLER-INTEGRATION-0071
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/0071-owner-first-v1
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Verify exact unmerged owner state
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$EXPECTED_OWNER_HEAD"
+          test "$(git merge-base --is-ancestor 169d9adf6531dc099a43541df413fef079322adf HEAD && echo yes)" = yes
+      - name: Refine prospective owner record only
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('config/research_registry.json')
+          obj=json.loads(p.read_text(encoding='utf-8'))
+          rid='BRRK-SOL-LONG-SIDEWAYS-CONTROLLER-INTEGRATION-0071'
+          matches=[r for r in obj['records'] if r.get('research_id')==rid]
+          assert len(matches)==1
+          r=matches[0]
+          assert r['actual_variants_evaluated']==0
+          assert r['result_status']=='PREREGISTERED_NOT_RUN'
+          assert r['production_authorized'] is False
+          assert r['declared_variant_budget']==6 and r['parameter_candidate_count']==6
+
+          ff=r['feature_families']
+          cash='FROZEN_0064_DTB3_PASSIVE_CASH_ACCRUAL'
+          if cash not in ff:
+              ff.append(cash)
+
+          decisions=r['researcher_decisions']
+          additions=[
+            'Accrue the uninvested long-or-cash fraction using the frozen 0064 passive-cash primary semantics: causally aligned pinned DTB3, 50% yield realization, and 100 bps annual continuous idle-cash spread/fee; identical cash accounting applies to every controller, the frozen SOL benchmark where cash exists, and every matched signal-off comparator.',
+            'For VOL_ADJUSTED, include a matched signal-off volatility-only comparator using identical volatility estimator, cap, cash accrual and cost accounting; this comparator is a diagnostic control and is not an additional selectable controller candidate.',
+            'For DRAWDOWN_AWARE, include a matched signal-off drawdown-only comparator using identical drawdown state, cap, cash accrual and cost accounting; this comparator is a diagnostic control and is not an additional selectable controller candidate.',
+            'Attribute incremental P02 value only relative to the appropriate matched baseline when a controller family contains an independently economic risk overlay; do not credit overlay-only improvement to P02.'
+          ]
+          for x in additions:
+              if x not in decisions:
+                  decisions.append(x)
+
+          notes=r['notes']
+          note='PREREGISTRATION must pin the exact 0064 cash-engine blob 4060a307be2204c11952cb52e2fc718a5343d8e1, DTB3 blob 71d50e26f8a9afb6bcb88401d20b97d5fb0a891a and DTB3 payload SHA256 4d8aee67dbd528ce38ff8482e9bb02dd5ccf2c6cd461f606fe90007151ab6879; no substituted rate series or altered cash realization/fee convention is allowed in 0071.'
+          if note not in notes:
+              notes.append(note)
+
+          rpc=r['research_process_complexity']
+          rpc['feature_representations']=len(r['feature_families'])
+          r['secondary_metrics'] = list(dict.fromkeys(r['secondary_metrics'] + [
+              'matched_signal_off_overlay_comparison',
+              'idle_cash_accrual_contribution'
+          ]))
+          r['success_criteria'] += ' For VOL_ADJUSTED and DRAWDOWN_AWARE, any claimed incremental P02 value must also pass the prospectively frozen matched signal-off overlay comparison; overlay-only economics cannot satisfy the P02 integration claim.'
+          r['forbidden_followup'] += ' No zero-return cash substitution and no omission or post-result alteration of preregistered matched signal-off overlay controls.'
+
+          p.write_text(json.dumps(obj, indent=2, ensure_ascii=False)+'\n', encoding='utf-8')
+          check=json.loads(p.read_text(encoding='utf-8'))
+          rr=[x for x in check['records'] if x.get('research_id')==rid][0]
+          assert cash in rr['feature_families']
+          assert rr['research_process_complexity']['feature_representations']==5
+          assert rr['declared_variant_budget']==6 and rr['parameter_candidate_count']==6
+          assert rr['actual_variants_evaluated']==0
+          assert rr['production_authorized'] is False
+          print('0071 owner cash/matched-control prospective refinement PASS')
+          PY
+          python -m json.tool config/research_registry.json >/dev/null
+      - name: Persist refinement to owner branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add config/research_registry.json
+          test "$(git diff --cached --name-only)" = "config/research_registry.json"
+          git commit -m 'research(0071): freeze passive cash and matched overlay controls'
+          git push origin "HEAD:refs/heads/$TARGET_BRANCH"
