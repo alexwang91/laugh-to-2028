@@ -16,7 +16,7 @@ Authoritative repository: `alexwang91/laugh-to-2028`.
 - 0067 = `INVALID_EXECUTION / CLOSED TO SAME-ID RERUN`; attempt 1/1 consumed. Physical mismatch: validation 31,008/31,008, economic 5,808/11,904, P08 NNLS 20/40. No 0067 scientific result is admissible.
 - 0068 = `PASS_EXECUTION_EQUIVALENCE / CLOSED`; immutable closeout `585308444719914028ac4410fba86948a5505a13`.
 - 0069 = `PASS_EVENT_EARLY_WARNING_ONLY / CLOSED TO SAME-ID RERUN`; attempt 1/1 consumed; merged immutable historical result bundle `911b68225310ec7621e9937ff698e7dff84f9ae8`.
-- 0070 = `PASS_LOCKED_EPISODE_ROBUSTNESS_REPLICATION / CLOSED TO SAME-ID RERUN`; attempt 1/1 consumed; merged immutable result bundle `174a30dc4950e7351f3a746edc8f581b8f12e6d3`.
+- 0070 = `PASS_LOCKED_EPISODE_ROBUSTNESS_REPLICATION / CLOSED TO SAME-ID RERUN`; attempt 1/1 consumed; merged immutable result bundle `174a30dc4950e7351f3a746edc8f581b8f12e6d3`; immutable closeout merge `d87607070cf03ccbbc318065f8c4c14ec6c6a50b`.
 - Canonical BRRK-0011 = NO CHANGE.
 - Phase 6 = NO CHANGE.
 
@@ -81,6 +81,7 @@ Lifecycle anchors:
 - unique controlled workflow `32040286477` = PASS;
 - finalized immutable result branch head before handoff-only docs commit `a62ffbe3557530beb6aae24c94975ac1f1041fe3`;
 - immutable result bundle merge `174a30dc4950e7351f3a746edc8f581b8f12e6d3`;
+- immutable closeout merge `d87607070cf03ccbbc318065f8c4c14ec6c6a50b`;
 - immutable closeout file `research/brrk_sol_long_sideways_early_warning_episode_robustness_0070/CLOSEOUT.md`.
 
 Attempt 1/1 completed exactly once. `RUN_ATTEMPT.marker` was durably persisted before controlled source reads and `RUN_ONCE.marker` seals the attempt. Same-ID rerun, retune, rescue and recomputation are forbidden.
@@ -113,9 +114,17 @@ Execution assurance:
 
 Evidence scope: researcher-exposed DEVELOPMENT-history episode robustness only; not independent OOS; no controller/economic inference. Production/signature/order authority remains zero.
 
+## Prospective multi-strategy research program
+
+Roadmap document under governance review: `research/governance/CRYPTO_MULTI_STRATEGY_RESEARCH_PROGRAM_0071_0082.md`.
+
+The roadmap serializes prospective IDs 0071–0082 and requires every eligible ID to independently traverse the same ten formal lifecycle stages used by 0069/0070. It defines point-in-time and anti-lookahead rules, ordered economic accounting, realistic/stressed cost treatment, trial counting, DSR/PBO/bootstrap requirements where applicable, concentration/capacity/stress tests, explicit stop/gating rules, and zero production authority.
+
+The roadmap itself does not register 0071 and does not authorize any controlled historical attempt.
+
 ## Exact next step
 
-Run standing CI on the separate 0070 immutable closeout PR and merge it only if the exact head is green. After that merge, 0070 has no remaining legal same-ID action. Merge the prospective multi-strategy roadmap after its own governance checks, then begin successor 0071 only through a new OWNER-FIRST registry entry. 0071 must follow the full ten-stage lifecycle and must stop after ZERO-RESULT PREFLIGHT for separate explicit authorization before any irreversible attempt 1/1.
+Run standing CI on the post-0070-closeout roadmap PR built from exact main `d87607070cf03ccbbc318065f8c4c14ec6c6a50b`. Merge the roadmap only if the exact head is green. After roadmap merge, begin `BRRK-SOL-LONG-SIDEWAYS-CONTROLLER-INTEGRATION-0071` through a new OWNER-FIRST registry entry before creating any governed 0071 research path. Continue 0071 serially through DESIGN, PREREGISTRATION, IMPLEMENTATION, NONHISTORICAL QUALIFICATION, CONTROLLED BOUNDARY and ZERO-RESULT PREFLIGHT. At that point stop and request separate explicit user authorization before the irreversible controlled development-history attempt 1/1.
 
 ## No-drift authority
 
