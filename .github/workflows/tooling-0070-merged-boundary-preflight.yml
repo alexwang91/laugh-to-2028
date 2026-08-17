@@ -1,0 +1,71 @@
+name: Tooling 0070 exact merged-boundary preflight
+
+on:
+  push:
+    branches:
+      - tools/0070-merged-boundary-preflight-v1
+    paths:
+      - '.github/workflows/tooling-0070-merged-boundary-preflight.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: brrk-0070-merged-boundary-preflight
+  cancel-in-progress: false
+
+jobs:
+  preflight:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      PYTHONHASHSEED: '0'
+      OMP_NUM_THREADS: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      NUMEXPR_NUM_THREADS: '1'
+      MERGED_BOUNDARY_SHA: '0c5a6affc2243a0fdaf621f7801e1870657f1254'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 0c5a6affc2243a0fdaf621f7801e1870657f1254
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: execution/plan-b-bot/requirements-dev.txt
+      - name: Install pinned runtime
+        run: python -m pip install -r execution/plan-b-bot/requirements-dev.txt
+      - name: Verify exact merged boundary identity
+        shell: bash
+        run: test "$(git rev-parse HEAD)" = "$MERGED_BOUNDARY_SHA"
+      - name: Run exact zero-result preflight
+        run: python -m research.brrk_sol_long_sideways_early_warning_episode_robustness_0070.run_once preflight --boundary-sha "$MERGED_BOUNDARY_SHA" | tee /tmp/0070-preflight.json
+      - name: Verify preflight output
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r=json.loads(Path('/tmp/0070-preflight.json').read_text())
+          assert r['research_id']=='BRRK-SOL-LONG-SIDEWAYS-EARLY-WARNING-EPISODE-ROBUSTNESS-0070'
+          assert r['status']=='PREFLIGHT_PASS_ZERO_RESULT_GIT_IDENTITY_ONLY'
+          assert r['boundary_sha']=='0c5a6affc2243a0fdaf621f7801e1870657f1254'
+          assert r['historical_or_0069_content_reads']==0
+          assert r['market_payload_reads']==0
+          assert r['market_loader_calls']==0
+          assert r['frozen_prediction_reconstruction_calls']==0
+          assert r['network_fetches']==0
+          assert r['controlled_attempt_consumed']==0
+          assert r['runtime_artifacts_present']==[]
+          assert r['production_authorized'] is False
+          assert r['signature_authorized'] is False
+          assert r['order_submission_authorized'] is False
+          print(json.dumps(r,indent=2,sort_keys=True))
+          PY
+      - name: Upload preflight evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: brrk-0070-preflight-0c5a6aff
+          path: /tmp/0070-preflight.json
+          if-no-files-found: error
