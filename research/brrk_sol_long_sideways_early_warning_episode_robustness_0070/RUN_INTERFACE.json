@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "research_id": "BRRK-SOL-LONG-SIDEWAYS-EARLY-WARNING-EPISODE-ROBUSTNESS-0070",
+  "stage": "CONTROLLED_EXECUTION_INTERFACE",
+  "entrypoint": "python -m research.brrk_sol_long_sideways_early_warning_episode_robustness_0070.run_once",
+  "commands": {
+    "preflight": "preflight --boundary-sha <MERGED_BOUNDARY_SHA>",
+    "start_attempt": "start --boundary-sha <MERGED_BOUNDARY_SHA> --workflow-run-id <RUN_ID>",
+    "evaluate": "evaluate --boundary-sha <MERGED_BOUNDARY_SHA>",
+    "finalize": "finalize --boundary-sha <MERGED_BOUNDARY_SHA>"
+  },
+  "qualification_gate": {
+    "required": true,
+    "implementation_merge_sha": "378c0a0098d9a508c20a0e0bb891a503e2357f2e",
+    "qualification_evidence_merge_sha": "709903bf5443cbb3b1fbd9d2c588db94b5566c6a",
+    "qualification_result_blob": "8ad8cc764407f954da7c82e06ad5fa0cb3b97ca1",
+    "qualification_verdict": "PASS"
+  },
+  "preflight_permissions": {
+    "git_identity_reads": true,
+    "runtime_artifact_existence_checks": true,
+    "historical_or_0069_content_reads": 0,
+    "market_loader_calls": 0,
+    "scientific_reconstruction_calls": 0,
+    "network_fetches": 0
+  },
+  "unique_attempt": {
+    "attempt_number": 1,
+    "durable_RUN_ATTEMPT_before_any_permitted_content_read": true,
+    "permitted_source_reads_exactly_once_each": [
+      "0069_PRIMARY_RESULT",
+      "0069_EVIDENCE",
+      "MARKET_EVIDENCE"
+    ],
+    "market_loader_calls": 1,
+    "frozen_prediction_reconstruction_calls": 1,
+    "warning_horizon_sessions": 10,
+    "loeo_fold_count": 7,
+    "same_id_rerun_allowed": false,
+    "same_id_retune_allowed": false,
+    "same_id_rescue_allowed": false
+  },
+  "scientific_scope": {
+    "primary_track": "P02_RAW_ELASTIC_NET_LOGIT|SOL|T4_LONG_SIDEWAYS",
+    "corroborative_cluster": [
+      "P03_VALIDATION_SCREENED_SIGNAL_LOGIT|SOL|T4_LONG_SIDEWAYS",
+      "P08_STACKED_PROBABILITY_ENSEMBLE|SOL|T4_LONG_SIDEWAYS"
+    ],
+    "retraining_or_reselection_inside_LOEO_folds": false,
+    "controller_or_economic_evaluation": false
+  },
+  "persistence": {
+    "create_only": true,
+    "runtime_artifacts": [
+      "RUN_ATTEMPT.marker",
+      "PRIMARY_RESULT.json",
+      "EVIDENCE.json",
+      "EXECUTION.json",
+      "RUN_ONCE.marker"
+    ],
+    "finalize_historical_content_reads": 0,
+    "finalize_scientific_reconstruction_calls": 0,
+    "marker_only_recovery": "allowed only when complete PRIMARY_RESULT/EVIDENCE/EXECUTION hashes already persist; no historical reread or scientific remeasurement"
+  },
+  "authorization": {
+    "production_authorized": false,
+    "signature_authorized": false,
+    "order_submission_authorized": false
+  }
+}
