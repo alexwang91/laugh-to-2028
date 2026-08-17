@@ -1,0 +1,71 @@
+{
+  "controlled_attempt_consumed": 0,
+  "historical_or_0069_evidence_reads": 0,
+  "implementation_checks": {
+    "missing_reproduction_metric_rejected": true,
+    "missing_reproduction_rejected": true,
+    "prediction_length_mismatch_rejected": true,
+    "session_horizon_uses_ordered_sessions_not_calendar_arithmetic": true
+  },
+  "implementation_head_sha": "204134c4666559b8de4b7c0e65a1507177f3cd1b",
+  "implementation_merge_sha": "378c0a0098d9a508c20a0e0bb891a503e2357f2e",
+  "market_payload_reads": 0,
+  "network_fetches": 0,
+  "order_submission_authorized": false,
+  "production_authorized": false,
+  "qualification_verdict": "PASS",
+  "regimes": [
+    {
+      "execution_valid": true,
+      "expected": "PASS_LOCKED_EPISODE_ROBUSTNESS_REPLICATION",
+      "expected_execution_valid": true,
+      "observed": "PASS_LOCKED_EPISODE_ROBUSTNESS_REPLICATION",
+      "pass": true,
+      "regime": "EXACT_PASS"
+    },
+    {
+      "execution_valid": true,
+      "expected": "FAIL_LOCKED_EPISODE_ROBUSTNESS_REPLICATION",
+      "expected_execution_valid": true,
+      "observed": "FAIL_LOCKED_EPISODE_ROBUSTNESS_REPLICATION",
+      "pass": true,
+      "regime": "SINGLE_EPISODE_DOMINANT"
+    },
+    {
+      "execution_valid": true,
+      "expected": "FAIL_LOCKED_EPISODE_ROBUSTNESS_REPLICATION",
+      "expected_execution_valid": true,
+      "observed": "FAIL_LOCKED_EPISODE_ROBUSTNESS_REPLICATION",
+      "pass": true,
+      "regime": "CLUSTER_FAIL"
+    },
+    {
+      "execution_valid": true,
+      "expected": "MEASUREMENT_INCONCLUSIVE_INSUFFICIENT_EPISODE_SUPPORT",
+      "expected_execution_valid": true,
+      "observed": "MEASUREMENT_INCONCLUSIVE_INSUFFICIENT_EPISODE_SUPPORT",
+      "pass": true,
+      "regime": "INSUFFICIENT_EPISODES"
+    },
+    {
+      "execution_valid": true,
+      "expected": "MEASUREMENT_INCONCLUSIVE_INSUFFICIENT_EPISODE_SUPPORT",
+      "expected_execution_valid": true,
+      "observed": "MEASUREMENT_INCONCLUSIVE_INSUFFICIENT_EPISODE_SUPPORT",
+      "pass": true,
+      "regime": "UNDEFINED_FOLD"
+    },
+    {
+      "execution_valid": false,
+      "expected": "INVALID_EXECUTION",
+      "expected_execution_valid": false,
+      "observed": "INVALID_EXECUTION",
+      "pass": true,
+      "regime": "IDENTITY_OR_REPRODUCTION_MISMATCH"
+    }
+  ],
+  "research_id": "BRRK-SOL-LONG-SIDEWAYS-EARLY-WARNING-EPISODE-ROBUSTNESS-0070",
+  "schema_version": 1,
+  "signature_authorized": false,
+  "stage": "NONHISTORICAL_QUALIFICATION"
+}
