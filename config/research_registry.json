@@ -5100,6 +5100,107 @@
         "Evidence remains researcher-exposed DEVELOPMENT history, not independent OOS.",
         "production_authorized=false; signature_authorized=false; order_submission_authorized=false."
       ]
+    },
+    {
+      "research_id": "BRRK-SOL-LONG-SIDEWAYS-CONTROLLER-INTEGRATION-0071",
+      "research_family_id": "BRRK_PATH_EVENT_EARLY_WARNING",
+      "research_domain": "RISK_CONTROL",
+      "research_governance_version": 1,
+      "governance_mode": "PROGRAM_GOVERNED_V1",
+      "objective_type": "PORTFOLIO_INTEGRATION",
+      "created_at": "2026-08-17",
+      "created_before_result": true,
+      "question": "Does the immutably closed 0070 P02 SOL T4_LONG_SIDEWAYS 10-session warning have incremental economic risk-control value when converted into a bounded prospectively frozen SOL exposure controller after realistic and stressed costs, without changing the signal, target, horizon, feature set, architecture, selected hyperparameters or episode semantics?",
+      "hypothesis": "At least one of six prospectively bounded non-levered long-or-cash controller families can use only the locked 0070 P02 risk score plus explicitly allowed lagged risk-accounting state to improve the preregistered net return/drawdown/tail/turnover Pareto trade-off versus the frozen SOL benchmark under realistic costs, with robustness surviving the preregistered stress and multiple-testing controls.",
+      "hypothesis_origin": "RESULT_INFORMED_FROM_IMMUTABLY_CLOSED_0070_AS_A_NEW_RESEARCH_ID; DEVELOPMENT_HISTORY_ECONOMIC_INTEGRATION_ONLY; NOT_INDEPENDENT_OOS.",
+      "economic_mechanism": "The locked 10-session SOL long-sideways warning may have economic value by reducing or scaling long SOL exposure before elevated long-sideways risk, trading some upside participation for lower drawdown/tail exposure. Any value must survive turnover and realistic/stressed implementation costs; no shorting or leverage is permitted in this research ID.",
+      "primary_target": "P02_RAW_ELASTIC_NET_LOGIT|SOL|T4_LONG_SIDEWAYS|LEAD_10_ECONOMIC_CONTROLLER",
+      "primary_metric": "NET_PARETO_RISK_CONTROL_VALUE_VS_FROZEN_SOL_BENCHMARK",
+      "secondary_metrics": [
+        "CAGR",
+        "annualized_volatility",
+        "Sharpe",
+        "Sortino",
+        "max_drawdown",
+        "Calmar",
+        "downside_deviation",
+        "worst_1_5_10_20_session_loss",
+        "average_and_gross_exposure",
+        "turnover_and_switch_count",
+        "transaction_cost_drag",
+        "cost_break_even",
+        "bull_participation",
+        "bear_protection",
+        "sideways_performance",
+        "profit_concentration",
+        "block_bootstrap",
+        "Deflated_Sharpe_Ratio",
+        "PBO_if_supported",
+        "exact_0070_signal_reproduction",
+        "exactly_once_artifact_read"
+      ],
+      "feature_families": [
+        "LOCKED_0070_P02_RISK_SCORE",
+        "SOL_PRICE_RETURN_ECONOMIC_ACCOUNTING",
+        "LAGGED_SOL_REALIZED_VOLATILITY",
+        "LAGGED_CONTROLLER_DRAWDOWN_STATE"
+      ],
+      "horizon": [
+        10
+      ],
+      "universe": [
+        "SOL"
+      ],
+      "development_dataset_refs": [],
+      "validation_dataset_refs": [],
+      "sealed_dataset_refs": [],
+      "declared_variant_budget": 6,
+      "actual_variants_evaluated": 0,
+      "parameter_candidate_count": 6,
+      "stopping_rule": "Owner-first DESIGN -> numerical/data/analysis preregistration -> implementation -> nonhistorical synthetic qualification -> separate controlled boundary -> exact merged-boundary zero-result preflight -> stop for explicit user authorization -> at most one durable controlled development-history attempt -> immutable result -> immutable closeout. The six controller families are the complete candidate-family ceiling. A durable RUN_ATTEMPT.marker must precede any controlled historical/evidence-content read. After durable attempt creation, no same-ID rerun, rescue, retune, threshold relaxation, alternate cost rule, alternate benchmark or alternate controller is allowed.",
+      "success_criteria": "PASS only if exact locked 0070 signal reproduction succeeds and at least one preregistered fixed controller candidate satisfies the prospectively frozen net economic Pareto/non-inferiority gates versus the frozen SOL benchmark under realistic costs, survives the preregistered stressed-cost/robustness/concentration checks, and satisfies the declared multiple-testing controls. Exact numerical controller parameters, transaction-cost assumptions, bootstrap/PBO/DSR definitions and PASS thresholds must be frozen in PREREGISTRATION before implementation and before any controlled history/evidence-content read.",
+      "failure_criteria": "FAIL if valid execution completes but no preregistered controller passes the frozen net economic and robustness gates. INCONCLUSIVE applies only to prospectively defined insufficient-support or mathematically undefined inference conditions. INVALID_EXECUTION applies to identity/hash/read-count/lookahead/controller-construction/cost-accounting/candidate-count/result-persistence drift.",
+      "allowed_followup": "Before attempt consumption, only semantics-preserving implementation and synthetic-qualification fixes that do not alter the frozen DESIGN/PREREGISTRATION contract. After terminal result, any new signal, threshold family, controller, cost model, benchmark, leverage/short rule, independent-OOS evaluation or portfolio extension requires a new owner-first research ID.",
+      "forbidden_followup": "No retraining or reselection of P02; no target or lead other than locked SOL T4_LONG_SIDEWAYS lead 10; no P03/P08 input in 0071; no new predictive feature search; no leverage; no short SOL; no result-informed controller parameter addition; no final-period Sharpe maximization; no post-read cost relaxation; no claim of independent OOS; no same-ID rerun/retune/rescue after attempt consumption.",
+      "researcher_decisions": [
+        "Treat closed 0070 only as hypothesis-generating DEVELOPMENT evidence for a new economic-integration ID.",
+        "Use locked P02 as the sole predictive warning input; exclude the dependent P03/P08 corroborative cluster from 0071 controller construction.",
+        "Bound research to exactly six controller families: BINARY_RISK_OFF, LINEAR_DERISK, PIECEWISE_DERISK, VOL_ADJUSTED, DRAWDOWN_AWARE and HYSTERESIS.",
+        "Restrict target SOL exposure to the preregistered long-or-cash interval with no leverage and no shorting.",
+        "Evaluate C0 theoretical, C1 realistic and C2 stressed cost states plus preregistered cost-multiplier sensitivity; C0 alone can never establish PASS.",
+        "Select by frozen Pareto/non-inferiority logic across return retention, drawdown/tail improvement and turnover/cost rather than maximizing observed Sharpe.",
+        "Persist and count every evaluated controller candidate, including failed or invalid candidates."
+      ],
+      "research_process_complexity": {
+        "declared_parameter_candidates": 6,
+        "actual_parameter_candidates_evaluated": 0,
+        "universes_evaluated": 1,
+        "horizons_evaluated": 1,
+        "rebalance_variants": 1,
+        "feature_representations": 4,
+        "special_cases_introduced": 6,
+        "validation_exposure_event_refs": 1,
+        "related_family_trials": 1
+      },
+      "lineage_edges": [],
+      "result_status": "PREREGISTERED_NOT_RUN",
+      "failure_reason": null,
+      "promotion_state": "NONE",
+      "evidence_refs": [],
+      "decision_refs": [],
+      "production_relevance": "Development-history SOL risk-controller integration research only; no automatic production, signature or order authority.",
+      "production_authorized": false,
+      "provenance_status": "PROSPECTIVE_FROZEN",
+      "governed_path_prefixes": [
+        "research/brrk_sol_long_sideways_controller_integration_0071"
+      ],
+      "notes": [
+        "Owner-first registration precedes introduction of the formal 0071 research path.",
+        "0071 begins only after immutable 0070 closeout and governed 0071-0082 roadmap merge.",
+        "The broad roadmap authorization does not authorize the future irreversible attempt 1/1; separate explicit user authorization is required after zero-result preflight PASS.",
+        "Evidence remains researcher-exposed DEVELOPMENT history, not independent OOS.",
+        "production_authorized=false; signature_authorized=false; order_submission_authorized=false."
+      ]
     }
   ],
   "research_governance_debt": [
