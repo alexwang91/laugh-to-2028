@@ -16,6 +16,7 @@ Authoritative repository: `alexwang91/laugh-to-2028`.
 - 0067 = `INVALID_EXECUTION / CLOSED TO SAME-ID RERUN`; attempt 1/1 consumed. Physical mismatch: validation 31,008/31,008, economic 5,808/11,904, P08 NNLS 20/40. No 0067 scientific result is admissible.
 - 0068 = `PASS_EXECUTION_EQUIVALENCE / CLOSED`; immutable closeout `585308444719914028ac4410fba86948a5505a13`.
 - 0069 = `PASS_EVENT_EARLY_WARNING_ONLY / CLOSED TO SAME-ID RERUN`; attempt 1/1 consumed; merged immutable historical result bundle `911b68225310ec7621e9937ff698e7dff84f9ae8`.
+- 0070 = `PASS_LOCKED_EPISODE_ROBUSTNESS_REPLICATION / CLOSED TO SAME-ID RERUN`; attempt 1/1 consumed; merged immutable result bundle `174a30dc4950e7351f3a746edc8f581b8f12e6d3`.
 - Canonical BRRK-0011 = NO CHANGE.
 - Phase 6 = NO CHANGE.
 
@@ -63,11 +64,10 @@ Controller/economic evidence: 8 controllers, 0 winners; all persisted `COMPONENT
 
 Execution assurance: `execution_valid=true`; validation 31,008/31,008; manifest-derived economic fits 5,808/5,808; P08 NNLS 20/20; manifest units and terminal traces 11,944/11,944; historical reads market/equity/weights/DTB3 1/1/1/1; loader calls 1; scientific-engine calls 1; network fetches 0. Same-ID rerun, retune, rescue and recomputation are forbidden. Production/signature/order authority remains zero.
 
-## 0070 locked SOL long-sideways episode robustness
+## 0070 immutable terminal result
 
 Research ID = `BRRK-SOL-LONG-SIDEWAYS-EARLY-WARNING-EPISODE-ROBUSTNESS-0070`.
-
-State = `PASS_LOCKED_EPISODE_ROBUSTNESS_REPLICATION / RESULT PR #284 OPEN / CLOSEOUT NOT YET MERGED / ATTEMPT 1/1 CONSUMED`.
+State = `PASS_LOCKED_EPISODE_ROBUSTNESS_REPLICATION / CLOSED TO SAME-ID RERUN`.
 
 Lifecycle anchors:
 - owner-first registry commit `28be2794f8471e400fe70196460eed744cce694c`;
@@ -79,12 +79,11 @@ Lifecycle anchors:
 - CONTROLLED-EXECUTION BOUNDARY merge `0c5a6affc2243a0fdaf621f7801e1870657f1254`;
 - exact merged-boundary zero-result preflight = PASS;
 - unique controlled workflow `32040286477` = PASS;
-- result branch `research/0070-result-v1`, finalized result head before handoff-only docs commit `a62ffbe3557530beb6aae24c94975ac1f1041fe3`;
-- immutable result review PR #284.
+- finalized immutable result branch head before handoff-only docs commit `a62ffbe3557530beb6aae24c94975ac1f1041fe3`;
+- immutable result bundle merge `174a30dc4950e7351f3a746edc8f581b8f12e6d3`;
+- immutable closeout file `research/brrk_sol_long_sideways_early_warning_episode_robustness_0070/CLOSEOUT.md`.
 
-Nonhistorical qualification = PASS. All six preregistered synthetic regimes and hardened implementation checks passed with zero controlled-history reads and attempt 0/1.
-
-The prospectively authorized unique controlled development-history attempt then completed exactly once. `RUN_ATTEMPT.marker` was durably persisted before any 0069/market content read and binds attempt 1/1 to boundary `0c5a6affc2243a0fdaf621f7801e1870657f1254` and workflow `32040286477`. Same-ID rerun, retune, rescue and recomputation are forbidden.
+Attempt 1/1 completed exactly once. `RUN_ATTEMPT.marker` was durably persisted before controlled source reads and `RUN_ONCE.marker` seals the attempt. Same-ID rerun, retune, rescue and recomputation are forbidden.
 
 Frozen primary signal:
 - `P02_RAW_ELASTIC_NET_LOGIT|SOL|T4_LONG_SIDEWAYS`;
@@ -96,7 +95,7 @@ Persisted scientific result:
 - classification `PASS_LOCKED_EPISODE_ROBUSTNESS_REPLICATION`;
 - `execution_valid=true`;
 - exact full-window reproduction PASS at absolute tolerance `1e-12`;
-- exactly 7/7 preregistered onset folds defined;
+- exactly `7/7` preregistered onset folds defined;
 - P02 positive PR-AUC lift and ROC-AUC >0.50 in every fold;
 - P02 median PR-lift retention `0.9823275624`;
 - P02 retention >=0.50 in `7/7` folds;
@@ -110,14 +109,13 @@ Execution assurance:
 - model reselection calls `0`;
 - LOEO retraining calls `0`;
 - network fetches `0`;
-- marker-only finalization controlled-source rereads `0`;
-- `RUN_ONCE.marker` exists on the result branch and permanently seals attempt 1/1.
+- marker-only finalization controlled-source rereads `0`.
 
-No economics/controllers are evaluated in 0070. This is researcher-exposed DEVELOPMENT-history robustness evidence, not independent OOS evidence. Production/signature/order authority remains zero.
+Evidence scope: researcher-exposed DEVELOPMENT-history episode robustness only; not independent OOS; no controller/economic inference. Production/signature/order authority remains zero.
 
 ## Exact next step
 
-Run standing CI on immutable result PR #284. Merge #284 only after every required workflow on the exact head succeeds and without modifying scientific result artifacts. Then create a separate immutable 0070 CLOSEOUT recording terminal `PASS_LOCKED_EPISODE_ROBUSTNESS_REPLICATION / CLOSED TO SAME-ID RERUN`, attempt 1/1 consumed, exact robustness metrics, exactly-once accounting, DEVELOPMENT evidence limitations and zero production authority. Only after that closeout merges may successor 0071 begin OWNER-FIRST.
+Run standing CI on the separate 0070 immutable closeout PR and merge it only if the exact head is green. After that merge, 0070 has no remaining legal same-ID action. Merge the prospective multi-strategy roadmap after its own governance checks, then begin successor 0071 only through a new OWNER-FIRST registry entry. 0071 must follow the full ten-stage lifecycle and must stop after ZERO-RESULT PREFLIGHT for separate explicit authorization before any irreversible attempt 1/1.
 
 ## No-drift authority
 
@@ -133,4 +131,5 @@ Canonical BRRK-0011 = NO CHANGE.
 0067 = NO CHANGE.
 0068 = NO CHANGE.
 0069 = NO CHANGE.
+0070 = CLOSED / NO SAME-ID ACTION.
 Phase 6 = NO CHANGE.
