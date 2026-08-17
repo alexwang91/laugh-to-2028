@@ -1,0 +1,163 @@
+{
+  "schema_version": 1,
+  "research_id": "BRRK-SOL-LONG-SIDEWAYS-CONTROLLER-INTEGRATION-0071",
+  "support": {
+    "score_rows": "exact frozen 0069 final-window P02 timestamps only",
+    "common_rows": "identical rows for benchmark, six candidates and two controls",
+    "start": "first row with P02, next SOL return, causal DTB3 and 20 lagged SOL returns",
+    "end": "last P02 row having next SOL return",
+    "minimum_common_rows": 252,
+    "no_score_extrapolation": true,
+    "annualization": 365.0,
+    "initial_NAV": 1.0
+  },
+  "timing": {
+    "decision_information": "through session t close",
+    "first_applied_return": "t_to_t_plus_1",
+    "lookahead_allowed": false
+  },
+  "benchmark": {
+    "id": "B00_FULLY_INVESTED_SOL",
+    "SOL_exposure": 1.0,
+    "initial_previous_SOL_exposure": 0.0,
+    "initial_establishment_turnover_charged": true
+  },
+  "cash": {
+    "idle_cash": "clip(1-SOL_exposure,0,1)",
+    "causal_DTB3_alignment": true,
+    "yield_realization_fraction": 0.50,
+    "annual_continuous_spread_bps": 100.0,
+    "zero_return_substitution": false
+  },
+  "turnover": {
+    "definition": "abs(SOL_exposure_t-SOL_exposure_t_minus_1)",
+    "cost_convention": "one-way bps times turnover",
+    "initial_previous_SOL_exposure": 0.0
+  },
+  "cost_states": {
+    "C0_THEORETICAL_bps": 0.0,
+    "C1_REALISTIC_bps": 10.0,
+    "C2_STRESSED_bps": 30.0,
+    "C0_can_establish_PASS": false
+  },
+  "controllers": {
+    "C01_BINARY_RISK_OFF": "score<0.50=>1.0 else 0.0",
+    "C02_LINEAR_DERISK": "clip(1-score,0,1)",
+    "C03_PIECEWISE_DERISK": "score<0.40=>1.0; 0.40<=score<0.60=>0.50; score>=0.60=>0.0",
+    "C04_VOL_ADJUSTED": "clip(1-score,0,1)*clip(0.60/(std(last20_lagged_SOL_returns)*sqrt(365)),0,1)",
+    "C05_DRAWDOWN_AWARE": "clip(1-score,0,1)*overlay where lagged SOL benchmark drawdown <10%=>1.0, 10-20%=>0.75, 20-30%=>0.50, >=30%=>0.25",
+    "C06_HYSTERESIS": "initial risk-on=1; score>=0.60=>0; score<=0.40=>1; otherwise carry prior state"
+  },
+  "matched_controls": {
+    "M01_SIGNAL_OFF_VOL_ONLY": "clip(0.60/(std(last20_lagged_SOL_returns)*sqrt(365)),0,1)",
+    "M02_SIGNAL_OFF_DRAWDOWN_ONLY": "lagged SOL benchmark drawdown <10%=>1.0, 10-20%=>0.75, 20-30%=>0.50, >=30%=>0.25"
+  },
+  "candidate_accounting": {
+    "selectable": 6,
+    "matched_controls": 2,
+    "benchmarks": 1,
+    "grid_search": false,
+    "all_candidates_persist": true
+  },
+  "ordered_computation": [
+    "verify identities",
+    "reconstruct frozen P02 exactly once",
+    "build common causal support",
+    "compute t-close decision state",
+    "map to SOL exposure",
+    "lag exposure to t->t+1",
+    "accrue frozen cash",
+    "compute turnover",
+    "apply C0/C1/C2 costs",
+    "compute net returns and NAV",
+    "compute metrics",
+    "run robustness/inference/attribution",
+    "apply frozen gates",
+    "persist all accounting before classification"
+  ],
+  "metrics": {
+    "CAGR": "NAV_end^(365/calendar_days_elapsed)-1",
+    "annualized_volatility": "sample_std(daily_returns)*sqrt(365)",
+    "Sharpe": "mean(daily_return)*365/(sample_std(daily_return)*sqrt(365)); no second risk-free subtraction",
+    "Sortino": "mean(daily_return)*365/(sample_std(min(daily_return,0))*sqrt(365))",
+    "max_drawdown": "min(NAV/running_max_NAV-1)",
+    "Calmar": "CAGR/abs(max_drawdown)",
+    "downside_deviation": "sample_std(min(daily_return,0))*sqrt(365)",
+    "worst_1": "min daily return",
+    "worst_5": "min compounded rolling 5-session return",
+    "worst_10": "min compounded rolling 10-session return",
+    "worst_20": "min compounded rolling 20-session return",
+    "average_exposure": "mean applied SOL exposure",
+    "time_in_cash": "mean(idle_cash>0)",
+    "switch_count": "count(abs(exposure_delta)>1e-12)",
+    "cost_drag": "C0 terminal NAV minus cost-state terminal NAV",
+    "recovery_time": "maximum sessions from drawdown start to prior high recovery, null if unrecovered"
+  },
+  "regime_diagnostics": "trailing 60-session SOL compounded return known at t: bull>20%, bear<-20%, sideways otherwise; diagnostic only",
+  "cost_break_even": {
+    "target": "candidate terminal NAV equals benchmark terminal NAV",
+    "one_way_bps_interval": [0.0, 1000.0],
+    "solver": "bisection",
+    "iterations": 80,
+    "no_crossing": "REPORT_GT_1000"
+  },
+  "bootstrap": {
+    "method": "synchronized moving-block bootstrap of common row indices",
+    "block_length": 20,
+    "replicates": 4000,
+    "seed": 710071,
+    "common_indices_across_all_series": true
+  },
+  "DSR": {
+    "trials": 6,
+    "cost_state": "C1_REALISTIC",
+    "definition": "Bailey-Lopez_de_Prado deflated Sharpe probability using observed Sharpe, T, skewness, Pearson kurtosis and expected maximum Sharpe over six trials",
+    "gate": 0.95
+  },
+  "PBO": {
+    "role": "diagnostic_not_PASS_gate",
+    "method": "CSCV",
+    "slices": 8,
+    "splits": 70,
+    "ranking": "C1 Sharpe",
+    "minimum_rows_per_slice": 20,
+    "unsupported": "NOT_SUPPORTED"
+  },
+  "concentration": {
+    "report": ["best_year", "best_month", "top_5_daily_PnL"],
+    "stress": "remove candidate best C1 calendar month and same month from benchmark"
+  },
+  "matched_attribution": {
+    "applies": ["C04_VOL_ADJUSTED", "C05_DRAWDOWN_AWARE"],
+    "return_gate": "if control CAGR>0 candidate CAGR>=0.95*control CAGR else candidate CAGR>=control CAGR",
+    "need_two_of_three": [
+      "candidate Sharpe>=control Sharpe+0.05",
+      "abs(candidate MDD)<=0.95*abs(control MDD)",
+      "if control worst20<0 candidate worst20>=control worst20+0.05*abs(control worst20) else candidate worst20>=control worst20"
+    ]
+  },
+  "pass_gates": {
+    "G0": "identity and P02 reproduction within 1e-12",
+    "G1": "6 candidates + 2 controls + benchmark complete; frozen counts; no lookahead",
+    "G2": "C1: if benchmark CAGR>0 candidate CAGR/benchmark CAGR>=0.75 else candidate CAGR>=benchmark CAGR",
+    "G3": "C1: abs(candidate MDD)<=0.80*abs(benchmark MDD)",
+    "G4": "C1: if benchmark worst20<0 candidate worst20>=benchmark worst20+0.10*abs(benchmark worst20) else candidate worst20>=benchmark worst20",
+    "G5": "C1 candidate Sharpe>=benchmark Sharpe and DSR>=0.95",
+    "G6": "one-way cost break-even>=30 bps",
+    "G7": "C2: return retention>=0.70 when benchmark CAGR>0 otherwise candidate>=benchmark; MDD magnitude<=0.85 benchmark; worst20 loss improves>=5% when benchmark worst20<0",
+    "G8": "best-month removal: return retention>=0.70 when benchmark positive otherwise candidate>=benchmark; MDD magnitude<=0.90 benchmark",
+    "G9": "MBB probability candidate MDD magnitude smaller than benchmark>=0.95 and probability G2 return condition holds>=0.90",
+    "G10": "C04/C05 only: matched attribution gate passes"
+  },
+  "pareto": {
+    "pass": "all applicable G0-G10",
+    "representative_if_multiple": "lowest C1 MDD magnitude, then lower C1 turnover, then lexical candidate id",
+    "observed_Sharpe_maximization": false
+  },
+  "classification": {
+    "PASS_LOCKED_P02_ECONOMIC_CONTROLLER_INTEGRATION": "valid, common rows>=252, at least one candidate passes all gates",
+    "FAIL_NO_ROBUST_LOCKED_P02_ECONOMIC_CONTROLLER_VALUE": "valid sufficient support, no candidate passes all gates",
+    "MEASUREMENT_INCONCLUSIVE_INSUFFICIENT_ECONOMIC_SUPPORT": "valid accounting but common rows<252 or required inference undefined",
+    "INVALID_EXECUTION": "identity/reproduction/lookahead/read/count/cash/cost/persistence/exactly-once drift"
+  }
+}
