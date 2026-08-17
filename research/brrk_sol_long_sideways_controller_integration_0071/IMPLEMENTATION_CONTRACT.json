@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "research_id": "BRRK-SOL-LONG-SIDEWAYS-CONTROLLER-INTEGRATION-0071",
+  "stage": "IMPLEMENTATION_ONLY_NOT_HISTORICALLY_RUN",
+  "base_preregistration_merge": "34ccffa6ecedffb5076b88cf86222c2fb142560c",
+  "implements_only": [
+    "PREREGISTRATION.json",
+    "ECONOMIC_ANALYSIS_CONTRACT.json",
+    "QUALIFICATION_PREREGISTRATION.json",
+    "RESULT_SCHEMA.json"
+  ],
+  "selectable_candidate_count": 6,
+  "matched_control_count": 2,
+  "benchmark_count": 1,
+  "cost_states_bps": {"C0_THEORETICAL": 0.0, "C1_REALISTIC": 10.0, "C2_STRESSED": 30.0},
+  "bootstrap": {"method": "synchronized moving-block", "block_length": 20, "replicates": 4000, "seed": 710071},
+  "DSR_trials": 6,
+  "PBO_role": "diagnostic_not_PASS_gate",
+  "controlled_content_reads": 0,
+  "network_fetches": 0,
+  "attempt_consumed": 0,
+  "result_writes_during_implementation": 0,
+  "historical_economic_measurement_allowed": false,
+  "production_authorized": false,
+  "signature_authorized": false,
+  "order_submission_authorized": false
+}
