@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "research_id": "BRRK-SOL-LONG-SIDEWAYS-CONTROLLER-INTEGRATION-0071",
+  "stage": "NUMERICAL_DATA_ANALYSIS_PREREGISTRATION_FROZEN_NOT_RUN",
+  "evidence_tier": "RESEARCHER_EXPOSED_DEVELOPMENT_NOT_INDEPENDENT_OOS",
+  "controlled_content_reads_during_preregistration": 0,
+  "owner_first_merge_sha": "4b8762f8046000c1bd414fb60b9232917251e579",
+  "design_merge_sha": "0f86341d40516e0ed90d09baaa17e149c64671f6",
+  "primary_track": "P02_RAW_ELASTIC_NET_LOGIT|SOL|T4_LONG_SIDEWAYS",
+  "warning_horizon_sessions": 10,
+  "universe": ["SOL"],
+  "source_identities": {
+    "0069_PRIMARY_RESULT_blob": "df00901c77d8d334d61c7c65a14b8d127e9ca8b6",
+    "0069_EVIDENCE_blob": "6266e6a11205e21592766546342ca5bca1dd97f0",
+    "0070_PRIMARY_RESULT_blob_identity_only": "e5226963c6bebfae4341889da1b17025152eec51",
+    "0070_EVIDENCE_blob_identity_only": "47d5f2ac5704ae2f89773d8d0c29ccce9ee2da0c",
+    "0070_EXECUTION_blob_identity_only": "ff264f5ef1bf3d5096301f3e31a0f136c7e3b0f8",
+    "market_blob": "64ebf5c6deaf3f34dbeac715378f196ff0f4fafe",
+    "market_payload_sha256": "d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193",
+    "market_history_end": "2026-08-02T00:00:00Z",
+    "market_loader_blob": "059b55961e279dab41ba29b5b017de0922e4f33c",
+    "feature_builder_blob": "cac8e946998c836d10842b9388e1e3ef345a8c0b",
+    "cash_engine_blob": "4060a307be2204c11952cb52e2fc718a5343d8e1",
+    "DTB3_blob": "71d50e26f8a9afb6bcb88401d20b97d5fb0a891a",
+    "DTB3_payload_sha256": "4d8aee67dbd528ce38ff8482e9bb02dd5ccf2c6cd461f606fe90007151ab6879"
+  },
+  "frozen_reference": {
+    "P02_PR_AUC": 0.7974030713822858,
+    "P02_prevalence": 0.45544554455445546,
+    "P02_PR_AUC_LIFT": 0.34195752682783037,
+    "P02_ROC_AUC": 0.7913043478260869,
+    "P02_0070_median_LOEO_retention": 0.9823275624,
+    "P02_0070_retention_gte_0_50_count": 7,
+    "P02_0070_fold_count": 7
+  },
+  "aggregate_reproduction_absolute_tolerance": 1e-12,
+  "frozen_contract_files": [
+    "ECONOMIC_ANALYSIS_CONTRACT.json",
+    "QUALIFICATION_PREREGISTRATION.json",
+    "RESULT_SCHEMA.json"
+  ],
+  "candidate_budget": 6,
+  "matched_control_count": 2,
+  "attempt_budget": 1,
+  "durable_marker_precedes_any_controlled_content_read": true,
+  "permitted_controlled_reads": {
+    "0069_PRIMARY_RESULT": 1,
+    "0069_EVIDENCE": 1,
+    "MARKET_EVIDENCE": 1,
+    "DTB3": 1,
+    "0070_RESULT_CONTENT": 0
+  },
+  "permitted_calls": {
+    "market_loader": 1,
+    "frozen_P02_prediction_reconstruction": 1,
+    "cash_engine": 1,
+    "validation_tuning": 0,
+    "model_reselection": 0,
+    "P02_retraining": 0
+  },
+  "network_fetch_allowed": false,
+  "result_branch": "research/0071-result-v1",
+  "result_artifacts_create_only": ["RUN_ATTEMPT.marker", "PRIMARY_RESULT.json", "EVIDENCE.json", "EXECUTION.json", "RUN_ONCE.marker"],
+  "same_id_rerun_allowed_after_attempt": false,
+  "same_id_retune_allowed_after_attempt": false,
+  "same_id_rescue_allowed_after_attempt": false,
+  "classification_enum": [
+    "PASS_LOCKED_P02_ECONOMIC_CONTROLLER_INTEGRATION",
+    "FAIL_NO_ROBUST_LOCKED_P02_ECONOMIC_CONTROLLER_VALUE",
+    "MEASUREMENT_INCONCLUSIVE_INSUFFICIENT_ECONOMIC_SUPPORT",
+    "INVALID_EXECUTION"
+  ],
+  "production_authorized": false,
+  "signature_authorized": false,
+  "order_submission_authorized": false
+}
