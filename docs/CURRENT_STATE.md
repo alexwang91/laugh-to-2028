@@ -121,29 +121,39 @@ Roadmap = `research/governance/CRYPTO_MULTI_STRATEGY_RESEARCH_PROGRAM_0071_0082.
 
 The merged roadmap serializes prospective IDs 0071–0082 and requires every eligible ID to independently traverse the same ten formal lifecycle stages used by 0069/0070. It defines point-in-time and anti-lookahead rules, ordered economic accounting, realistic/stressed cost treatment, trial counting, DSR/PBO/bootstrap requirements where applicable, concentration/capacity/stress tests, explicit stop/gating rules, and zero production authority.
 
-The roadmap merge does not relax any per-ID lifecycle or evidence gate.
+The roadmap does not relax any per-ID lifecycle or evidence gate.
 
 ## 0071 controller integration
 
 Research ID = `BRRK-SOL-LONG-SIDEWAYS-CONTROLLER-INTEGRATION-0071`.
-State = `OWNER-FIRST MERGED / DESIGN IN PR #290 / PREREGISTRATION NOT STARTED / CONTROLLED ATTEMPT 0/1`.
+State = `OWNER-FIRST + DESIGN MERGED / PREREGISTRATION FROZEN IN PR / IMPLEMENTATION NOT STARTED / CONTROLLED ATTEMPT 0/1`.
 
 Lifecycle anchors:
 - roadmap merge `169d9adf6531dc099a43541df413fef079322adf`;
 - OWNER-FIRST merge `4b8762f8046000c1bd414fb60b9232917251e579`;
-- DESIGN branch `research/0071-design-v1`;
-- DESIGN path `research/brrk_sol_long_sideways_controller_integration_0071/DESIGN.md`;
-- DESIGN PR #290.
+- DESIGN merge `0f86341d40516e0ed90d09baaa17e149c64671f6`;
+- PREREGISTRATION branch `research/0071-prereg-v1`;
+- frozen files: `PREREGISTRATION.json`, `ECONOMIC_ANALYSIS_CONTRACT.json`, `QUALIFICATION_PREREGISTRATION.json`, `RESULT_SCHEMA.json`.
 
-Frozen scope remains: locked P02 SOL T4_LONG_SIDEWAYS lead 10 as sole predictive input; exactly six selectable controller families; SOL long-or-cash exposure in `[0,1]`; no leverage or shorting; P03/P08 excluded; frozen 0064 causal passive-cash semantics; C0/C1/C2 accounting; matched signal-off volatility/drawdown attribution controls; prospective Pareto/non-inferiority selection; complete candidate accounting; exact numerical parameters and inference gates deferred to separate PREREGISTRATION.
+Frozen preregistration now fixes before any controlled read:
+- common causal support and minimum 252 rows;
+- exact six controller formulas and two nonselectable matched controls;
+- t-close information first applies to t->t+1 return;
+- C0/C1/C2 one-way turnover costs = 0/10/30 bps;
+- frozen 0064 cash rule and exact cash/DTB3 identities;
+- turnover, NAV, CAGR/vol/Sharpe/Sortino/MDD/Calmar/tail/exposure/cost/concentration formulas;
+- 20-session synchronized MBB, 4,000 reps, seed 710071;
+- DSR with exactly six trials and 0.95 gate;
+- PBO CSCV 8 slices/70 splits as diagnostic only where supported;
+- cost break-even, best-month concentration stress and matched-overlay attribution gates;
+- exact candidate G0-G10 gates, Pareto tie-break and terminal classification meanings;
+- controlled read/call budgets, create-only result chain and one-attempt rules.
 
-DESIGN adds only prospective causal and economic semantics and reports no new historical performance. No 0071 controlled history/evidence content has been read. No controller result exists. `controlled_attempt_consumed=0`.
-
-Standing user authorization permits governed automatic merge and, only after every lifecycle gate including exact merged-boundary ZERO-RESULT PREFLIGHT passes, the unique attempt 1/1. No gate may be skipped or weakened.
+No 0071 controlled history/evidence/market/DTB3 content has been read by this stage. No controller has been evaluated. `controlled_attempt_consumed=0`.
 
 ## Exact next step
 
-Run standing CI on exact DESIGN head and merge PR #290 automatically only after required exact-head workflows succeed. Then create a separate comprehensive PREREGISTRATION freezing exact controller parameters, benchmark/calendar alignment, C0/C1/C2 numerical costs, volatility/drawdown/turnover definitions, metric formulas, bootstrap/DSR/PBO settings and seeds, concentration tests, matched-control attribution gates, classification thresholds, controlled source identities/read budgets and exactly-once persistence rules before implementation or controlled content reads.
+Run standing CI on the exact PREREGISTRATION head and merge automatically only when every required exact-head workflow succeeds. Then implement only the frozen contract with deterministic ordering, counters, create-only result writers and synthetic fixtures. Historical/economic controlled reads remain forbidden until later CONTROLLED BOUNDARY + exact merged-boundary ZERO-RESULT PREFLIGHT.
 
 ## No-drift authority
 
@@ -160,5 +170,5 @@ Canonical BRRK-0011 = NO CHANGE.
 0068 = NO CHANGE.
 0069 = NO CHANGE.
 0070 = CLOSED / NO SAME-ID ACTION.
-0071 = OWNER-FIRST MERGED / DESIGN IN PR / ATTEMPT 0/1.
+0071 = DESIGN MERGED / PREREGISTRATION IN PR / ATTEMPT 0/1.
 Phase 6 = NO CHANGE.
