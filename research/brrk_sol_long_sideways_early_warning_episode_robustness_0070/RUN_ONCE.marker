@@ -1,0 +1,18 @@
+{
+  "attempt_number": 1,
+  "attempt_sha256": "ff85e0fae9e6d6d37204cd17e54290beffc29b18a90825333257bee2a99bbf87",
+  "boundary_merge_sha": "0c5a6affc2243a0fdaf621f7801e1870657f1254",
+  "classification": "PASS_LOCKED_EPISODE_ROBUSTNESS_REPLICATION",
+  "created_at_utc": "2026-08-17T14:50:26.284341+00:00",
+  "evidence_sha256": "812d49854e168d35a651d60dbb20cd83bb0e696c3529f682bf39b7074baf202b",
+  "execution_sha256": "56b86f4fb41f5a6fd5a2a643494b4cb430104df1e2ce832fcef60e178af3e219",
+  "finalize_controlled_source_reads": 0,
+  "finalize_frozen_prediction_reconstruction_calls": 0,
+  "finalize_market_loader_calls": 0,
+  "primary_result_sha256": "b43d5ded394450fdb4d28f30758a1e0c0bd219299519535d028e4f95ba389558",
+  "research_id": "BRRK-SOL-LONG-SIDEWAYS-EARLY-WARNING-EPISODE-ROBUSTNESS-0070",
+  "same_id_rerun_allowed": false,
+  "same_id_rescue_allowed": false,
+  "same_id_retune_allowed": false,
+  "schema_version": 1
+}

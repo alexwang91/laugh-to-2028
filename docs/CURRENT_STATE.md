@@ -67,7 +67,7 @@ Execution assurance: `execution_valid=true`; validation 31,008/31,008; manifest-
 
 Research ID = `BRRK-SOL-LONG-SIDEWAYS-EARLY-WARNING-EPISODE-ROBUSTNESS-0070`.
 
-State = `QUALIFICATION EVIDENCE MERGED / CONTROLLED BOUNDARY IN PR #283 / ZERO-RESULT PREFLIGHT NOT RUN / CONTROLLED ATTEMPT 0/1`.
+State = `PASS_LOCKED_EPISODE_ROBUSTNESS_REPLICATION / RESULT PR #284 OPEN / CLOSEOUT NOT YET MERGED / ATTEMPT 1/1 CONSUMED`.
 
 Lifecycle anchors:
 - owner-first registry commit `28be2794f8471e400fe70196460eed744cce694c`;
@@ -76,10 +76,15 @@ Lifecycle anchors:
 - IMPLEMENTATION merge `378c0a0098d9a508c20a0e0bb891a503e2357f2e`;
 - qualification evidence merge `709903bf5443cbb3b1fbd9d2c588db94b5566c6a`;
 - qualification result blob `8ad8cc764407f954da7c82e06ad5fa0cb3b97ca1`;
-- CONTROLLED-EXECUTION BOUNDARY branch `research/0070-controlled-boundary-v1`;
-- CONTROLLED-EXECUTION BOUNDARY PR #283.
+- CONTROLLED-EXECUTION BOUNDARY merge `0c5a6affc2243a0fdaf621f7801e1870657f1254`;
+- exact merged-boundary zero-result preflight = PASS;
+- unique controlled workflow `32040286477` = PASS;
+- result branch `research/0070-result-v1`, finalized result head before handoff-only docs commit `a62ffbe3557530beb6aae24c94975ac1f1041fe3`;
+- immutable result review PR #284.
 
-Nonhistorical qualification = PASS. All six preregistered synthetic regimes and four hardened implementation checks pass. Qualification read zero 0069/market payloads and performed zero network fetches. Controlled attempt consumption remains 0/1.
+Nonhistorical qualification = PASS. All six preregistered synthetic regimes and hardened implementation checks passed with zero controlled-history reads and attempt 0/1.
+
+The prospectively authorized unique controlled development-history attempt then completed exactly once. `RUN_ATTEMPT.marker` was durably persisted before any 0069/market content read and binds attempt 1/1 to boundary `0c5a6affc2243a0fdaf621f7801e1870657f1254` and workflow `32040286477`. Same-ID rerun, retune, rescue and recomputation are forbidden.
 
 Frozen primary signal:
 - `P02_RAW_ELASTIC_NET_LOGIT|SOL|T4_LONG_SIDEWAYS`;
@@ -87,28 +92,32 @@ Frozen primary signal:
 - frozen 0069 PR-AUC `0.7974030713822858`, prevalence `0.45544554455445546`, PR-AUC lift `0.34195752682783037`, ROC-AUC `0.7913043478260869`;
 - exactly seven final unique onsets.
 
-Dependent corroborative cluster:
-- `P03_VALIDATION_SCREENED_SIGNAL_LOGIT|SOL|T4_LONG_SIDEWAYS`;
-- `P08_STACKED_PROBABILITY_ENSEMBLE|SOL|T4_LONG_SIDEWAYS`;
-- P03/P08 count as one dependent corroborative cluster.
+Persisted scientific result:
+- classification `PASS_LOCKED_EPISODE_ROBUSTNESS_REPLICATION`;
+- `execution_valid=true`;
+- exact full-window reproduction PASS at absolute tolerance `1e-12`;
+- exactly 7/7 preregistered onset folds defined;
+- P02 positive PR-AUC lift and ROC-AUC >0.50 in every fold;
+- P02 median PR-lift retention `0.9823275624`;
+- P02 retention >=0.50 in `7/7` folds;
+- P03/P08 remain one dependent corroborative cluster and the frozen corroborative-cluster gate PASSes.
 
-Frozen source identities for the future controlled attempt:
-- 0069 PRIMARY_RESULT blob `df00901c77d8d334d61c7c65a14b8d127e9ca8b6`;
-- 0069 EVIDENCE blob `6266e6a11205e21592766546342ca5bca1dd97f0`;
-- market blob `64ebf5c6deaf3f34dbeac715378f196ff0f4fafe`, payload SHA256 `d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193`;
-- loader blob `059b55961e279dab41ba29b5b017de0922e4f33c`;
-- feature builder blob `cac8e946998c836d10842b9388e1e3ef345a8c0b`;
-- aggregate reproduction absolute tolerance `1e-12`.
+Execution assurance:
+- controlled source reads: 0069 PRIMARY_RESULT `1`, 0069 EVIDENCE `1`, MARKET_EVIDENCE `1`;
+- market loader calls `1`;
+- frozen prediction reconstruction calls `1`;
+- validation tuning calls `0`;
+- model reselection calls `0`;
+- LOEO retraining calls `0`;
+- network fetches `0`;
+- marker-only finalization controlled-source rereads `0`;
+- `RUN_ONCE.marker` exists on the result branch and permanently seals attempt 1/1.
 
-Frozen robustness rule: positive Y10 rows map to the earliest qualifying SOL T4 onset in `(t,t+10]`; seven LOEO folds each remove all positive rows assigned to one onset while retaining all other rows. No retraining, reselection, recalibration, threshold or hyperparameter changes are allowed inside LOEO robustness evaluation. Frozen prediction reconstruction may replay only the already-selected 0069 parameters/screens; validation tuning and model reselection remain zero.
-
-PASS requires P02 positive PR-AUC lift and ROC-AUC>0.50 in every fold, median retention >=0.75, at least 6/7 folds retention >=0.50, plus at least one member of the P03/P08 dependent cluster with all positive fold lifts and median retention >=0.50. Exact identity/full-window reproduction and seven defined onsets/folds are prerequisites.
-
-No economics/controllers are evaluated in 0070. Controlled attempt consumption remains 0/1. No `RUN_ATTEMPT.marker` exists. Production/signature/order authority remains zero.
+No economics/controllers are evaluated in 0070. This is researcher-exposed DEVELOPMENT-history robustness evidence, not independent OOS evidence. Production/signature/order authority remains zero.
 
 ## Exact next step
 
-Run standing CI on CONTROLLED-EXECUTION BOUNDARY PR #283. Merge #283 only after every required workflow on the exact head succeeds. Then run the exact merged-boundary zero-result preflight with zero 0069/history reads. Only after that preflight passes may the unique development-history attempt be separately authorized and a durable `RUN_ATTEMPT.marker` be created before any permitted source read.
+Run standing CI on immutable result PR #284. Merge #284 only after every required workflow on the exact head succeeds and without modifying scientific result artifacts. Then create a separate immutable 0070 CLOSEOUT recording terminal `PASS_LOCKED_EPISODE_ROBUSTNESS_REPLICATION / CLOSED TO SAME-ID RERUN`, attempt 1/1 consumed, exact robustness metrics, exactly-once accounting, DEVELOPMENT evidence limitations and zero production authority. Only after that closeout merges may successor 0071 begin OWNER-FIRST.
 
 ## No-drift authority
 
