@@ -126,7 +126,7 @@ The roadmap does not relax any per-ID lifecycle or evidence gate.
 ## 0071 controller integration
 
 Research ID = `BRRK-SOL-LONG-SIDEWAYS-CONTROLLER-INTEGRATION-0071`.
-State = `OWNER-FIRST + DESIGN + PREREGISTRATION + IMPLEMENTATION MERGED / NONHISTORICAL QUALIFICATION PASS IN PR / CONTROLLED ATTEMPT 0/1`.
+State = `OWNER-FIRST + DESIGN + PREREGISTRATION + IMPLEMENTATION + NONHISTORICAL QUALIFICATION MERGED / CONTROLLED BOUNDARY IN BRANCH / PREFLIGHT NOT RUN / CONTROLLED ATTEMPT 0/1`.
 
 Lifecycle anchors:
 - roadmap merge `169d9adf6531dc099a43541df413fef079322adf`;
@@ -134,7 +134,9 @@ Lifecycle anchors:
 - DESIGN merge `0f86341d40516e0ed90d09baaa17e149c64671f6`;
 - PREREGISTRATION merge `34ccffa6ecedffb5076b88cf86222c2fb142560c`;
 - IMPLEMENTATION merge `cf203236348de692d8d92f30aedf35db7d2fe0c2`;
-- NONHISTORICAL QUALIFICATION branch `research/0071-qualification-v1`.
+- NONHISTORICAL QUALIFICATION merge `693ddde4898ef923e3f55b09b138d9354d8da4c9`;
+- qualification result blob `9a782797b32430e36fd20316f5aa3030fa04e72d`;
+- CONTROLLED BOUNDARY branch `research/0071-controlled-boundary-v1`.
 
 Frozen preregistration fixes before any controlled read:
 - common causal support and minimum 252 rows;
@@ -150,15 +152,15 @@ Frozen preregistration fixes before any controlled read:
 - exact candidate G0-G10 gates, Pareto tie-break and terminal classification meanings;
 - controlled read/call budgets, create-only result chain and one-attempt rules.
 
-Implementation encodes only the frozen contract in `engine.py`, `qualification.py` and `IMPLEMENTATION_CONTRACT.json`: deterministic six-candidate/two-control exposure construction, long-or-cash bounds, t-to-t+1 economic interface, frozen cash input interface, initial establishment turnover, C0/C1/C2 one-way costs, NAV/performance/tail metrics, cost break-even, deterministic synchronized MBB, six-trial DSR, matched-overlay attribution and frozen gate evaluation.
+Implementation encodes only the frozen contract in `engine.py`, `qualification.py` and `IMPLEMENTATION_CONTRACT.json`. NONHISTORICAL QUALIFICATION = PASS: all 13 preregistered classification regimes and mechanical checks passed with controlled historical/evidence reads `0`, market/DTB3 reads `0`, network fetches `0` and attempt consumed `0/1`.
 
-NONHISTORICAL QUALIFICATION = PASS. All 13 preregistered classification regimes matched exactly. Mechanical qualification confirmed next-return timing interface, common-support mechanics, initial establishment turnover, identical cost-state exposure paths, exact 10/30 bps one-way cost arithmetic, explicit idle-cash accounting, 20-lag volatility input, lagged drawdown-only state, deterministic hysteresis, exactly six selectable candidates plus two diagnostic matched controls, long-or-cash bounds, deterministic synchronized moving-block indices, six-trial DSR accounting, diagnostic-only PBO contract and deterministic cost-break-even mechanics.
+CONTROLLED BOUNDARY in branch pins merged preregistration, implementation and qualification identities plus exact 0069 source, market, DTB3, loader, feature and cash-engine blobs. Future controlled budgets are 0069 PRIMARY_RESULT `1`, 0069 EVIDENCE `1`, MARKET_EVIDENCE `1`, DTB3 `1`, 0070 result content `0`; market loader `1`, frozen P02 reconstruction `1`, cash-engine invocation `1`; validation tuning/model reselection/P02 retraining/network fetches `0`. `run_once.py` requires durable `RUN_ATTEMPT.marker` before any controlled read, exact merged-boundary SHA, create-only result artifacts and hash-bound marker-only finalization. No controlled content has been read by this boundary construction.
 
-Qualification controlled-access accounting: historical content reads `0`; 0069 reads `0`; 0070 content reads `0`; market payload reads `0`; DTB3 reads `0`; network fetches `0`; attempt consumed `0/1`. No controller has been historically/economically evaluated. Production/signature/order authority remains zero.
+Production/signature/order authority remains zero.
 
 ## Exact next step
 
-Run exact-head standing CI on the NONHISTORICAL QUALIFICATION PR and merge automatically only if green. After merge, create a separate CONTROLLED BOUNDARY pinned to the merged preregistration, implementation and qualification identities. Then perform exact merged-boundary ZERO-RESULT PREFLIGHT with zero controlled reads before the standing-authorized unique 1/1 attempt.
+Create and run exact-head standing CI on the separate CONTROLLED BOUNDARY PR. Merge automatically only if every required exact-head workflow succeeds. Then run exact merged-boundary ZERO-RESULT PREFLIGHT using Git identity only. If PASS, the standing authorization permits immediate durable attempt 1/1 before any controlled read, followed by exactly-once evaluation, immutable RESULT persistence and separate closeout.
 
 ## No-drift authority
 
@@ -175,5 +177,5 @@ Canonical BRRK-0011 = NO CHANGE.
 0068 = NO CHANGE.
 0069 = NO CHANGE.
 0070 = CLOSED / NO SAME-ID ACTION.
-0071 = IMPLEMENTATION MERGED / NONHISTORICAL QUALIFICATION PASS IN PR / ATTEMPT 0/1.
+0071 = NONHISTORICAL QUALIFICATION MERGED / CONTROLLED BOUNDARY IN BRANCH / PREFLIGHT NOT RUN / ATTEMPT 0/1.
 Phase 6 = NO CHANGE.
