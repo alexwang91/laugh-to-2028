@@ -1,0 +1,100 @@
+{
+  "schema_version": 1,
+  "research_id": "BRRK-SOL-LONG-SIDEWAYS-CONTROLLER-INTEGRATION-0071",
+  "stage": "CONTROLLED_EXECUTION_BOUNDARY_NOT_RUN",
+  "base_qualification_merge": "693ddde4898ef923e3f55b09b138d9354d8da4c9",
+  "frozen_identities": {
+    "owner_first_merge": "4b8762f8046000c1bd414fb60b9232917251e579",
+    "design_merge": "0f86341d40516e0ed90d09baaa17e149c64671f6",
+    "preregistration_merge": "34ccffa6ecedffb5076b88cf86222c2fb142560c",
+    "implementation_merge": "cf203236348de692d8d92f30aedf35db7d2fe0c2",
+    "qualification_merge": "693ddde4898ef923e3f55b09b138d9354d8da4c9",
+    "PREREGISTRATION_blob": "f7810fcf1db723c0b84c71a5d74d4f74573c3830",
+    "IMPLEMENTATION_CONTRACT_blob": "f20564293dce526546e119681c7eba4e261da3d3",
+    "engine_blob": "26cac1ecd2e93b6954bed23737e8416893376c4d",
+    "QUALIFICATION_RESULT_blob": "9a782797b32430e36fd20316f5aa3030fa04e72d",
+    "0069_PRIMARY_RESULT_blob": "df00901c77d8d334d61c7c65a14b8d127e9ca8b6",
+    "0069_EVIDENCE_blob": "6266e6a11205e21592766546342ca5bca1dd97f0",
+    "0070_PRIMARY_RESULT_blob_identity_only": "e5226963c6bebfae4341889da1b17025152eec51",
+    "0070_EVIDENCE_blob_identity_only": "47d5f2ac5704ae2f89773d8d0c29ccce9ee2da0c",
+    "0070_EXECUTION_blob_identity_only": "ff264f5ef1bf3d5096301f3e31a0f136c7e3b0f8",
+    "market_blob": "64ebf5c6deaf3f34dbeac715378f196ff0f4fafe",
+    "market_payload_sha256": "d1cd28bc76f2cd8ee0486287fc50b49e5451355a3e75132a2de5b30c15af3193",
+    "market_loader_blob": "059b55961e279dab41ba29b5b017de0922e4f33c",
+    "feature_builder_blob": "cac8e946998c836d10842b9388e1e3ef345a8c0b",
+    "cash_engine_blob": "4060a307be2204c11952cb52e2fc718a5343d8e1",
+    "DTB3_blob": "71d50e26f8a9afb6bcb88401d20b97d5fb0a891a",
+    "DTB3_payload_sha256": "4d8aee67dbd528ce38ff8482e9bb02dd5ccf2c6cd461f606fe90007151ab6879"
+  },
+  "controlled_read_budget": {
+    "0069_PRIMARY_RESULT": 1,
+    "0069_EVIDENCE": 1,
+    "MARKET_EVIDENCE": 1,
+    "DTB3": 1,
+    "0070_RESULT_CONTENT": 0
+  },
+  "controlled_call_budget": {
+    "market_loader": 1,
+    "frozen_P02_prediction_reconstruction": 1,
+    "cash_engine": 1,
+    "validation_tuning": 0,
+    "model_reselection": 0,
+    "P02_retraining": 0,
+    "network_fetch": 0
+  },
+  "zero_result_preflight": {
+    "must_run_only_after_this_boundary_is_merged": true,
+    "uses_git_identity_only": true,
+    "requires_result_branch_absent": "research/0071-result-v1",
+    "requires_runtime_artifacts_absent": [
+      "RUN_ATTEMPT.marker",
+      "PRIMARY_RESULT.json",
+      "EVIDENCE.json",
+      "EXECUTION.json",
+      "RUN_ONCE.marker"
+    ],
+    "requires_controlled_reads": 0,
+    "requires_attempt_consumed": 0,
+    "requires_production_authorized": false
+  },
+  "attempt_contract": {
+    "attempt_budget": 1,
+    "durable_RUN_ATTEMPT_marker_must_precede_any_controlled_content_read": true,
+    "marker_binds_exact_merged_boundary_sha": true,
+    "same_id_rerun_after_marker": false,
+    "same_id_retune_after_marker": false,
+    "same_id_rescue_after_marker": false,
+    "standing_user_authorization_recorded": true
+  },
+  "result_persistence": {
+    "result_branch": "research/0071-result-v1",
+    "create_only_artifacts": [
+      "RUN_ATTEMPT.marker",
+      "PRIMARY_RESULT.json",
+      "EVIDENCE.json",
+      "EXECUTION.json",
+      "RUN_ONCE.marker"
+    ],
+    "hash_chain_required": true,
+    "marker_only_finalize_allowed_only_for_already_complete_durable_result_bundle": true,
+    "finalization_controlled_rereads": 0
+  },
+  "frozen_science": {
+    "primary_track": "P02_RAW_ELASTIC_NET_LOGIT|SOL|T4_LONG_SIDEWAYS",
+    "warning_horizon_sessions": 10,
+    "selectable_candidate_count": 6,
+    "matched_control_count": 2,
+    "long_or_cash_only": true,
+    "leverage_allowed": false,
+    "short_allowed": false,
+    "cost_states_one_way_turnover_bps": [0.0, 10.0, 30.0],
+    "MBB_block_length": 20,
+    "MBB_replicates": 4000,
+    "MBB_seed": 710071,
+    "DSR_trials": 6,
+    "PBO_role": "diagnostic_not_PASS_gate"
+  },
+  "production_authorized": false,
+  "signature_authorized": false,
+  "order_submission_authorized": false
+}
