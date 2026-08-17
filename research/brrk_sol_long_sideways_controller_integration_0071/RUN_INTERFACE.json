@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "research_id": "BRRK-SOL-LONG-SIDEWAYS-CONTROLLER-INTEGRATION-0071",
+  "interface_version": "CONTROLLED_RUN_V1",
+  "boundary_file": "CONTROLLED_EXECUTION_BOUNDARY.json",
+  "runner": "run_once.py",
+  "preflight": "preflight.py",
+  "result_branch": "research/0071-result-v1",
+  "required_sequence": [
+    "MERGE_CONTROLLED_BOUNDARY",
+    "RUN_EXACT_MERGED_BOUNDARY_ZERO_RESULT_PREFLIGHT",
+    "VERIFY_PREFLIGHT_PASS",
+    "CREATE_DURABLE_RUN_ATTEMPT_MARKER",
+    "READ_CONTROLLED_INPUTS_WITHIN_FROZEN_BUDGET",
+    "EXECUTE_FROZEN_CONTROLLER_ECONOMICS_ONCE",
+    "CREATE_PRIMARY_RESULT_EVIDENCE_EXECUTION",
+    "CREATE_RUN_ONCE_MARKER_WITH_HASH_CHAIN",
+    "RESULT_ONLY_REVIEW_AND_MERGE",
+    "SEPARATE_IMMUTABLE_CLOSEOUT"
+  ],
+  "attempt_budget": 1,
+  "controlled_reads_before_attempt_marker": 0,
+  "network_fetch_allowed": false,
+  "same_id_rerun_allowed": false,
+  "same_id_retune_allowed": false,
+  "same_id_rescue_allowed": false,
+  "production_authorized": false,
+  "signature_authorized": false,
+  "order_submission_authorized": false
+}
