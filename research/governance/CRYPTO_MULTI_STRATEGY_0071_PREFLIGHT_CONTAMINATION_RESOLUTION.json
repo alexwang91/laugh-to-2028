@@ -1,0 +1,21 @@
+{
+  "resolution_id": "BRRK-GOV-0071-PREFLIGHT-CONTAMINATION-20260818",
+  "status": "PROSPECTIVE_GOVERNANCE_AMENDMENT_NO_RETROACTIVE_VALIDATION",
+  "incident_issue": 295,
+  "affected_research_id": "BRRK-SOL-LONG-SIDEWAYS-CONTROLLER-INTEGRATION-0071",
+  "affected_stage": "ZERO_RESULT_PREFLIGHT",
+  "formal_completion": "6/10",
+  "attempt_state": "0/1_UNCONSUMED",
+  "terminal_block_state": "BLOCKED_PRE_ATTEMPT_CONTROLLED_CONTENT_CONTAMINATION",
+  "same_id_continuation_authorized": false,
+  "retroactive_marker_authorized": false,
+  "additional_0071_controlled_reads_authorized": false,
+  "scientific_result_authorized": false,
+  "replacement_research_id": "BRRK-SOL-LONG-SIDEWAYS-CONTROLLER-INTEGRATION-REPLACEMENT-0083",
+  "replacement_requires_full_ten_stage_lifecycle": true,
+  "replacement_must_bind_frozen_0071_science_without_result_informed_change": true,
+  "0072_hard_prerequisite_after_resolution_merge": "0083_IMMUTABLE_CLOSEOUT",
+  "production_authorized": false,
+  "signature_authorized": false,
+  "order_submission_authorized": false
+}
