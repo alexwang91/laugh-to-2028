@@ -163,7 +163,7 @@ Governance resolution PR #296 permanently keeps 0071 blocked at 6/10, forbids sa
 ## 0083 replacement controller integration
 
 Research ID = `BRRK-SOL-LONG-SIDEWAYS-CONTROLLER-INTEGRATION-REPLACEMENT-0083`.
-State = `OWNER-FIRST + DESIGN + PREREGISTRATION MERGED / IMPLEMENTATION IN PR / CONTROLLED ATTEMPT 0/1`.
+State = `OWNER-FIRST + DESIGN + PREREGISTRATION + IMPLEMENTATION MERGED / NONHISTORICAL QUALIFICATION IN PR / CONTROLLED ATTEMPT 0/1`.
 
 Lifecycle anchors:
 - governance resolution merge `b58960ee3bc9e5cc5976d889cc28026614525686`;
@@ -172,17 +172,18 @@ Lifecycle anchors:
 - OWNER-FIRST merge `dd9f3f28aabfdf6c05dcb9ca5a3dd13ca36a2467`;
 - DESIGN merge `440b474a1908a4ec4196efa635d8154409a3c3de`;
 - PREREGISTRATION merge `7e8a4e1d296dc9cb095f6b4ba66ab604d2723ff2`;
-- IMPLEMENTATION PR #304 branch `research/0083-implementation-v1`; implementation files encode only the frozen preregistered contract.
+- IMPLEMENTATION merge `87bbed308fc54496b74d7d12c17c7cb15845f231`;
+- NONHISTORICAL QUALIFICATION branch `research/0083-qualification-v1`, qualification result blob `89b38689524ff44cc54cb71da0573043c30bfa7e`.
 
 OWNER-FIRST prospectively binds SOL-only, locked 0070 P02 `P02_RAW_ELASTIC_NET_LOGIT|SOL|T4_LONG_SIDEWAYS` lead 10 as the sole predictive warning input, exactly six selectable controller families, matched signal-off controls, long-or-cash/no leverage/no short, P03/P08 exclusion, frozen 0064 passive-cash semantics, C0/C1/C2 framework, zero result-informed changes from the 0071 contamination event, a fresh ten-stage lifecycle, controlled reads `0`, network fetches `0`, attempt `0/1`, and zero production/signature/order authority.
 
 DESIGN and PREREGISTRATION merged after exact-head standing CI success. PREREGISTRATION freezes the same pre-existing 0071 contract without result-informed modification: minimum common support 252; exact six controller formulas and two diagnostic controls; t-close to t+1 timing; C0/C1/C2 0/10/30 bps; frozen cash identities; exact metric/accounting rules; synchronized MBB block 20 with 4,000 reps and seed 710071; DSR six trials and 0.95 gate; diagnostic CSCV PBO 8 slices/70 splits; concentration and matched-attribution tests; G0-G10 gates; Pareto tie-break; controlled read/call budgets; create-only artifacts; one-attempt rule; and frozen terminal classifications.
 
-IMPLEMENTATION adds only `engine.py`, `qualification.py`, and `IMPLEMENTATION_CONTRACT.json` under the 0083 governed path. Controlled scientific/economic reads remain `0`; market/DTB3 reads remain `0`; network fetches remain `0`; no controller has been evaluated; no result artifact exists; attempt remains `0/1`.
+IMPLEMENTATION merged after exact-head standing CI success. NONHISTORICAL QUALIFICATION = `PASS`: all 13 preregistered classification regimes match their frozen terminal classes and every mechanical check passes, including causal timing, common support, turnover/cost accounting, cash handling, exact candidate/control counts, exposure bounds, deterministic synchronized bootstrap, six-trial DSR accounting, diagnostic-only PBO contract and deterministic cost-break-even mechanics. Controlled historical/evidence reads = `0`; 0069 reads = `0`; 0070 content reads = `0`; market payload reads = `0`; DTB3 reads = `0`; network fetches = `0`; attempt remains `0/1`. No controlled economic result exists.
 
 ## Exact next step
 
-Require fresh standing CI on the exact PR #304 head after this CURRENT_STATE handoff repair and the mandatory PR-body governance repair. Merge #304 only if the exact head is unchanged, mergeable, non-draft, and every required exact-head standing workflow completes successfully. After merge, create a separate 0083 NONHISTORICAL QUALIFICATION stage with zero controlled scientific/economic reads and attempt `0/1`.
+Require fresh standing CI on the exact NONHISTORICAL QUALIFICATION PR head. Merge only if the exact head is unchanged, mergeable, non-draft, and every required exact-head standing workflow completes successfully. After qualification merge, create a separate 0083 CONTROLLED BOUNDARY that pins exact preregistration, implementation, qualification and allowed controlled-source identities without reading controlled payload content.
 
 ## No-drift authority
 
@@ -200,5 +201,5 @@ Canonical BRRK-0011 = NO CHANGE.
 0069 = NO CHANGE.
 0070 = CLOSED / NO SAME-ID ACTION.
 0071 = CONTROLLED BOUNDARY MERGED / ZERO-RESULT PREFLIGHT BLOCKED_PRE_ATTEMPT_CONTROLLED_CONTENT_CONTAMINATION / ATTEMPT 0/1.
-0083 = OWNER-FIRST + DESIGN + PREREGISTRATION MERGED / IMPLEMENTATION IN PR / ATTEMPT 0/1 / CONTROLLED READS 0.
+0083 = OWNER-FIRST + DESIGN + PREREGISTRATION + IMPLEMENTATION MERGED / NONHISTORICAL QUALIFICATION IN PR / ATTEMPT 0/1 / CONTROLLED READS 0.
 Phase 6 = NO CHANGE.
