@@ -160,33 +160,27 @@ CONTROLLED BOUNDARY is merged. During subsequent ZERO-RESULT PREFLIGHT, 0069 PRI
 
 Governance resolution PR #296 permanently keeps 0071 blocked at 6/10, forbids same-ID continuation or retroactive marker creation, and authorizes a new full-lifecycle replacement ID `BRRK-SOL-LONG-SIDEWAYS-CONTROLLER-INTEGRATION-REPLACEMENT-0083`. No formal 0071 lifecycle stage transfers to 0083.
 
-## 0083 replacement controller integration OWNER-FIRST
+## 0083 replacement controller integration
 
 Research ID = `BRRK-SOL-LONG-SIDEWAYS-CONTROLLER-INTEGRATION-REPLACEMENT-0083`.
-State = `OWNER-FIRST IN PR / DESIGN NOT STARTED / CONTROLLED ATTEMPT 0/1`.
+State = `OWNER-FIRST MERGED / DESIGN IN PR / PREREGISTRATION NOT STARTED / CONTROLLED ATTEMPT 0/1`.
 
-OWNER-FIRST base = writer-fix governance merge `4d7ac96fc5b6f19e35405afa9d42633d33058738`.
-Governance replacement authority = `research/governance/CRYPTO_MULTI_STRATEGY_0071_PREFLIGHT_CONTAMINATION_RESOLUTION.md`, merge `b58960ee3bc9e5cc5976d889cc28026614525686`.
-Guarded registry writer = #298 merge `be519797af338a2529910e27dfcd8f908f9cd8a3`, full-history repair = #300 merge `4d7ac96fc5b6f19e35405afa9d42633d33058738`.
+Lifecycle anchors:
+- governance resolution merge `b58960ee3bc9e5cc5976d889cc28026614525686`;
+- guarded registry writer merge `be519797af338a2529910e27dfcd8f908f9cd8a3`;
+- full-history writer repair merge `4d7ac96fc5b6f19e35405afa9d42633d33058738`;
+- OWNER-FIRST merge `dd9f3f28aabfdf6c05dcb9ca5a3dd13ca36a2467`;
+- DESIGN branch introduces `research/brrk_sol_long_sideways_controller_integration_replacement_0083/DESIGN.md` for the first time.
 
-OWNER-FIRST prospectively binds before any formal 0083 research path or controlled scientific/economic read:
-- scientific question, target, primary metric, mechanism and complete candidate ceiling are mechanically inherited from frozen 0071 with zero result-informed scientific change;
-- locked predictive input = 0070 P02 `P02_RAW_ELASTIC_NET_LOGIT|SOL|T4_LONG_SIDEWAYS`, lead exactly 10 sessions, sole predictive warning input;
-- universe = SOL only;
-- exactly six selectable controller families = `BINARY_RISK_OFF`, `LINEAR_DERISK`, `PIECEWISE_DERISK`, `VOL_ADJUSTED`, `DRAWDOWN_AWARE`, `HYSTERESIS`;
-- matched signal-off volatility-only and drawdown-only controls remain diagnostic and nonselectable;
-- long-or-cash only, no leverage and no short SOL; P03/P08 remain excluded;
-- frozen 0064 passive-cash semantics and C0/C1/C2 framework remain unchanged;
-- no information from the accidental 0071 preflight content exposure may influence tuning, pruning, thresholds, costs, gates, benchmark choice or controller priority;
-- no completed 0071 lifecycle stage is inherited;
-- 0083 controlled scientific/economic content reads = `0`; network fetches = `0`; attempt = `0/1`;
-- production/signature/order authority remains false.
+OWNER-FIRST prospectively binds SOL-only, locked 0070 P02 `P02_RAW_ELASTIC_NET_LOGIT|SOL|T4_LONG_SIDEWAYS` lead 10 as the sole predictive warning input, exactly six selectable controller families, matched signal-off controls, long-or-cash/no leverage/no short, P03/P08 exclusion, frozen 0064 passive-cash semantics, C0/C1/C2 framework, zero result-informed changes from the 0071 contamination event, a fresh ten-stage lifecycle, controlled reads `0`, network fetches `0`, attempt `0/1`, and zero production/signature/order authority.
 
-No formal path `research/brrk_sol_long_sideways_controller_integration_replacement_0083` exists yet. It may be introduced only by a separate DESIGN PR after OWNER-FIRST merges.
+DESIGN restates only the frozen economic question, immutable lineage, six controller families, matched controls, causal t-close to t+1 timing, passive-cash treatment, ordered accounting, cost/metric families, robustness/multiple-testing families, evidence tier, terminal classification meanings and fail-closed lifecycle. Numerical controller parameters and PASS thresholds remain for separate PREREGISTRATION.
+
+No 0083 controlled scientific/economic payload has been read. No controller has been evaluated. Attempt remains `0/1`.
 
 ## Exact next step
 
-Run all required standing CI on the exact generated 0083 OWNER-FIRST PR head and merge only if every workflow completes successfully. After OWNER-FIRST merges, introduce formal path `research/brrk_sol_long_sideways_controller_integration_replacement_0083` for the first time in a separate DESIGN PR with no controlled scientific/economic reads and no new historical performance.
+Run every required standing workflow on the exact 0083 DESIGN PR head and merge only if all exact-head CI succeeds. After DESIGN merge, create a separate comprehensive 0083 PREREGISTRATION that mechanically reproduces the frozen 0071 numerical/data/analysis contract without result-informed change, before implementation or any controlled scientific/economic read.
 
 ## No-drift authority
 
@@ -204,5 +198,5 @@ Canonical BRRK-0011 = NO CHANGE.
 0069 = NO CHANGE.
 0070 = CLOSED / NO SAME-ID ACTION.
 0071 = CONTROLLED BOUNDARY MERGED / ZERO-RESULT PREFLIGHT BLOCKED_PRE_ATTEMPT_CONTROLLED_CONTENT_CONTAMINATION / ATTEMPT 0/1.
-0083 = OWNER-FIRST IN PR / DESIGN NOT STARTED / ATTEMPT 0/1 / CONTROLLED READS 0.
+0083 = OWNER-FIRST MERGED / DESIGN IN PR / PREREGISTRATION NOT STARTED / ATTEMPT 0/1 / CONTROLLED READS 0.
 Phase 6 = NO CHANGE.
