@@ -5334,6 +5334,117 @@
         "Evidence remains researcher-exposed DEVELOPMENT history, not independent OOS.",
         "production_authorized=false; signature_authorized=false; order_submission_authorized=false."
       ]
+    },
+    {
+      "research_id": "BRRK-CRYPTO-CARRY-ATLAS-0072",
+      "research_family_id": "CRYPTO_CARRY",
+      "research_domain": "DERIVATIVES_CROWDING",
+      "research_governance_version": 1,
+      "governance_mode": "PROGRAM_GOVERNED_V1",
+      "objective_type": "MECHANISM_TEST",
+      "created_at": "2026-08-18",
+      "created_before_result": true,
+      "question": "Can a prospectively frozen point-in-time BTC/ETH/SOL carry atlas establish a reproducible structural relationship among perpetual funding, spot-perpetual and dated-futures basis, term structure, cross-venue dispersion, leverage/crowding and future crash-risk states across sufficient assets, venues and regimes before any carry strategy is defined?",
+      "hypothesis": "A bounded atlas of the ten roadmap-declared carry, crowding, liquidity and risk-state families will show a reproducible point-in-time structural carry mechanism across sufficient BTC/ETH/SOL asset, venue and regime support: carry is persistent but state-dependent, dispersion and extreme carry co-occur with leverage/crowding conditions, and prospectively defined extreme-carry states contain non-random information about future crash-risk outcomes after declared multiple-testing correction. No trading profitability is claimed or tested in 0072.",
+      "hypothesis_origin": "PROSPECTIVE_PROGRAM_ROADMAP_0071_0082_AFTER_0083_IMMUTABLE_CLOSEOUT; NO_0072_CONTROLLED_HISTORY_OR_RESULT_EXPOSURE",
+      "economic_mechanism": "Crypto spot-futures carry can arise from leveraged directional demand interacting with limited arbitrage capital, venue segmentation, collateral constraints and liquidity conditions. Funding, basis, term structure, open interest, liquidity and volatility therefore may form a coherent point-in-time crowding state whose persistence, dispersion and extremes vary across assets, venues and regimes and may coincide with elevated future crash risk. This ID characterizes structure only and does not translate the atlas into positions or PnL.",
+      "primary_target": "POINT_IN_TIME_BTC_ETH_SOL_CARRY_STRUCTURE_AND_CROWDING_STATE",
+      "primary_metric": "STRUCTURAL_CARRY_MECHANISM_REPRODUCIBILITY_ACROSS_SUFFICIENT_ASSETS_VENUES_AND_REGIMES",
+      "secondary_metrics": [
+        "perpetual_funding_rate_and_annualized_funding",
+        "spot_perpetual_basis",
+        "spot_dated_futures_annualized_basis",
+        "term_structure_slope_and_curvature_where_supported",
+        "cross_venue_basis_and_funding_dispersion",
+        "open_interest_and_open_interest_change",
+        "volume_liquidity_and_spread_state",
+        "realized_volatility",
+        "liquidation_intensity_if_point_in_time_data_qualify",
+        "price_trend_or_attention_proxy_only_if_frozen_before_controlled_history",
+        "carry_persistence_transition_and_mean_reversion",
+        "asset_venue_and_regime_robustness",
+        "leave_one_asset_and_leave_one_venue_out_robustness",
+        "multiple_testing_adjusted_atlas_hypothesis_evidence",
+        "extreme_carry_and_future_crash_risk_association"
+      ],
+      "feature_families": [
+        "PERPETUAL_FUNDING",
+        "SPOT_PERPETUAL_BASIS",
+        "DATED_FUTURES_BASIS",
+        "TERM_STRUCTURE",
+        "CROSS_VENUE_DISPERSION",
+        "OPEN_INTEREST",
+        "LIQUIDITY_SPREAD_VOLUME",
+        "REALIZED_VOLATILITY",
+        "LIQUIDATION_INTENSITY_CONDITIONAL_ON_POINT_IN_TIME_QUALIFICATION",
+        "PRICE_TREND_OR_ATTENTION_PROXY_CONDITIONAL_ON_PROSPECTIVE_FREEZE"
+      ],
+      "horizon": [
+        "POINT_IN_TIME_STATE_AT_T",
+        "PROSPECTIVELY_FIXED_FORWARD_CRASH_RISK_OUTCOME_HORIZONS_TO_BE_NUMERICALLY_FROZEN_IN_DESIGN_AND_PREREGISTRATION_BEFORE_CONTROLLED_HISTORY"
+      ],
+      "universe": [
+        "BTC",
+        "ETH",
+        "SOL"
+      ],
+      "development_dataset_refs": [],
+      "validation_dataset_refs": [],
+      "sealed_dataset_refs": [],
+      "declared_variant_budget": 10,
+      "actual_variants_evaluated": 0,
+      "parameter_candidate_count": 10,
+      "stopping_rule": "Traverse exactly the ten program lifecycle stages in order. OWNER-FIRST and DESIGN may read zero 0072 controlled scientific/history payload. DESIGN must bound venue/instrument eligibility, timestamp semantics, hypotheses and support rules; PREREGISTRATION must freeze exact source identities, numerical horizons, transformations, candidate definitions, multiple-testing method, robustness tests and terminal gates before implementation. NONHISTORICAL QUALIFICATION must pass with attempt 0/1 and zero controlled reads. After a separately merged CONTROLLED BOUNDARY, ZERO-RESULT PREFLIGHT must use identity-only checks. Stage 8 requires explicit user authorization after preflight PASS, durable RUN_ATTEMPT.marker persistence before the first controlled content read, and permits at most one controlled development-history attempt. Once consumed, no same-ID rerun, retune, rescue, candidate addition, universe alteration, source substitution or threshold relaxation is allowed.",
+      "success_criteria": "PASS only if valid execution of the prospectively frozen atlas establishes the preregistered structural carry mechanism across sufficient BTC/ETH/SOL asset, venue and regime support, including the required robustness and declared multiple-testing correction. PASS must be based on point-in-time semantics and the frozen support gates. No trading profitability is claimed in 0072, no strategy PnL may satisfy this gate, and a PASS only makes a separately owner-first 0073 carry-strategy research ID eligible under the roadmap.",
+      "failure_criteria": "FAIL if valid execution completes but the frozen structural carry mechanism does not satisfy the preregistered support, cross-asset/cross-venue/regime robustness or multiple-testing gates. INCONCLUSIVE is limited to prospectively defined insufficient data/support or mathematically undefined inference conditions. INVALID_EXECUTION applies to identity/hash/read-count/lookahead/timestamp/unit/candidate-count/source/persistence drift or any strategy-profitability computation outside the 0072 atlas contract.",
+      "allowed_followup": "Before attempt consumption, only semantics-preserving implementation or synthetic-qualification corrections that do not alter the merged DESIGN/PREREGISTRATION scientific contract. After immutable 0072 closeout, only a 0072 PASS may make separately owner-first BRRK-CRYPTO-DELTA-NEUTRAL-CARRY-STRATEGY-0073 eligible. Any altered variable family, venue universe, crash-risk horizon, structural hypothesis, source family, threshold, cost model or strategy translation requires a new research ID where governance requires it.",
+      "forbidden_followup": "No strategy position construction, hedge-ratio optimization, portfolio PnL, Sharpe-based selection, leverage selection, carry-trade profitability claim, post-result variable addition, venue substitution, universe expansion, hypothesis pruning, threshold rescue or multiple-testing relaxation under 0072. No same-ID rerun/retune/rescue after attempt consumption. No production, signing or order-submission authority may be inferred from any 0072 outcome.",
+      "researcher_decisions": [
+        "Use the roadmap initial universe exactly as BTC, ETH and SOL, subject only to prospectively frozen point-in-time data-quality and venue-availability gates.",
+        "Bound the OWNER-FIRST structural candidate-family budget to exactly the ten variable families explicitly enumerated by the merged roadmap; conditional liquidation and trend/attention families remain unavailable unless DESIGN and PREREGISTRATION qualify and freeze them before controlled history.",
+        "Treat perpetual funding, spot-perpetual basis, dated-futures basis, term structure and cross-venue dispersion as distinct carry-structure families rather than collapsing them into a single optimized carry score.",
+        "Treat open interest, liquidity/spread/volume, realized volatility, conditional liquidation intensity and conditional trend/attention only as structural state/context families; no family may be selected because of observed 0072 strategy performance because 0072 may not compute strategy profitability.",
+        "Require point-in-time venue/instrument metadata, source event time, exchange time and calculation time semantics, as-of joins, maturity barriers, no future venue inclusion and no revised-history substitution unless prospectively classified.",
+        "Require carry persistence, transition, mean reversion and dispersion diagnostics by asset, venue and regime, plus leave-one-asset and leave-one-venue robustness where support permits.",
+        "Require prospectively defined extreme-carry versus future crash-risk outcomes and declared multiple-testing correction; exact numerical horizons, thresholds, support minima, correction method and randomization/bootstrap details must be frozen later in DESIGN/PREREGISTRATION before controlled content access.",
+        "Do not define or evaluate long-spot/short-perpetual, dated-futures or cross-venue trading structures under 0072; those belong only to 0073 after a 0072 PASS closeout.",
+        "Preserve exactly one irreversible controlled development-history attempt, with durable attempt marker preceding every permitted controlled content read.",
+        "Maintain production_authorized=false, signature_authorized=false and order_submission_authorized=false throughout 0072."
+      ],
+      "research_process_complexity": {
+        "declared_parameter_candidates": 10,
+        "actual_parameter_candidates_evaluated": 0,
+        "universes_evaluated": 1,
+        "horizons_evaluated": 2,
+        "rebalance_variants": 0,
+        "feature_representations": 10,
+        "special_cases_introduced": 2,
+        "validation_exposure_event_refs": 0,
+        "related_family_trials": 1
+      },
+      "lineage_edges": [],
+      "result_status": "PREREGISTERED_NOT_RUN",
+      "failure_reason": null,
+      "promotion_state": "NONE",
+      "evidence_refs": [],
+      "decision_refs": [
+        "research/governance/CRYPTO_MULTI_STRATEGY_RESEARCH_PROGRAM_0071_0082.md",
+        "docs/CURRENT_STATE.md"
+      ],
+      "production_relevance": "Research-only point-in-time carry/crowding structural atlas. No strategy profitability claim and no automatic production, signature or order authority.",
+      "production_authorized": false,
+      "provenance_status": "PROSPECTIVE_FROZEN",
+      "governed_path_prefixes": [
+        "research/brrk_crypto_carry_atlas_0072"
+      ],
+      "notes": [
+        "OWNER-FIRST registration precedes introduction of the formal 0072 governed research path.",
+        "The post-resolution hard prerequisite is satisfied by immutable 0083 closeout merge f4abfcabe68fa09f27900aac59228420f8721403; 0083 PASS is not required by governance resolution #296.",
+        "Roadmap merge 169d9adf6531dc099a43541df413fef079322adf remains authoritative for the 0071-0082 program lifecycle.",
+        "No 0072 controlled funding, basis, venue, market, OI, liquidity, volatility, liquidation, trend or attention payload was read to create this owner record.",
+        "The broad standing authorization does not consume or authorize Stage 8 before exact-boundary zero-result preflight PASS; irreversible controlled execution remains separately gated by the lifecycle.",
+        "production_authorized=false; signature_authorized=false; order_submission_authorized=false."
+      ]
     }
   ],
   "research_governance_debt": [
