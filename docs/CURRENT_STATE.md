@@ -197,17 +197,17 @@ Execution assurance: controlled reads 0069 PRIMARY_RESULT/EVIDENCE, MARKET_EVIDE
 
 The immutable closeout records the FAIL without rescue or reinterpretation. Governance resolution #296 sets the post-resolution 0072 hard prerequisite to `0083_IMMUTABLE_CLOSEOUT`; it does not require 0083 PASS. That prerequisite is now satisfied by closeout merge `f4abfcabe68fa09f27900aac59228420f8721403`.
 
-## Governance tooling for 0072 OWNER-FIRST
+## 0072 carry atlas
 
-0072 prospective ID = `BRRK-CRYPTO-CARRY-ATLAS-0072`. The roadmap purpose is a point-in-time BTC/ETH/SOL funding/basis/carry structural atlas before any carry strategy. The post-resolution hard prerequisite is satisfied, but 0072 has not completed OWNER-FIRST and no formal 0072 research path exists.
+Research ID = `BRRK-CRYPTO-CARRY-ATLAS-0072`. Stage 1 OWNER-FIRST prospective owner record is being registered through the guarded core governance writer from exact branch `research/0072-owner-first-v1`. The frozen purpose is a point-in-time BTC/ETH/SOL funding/basis/carry structural atlas before any carry strategy; 0072 cannot claim trading profitability.
 
-A separate guarded writer is being introduced at `.github/workflows/research-owner-first-0072.yml`. It is restricted to same-repository PRs from exact branch `research/0072-owner-first-v1`, requires explicit request `research/governance/owner_first_requests/0072.json`, requires roadmap merge `169d9adf6531dc099a43541df413fef079322adf` and 0083 closeout merge `f4abfcabe68fa09f27900aac59228420f8721403`, enforces controlled reads `0`, attempt `0/1`, zero production authority, canonical registry validation, no-drift, and request deletion in the same generated commit.
+OWNER-FIRST freezes the structural research family, question, mechanism, initial universe, ten roadmap-declared variable families, candidate-family ceiling, stopping/follow-up rules and zero production authority. No 0072 controlled scientific/history payload has been read; controlled reads remain `0` and attempt remains `0/1`.
 
-This governance tooling is not a formal 0072 lifecycle stage. 0072 remains `0/10`, controlled scientific/history reads `0`, attempt `0/1`, production/signature/order authority false.
+Stage 1 is not complete until the writer-generated canonical registry/state head passes all standing CI and the OWNER-FIRST PR merges. Until that merge, formal completion remains `0/10`.
 
 ## Exact next step
 
-Require every standing workflow to succeed on the exact governance-tooling PR head. Merge only if the exact head is unchanged, mergeable and non-draft. After the tooling merge, create `research/0072-owner-first-v1` from the exact merged main, add one prospective 0072 OWNER-FIRST request containing the complete frozen owner record, and open a separate Stage 1 PR. The guarded writer must append exactly one 0072 registry record, update CURRENT_STATE, delete the request, and pass fresh exact-head standing CI before OWNER-FIRST can merge. No 0072 controlled scientific/history payload may be read.
+On the separate 0072 Stage 1 OWNER-FIRST PR from `research/0072-owner-first-v1`, allow the guarded core governance writer to append exactly one canonical `BRRK-CRYPTO-CARRY-ATLAS-0072` registry record, update CURRENT_STATE and delete the request in the same generated commit. Require every standing workflow to succeed on that exact writer-generated head. Merge only if the exact head is unchanged, mergeable and non-draft. Only after OWNER-FIRST merges may a separate Stage 2 DESIGN branch be created. No 0072 controlled scientific/history payload may be read before the lifecycle permits it.
 
 ## No-drift authority
 
@@ -226,5 +226,5 @@ Canonical BRRK-0011 = NO CHANGE.
 0070 = CLOSED / NO SAME-ID ACTION.
 0071 = CONTROLLED BOUNDARY MERGED / ZERO-RESULT PREFLIGHT BLOCKED_PRE_ATTEMPT_CONTROLLED_CONTENT_CONTAMINATION / ATTEMPT 0/1.
 0083 = 10/10 COMPLETE / `FAIL_NO_ROBUST_LOCKED_P02_ECONOMIC_CONTROLLER_VALUE` / CLOSED TO SAME-ID RERUN / ATTEMPT 1/1.
-0072 = ELIGIBLE BY DEPENDENCY / OWNER-FIRST NOT YET COMPLETE / ATTEMPT 0/1 / CONTROLLED READS 0.
+0072 = OWNER-FIRST REGISTRATION IN PROGRESS / FORMAL COMPLETION 0/10 UNTIL MERGE / ATTEMPT 0/1 / CONTROLLED READS 0.
 Phase 6 = NO CHANGE.
