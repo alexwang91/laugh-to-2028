@@ -1,0 +1,197 @@
+name: Tooling 0083 unique historical execution
+on:
+  push:
+    branches: [tools/0083-unique-historical-execution-v1]
+    paths: ['.github/workflows/tooling-0083-unique-historical-execution.yml']
+permissions:
+  contents: write
+concurrency:
+  group: brrk-0083-unique-historical-execution
+  cancel-in-progress: false
+jobs:
+  execute-once:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 350
+    env:
+      BOUNDARY: 7a98d39ce5e686731f0528ae0adb7816fed30a67
+      RESULT_BRANCH: research/0083-result-v1
+      D: research/brrk_sol_long_sideways_controller_integration_replacement_0083
+      RID: BRRK-SOL-LONG-SIDEWAYS-CONTROLLER-INTEGRATION-REPLACEMENT-0083
+      PYTHONHASHSEED: '0'
+      PYTHONPATH: .
+      OMP_NUM_THREADS: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      NUMEXPR_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 7a98d39ce5e686731f0528ae0adb7816fed30a67
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r execution/plan-b-bot/requirements-dev.txt
+      - name: Final exact-boundary zero-result preflight
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$BOUNDARY"
+          if git ls-remote --exit-code --heads origin "refs/heads/$RESULT_BRANCH" >/dev/null 2>&1; then
+            echo "Result branch already exists; unique attempt start forbidden" >&2
+            exit 1
+          fi
+          python -m research.brrk_sol_long_sideways_controller_integration_replacement_0083.run_once preflight --boundary-sha "$BOUNDARY"
+          for f in RUN_ATTEMPT.marker PRIMARY_RESULT.json EVIDENCE.json EXECUTION.json RUN_ONCE.marker; do test ! -e "$D/$f"; done
+      - name: Durably persist unique RUN_ATTEMPT before any controlled source read
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          python - <<'PY'
+          import json, os
+          from datetime import datetime, timezone
+          from pathlib import Path
+          d=Path(os.environ['D'])
+          p=d/'RUN_ATTEMPT.marker'
+          if p.exists():
+              raise SystemExit('RUN_ATTEMPT.marker already exists')
+          marker={
+              'schema_version':1,
+              'research_id':os.environ['RID'],
+              'attempt_number':1,
+              'boundary_merge_sha':os.environ['BOUNDARY'],
+              'workflow_run_id':os.environ['GITHUB_RUN_ID'],
+              'created_at_utc':datetime.now(timezone.utc).isoformat(),
+              'result_branch':os.environ['RESULT_BRANCH'],
+              'same_id_rerun_allowed':False,
+              'same_id_retune_allowed':False,
+              'same_id_rescue_allowed':False,
+              'production_authorized':False,
+              'signature_authorized':False,
+              'order_submission_authorized':False,
+          }
+          p.write_text(json.dumps(marker, indent=2, sort_keys=True)+'\n', encoding='utf-8')
+          PY
+          test "$(git rev-parse HEAD)" = "$BOUNDARY"
+          git add "$D/RUN_ATTEMPT.marker"
+          tree=$(git write-tree)
+          marker_commit=$(printf '%s\n' '0083: persist unique RUN_ATTEMPT before controlled source read' | git commit-tree "$tree" -p "$BOUNDARY")
+          git push origin "$marker_commit:refs/heads/$RESULT_BRANCH"
+          git fetch origin "+refs/heads/$RESULT_BRANCH:refs/remotes/origin/$RESULT_BRANCH"
+          test "$(git rev-parse refs/remotes/origin/$RESULT_BRANCH)" = "$marker_commit"
+          test "$(git rev-parse "$marker_commit^")" = "$BOUNDARY"
+          git cat-file -e "refs/remotes/origin/$RESULT_BRANCH:$D/RUN_ATTEMPT.marker"
+          python - <<'PY'
+          import json, os, subprocess
+          spec=f"refs/remotes/origin/{os.environ['RESULT_BRANCH']}:{os.environ['D']}/RUN_ATTEMPT.marker"
+          m=json.loads(subprocess.check_output(['git','show',spec], text=True))
+          assert m['research_id']==os.environ['RID']
+          assert m['attempt_number']==1
+          assert m['boundary_merge_sha']==os.environ['BOUNDARY']
+          assert m['production_authorized'] is False
+          assert m['signature_authorized'] is False
+          assert m['order_submission_authorized'] is False
+          PY
+          test "$(git rev-parse HEAD)" = "$BOUNDARY"
+          echo "MARKER_COMMIT=$marker_commit" >> "$GITHUB_ENV"
+          echo "0083 attempt 1/1 durable marker commit: $marker_commit"
+      - name: Execute frozen 0083 exactly once
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$MARKER_COMMIT"
+          test "$(git rev-parse HEAD)" = "$BOUNDARY"
+          python -m research.brrk_sol_long_sideways_controller_integration_replacement_0083.run_once evaluate --boundary-sha "$BOUNDARY"
+          test "$(git rev-parse HEAD)" = "$BOUNDARY"
+          test -f "$D/RUN_ATTEMPT.marker"
+          test -f "$D/PRIMARY_RESULT.json"
+          test -f "$D/EVIDENCE.json"
+          test -f "$D/EXECUTION.json"
+          test ! -e "$D/RUN_ONCE.marker"
+      - name: Durably persist immutable result bundle
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$MARKER_COMMIT"
+          git add "$D/RUN_ATTEMPT.marker" "$D/PRIMARY_RESULT.json" "$D/EVIDENCE.json" "$D/EXECUTION.json"
+          tree=$(git write-tree)
+          result_commit=$(printf '%s\n' '0083: persist immutable unique controlled result bundle' | git commit-tree "$tree" -p "$MARKER_COMMIT")
+          git push origin "$result_commit:refs/heads/$RESULT_BRANCH"
+          git fetch origin "+refs/heads/$RESULT_BRANCH:refs/remotes/origin/$RESULT_BRANCH"
+          test "$(git rev-parse refs/remotes/origin/$RESULT_BRANCH)" = "$result_commit"
+          test "$(git rev-parse "$result_commit^")" = "$MARKER_COMMIT"
+          for f in RUN_ATTEMPT.marker PRIMARY_RESULT.json EVIDENCE.json EXECUTION.json; do git cat-file -e "refs/remotes/origin/$RESULT_BRANCH:$D/$f"; done
+          test "$(git rev-parse HEAD)" = "$BOUNDARY"
+          echo "RESULT_COMMIT=$result_commit" >> "$GITHUB_ENV"
+      - name: Marker-only finalize with zero controlled-source reread
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$RESULT_COMMIT"
+          test "$(git rev-parse HEAD)" = "$BOUNDARY"
+          python -m research.brrk_sol_long_sideways_controller_integration_replacement_0083.run_once finalize --boundary-sha "$BOUNDARY"
+          test -f "$D/RUN_ONCE.marker"
+          test "$(git rev-parse HEAD)" = "$BOUNDARY"
+      - name: Durably persist final RUN_ONCE marker
+        shell: bash
+        run: |
+          set -euo pipefail
+          git add "$D/RUN_ONCE.marker"
+          tree=$(git write-tree)
+          final_commit=$(printf '%s\n' '0083: finalize exactly-once controlled historical execution' | git commit-tree "$tree" -p "$RESULT_COMMIT")
+          git push origin "$final_commit:refs/heads/$RESULT_BRANCH"
+          git fetch origin "+refs/heads/$RESULT_BRANCH:refs/remotes/origin/$RESULT_BRANCH"
+          test "$(git rev-parse refs/remotes/origin/$RESULT_BRANCH)" = "$final_commit"
+          test "$(git rev-parse "$final_commit^")" = "$RESULT_COMMIT"
+          for f in RUN_ATTEMPT.marker PRIMARY_RESULT.json EVIDENCE.json EXECUTION.json RUN_ONCE.marker; do git cat-file -e "refs/remotes/origin/$RESULT_BRANCH:$D/$f"; done
+          test "$(git rev-parse HEAD)" = "$BOUNDARY"
+          echo "FINAL_COMMIT=$final_commit" >> "$GITHUB_ENV"
+      - name: Verify immutable execution and zero production authority
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          d=Path(os.environ['D'])
+          p=json.loads((d/'PRIMARY_RESULT.json').read_text())
+          ev=json.loads((d/'EVIDENCE.json').read_text())
+          ex=json.loads((d/'EXECUTION.json').read_text())
+          f=json.loads((d/'RUN_ONCE.marker').read_text())
+          allowed={
+              'PASS_LOCKED_P02_ECONOMIC_CONTROLLER_INTEGRATION',
+              'FAIL_NO_ROBUST_LOCKED_P02_ECONOMIC_CONTROLLER_VALUE',
+              'MEASUREMENT_INCONCLUSIVE_INSUFFICIENT_ECONOMIC_SUPPORT',
+              'INVALID_EXECUTION',
+          }
+          assert p['research_id']==os.environ['RID']
+          assert p['classification'] in allowed
+          assert ex['research_id']==f['research_id']==os.environ['RID']
+          assert ex['boundary_sha']==f['boundary_sha']==os.environ['BOUNDARY']
+          assert ex['attempt_consumed']=='1/1'
+          assert ex['network_fetches']==0
+          assert ex['production_authorized'] is False
+          assert ex['signature_authorized'] is False
+          assert ex['order_submission_authorized'] is False
+          assert f['attempt_consumed']=='1/1'
+          assert f['finalization_controlled_source_rereads']==0
+          assert f['same_id_rerun_allowed'] is False
+          assert f['same_id_retune_allowed'] is False
+          assert f['same_id_rescue_allowed'] is False
+          assert ev['network_fetches']==0
+          if p['classification'] != 'INVALID_EXECUTION':
+              assert p['execution_valid'] is True
+              assert p['source_read_counts']=={'0069_PRIMARY_RESULT':1,'0069_EVIDENCE':1,'MARKET_EVIDENCE':1,'DTB3':1,'0070_RESULT_CONTENT':0}
+              assert p['call_counts']=={'market_loader':1,'frozen_P02_prediction_reconstruction':1,'cash_engine':1,'validation_tuning':0,'model_reselection':0,'P02_retraining':0}
+              assert p['candidate_accounting']=={'selectable_candidates':6,'matched_controls':2,'benchmark':1}
+              assert p['full_window_P02_reproduction']['status']=='PASS'
+          print('0083 immutable exactly-once verification PASS', p['classification'])
+          PY
+          test "$(git rev-parse HEAD:research/brrk_btc_sol_path_event_early_warning_execution_assured_0069/PRIMARY_RESULT.json)" = df00901c77d8d334d61c7c65a14b8d127e9ca8b6
+          test "$(git rev-parse HEAD:research/brrk_btc_sol_path_event_early_warning_execution_assured_0069/EVIDENCE.json)" = 6266e6a11205e21592766546342ca5bca1dd97f0
+          test "$(git rev-parse HEAD:research/brrk_beta_handoff_0047/evidence/MARKET_EVIDENCE.json)" = 64ebf5c6deaf3f34dbeac715378f196ff0f4fafe
+          test "$(git rev-parse HEAD:research/brrk_idle_cash_sweep_robustness_0063/DTB3_RAW.csv)" = 71d50e26f8a9afb6bcb88401d20b97d5fb0a891a
+          test "$(git rev-parse HEAD)" = "$BOUNDARY"
