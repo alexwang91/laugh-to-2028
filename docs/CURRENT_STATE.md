@@ -162,13 +162,13 @@ Governance resolution PR #296 permanently keeps 0071 blocked at 6/10, forbids sa
 
 ## Governance tooling for 0083 OWNER-FIRST
 
-Stage 1 requires the new owner record to be appended to `config/research_registry.json` before DESIGN. Because the registry is large and the GitHub contents write API only supports complete-file replacement, governance PR for the guarded OWNER-FIRST registry writer is in branch `governance/owner-first-registry-writer-v1`. The writer is restricted to same-repository PRs from exact head branch `research/0083-owner-first-v1`, requires an explicit governance request file, validates the canonical registries and no-drift policy before writing, preserves the governance-debt array, deletes the request in the same commit, and gives no controlled scientific/economic read or production authority.
+Guarded OWNER-FIRST registry-writer governance PR #298 merged at `be519797af338a2529910e27dfcd8f908f9cd8a3`. The first 0083 owner request was opened as PR #299, but the writer's internal no-drift self-check failed before any registry/state commit because its branch checkout used `fetch-depth: 1` and therefore could not resolve the historical no-drift baseline. PR #299 was closed without merge. No 0083 registry record, formal path, controlled scientific/economic read, marker or attempt consumption resulted from that failed tooling run.
 
-0083 has not yet completed OWNER-FIRST. Controlled reads remain `0`; attempt remains `0/1`.
+The active governance-only repair changes the guarded writer checkout to `fetch-depth: 0` so its unchanged canonical `research.governance.no_drift` check can resolve repository history. 0083 has not yet completed OWNER-FIRST. Controlled reads remain `0`; attempt remains `0/1`.
 
 ## Exact next step
 
-Open the guarded registry-writer governance PR, run all exact-head standing CI, and merge only if every required workflow succeeds. After that merge, reset `research/0083-owner-first-v1` to the exact merged governance head, add one explicit 0083 OWNER-FIRST request, allow the base governance workflow to append the formal registry record and CURRENT_STATE handoff, then open the formal 0083 OWNER-FIRST PR. Do not read any controlled scientific/economic payload.
+Run all exact-head standing CI on the guarded writer-depth repair PR and merge only if every required workflow succeeds. Then reset `research/0083-owner-first-v1` to that exact merge, recreate the same prospective owner request against the updated CURRENT_STATE anchors, and open a new formal 0083 OWNER-FIRST PR. The guarded writer must append the canonical registry record, update CURRENT_STATE, delete the request, and pass its full-history self-check before any OWNER-FIRST merge. Do not read any controlled scientific/economic payload.
 
 ## No-drift authority
 
@@ -186,5 +186,5 @@ Canonical BRRK-0011 = NO CHANGE.
 0069 = NO CHANGE.
 0070 = CLOSED / NO SAME-ID ACTION.
 0071 = CONTROLLED BOUNDARY MERGED / ZERO-RESULT PREFLIGHT BLOCKED_PRE_ATTEMPT_CONTROLLED_CONTENT_CONTAMINATION / ATTEMPT 0/1.
-0083 = REPLACEMENT AUTHORIZED BY GOVERNANCE RESOLUTION / OWNER-FIRST NOT YET COMPLETE / ATTEMPT 0/1 / CONTROLLED READS 0.
+0083 = REPLACEMENT AUTHORIZED / OWNER-FIRST NOT YET COMPLETE / ATTEMPT 0/1 / CONTROLLED READS 0.
 Phase 6 = NO CHANGE.
