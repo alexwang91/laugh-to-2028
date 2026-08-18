@@ -94,14 +94,7 @@
       "validation_exposure_event_refs": 0,
       "related_family_trials": 1
     },
-    "lineage_edges": [
-      {
-        "relation": "PROGRAM_PREREQUISITE",
-        "ref_research_id": "BRRK-SOL-LONG-SIDEWAYS-CONTROLLER-INTEGRATION-REPLACEMENT-0083",
-        "provenance_status": "FACT",
-        "evidence_ref": "research/brrk_sol_long_sideways_controller_integration_replacement_0083/CLOSEOUT.md"
-      }
-    ],
+    "lineage_edges": [],
     "result_status": "PREREGISTERED_NOT_RUN",
     "failure_reason": null,
     "promotion_state": "NONE",
