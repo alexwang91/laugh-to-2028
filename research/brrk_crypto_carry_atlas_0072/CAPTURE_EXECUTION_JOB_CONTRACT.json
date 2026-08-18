@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "contract_id": "BRRK-CRYPTO-CARRY-ATLAS-0072-FIRST-CAPTURE-EXECUTION-JOB-V1",
+  "research_id": "BRRK-CRYPTO-CARRY-ATLAS-0072",
+  "capture_request_id": "BRRK-CRYPTO-CARRY-ATLAS-0072-CAPTURE-0001",
+  "status": "PROSPECTIVE_NOT_MERGED_NOT_EXECUTED",
+  "lifecycle_credit": "NONE_STAGE_3_REMAINS_INCOMPLETE",
+  "workflow_path": ".github/workflows/research-governance.yml",
+  "trigger": {
+    "event": "push",
+    "branch": "main",
+    "required_head_commit_message_token": "[0072_FIRST_CAPTURE_EXECUTE_V1]",
+    "wiring_install_merge_must_not_contain_trigger_token": true
+  },
+  "preflight": {
+    "require_exact_merged_capture_plan": true,
+    "require_exact_merged_source_gate_request_implementation_blobs": true,
+    "fixed_raw_artifact_name": "0072-first-capture-raw-BRRK-CRYPTO-CARRY-ATLAS-0072-CAPTURE-0001",
+    "repository_wide_nonexpired_raw_artifact_count_required": 0,
+    "automatic_retry": false,
+    "redirect_following": false
+  },
+  "ordered_execution": [
+    "PREFLIGHT_REPOSITORY_WIDE_DUPLICATE_ARTIFACT_GUARD",
+    "CAPTURE_EACH_CANONICAL_REQUEST_AT_MOST_ONCE",
+    "PERSIST_EACH_RAW_OBJECT_AND_REQUEST_MANIFEST_CREATE_ONLY_BEFORE_PARSE",
+    "ON_ANY_CAPTURE_FAILURE_CREATE_METADATA_ONLY_FAILURE_RECEIPT",
+    "UPLOAD_RAW_OR_PARTIAL_CAPTURE_ARTIFACT_WITH_OVERWRITE_FALSE",
+    "IF_CAPTURE_FAILED_STOP_AFTER_DURABLE_FAILURE_ARTIFACT",
+    "IF_CAPTURE_SUCCEEDED_CREATE_HASH_BOUND_DURABILITY_RECEIPT",
+    "ONLY_AFTER_DURABILITY_RECEIPT_PARSE_PERSISTED_VERIFIED_BYTES",
+    "UPLOAD_METADATA_ONLY_SUPPORT_MANIFEST_AND_RECEIPT",
+    "EMIT_ONLY_AGGREGATE_METADATA_SUMMARY"
+  ],
+  "partial_failure_rule": "ANY_PARTIAL_OR_FAILURE_ARTIFACT_PERMANENTLY_BLOCKS_AUTOMATIC_REFETCH_AND_REQUIRES_MANUAL_GOVERNANCE_RECONCILIATION",
+  "forbidden": [
+    "LOG_OR_SUMMARIZE_RAW_SOURCE_VALUES",
+    "AUTO_RETRY_NETWORK_FAILURE",
+    "OVERWRITE_DURABLE_ARTIFACT",
+    "CREATE_RUN_ATTEMPT_MARKER",
+    "CONSUME_STAGE_8_ATTEMPT",
+    "COMPUTE_SCIENTIFIC_FEATURES_OR_RESULTS",
+    "GRANT_PRODUCTION_SIGNATURE_OR_ORDER_AUTHORITY"
+  ],
+  "attempt_consumed": 0,
+  "controlled_scientific_history_reads_to_researcher": 0,
+  "production_authorized": false,
+  "signature_authorized": false,
+  "order_submission_authorized": false
+}
