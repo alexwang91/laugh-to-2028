@@ -138,7 +138,7 @@ Lifecycle anchors:
 - qualification result blob `9a782797b32430e36fd20316f5aa3030fa04e72d`;
 - CONTROLLED BOUNDARY merge `0cad34af6ea5919f974a593b3a0f9427a5c1c5fd`;
 - governance incident Issue #295;
-- prospective governance resolution PR #296, not authoritative unless merged.
+- governance resolution PR #296 merge `b58960ee3bc9e5cc5976d889cc28026614525686`.
 
 Frozen preregistration fixes before any controlled read:
 - common causal support and minimum 252 rows;
@@ -158,11 +158,17 @@ Implementation encodes only the frozen contract in `engine.py`, `qualification.p
 
 CONTROLLED BOUNDARY is merged. During subsequent ZERO-RESULT PREFLIGHT, 0069 PRIMARY_RESULT content was opened before any durable 0071 `RUN_ATTEMPT.marker`. Stage 7 therefore cannot be declared PASS. No retroactive marker is permitted, no additional 0071 controlled payload may be read, no Stage 8 execution may occur under 0071, and no 0071 RESULT/CLOSEOUT stage may be fabricated. Attempt remains `0/1` unconsumed. Production/signature/order authority remains zero.
 
-PR #296 prospectively proposes, only if its exact head passes standing CI and merges, to keep 0071 permanently blocked at 6/10 and authorize a new full-lifecycle replacement ID `BRRK-SOL-LONG-SIDEWAYS-CONTROLLER-INTEGRATION-REPLACEMENT-0083`. 0083 is not yet authorized while #296 remains unmerged.
+Governance resolution PR #296 permanently keeps 0071 blocked at 6/10, forbids same-ID continuation or retroactive marker creation, and authorizes a new full-lifecycle replacement ID `BRRK-SOL-LONG-SIDEWAYS-CONTROLLER-INTEGRATION-REPLACEMENT-0083`. No formal 0071 lifecycle stage transfers to 0083.
+
+## Governance tooling for 0083 OWNER-FIRST
+
+Stage 1 requires the new owner record to be appended to `config/research_registry.json` before DESIGN. Because the registry is large and the GitHub contents write API only supports complete-file replacement, governance PR for the guarded OWNER-FIRST registry writer is in branch `governance/owner-first-registry-writer-v1`. The writer is restricted to same-repository PRs from exact head branch `research/0083-owner-first-v1`, requires an explicit governance request file, validates the canonical registries and no-drift policy before writing, preserves the governance-debt array, deletes the request in the same commit, and gives no controlled scientific/economic read or production authority.
+
+0083 has not yet completed OWNER-FIRST. Controlled reads remain `0`; attempt remains `0/1`.
 
 ## Exact next step
 
-Run exact-head standing CI on governance resolution PR #296. Merge only if every required workflow succeeds. If #296 merges, create a separate OWNER-FIRST PR for replacement ID `BRRK-SOL-LONG-SIDEWAYS-CONTROLLER-INTEGRATION-REPLACEMENT-0083` and independently traverse all ten lifecycle stages. Until then, do not read any additional controlled scientific/economic payload and do not resume 0071.
+Open the guarded registry-writer governance PR, run all exact-head standing CI, and merge only if every required workflow succeeds. After that merge, reset `research/0083-owner-first-v1` to the exact merged governance head, add one explicit 0083 OWNER-FIRST request, allow the base governance workflow to append the formal registry record and CURRENT_STATE handoff, then open the formal 0083 OWNER-FIRST PR. Do not read any controlled scientific/economic payload.
 
 ## No-drift authority
 
@@ -180,5 +186,5 @@ Canonical BRRK-0011 = NO CHANGE.
 0069 = NO CHANGE.
 0070 = CLOSED / NO SAME-ID ACTION.
 0071 = CONTROLLED BOUNDARY MERGED / ZERO-RESULT PREFLIGHT BLOCKED_PRE_ATTEMPT_CONTROLLED_CONTENT_CONTAMINATION / ATTEMPT 0/1.
-0083 = PROSPECTIVE REPLACEMENT ONLY / NOT AUTHORIZED UNLESS GOVERNANCE PR #296 MERGES.
+0083 = REPLACEMENT AUTHORIZED BY GOVERNANCE RESOLUTION / OWNER-FIRST NOT YET COMPLETE / ATTEMPT 0/1 / CONTROLLED READS 0.
 Phase 6 = NO CHANGE.
