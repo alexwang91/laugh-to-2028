@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "reconciliation_id": "BRRK-CRYPTO-CARRY-ATLAS-0072-FIRST-CAPTURE-RECONCILIATION-V1",
+  "research_id": "BRRK-CRYPTO-CARRY-ATLAS-0072",
+  "capture_request_id": "BRRK-CRYPTO-CARRY-ATLAS-0072-CAPTURE-0001",
+  "triggering_main_sha": "a5a71825756180f2f9eb079d7e8c3f17e1470e98",
+  "workflow_run_id": 32194081362,
+  "capture_job_id": 95894400892,
+  "durable_raw_or_failure_artifact": {
+    "artifact_id": 9345233553,
+    "name": "0072-first-capture-raw-BRRK-CRYPTO-CARRY-ATLAS-0072-CAPTURE-0001",
+    "size_in_bytes": 570,
+    "artifact_digest_sha256": "8cb16e0360c870875360aed51f3db4b7d4a08205319965ef41f3564de9e68e0b",
+    "metadata_success_artifact_present": false
+  },
+  "execution_facts": {
+    "duplicate_artifact_preflight": "PASS_ZERO_EXISTING",
+    "capture_step": "FAILED_CLOSED",
+    "failure_class": "SOURCE_UNAVAILABLE_HTTP_451",
+    "first_canonical_request": "BINANCE_EXCHANGE_INFO_CURRENT",
+    "first_request_url_class": "BINANCE_FAPI_EXCHANGE_INFO",
+    "persisted_source_payload_objects": 0,
+    "metadata_only_failure_receipt_persisted": true,
+    "automatic_retry_permitted": false,
+    "same_capture_request_refetch_permitted": false
+  },
+  "scientific_exposure": {
+    "raw_artifact_downloaded_or_opened_by_researcher": false,
+    "source_value_series_exposed": false,
+    "scientific_features_or_results_computed": false,
+    "controlled_scientific_history_reads_to_researcher": 0,
+    "stage8_attempt_consumed": 0
+  },
+  "manual_governance_reconciliation": {
+    "capture_0001_status": "SEALED_FAILED_NO_RETRY",
+    "same_request_retry_forbidden": true,
+    "result_informed_source_substitution_forbidden": true,
+    "same_research_id_may_continue_stage3_only_if": [
+      "A_SEPARATE_PROSPECTIVE_SOURCE_ACCESS_OR_SOURCE_IDENTITY_AMENDMENT_MERGES_BEFORE_ANY_NEW_NETWORK_PROBE_OR_CAPTURE",
+      "ANY_NEW_CAPTURE_USES_A_DISTINCT_CAPTURE_REQUEST_ID",
+      "THE_AMENDMENT_IS_JUSTIFIED_ONLY_BY_TECHNICAL_ACCESSIBILITY_OR_POINT_IN_TIME_PROVENANCE_NOT_BY_SCIENTIFIC_VALUES_OR_RESULTS",
+      "NO_FAILED_CAPTURE_PAYLOAD_IS_OPENED_OR_USED",
+      "THE_OWNER_FIRST_TEN_FAMILY_CEILING_AND_DESIGN_SCIENCE_REMAIN_UNCHANGED"
+    ],
+    "if_these_conditions_cannot_be_met": "STAGE_3_CANNOT_COMPLETE_UNDER_0072_WITH_THE_CURRENT_SOURCE_PLAN"
+  },
+  "lifecycle_credit": "NONE_STAGE_3_REMAINS_2_OF_10",
+  "production_authorized": false,
+  "signature_authorized": false,
+  "order_submission_authorized": false
+}
