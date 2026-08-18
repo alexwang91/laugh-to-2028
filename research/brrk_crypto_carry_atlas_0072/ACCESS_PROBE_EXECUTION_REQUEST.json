@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "request_id": "BRRK-CRYPTO-CARRY-ATLAS-0072-ACCESS-PROBE-REQUEST-0001",
+  "research_id": "BRRK-CRYPTO-CARRY-ATLAS-0072",
+  "status": "PROSPECTIVE_NOT_EXECUTED",
+  "requalification_plan_merge": "a38dc764b5d075403c0827cacafc14a6a0d4230a",
+  "probe_plan_id": "BRRK-CRYPTO-CARRY-ATLAS-0072-SOURCE-ACCESS-REQUALIFICATION-V1",
+  "probe_id": "BRRK-CRYPTO-CARRY-ATLAS-0072-ACCESS-PROBE-0001",
+  "sealed_failed_capture_request_id": "BRRK-CRYPTO-CARRY-ATLAS-0072-CAPTURE-0001",
+  "capture_0001_retry_forbidden": true,
+  "objective": "Execute only the two prospectively frozen technical reachability probes over already-governed delivery hosts, without reading or persisting response bodies and without admitting or substituting any source.",
+  "execution_constraints": {
+    "automatic_retry": false,
+    "redirect_following": false,
+    "response_body_read_or_persist": false,
+    "scientific_history_payload_read": false,
+    "scientific_computation": false,
+    "stage8_marker_creation": false,
+    "stage8_attempt_consumption": false,
+    "new_source_admission": false,
+    "source_precedence_change": false,
+    "new_feature_family_admission": false,
+    "ad_hoc_additional_host_probe": false
+  },
+  "allowed_probe_set": [
+    "BINANCE_DATA_VISION_ARCHIVE_HEAD",
+    "BYBIT_CURRENT_INSTRUMENT_METADATA_HEADERS_ONLY"
+  ],
+  "allowed_output_fields": [
+    "probe_id",
+    "canonical_probe_id",
+    "source_id",
+    "host",
+    "http_method",
+    "http_status_or_transport_failure_class",
+    "selected_non_secret_response_headers",
+    "probed_at_utc"
+  ],
+  "forbidden_outputs": [
+    "RESPONSE_BODY",
+    "SOURCE_VALUE_SERIES",
+    "FUNDING_LEVELS",
+    "PRICE_LEVELS",
+    "OI_LEVELS",
+    "FEATURES",
+    "LABELS",
+    "SCIENTIFIC_SUMMARY_STATISTICS",
+    "SCIENTIFIC_CLASSIFICATION"
+  ],
+  "post_execution_rule": "Persist only technical-access evidence, then require a separate prospective source-identity amendment or explicit access blocker record before any distinct future capture request.",
+  "lifecycle_credit": "NONE_STAGE_3_REMAINS_2_OF_10",
+  "controlled_scientific_history_reads_to_researcher": 0,
+  "stage8_attempt_consumed": 0,
+  "production_authorized": false,
+  "signature_authorized": false,
+  "order_submission_authorized": false
+}
