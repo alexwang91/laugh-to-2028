@@ -199,15 +199,23 @@ The immutable closeout records the FAIL without rescue or reinterpretation. Gove
 
 ## 0072 carry atlas
 
-Research ID = `BRRK-CRYPTO-CARRY-ATLAS-0072`. Stage 1 OWNER-FIRST prospective owner record is being registered through the guarded core governance writer from exact branch `research/0072-owner-first-v1`. The frozen purpose is a point-in-time BTC/ETH/SOL funding/basis/carry structural atlas before any carry strategy; 0072 cannot claim trading profitability.
+Research ID = `BRRK-CRYPTO-CARRY-ATLAS-0072`.
+State = `OWNER-FIRST MERGED / DESIGN IN PROGRESS / FORMAL COMPLETION 1/10 / CONTROLLED ATTEMPT 0/1 / CONTROLLED READS 0`.
 
-OWNER-FIRST freezes the structural research family, question, mechanism, initial universe, ten roadmap-declared variable families, candidate-family ceiling, stopping/follow-up rules and zero production authority. No 0072 controlled scientific/history payload has been read; controlled reads remain `0` and attempt remains `0/1`.
+Lifecycle anchors:
+- roadmap merge `169d9adf6531dc099a43541df413fef079322adf`;
+- post-resolution prerequisite 0083 immutable closeout `f4abfcabe68fa09f27900aac59228420f8721403`;
+- OWNER-FIRST merge `e1d61eadb8a4564cae2689a718e2eaaa859aa05e`.
 
-Stage 1 is not complete until the writer-generated canonical registry/state head passes all standing CI and the OWNER-FIRST PR merges. Until that merge, formal completion remains `0/10`.
+OWNER-FIRST freezes the structural research family, question, mechanism, BTC/ETH/SOL initial universe, exactly ten roadmap-declared variable families, candidate-family ceiling, stopping/follow-up rules and zero production authority. No 0072 controlled scientific/history payload was read in OWNER-FIRST.
+
+Stage 2 DESIGN is active on `research/0072-design-v1`. DESIGN may freeze only the structural scientific contract before controlled access: point-in-time timestamp semantics, universe construction, allowed structural hypothesis families, candidate ceiling, chronology/maturation rules, calculation order, metrics/robustness families, evidence tier, terminal classification vocabulary and failure/stop conditions. Exact controlled-source identities, numerical horizons, support minima, formulas, multiple-testing procedure, bootstrap/random seeds and terminal numerical gates belong to Stage 3 PREREGISTRATION.
+
+DESIGN has read zero controlled funding/basis/history payload. Controlled reads remain `0`; attempt remains `0/1`. DESIGN receives no lifecycle credit until its exact-head all-green PR merges.
 
 ## Exact next step
 
-On the separate 0072 Stage 1 OWNER-FIRST PR from `research/0072-owner-first-v1`, allow the guarded core governance writer to append exactly one canonical `BRRK-CRYPTO-CARRY-ATLAS-0072` registry record, update CURRENT_STATE and delete the request in the same generated commit. Require every standing workflow to succeed on that exact writer-generated head. Merge only if the exact head is unchanged, mergeable and non-draft. Only after OWNER-FIRST merges may a separate Stage 2 DESIGN branch be created. No 0072 controlled scientific/history payload may be read before the lifecycle permits it.
+Require every standing workflow to succeed on the exact Stage 2 DESIGN PR head, including PR handoff governance. Merge only if the exact head is unchanged, mergeable and non-draft. After DESIGN merge, create a separate Stage 3 PREREGISTRATION branch from exact merged main and freeze the numerical/data/analysis contract before implementation. No 0072 controlled scientific/history payload may be read before the lifecycle permits it.
 
 ## No-drift authority
 
@@ -226,5 +234,5 @@ Canonical BRRK-0011 = NO CHANGE.
 0070 = CLOSED / NO SAME-ID ACTION.
 0071 = CONTROLLED BOUNDARY MERGED / ZERO-RESULT PREFLIGHT BLOCKED_PRE_ATTEMPT_CONTROLLED_CONTENT_CONTAMINATION / ATTEMPT 0/1.
 0083 = 10/10 COMPLETE / `FAIL_NO_ROBUST_LOCKED_P02_ECONOMIC_CONTROLLER_VALUE` / CLOSED TO SAME-ID RERUN / ATTEMPT 1/1.
-0072 = OWNER-FIRST REGISTRATION IN PROGRESS / FORMAL COMPLETION 0/10 UNTIL MERGE / ATTEMPT 0/1 / CONTROLLED READS 0.
+0072 = OWNER-FIRST MERGED / DESIGN IN PROGRESS / FORMAL COMPLETION 1/10 / ATTEMPT 0/1 / CONTROLLED READS 0.
 Phase 6 = NO CHANGE.
