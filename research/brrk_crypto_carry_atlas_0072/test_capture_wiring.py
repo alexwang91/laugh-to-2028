@@ -62,7 +62,6 @@ class CaptureWiringTests(unittest.TestCase):
                 rows.append({"id":a.get("id"),"name":a.get("name"),"size_in_bytes":a.get("size_in_bytes"),"expired":a.get("expired"),"created_at":a.get("created_at"),"updated_at":a.get("updated_at"),"workflow_run_id":wr.get("id"),"workflow_head_sha":wr.get("head_sha")})
             out[name]=rows
         print("0072_CAPTURE_STATUS_PROBE="+json.dumps(out,sort_keys=True,separators=(",",":")))
-        self.assertLessEqual(len(out[names[0]]),1)
-        self.assertLessEqual(len(out[names[1]]),1)
+        self.assertEqual(len(out[names[0]]),1,"durable raw/failure artifact must exist after the one-shot trigger")
 
 if __name__=="__main__":unittest.main()
