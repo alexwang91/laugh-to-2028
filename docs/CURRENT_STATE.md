@@ -76,7 +76,7 @@ Lifecycle anchors:
 - IMPLEMENTATION merge `378c0a0098d9a508c20a0e0bb891a503e2357f2e`;
 - qualification evidence merge `709903bf5443cbb3b1fbd9d2c588db94b5566c6a`;
 - qualification result blob `8ad8cc764407f954da7c82e06ad5fa0cb3b97ca1`;
-- CONTROLLED-EXECUTION BOUNDARY merge `0c5a6affc2243a0fdaf621f7801e1870657f1254`;
+- CONTROLLED BOUNDARY merge `0c5a6affc2243a0fdaf621f7801e1870657f1254`;
 - exact merged-boundary zero-result preflight = PASS;
 - unique controlled workflow `32040286477` = PASS;
 - finalized immutable result branch head before handoff-only docs commit `a62ffbe3557530beb6aae24c94975ac1f1041fe3`;
@@ -200,22 +200,21 @@ The immutable closeout records the FAIL without rescue or reinterpretation. Gove
 ## 0072 carry atlas
 
 Research ID = `BRRK-CRYPTO-CARRY-ATLAS-0072`.
-State = `OWNER-FIRST MERGED / DESIGN IN PROGRESS / FORMAL COMPLETION 1/10 / CONTROLLED ATTEMPT 0/1 / CONTROLLED READS 0`.
+State = `OWNER-FIRST + DESIGN MERGED / STAGE 3 PREREGISTRATION SOURCE-IDENTITY PRECONDITION IN PROGRESS / FORMAL COMPLETION 2/10 / CONTROLLED ATTEMPT 0/1 / CONTROLLED READS 0`.
 
 Lifecycle anchors:
 - roadmap merge `169d9adf6531dc099a43541df413fef079322adf`;
 - post-resolution prerequisite 0083 immutable closeout `f4abfcabe68fa09f27900aac59228420f8721403`;
-- OWNER-FIRST merge `e1d61eadb8a4564cae2689a718e2eaaa859aa05e`.
+- OWNER-FIRST merge `e1d61eadb8a4564cae2689a718e2eaaa859aa05e`;
+- DESIGN merge `90a7b68718c5cb59002fe4b451d39d8979602161`.
 
-OWNER-FIRST freezes the structural research family, question, mechanism, BTC/ETH/SOL initial universe, exactly ten roadmap-declared variable families, candidate-family ceiling, stopping/follow-up rules and zero production authority. No 0072 controlled scientific/history payload was read in OWNER-FIRST.
+OWNER-FIRST and DESIGN are merged. Stage 3 PREREGISTRATION is active but incomplete. The current forward work freezes the source-identity and one-shot first-capture boundary required before exact immutable raw identities and the complete numerical/scientific preregistration can be bound. No lifecycle credit is awarded for this precondition work.
 
-Stage 2 DESIGN is active on `research/0072-design-v1`. DESIGN may freeze only the structural scientific contract before controlled access: point-in-time timestamp semantics, universe construction, allowed structural hypothesis families, candidate ceiling, chronology/maturation rules, calculation order, metrics/robustness families, evidence tier, terminal classification vocabulary and failure/stop conditions. Exact controlled-source identities, numerical horizons, support minima, formulas, multiple-testing procedure, bootstrap/random seeds and terminal numerical gates belong to Stage 3 PREREGISTRATION.
-
-DESIGN has read zero controlled funding/basis/history payload. Controlled reads remain `0`; attempt remains `0/1`. DESIGN receives no lifecycle credit until its exact-head all-green PR merges.
+No 0072 controlled funding/basis/history payload has been read. Controlled reads remain `0`; attempt remains `0/1`. Production/signature/order authority remains zero. Liquidation intensity and external attention remain unqualified; no substitute family is allowed. Dated-futures/term-structure support remains conditional until lawful point-in-time metadata establishes eligibility.
 
 ## Exact next step
 
-Require every standing workflow to succeed on the exact Stage 2 DESIGN PR head, including PR handoff governance. Merge only if the exact head is unchanged, mergeable and non-draft. After DESIGN merge, create a separate Stage 3 PREREGISTRATION branch from exact merged main and freeze the numerical/data/analysis contract before implementation. No 0072 controlled scientific/history payload may be read before the lifecycle permits it.
+Require every standing workflow to succeed on the exact Stage 3 source-identity precondition PR head, including PR handoff governance. Merge only if the exact head is unchanged, mergeable and non-draft. After that merge, implement and freeze the one-shot metadata-only capture request boundary. Full Stage 3 PREREGISTRATION may merge only after exact captured source identities and the complete numerical/scientific contract are frozen. No 0072 controlled scientific/history payload may be exposed before the lifecycle permits it.
 
 ## No-drift authority
 
@@ -234,5 +233,5 @@ Canonical BRRK-0011 = NO CHANGE.
 0070 = CLOSED / NO SAME-ID ACTION.
 0071 = CONTROLLED BOUNDARY MERGED / ZERO-RESULT PREFLIGHT BLOCKED_PRE_ATTEMPT_CONTROLLED_CONTENT_CONTAMINATION / ATTEMPT 0/1.
 0083 = 10/10 COMPLETE / `FAIL_NO_ROBUST_LOCKED_P02_ECONOMIC_CONTROLLER_VALUE` / CLOSED TO SAME-ID RERUN / ATTEMPT 1/1.
-0072 = OWNER-FIRST MERGED / DESIGN IN PROGRESS / FORMAL COMPLETION 1/10 / ATTEMPT 0/1 / CONTROLLED READS 0.
+0072 = OWNER-FIRST + DESIGN MERGED / STAGE 3 PREREGISTRATION SOURCE-IDENTITY PRECONDITION IN PROGRESS / FORMAL COMPLETION 2/10 / ATTEMPT 0/1 / CONTROLLED READS 0.
 Phase 6 = NO CHANGE.

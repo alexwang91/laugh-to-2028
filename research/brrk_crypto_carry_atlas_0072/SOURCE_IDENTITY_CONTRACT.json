@@ -1,0 +1,127 @@
+{
+  "schema_version": 1,
+  "contract_id": "BRRK-CRYPTO-CARRY-ATLAS-0072-SOURCE-IDENTITY-V1",
+  "research_id": "BRRK-CRYPTO-CARRY-ATLAS-0072",
+  "status": "FROZEN_NOT_CAPTURED",
+  "lifecycle_credit": "NONE_STAGE_3_INCOMPLETE_UNTIL_EXACT_CAPTURE_IDENTITIES_AND_FULL_PREREGISTRATION_MERGE",
+  "design_merge": "90a7b68718c5cb59002fe4b451d39d8979602161",
+  "roadmap_merge": "169d9adf6531dc099a43541df413fef079322adf",
+  "verified_documentation_date": "2026-08-18",
+  "controlled_scientific_history_reads": 0,
+  "attempt_consumed": 0,
+  "production_authorized": false,
+  "signature_authorized": false,
+  "order_submission_authorized": false,
+  "purpose": "Freeze the only source families and acquisition interfaces that may be used to create immutable 0072 input snapshots before the full Stage 3 preregistration can bind exact raw identities. This contract does not retrieve source payloads, inspect historical values, compute atlas features or consume the Stage 8 attempt.",
+  "assets": ["BTC", "ETH", "SOL"],
+  "allowed_source_roster": [
+    {
+      "source_id": "BINANCE_OFFICIAL_PUBLIC_FUTURES_AND_ARCHIVE_V1",
+      "operator": "Binance",
+      "source_class": "OFFICIAL_EXCHANGE_PUBLIC",
+      "base_hosts": [
+        "https://fapi.binance.com",
+        "https://data.binance.vision"
+      ],
+      "allowed_rest_paths": [
+        "/fapi/v1/exchangeInfo",
+        "/fapi/v1/fundingRate",
+        "/fapi/v1/klines",
+        "/fapi/v1/markPriceKlines",
+        "/fapi/v1/indexPriceKlines"
+      ],
+      "allowed_archive_families": [
+        "spot/monthly/klines",
+        "futures/um/monthly/klines",
+        "futures/um/monthly/markPriceKlines",
+        "futures/um/monthly/indexPriceKlines",
+        "futures/um/monthly/premiumIndexKlines"
+      ],
+      "integrity_rule": "When an official .CHECKSUM object exists for an archive object, capture both the archive bytes and checksum bytes and require checksum verification before parsing.",
+      "allowed_roles": [
+        "SPOT_REFERENCE_PRICE",
+        "PERPETUAL_TRADE_PRICE",
+        "MARK_PRICE",
+        "INDEX_PRICE",
+        "PERPETUAL_FUNDING",
+        "CONTRACT_METADATA",
+        "VOLUME"
+      ],
+      "forbidden_assumption": "Do not infer historical contract metadata from current exchangeInfo when historical-effective metadata cannot be proven."
+    },
+    {
+      "source_id": "BYBIT_V5_OFFICIAL_PUBLIC_MARKET_V1",
+      "operator": "Bybit",
+      "source_class": "OFFICIAL_EXCHANGE_PUBLIC",
+      "base_host": "https://api.bybit.com",
+      "allowed_rest_paths": [
+        "/v5/market/funding/history",
+        "/v5/market/open-interest",
+        "/v5/market/kline",
+        "/v5/market/mark-price-kline",
+        "/v5/market/index-price-kline",
+        "/v5/market/instruments-info"
+      ],
+      "allowed_roles": [
+        "CROSS_VENUE_PERPETUAL_FUNDING",
+        "OPEN_INTEREST",
+        "PERPETUAL_OR_FUTURES_PRICE",
+        "MARK_PRICE",
+        "INDEX_PRICE",
+        "INSTRUMENT_METADATA",
+        "VOLUME"
+      ],
+      "pagination_rule": "Use deterministic reverse-chronological pagination with explicit start/end bounds and persist every exact response page before parsing. Cursor-bearing endpoints must persist the cursor chain in the manifest.",
+      "forbidden_assumption": "Do not claim point-in-time availability of fields or instruments solely from present-day documentation or current instrument metadata."
+    }
+  ],
+  "source_precedence": {
+    "spot_reference": "BINANCE_OFFICIAL_PUBLIC_FUTURES_AND_ARCHIVE_V1",
+    "primary_perpetual_funding": "BINANCE_OFFICIAL_PUBLIC_FUTURES_AND_ARCHIVE_V1",
+    "cross_venue_funding": "BYBIT_V5_OFFICIAL_PUBLIC_MARKET_V1",
+    "open_interest": "BYBIT_V5_OFFICIAL_PUBLIC_MARKET_V1",
+    "dated_futures_and_term_structure": "ONLY_IF_CAPTURED_INSTRUMENT_METADATA_AND_PRICE_HISTORY_PROVE_POINT_IN_TIME_SUPPORT; OTHERWISE_FAMILY_INSUFFICIENT_SUPPORT",
+    "liquidation_intensity": "UNQUALIFIED_IN_SOURCE_CONTRACT_V1; MAY_NOT_BE_USED_UNLESS A SEPARATE PROSPECTIVE SOURCE QUALIFICATION IS MERGED BEFORE FULL PREREGISTRATION",
+    "trend_or_attention": "PRICE_TREND_ONLY_FROM_ALREADY_ALLOWED_POINT_IN_TIME_PRICE SOURCES; ATTENTION_PROXY_UNQUALIFIED"
+  },
+  "capture_cutoff_rule": "The first immutable capture must use a single UTC cutoff timestamp fixed in its merged capture request before any live fetch. Every REST query and archive object selection must end at or before that cutoff. No object first published after the cutoff may be included even if it contains older observations.",
+  "raw_identity_rule": "Every network response page and archive/checksum object is an immutable raw object identified by source_id, canonical request identity, retrieval timestamp, byte length and SHA256. No parser output may substitute for raw identity.",
+  "point_in_time_rules": [
+    "Preserve source event/exchange timestamp separately from retrieval/publication availability evidence where available.",
+    "A value may enter state t only if its frozen availability timestamp is <= t.",
+    "No current metadata may be projected backward as historical-effective metadata without explicit provenance.",
+    "No archive revision may silently replace a previously captured object; replacement is a distinct raw vintage and cannot rescue the same frozen preregistration.",
+    "Missing dates and absent instruments are not forward filled beyond the later preregistered maximum staleness.",
+    "Venue survival and contract survival at the end of sample cannot determine historical eligibility."
+  ],
+  "capture_outputs_allowed": [
+    "RAW_OBJECT_MANIFESTS",
+    "RAW_SHA256",
+    "RAW_SIZE_BYTES",
+    "CANONICAL_REQUEST_IDENTITIES",
+    "RETRIEVAL_TIMESTAMPS",
+    "HTTP_STATUS_AND_SELECTED_NON_SECRET_HEADERS",
+    "ROW_COUNTS",
+    "OBSERVED_MIN_MAX_TIMESTAMPS",
+    "SCHEMA_FIELD_NAMES_AND_TYPES",
+    "MISSINGNESS_COUNTS",
+    "SOURCE_SUPPORT_MATRIX_BY_ASSET_VENUE_INSTRUMENT_FAMILY"
+  ],
+  "capture_outputs_forbidden": [
+    "SOURCE_VALUE_SERIES_TO_RESEARCHER",
+    "FUNDING_OR_BASIS_SUMMARY_STATISTICS",
+    "FEATURE_VALUE_SERIES",
+    "CRASH_LABEL_SERIES",
+    "CORRELATIONS",
+    "REGRESSIONS",
+    "P_VALUES",
+    "MODEL_COEFFICIENTS",
+    "SIGNALS",
+    "POSITIONS",
+    "PNL",
+    "SHARPE_OR_OTHER_STRATEGY_PERFORMANCE",
+    "ATLAS_PASS_FAIL_RESULT"
+  ],
+  "family_admission_rule": "The full Stage 3 preregistration may admit only OWNER-FIRST families with exact captured source identities and prospectively sufficient point-in-time semantics. It may use fewer than ten families when support fails, but may not replace a failed family with an eleventh family.",
+  "no_drift": "No scientific result, strategy translation, production authority, signature authority, order authority, prior research state or canonical BRRK behavior changes in this source contract."
+}
