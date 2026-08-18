@@ -163,7 +163,7 @@ Governance resolution PR #296 permanently keeps 0071 blocked at 6/10, forbids sa
 ## 0083 replacement controller integration
 
 Research ID = `BRRK-SOL-LONG-SIDEWAYS-CONTROLLER-INTEGRATION-REPLACEMENT-0083`.
-State = `STAGES 1-9 COMPLETE / IMMUTABLE CLOSEOUT IN PR / CONTROLLED ATTEMPT 1/1 / FAIL_NO_ROBUST_LOCKED_P02_ECONOMIC_CONTROLLER_VALUE`.
+State = `10/10 COMPLETE / FAIL_NO_ROBUST_LOCKED_P02_ECONOMIC_CONTROLLER_VALUE / CLOSED TO SAME-ID RERUN / CONTROLLED ATTEMPT 1/1`.
 
 Lifecycle anchors:
 - governance resolution merge `b58960ee3bc9e5cc5976d889cc28026614525686`;
@@ -182,11 +182,12 @@ Lifecycle anchors:
 - immutable result bundle commit `b4fe7f97892bb710ac4ff3ce91704ff25170999d`;
 - finalized scientific result branch head before governance-only documentation `1c3d2d8796eed226aee2f6bcc9abcf067cd75ead`;
 - RESULT merge `867544e097de129355d336adbb52662b30a5f1c7`;
+- IMMUTABLE CLOSEOUT merge `f4abfcabe68fa09f27900aac59228420f8721403`;
+- immutable closeout file `research/brrk_sol_long_sideways_controller_integration_replacement_0083/CLOSEOUT.md`;
 - PRIMARY_RESULT blob `173b738d30bd26a21a9a0041037fa53d1de33156`, payload SHA256 `1540060a0e768ce4154b4ffd06904f7362e4c73ebc34e70b183b05acafa074b1`;
 - EVIDENCE blob `898ed00b90953bc1fc39721b588a9fafe2b67fb7`, payload SHA256 `6fe0b86aba6dd5b673b3c21a464accdd76ab798285a050b1a8b7d4aa02eab270`;
 - EXECUTION blob `0d2758ae0c5384bab19eb8215864adbf0659950a`, payload SHA256 `6758cded3bd60ba71f13378a06e80f09003798e68bae11722855d15873ac365c`;
-- RUN_ONCE blob `e3a20ed54e93aa9452a69772acd2a277bb1dbd11`;
-- closeout file in branch `research/brrk_sol_long_sideways_controller_integration_replacement_0083/CLOSEOUT.md`.
+- RUN_ONCE blob `e3a20ed54e93aa9452a69772acd2a277bb1dbd11`.
 
 The unique Stage 8 attempt was consumed exactly once after a strict identity-only preflight PASS and durable remote attempt marker. Same-ID rerun, retune, rescue and recomputation are permanently forbidden.
 
@@ -194,11 +195,19 @@ Persisted scientific classification = `FAIL_NO_ROBUST_LOCKED_P02_ECONOMIC_CONTRO
 
 Execution assurance: controlled reads 0069 PRIMARY_RESULT/EVIDENCE, MARKET_EVIDENCE, DTB3 = `1/1/1/1`; 0070 result content = `0`; market loader / frozen P02 reconstruction / cash engine calls = `1/1/1`; validation tuning/model reselection/P02 retraining = `0/0/0`; network fetches = `0`; finalization controlled-source rereads = `0`. Evidence tier remains `RESEARCHER_EXPOSED_DEVELOPMENT_NOT_INDEPENDENT_OOS`. Production/signature/order authority remains zero.
 
-The immutable closeout records the FAIL without rescue or reinterpretation. Governance resolution #296 sets the post-resolution 0072 hard prerequisite to `0083_IMMUTABLE_CLOSEOUT`; it does not require 0083 PASS.
+The immutable closeout records the FAIL without rescue or reinterpretation. Governance resolution #296 sets the post-resolution 0072 hard prerequisite to `0083_IMMUTABLE_CLOSEOUT`; it does not require 0083 PASS. That prerequisite is now satisfied by closeout merge `f4abfcabe68fa09f27900aac59228420f8721403`.
+
+## Governance tooling for 0072 OWNER-FIRST
+
+0072 prospective ID = `BRRK-CRYPTO-CARRY-ATLAS-0072`. The roadmap purpose is a point-in-time BTC/ETH/SOL funding/basis/carry structural atlas before any carry strategy. The post-resolution hard prerequisite is satisfied, but 0072 has not completed OWNER-FIRST and no formal 0072 research path exists.
+
+A separate guarded writer is being introduced at `.github/workflows/research-owner-first-0072.yml`. It is restricted to same-repository PRs from exact branch `research/0072-owner-first-v1`, requires explicit request `research/governance/owner_first_requests/0072.json`, requires roadmap merge `169d9adf6531dc099a43541df413fef079322adf` and 0083 closeout merge `f4abfcabe68fa09f27900aac59228420f8721403`, enforces controlled reads `0`, attempt `0/1`, zero production authority, canonical registry validation, no-drift, and request deletion in the same generated commit.
+
+This governance tooling is not a formal 0072 lifecycle stage. 0072 remains `0/10`, controlled scientific/history reads `0`, attempt `0/1`, production/signature/order authority false.
 
 ## Exact next step
 
-Require fresh standing CI on the exact Stage 10 CLOSEOUT PR head. Merge only if the exact head is unchanged, mergeable, non-draft and every required exact-head standing workflow succeeds. After CLOSEOUT merge, 0083 becomes `10/10 / CLOSED TO SAME-ID RERUN`. Then LIVE-read main, roadmap, registry and amendments and, if no newer blocker exists, begin 0072 OWNER-FIRST with no controlled history/evidence content read.
+Require every standing workflow to succeed on the exact governance-tooling PR head. Merge only if the exact head is unchanged, mergeable and non-draft. After the tooling merge, create `research/0072-owner-first-v1` from the exact merged main, add one prospective 0072 OWNER-FIRST request containing the complete frozen owner record, and open a separate Stage 1 PR. The guarded writer must append exactly one 0072 registry record, update CURRENT_STATE, delete the request, and pass fresh exact-head standing CI before OWNER-FIRST can merge. No 0072 controlled scientific/history payload may be read.
 
 ## No-drift authority
 
@@ -216,5 +225,6 @@ Canonical BRRK-0011 = NO CHANGE.
 0069 = NO CHANGE.
 0070 = CLOSED / NO SAME-ID ACTION.
 0071 = CONTROLLED BOUNDARY MERGED / ZERO-RESULT PREFLIGHT BLOCKED_PRE_ATTEMPT_CONTROLLED_CONTENT_CONTAMINATION / ATTEMPT 0/1.
-0083 = STAGES 1-9 COMPLETE / IMMUTABLE CLOSEOUT IN PR / ATTEMPT 1/1 / CLASSIFICATION `FAIL_NO_ROBUST_LOCKED_P02_ECONOMIC_CONTROLLER_VALUE`.
+0083 = 10/10 COMPLETE / `FAIL_NO_ROBUST_LOCKED_P02_ECONOMIC_CONTROLLER_VALUE` / CLOSED TO SAME-ID RERUN / ATTEMPT 1/1.
+0072 = ELIGIBLE BY DEPENDENCY / OWNER-FIRST NOT YET COMPLETE / ATTEMPT 0/1 / CONTROLLED READS 0.
 Phase 6 = NO CHANGE.
