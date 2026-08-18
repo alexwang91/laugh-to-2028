@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "research_id": "BRRK-SOL-LONG-SIDEWAYS-CONTROLLER-INTEGRATION-REPLACEMENT-0083",
+  "stage": "IMPLEMENTATION_ONLY_NOT_HISTORICALLY_RUN",
+  "base_preregistration_merge": "7e8a4e1d296dc9cb095f6b4ba66ab604d2723ff2",
+  "implements_only": [
+    "PREREGISTRATION.json",
+    "ECONOMIC_ANALYSIS_CONTRACT.json",
+    "QUALIFICATION_PREREGISTRATION.json",
+    "RESULT_SCHEMA.json"
+  ],
+  "implementation_semantics_source": "BRRK-SOL-LONG-SIDEWAYS-CONTROLLER-INTEGRATION-0071",
+  "implementation_semantics_source_merge": "cf203236348de692d8d92f30aedf35db7d2fe0c2",
+  "selectable_candidate_count": 6,
+  "matched_control_count": 2,
+  "benchmark_count": 1,
+  "cost_states_bps": {"C0_THEORETICAL": 0.0, "C1_REALISTIC": 10.0, "C2_STRESSED": 30.0},
+  "bootstrap": {"method": "synchronized moving-block", "block_length": 20, "replicates": 4000, "seed": 710071},
+  "DSR_trials": 6,
+  "PBO_role": "diagnostic_not_PASS_gate",
+  "controlled_content_reads": 0,
+  "network_fetches": 0,
+  "attempt_consumed": 0,
+  "result_writes_during_implementation": 0,
+  "historical_economic_measurement_allowed": false,
+  "production_authorized": false,
+  "signature_authorized": false,
+  "order_submission_authorized": false
+}
