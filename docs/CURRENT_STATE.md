@@ -163,7 +163,7 @@ Governance resolution PR #296 permanently keeps 0071 blocked at 6/10, forbids sa
 ## 0083 replacement controller integration
 
 Research ID = `BRRK-SOL-LONG-SIDEWAYS-CONTROLLER-INTEGRATION-REPLACEMENT-0083`.
-State = `OWNER-FIRST + DESIGN + PREREGISTRATION + IMPLEMENTATION MERGED / NONHISTORICAL QUALIFICATION IN PR / CONTROLLED ATTEMPT 0/1`.
+State = `OWNER-FIRST + DESIGN + PREREGISTRATION + IMPLEMENTATION + NONHISTORICAL QUALIFICATION MERGED / CONTROLLED BOUNDARY IN PR / CONTROLLED ATTEMPT 0/1`.
 
 Lifecycle anchors:
 - governance resolution merge `b58960ee3bc9e5cc5976d889cc28026614525686`;
@@ -173,17 +173,19 @@ Lifecycle anchors:
 - DESIGN merge `440b474a1908a4ec4196efa635d8154409a3c3de`;
 - PREREGISTRATION merge `7e8a4e1d296dc9cb095f6b4ba66ab604d2723ff2`;
 - IMPLEMENTATION merge `87bbed308fc54496b74d7d12c17c7cb15845f231`;
-- NONHISTORICAL QUALIFICATION branch `research/0083-qualification-v1`, qualification result blob `89b38689524ff44cc54cb71da0573043c30bfa7e`.
+- NONHISTORICAL QUALIFICATION merge `b61ca07338a7eda7eaed459fda89272f4e22fdc1`;
+- qualification result blob `89b38689524ff44cc54cb71da0573043c30bfa7e`;
+- CONTROLLED BOUNDARY branch `research/0083-controlled-boundary-v1`.
 
 OWNER-FIRST prospectively binds SOL-only, locked 0070 P02 `P02_RAW_ELASTIC_NET_LOGIT|SOL|T4_LONG_SIDEWAYS` lead 10 as the sole predictive warning input, exactly six selectable controller families, matched signal-off controls, long-or-cash/no leverage/no short, P03/P08 exclusion, frozen 0064 passive-cash semantics, C0/C1/C2 framework, zero result-informed changes from the 0071 contamination event, a fresh ten-stage lifecycle, controlled reads `0`, network fetches `0`, attempt `0/1`, and zero production/signature/order authority.
 
-DESIGN and PREREGISTRATION merged after exact-head standing CI success. PREREGISTRATION freezes the same pre-existing 0071 contract without result-informed modification: minimum common support 252; exact six controller formulas and two diagnostic controls; t-close to t+1 timing; C0/C1/C2 0/10/30 bps; frozen cash identities; exact metric/accounting rules; synchronized MBB block 20 with 4,000 reps and seed 710071; DSR six trials and 0.95 gate; diagnostic CSCV PBO 8 slices/70 splits; concentration and matched-attribution tests; G0-G10 gates; Pareto tie-break; controlled read/call budgets; create-only artifacts; one-attempt rule; and frozen terminal classifications.
+DESIGN and PREREGISTRATION merged after exact-head standing CI success. IMPLEMENTATION merged after exact-head standing CI success. NONHISTORICAL QUALIFICATION = `PASS`: all 13 preregistered classification regimes match their frozen terminal classes and every mechanical check passes. Controlled historical/evidence reads = `0`; 0069 reads = `0`; 0070 content reads = `0`; market payload reads = `0`; DTB3 reads = `0`; network fetches = `0`; attempt remains `0/1`. No controlled economic result exists.
 
-IMPLEMENTATION merged after exact-head standing CI success. NONHISTORICAL QUALIFICATION = `PASS`: all 13 preregistered classification regimes match their frozen terminal classes and every mechanical check passes, including causal timing, common support, turnover/cost accounting, cash handling, exact candidate/control counts, exposure bounds, deterministic synchronized bootstrap, six-trial DSR accounting, diagnostic-only PBO contract and deterministic cost-break-even mechanics. Controlled historical/evidence reads = `0`; 0069 reads = `0`; 0070 content reads = `0`; market payload reads = `0`; DTB3 reads = `0`; network fetches = `0`; attempt remains `0/1`. No controlled economic result exists.
+CONTROLLED BOUNDARY pins exact 0083 preregistration/implementation/qualification identities; exact 0069 source blobs; identity-only 0070 result blobs; frozen market, loader, feature-builder, cash-engine and DTB3 identities; read budgets 1/1/1/1 with 0070 result content 0; call budgets one market loader, one frozen P02 reconstruction, one cash-engine call and zero tuning/reselection/retraining/network fetch. It requires the unique result branch `research/0083-result-v1` to be absent at preflight, all five runtime/result artifacts absent, controlled reads/calls zero, attempt 0/1 and all production/signature/order authority false. The runner has no local-only start/run shortcut: a durable remote `RUN_ATTEMPT.marker` and remote durability verification must precede controlled reads.
 
 ## Exact next step
 
-Require fresh standing CI on the exact NONHISTORICAL QUALIFICATION PR head. Merge only if the exact head is unchanged, mergeable, non-draft, and every required exact-head standing workflow completes successfully. After qualification merge, create a separate 0083 CONTROLLED BOUNDARY that pins exact preregistration, implementation, qualification and allowed controlled-source identities without reading controlled payload content.
+Require fresh standing CI on the exact CONTROLLED BOUNDARY PR head. Merge only if the exact head is unchanged, mergeable, non-draft and every required exact-head standing workflow succeeds. Then execute Stage 7 ZERO-RESULT PREFLIGHT only on the exact merged-boundary main SHA using Git identity/blob metadata, branch/artifact absence checks and zero read/call/authority counters. No controlled payload content may be opened during preflight. If and only if every check passes, standing authorization permits immediate Stage 8 marker persistence on `research/0083-result-v1` followed by remote marker verification before any controlled read.
 
 ## No-drift authority
 
@@ -201,5 +203,5 @@ Canonical BRRK-0011 = NO CHANGE.
 0069 = NO CHANGE.
 0070 = CLOSED / NO SAME-ID ACTION.
 0071 = CONTROLLED BOUNDARY MERGED / ZERO-RESULT PREFLIGHT BLOCKED_PRE_ATTEMPT_CONTROLLED_CONTENT_CONTAMINATION / ATTEMPT 0/1.
-0083 = OWNER-FIRST + DESIGN + PREREGISTRATION + IMPLEMENTATION MERGED / NONHISTORICAL QUALIFICATION IN PR / ATTEMPT 0/1 / CONTROLLED READS 0.
+0083 = OWNER-FIRST + DESIGN + PREREGISTRATION + IMPLEMENTATION + NONHISTORICAL QUALIFICATION MERGED / CONTROLLED BOUNDARY IN PR / ATTEMPT 0/1 / CONTROLLED READS 0.
 Phase 6 = NO CHANGE.
