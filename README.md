@@ -16,7 +16,7 @@ Phase 8                              TRIGGER ABSENT / NOT RUN
 0083                                 10/10 CLOSED / FAIL_NO_ROBUST_LOCKED_P02_ECONOMIC_CONTROLLER_VALUE / ATTEMPT 1/1
 0072                                 2/10 / STAGE 3 PREREGISTRATION IN PROGRESS / ATTEMPT 0/1
 production gross cap                 1.0
-production_authorized_components     []
+production_authorized_components = []
 production_authorized                false
 signature_authorized                 false
 order_submission_authorized          false
@@ -130,11 +130,10 @@ Liquidation intensity 与 external attention 仍未资格化，不允许用第 1
 
 Phase 6 现有 shadow implementation、durable evidence backend、valuation contract 和 identity-binding rules 不因 0069–0083 研究推进而改变。Phase 7 仍为 `MONITOR_ONLY`；Phase 8 仍为 trigger absent / not run。研究 PASS/FAIL 都不能自动修改生产权限。
 
-## 中文状态与研究历史
+## 状态与历史入口
 
-- 中文当前状态：`docs/CURRENT_STATE_CN.md`
-- 中文研究历史：`docs/RESEARCH_HISTORY_0069_0083_CN.md`
-- 精确治理状态：`docs/CURRENT_STATE.md`
+- 本 README 的 `0069–0083 关键研究历史` 章节提供中文历史概览。
+- 精确治理状态与 immutable anchors：`docs/CURRENT_STATE.md`
 - 正式 roadmap：`research/governance/CRYPTO_MULTI_STRATEGY_RESEARCH_PROGRAM_0071_0082.md`
 
 ## Source-of-truth 顺序
