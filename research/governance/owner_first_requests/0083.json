@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "target_branch": "research/0083-owner-first-v1",
+  "template_research_id": "BRRK-SOL-LONG-SIDEWAYS-CONTROLLER-INTEGRATION-0071",
+  "new_research_id": "BRRK-SOL-LONG-SIDEWAYS-CONTROLLER-INTEGRATION-REPLACEMENT-0083",
+  "created_at": "2026-08-18",
+  "governance_resolution_merge": "b58960ee3bc9e5cc5976d889cc28026614525686",
+  "governance_resolution_path": "research/governance/CRYPTO_MULTI_STRATEGY_0071_PREFLIGHT_CONTAMINATION_RESOLUTION.md",
+  "governed_path_prefix": "research/brrk_sol_long_sideways_controller_integration_replacement_0083",
+  "controlled_reads": 0,
+  "attempt_consumed": 0,
+  "production_authorized": false,
+  "top_level_overrides": {
+    "hypothesis_origin": "GOVERNANCE_REPLACEMENT_AFTER_0071_PRE_ATTEMPT_CONTROLLED_CONTENT_CONTAMINATION; SCIENTIFIC_CONTRACT_MECHANICALLY_INHERITED_FROM_FROZEN_0071_WITH_ZERO_RESULT_INFORMED_CHANGE; DEVELOPMENT_HISTORY_ECONOMIC_INTEGRATION_ONLY; NOT_INDEPENDENT_OOS.",
+    "stopping_rule": "OWNER-FIRST -> DESIGN -> PREREGISTRATION -> IMPLEMENTATION -> NONHISTORICAL QUALIFICATION -> CONTROLLED BOUNDARY -> exact merged-boundary ZERO-RESULT PREFLIGHT -> at most one durable controlled development-history attempt -> RESULT -> IMMUTABLE CLOSEOUT. No formal lifecycle stage is inherited from 0071. A durable 0083 RUN_ATTEMPT.marker must precede the first permitted 0083 controlled scientific/economic content read. After durable marker creation, no same-ID rerun, rescue, retune, threshold relaxation, alternate cost rule, alternate benchmark or alternate controller is allowed.",
+    "production_relevance": "Governance-replacement DEVELOPMENT-history SOL risk-controller integration research only; no automatic production, signature or order authority."
+  },
+  "researcher_decisions": [
+    "0083 is a new full-lifecycle replacement prospectively authorized by merged governance resolution PR #296; it is not a 0071 rerun and inherits no completed formal lifecycle stage.",
+    "Mechanically bind the complete frozen 0071 scientific contract before any 0083 controlled read; no information from the accidental 0071 preflight exposure may alter, narrow, widen, reprioritize, retune or rescue any scientific choice.",
+    "Keep 0083 controlled scientific/economic content reads at zero until its own merged CONTROLLED BOUNDARY, identity-only ZERO-RESULT PREFLIGHT PASS and durable 0083 RUN_ATTEMPT.marker."
+  ],
+  "notes": [
+    "OWNER-FIRST registration only; the formal 0083 research path does not exist at this stage.",
+    "Governance resolution PR #296 merged at b58960ee3bc9e5cc5976d889cc28026614525686 and permanently leaves 0071 blocked at 6/10 with attempt 0/1 unconsumed.",
+    "Guarded registry writer PR #298 merged at be519797af338a2529910e27dfcd8f908f9cd8a3 and full-history writer repair PR #300 merged at 4d7ac96fc5b6f19e35405afa9d42633d33058738.",
+    "0083 independently restarts the ten-stage lifecycle and may not inherit 0071 formal completion despite mechanically binding its frozen scientific contract.",
+    "The accidental 0071 connector content exposure has zero 0083 parameter-selection, tuning, candidate-pruning, cost, gate or benchmark authority.",
+    "0083 controlled scientific/economic content reads remain zero at OWNER-FIRST and attempt remains 0/1.",
+    "No 0083 controlled read is authorized before its own merged CONTROLLED BOUNDARY, identity-only ZERO-RESULT PREFLIGHT PASS and durable 0083 RUN_ATTEMPT.marker.",
+    "Evidence remains researcher-exposed DEVELOPMENT history, not independent OOS.",
+    "production_authorized=false; signature_authorized=false; order_submission_authorized=false."
+  ],
+  "current_state_replacements": [
+    [
+      "## Governance tooling for 0083 OWNER-FIRST\n\nGuarded OWNER-FIRST registry-writer governance PR #298 merged at `be519797af338a2529910e27dfcd8f908f9cd8a3`. The first 0083 owner request was opened as PR #299, but the writer's internal no-drift self-check failed before any registry/state commit because its branch checkout used `fetch-depth: 1` and therefore could not resolve the historical no-drift baseline. PR #299 was closed without merge. No 0083 registry record, formal path, controlled scientific/economic read, marker or attempt consumption resulted from that failed tooling run.\n\nThe active governance-only repair changes the guarded writer checkout to `fetch-depth: 0` so its unchanged canonical `research.governance.no_drift` check can resolve repository history. 0083 has not yet completed OWNER-FIRST. Controlled reads remain `0`; attempt remains `0/1`.",
+      "## 0083 replacement controller integration OWNER-FIRST\n\nResearch ID = `BRRK-SOL-LONG-SIDEWAYS-CONTROLLER-INTEGRATION-REPLACEMENT-0083`.\nState = `OWNER-FIRST IN PR / DESIGN NOT STARTED / CONTROLLED ATTEMPT 0/1`.\n\nOWNER-FIRST base = writer-fix governance merge `4d7ac96fc5b6f19e35405afa9d42633d33058738`.\nGovernance replacement authority = `research/governance/CRYPTO_MULTI_STRATEGY_0071_PREFLIGHT_CONTAMINATION_RESOLUTION.md`, merge `b58960ee3bc9e5cc5976d889cc28026614525686`.\nGuarded registry writer = #298 merge `be519797af338a2529910e27dfcd8f908f9cd8a3`, full-history repair = #300 merge `4d7ac96fc5b6f19e35405afa9d42633d33058738`.\n\nOWNER-FIRST prospectively binds before any formal 0083 research path or controlled scientific/economic read:\n- scientific question, target, primary metric, mechanism and complete candidate ceiling are mechanically inherited from frozen 0071 with zero result-informed scientific change;\n- locked predictive input = 0070 P02 `P02_RAW_ELASTIC_NET_LOGIT|SOL|T4_LONG_SIDEWAYS`, lead exactly 10 sessions, sole predictive warning input;\n- universe = SOL only;\n- exactly six selectable controller families = `BINARY_RISK_OFF`, `LINEAR_DERISK`, `PIECEWISE_DERISK`, `VOL_ADJUSTED`, `DRAWDOWN_AWARE`, `HYSTERESIS`;\n- matched signal-off volatility-only and drawdown-only controls remain diagnostic and nonselectable;\n- long-or-cash only, no leverage and no short SOL; P03/P08 remain excluded;\n- frozen 0064 passive-cash semantics and C0/C1/C2 framework remain unchanged;\n- no information from the accidental 0071 preflight content exposure may influence tuning, pruning, thresholds, costs, gates, benchmark choice or controller priority;\n- no completed 0071 lifecycle stage is inherited;\n- 0083 controlled scientific/economic content reads = `0`; network fetches = `0`; attempt = `0/1`;\n- production/signature/order authority remains false.\n\nNo formal path `research/brrk_sol_long_sideways_controller_integration_replacement_0083` exists yet. It may be introduced only by a separate DESIGN PR after OWNER-FIRST merges."
+    ],
+    [
+      "## Exact next step\n\nRun all exact-head standing CI on the guarded writer-depth repair PR and merge only if every required workflow succeeds. Then reset `research/0083-owner-first-v1` to that exact merge, recreate the same prospective owner request against the updated CURRENT_STATE anchors, and open a new formal 0083 OWNER-FIRST PR. The guarded writer must append the canonical registry record, update CURRENT_STATE, delete the request, and pass its full-history self-check before any OWNER-FIRST merge. Do not read any controlled scientific/economic payload.",
+      "## Exact next step\n\nRun all required standing CI on the exact generated 0083 OWNER-FIRST PR head and merge only if every workflow completes successfully. After OWNER-FIRST merges, introduce formal path `research/brrk_sol_long_sideways_controller_integration_replacement_0083` for the first time in a separate DESIGN PR with no controlled scientific/economic reads and no new historical performance."
+    ],
+    [
+      "0083 = REPLACEMENT AUTHORIZED / OWNER-FIRST NOT YET COMPLETE / ATTEMPT 0/1 / CONTROLLED READS 0.",
+      "0083 = OWNER-FIRST IN PR / DESIGN NOT STARTED / ATTEMPT 0/1 / CONTROLLED READS 0."
+    ]
+  ]
+}
