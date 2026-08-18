@@ -200,21 +200,22 @@ The immutable closeout records the FAIL without rescue or reinterpretation. Gove
 ## 0072 carry atlas
 
 Research ID = `BRRK-CRYPTO-CARRY-ATLAS-0072`.
-State = `OWNER-FIRST + DESIGN MERGED / STAGE 3 PREREGISTRATION SOURCE-IDENTITY PRECONDITION IN PROGRESS / FORMAL COMPLETION 2/10 / CONTROLLED ATTEMPT 0/1 / CONTROLLED READS 0`.
+State = `OWNER-FIRST + DESIGN MERGED / STAGE 3 PREREGISTRATION FIRST-CAPTURE BOUNDARY IN PROGRESS / FORMAL COMPLETION 2/10 / CONTROLLED ATTEMPT 0/1 / CONTROLLED READS 0`.
 
 Lifecycle anchors:
 - roadmap merge `169d9adf6531dc099a43541df413fef079322adf`;
 - post-resolution prerequisite 0083 immutable closeout `f4abfcabe68fa09f27900aac59228420f8721403`;
 - OWNER-FIRST merge `e1d61eadb8a4564cae2689a718e2eaaa859aa05e`;
-- DESIGN merge `90a7b68718c5cb59002fe4b451d39d8979602161`.
+- DESIGN merge `90a7b68718c5cb59002fe4b451d39d8979602161`;
+- Stage 3 source-identity precondition merge `318adfe656ba1dfe4028ac3df388a96796e5ce60`.
 
-OWNER-FIRST and DESIGN are merged. Stage 3 PREREGISTRATION is active but incomplete. The current forward work freezes the source-identity and one-shot first-capture boundary required before exact immutable raw identities and the complete numerical/scientific preregistration can be bound. No lifecycle credit is awarded for this precondition work.
+OWNER-FIRST and DESIGN are merged. Stage 3 PREREGISTRATION remains active and incomplete. The source-identity precondition is merged. Current work prospectively freezes capture request `BRRK-CRYPTO-CARRY-ATLAS-0072-CAPTURE-0001` with cutoff `2026-08-18T19:45:00Z` plus a metadata-only capture implementation contract. No live capture has occurred and this boundary earns no lifecycle credit.
 
-No 0072 controlled funding/basis/history payload has been read. Controlled reads remain `0`; attempt remains `0/1`. Production/signature/order authority remains zero. Liquidation intensity and external attention remain unqualified; no substitute family is allowed. Dated-futures/term-structure support remains conditional until lawful point-in-time metadata establishes eligibility.
+No 0072 controlled funding/basis/history value has been exposed. Controlled reads remain `0`; attempt remains `0/1`. Production/signature/order authority remains zero. Liquidation intensity and external attention remain unqualified and cannot be substituted. Dated-futures/term-structure support remains conditional on truthful metadata-only capture support.
 
 ## Exact next step
 
-Require every standing workflow to succeed on the exact Stage 3 source-identity precondition PR head, including PR handoff governance. Merge only if the exact head is unchanged, mergeable and non-draft. After that merge, implement and freeze the one-shot metadata-only capture request boundary. Full Stage 3 PREREGISTRATION may merge only after exact captured source identities and the complete numerical/scientific contract are frozen. No 0072 controlled scientific/history payload may be exposed before the lifecycle permits it.
+Require every standing workflow to succeed on the exact first-capture-boundary PR head. Merge only if the exact head is unchanged, mergeable and non-draft. After merge, add only the governed execution wiring needed to perform `BRRK-CRYPTO-CARRY-ATLAS-0072-CAPTURE-0001` once under the merged request and metadata-only gate. The capture may persist raw bytes and metadata manifests but must not expose source values, compute scientific features/results, create `RUN_ATTEMPT.marker`, or consume Stage 8. Full Stage 3 PREREGISTRATION remains 2/10 until exact captured identities and the complete numerical/scientific contract merge.
 
 ## No-drift authority
 
@@ -233,5 +234,5 @@ Canonical BRRK-0011 = NO CHANGE.
 0070 = CLOSED / NO SAME-ID ACTION.
 0071 = CONTROLLED BOUNDARY MERGED / ZERO-RESULT PREFLIGHT BLOCKED_PRE_ATTEMPT_CONTROLLED_CONTENT_CONTAMINATION / ATTEMPT 0/1.
 0083 = 10/10 COMPLETE / `FAIL_NO_ROBUST_LOCKED_P02_ECONOMIC_CONTROLLER_VALUE` / CLOSED TO SAME-ID RERUN / ATTEMPT 1/1.
-0072 = OWNER-FIRST + DESIGN MERGED / STAGE 3 PREREGISTRATION SOURCE-IDENTITY PRECONDITION IN PROGRESS / FORMAL COMPLETION 2/10 / ATTEMPT 0/1 / CONTROLLED READS 0.
+0072 = OWNER-FIRST + DESIGN MERGED / STAGE 3 PREREGISTRATION FIRST-CAPTURE BOUNDARY IN PROGRESS / FORMAL COMPLETION 2/10 / ATTEMPT 0/1 / CONTROLLED READS 0.
 Phase 6 = NO CHANGE.
