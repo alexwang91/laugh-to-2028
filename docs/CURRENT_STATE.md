@@ -200,7 +200,7 @@ The immutable closeout records the FAIL without rescue or reinterpretation. Gove
 ## 0072 carry atlas
 
 Research ID = `BRRK-CRYPTO-CARRY-ATLAS-0072`.
-State = `OWNER-FIRST + DESIGN MERGED / STAGE 3 PREREGISTRATION FIRST-CAPTURE WORKFLOW MERGED / ONE-SHOT EXECUTION REQUEST IN PROGRESS / FORMAL COMPLETION 2/10 / CONTROLLED ATTEMPT 0/1 / CONTROLLED READS 0`.
+State = `OWNER-FIRST + DESIGN MERGED / STAGE 3 PREREGISTRATION FIRST CAPTURE SEALED FAILED / MANUAL GOVERNANCE RECONCILIATION IN PROGRESS / FORMAL COMPLETION 2/10 / CONTROLLED ATTEMPT 0/1 / CONTROLLED READS 0`.
 
 Lifecycle anchors:
 - roadmap merge `169d9adf6531dc099a43541df413fef079322adf`;
@@ -213,17 +213,20 @@ Lifecycle anchors:
 - Stage 3 offline first-capture wiring merge `d353fc89b92e75343a0b5e8228f27f9c50d8b4e4`;
 - Stage 3 guarded execution-job contract merge `a2fb6612c8ec7e556585aafb9f759fa49834cfbb`;
 - Stage 3 byte-preserving workflow patch-helper merge `25f6ec3d77055429c82a28c8631ff25b843592de`;
-- Stage 3 first-capture workflow-wiring merge `884a21cb3b5d4e4342fa84efdf53e9a1250bef03`.
+- Stage 3 first-capture workflow-wiring merge `884a21cb3b5d4e4342fa84efdf53e9a1250bef03`;
+- Stage 3 execution-request merge / capture trigger `a5a71825756180f2f9eb079d7e8c3f17e1470e98`;
+- first-capture workflow run `32194081362`, capture job `95894400892`;
+- durable raw/failure artifact id `9345233553`, fixed artifact name `0072-first-capture-raw-BRRK-CRYPTO-CARRY-ATLAS-0072-CAPTURE-0001`.
 
-OWNER-FIRST and DESIGN are merged. Stage 3 PREREGISTRATION remains active and incomplete. The first-capture source identity, boundary, offline capture engine/support plan, guarded execution-job contract, byte-preserving helper and workflow job are merged. The current governance-only request explicitly asks for exactly one metadata-only capture after exact-head CI and merge; the triggering main merge commit must contain `[0072_FIRST_CAPTURE_EXECUTE_V1]`.
+The one-shot Stage-3 support capture was triggered exactly once. Duplicate-artifact preflight passed with zero existing artifacts. The first frozen network request then failed closed with HTTP 451 before any source payload object was persisted. The workflow durably uploaded the metadata-only failure state and stopped with exit 42. No metadata-success artifact exists.
 
-The one-shot capture remains outside Stage 8: it may fetch only the prospectively frozen 37 support objects, persist raw/failure state durably before any parse, expose only aggregate metadata after a hash-bound durability receipt, and must not create `RUN_ATTEMPT.marker`, consume the controlled attempt, compute scientific features/results, or grant production/signature/order authority. Any partial/failure durable artifact permanently blocks automatic refetch.
+`BRRK-CRYPTO-CARRY-ATLAS-0072-CAPTURE-0001` is sealed failed and may not be retried or refetched. The fixed durable failure artifact permanently blocks automatic refetch. The raw/failure artifact has not been downloaded or opened by the researcher; no source value series, scientific feature or result was exposed. Controlled scientific/history reads to the researcher remain `0`; Stage-8 attempt remains `0/1` unconsumed.
 
-No live source endpoint has yet been called by this execution-request branch. No 0072 controlled funding/basis/history value has been exposed to the researcher. Controlled reads remain `0`; attempt remains `0/1`.
+Manual governance reconciliation may not reinterpret the failure as scientific evidence and may not result-inform source selection. Same-ID Stage 3 may continue only through a separately merged prospective source-access/source-identity amendment based solely on technical accessibility or point-in-time provenance, followed by a distinct capture request ID. If such a prospective path cannot be established without changing the DESIGN science, Stage 3 cannot complete under 0072.
 
 ## Exact next step
 
-Require exact-head standing CI on `research/0072-first-capture-execution-request-v1`. If all checks succeed and the PR remains unchanged, open, mergeable and non-draft, merge with expected-head protection using a merge commit title containing `[0072_FIRST_CAPTURE_EXECUTE_V1]`. Then inspect the resulting exact-main `Research governance core` push run. If the capture job fails or a partial/failure artifact exists, do not rerun automatically; inspect logs and metadata-only failure state and stop for manual governance reconciliation. If it succeeds, inspect only the metadata artifact, register exact captured raw identities/support without opening raw payload content, and finish full Stage 3 PREREGISTRATION. Formal completion remains 2/10 until complete preregistration merges.
+Merge this reconciliation only on an unchanged all-green exact head. After merge, create a separate prospective source-access/source-identity qualification that does not open the failed artifact or any scientific values and that freezes any new allowed delivery interface before a new network probe or capture. Any future capture must use a distinct request ID; `CAPTURE-0001` is permanently closed. Full Stage 3 remains 2/10 until exact captured identities and the complete numerical/scientific preregistration merge.
 
 ## No-drift authority
 
@@ -242,5 +245,5 @@ Canonical BRRK-0011 = NO CHANGE.
 0070 = CLOSED / NO SAME-ID ACTION.
 0071 = CONTROLLED BOUNDARY MERGED / ZERO-RESULT PREFLIGHT BLOCKED_PRE_ATTEMPT_CONTROLLED_CONTENT_CONTAMINATION / ATTEMPT 0/1.
 0083 = 10/10 COMPLETE / `FAIL_NO_ROBUST_LOCKED_P02_ECONOMIC_CONTROLLER_VALUE` / CLOSED TO SAME-ID RERUN / ATTEMPT 1/1.
-0072 = OWNER-FIRST + DESIGN MERGED / STAGE 3 ONE-SHOT EXECUTION REQUEST IN PROGRESS / FORMAL COMPLETION 2/10 / ATTEMPT 0/1 / CONTROLLED READS 0.
+0072 = OWNER-FIRST + DESIGN MERGED / STAGE 3 FIRST CAPTURE SEALED FAILED / MANUAL RECONCILIATION IN PROGRESS / FORMAL COMPLETION 2/10 / ATTEMPT 0/1 / CONTROLLED READS 0.
 Phase 6 = NO CHANGE.
