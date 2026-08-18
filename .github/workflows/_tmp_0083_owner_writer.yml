@@ -4,16 +4,21 @@ on:
   push:
     branches:
       - research/0083-owner-first-v1
+  pull_request:
+    branches:
+      - main
 
 permissions:
   contents: write
 
 jobs:
   write-owner-first:
+    if: github.head_ref == 'research/0083-owner-first-v1' || github.ref_name == 'research/0083-owner-first-v1'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: research/0083-owner-first-v1
           fetch-depth: 1
 
       - name: Append 0083 registry record and update CURRENT_STATE
@@ -24,7 +29,6 @@ jobs:
           import json
           from pathlib import Path
 
-          REPO_BASE = "b58960ee3bc9e5cc5976d889cc28026614525686"
           OLD_ID = "BRRK-SOL-LONG-SIDEWAYS-CONTROLLER-INTEGRATION-0071"
           NEW_ID = "BRRK-SOL-LONG-SIDEWAYS-CONTROLLER-INTEGRATION-REPLACEMENT-0083"
           NEW_PATH = "research/brrk_sol_long_sideways_controller_integration_replacement_0083"
@@ -63,31 +67,26 @@ jobs:
               "content read. After durable marker creation, no same-ID rerun, rescue, retune, threshold relaxation, "
               "alternate cost rule, alternate benchmark or alternate controller is allowed."
           )
-          new["lineage_edges"] = [
-              {
-                  "relation": "MEASUREMENT_FIX",
-                  "ref_research_id": OLD_ID,
-                  "provenance_status": "FACT",
-                  "evidence_ref": RESOLUTION,
-              }
-          ]
+          new["lineage_edges"] = [{
+              "relation": "MEASUREMENT_FIX",
+              "ref_research_id": OLD_ID,
+              "provenance_status": "FACT",
+              "evidence_ref": RESOLUTION,
+          }]
           new["result_status"] = "PREREGISTERED_NOT_RUN"
           new["failure_reason"] = None
           new["promotion_state"] = "NONE"
           new["evidence_refs"] = []
           new["decision_refs"] = [RESOLUTION, "docs/CURRENT_STATE.md"]
-          new["production_relevance"] = (
-              "Governance-replacement DEVELOPMENT-history SOL risk-controller integration research only; no automatic "
-              "production, signature or order authority."
-          )
+          new["production_relevance"] = "Governance-replacement DEVELOPMENT-history SOL risk-controller integration research only; no automatic production, signature or order authority."
           new["production_authorized"] = False
           new["provenance_status"] = "PROSPECTIVE_FROZEN"
           new["governed_path_prefixes"] = [NEW_PATH]
-          inherited_decisions = list(new.get("researcher_decisions", []))
+          inherited = list(new.get("researcher_decisions", []))
           new["researcher_decisions"] = [
               "0083 is a new full-lifecycle replacement authorized prospectively by merged governance resolution PR #296; it is not a 0071 rerun and inherits no completed formal stage.",
               "No observed information from the accidental 0071 preflight content exposure may alter, narrow, widen, reprioritize, retune or rescue any 0083 scientific choice.",
-          ] + inherited_decisions
+          ] + inherited
           new["notes"] = [
               "OWNER-FIRST registration only; the formal 0083 research path does not exist at this stage.",
               "Governance resolution PR #296 merged at b58960ee3bc9e5cc5976d889cc28026614525686 and permanently leaves 0071 blocked at 6/10 with attempt 0/1 unconsumed.",
@@ -101,7 +100,7 @@ jobs:
 
           marker = '\n  ],\n  "research_governance_debt": ['
           pos = raw.rfind(marker)
-          assert pos > 0, "records/debt boundary not found"
+          assert pos > 0
           rendered = json.dumps(new, indent=2, ensure_ascii=False)
           rendered = "\n".join("    " + line for line in rendered.splitlines())
           raw2 = raw[:pos] + ",\n" + rendered + raw[pos:]
@@ -119,16 +118,10 @@ jobs:
               "- prospective governance resolution PR #296, not authoritative unless merged.",
               "- governance resolution PR #296 merge `b58960ee3bc9e5cc5976d889cc28026614525686`; 0071 remains permanently blocked at 6/10 with attempt 0/1."
           )
-          old_resolution = (
-              "PR #296 prospectively proposes, only if its exact head passes standing CI and merges, to keep 0071 permanently blocked at 6/10 and authorize a new full-lifecycle replacement ID `BRRK-SOL-LONG-SIDEWAYS-CONTROLLER-INTEGRATION-REPLACEMENT-0083`. 0083 is not yet authorized while #296 remains unmerged."
-          )
-          new_resolution = (
-              "Governance resolution PR #296 merged at `b58960ee3bc9e5cc5976d889cc28026614525686`. It permanently keeps 0071 blocked at 6/10, forbids retroactive marker creation or same-ID continuation, and prospectively authorizes replacement ID `BRRK-SOL-LONG-SIDEWAYS-CONTROLLER-INTEGRATION-REPLACEMENT-0083` to begin a fresh ten-stage lifecycle. No formal 0071 stage is inherited by 0083."
-          )
+          old_resolution = "PR #296 prospectively proposes, only if its exact head passes standing CI and merges, to keep 0071 permanently blocked at 6/10 and authorize a new full-lifecycle replacement ID `BRRK-SOL-LONG-SIDEWAYS-CONTROLLER-INTEGRATION-REPLACEMENT-0083`. 0083 is not yet authorized while #296 remains unmerged."
           assert old_resolution in state
-          state = state.replace(old_resolution, new_resolution)
-
-          owner_section = '''## 0083 replacement controller integration OWNER-FIRST
+          state = state.replace(old_resolution, "Governance resolution PR #296 merged at `b58960ee3bc9e5cc5976d889cc28026614525686`. It permanently keeps 0071 blocked at 6/10, forbids retroactive marker creation or same-ID continuation, and prospectively authorizes replacement ID `BRRK-SOL-LONG-SIDEWAYS-CONTROLLER-INTEGRATION-REPLACEMENT-0083` to begin a fresh ten-stage lifecycle. No formal 0071 stage is inherited by 0083.")
+          owner = '''## 0083 replacement controller integration OWNER-FIRST
 
 Research ID = `BRRK-SOL-LONG-SIDEWAYS-CONTROLLER-INTEGRATION-REPLACEMENT-0083`.
 State = `OWNER-FIRST IN BRANCH / DESIGN NOT STARTED / CONTROLLED ATTEMPT 0/1`.
@@ -154,14 +147,8 @@ No formal path `research/brrk_sol_long_sideways_controller_integration_replaceme
 '''
           exact_next = "## Exact next step\n\nRun exact-head standing CI on governance resolution PR #296. Merge only if every required workflow succeeds. If #296 merges, create a separate OWNER-FIRST PR for replacement ID `BRRK-SOL-LONG-SIDEWAYS-CONTROLLER-INTEGRATION-REPLACEMENT-0083` and independently traverse all ten lifecycle stages. Until then, do not read any additional controlled scientific/economic payload and do not resume 0071.\n"
           assert exact_next in state
-          state = state.replace(
-              exact_next,
-              owner_section + "## Exact next step\n\nOpen the 0083 OWNER-FIRST PR from exact base `b58960ee3bc9e5cc5976d889cc28026614525686` and run every required standing workflow on its exact head. Merge only if all exact-head standing CI succeeds. After OWNER-FIRST merge, introduce `research/brrk_sol_long_sideways_controller_integration_replacement_0083` for the first time in a separate DESIGN PR with no controlled scientific/economic read and no new historical performance.\n"
-          )
-          state = state.replace(
-              "0083 = PROSPECTIVE REPLACEMENT ONLY / NOT AUTHORIZED UNLESS GOVERNANCE PR #296 MERGES.",
-              "0083 = OWNER-FIRST IN BRANCH / DESIGN NOT STARTED / ATTEMPT 0/1 / CONTROLLED READS 0."
-          )
+          state = state.replace(exact_next, owner + "## Exact next step\n\nOpen the 0083 OWNER-FIRST PR from exact base `b58960ee3bc9e5cc5976d889cc28026614525686` and run every required standing workflow on its exact head. Merge only if all exact-head standing CI succeeds. After OWNER-FIRST merge, introduce `research/brrk_sol_long_sideways_controller_integration_replacement_0083` for the first time in a separate DESIGN PR with no controlled scientific/economic read and no new historical performance.\n")
+          state = state.replace("0083 = PROSPECTIVE REPLACEMENT ONLY / NOT AUTHORIZED UNLESS GOVERNANCE PR #296 MERGES.", "0083 = OWNER-FIRST IN BRANCH / DESIGN NOT STARTED / ATTEMPT 0/1 / CONTROLLED READS 0.")
           assert state.count(immutable) == 1
           state_path.write_text(state, encoding="utf-8")
           PY
