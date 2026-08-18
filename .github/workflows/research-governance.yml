@@ -301,3 +301,96 @@ jobs:
           test "$(git diff --cached --name-only | sort)" = "$(printf '%s\n' 'config/research_registry.json' 'docs/CURRENT_STATE.md' "$REQUEST" | sort)"
           git commit -m 'governance(0083): register replacement OWNER-FIRST'
           git push origin HEAD:${{ github.event.pull_request.head.ref }}
+
+  owner-first-registry-writer-0072:
+    name: Guarded 0072 OWNER-FIRST registry writer
+    if: >-
+      github.event_name == 'pull_request' &&
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      github.head_ref == 'research/0072-owner-first-v1'
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
+      - name: Apply prospective 0072 owner-first request if present
+        shell: bash
+        run: |
+          REQUEST='research/governance/owner_first_requests/0072.json'
+          if [[ ! -f "$REQUEST" ]]; then
+            echo 'No 0072 owner-first request present; no mutation.'
+            exit 0
+          fi
+
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          request_path = Path('research/governance/owner_first_requests/0072.json')
+          request = json.loads(request_path.read_text(encoding='utf-8'))
+          assert request['schema_version'] == 1
+          assert request['target_branch'] == 'research/0072-owner-first-v1'
+          assert request['new_research_id'] == 'BRRK-CRYPTO-CARRY-ATLAS-0072'
+          assert request['roadmap_merge'] == '169d9adf6531dc099a43541df413fef079322adf'
+          assert request['0083_closeout_merge'] == 'f4abfcabe68fa09f27900aac59228420f8721403'
+          assert request['controlled_reads'] == 0
+          assert request['attempt_consumed'] == 0
+          assert request['production_authorized'] is False
+
+          record = request['record']
+          assert record['research_id'] == request['new_research_id']
+          assert record['created_before_result'] is True
+          assert record['actual_variants_evaluated'] == 0
+          assert record['production_authorized'] is False
+          assert record['provenance_status'] == 'PROSPECTIVE_FROZEN'
+          assert record['governed_path_prefixes'] == ['research/brrk_crypto_carry_atlas_0072']
+          assert record['universe'] == ['BTC', 'ETH', 'SOL']
+          assert record['result_status'] == 'PREREGISTERED_NOT_RUN'
+          assert record['promotion_state'] == 'NONE'
+          assert record['failure_reason'] is None
+          assert record['declared_variant_budget'] > 0
+          assert record['parameter_candidate_count'] == record['declared_variant_budget']
+          assert 'no trading profitability' in record['success_criteria'].lower()
+
+          registry_path = Path('config/research_registry.json')
+          raw = registry_path.read_text(encoding='utf-8')
+          data = json.loads(raw)
+          new_id = request['new_research_id']
+          assert not any(row.get('research_id') == new_id for row in data['records'])
+
+          marker = '\n  ],\n  "research_governance_debt": ['
+          pos = raw.rfind(marker)
+          assert pos > 0, 'registry records/debt boundary not found'
+          rendered = json.dumps(record, indent=2, ensure_ascii=False)
+          rendered = '\n'.join('    ' + line for line in rendered.splitlines())
+          updated = raw[:pos] + ',\n' + rendered + raw[pos:]
+          parsed = json.loads(updated)
+          assert len(parsed['records']) == len(data['records']) + 1
+          assert parsed['records'][-1]['research_id'] == new_id
+          assert parsed['research_governance_debt'] == data['research_governance_debt']
+          registry_path.write_text(updated, encoding='utf-8')
+
+          state_path = Path('docs/CURRENT_STATE.md')
+          state = state_path.read_text(encoding='utf-8')
+          immutable = 'workflow run                         31381953131 / attempt 1'
+          assert state.count(immutable) == 1
+          for old, replacement in request['current_state_replacements']:
+              assert old in state, f'missing CURRENT_STATE anchor: {old}'
+              state = state.replace(old, replacement, 1)
+          assert state.count(immutable) == 1
+          state_path.write_text(state, encoding='utf-8')
+          PY
+
+          python -m research.governance.validate
+          python -m research.governance.no_drift
+          git diff --check
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add config/research_registry.json docs/CURRENT_STATE.md
+          git rm "$REQUEST"
+          test "$(git diff --cached --name-only | sort)" = "$(printf '%s\n' 'config/research_registry.json' 'docs/CURRENT_STATE.md' "$REQUEST" | sort)"
+          git commit -m 'governance(0072): register carry atlas OWNER-FIRST'
+          git push origin HEAD:${{ github.event.pull_request.head.ref }}
