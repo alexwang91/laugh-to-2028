@@ -25,7 +25,7 @@ class CaptureWiringTests(unittest.TestCase):
         self.assertNotIn("SECRET",json.dumps(out));self.assertEqual(out[0],1)
     def test_current_metadata_fail_closed(self):
         r={"kind":"json","source_id":"BYBIT_V5_OFFICIAL_PUBLIC_MARKET_V1","timestamp_rule":"NONE_CURRENT_METADATA_NOT_HISTORICAL_EFFECTIVE","support_if_parsed":"HISTORICAL_METADATA_UNPROVABLE"}
-        out=c.parse_meta(json.dumps({"retCode":0,"result":{"list":[{"symbol":"BTCUSDT"}]}}).encode(),r);self.assertEqual(out[-2:]("FAIL","HISTORICAL_METADATA_UNPROVABLE"))
+        out=c.parse_meta(json.dumps({"retCode":0,"result":{"list":[{"symbol":"BTCUSDT"}]}}).encode(),r);self.assertEqual(out[-2:],("FAIL","HISTORICAL_METADATA_UNPROVABLE"))
     def test_capture_exactly_once_and_no_second_capture(self):
         zp=z();zs=hashlib.sha256(zp).hexdigest();calls=[]
         def f(url):
