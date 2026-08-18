@@ -1,0 +1,62 @@
+{
+  "P02_replay_audit": {
+    "P02_RAW_ELASTIC_NET_LOGIT|SOL|T4_LONG_SIDEWAYS|L10": {
+      "fit_call_attempts": 48,
+      "fit_failures": [],
+      "refit_count": 48,
+      "worker_maxrss_kb": 243688,
+      "worker_pid": 2398
+    },
+    "__runtime__": {
+      "fit_call_attempts": 48,
+      "worker_count": 4
+    }
+  },
+  "boundary_sha": "7a98d39ce5e686731f0528ae0adb7816fed30a67",
+  "call_counts": {
+    "P02_retraining": 0,
+    "cash_engine": 1,
+    "frozen_P02_prediction_reconstruction": 1,
+    "market_loader": 1,
+    "model_reselection": 0,
+    "validation_tuning": 0
+  },
+  "candidate_accounting": {
+    "benchmark": 1,
+    "matched_controls": 2,
+    "selectable_candidates": 6
+  },
+  "common_support": {
+    "decision_end": "2025-11-15",
+    "decision_start": "2024-01-01",
+    "first_applied_return": "t_to_t_plus_1",
+    "rows": 685
+  },
+  "full_window_P02_reproduction": {
+    "absolute_tolerance": 1e-12,
+    "reproduced": {
+      "PR_AUC": 0.7974030713822858,
+      "PR_AUC_LIFT": 0.34195752682783037,
+      "ROC_AUC": 0.7913043478260869,
+      "prevalence": 0.45544554455445546,
+      "retention": 1.0
+    },
+    "source": {
+      "PR_AUC": 0.7974030713822858,
+      "PR_AUC_LIFT": 0.34195752682783037,
+      "ROC_AUC": 0.7913043478260869,
+      "prevalence": 0.45544554455445546
+    },
+    "status": "PASS"
+  },
+  "network_fetches": 0,
+  "production_authorized": false,
+  "research_id": "BRRK-SOL-LONG-SIDEWAYS-CONTROLLER-INTEGRATION-REPLACEMENT-0083",
+  "source_read_counts": {
+    "0069_EVIDENCE": 1,
+    "0069_PRIMARY_RESULT": 1,
+    "0070_RESULT_CONTENT": 0,
+    "DTB3": 1,
+    "MARKET_EVIDENCE": 1
+  }
+}
