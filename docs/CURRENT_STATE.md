@@ -4,6 +4,8 @@ Last updated: 2026-08-18
 
 Authoritative repository: `alexwang91/laugh-to-2028`.
 
+中文可读镜像：`docs/CURRENT_STATE_CN.md`。精确治理锚点仍以本文件为准。
+
 ## Immutable research anchors
 
 - BRRK-EXHAUSTION-EVENT-STUDY-0043 — complete diagnostic; historical diagnostic state remains closed and unchanged.
@@ -200,22 +202,23 @@ The immutable closeout records the FAIL without rescue or reinterpretation. Gove
 ## 0072 carry atlas
 
 Research ID = `BRRK-CRYPTO-CARRY-ATLAS-0072`.
-State = `OWNER-FIRST + DESIGN MERGED / STAGE 3 PREREGISTRATION FIRST-CAPTURE BOUNDARY IN PROGRESS / FORMAL COMPLETION 2/10 / CONTROLLED ATTEMPT 0/1 / CONTROLLED READS 0`.
+State = `OWNER-FIRST + DESIGN MERGED / STAGE 3 PREREGISTRATION FIRST-CAPTURE BOUNDARY MERGED / WIRING NEXT / FORMAL COMPLETION 2/10 / CONTROLLED ATTEMPT 0/1 / CONTROLLED READS 0`.
 
 Lifecycle anchors:
 - roadmap merge `169d9adf6531dc099a43541df413fef079322adf`;
 - post-resolution prerequisite 0083 immutable closeout `f4abfcabe68fa09f27900aac59228420f8721403`;
 - OWNER-FIRST merge `e1d61eadb8a4564cae2689a718e2eaaa859aa05e`;
 - DESIGN merge `90a7b68718c5cb59002fe4b451d39d8979602161`;
-- Stage 3 source-identity precondition merge `318adfe656ba1dfe4028ac3df388a96796e5ce60`.
+- Stage 3 source-identity precondition merge `318adfe656ba1dfe4028ac3df388a96796e5ce60`;
+- Stage 3 first metadata-only capture boundary merge `d8c9f3a262dadf1721103499f00fe9dcff4561ca`.
 
-OWNER-FIRST and DESIGN are merged. Stage 3 PREREGISTRATION remains active and incomplete. The source-identity precondition is merged. Current work prospectively freezes capture request `BRRK-CRYPTO-CARRY-ATLAS-0072-CAPTURE-0001` with cutoff `2026-08-18T19:45:00Z` plus a metadata-only capture implementation contract. No live capture has occurred and this boundary earns no lifecycle credit.
+OWNER-FIRST and DESIGN are merged. Stage 3 PREREGISTRATION remains active and incomplete. The source-identity precondition and first-capture boundary are merged. Frozen request `BRRK-CRYPTO-CARRY-ATLAS-0072-CAPTURE-0001` uses cutoff `2026-08-18T19:45:00Z`, BTC/ETH/SOL, the qualified Binance/Bybit source roster, zero automatic retry, create-only raw persistence, metadata-only researcher visibility and fail-closed partial-capture handling. No live capture has occurred and these preconditions earn no lifecycle credit.
 
 No 0072 controlled funding/basis/history value has been exposed. Controlled reads remain `0`; attempt remains `0/1`. Production/signature/order authority remains zero. Liquidation intensity and external attention remain unqualified and cannot be substituted. Dated-futures/term-structure support remains conditional on truthful metadata-only capture support.
 
 ## Exact next step
 
-Require every standing workflow to succeed on the exact first-capture-boundary PR head. Merge only if the exact head is unchanged, mergeable and non-draft. After merge, add only the governed execution wiring needed to perform `BRRK-CRYPTO-CARRY-ATLAS-0072-CAPTURE-0001` once under the merged request and metadata-only gate. The capture may persist raw bytes and metadata manifests but must not expose source values, compute scientific features/results, create `RUN_ATTEMPT.marker`, or consume Stage 8. Full Stage 3 PREREGISTRATION remains 2/10 until exact captured identities and the complete numerical/scientific contract merge.
+Create a separate wiring PR from exact main `d8c9f3a262dadf1721103499f00fe9dcff4561ca` that mechanically implements only the merged `BRRK-CRYPTO-CARRY-ATLAS-0072-CAPTURE-0001` contract. Require fresh exact-head standing CI and merge only if unchanged, mergeable and non-draft. Only after wiring merges may the one-shot metadata-only capture execute. The capture may persist raw bytes and metadata manifests but must not expose source values, compute scientific features/results, create `RUN_ATTEMPT.marker`, or consume Stage 8. Full Stage 3 PREREGISTRATION remains 2/10 until exact captured identities and the complete numerical/scientific contract merge.
 
 ## No-drift authority
 
@@ -234,5 +237,5 @@ Canonical BRRK-0011 = NO CHANGE.
 0070 = CLOSED / NO SAME-ID ACTION.
 0071 = CONTROLLED BOUNDARY MERGED / ZERO-RESULT PREFLIGHT BLOCKED_PRE_ATTEMPT_CONTROLLED_CONTENT_CONTAMINATION / ATTEMPT 0/1.
 0083 = 10/10 COMPLETE / `FAIL_NO_ROBUST_LOCKED_P02_ECONOMIC_CONTROLLER_VALUE` / CLOSED TO SAME-ID RERUN / ATTEMPT 1/1.
-0072 = OWNER-FIRST + DESIGN MERGED / STAGE 3 PREREGISTRATION FIRST-CAPTURE BOUNDARY IN PROGRESS / FORMAL COMPLETION 2/10 / ATTEMPT 0/1 / CONTROLLED READS 0.
+0072 = OWNER-FIRST + DESIGN MERGED / STAGE 3 FIRST-CAPTURE BOUNDARY MERGED / WIRING NEXT / FORMAL COMPLETION 2/10 / ATTEMPT 0/1 / CONTROLLED READS 0.
 Phase 6 = NO CHANGE.
