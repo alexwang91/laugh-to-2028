@@ -1,0 +1,14 @@
+{
+  "EVIDENCE_sha256": "6fe0b86aba6dd5b673b3c21a464accdd76ab798285a050b1a8b7d4aa02eab270",
+  "EXECUTION_sha256": "6758cded3bd60ba71f13378a06e80f09003798e68bae11722855d15873ac365c",
+  "PRIMARY_RESULT_sha256": "1540060a0e768ce4154b4ffd06904f7362e4c73ebc34e70b183b05acafa074b1",
+  "attempt_consumed": "1/1",
+  "boundary_sha": "7a98d39ce5e686731f0528ae0adb7816fed30a67",
+  "finalization_controlled_source_rereads": 0,
+  "finalized_at_utc": "2026-08-18T07:59:41.646059+00:00",
+  "research_id": "BRRK-SOL-LONG-SIDEWAYS-CONTROLLER-INTEGRATION-REPLACEMENT-0083",
+  "same_id_rerun_allowed": false,
+  "same_id_rescue_allowed": false,
+  "same_id_retune_allowed": false,
+  "schema_version": 1
+}

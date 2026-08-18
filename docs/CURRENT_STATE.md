@@ -163,7 +163,7 @@ Governance resolution PR #296 permanently keeps 0071 blocked at 6/10, forbids sa
 ## 0083 replacement controller integration
 
 Research ID = `BRRK-SOL-LONG-SIDEWAYS-CONTROLLER-INTEGRATION-REPLACEMENT-0083`.
-State = `OWNER-FIRST + DESIGN + PREREGISTRATION + IMPLEMENTATION + NONHISTORICAL QUALIFICATION MERGED / CONTROLLED BOUNDARY IN PR / CONTROLLED ATTEMPT 0/1`.
+State = `OWNER-FIRST + DESIGN + PREREGISTRATION + IMPLEMENTATION + NONHISTORICAL QUALIFICATION + CONTROLLED BOUNDARY MERGED / ZERO-RESULT PREFLIGHT PASS / UNIQUE CONTROLLED ATTEMPT COMPLETE / RESULT IN PR / CONTROLLED ATTEMPT 1/1`.
 
 Lifecycle anchors:
 - governance resolution merge `b58960ee3bc9e5cc5976d889cc28026614525686`;
@@ -175,17 +175,32 @@ Lifecycle anchors:
 - IMPLEMENTATION merge `87bbed308fc54496b74d7d12c17c7cb15845f231`;
 - NONHISTORICAL QUALIFICATION merge `b61ca07338a7eda7eaed459fda89272f4e22fdc1`;
 - qualification result blob `89b38689524ff44cc54cb71da0573043c30bfa7e`;
-- CONTROLLED BOUNDARY branch `research/0083-controlled-boundary-v1`.
+- CONTROLLED BOUNDARY merge `7a98d39ce5e686731f0528ae0adb7816fed30a67`;
+- exact merged-boundary ZERO-RESULT PREFLIGHT = `PREFLIGHT_PASS_ZERO_RESULT_GIT_IDENTITY_ONLY`;
+- unique controlled workflow `32113475556`, job `95637765942` = SUCCESS;
+- durable attempt marker commit `049cd7cc92c76832c487a66a1f2a20752d6a8934`;
+- immutable result bundle commit `b4fe7f97892bb710ac4ff3ce91704ff25170999d`;
+- finalized scientific result branch head before governance-only CURRENT_STATE handoff `1c3d2d8796eed226aee2f6bcc9abcf067cd75ead`;
+- PRIMARY_RESULT blob `173b738d30bd26a21a9a0041037fa53d1de33156`, payload SHA256 `1540060a0e768ce4154b4ffd06904f7362e4c73ebc34e70b183b05acafa074b1`;
+- EVIDENCE blob `898ed00b90953bc1fc39721b588a9fafe2b67fb7`, payload SHA256 `6fe0b86aba6dd5b673b3c21a464accdd76ab798285a050b1a8b7d4aa02eab270`;
+- EXECUTION blob `0d2758ae0c5384bab19eb8215864adbf0659950a`, payload SHA256 `6758cded3bd60ba71f13378a06e80f09003798e68bae11722855d15873ac365c`;
+- RUN_ONCE blob `e3a20ed54e93aa9452a69772acd2a277bb1dbd11`.
 
-OWNER-FIRST prospectively binds SOL-only, locked 0070 P02 `P02_RAW_ELASTIC_NET_LOGIT|SOL|T4_LONG_SIDEWAYS` lead 10 as the sole predictive warning input, exactly six selectable controller families, matched signal-off controls, long-or-cash/no leverage/no short, P03/P08 exclusion, frozen 0064 passive-cash semantics, C0/C1/C2 framework, zero result-informed changes from the 0071 contamination event, a fresh ten-stage lifecycle, controlled reads `0`, network fetches `0`, attempt `0/1`, and zero production/signature/order authority.
+OWNER-FIRST prospectively binds SOL-only, locked 0070 P02 `P02_RAW_ELASTIC_NET_LOGIT|SOL|T4_LONG_SIDEWAYS` lead 10 as the sole predictive warning input, exactly six selectable controller families, matched signal-off controls, long-or-cash/no leverage/no short, P03/P08 exclusion, frozen 0064 passive-cash semantics, C0/C1/C2 framework, zero result-informed changes from the 0071 contamination event, a fresh ten-stage lifecycle, and zero production/signature/order authority.
 
-DESIGN and PREREGISTRATION merged after exact-head standing CI success. IMPLEMENTATION merged after exact-head standing CI success. NONHISTORICAL QUALIFICATION = `PASS`: all 13 preregistered classification regimes match their frozen terminal classes and every mechanical check passes. Controlled historical/evidence reads = `0`; 0069 reads = `0`; 0070 content reads = `0`; market payload reads = `0`; DTB3 reads = `0`; network fetches = `0`; attempt remains `0/1`. No controlled economic result exists.
+NONHISTORICAL QUALIFICATION = `PASS`. CONTROLLED BOUNDARY pinned exact source identities and exactly-once budgets. Stage 7 then passed on exact merged-boundary SHA using Git identity/blob metadata only: result branch absent, all runtime/result artifacts absent, controlled reads/calls `0`, attempt `0/1`, and all production/signature/order authority false.
 
-CONTROLLED BOUNDARY pins exact 0083 preregistration/implementation/qualification identities; exact 0069 source blobs; identity-only 0070 result blobs; frozen market, loader, feature-builder, cash-engine and DTB3 identities; read budgets 1/1/1/1 with 0070 result content 0; call budgets one market loader, one frozen P02 reconstruction, one cash-engine call and zero tuning/reselection/retraining/network fetch. It requires the unique result branch `research/0083-result-v1` to be absent at preflight, all five runtime/result artifacts absent, controlled reads/calls zero, attempt 0/1 and all production/signature/order authority false. The runner has no local-only start/run shortcut: a durable remote `RUN_ATTEMPT.marker` and remote durability verification must precede controlled reads.
+The unique Stage 8 attempt was then consumed exactly once. `RUN_ATTEMPT.marker` was durably persisted remotely and verified before any controlled source read. The attempt finished successfully as an execution, persisted `PRIMARY_RESULT.json`, `EVIDENCE.json`, `EXECUTION.json`, and marker-only finalized `RUN_ONCE.marker` with zero controlled-source rereads during finalization. Same-ID rerun, retune, rescue and recomputation are permanently forbidden.
+
+Persisted scientific classification = `FAIL_NO_ROBUST_LOCKED_P02_ECONOMIC_CONTROLLER_VALUE`. `execution_valid=true`; common support = 685 rows from 2024-01-01 through 2025-11-15; t-close information first applies to t→t+1 return. Frozen full-window P02 reproduction PASSed at absolute tolerance `1e-12` with PR-AUC `0.7974030713822858`, prevalence `0.45544554455445546`, PR-AUC lift `0.34195752682783037`, ROC-AUC `0.7913043478260869`, retention `1.0`.
+
+Candidate accounting is exact: six selectable candidates, two matched controls and one benchmark. Passing candidates = `0/6`; representative candidate = `null`; every selectable candidate has DSR `0.0` and cost break-even `0.0` bps. The SOL-long benchmark C1 has CAGR `0.1248839480585966`, Sharpe `0.5623354698442253`, MDD `-0.5976638546398444`; the signal-off vol-only matched control C1 has CAGR `0.1695897726859319`, Sharpe `0.5641111385436972`, MDD `-0.4242699355970778`. Under the frozen attribution and robustness gates, the locked P02 warning therefore does not establish robust controller economic value.
+
+Execution assurance: controlled reads 0069 PRIMARY_RESULT/EVIDENCE, MARKET_EVIDENCE, DTB3 = `1/1/1/1`; 0070 result content = `0`; market loader / frozen P02 reconstruction / cash engine calls = `1/1/1`; validation tuning/model reselection/P02 retraining = `0/0/0`; network fetches = `0`; finalization controlled-source rereads = `0`. Evidence tier remains `RESEARCHER_EXPOSED_DEVELOPMENT_NOT_INDEPENDENT_OOS`. Production/signature/order authority remains zero.
 
 ## Exact next step
 
-Require fresh standing CI on the exact CONTROLLED BOUNDARY PR head. Merge only if the exact head is unchanged, mergeable, non-draft and every required exact-head standing workflow succeeds. Then execute Stage 7 ZERO-RESULT PREFLIGHT only on the exact merged-boundary main SHA using Git identity/blob metadata, branch/artifact absence checks and zero read/call/authority counters. No controlled payload content may be opened during preflight. If and only if every check passes, standing authorization permits immediate Stage 8 marker persistence on `research/0083-result-v1` followed by remote marker verification before any controlled read.
+Require fresh standing CI on the exact Stage 9 RESULT PR head. Merge only if the exact head is unchanged, mergeable, non-draft and every required exact-head standing workflow succeeds. After RESULT merge, create a separate immutable 0083 CLOSEOUT that records the terminal FAIL without rescue or reinterpretation. Only after immutable closeout may the roadmap dependency for 0072 be evaluated from LIVE governance state.
 
 ## No-drift authority
 
@@ -203,5 +218,5 @@ Canonical BRRK-0011 = NO CHANGE.
 0069 = NO CHANGE.
 0070 = CLOSED / NO SAME-ID ACTION.
 0071 = CONTROLLED BOUNDARY MERGED / ZERO-RESULT PREFLIGHT BLOCKED_PRE_ATTEMPT_CONTROLLED_CONTENT_CONTAMINATION / ATTEMPT 0/1.
-0083 = OWNER-FIRST + DESIGN + PREREGISTRATION + IMPLEMENTATION + NONHISTORICAL QUALIFICATION MERGED / CONTROLLED BOUNDARY IN PR / ATTEMPT 0/1 / CONTROLLED READS 0.
+0083 = STAGES 1-8 COMPLETE / RESULT IN PR / ATTEMPT 1/1 / CLASSIFICATION `FAIL_NO_ROBUST_LOCKED_P02_ECONOMIC_CONTROLLER_VALUE`.
 Phase 6 = NO CHANGE.
