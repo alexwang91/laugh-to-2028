@@ -1,6 +1,6 @@
 # BRRK Current State
 
-Last updated: 2026-08-17
+Last updated: 2026-08-18
 
 Authoritative repository: `alexwang91/laugh-to-2028`.
 
@@ -126,7 +126,7 @@ The roadmap does not relax any per-ID lifecycle or evidence gate.
 ## 0071 controller integration
 
 Research ID = `BRRK-SOL-LONG-SIDEWAYS-CONTROLLER-INTEGRATION-0071`.
-State = `OWNER-FIRST + DESIGN + PREREGISTRATION + IMPLEMENTATION + NONHISTORICAL QUALIFICATION MERGED / CONTROLLED BOUNDARY IN BRANCH / PREFLIGHT NOT RUN / CONTROLLED ATTEMPT 0/1`.
+State = `OWNER-FIRST + DESIGN + PREREGISTRATION + IMPLEMENTATION + NONHISTORICAL QUALIFICATION + CONTROLLED BOUNDARY MERGED / ZERO-RESULT PREFLIGHT BLOCKED_PRE_ATTEMPT_CONTROLLED_CONTENT_CONTAMINATION / CONTROLLED ATTEMPT 0/1`.
 
 Lifecycle anchors:
 - roadmap merge `169d9adf6531dc099a43541df413fef079322adf`;
@@ -136,7 +136,9 @@ Lifecycle anchors:
 - IMPLEMENTATION merge `cf203236348de692d8d92f30aedf35db7d2fe0c2`;
 - NONHISTORICAL QUALIFICATION merge `693ddde4898ef923e3f55b09b138d9354d8da4c9`;
 - qualification result blob `9a782797b32430e36fd20316f5aa3030fa04e72d`;
-- CONTROLLED BOUNDARY branch `research/0071-controlled-boundary-v1`.
+- CONTROLLED BOUNDARY merge `0cad34af6ea5919f974a593b3a0f9427a5c1c5fd`;
+- governance incident Issue #295;
+- prospective governance resolution PR #296, not authoritative unless merged.
 
 Frozen preregistration fixes before any controlled read:
 - common causal support and minimum 252 rows;
@@ -154,13 +156,13 @@ Frozen preregistration fixes before any controlled read:
 
 Implementation encodes only the frozen contract in `engine.py`, `qualification.py` and `IMPLEMENTATION_CONTRACT.json`. NONHISTORICAL QUALIFICATION = PASS: all 13 preregistered classification regimes and mechanical checks passed with controlled historical/evidence reads `0`, market/DTB3 reads `0`, network fetches `0` and attempt consumed `0/1`.
 
-CONTROLLED BOUNDARY in branch pins merged preregistration, implementation and qualification identities plus exact 0069 source, market, DTB3, loader, feature and cash-engine blobs. Future controlled budgets are 0069 PRIMARY_RESULT `1`, 0069 EVIDENCE `1`, MARKET_EVIDENCE `1`, DTB3 `1`, 0070 result content `0`; market loader `1`, frozen P02 reconstruction `1`, cash-engine invocation `1`; validation tuning/model reselection/P02 retraining/network fetches `0`. `run_once.py` requires durable `RUN_ATTEMPT.marker` before any controlled read, exact merged-boundary SHA, create-only result artifacts and hash-bound marker-only finalization. No controlled content has been read by this boundary construction.
+CONTROLLED BOUNDARY is merged. During subsequent ZERO-RESULT PREFLIGHT, 0069 PRIMARY_RESULT content was opened before any durable 0071 `RUN_ATTEMPT.marker`. Stage 7 therefore cannot be declared PASS. No retroactive marker is permitted, no additional 0071 controlled payload may be read, no Stage 8 execution may occur under 0071, and no 0071 RESULT/CLOSEOUT stage may be fabricated. Attempt remains `0/1` unconsumed. Production/signature/order authority remains zero.
 
-Production/signature/order authority remains zero.
+PR #296 prospectively proposes, only if its exact head passes standing CI and merges, to keep 0071 permanently blocked at 6/10 and authorize a new full-lifecycle replacement ID `BRRK-SOL-LONG-SIDEWAYS-CONTROLLER-INTEGRATION-REPLACEMENT-0083`. 0083 is not yet authorized while #296 remains unmerged.
 
 ## Exact next step
 
-Create and run exact-head standing CI on the separate CONTROLLED BOUNDARY PR. Merge automatically only if every required exact-head workflow succeeds. Then run exact merged-boundary ZERO-RESULT PREFLIGHT using Git identity only. If PASS, the standing authorization permits immediate durable attempt 1/1 before any controlled read, followed by exactly-once evaluation, immutable RESULT persistence and separate closeout.
+Run exact-head standing CI on governance resolution PR #296. Merge only if every required workflow succeeds. If #296 merges, create a separate OWNER-FIRST PR for replacement ID `BRRK-SOL-LONG-SIDEWAYS-CONTROLLER-INTEGRATION-REPLACEMENT-0083` and independently traverse all ten lifecycle stages. Until then, do not read any additional controlled scientific/economic payload and do not resume 0071.
 
 ## No-drift authority
 
@@ -177,5 +179,6 @@ Canonical BRRK-0011 = NO CHANGE.
 0068 = NO CHANGE.
 0069 = NO CHANGE.
 0070 = CLOSED / NO SAME-ID ACTION.
-0071 = NONHISTORICAL QUALIFICATION MERGED / CONTROLLED BOUNDARY IN BRANCH / PREFLIGHT NOT RUN / ATTEMPT 0/1.
+0071 = CONTROLLED BOUNDARY MERGED / ZERO-RESULT PREFLIGHT BLOCKED_PRE_ATTEMPT_CONTROLLED_CONTENT_CONTAMINATION / ATTEMPT 0/1.
+0083 = PROSPECTIVE REPLACEMENT ONLY / NOT AUTHORIZED UNLESS GOVERNANCE PR #296 MERGES.
 Phase 6 = NO CHANGE.
