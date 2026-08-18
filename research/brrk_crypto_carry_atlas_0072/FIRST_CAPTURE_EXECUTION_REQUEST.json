@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "request_id": "BRRK-CRYPTO-CARRY-ATLAS-0072-FIRST-CAPTURE-EXECUTION-REQUEST-V1",
+  "research_id": "BRRK-CRYPTO-CARRY-ATLAS-0072",
+  "capture_request_id": "BRRK-CRYPTO-CARRY-ATLAS-0072-CAPTURE-0001",
+  "exact_workflow_wiring_merge": "884a21cb3b5d4e4342fa84efdf53e9a1250bef03",
+  "required_main_push_token": "[0072_FIRST_CAPTURE_EXECUTE_V1]",
+  "requested_action": "EXECUTE_ONE_SHOT_METADATA_ONLY_FIRST_CAPTURE_AFTER_THIS_REQUEST_PR_IS_ALL_GREEN",
+  "automatic_retry": false,
+  "raw_or_partial_failure_artifact_blocks_refetch": true,
+  "raw_values_visible_to_researcher": false,
+  "scientific_features_or_results_allowed": false,
+  "run_attempt_marker_allowed": false,
+  "stage8_attempt_consumed": 0,
+  "controlled_scientific_history_reads_to_researcher": 0,
+  "lifecycle_credit": "NONE_STAGE_3_REMAINS_INCOMPLETE",
+  "production_authorized": false,
+  "signature_authorized": false,
+  "order_submission_authorized": false
+}
