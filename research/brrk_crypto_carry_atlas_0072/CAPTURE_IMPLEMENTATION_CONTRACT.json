@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "contract_id": "BRRK-CRYPTO-CARRY-ATLAS-0072-CAPTURE-IMPLEMENTATION-V1",
+  "research_id": "BRRK-CRYPTO-CARRY-ATLAS-0072",
+  "status": "FROZEN_NOT_EXECUTED",
+  "capture_request_path": "research/brrk_crypto_carry_atlas_0072/CAPTURE_REQUEST.json",
+  "capture_gate_path": "research/brrk_crypto_carry_atlas_0072/FIRST_CAPTURE_GATE.json",
+  "source_contract_path": "research/brrk_crypto_carry_atlas_0072/SOURCE_IDENTITY_CONTRACT.json",
+  "execution_mode": "METADATA_ONLY_FIRST_CAPTURE",
+  "lifecycle_credit": "NONE",
+  "controlled_scientific_history_reads_to_researcher": 0,
+  "attempt_consumed": 0,
+  "required_behavior": [
+    "REFUSE_IF_REQUEST_NOT_MERGED_TO_MAIN",
+    "REFUSE_IF_SOURCE_OR_GATE_BLOB_IDENTITY_DIFFERS",
+    "REFUSE_IF_CAPTURE_REQUEST_ID_ALREADY_HAS_ANY_DURABLE_ARTIFACT",
+    "NO_AUTOMATIC_NETWORK_RETRY",
+    "PERSIST_RESPONSE_BYTES_CREATE_ONLY_BEFORE_PARSE",
+    "HASH_EVERY_RESPONSE_WITH_SHA256",
+    "VERIFY_OFFICIAL_ARCHIVE_CHECKSUM_WHERE_PRESENT",
+    "PERSIST_CANONICAL_REQUEST_AND_PAGINATION_CHAIN",
+    "PARSE_ONLY_PERSISTED_VERIFIED_BYTES",
+    "EMIT_ONLY_METADATA_ALLOWED_BY_FIRST_CAPTURE_GATE",
+    "NEVER_LOG_RESPONSE_BODY_OR_PARSED_VALUES",
+    "STOP_AFTER_METADATA_SUPPORT_MANIFEST",
+    "NEVER_CREATE_RUN_ATTEMPT_MARKER"
+  ],
+  "failure_semantics": {
+    "any_network_or_http_failure": "FAIL_CLOSED_NO_RETRY",
+    "any_partial_durable_artifact": "RECONCILIATION_REQUIRED_NO_SECOND_FETCH",
+    "checksum_or_hash_failure": "INVALID_CAPTURE_NO_PARSE",
+    "schema_or_timestamp_failure": "SUPPORT_FAIL_CLOSED",
+    "point_in_time_unprovable": "SUPPORT_FAIL_CLOSED",
+    "existing_capture": "HARD_FAIL"
+  },
+  "durable_layout": {
+    "root": "research/brrk_crypto_carry_atlas_0072/captures/BRRK-CRYPTO-CARRY-ATLAS-0072-CAPTURE-0001/",
+    "raw": "raw/",
+    "manifests": "manifests/",
+    "support_manifest": "SUPPORT_MANIFEST.json",
+    "capture_receipt": "CAPTURE_RECEIPT.json"
+  },
+  "forbidden": [
+    "DISPLAY_OR_SUMMARIZE_RAW_VALUES",
+    "FEATURE_COMPUTATION",
+    "SCIENTIFIC_METRIC_COMPUTATION",
+    "MODEL_FIT",
+    "STRATEGY_TRANSLATION",
+    "RESULT_CLASSIFICATION",
+    "PRODUCTION_OR_ORDER_PATH"
+  ],
+  "authority": {
+    "production_authorized": false,
+    "signature_authorized": false,
+    "order_submission_authorized": false
+  }
+}

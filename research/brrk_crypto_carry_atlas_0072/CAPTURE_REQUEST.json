@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "capture_request_id": "BRRK-CRYPTO-CARRY-ATLAS-0072-CAPTURE-0001",
+  "research_id": "BRRK-CRYPTO-CARRY-ATLAS-0072",
+  "status": "FROZEN_NOT_EXECUTED",
+  "source_contract_path": "research/brrk_crypto_carry_atlas_0072/SOURCE_IDENTITY_CONTRACT.json",
+  "source_contract_blob": "8b933f357a4f4b1299558386e7ad6e91742df939",
+  "first_capture_gate_path": "research/brrk_crypto_carry_atlas_0072/FIRST_CAPTURE_GATE.json",
+  "first_capture_gate_blob": "e7aa54275d541cefd6f39b6845d619d1b40aafd3",
+  "source_precondition_merge": "318adfe656ba1dfe4028ac3df388a96796e5ce60",
+  "capture_cutoff_utc": "2026-08-18T19:45:00Z",
+  "assets": ["BTC", "ETH", "SOL"],
+  "network_retry_policy": "ZERO_AUTOMATIC_RETRIES",
+  "partial_capture_policy": "HARD_FAIL_REQUIRE_MANUAL_RECONCILIATION",
+  "payload_visibility": "RAW_BYTES_CREATE_ONLY_NO_RESEARCHER_ECHO",
+  "lifecycle_credit": "NONE_STAGE_3_REMAINS_INCOMPLETE",
+  "controlled_scientific_history_reads": 0,
+  "attempt_consumed": 0,
+  "production_authorized": false,
+  "signature_authorized": false,
+  "order_submission_authorized": false,
+  "requested_source_roles": [
+    {
+      "source_id": "BINANCE_OFFICIAL_PUBLIC_FUTURES_AND_ARCHIVE_V1",
+      "roles": [
+        "SPOT_REFERENCE_PRICE",
+        "PERPETUAL_TRADE_PRICE",
+        "MARK_PRICE",
+        "INDEX_PRICE",
+        "PERPETUAL_FUNDING",
+        "CONTRACT_METADATA",
+        "VOLUME"
+      ],
+      "assets": ["BTC", "ETH", "SOL"]
+    },
+    {
+      "source_id": "BYBIT_V5_OFFICIAL_PUBLIC_MARKET_V1",
+      "roles": [
+        "CROSS_VENUE_PERPETUAL_FUNDING",
+        "OPEN_INTEREST",
+        "PERPETUAL_OR_FUTURES_PRICE",
+        "MARK_PRICE",
+        "INDEX_PRICE",
+        "INSTRUMENT_METADATA",
+        "VOLUME"
+      ],
+      "assets": ["BTC", "ETH", "SOL"]
+    }
+  ],
+  "conditional_families": {
+    "dated_futures_and_term_structure": "ADMIT_ONLY_IF_CAPTURED_METADATA_AND_PRICE_HISTORY_PROVE_POINT_IN_TIME_SUPPORT",
+    "liquidation_intensity": "UNQUALIFIED_NO_CAPTURE_REQUESTED",
+    "external_attention": "UNQUALIFIED_NO_CAPTURE_REQUESTED"
+  },
+  "allowed_persisted_outputs": [
+    "raw_objects",
+    "request_response_manifest",
+    "metadata_only_support_manifest"
+  ],
+  "forbidden_outputs": [
+    "source_value_series_to_researcher",
+    "funding_or_basis_summary_statistics",
+    "feature_series",
+    "labels",
+    "correlations",
+    "regressions",
+    "p_values",
+    "signals",
+    "positions",
+    "pnl",
+    "performance_metrics",
+    "scientific_classification"
+  ],
+  "execution_preconditions": [
+    "THIS_REQUEST_MUST_BE_MERGED_TO_MAIN",
+    "MERGED_SOURCE_CONTRACT_AND_FIRST_CAPTURE_GATE_BLOBS_MUST_MATCH",
+    "NO_EXISTING_CAPTURE_ARTIFACT_FOR_CAPTURE_REQUEST_ID",
+    "CAPTURE_IMPLEMENTATION_MUST_RUN_IN_METADATA_ONLY_MODE",
+    "NO_CONTROLLED_VALUE_MAY_BE_ECHOED_TO_LOGS_OR_ASSISTANT"
+  ]
+}
