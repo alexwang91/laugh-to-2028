@@ -185,3 +185,119 @@ jobs:
           if-no-files-found: error
           retention-days: 90
           overwrite: false
+
+  owner-first-registry-writer:
+    name: Guarded OWNER-FIRST registry writer
+    if: >-
+      github.event_name == 'pull_request' &&
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      github.head_ref == 'research/0083-owner-first-v1'
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 1
+      - name: Apply prospective owner-first request if present
+        shell: bash
+        run: |
+          REQUEST='research/governance/owner_first_requests/0083.json'
+          if [[ ! -f "$REQUEST" ]]; then
+            echo 'No 0083 owner-first request present; no mutation.'
+            exit 0
+          fi
+
+          python - <<'PY'
+          import copy
+          import json
+          from pathlib import Path
+
+          request_path = Path('research/governance/owner_first_requests/0083.json')
+          request = json.loads(request_path.read_text(encoding='utf-8'))
+          assert request['schema_version'] == 1
+          assert request['target_branch'] == 'research/0083-owner-first-v1'
+          assert request['new_research_id'] == 'BRRK-SOL-LONG-SIDEWAYS-CONTROLLER-INTEGRATION-REPLACEMENT-0083'
+          assert request['template_research_id'] == 'BRRK-SOL-LONG-SIDEWAYS-CONTROLLER-INTEGRATION-0071'
+          assert request['governance_resolution_merge'] == 'b58960ee3bc9e5cc5976d889cc28026614525686'
+          assert request['controlled_reads'] == 0
+          assert request['attempt_consumed'] == 0
+          assert request['production_authorized'] is False
+
+          registry_path = Path('config/research_registry.json')
+          raw = registry_path.read_text(encoding='utf-8')
+          data = json.loads(raw)
+          old_id = request['template_research_id']
+          new_id = request['new_research_id']
+          assert not any(row.get('research_id') == new_id for row in data['records'])
+          source = next(row for row in data['records'] if row.get('research_id') == old_id)
+          new = copy.deepcopy(source)
+
+          def replace_token(value):
+              if isinstance(value, str):
+                  return value.replace('0071', '0083')
+              if isinstance(value, list):
+                  return [replace_token(item) for item in value]
+              if isinstance(value, dict):
+                  return {key: replace_token(item) for key, item in value.items()}
+              return value
+
+          new = replace_token(new)
+          for key, value in request['top_level_overrides'].items():
+              new[key] = value
+
+          new['research_id'] = new_id
+          new['created_at'] = request['created_at']
+          new['created_before_result'] = True
+          new['actual_variants_evaluated'] = 0
+          new['result_status'] = 'PREREGISTERED_NOT_RUN'
+          new['failure_reason'] = None
+          new['promotion_state'] = 'NONE'
+          new['evidence_refs'] = []
+          new['production_authorized'] = False
+          new['provenance_status'] = 'PROSPECTIVE_FROZEN'
+          new['governed_path_prefixes'] = [request['governed_path_prefix']]
+          new['lineage_edges'] = [{
+              'relation': 'MEASUREMENT_FIX',
+              'ref_research_id': old_id,
+              'provenance_status': 'FACT',
+              'evidence_ref': request['governance_resolution_path'],
+          }]
+          new['decision_refs'] = [request['governance_resolution_path'], 'docs/CURRENT_STATE.md']
+          new['researcher_decisions'] = request['researcher_decisions'] + list(new.get('researcher_decisions', []))
+          new['notes'] = request['notes']
+
+          marker = '\n  ],\n  "research_governance_debt": ['
+          pos = raw.rfind(marker)
+          assert pos > 0, 'registry records/debt boundary not found'
+          rendered = json.dumps(new, indent=2, ensure_ascii=False)
+          rendered = '\n'.join('    ' + line for line in rendered.splitlines())
+          updated = raw[:pos] + ',\n' + rendered + raw[pos:]
+          parsed = json.loads(updated)
+          assert len(parsed['records']) == len(data['records']) + 1
+          assert parsed['records'][-1]['research_id'] == new_id
+          assert parsed['research_governance_debt'] == data['research_governance_debt']
+          registry_path.write_text(updated, encoding='utf-8')
+
+          state_path = Path('docs/CURRENT_STATE.md')
+          state = state_path.read_text(encoding='utf-8')
+          immutable = 'workflow run                         31381953131 / attempt 1'
+          assert state.count(immutable) == 1
+          for old, replacement in request['current_state_replacements']:
+              assert old in state, f'missing CURRENT_STATE anchor: {old}'
+              state = state.replace(old, replacement, 1)
+          assert state.count(immutable) == 1
+          state_path.write_text(state, encoding='utf-8')
+          PY
+
+          python -m research.governance.validate
+          python -m research.governance.no_drift
+          git diff --check
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add config/research_registry.json docs/CURRENT_STATE.md
+          git rm "$REQUEST"
+          test "$(git diff --cached --name-only | sort)" = "$(printf '%s\n' 'config/research_registry.json' 'docs/CURRENT_STATE.md' "$REQUEST" | sort)"
+          git commit -m 'governance(0083): register replacement OWNER-FIRST'
+          git push origin HEAD:${{ github.event.pull_request.head.ref }}
