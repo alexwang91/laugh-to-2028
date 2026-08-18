@@ -79,7 +79,7 @@ Lifecycle anchors:
 - CONTROLLED BOUNDARY merge `0c5a6affc2243a0fdaf621f7801e1870657f1254`;
 - exact merged-boundary zero-result preflight = PASS;
 - unique controlled workflow `32040286477` = PASS;
-- finalized immutable result branch head before handoff-only docs commit `a62ffbe3557530beb6aae24c94975ac1f1041fe3`;
+- finalized immutable result branch head before governance-only documentation `a62ffbe3557530beb6aae24c94975ac1f1041fe3`;
 - immutable result bundle merge `174a30dc4950e7351f3a746edc8f581b8f12e6d3`;
 - immutable closeout merge `d87607070cf03ccbbc318065f8c4c14ec6c6a50b`;
 - immutable closeout file `research/brrk_sol_long_sideways_early_warning_episode_robustness_0070/CLOSEOUT.md`.
@@ -200,7 +200,7 @@ The immutable closeout records the FAIL without rescue or reinterpretation. Gove
 ## 0072 carry atlas
 
 Research ID = `BRRK-CRYPTO-CARRY-ATLAS-0072`.
-State = `OWNER-FIRST + DESIGN MERGED / STAGE 3 PREREGISTRATION OFFLINE FIRST-CAPTURE WIRING MERGED / EXECUTION-JOB CONTRACT MERGED / BYTE-PRESERVING WORKFLOW PATCH IN PROGRESS / FORMAL COMPLETION 2/10 / CONTROLLED ATTEMPT 0/1 / CONTROLLED READS 0`.
+State = `OWNER-FIRST + DESIGN MERGED / STAGE 3 PREREGISTRATION OFFLINE FIRST-CAPTURE WIRING + EXECUTION-JOB CONTRACT + BYTE-PRESERVING PATCH HELPER MERGED / WORKFLOW WIRING IN PROGRESS / FORMAL COMPLETION 2/10 / CONTROLLED ATTEMPT 0/1 / CONTROLLED READS 0`.
 
 Lifecycle anchors:
 - roadmap merge `169d9adf6531dc099a43541df413fef079322adf`;
@@ -211,15 +211,18 @@ Lifecycle anchors:
 - Stage 3 first metadata-only capture boundary merge `d8c9f3a262dadf1721103499f00fe9dcff4561ca`;
 - documentation synchronization merge `f2912b86a5c3bcaf15580ebf7f210287ea741635`;
 - Stage 3 offline first-capture wiring merge `d353fc89b92e75343a0b5e8228f27f9c50d8b4e4`;
-- Stage 3 guarded execution-job contract merge `a2fb6612c8ec7e556585aafb9f759fa49834cfbb`.
+- Stage 3 guarded execution-job contract merge `a2fb6612c8ec7e556585aafb9f759fa49834cfbb`;
+- Stage 3 byte-preserving workflow patch-helper merge `25f6ec3d77055429c82a28c8631ff25b843592de`.
 
-OWNER-FIRST and DESIGN are merged. Stage 3 PREREGISTRATION remains active and incomplete. The source-identity precondition, first-capture boundary, offline capture engine/support plan, and guarded execution-job contract are merged. The execution job is not yet installed in `.github/workflows/research-governance.yml`. Current work adds a byte-preserving helper that can insert only the frozen 0072 capture-test step and guarded execution job while proving all pre-existing workflow bytes remain identical.
+OWNER-FIRST and DESIGN are merged. Stage 3 PREREGISTRATION remains active and incomplete. The source-identity precondition, first-capture boundary, offline capture engine/support plan, guarded execution-job contract and byte-preserving helper are merged. Current work applies the merged helper semantics to the existing allowlisted `research-governance.yml`. Exact compare against helper-merge main shows the workflow edit is strictly additive: the 0072 wiring-test step plus guarded execution job, with zero deletions from the pre-existing workflow.
 
-No live source endpoint has been called. No 0072 controlled funding/basis/history value has been exposed. Controlled reads remain `0`; attempt remains `0/1`. Production/signature/order authority remains zero. The prior unsafe whole-file workflow rewrite remains rejected and is not part of main.
+The job remains gated to a later exact-main push whose head commit message contains `[0072_FIRST_CAPTURE_EXECUTE_V1]`; it checks the fixed repository-wide raw/failure artifact name before source access, uses zero automatic retry and redirects, persists raw-or-failure state before any parse, creates a hash-bound durability receipt, finalizes only metadata after durability, and creates no Stage-8 marker. This workflow-wiring PR itself cannot invoke the live capture.
+
+No live source endpoint has been called. No 0072 controlled funding/basis/history value has been exposed. Controlled reads remain `0`; attempt remains `0/1`. Production/signature/order authority remains zero. Liquidation intensity and external attention remain unqualified and cannot be substituted.
 
 ## Exact next step
 
-Require exact-head standing CI on `research/0072-workflow-bytepatch-v1`. If all checks succeed and head remains unchanged, open, mergeable and non-draft, merge with expected-head protection. Then create a separate exact-main workflow-wiring PR that applies the byte-preserving helper, verify the workflow diff contains only the frozen test insertion plus guarded execution job, run full standing CI, and merge only if all-green. Only after that may a separate execution-request PR with token `[0072_FIRST_CAPTURE_EXECUTE_V1]` be created to invoke the one-shot metadata-only capture. Full Stage 3 remains 2/10 until exact captured identities and the complete numerical/scientific preregistration merge.
+Require exact-head standing CI on `research/0072-first-capture-workflow-wiring-v2`. Merge only if the head remains unchanged, open, mergeable, non-draft and every standing workflow succeeds. After merge, create a separate governance-only execution-request PR from exact main; only its all-green expected-head merge may use a merge commit title containing `[0072_FIRST_CAPTURE_EXECUTE_V1]` to invoke the one-shot metadata-only capture. If capture or any partial acquisition fails, the durable raw/failure artifact permanently blocks automatic refetch and requires manual governance reconciliation. If capture succeeds, inspect only the metadata artifact, register exact raw identities/support without opening raw payload content, and complete full Stage 3 numerical/scientific preregistration. Formal completion remains 2/10 until that preregistration merges.
 
 ## No-drift authority
 
@@ -238,5 +241,5 @@ Canonical BRRK-0011 = NO CHANGE.
 0070 = CLOSED / NO SAME-ID ACTION.
 0071 = CONTROLLED BOUNDARY MERGED / ZERO-RESULT PREFLIGHT BLOCKED_PRE_ATTEMPT_CONTROLLED_CONTENT_CONTAMINATION / ATTEMPT 0/1.
 0083 = 10/10 COMPLETE / `FAIL_NO_ROBUST_LOCKED_P02_ECONOMIC_CONTROLLER_VALUE` / CLOSED TO SAME-ID RERUN / ATTEMPT 1/1.
-0072 = OWNER-FIRST + DESIGN MERGED / STAGE 3 EXECUTION-JOB CONTRACT MERGED / BYTE-PRESERVING WORKFLOW PATCH IN PROGRESS / FORMAL COMPLETION 2/10 / ATTEMPT 0/1 / CONTROLLED READS 0.
+0072 = OWNER-FIRST + DESIGN MERGED / STAGE 3 WORKFLOW WIRING IN PROGRESS / FORMAL COMPLETION 2/10 / ATTEMPT 0/1 / CONTROLLED READS 0.
 Phase 6 = NO CHANGE.
