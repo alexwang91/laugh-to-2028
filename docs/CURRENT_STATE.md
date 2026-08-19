@@ -71,9 +71,9 @@ State = `PASS_LOCKED_EPISODE_ROBUSTNESS_REPLICATION / CLOSED TO SAME-ID RERUN`.
 
 Lifecycle anchors:
 - owner-first registry commit `28be2794f8471e400fe70196460eed744cce694c`;
-- DESIGN merge `828e90fa4b48ecb2ddc297d3b798e918601af2e9`;
-- PREREGISTRATION merge `b00dd5e50401fd0b35c57d962d0625fa5790792f`;
-- IMPLEMENTATION merge `378c0a0098d9a508c20a0e0bb891a503e2357f2e`;
+- DESIGN `828e90fa4b48ecb2ddc297d3b798e918601af2e9`;
+- PREREGISTRATION `b00dd5e50401fd0b35c57d962d0625fa5790792f`;
+- IMPLEMENTATION `378c0a0098d9a508c20a0e0bb891a503e2357f2e`;
 - qualification evidence merge `709903bf5443cbb3b1fbd9d2c588db94b5566c6a`;
 - qualification result blob `8ad8cc764407f954da7c82e06ad5fa0cb3b97ca1`;
 - CONTROLLED BOUNDARY merge `0c5a6affc2243a0fdaf621f7801e1870657f1254`;
@@ -131,10 +131,10 @@ State = `OWNER-FIRST + DESIGN + PREREGISTRATION + IMPLEMENTATION + NONHISTORICAL
 Lifecycle anchors:
 - roadmap merge `169d9adf6531dc099a43541df413fef079322adf`;
 - OWNER-FIRST merge `4b8762f8046000c1bd414fb60b9232917251e579`;
-- DESIGN merge `0f86341d40516e0ed90d09baaa17e149c64671f6`;
-- PREREGISTRATION merge `34ccffa6ecedffb5076b88cf86222c2fb142560c`;
-- IMPLEMENTATION merge `cf203236348de692d8d92f30aedf35db7d2fe0c2`;
-- NONHISTORICAL QUALIFICATION merge `693ddde4898ef923e3f55b09b138d9354d8da4c9`;
+- DESIGN `0f86341d40516e0ed90d09baaa17e149c64671f6`;
+- PREREGISTRATION `34ccffa6ecedffb5076b88cf86222c2fb142560c`;
+- IMPLEMENTATION `cf203236348de692d8d92f30aedf35db7d2fe0c2`;
+- NONHISTORICAL QUALIFICATION `693ddde4898ef923e3f55b09b138d9354d8da4c9`;
 - qualification result blob `9a782797b32430e36fd20316f5aa3030fa04e72d`;
 - CONTROLLED BOUNDARY merge `0cad34af6ea5919f974a593b3a0f9427a5c1c5fd`;
 - governance incident Issue #295;
@@ -170,12 +170,12 @@ Lifecycle anchors:
 - guarded registry writer merge `be519797af338a2529910e27dfcd8f908f9cd8a3`;
 - full-history writer repair merge `4d7ac96fc5b6f19e35405afa9d42633d33058738`;
 - OWNER-FIRST merge `dd9f3f28aabfdf6c05dcb9ca5a3dd13ca36a2467`;
-- DESIGN merge `440b474a1908a4ec4196efa635d8154409a3c3de`;
-- PREREGISTRATION merge `7e8a4e1d296dc9cb095f6b4ba66ab604d2723ff2`;
-- IMPLEMENTATION merge `87bbed308fc54496b74d7d12c17c7cb15845f231`;
-- NONHISTORICAL QUALIFICATION merge `b61ca07338a7eda7eaed459fda89272f4e22fdc1`;
+- DESIGN `440b474a1908a4ec4196efa635d8154409a3c3de`;
+- PREREGISTRATION `7e8a4e1d296dc9cb095f6b4ba66ab604d2723ff2`;
+- IMPLEMENTATION `87bbed308fc54496b74d7d12c17c7cb15845f231`;
+- NONHISTORICAL QUALIFICATION `b61ca07338a7eda7eaed459fda89272f4e22fdc1`;
 - qualification result blob `89b38689524ff44cc54cb71da0573043c30bfa7e`;
-- CONTROLLED BOUNDARY merge `7a98d39ce5e686731f0528ae0adb7816fed30a67`;
+- CONTROLLED BOUNDARY `7a98d39ce5e686731f0528ae0adb7816fed30a67`;
 - exact merged-boundary ZERO-RESULT PREFLIGHT = `PREFLIGHT_PASS_ZERO_RESULT_GIT_IDENTITY_ONLY`;
 - unique controlled workflow `32113475556`, job `95637765942` = SUCCESS;
 - durable attempt marker commit `049cd7cc92c76832c487a66a1f2a20752d6a8934`;
@@ -200,7 +200,7 @@ The immutable closeout records the FAIL without rescue or reinterpretation. Gove
 ## 0072 carry atlas
 
 Research ID = `BRRK-CRYPTO-CARRY-ATLAS-0072`.
-State = `OWNER-FIRST + DESIGN MERGED / STAGE 3 PREREGISTRATION FIRST CAPTURE SEALED FAILED / RECONCILIATION MERGED / SOURCE ACCESS REQUALIFICATION PLAN MERGED / ACCESS PROBE EXECUTION REQUEST MERGED / ACCESS PROBE WORKFLOW MERGED / TWO DISPATCHES GUARD-SKIPPED / ACCESS PROBE GUARD REPAIR IN PROGRESS / FORMAL COMPLETION 2/10 / CONTROLLED ATTEMPT 0/1 / CONTROLLED READS 0`.
+State = `OWNER-FIRST + DESIGN MERGED / STAGE 3 PREREGISTRATION FIRST CAPTURE SEALED FAILED / RECONCILIATION MERGED / SOURCE ACCESS REQUALIFICATION PLAN MERGED / ACCESS PROBE EXECUTION REQUEST MERGED / ACCESS PROBE WORKFLOW MERGED / THREE DISPATCHES GUARD-SKIPPED / ACCESS PROBE RUNNER-SIDE REQUEST-ID GATE REPAIR IN PROGRESS / FORMAL COMPLETION 2/10 / CONTROLLED ATTEMPT 0/1 / CONTROLLED READS 0`.
 
 Lifecycle anchors:
 - roadmap merge `169d9adf6531dc099a43541df413fef079322adf`;
@@ -220,10 +220,12 @@ Lifecycle anchors:
 - Stage 3 failed-capture reconciliation merge `6c9bc1e540d6ab7d497cc996fa8b1da4c4310066`;
 - Stage 3 source-access requalification plan merge `a38dc764b5d075403c0827cacafc14a6a0d4230a`;
 - Stage 3 access-probe execution-request merge `82163c1eaf51b25b09cf2c0119c60ba9e515668e`;
-- Stage 3 access-probe workflow merge `cb1fafce46b3b17b9450ed58211408846530b272`.
+- Stage 3 access-probe workflow merge `cb1fafce46b3b17b9450ed58211408846530b272`;
+- Stage 3 access-probe guard repair #327 merge `c17ed7b404456b0121c842eaed98a629c0929127`.
 - bounded access-probe dispatch run `32245507502`: contract validation PASS; execution job SKIPPED before any network probe; no artifact produced.
 - bounded access-probe dispatch run `32245682524`: contract validation PASS; execution job SKIPPED before any network probe; no artifact produced.
-- prospective mechanical guard repair PR #327 uses `github.event.inputs.probe_request_id`; no science, source, method, attempt, or controlled-read rule changes.
+- bounded access-probe dispatch run `32291738138`: exact main `c17ed7b404456b0121c842eaed98a629c0929127`; contract validation PASS; execution job still SKIPPED before any network probe; no artifact produced.
+- prospective mechanical runner-side gate repair PR #328 validates the exact frozen request id as the first runner step before any network access; no science, source, method, attempt, or controlled-read rule changes.
 
 `CAPTURE-0001` is sealed failed and permanently non-retriable after HTTP 451 on its first frozen request. No source payload object was persisted; the durable artifact contains only failure/empty staging state and has not been downloaded or opened by the researcher. Controlled scientific/history reads remain `0`; Stage-8 attempt remains `0/1` unconsumed.
 
@@ -231,7 +233,7 @@ Current prospective work does not admit or substitute any source. It freezes onl
 
 ## Exact next step
 
-Merge the mechanical access-probe guard repair only after exact-head standing CI succeeds, then issue a fresh bounded access-probe workflow dispatch on exact `main` using request id `BRRK-CRYPTO-CARRY-ATLAS-0072-ACCESS-PROBE-REQUEST-0001`. The two prior dispatches executed no probe and produced no evidence artifact. Read only the resulting technical-access evidence. If at least one frozen delivery interface is technically reachable, create a separate prospective source-identity amendment path before any new capture; if neither is reachable, immutably record the access blocker. `CAPTURE-0001` remains permanently closed. No new capture may occur until probe evidence is immutably recorded and any required prospective source-identity amendment merges. Full Stage 3 remains 2/10.
+Merge the runner-side exact request-id gate repair only after exact-head standing CI succeeds, then issue a fresh bounded access-probe workflow dispatch on exact `main` using request id `BRRK-CRYPTO-CARRY-ATLAS-0072-ACCESS-PROBE-REQUEST-0001`. The three prior dispatches executed no probe and produced no evidence artifact. The repaired workflow must validate the exact request id before any network step. Read only the resulting technical-access evidence. If at least one frozen delivery interface is technically reachable, create a separate prospective source-identity amendment path before any new capture; if neither is reachable, immutably record the access blocker. `CAPTURE-0001` remains permanently closed. No new capture may occur until probe evidence is immutably recorded and any required prospective source-identity amendment merges. Full Stage 3 remains 2/10.
 
 ## No-drift authority
 
@@ -250,5 +252,5 @@ Canonical BRRK-0011 = NO CHANGE.
 0070 = CLOSED / NO SAME-ID ACTION.
 0071 = CONTROLLED BOUNDARY MERGED / ZERO-RESULT PREFLIGHT BLOCKED_PRE_ATTEMPT_CONTROLLED_CONTENT_CONTAMINATION / ATTEMPT 0/1.
 0083 = 10/10 COMPLETE / `FAIL_NO_ROBUST_LOCKED_P02_ECONOMIC_CONTROLLER_VALUE` / CLOSED TO SAME-ID RERUN / ATTEMPT 1/1.
-0072 = OWNER-FIRST + DESIGN MERGED / STAGE 3 SOURCE ACCESS REQUALIFICATION PLAN MERGED / ACCESS PROBE EXECUTION REQUEST MERGED / ACCESS PROBE WORKFLOW MERGED / TWO DISPATCHES GUARD-SKIPPED / ACCESS PROBE GUARD REPAIR IN PROGRESS / FORMAL COMPLETION 2/10 / ATTEMPT 0/1 / CONTROLLED READS 0.
+0072 = OWNER-FIRST + DESIGN MERGED / STAGE 3 SOURCE ACCESS REQUALIFICATION PLAN MERGED / ACCESS PROBE EXECUTION REQUEST MERGED / ACCESS PROBE WORKFLOW MERGED / THREE DISPATCHES GUARD-SKIPPED / ACCESS PROBE RUNNER-SIDE REQUEST-ID GATE REPAIR IN PROGRESS / FORMAL COMPLETION 2/10 / ATTEMPT 0/1 / CONTROLLED READS 0.
 Phase 6 = NO CHANGE.
