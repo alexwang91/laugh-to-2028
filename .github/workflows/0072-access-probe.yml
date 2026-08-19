@@ -32,8 +32,7 @@ jobs:
   execute-bounded-probe:
     if: >-
       github.event_name == 'workflow_dispatch' &&
-      github.ref == 'refs/heads/main' &&
-      github.event.inputs.probe_request_id == 'BRRK-CRYPTO-CARRY-ATLAS-0072-ACCESS-PROBE-REQUEST-0001'
+      github.ref == 'refs/heads/main'
     needs: contract-validation
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -44,6 +43,18 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Validate exact frozen dispatch request id before any network access
+        env:
+          PROBE_REQUEST_ID: ${{ github.event.inputs.probe_request_id }}
+        run: |
+          python - <<'PY'
+          import os
+          expected = 'BRRK-CRYPTO-CARRY-ATLAS-0072-ACCESS-PROBE-REQUEST-0001'
+          actual = os.environ.get('PROBE_REQUEST_ID', '')
+          if actual != expected:
+              raise SystemExit(f'Invalid probe_request_id; refusing network probe: {actual!r}')
+          print('Exact frozen probe_request_id validated; network probe may proceed.')
+          PY
       - name: Execute exactly the two frozen technical probes
         run: |
           mkdir -p access_probe_evidence
