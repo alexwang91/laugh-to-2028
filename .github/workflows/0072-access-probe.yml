@@ -1,0 +1,78 @@
+name: 0072 bounded source-access probe
+
+on:
+  pull_request:
+    paths:
+      - 'research/brrk_crypto_carry_atlas_0072/access_probe.py'
+      - 'research/brrk_crypto_carry_atlas_0072/ACCESS_PROBE_EXECUTION_REQUEST.json'
+      - 'research/brrk_crypto_carry_atlas_0072/SOURCE_ACCESS_REQUALIFICATION_PLAN.json'
+      - '.github/workflows/0072-access-probe.yml'
+      - 'docs/CURRENT_STATE.md'
+  workflow_dispatch:
+    inputs:
+      probe_request_id:
+        description: 'Exact merged 0072 bounded access-probe request id'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  contract-validation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate frozen access-probe contract without network access
+        run: python research/brrk_crypto_carry_atlas_0072/access_probe.py --validate-contract
+
+  execute-bounded-probe:
+    if: >-
+      github.event_name == 'workflow_dispatch' &&
+      github.ref == 'refs/heads/main' &&
+      inputs.probe_request_id == 'BRRK-CRYPTO-CARRY-ATLAS-0072-ACCESS-PROBE-REQUEST-0001'
+    needs: contract-validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Execute exactly the two frozen technical probes
+        run: |
+          mkdir -p access_probe_evidence
+          python research/brrk_crypto_carry_atlas_0072/access_probe.py \
+            --execute \
+            --output access_probe_evidence/ACCESS_PROBE_EVIDENCE.json
+      - name: Validate evidence contains no scientific payload fields
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p = Path('access_probe_evidence/ACCESS_PROBE_EVIDENCE.json')
+          data = json.loads(p.read_text())
+          assert data['scientific_payload_read'] is False
+          assert data['stage8_attempt_consumed'] == 0
+          assert data['controlled_scientific_history_reads_to_researcher'] == 0
+          assert len(data['results']) == 2
+          allowed = {
+              'probe_id','canonical_probe_id','source_id','host','http_method',
+              'http_status_or_transport_failure_class',
+              'selected_non_secret_response_headers','probed_at_utc'
+          }
+          assert all(set(row) == allowed for row in data['results'])
+          PY
+      - name: Upload technical-access evidence only
+        uses: actions/upload-artifact@v4
+        with:
+          name: 0072-access-probe-${{ github.run_id }}-${{ github.run_attempt }}
+          path: access_probe_evidence/ACCESS_PROBE_EVIDENCE.json
+          if-no-files-found: error
+          retention-days: 90
+          overwrite: false
