@@ -33,7 +33,7 @@ jobs:
     if: >-
       github.event_name == 'workflow_dispatch' &&
       github.ref == 'refs/heads/main' &&
-      inputs.probe_request_id == 'BRRK-CRYPTO-CARRY-ATLAS-0072-ACCESS-PROBE-REQUEST-0001'
+      github.event.inputs.probe_request_id == 'BRRK-CRYPTO-CARRY-ATLAS-0072-ACCESS-PROBE-REQUEST-0001'
     needs: contract-validation
     runs-on: ubuntu-latest
     timeout-minutes: 5

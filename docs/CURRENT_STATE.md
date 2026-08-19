@@ -79,7 +79,7 @@ Lifecycle anchors:
 - CONTROLLED BOUNDARY merge `0c5a6affc2243a0fdaf621f7801e1870657f1254`;
 - exact merged-boundary zero-result preflight = PASS;
 - unique controlled workflow `32040286477` = PASS;
-- finalized immutable result branch head before governance-only documentation `a62ffbe3557530beb6aae24c94975ac1f1041fe3`;
+- finalized scientific result branch head before governance-only documentation `a62ffbe3557530beb6aae24c94975ac1f1041fe3`;
 - immutable result bundle merge `174a30dc4950e7351f3a746edc8f581b8f12e6d3`;
 - immutable closeout merge `d87607070cf03ccbbc318065f8c4c14ec6c6a50b`;
 - immutable closeout file `research/brrk_sol_long_sideways_early_warning_episode_robustness_0070/CLOSEOUT.md`.
@@ -200,7 +200,7 @@ The immutable closeout records the FAIL without rescue or reinterpretation. Gove
 ## 0072 carry atlas
 
 Research ID = `BRRK-CRYPTO-CARRY-ATLAS-0072`.
-State = `OWNER-FIRST + DESIGN MERGED / STAGE 3 PREREGISTRATION FIRST CAPTURE SEALED FAILED / RECONCILIATION MERGED / SOURCE ACCESS REQUALIFICATION PLAN MERGED / ACCESS PROBE EXECUTION REQUEST MERGED / ACCESS PROBE WORKFLOW MERGED / ACCESS PROBE EXECUTION PENDING / FORMAL COMPLETION 2/10 / CONTROLLED ATTEMPT 0/1 / CONTROLLED READS 0`.
+State = `OWNER-FIRST + DESIGN MERGED / STAGE 3 PREREGISTRATION FIRST CAPTURE SEALED FAILED / RECONCILIATION MERGED / SOURCE ACCESS REQUALIFICATION PLAN MERGED / ACCESS PROBE EXECUTION REQUEST MERGED / ACCESS PROBE WORKFLOW MERGED / TWO DISPATCHES GUARD-SKIPPED / ACCESS PROBE GUARD REPAIR IN PROGRESS / FORMAL COMPLETION 2/10 / CONTROLLED ATTEMPT 0/1 / CONTROLLED READS 0`.
 
 Lifecycle anchors:
 - roadmap merge `169d9adf6531dc099a43541df413fef079322adf`;
@@ -221,6 +221,9 @@ Lifecycle anchors:
 - Stage 3 source-access requalification plan merge `a38dc764b5d075403c0827cacafc14a6a0d4230a`;
 - Stage 3 access-probe execution-request merge `82163c1eaf51b25b09cf2c0119c60ba9e515668e`;
 - Stage 3 access-probe workflow merge `cb1fafce46b3b17b9450ed58211408846530b272`.
+- bounded access-probe dispatch run `32245507502`: contract validation PASS; execution job SKIPPED before any network probe; no artifact produced.
+- bounded access-probe dispatch run `32245682524`: contract validation PASS; execution job SKIPPED before any network probe; no artifact produced.
+- prospective mechanical guard repair PR #327 uses `github.event.inputs.probe_request_id`; no science, source, method, attempt, or controlled-read rule changes.
 
 `CAPTURE-0001` is sealed failed and permanently non-retriable after HTTP 451 on its first frozen request. No source payload object was persisted; the durable artifact contains only failure/empty staging state and has not been downloaded or opened by the researcher. Controlled scientific/history reads remain `0`; Stage-8 attempt remains `0/1` unconsumed.
 
@@ -228,7 +231,7 @@ Current prospective work does not admit or substitute any source. It freezes onl
 
 ## Exact next step
 
-Dispatch the merged bounded access-probe workflow on exact `main` using request id `BRRK-CRYPTO-CARRY-ATLAS-0072-ACCESS-PROBE-REQUEST-0001`. Execute exactly once under the merged workflow; read only the resulting technical-access evidence. If at least one frozen delivery interface is technically reachable, create a separate prospective source-identity amendment path before any new capture; if neither is reachable, immutably record the access blocker. `CAPTURE-0001` remains permanently closed. No new capture may occur until probe evidence is immutably recorded and any required prospective source-identity amendment merges. Full Stage 3 remains 2/10.
+Merge the mechanical access-probe guard repair only after exact-head standing CI succeeds, then issue a fresh bounded access-probe workflow dispatch on exact `main` using request id `BRRK-CRYPTO-CARRY-ATLAS-0072-ACCESS-PROBE-REQUEST-0001`. The two prior dispatches executed no probe and produced no evidence artifact. Read only the resulting technical-access evidence. If at least one frozen delivery interface is technically reachable, create a separate prospective source-identity amendment path before any new capture; if neither is reachable, immutably record the access blocker. `CAPTURE-0001` remains permanently closed. No new capture may occur until probe evidence is immutably recorded and any required prospective source-identity amendment merges. Full Stage 3 remains 2/10.
 
 ## No-drift authority
 
@@ -247,5 +250,5 @@ Canonical BRRK-0011 = NO CHANGE.
 0070 = CLOSED / NO SAME-ID ACTION.
 0071 = CONTROLLED BOUNDARY MERGED / ZERO-RESULT PREFLIGHT BLOCKED_PRE_ATTEMPT_CONTROLLED_CONTENT_CONTAMINATION / ATTEMPT 0/1.
 0083 = 10/10 COMPLETE / `FAIL_NO_ROBUST_LOCKED_P02_ECONOMIC_CONTROLLER_VALUE` / CLOSED TO SAME-ID RERUN / ATTEMPT 1/1.
-0072 = OWNER-FIRST + DESIGN MERGED / STAGE 3 SOURCE ACCESS REQUALIFICATION PLAN MERGED / ACCESS PROBE EXECUTION REQUEST MERGED / ACCESS PROBE WORKFLOW MERGED / ACCESS PROBE EXECUTION PENDING / FORMAL COMPLETION 2/10 / ATTEMPT 0/1 / CONTROLLED READS 0.
+0072 = OWNER-FIRST + DESIGN MERGED / STAGE 3 SOURCE ACCESS REQUALIFICATION PLAN MERGED / ACCESS PROBE EXECUTION REQUEST MERGED / ACCESS PROBE WORKFLOW MERGED / TWO DISPATCHES GUARD-SKIPPED / ACCESS PROBE GUARD REPAIR IN PROGRESS / FORMAL COMPLETION 2/10 / ATTEMPT 0/1 / CONTROLLED READS 0.
 Phase 6 = NO CHANGE.
