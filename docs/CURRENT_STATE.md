@@ -79,7 +79,7 @@ Lifecycle anchors:
 - CONTROLLED BOUNDARY merge `0c5a6affc2243a0fdaf621f7801e1870657f1254`;
 - exact merged-boundary zero-result preflight = PASS;
 - unique controlled workflow `32040286477` = PASS;
-- finalized scientific result branch head before governance-only documentation `a62ffbe3557530beb6aae24c94975ac1f1041fe3`;
+- finalized immutable result branch head before governance-only documentation `a62ffbe3557530beb6aae24c94975ac1f1041fe3`;
 - immutable result bundle merge `174a30dc4950e7351f3a746edc8f581b8f12e6d3`;
 - immutable closeout merge `d87607070cf03ccbbc318065f8c4c14ec6c6a50b`;
 - immutable closeout file `research/brrk_sol_long_sideways_early_warning_episode_robustness_0070/CLOSEOUT.md`.
