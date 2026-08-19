@@ -13,14 +13,16 @@ on:
       probe_request_id:
         description: 'Exact merged 0072 bounded access-probe request id'
         required: true
+        default: 'BRRK-CRYPTO-CARRY-ATLAS-0072-ACCESS-PROBE-REQUEST-0001'
         type: string
 
 permissions:
   contents: read
 
 jobs:
-  contract-validation:
+  bounded-probe-control:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -28,40 +30,49 @@ jobs:
           python-version: '3.12'
       - name: Validate frozen access-probe contract without network access
         run: python research/brrk_crypto_carry_atlas_0072/access_probe.py --validate-contract
-
-  execute-bounded-probe:
-    if: >-
-      github.event_name == 'workflow_dispatch' &&
-      github.ref == 'refs/heads/main'
-    needs: contract-validation
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: main
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-      - name: Validate exact frozen dispatch request id before any network access
+      - name: Diagnose gate and execute only on exact governed dispatch
         env:
-          PROBE_REQUEST_ID: ${{ github.event.inputs.probe_request_id }}
+          PROBE_REQUEST_ID_INPUTS: ${{ inputs.probe_request_id }}
+          PROBE_REQUEST_ID_EVENT: ${{ github.event.inputs.probe_request_id }}
         run: |
           python - <<'PY'
           import os
+          import subprocess
+          from pathlib import Path
+
+          event = os.environ.get('GITHUB_EVENT_NAME', '')
+          ref = os.environ.get('GITHUB_REF', '')
+          via_inputs = os.environ.get('PROBE_REQUEST_ID_INPUTS', '')
+          via_event = os.environ.get('PROBE_REQUEST_ID_EVENT', '')
           expected = 'BRRK-CRYPTO-CARRY-ATLAS-0072-ACCESS-PROBE-REQUEST-0001'
-          actual = os.environ.get('PROBE_REQUEST_ID', '')
-          if actual != expected:
-              raise SystemExit(f'Invalid probe_request_id; refusing network probe: {actual!r}')
-          print('Exact frozen probe_request_id validated; network probe may proceed.')
+
+          print(f'gate event={event!r}')
+          print(f'gate ref={ref!r}')
+          print(f'gate inputs_context={via_inputs!r}')
+          print(f'gate event_inputs_context={via_event!r}')
+
+          if event != 'workflow_dispatch':
+              print('Pull-request validation mode: no network probe is permitted or attempted.')
+              raise SystemExit(0)
+          if ref != 'refs/heads/main':
+              raise SystemExit(f'Invalid dispatch ref; refusing network probe: {ref!r}')
+          if via_inputs != expected:
+              raise SystemExit(f'Invalid inputs.probe_request_id; refusing network probe: {via_inputs!r}')
+          if via_event != expected:
+              raise SystemExit(f'Invalid github.event.inputs.probe_request_id; refusing network probe: {via_event!r}')
+
+          print('All frozen dispatch gates validated; executing exactly two technical probes.')
+          out = Path('access_probe_evidence/ACCESS_PROBE_EVIDENCE.json')
+          out.parent.mkdir(parents=True, exist_ok=True)
+          subprocess.run([
+              'python',
+              'research/brrk_crypto_carry_atlas_0072/access_probe.py',
+              '--execute',
+              '--output', str(out),
+          ], check=True)
           PY
-      - name: Execute exactly the two frozen technical probes
-        run: |
-          mkdir -p access_probe_evidence
-          python research/brrk_crypto_carry_atlas_0072/access_probe.py \
-            --execute \
-            --output access_probe_evidence/ACCESS_PROBE_EVIDENCE.json
       - name: Validate evidence contains no scientific payload fields
+        if: ${{ github.event_name == 'workflow_dispatch' }}
         run: |
           python - <<'PY'
           import json
@@ -80,6 +91,7 @@ jobs:
           assert all(set(row) == allowed for row in data['results'])
           PY
       - name: Upload technical-access evidence only
+        if: ${{ github.event_name == 'workflow_dispatch' }}
         uses: actions/upload-artifact@v4
         with:
           name: 0072-access-probe-${{ github.run_id }}-${{ github.run_attempt }}
