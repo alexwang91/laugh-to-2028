@@ -6,7 +6,8 @@
   "status": "PROSPECTIVE_BOUNDARY_NOT_EXECUTED",
   "request_plan_merge": "2e86901d9fe49cb7a2f4944914caaee13e0c6b77",
   "implementation_contract_path": "research/brrk_crypto_carry_atlas_0072/CAPTURE_IMPLEMENTATION_CONTRACT_0002.json",
-  "implementation_path": "research/brrk_crypto_carry_atlas_0072/capture_wiring_0002.py",
+  "implementation_path": "research/brrk_crypto_carry_atlas_0072/capture_wiring_0002_fixed.py",
+  "superseded_unexecuted_candidate_path": "research/brrk_crypto_carry_atlas_0072/capture_wiring_0002.py",
   "validation_workflow_path": ".github/workflows/0072-capture-0002.yml",
   "execution_trigger_in_this_boundary": false,
   "network_execution_authorized_by_this_boundary": false,
@@ -21,6 +22,13 @@
     "scientific_payload_reads": 0,
     "network_requests": 0
   },
+  "audit_repairs_before_merge": [
+    "SOURCE_IDENTITY_CONTRACT_CANONICAL_FIELD_IS_contract_id",
+    "FROZEN_2026_07_SPOT_ARCHIVE_TIMESTAMP_UNIT_IS_MICROSECONDS",
+    "FROZEN_USDM_ARCHIVE_TIMESTAMP_UNIT_IS_MILLISECONDS",
+    "TIMESTAMP_UNIT_DRIFT_FAILS_CLOSED",
+    "OFFLINE_REGRESSION_REQUIRED_WITH_ZERO_NETWORK"
+  ],
   "post_preflight_rule": "ONLY_A_SEPARATE_PROSPECTIVE_ONE_SHOT_CAPTURE_0002_EXECUTION_REQUEST_AND_TRIGGER_MAY_AUTHORIZE_NETWORK_FETCH_AFTER_PREFLIGHT_PASS_ZERO_EXISTING_ARTIFACT",
   "execution_if_later_authorized": {
     "allowed_host": "data.binance.vision",
