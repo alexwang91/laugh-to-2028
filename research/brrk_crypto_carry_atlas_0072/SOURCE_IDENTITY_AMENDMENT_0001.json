@@ -1,0 +1,91 @@
+{
+  "schema_version": 1,
+  "amendment_id": "BRRK-CRYPTO-CARRY-ATLAS-0072-SOURCE-IDENTITY-AMENDMENT-0001",
+  "research_id": "BRRK-CRYPTO-CARRY-ATLAS-0072",
+  "status": "PROSPECTIVE_PENDING_MERGE",
+  "base_source_identity_contract": "BRRK-CRYPTO-CARRY-ATLAS-0072-SOURCE-IDENTITY-V1",
+  "base_source_identity_contract_blob": "8b933f357a4f4b1299558386e7ad6e91742df939",
+  "source_access_requalification_plan": "BRRK-CRYPTO-CARRY-ATLAS-0072-SOURCE-ACCESS-REQUALIFICATION-V1",
+  "access_probe_request_id": "BRRK-CRYPTO-CARRY-ATLAS-0072-ACCESS-PROBE-REQUEST-0001",
+  "access_probe_id": "BRRK-CRYPTO-CARRY-ATLAS-0072-ACCESS-PROBE-0001",
+  "access_probe_trigger_merge": "788c59e1def18bd9cf9b38f8b832a326d8249f72",
+  "access_probe_workflow_run_id": 32412002636,
+  "access_probe_job_id": 96564322145,
+  "access_probe_artifact_id": 9422472181,
+  "access_probe_artifact_name": "0072-access-probe-32412002636-1",
+  "access_probe_artifact_zip_sha256": "b9f922ed17a855fe8f2a5292f3f198413ef6f0e190dba2f50ad7e2ab77e75576",
+  "access_probe_evidence_payload_sha256": "9deda918c35f3a2a91a415ba0be8c703d2071f0844cb6c5d8cc6480840a45021",
+  "evidence_constraints_verified": {
+    "scientific_payload_read": false,
+    "stage8_attempt_consumed": 0,
+    "controlled_scientific_history_reads_to_researcher": 0,
+    "frozen_probe_row_count": 2
+  },
+  "technical_access_observations": [
+    {
+      "source_id": "BINANCE_OFFICIAL_PUBLIC_FUTURES_AND_ARCHIVE_V1",
+      "canonical_probe_id": "BINANCE_DATA_VISION_ARCHIVE_HEAD",
+      "host": "data.binance.vision",
+      "http_method": "HEAD",
+      "observed_status": 200,
+      "probed_at_utc": "2026-08-20T20:03:28.633244Z",
+      "technical_classification": "TECHNICALLY_REACHABLE_UNDER_FROZEN_PROBE"
+    },
+    {
+      "source_id": "BYBIT_V5_OFFICIAL_PUBLIC_MARKET_V1",
+      "canonical_probe_id": "BYBIT_CURRENT_INSTRUMENT_METADATA_HEADERS_ONLY",
+      "host": "api.bybit.com",
+      "http_method": "GET_HEADERS_ONLY_NO_BODY_READ",
+      "observed_status": 403,
+      "probed_at_utc": "2026-08-20T20:03:28.691609Z",
+      "technical_classification": "NOT_TECHNICALLY_USABLE_UNDER_FROZEN_PROBE"
+    }
+  ],
+  "prior_capture_access_fact": {
+    "capture_request_id": "BRRK-CRYPTO-CARRY-ATLAS-0072-CAPTURE-0001",
+    "first_request_interface": "https://fapi.binance.com/fapi/v1/exchangeInfo",
+    "observed_failure": "SOURCE_UNAVAILABLE_HTTP_451",
+    "persisted_source_payload_objects": 0,
+    "capture_status": "SEALED_FAILED_NO_RETRY"
+  },
+  "prospective_capture_identity_decision": {
+    "new_source_admission": false,
+    "source_roster_change": false,
+    "source_precedence_change": false,
+    "scientific_scope_change": false,
+    "feature_family_replacement": false,
+    "binance_archive_interface": "ELIGIBLE_FOR_A_DISTINCT_FUTURE_CAPTURE_REQUEST_ONLY_FOR_ARCHIVE_FAMILIES_ALREADY_ENUMERATED_IN_SOURCE_IDENTITY_V1_AND_ONLY_AFTER_EXACT_OBJECT_IDENTITIES_ARE_FROZEN",
+    "binance_archive_object_availability_not_proven_by_probe": true,
+    "binance_fapi_interface": "INELIGIBLE_FOR_THE_NEXT_CAPTURE_UNDER_CURRENT_EXECUTION_ENVIRONMENT_UNLESS_A_SEPARATE_PROSPECTIVE_REQUALIFICATION_MERGES",
+    "bybit_api_interface": "INELIGIBLE_FOR_THE_NEXT_CAPTURE_UNDER_CURRENT_EXECUTION_ENVIRONMENT_UNLESS_A_SEPARATE_PROSPECTIVE_REQUALIFICATION_MERGES",
+    "design_families_currently_lacking_THEIR_FROZEN_SOURCE_PRECEDENCE_SUPPORT": [
+      "CROSS_VENUE_FUNDING_OR_BASIS_DISPERSION",
+      "OPEN_INTEREST_AND_OPEN_INTEREST_CHANGE"
+    ],
+    "insufficient_support_rule": "AFFECTED_FAMILIES_REMAIN_PROSPECTIVELY_INSUFFICIENT_SOURCE_SUPPORT_UNDER_THE_CURRENT_EXECUTION_ENVIRONMENT; THEY_MAY_NOT_BE_REPLACED_BY_AN_ELEVENTH_FAMILY_OR_BY_RESULT_INFORMED_SOURCE_SUBSTITUTION",
+    "no_eleventh_family_replacement": true
+  },
+  "interpretation_limits": [
+    "Technical reachability does not establish source admission, point-in-time semantics, historical completeness, field availability, or scientific support.",
+    "A HEAD 200 for one data.binance.vision checksum object proves only technical reachability of the tested delivery interface at probe time; it does not prove every allowed archive object exists or is complete.",
+    "HTTP 403 does not prove the Bybit source family is globally unavailable; it proves only that the frozen interface was not technically usable from this execution environment at probe time.",
+    "The prior Binance fapi HTTP 451 and the later data.binance.vision HEAD 200 must not be conflated; fapi is not requalified by the archive probe.",
+    "No scientific or historical source values were read in forming this amendment.",
+    "This amendment may govern only future distinct capture requests created after it merges."
+  ],
+  "future_capture_rules": {
+    "capture_0001_retry_forbidden": true,
+    "future_capture_request_id_must_differ_from_capture_0001": true,
+    "no_network_capture_before_this_amendment_merges": true,
+    "no_ad_hoc_new_host_probe": true,
+    "future_capture_must_freeze_exact_archive_objects_and_checksums_before_fetch": true,
+    "future_capture_may_not_use_fapi_or_bybit_under_current_execution_environment": true,
+    "raw_identity_and_cutoff_rules_unchanged": true
+  },
+  "lifecycle_credit": "NONE_STAGE_3_REMAINS_2_OF_10",
+  "stage8_attempt_consumed": 0,
+  "controlled_scientific_history_reads_to_researcher": 0,
+  "production_authorized": false,
+  "signature_authorized": false,
+  "order_submission_authorized": false
+}
