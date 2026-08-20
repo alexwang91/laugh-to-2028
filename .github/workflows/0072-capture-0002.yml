@@ -29,9 +29,18 @@ jobs:
         run: |
           cd research/brrk_crypto_carry_atlas_0072
           python capture_wiring_0002_fixed.py --validate-contract
-      - name: Run offline CAPTURE-0002 regressions
+      - name: Run offline CAPTURE-0002 regressions without external test dependencies
         run: |
-          python -m pytest -q research/brrk_crypto_carry_atlas_0072/test_capture_wiring_0002_fixed.py
+          cd research/brrk_crypto_carry_atlas_0072
+          python - <<'PY'
+          import test_capture_wiring_0002_fixed as tests
+          names = sorted(name for name in dir(tests) if name.startswith('test_') and callable(getattr(tests, name)))
+          assert names, 'no CAPTURE-0002 regression tests discovered'
+          for name in names:
+              getattr(tests, name)()
+              print(f'PASS {name}')
+          print(f'CAPTURE_0002_OFFLINE_REGRESSIONS_PASS count={len(names)}')
+          PY
       - name: Assert no execution authority in boundary
         run: |
           python - <<'PY'
