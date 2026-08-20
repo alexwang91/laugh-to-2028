@@ -1,0 +1,57 @@
+name: 0072 CAPTURE-0002 boundary validation
+
+on:
+  pull_request:
+    paths:
+      - 'research/brrk_crypto_carry_atlas_0072/**'
+      - '.github/workflows/0072-capture-0002.yml'
+      - 'docs/CURRENT_STATE.md'
+
+permissions:
+  contents: read
+
+jobs:
+  offline-boundary-validation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Compile CAPTURE-0002 implementation
+        run: |
+          python -m py_compile \
+            research/brrk_crypto_carry_atlas_0072/capture_wiring_0002.py \
+            research/brrk_crypto_carry_atlas_0072/capture_wiring_0002_fixed.py \
+            research/brrk_crypto_carry_atlas_0072/test_capture_wiring_0002_fixed.py
+      - name: Validate frozen CAPTURE-0002 contract without network
+        run: |
+          cd research/brrk_crypto_carry_atlas_0072
+          python capture_wiring_0002_fixed.py --validate-contract
+      - name: Run offline CAPTURE-0002 regressions without external test dependencies
+        run: |
+          cd research/brrk_crypto_carry_atlas_0072
+          python - <<'PY'
+          import test_capture_wiring_0002_fixed as tests
+          names = sorted(name for name in dir(tests) if name.startswith('test_') and callable(getattr(tests, name)))
+          assert names, 'no CAPTURE-0002 regression tests discovered'
+          for name in names:
+              getattr(tests, name)()
+              print(f'PASS {name}')
+          print(f'CAPTURE_0002_OFFLINE_REGRESSIONS_PASS count={len(names)}')
+          PY
+      - name: Assert no execution authority in boundary
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p = Path('research/brrk_crypto_carry_atlas_0072/CAPTURE_EXECUTION_BOUNDARY_0002.json')
+          b = json.loads(p.read_text())
+          assert b['execution_trigger_in_this_boundary'] is False
+          assert b['network_execution_authorized_by_this_boundary'] is False
+          assert b['controlled_scientific_history_reads_to_researcher'] == 0
+          assert b['stage8_attempt_consumed'] == 0
+          assert b['implementation_path'].endswith('capture_wiring_0002_fixed.py')
+          print('CAPTURE_0002_BOUNDARY_OFFLINE_VALID')
+          PY

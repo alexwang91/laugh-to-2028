@@ -17,6 +17,7 @@ from .validate import repo_root_from_module
 # separately through the prospective PROGRAM_GOVERNED_V1 authorization path.
 ALLOWED_EXACT_PATHS = {
     ".github/workflows/0072-access-probe.yml",
+    ".github/workflows/0072-capture-0002.yml",
     ".github/workflows/research-governance.yml",
     "config/dataset_exposure_registry.json",
     "config/edge_registry.json",

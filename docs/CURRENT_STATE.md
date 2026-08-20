@@ -200,7 +200,7 @@ The immutable closeout records the FAIL without rescue or reinterpretation. Gove
 ## 0072 carry atlas
 
 Research ID = `BRRK-CRYPTO-CARRY-ATLAS-0072`.
-State = `OWNER-FIRST + DESIGN MERGED / STAGE 3 PREREGISTRATION FIRST CAPTURE SEALED FAILED / RECONCILIATION MERGED / SOURCE ACCESS REQUALIFICATION PLAN MERGED / ACCESS PROBE EXECUTION REQUEST MERGED / ACCESS PROBE WORKFLOW MERGED / THREE DISPATCHES GUARD-SKIPPED / RUNNER-SIDE REQUEST-ID GATE MERGED / OBSERVABLE FAIL-CLOSED GATE MERGED / ONE-SHOT MERGE-TRIGGER MERGED / ACCESS PROBE SUCCESS_WITH_PARTIAL_TECHNICAL_REACHABILITY / SOURCE-IDENTITY AMENDMENT MERGED / CAPTURE-0002 REQUEST+OBJECT PLAN IN PROGRESS / FORMAL COMPLETION 2/10 / CONTROLLED ATTEMPT 0/1 / CONTROLLED READS 0`.
+State = `OWNER-FIRST + DESIGN MERGED / STAGE 3 PREREGISTRATION FIRST CAPTURE SEALED FAILED / RECONCILIATION MERGED / SOURCE ACCESS REQUALIFICATION PLAN MERGED / ACCESS PROBE EXECUTION REQUEST MERGED / ACCESS PROBE WORKFLOW MERGED / THREE DISPATCHES GUARD-SKIPPED / RUNNER-SIDE REQUEST-ID GATE MERGED / OBSERVABLE FAIL-CLOSED GATE MERGED / ONE-SHOT MERGE-TRIGGER MERGED / ACCESS PROBE SUCCESS_WITH_PARTIAL_TECHNICAL_REACHABILITY / SOURCE-IDENTITY AMENDMENT MERGED / CAPTURE-0002 REQUEST+OBJECT PLAN MERGED / CAPTURE-0002 IMPLEMENTATION+BOUNDARY IN PROGRESS / FORMAL COMPLETION 2/10 / CONTROLLED ATTEMPT 0/1 / CONTROLLED READS 0`.
 
 Lifecycle anchors:
 - roadmap merge `169d9adf6531dc099a43541df413fef079322adf`;
@@ -226,13 +226,16 @@ Lifecycle anchors:
 - Stage 3 observable fail-closed gate repair #329 merge `c2e57537fe66f050e6aae4b70e343e37c197fa9d`;
 - Stage 3 one-shot merge-trigger amendment #330 merge `788c59e1def18bd9cf9b38f8b832a326d8249f72`;
 - Stage 3 source-identity amendment #332 merge `55b673f24155b4fe801e8adfdbb2f797b6f0ed0f`;
+- Stage 3 CAPTURE-0002 request/object-plan #333 merge `2e86901d9fe49cb7a2f4944914caaee13e0c6b77`;
+- Stage 3 CAPTURE-0002 implementation/execution-boundary PR #334 is in progress; this PR authorizes no network execution and earns no lifecycle credit.
 - bounded access-probe dispatch run `32245507502`: contract validation PASS; execution job SKIPPED before any network probe; no artifact produced.
 - bounded access-probe dispatch run `32245682524`: contract validation PASS; execution job SKIPPED before any network probe; no artifact produced.
 - bounded access-probe dispatch run `32291738138`: exact main `c17ed7b404456b0121c842eaed98a629c0929127`; contract validation PASS; execution job still SKIPPED before any network probe; no artifact produced.
 - unique one-shot access-probe push run `32412002636`, job `96564322145`: SUCCESS on exact main `788c59e1def18bd9cf9b38f8b832a326d8249f72`; artifact `9422472181` / `0072-access-probe-32412002636-1`; artifact ZIP SHA256 `b9f922ed17a855fe8f2a5292f3f198413ef6f0e190dba2f50ad7e2ab77e75576`; evidence payload SHA256 `9deda918c35f3a2a91a415ba0be8c703d2071f0844cb6c5d8cc6480840a45021`.
 - frozen technical evidence: `data.binance.vision` checksum-object HEAD = HTTP 200 (`TECHNICALLY_REACHABLE_UNDER_FROZEN_PROBE`); `api.bybit.com` headers-only instrument-metadata request = HTTP 403 (`NOT_TECHNICALLY_USABLE_UNDER_FROZEN_PROBE`). Technical reachability is not source admission, PIT proof or scientific support.
 - merged source-identity amendment fixes the next-capture boundary: no new source or family substitution; Binance archive only under already-enumerated archive families with exact object identities frozen before fetch; Binance fapi and Bybit API are ineligible under the current execution environment unless separately prospectively requalified.
-- prospective `CAPTURE-0002` request/plan freezes support month `2026-07`, cutoff `2026-08-20T20:33:00Z`, exactly BTC/ETH/SOL, exactly five already-enumerated `data.binance.vision` archive families, 15 ZIP objects plus 15 paired `.CHECKSUM` objects, zero retries and zero redirects. `premiumIndexKlines` is raw support only and is not perpetual funding.
+- merged `CAPTURE-0002` request/plan freezes support month `2026-07`, cutoff `2026-08-20T20:33:00Z`, exactly BTC/ETH/SOL, exactly five already-enumerated `data.binance.vision` archive families, 15 ZIP objects plus 15 paired `.CHECKSUM` objects, zero retries and zero redirects. `premiumIndexKlines` is raw support only and is not perpetual funding.
+- PR #334 prospectively hardens CAPTURE-0002 before any fetch: canonical source-contract field is `contract_id`; frozen 2026-07 Binance SPOT archive timestamps are interpreted as microseconds while frozen USD-M archive-family timestamps are interpreted as milliseconds; unexpected unit ranges fail closed. The boundary keeps `network_execution_authorized_by_this_boundary=false` and `execution_trigger_in_this_boundary=false`.
 
 `CAPTURE-0001` is sealed failed and permanently non-retriable after HTTP 451 on its first frozen request. No source payload object was persisted. Controlled scientific/history reads remain `0`; Stage-8 attempt remains `0/1` unconsumed.
 
@@ -240,7 +243,7 @@ The successful access probe read no scientific payload. Evidence explicitly reco
 
 ## Exact next step
 
-Merge the CAPTURE-0002 request/object plan only after exact-head standing CI succeeds. After merge, create a separate CAPTURE-0002 implementation/execution boundary that mechanically reuses the existing create-only raw-byte, SHA256, checksum-verification, metadata-only, fail-closed/no-retry semantics while changing only the distinct request/plan identity and durable layout. Do not execute CAPTURE-0002 until that implementation/boundary is separately merged and zero-existing-artifact preflight succeeds. Any future execution must use only the 30 exact `data.binance.vision` objects frozen in `CAPTURE_PLAN_0002.json`; no fapi, Bybit, ad-hoc host, CAPTURE-0001 retry or Stage-8 action is permitted. Full Stage 3 remains 2/10.
+Require all standing CI SUCCESS on the exact PR #334 head after the mechanical fixes and mandatory handoff. Merge only if #334 is unchanged, open, mergeable and non-draft. After the CAPTURE-0002 implementation/execution boundary merges, perform a separate repository-wide zero-existing-artifact preflight on exact merged main with zero network and zero scientific/source-value reads. Only a later separately governed prospective one-shot CAPTURE-0002 execution request/trigger may authorize the 30 frozen `data.binance.vision` objects; no fapi, Bybit, ad-hoc host, CAPTURE-0001 retry or Stage-8 action is permitted. Full Stage 3 remains 2/10.
 
 ## No-drift authority
 
@@ -259,5 +262,5 @@ Canonical BRRK-0011 = NO CHANGE.
 0070 = CLOSED / NO SAME-ID ACTION.
 0071 = CONTROLLED BOUNDARY MERGED / ZERO-RESULT PREFLIGHT BLOCKED_PRE_ATTEMPT_CONTROLLED_CONTENT_CONTAMINATION / ATTEMPT 0/1.
 0083 = 10/10 COMPLETE / `FAIL_NO_ROBUST_LOCKED_P02_ECONOMIC_CONTROLLER_VALUE` / CLOSED TO SAME-ID RERUN / ATTEMPT 1/1.
-0072 = OWNER-FIRST + DESIGN MERGED / STAGE 3 SOURCE ACCESS REQUALIFICATION PLAN MERGED / ACCESS PROBE EXECUTION REQUEST MERGED / ACCESS PROBE WORKFLOW MERGED / THREE DISPATCHES GUARD-SKIPPED / RUNNER-SIDE REQUEST-ID GATE MERGED / OBSERVABLE FAIL-CLOSED GATE MERGED / ONE-SHOT MERGE-TRIGGER MERGED / ACCESS PROBE SUCCESS_WITH_PARTIAL_TECHNICAL_REACHABILITY / SOURCE-IDENTITY AMENDMENT MERGED / CAPTURE-0002 REQUEST+OBJECT PLAN IN PROGRESS / FORMAL COMPLETION 2/10 / ATTEMPT 0/1 / CONTROLLED READS 0.
+0072 = OWNER-FIRST + DESIGN MERGED / STAGE 3 SOURCE ACCESS REQUALIFICATION PLAN MERGED / ACCESS PROBE EXECUTION REQUEST MERGED / ACCESS PROBE WORKFLOW MERGED / THREE DISPATCHES GUARD-SKIPPED / RUNNER-SIDE REQUEST-ID GATE MERGED / OBSERVABLE FAIL-CLOSED GATE MERGED / ONE-SHOT MERGE-TRIGGER MERGED / ACCESS PROBE SUCCESS_WITH_PARTIAL_TECHNICAL_REACHABILITY / SOURCE-IDENTITY AMENDMENT MERGED / CAPTURE-0002 REQUEST+OBJECT PLAN MERGED / CAPTURE-0002 IMPLEMENTATION+BOUNDARY IN PROGRESS / FORMAL COMPLETION 2/10 / ATTEMPT 0/1 / CONTROLLED READS 0.
 Phase 6 = NO CHANGE.
