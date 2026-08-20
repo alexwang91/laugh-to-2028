@@ -14,6 +14,7 @@
   "access_probe_artifact_id": 9422472181,
   "access_probe_artifact_name": "0072-access-probe-32412002636-1",
   "access_probe_artifact_zip_sha256": "b9f922ed17a855fe8f2a5292f3f198413ef6f0e190dba2f50ad7e2ab77e75576",
+  "access_probe_evidence_payload_sha256": "9deda918c35f3a2a91a415ba0be8c703d2071f0844cb6c5d8cc6480840a45021",
   "evidence_constraints_verified": {
     "scientific_payload_read": false,
     "stage8_attempt_consumed": 0,
@@ -40,30 +41,35 @@
       "technical_classification": "NOT_TECHNICALLY_USABLE_UNDER_FROZEN_PROBE"
     }
   ],
+  "prior_capture_access_fact": {
+    "capture_request_id": "BRRK-CRYPTO-CARRY-ATLAS-0072-CAPTURE-0001",
+    "first_request_interface": "https://fapi.binance.com/fapi/v1/exchangeInfo",
+    "observed_failure": "SOURCE_UNAVAILABLE_HTTP_451",
+    "persisted_source_payload_objects": 0,
+    "capture_status": "SEALED_FAILED_NO_RETRY"
+  },
   "prospective_capture_identity_decision": {
     "new_source_admission": false,
     "source_roster_change": false,
     "source_precedence_change": false,
     "scientific_scope_change": false,
     "feature_family_replacement": false,
-    "binance_archive_interface": "ELIGIBLE_FOR_A_DISTINCT_FUTURE_CAPTURE_REQUEST_SUBJECT_TO_EXISTING_POINT_IN_TIME_AND_CHECKSUM_RULES",
-    "binance_fapi_interface": "NOT_REQUALIFIED_BY_THIS_PROBE_AND_MAY_NOT_BE_ASSUMED_REACHABLE",
-    "bybit_api_interface": "INELIGIBLE_FOR_THE_NEXT_CAPTURE_REQUEST_UNDER_CURRENT_EXECUTION_ENVIRONMENT",
-    "bybit_dependent_roles": [
-      "CROSS_VENUE_PERPETUAL_FUNDING",
-      "OPEN_INTEREST",
-      "PERPETUAL_OR_FUTURES_PRICE",
-      "MARK_PRICE",
-      "INDEX_PRICE",
-      "INSTRUMENT_METADATA",
-      "VOLUME"
+    "binance_archive_interface": "ELIGIBLE_FOR_A_DISTINCT_FUTURE_CAPTURE_REQUEST_ONLY_FOR_ARCHIVE_FAMILIES_ALREADY_ENUMERATED_IN_SOURCE_IDENTITY_V1_AND_ONLY_AFTER_EXACT_OBJECT_IDENTITIES_ARE_FROZEN",
+    "binance_archive_object_availability_not_proven_by_probe": true,
+    "binance_fapi_interface": "INELIGIBLE_FOR_THE_NEXT_CAPTURE_UNDER_CURRENT_EXECUTION_ENVIRONMENT_UNLESS_A_SEPARATE_PROSPECTIVE_REQUALIFICATION_MERGES",
+    "bybit_api_interface": "INELIGIBLE_FOR_THE_NEXT_CAPTURE_UNDER_CURRENT_EXECUTION_ENVIRONMENT_UNLESS_A_SEPARATE_PROSPECTIVE_REQUALIFICATION_MERGES",
+    "design_families_currently_lacking_THEIR_FROZEN_SOURCE_PRECEDENCE_SUPPORT": [
+      "CROSS_VENUE_FUNDING_OR_BASIS_DISPERSION",
+      "OPEN_INTEREST_AND_OPEN_INTEREST_CHANGE"
     ],
-    "bybit_dependent_family_rule": "TREAT_AS_INSUFFICIENT_SOURCE_SUPPORT_UNLESS_A_SEPARATE_PROSPECTIVE_SOURCE_QUALIFICATION_OR_EXECUTION_ENVIRONMENT_AMENDMENT_MERGES_BEFORE_FULL_STAGE_3_PREREGISTRATION",
+    "insufficient_support_rule": "AFFECTED_FAMILIES_REMAIN_PROSPECTIVELY_INSUFFICIENT_SOURCE_SUPPORT_UNDER_THE_CURRENT_EXECUTION_ENVIRONMENT; THEY_MAY_NOT_BE_REPLACED_BY_AN_ELEVENTH_FAMILY_OR_BY_RESULT_INFORMED_SOURCE_SUBSTITUTION",
     "no_eleventh_family_replacement": true
   },
   "interpretation_limits": [
     "Technical reachability does not establish source admission, point-in-time semantics, historical completeness, field availability, or scientific support.",
+    "A HEAD 200 for one data.binance.vision checksum object proves only technical reachability of the tested delivery interface at probe time; it does not prove every allowed archive object exists or is complete.",
     "HTTP 403 does not prove the Bybit source family is globally unavailable; it proves only that the frozen interface was not technically usable from this execution environment at probe time.",
+    "The prior Binance fapi HTTP 451 and the later data.binance.vision HEAD 200 must not be conflated; fapi is not requalified by the archive probe.",
     "No scientific or historical source values were read in forming this amendment.",
     "This amendment may govern only future distinct capture requests created after it merges."
   ],
@@ -72,6 +78,8 @@
     "future_capture_request_id_must_differ_from_capture_0001": true,
     "no_network_capture_before_this_amendment_merges": true,
     "no_ad_hoc_new_host_probe": true,
+    "future_capture_must_freeze_exact_archive_objects_and_checksums_before_fetch": true,
+    "future_capture_may_not_use_fapi_or_bybit_under_current_execution_environment": true,
     "raw_identity_and_cutoff_rules_unchanged": true
   },
   "lifecycle_credit": "NONE_STAGE_3_REMAINS_2_OF_10",
