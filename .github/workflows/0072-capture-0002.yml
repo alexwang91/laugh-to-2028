@@ -1,4 +1,4 @@
-name: 0072 CAPTURE-0002 boundary validation
+name: 0072 CAPTURE-0002 boundary and one-shot execution
 
 on:
   pull_request:
@@ -6,52 +6,321 @@ on:
       - 'research/brrk_crypto_carry_atlas_0072/**'
       - '.github/workflows/0072-capture-0002.yml'
       - 'docs/CURRENT_STATE.md'
+  push:
+    branches:
+      - main
+    paths:
+      - 'research/brrk_crypto_carry_atlas_0072/CAPTURE_0002_EXECUTION_TRIGGER_0001.json'
 
 permissions:
   contents: read
+  actions: read
 
 jobs:
-  offline-boundary-validation:
+  boundary-and-execution-control:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Compile CAPTURE-0002 implementation
+
+      - name: Validate frozen CAPTURE-0002 contracts and one-shot gate without source network
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          GIT_REF: ${{ github.ref }}
         run: |
-          python -m py_compile \
-            research/brrk_crypto_carry_atlas_0072/capture_wiring_0002.py \
-            research/brrk_crypto_carry_atlas_0072/capture_wiring_0002_fixed.py \
-            research/brrk_crypto_carry_atlas_0072/test_capture_wiring_0002_fixed.py
-      - name: Validate frozen CAPTURE-0002 contract without network
-        run: |
+          set -euo pipefail
           cd research/brrk_crypto_carry_atlas_0072
           python capture_wiring_0002_fixed.py --validate-contract
-      - name: Run offline CAPTURE-0002 regressions without external test dependencies
+          cd ../..
+          python - <<'PY'
+          import json, os, subprocess
+          from pathlib import Path
+
+          ROOT = Path('.')
+          P = Path('research/brrk_crypto_carry_atlas_0072')
+          request_path = P / 'CAPTURE_0002_EXECUTION_REQUEST_0001.json'
+          trigger_path = P / 'CAPTURE_0002_EXECUTION_TRIGGER_0001.json'
+          evidence_path = P / 'CAPTURE_0002_ZERO_ARTIFACT_PREFLIGHT_EVIDENCE.json'
+          boundary_path = P / 'CAPTURE_EXECUTION_BOUNDARY_0002.json'
+          impl_contract_path = P / 'CAPTURE_IMPLEMENTATION_CONTRACT_0002.json'
+          impl_path = P / 'capture_wiring_0002_fixed.py'
+          capture_request_path = P / 'CAPTURE_REQUEST_0002.json'
+          plan_path = P / 'CAPTURE_PLAN_0002.json'
+
+          expected_blobs = {
+              str(request_path): '5c2952be2c528eb3ce7c5f859c569d51367d790d',
+              str(trigger_path): '65fc4eb99db39d28ac6664b925557f7631510de6',
+              str(evidence_path): '08ac01d7b284854e7af480dfc0be79ee2d217535',
+              str(boundary_path): '9ac482fde0dd53a9d9c08d92714c3ca5f4b159ba',
+              str(impl_contract_path): '4dc0cc6e0327f4a9c77f14a05158ee83188f034c',
+              str(impl_path): 'f041c35a25ca54067d8f5972b8cb2feb6c82329c',
+              str(capture_request_path): 'a7322f7e3da1494afc4a2dd2e6468ab5499b73ff',
+              str(plan_path): 'd18c1d84051c4bb0274cca6fa953954333283fbd',
+          }
+          for path, expected in expected_blobs.items():
+              actual = subprocess.check_output(['git','rev-parse',f'HEAD:{path}'], text=True).strip()
+              if actual != expected:
+                  raise SystemExit(f'BLOB_IDENTITY_DRIFT {path} {actual}')
+
+          request = json.loads(request_path.read_text())
+          trigger = json.loads(trigger_path.read_text())
+          evidence = json.loads(evidence_path.read_text())
+          boundary = json.loads(boundary_path.read_text())
+          plan = json.loads(plan_path.read_text())
+
+          assert request['request_id'] == 'BRRK-CRYPTO-CARRY-ATLAS-0072-CAPTURE-0002-EXECUTION-REQUEST-0001'
+          assert trigger['trigger_id'] == 'BRRK-CRYPTO-CARRY-ATLAS-0072-CAPTURE-0002-EXECUTION-TRIGGER-0001'
+          assert trigger['execution_request_blob'] == expected_blobs[str(request_path)]
+          assert request['execute_once'] is True and request['reusable'] is False and request['automatic_retry'] is False
+          assert trigger['execute_once'] is True and trigger['reusable'] is False and trigger['automatic_retry'] is False
+          assert trigger['workflow_dispatch_allowed'] is False and trigger['network_execution_in_pull_request'] is False
+          assert request['allowed_host'] == trigger['allowed_host'] == 'data.binance.vision'
+          assert request['exact_network_object_count'] == trigger['exact_network_object_count'] == 30
+          assert request['execution_claim_artifact_name'] == trigger['execution_claim_artifact_name']
+          assert set(request['forbidden_hosts']) == {'fapi.binance.com','api.bybit.com'}
+          assert evidence['classification'] == 'PASS_ZERO_EXISTING_ARTIFACT_AND_RESULT_FILE'
+          assert evidence['repository_wide_nonexpired_capture_0002_artifact_count'] == 0
+          assert evidence['repository_capture_0002_result_file_count'] == 0
+          assert evidence['scientific_payload_reads'] == 0 and evidence['source_network_requests'] == 0
+          assert evidence['stage8_attempt_consumed'] == 0 and evidence['controlled_scientific_history_reads_to_researcher'] == 0
+          assert boundary['network_execution_authorized_by_this_boundary'] is False
+          assert boundary['execution_trigger_in_this_boundary'] is False
+          assert plan['network_object_count_total'] == 30 and len(plan['objects']) == 15
+          assert all(row['archive_url'].startswith('https://data.binance.vision/') for row in plan['objects'])
+          assert all(row['checksum_url'].startswith('https://data.binance.vision/') for row in plan['objects'])
+
+          event = os.environ['EVENT_NAME']
+          ref = os.environ['GIT_REF']
+          if event == 'pull_request':
+              print('CAPTURE_0002_PR_VALIDATION_ONLY_ZERO_SOURCE_NETWORK')
+          elif event == 'push':
+              if ref != 'refs/heads/main':
+                  raise SystemExit('EXECUTION_REF_NOT_MAIN')
+              diff = subprocess.check_output(
+                  ['git','diff','--name-status','HEAD^1','HEAD','--',str(trigger_path)], text=True
+              ).strip()
+              expected = 'A\t' + str(trigger_path)
+              if diff != expected:
+                  raise SystemExit(f'TRIGGER_NOT_FIRST_LANDING_ADD_ONLY {diff!r}')
+              print('CAPTURE_0002_ONE_SHOT_MAIN_PUSH_GATE_PASS')
+          else:
+              raise SystemExit(f'UNAUTHORIZED_EVENT {event}')
+          print('stage8_attempt_consumed=0')
+          print('controlled_scientific_history_reads_to_researcher=0')
+          PY
+
+      - name: Run offline CAPTURE-0002 timestamp and contract regressions
         run: |
+          set -euo pipefail
           cd research/brrk_crypto_carry_atlas_0072
+          python -m py_compile capture_wiring_0002.py capture_wiring_0002_fixed.py test_capture_wiring_0002_fixed.py
           python - <<'PY'
           import test_capture_wiring_0002_fixed as tests
           names = sorted(name for name in dir(tests) if name.startswith('test_') and callable(getattr(tests, name)))
-          assert names, 'no CAPTURE-0002 regression tests discovered'
+          assert names
           for name in names:
               getattr(tests, name)()
               print(f'PASS {name}')
           print(f'CAPTURE_0002_OFFLINE_REGRESSIONS_PASS count={len(names)}')
           PY
-      - name: Assert no execution authority in boundary
+
+      - name: Immediate repository-wide duplicate artifact guard before execution claim
+        if: github.event_name == 'push'
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
+          set -euo pipefail
           python - <<'PY'
-          import json
-          from pathlib import Path
-          p = Path('research/brrk_crypto_carry_atlas_0072/CAPTURE_EXECUTION_BOUNDARY_0002.json')
-          b = json.loads(p.read_text())
-          assert b['execution_trigger_in_this_boundary'] is False
-          assert b['network_execution_authorized_by_this_boundary'] is False
-          assert b['controlled_scientific_history_reads_to_researcher'] == 0
-          assert b['stage8_attempt_consumed'] == 0
-          assert b['implementation_path'].endswith('capture_wiring_0002_fixed.py')
-          print('CAPTURE_0002_BOUNDARY_OFFLINE_VALID')
+          import json, os, urllib.parse, urllib.request
+          names = [
+              '0072-capture-execution-claim-BRRK-CRYPTO-CARRY-ATLAS-0072-CAPTURE-0002',
+              '0072-capture-raw-BRRK-CRYPTO-CARRY-ATLAS-0072-CAPTURE-0002',
+              '0072-capture-support-BRRK-CRYPTO-CARRY-ATLAS-0072-CAPTURE-0002',
+          ]
+          token = os.environ['GH_TOKEN']
+          nonexpired = []
+          for name in names:
+              url = 'https://api.github.com/repos/alexwang91/laugh-to-2028/actions/artifacts?name=' + urllib.parse.quote(name) + '&per_page=100'
+              req = urllib.request.Request(url, headers={
+                  'Accept':'application/vnd.github+json',
+                  'Authorization':'Bearer ' + token,
+                  'User-Agent':'0072-capture-0002-immediate-duplicate-guard',
+                  'X-GitHub-Api-Version':'2022-11-28',
+              })
+              with urllib.request.urlopen(req, timeout=20) as response:
+                  data = json.load(response)
+              rows = [a for a in data.get('artifacts', []) if a.get('expired') is False]
+              if rows:
+                  nonexpired.extend((name, a.get('id'), (a.get('workflow_run') or {}).get('id')) for a in rows)
+          print('CAPTURE_0002_PRENETWORK_EXISTING_ARTIFACTS=' + json.dumps(nonexpired, separators=(',',':')))
+          if nonexpired:
+              raise SystemExit('CAPTURE_0002_ALREADY_CLAIMED_OR_CAPTURED_NO_REFETCH')
+          print('CAPTURE_0002_IMMEDIATE_DUPLICATE_GUARD_PASS_ZERO')
           PY
+
+      - name: Create fixed execution-claim payload before source network
+        if: github.event_name == 'push'
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/capture-0002-claim"
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          payload = {
+              'schema_version': 1,
+              'research_id': 'BRRK-CRYPTO-CARRY-ATLAS-0072',
+              'capture_request_id': 'BRRK-CRYPTO-CARRY-ATLAS-0072-CAPTURE-0002',
+              'execution_request_id': 'BRRK-CRYPTO-CARRY-ATLAS-0072-CAPTURE-0002-EXECUTION-REQUEST-0001',
+              'trigger_id': 'BRRK-CRYPTO-CARRY-ATLAS-0072-CAPTURE-0002-EXECUTION-TRIGGER-0001',
+              'workflow_run_id': os.environ['GITHUB_RUN_ID'],
+              'workflow_run_attempt': os.environ['GITHUB_RUN_ATTEMPT'],
+              'main_head_sha': os.environ['GITHUB_SHA'],
+              'state': 'SOURCE_FETCH_CLAIMED_EXACTLY_ONCE_BEFORE_NETWORK',
+              'automatic_retry': False,
+              'second_fetch_allowed': False,
+              'stage8_attempt_consumed': 0,
+              'controlled_scientific_history_reads_to_researcher': 0,
+          }
+          Path(os.environ['RUNNER_TEMP'], 'capture-0002-claim', 'EXECUTION_CLAIM.json').write_text(
+              json.dumps(payload, sort_keys=True, separators=(',',':')) + '\n'
+          )
+          PY
+
+      - name: Durably upload fixed execution claim
+        if: github.event_name == 'push'
+        id: claim_upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: 0072-capture-execution-claim-BRRK-CRYPTO-CARRY-ATLAS-0072-CAPTURE-0002
+          path: ${{ runner.temp }}/capture-0002-claim/EXECUTION_CLAIM.json
+          if-no-files-found: error
+          retention-days: 90
+          overwrite: false
+
+      - name: Execute exact frozen CAPTURE-0002 objects once after durable claim
+        if: github.event_name == 'push'
+        id: capture
+        env:
+          CLAIM_ARTIFACT_ID: ${{ steps.claim_upload.outputs.artifact-id }}
+        run: |
+          set -euo pipefail
+          test -n "$CLAIM_ARTIFACT_ID"
+          STORAGE_ROOT="$RUNNER_TEMP/capture-0002-storage"
+          mkdir -p "$STORAGE_ROOT"
+          set +e
+          python research/brrk_crypto_carry_atlas_0072/capture_wiring_0002_fixed.py \
+            --storage-root "$STORAGE_ROOT" \
+            --capture-only \
+            --execute-live-capture \
+            --durable-storage-attested \
+            --zero-existing-artifact-preflight-pass
+          rc=$?
+          set -e
+          echo "capture_rc=$rc" >> "$GITHUB_OUTPUT"
+          echo "storage_root=$STORAGE_ROOT" >> "$GITHUB_OUTPUT"
+          echo "CAPTURE_0002_CAPTURE_RC=$rc"
+          exit 0
+
+      - name: Durably upload raw, partial, or failure state before any parse
+        if: github.event_name == 'push'
+        id: raw_upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: 0072-capture-raw-BRRK-CRYPTO-CARRY-ATLAS-0072-CAPTURE-0002
+          path: ${{ steps.capture.outputs.storage_root }}/research/brrk_crypto_carry_atlas_0072/captures/BRRK-CRYPTO-CARRY-ATLAS-0072-CAPTURE-0002/
+          if-no-files-found: error
+          retention-days: 90
+          overwrite: false
+
+      - name: Stop permanently after failed or partial capture once raw state is durable
+        if: github.event_name == 'push' && steps.capture.outputs.capture_rc != '0'
+        run: |
+          echo 'CAPTURE_0002_FAILED_OR_PARTIAL_DURABLY_RECORDED_NO_REFETCH'
+          exit 86
+
+      - name: Create hash-bound durability receipt after successful raw artifact upload
+        if: github.event_name == 'push' && steps.capture.outputs.capture_rc == '0'
+        env:
+          STORAGE_ROOT: ${{ steps.capture.outputs.storage_root }}
+          RAW_ARTIFACT_ID: ${{ steps.raw_upload.outputs.artifact-id }}
+          RAW_ARTIFACT_URL: ${{ steps.raw_upload.outputs.artifact-url }}
+          RAW_ARTIFACT_DIGEST: ${{ steps.raw_upload.outputs.artifact-digest }}
+        run: |
+          set -euo pipefail
+          test -n "$RAW_ARTIFACT_ID"
+          python - <<'PY'
+          import os
+          from datetime import datetime, timezone
+          from pathlib import Path
+          import sys
+          sys.path.insert(0, 'research/brrk_crypto_carry_atlas_0072')
+          import capture_wiring_0002_fixed as mod
+          storage = Path(os.environ['STORAGE_ROOT'])
+          root = mod.base.capture_root(storage)
+          staging = mod.base.load(root / 'STAGING_MANIFEST.json')
+          mod.base.write_durability_receipt(
+              root / 'DURABILITY_RECEIPT.json',
+              staging,
+              durable_backend='GITHUB_ACTIONS_ARTIFACT',
+              durable_root_ref=os.environ['RAW_ARTIFACT_URL'],
+              artifact_id=os.environ['RAW_ARTIFACT_ID'],
+              artifact_url=os.environ['RAW_ARTIFACT_URL'],
+              artifact_digest=os.environ['RAW_ARTIFACT_DIGEST'],
+              archived_at_utc=datetime.now(timezone.utc).isoformat().replace('+00:00','Z'),
+          )
+          print('CAPTURE_0002_DURABILITY_RECEIPT_CREATED_AFTER_RAW_UPLOAD')
+          PY
+
+      - name: Finalize metadata only from persisted checksum-verified durable bytes
+        if: github.event_name == 'push' && steps.capture.outputs.capture_rc == '0'
+        env:
+          STORAGE_ROOT: ${{ steps.capture.outputs.storage_root }}
+        run: |
+          set -euo pipefail
+          ROOT="$STORAGE_ROOT/research/brrk_crypto_carry_atlas_0072/captures/BRRK-CRYPTO-CARRY-ATLAS-0072-CAPTURE-0002"
+          python research/brrk_crypto_carry_atlas_0072/capture_wiring_0002_fixed.py \
+            --storage-root "$STORAGE_ROOT" \
+            --finalize \
+            --staging-json "$ROOT/STAGING_MANIFEST.json" \
+            --receipt "$ROOT/DURABILITY_RECEIPT.json"
+
+      - name: Validate metadata-only support output and zero Stage-8 consumption
+        if: github.event_name == 'push' && steps.capture.outputs.capture_rc == '0'
+        env:
+          STORAGE_ROOT: ${{ steps.capture.outputs.storage_root }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          root = Path(os.environ['STORAGE_ROOT']) / 'research/brrk_crypto_carry_atlas_0072/captures/BRRK-CRYPTO-CARRY-ATLAS-0072-CAPTURE-0002'
+          support = json.loads((root / 'SUPPORT_MANIFEST.json').read_text())
+          assert support['archive_object_count'] == 15
+          assert support['checksum_object_count'] == 15
+          assert support['network_object_count_total'] == 30
+          assert support['controlled_scientific_history_reads_to_researcher'] == 0
+          assert support['stage8_attempt_consumed'] == 0
+          assert support['lifecycle_credit'] == 'NONE_STAGE_3_REMAINS_2_OF_10'
+          assert len(support['objects']) == 15
+          forbidden = {'raw_values','prices','returns','funding_values','pnl','sharpe','cagr'}
+          assert not any(forbidden.intersection(item.keys()) for item in support['objects'])
+          print('CAPTURE_0002_METADATA_ONLY_SUPPORT_VALID')
+          PY
+
+      - name: Upload metadata-only CAPTURE-0002 support artifact
+        if: github.event_name == 'push' && steps.capture.outputs.capture_rc == '0'
+        uses: actions/upload-artifact@v4
+        with:
+          name: 0072-capture-support-BRRK-CRYPTO-CARRY-ATLAS-0072-CAPTURE-0002
+          path: |
+            ${{ steps.capture.outputs.storage_root }}/research/brrk_crypto_carry_atlas_0072/captures/BRRK-CRYPTO-CARRY-ATLAS-0072-CAPTURE-0002/SUPPORT_MANIFEST.json
+            ${{ steps.capture.outputs.storage_root }}/research/brrk_crypto_carry_atlas_0072/captures/BRRK-CRYPTO-CARRY-ATLAS-0072-CAPTURE-0002/CAPTURE_RECEIPT.json
+            ${{ steps.capture.outputs.storage_root }}/research/brrk_crypto_carry_atlas_0072/captures/BRRK-CRYPTO-CARRY-ATLAS-0072-CAPTURE-0002/DURABILITY_RECEIPT.json
+          if-no-files-found: error
+          retention-days: 90
+          overwrite: false
