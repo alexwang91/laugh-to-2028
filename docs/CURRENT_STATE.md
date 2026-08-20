@@ -1,6 +1,6 @@
 # BRRK Current State
 
-Last updated: 2026-08-19
+Last updated: 2026-08-20
 
 Authoritative repository: `alexwang91/laugh-to-2028`.
 
@@ -200,7 +200,7 @@ The immutable closeout records the FAIL without rescue or reinterpretation. Gove
 ## 0072 carry atlas
 
 Research ID = `BRRK-CRYPTO-CARRY-ATLAS-0072`.
-State = `OWNER-FIRST + DESIGN MERGED / STAGE 3 PREREGISTRATION FIRST CAPTURE SEALED FAILED / RECONCILIATION MERGED / SOURCE ACCESS REQUALIFICATION PLAN MERGED / ACCESS PROBE EXECUTION REQUEST MERGED / ACCESS PROBE WORKFLOW MERGED / THREE DISPATCHES GUARD-SKIPPED / RUNNER-SIDE REQUEST-ID GATE MERGED / OBSERVABLE FAIL-CLOSED GATE REPAIR IN PROGRESS / FORMAL COMPLETION 2/10 / CONTROLLED ATTEMPT 0/1 / CONTROLLED READS 0`.
+State = `OWNER-FIRST + DESIGN MERGED / STAGE 3 PREREGISTRATION FIRST CAPTURE SEALED FAILED / RECONCILIATION MERGED / SOURCE ACCESS REQUALIFICATION PLAN MERGED / ACCESS PROBE EXECUTION REQUEST MERGED / ACCESS PROBE WORKFLOW MERGED / THREE DISPATCHES GUARD-SKIPPED / RUNNER-SIDE REQUEST-ID GATE MERGED / OBSERVABLE FAIL-CLOSED GATE MERGED / ONE-SHOT MERGE-TRIGGER AMENDMENT IN PROGRESS / FORMAL COMPLETION 2/10 / CONTROLLED ATTEMPT 0/1 / CONTROLLED READS 0`.
 
 Lifecycle anchors:
 - roadmap merge `169d9adf6531dc099a43541df413fef079322adf`;
@@ -222,11 +222,12 @@ Lifecycle anchors:
 - Stage 3 access-probe execution-request merge `82163c1eaf51b25b09cf2c0119c60ba9e515668e`;
 - Stage 3 access-probe workflow merge `cb1fafce46b3b17b9450ed58211408846530b272`;
 - Stage 3 access-probe guard repair #327 merge `c17ed7b404456b0121c842eaed98a629c0929127`;
-- Stage 3 runner-side request-id gate repair #328 merge `1e2dd25ee9deed8ca19a4fbf31b482ba4076ad5d`.
+- Stage 3 runner-side request-id gate repair #328 merge `1e2dd25ee9deed8ca19a4fbf31b482ba4076ad5d`;
+- Stage 3 observable fail-closed gate repair #329 merge `c2e57537fe66f050e6aae4b70e343e37c197fa9d`.
 - bounded access-probe dispatch run `32245507502`: contract validation PASS; execution job SKIPPED before any network probe; no artifact produced.
 - bounded access-probe dispatch run `32245682524`: contract validation PASS; execution job SKIPPED before any network probe; no artifact produced.
 - bounded access-probe dispatch run `32291738138`: exact main `c17ed7b404456b0121c842eaed98a629c0929127`; contract validation PASS; execution job still SKIPPED before any network probe; no artifact produced.
-- prospective observable fail-closed gate repair PR #329 removes the critical whole-job `if`, defaults the frozen request id, and records/validates event, ref, `inputs` and `github.event.inputs` before any network execution; no science, source, method, attempt, or controlled-read rule changes.
+- prospective one-shot merge-trigger amendment replaces only the inaccessible/manual execution trigger with a unique immutable marker pushed to exact `main`; the marker validates the same request/probe identity and changes no source, probe method, payload-read, attempt, controlled-read, lifecycle, or production rule.
 
 `CAPTURE-0001` is sealed failed and permanently non-retriable after HTTP 451 on its first frozen request. No source payload object was persisted; the durable artifact contains only failure/empty staging state and has not been downloaded or opened by the researcher. Controlled scientific/history reads remain `0`; Stage-8 attempt remains `0/1` unconsumed.
 
@@ -234,7 +235,7 @@ Current prospective work does not admit or substitute any source. It freezes onl
 
 ## Exact next step
 
-Merge PR #329 only after exact-head standing CI succeeds. Do not issue another blind dispatch before that merge. After merge, perform one fresh bounded access-probe workflow_dispatch on exact `main`; the input defaults to `BRRK-CRYPTO-CARRY-ATLAS-0072-ACCESS-PROBE-REQUEST-0001`, and the always-started control job must either expose a precise gate failure in logs or execute exactly the two frozen technical probes. Read only resulting technical-access evidence. If at least one frozen delivery interface is technically reachable, create a separate prospective source-identity amendment before any new capture; if neither is reachable, immutably record the access blocker. `CAPTURE-0001` remains permanently closed. Full Stage 3 remains 2/10.
+Merge the prospective one-shot merge-trigger amendment only after exact-head standing CI succeeds. The merge itself introduces the unique `ACCESS_PROBE_EXECUTION_TRIGGER_0001.json` marker on exact `main`, which automatically starts the bounded access-probe workflow through the path-restricted `push` trigger. The always-started control job must validate the amendment, marker, event and ref before any network step and may then execute exactly the two frozen technical probes. No manual workflow_dispatch is required. Read only resulting technical-access evidence. If at least one frozen delivery interface is technically reachable, create a separate prospective source-identity amendment before any new capture; if neither is reachable, immutably record the access blocker. `CAPTURE-0001` remains permanently closed. Full Stage 3 remains 2/10.
 
 ## No-drift authority
 
@@ -253,5 +254,5 @@ Canonical BRRK-0011 = NO CHANGE.
 0070 = CLOSED / NO SAME-ID ACTION.
 0071 = CONTROLLED BOUNDARY MERGED / ZERO-RESULT PREFLIGHT BLOCKED_PRE_ATTEMPT_CONTROLLED_CONTENT_CONTAMINATION / ATTEMPT 0/1.
 0083 = 10/10 COMPLETE / `FAIL_NO_ROBUST_LOCKED_P02_ECONOMIC_CONTROLLER_VALUE` / CLOSED TO SAME-ID RERUN / ATTEMPT 1/1.
-0072 = OWNER-FIRST + DESIGN MERGED / STAGE 3 SOURCE ACCESS REQUALIFICATION PLAN MERGED / ACCESS PROBE EXECUTION REQUEST MERGED / ACCESS PROBE WORKFLOW MERGED / THREE DISPATCHES GUARD-SKIPPED / RUNNER-SIDE REQUEST-ID GATE MERGED / OBSERVABLE FAIL-CLOSED GATE REPAIR IN PROGRESS / FORMAL COMPLETION 2/10 / ATTEMPT 0/1 / CONTROLLED READS 0.
+0072 = OWNER-FIRST + DESIGN MERGED / STAGE 3 SOURCE ACCESS REQUALIFICATION PLAN MERGED / ACCESS PROBE EXECUTION REQUEST MERGED / ACCESS PROBE WORKFLOW MERGED / THREE DISPATCHES GUARD-SKIPPED / RUNNER-SIDE REQUEST-ID GATE MERGED / OBSERVABLE FAIL-CLOSED GATE MERGED / ONE-SHOT MERGE-TRIGGER AMENDMENT IN PROGRESS / FORMAL COMPLETION 2/10 / ATTEMPT 0/1 / CONTROLLED READS 0.
 Phase 6 = NO CHANGE.
