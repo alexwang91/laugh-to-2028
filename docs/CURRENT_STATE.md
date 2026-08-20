@@ -200,7 +200,7 @@ The immutable closeout records the FAIL without rescue or reinterpretation. Gove
 ## 0072 carry atlas
 
 Research ID = `BRRK-CRYPTO-CARRY-ATLAS-0072`.
-State = `OWNER-FIRST + DESIGN MERGED / STAGE 3 PREREGISTRATION FIRST CAPTURE SEALED FAILED / RECONCILIATION MERGED / SOURCE ACCESS REQUALIFICATION PLAN MERGED / ACCESS PROBE EXECUTION REQUEST MERGED / ACCESS PROBE WORKFLOW MERGED / THREE DISPATCHES GUARD-SKIPPED / RUNNER-SIDE REQUEST-ID GATE MERGED / OBSERVABLE FAIL-CLOSED GATE MERGED / ONE-SHOT MERGE-TRIGGER MERGED / ACCESS PROBE SUCCESS_WITH_PARTIAL_TECHNICAL_REACHABILITY / SOURCE-IDENTITY AMENDMENT IN PROGRESS / FORMAL COMPLETION 2/10 / CONTROLLED ATTEMPT 0/1 / CONTROLLED READS 0`.
+State = `OWNER-FIRST + DESIGN MERGED / STAGE 3 PREREGISTRATION FIRST CAPTURE SEALED FAILED / RECONCILIATION MERGED / SOURCE ACCESS REQUALIFICATION PLAN MERGED / ACCESS PROBE EXECUTION REQUEST MERGED / ACCESS PROBE WORKFLOW MERGED / THREE DISPATCHES GUARD-SKIPPED / RUNNER-SIDE REQUEST-ID GATE MERGED / OBSERVABLE FAIL-CLOSED GATE MERGED / ONE-SHOT MERGE-TRIGGER MERGED / ACCESS PROBE SUCCESS_WITH_PARTIAL_TECHNICAL_REACHABILITY / SOURCE-IDENTITY AMENDMENT MERGED / CAPTURE-0002 REQUEST+OBJECT PLAN IN PROGRESS / FORMAL COMPLETION 2/10 / CONTROLLED ATTEMPT 0/1 / CONTROLLED READS 0`.
 
 Lifecycle anchors:
 - roadmap merge `169d9adf6531dc099a43541df413fef079322adf`;
@@ -225,20 +225,22 @@ Lifecycle anchors:
 - Stage 3 runner-side request-id gate repair #328 merge `1e2dd25ee9deed8ca19a4fbf31b482ba4076ad5d`;
 - Stage 3 observable fail-closed gate repair #329 merge `c2e57537fe66f050e6aae4b70e343e37c197fa9d`;
 - Stage 3 one-shot merge-trigger amendment #330 merge `788c59e1def18bd9cf9b38f8b832a326d8249f72`;
+- Stage 3 source-identity amendment #332 merge `55b673f24155b4fe801e8adfdbb2f797b6f0ed0f`;
 - bounded access-probe dispatch run `32245507502`: contract validation PASS; execution job SKIPPED before any network probe; no artifact produced.
 - bounded access-probe dispatch run `32245682524`: contract validation PASS; execution job SKIPPED before any network probe; no artifact produced.
 - bounded access-probe dispatch run `32291738138`: exact main `c17ed7b404456b0121c842eaed98a629c0929127`; contract validation PASS; execution job still SKIPPED before any network probe; no artifact produced.
 - unique one-shot access-probe push run `32412002636`, job `96564322145`: SUCCESS on exact main `788c59e1def18bd9cf9b38f8b832a326d8249f72`; artifact `9422472181` / `0072-access-probe-32412002636-1`; artifact ZIP SHA256 `b9f922ed17a855fe8f2a5292f3f198413ef6f0e190dba2f50ad7e2ab77e75576`; evidence payload SHA256 `9deda918c35f3a2a91a415ba0be8c703d2071f0844cb6c5d8cc6480840a45021`.
 - frozen technical evidence: `data.binance.vision` checksum-object HEAD = HTTP 200 (`TECHNICALLY_REACHABLE_UNDER_FROZEN_PROBE`); `api.bybit.com` headers-only instrument-metadata request = HTTP 403 (`NOT_TECHNICALLY_USABLE_UNDER_FROZEN_PROBE`). Technical reachability is not source admission, PIT proof or scientific support.
-- prospective source-identity amendment #332 records the post-probe capture eligibility boundary: no new source or family substitution; Binance archive only under already-enumerated archive families with exact future object identities frozen before fetch; Binance fapi and Bybit API are ineligible for the next capture under the current execution environment unless separately prospectively requalified.
+- merged source-identity amendment fixes the next-capture boundary: no new source or family substitution; Binance archive only under already-enumerated archive families with exact object identities frozen before fetch; Binance fapi and Bybit API are ineligible under the current execution environment unless separately prospectively requalified.
+- prospective `CAPTURE-0002` request/plan freezes support month `2026-07`, cutoff `2026-08-20T20:33:00Z`, exactly BTC/ETH/SOL, exactly five already-enumerated `data.binance.vision` archive families, 15 ZIP objects plus 15 paired `.CHECKSUM` objects, zero retries and zero redirects. `premiumIndexKlines` is raw support only and is not perpetual funding.
 
 `CAPTURE-0001` is sealed failed and permanently non-retriable after HTTP 451 on its first frozen request. No source payload object was persisted. Controlled scientific/history reads remain `0`; Stage-8 attempt remains `0/1` unconsumed.
 
-The successful access probe read no scientific payload. Evidence explicitly records `scientific_payload_read=false`, `controlled_scientific_history_reads_to_researcher=0`, and `stage8_attempt_consumed=0`. Under DESIGN, families lacking prospectively sufficient source support may be omitted but may not be replaced by an eleventh family; under the current execution environment the Bybit-precedence cross-venue funding/basis-dispersion and open-interest families remain prospectively insufficient unless separately requalified before full Stage 3 preregistration.
+The successful access probe read no scientific payload. Evidence explicitly records `scientific_payload_read=false`, `controlled_scientific_history_reads_to_researcher=0`, and `stage8_attempt_consumed=0`. Under DESIGN, families lacking prospectively sufficient source support may be omitted but may not be replaced by an eleventh family. CAPTURE-0002 is support-only: it may establish immutable raw/archive identities, checksum integrity, schema/timestamp/coverage metadata and family support truth, but may not release source values or scientific statistics.
 
 ## Exact next step
 
-Merge the prospective source-identity amendment only after exact-head standing CI succeeds. After that merge, create a separate governed support-capture request with a new capture request ID (never `CAPTURE-0001`) and freeze exact eligible `data.binance.vision` archive objects/checksums before any network fetch. The next capture may use only archive families already enumerated in `SOURCE_IDENTITY_CONTRACT.json`; it may not assume `fapi.binance.com` or `api.bybit.com` is usable under the current execution environment. No ad-hoc new host probe, no source substitution and no Stage-8 action are permitted. Full Stage 3 remains 2/10 until the complete preregistration truthfully binds captured identities and all frozen numerical/scientific rules.
+Merge the CAPTURE-0002 request/object plan only after exact-head standing CI succeeds. After merge, create a separate CAPTURE-0002 implementation/execution boundary that mechanically reuses the existing create-only raw-byte, SHA256, checksum-verification, metadata-only, fail-closed/no-retry semantics while changing only the distinct request/plan identity and durable layout. Do not execute CAPTURE-0002 until that implementation/boundary is separately merged and zero-existing-artifact preflight succeeds. Any future execution must use only the 30 exact `data.binance.vision` objects frozen in `CAPTURE_PLAN_0002.json`; no fapi, Bybit, ad-hoc host, CAPTURE-0001 retry or Stage-8 action is permitted. Full Stage 3 remains 2/10.
 
 ## No-drift authority
 
@@ -257,5 +259,5 @@ Canonical BRRK-0011 = NO CHANGE.
 0070 = CLOSED / NO SAME-ID ACTION.
 0071 = CONTROLLED BOUNDARY MERGED / ZERO-RESULT PREFLIGHT BLOCKED_PRE_ATTEMPT_CONTROLLED_CONTENT_CONTAMINATION / ATTEMPT 0/1.
 0083 = 10/10 COMPLETE / `FAIL_NO_ROBUST_LOCKED_P02_ECONOMIC_CONTROLLER_VALUE` / CLOSED TO SAME-ID RERUN / ATTEMPT 1/1.
-0072 = OWNER-FIRST + DESIGN MERGED / STAGE 3 SOURCE ACCESS REQUALIFICATION PLAN MERGED / ACCESS PROBE EXECUTION REQUEST MERGED / ACCESS PROBE WORKFLOW MERGED / THREE DISPATCHES GUARD-SKIPPED / RUNNER-SIDE REQUEST-ID GATE MERGED / OBSERVABLE FAIL-CLOSED GATE MERGED / ONE-SHOT MERGE-TRIGGER MERGED / ACCESS PROBE SUCCESS_WITH_PARTIAL_TECHNICAL_REACHABILITY / SOURCE-IDENTITY AMENDMENT IN PROGRESS / FORMAL COMPLETION 2/10 / ATTEMPT 0/1 / CONTROLLED READS 0.
+0072 = OWNER-FIRST + DESIGN MERGED / STAGE 3 SOURCE ACCESS REQUALIFICATION PLAN MERGED / ACCESS PROBE EXECUTION REQUEST MERGED / ACCESS PROBE WORKFLOW MERGED / THREE DISPATCHES GUARD-SKIPPED / RUNNER-SIDE REQUEST-ID GATE MERGED / OBSERVABLE FAIL-CLOSED GATE MERGED / ONE-SHOT MERGE-TRIGGER MERGED / ACCESS PROBE SUCCESS_WITH_PARTIAL_TECHNICAL_REACHABILITY / SOURCE-IDENTITY AMENDMENT MERGED / CAPTURE-0002 REQUEST+OBJECT PLAN IN PROGRESS / FORMAL COMPLETION 2/10 / ATTEMPT 0/1 / CONTROLLED READS 0.
 Phase 6 = NO CHANGE.

@@ -1,0 +1,155 @@
+{
+  "schema_version": 1,
+  "plan_id": "BRRK-CRYPTO-CARRY-ATLAS-0072-CAPTURE-0002-SUPPORT-PLAN-V1",
+  "capture_request_id": "BRRK-CRYPTO-CARRY-ATLAS-0072-CAPTURE-0002",
+  "research_id": "BRRK-CRYPTO-CARRY-ATLAS-0072",
+  "status": "PROSPECTIVE_NOT_EXECUTED",
+  "purpose": "Exact create-only object plan for CAPTURE-0002. Every listed object belongs to an archive family already enumerated in SOURCE_IDENTITY_CONTRACT.json. This plan performs no network access and freezes no scientific result.",
+  "source_identity_amendment_merge": "55b673f24155b4fe801e8adfdbb2f797b6f0ed0f",
+  "capture_cutoff_utc": "2026-08-20T20:33:00Z",
+  "support_month": "2026-07",
+  "host": "data.binance.vision",
+  "automatic_retry": false,
+  "redirect_following": false,
+  "response_body_echo": false,
+  "scientific_computation": false,
+  "archive_object_count": 15,
+  "checksum_object_count": 15,
+  "network_object_count_total": 30,
+  "objects": [
+    {
+      "object_id": "BINANCE_BTC_SPOT_MONTHLY_KLINES_202607",
+      "asset": "BTC",
+      "archive_family": "spot/monthly/klines",
+      "capture_role": "SPOT_REFERENCE_PRICE",
+      "archive_url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1d/BTCUSDT-1d-2026-07.zip",
+      "checksum_url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1d/BTCUSDT-1d-2026-07.zip.CHECKSUM"
+    },
+    {
+      "object_id": "BINANCE_BTC_UM_MONTHLY_KLINES_202607",
+      "asset": "BTC",
+      "archive_family": "futures/um/monthly/klines",
+      "capture_role": "PERPETUAL_TRADE_PRICE",
+      "archive_url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT/1d/BTCUSDT-1d-2026-07.zip",
+      "checksum_url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT/1d/BTCUSDT-1d-2026-07.zip.CHECKSUM"
+    },
+    {
+      "object_id": "BINANCE_BTC_UM_MONTHLY_MARK_PRICE_KLINES_202607",
+      "asset": "BTC",
+      "archive_family": "futures/um/monthly/markPriceKlines",
+      "capture_role": "MARK_PRICE",
+      "archive_url": "https://data.binance.vision/data/futures/um/monthly/markPriceKlines/BTCUSDT/1d/BTCUSDT-1d-2026-07.zip",
+      "checksum_url": "https://data.binance.vision/data/futures/um/monthly/markPriceKlines/BTCUSDT/1d/BTCUSDT-1d-2026-07.zip.CHECKSUM"
+    },
+    {
+      "object_id": "BINANCE_BTC_UM_MONTHLY_INDEX_PRICE_KLINES_202607",
+      "asset": "BTC",
+      "archive_family": "futures/um/monthly/indexPriceKlines",
+      "capture_role": "INDEX_PRICE",
+      "archive_url": "https://data.binance.vision/data/futures/um/monthly/indexPriceKlines/BTCUSDT/1d/BTCUSDT-1d-2026-07.zip",
+      "checksum_url": "https://data.binance.vision/data/futures/um/monthly/indexPriceKlines/BTCUSDT/1d/BTCUSDT-1d-2026-07.zip.CHECKSUM"
+    },
+    {
+      "object_id": "BINANCE_BTC_UM_MONTHLY_PREMIUM_INDEX_KLINES_202607",
+      "asset": "BTC",
+      "archive_family": "futures/um/monthly/premiumIndexKlines",
+      "capture_role": "PREMIUM_INDEX_RAW_SUPPORT_ONLY",
+      "archive_url": "https://data.binance.vision/data/futures/um/monthly/premiumIndexKlines/BTCUSDT/1d/BTCUSDT-1d-2026-07.zip",
+      "checksum_url": "https://data.binance.vision/data/futures/um/monthly/premiumIndexKlines/BTCUSDT/1d/BTCUSDT-1d-2026-07.zip.CHECKSUM"
+    },
+    {
+      "object_id": "BINANCE_ETH_SPOT_MONTHLY_KLINES_202607",
+      "asset": "ETH",
+      "archive_family": "spot/monthly/klines",
+      "capture_role": "SPOT_REFERENCE_PRICE",
+      "archive_url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/1d/ETHUSDT-1d-2026-07.zip",
+      "checksum_url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/1d/ETHUSDT-1d-2026-07.zip.CHECKSUM"
+    },
+    {
+      "object_id": "BINANCE_ETH_UM_MONTHLY_KLINES_202607",
+      "asset": "ETH",
+      "archive_family": "futures/um/monthly/klines",
+      "capture_role": "PERPETUAL_TRADE_PRICE",
+      "archive_url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT/1d/ETHUSDT-1d-2026-07.zip",
+      "checksum_url": "https://data.binance.vision/data/futures/um/monthly/klines/ETHUSDT/1d/ETHUSDT-1d-2026-07.zip.CHECKSUM"
+    },
+    {
+      "object_id": "BINANCE_ETH_UM_MONTHLY_MARK_PRICE_KLINES_202607",
+      "asset": "ETH",
+      "archive_family": "futures/um/monthly/markPriceKlines",
+      "capture_role": "MARK_PRICE",
+      "archive_url": "https://data.binance.vision/data/futures/um/monthly/markPriceKlines/ETHUSDT/1d/ETHUSDT-1d-2026-07.zip",
+      "checksum_url": "https://data.binance.vision/data/futures/um/monthly/markPriceKlines/ETHUSDT/1d/ETHUSDT-1d-2026-07.zip.CHECKSUM"
+    },
+    {
+      "object_id": "BINANCE_ETH_UM_MONTHLY_INDEX_PRICE_KLINES_202607",
+      "asset": "ETH",
+      "archive_family": "futures/um/monthly/indexPriceKlines",
+      "capture_role": "INDEX_PRICE",
+      "archive_url": "https://data.binance.vision/data/futures/um/monthly/indexPriceKlines/ETHUSDT/1d/ETHUSDT-1d-2026-07.zip",
+      "checksum_url": "https://data.binance.vision/data/futures/um/monthly/indexPriceKlines/ETHUSDT/1d/ETHUSDT-1d-2026-07.zip.CHECKSUM"
+    },
+    {
+      "object_id": "BINANCE_ETH_UM_MONTHLY_PREMIUM_INDEX_KLINES_202607",
+      "asset": "ETH",
+      "archive_family": "futures/um/monthly/premiumIndexKlines",
+      "capture_role": "PREMIUM_INDEX_RAW_SUPPORT_ONLY",
+      "archive_url": "https://data.binance.vision/data/futures/um/monthly/premiumIndexKlines/ETHUSDT/1d/ETHUSDT-1d-2026-07.zip",
+      "checksum_url": "https://data.binance.vision/data/futures/um/monthly/premiumIndexKlines/ETHUSDT/1d/ETHUSDT-1d-2026-07.zip.CHECKSUM"
+    },
+    {
+      "object_id": "BINANCE_SOL_SPOT_MONTHLY_KLINES_202607",
+      "asset": "SOL",
+      "archive_family": "spot/monthly/klines",
+      "capture_role": "SPOT_REFERENCE_PRICE",
+      "archive_url": "https://data.binance.vision/data/spot/monthly/klines/SOLUSDT/1d/SOLUSDT-1d-2026-07.zip",
+      "checksum_url": "https://data.binance.vision/data/spot/monthly/klines/SOLUSDT/1d/SOLUSDT-1d-2026-07.zip.CHECKSUM"
+    },
+    {
+      "object_id": "BINANCE_SOL_UM_MONTHLY_KLINES_202607",
+      "asset": "SOL",
+      "archive_family": "futures/um/monthly/klines",
+      "capture_role": "PERPETUAL_TRADE_PRICE",
+      "archive_url": "https://data.binance.vision/data/futures/um/monthly/klines/SOLUSDT/1d/SOLUSDT-1d-2026-07.zip",
+      "checksum_url": "https://data.binance.vision/data/futures/um/monthly/klines/SOLUSDT/1d/SOLUSDT-1d-2026-07.zip.CHECKSUM"
+    },
+    {
+      "object_id": "BINANCE_SOL_UM_MONTHLY_MARK_PRICE_KLINES_202607",
+      "asset": "SOL",
+      "archive_family": "futures/um/monthly/markPriceKlines",
+      "capture_role": "MARK_PRICE",
+      "archive_url": "https://data.binance.vision/data/futures/um/monthly/markPriceKlines/SOLUSDT/1d/SOLUSDT-1d-2026-07.zip",
+      "checksum_url": "https://data.binance.vision/data/futures/um/monthly/markPriceKlines/SOLUSDT/1d/SOLUSDT-1d-2026-07.zip.CHECKSUM"
+    },
+    {
+      "object_id": "BINANCE_SOL_UM_MONTHLY_INDEX_PRICE_KLINES_202607",
+      "asset": "SOL",
+      "archive_family": "futures/um/monthly/indexPriceKlines",
+      "capture_role": "INDEX_PRICE",
+      "archive_url": "https://data.binance.vision/data/futures/um/monthly/indexPriceKlines/SOLUSDT/1d/SOLUSDT-1d-2026-07.zip",
+      "checksum_url": "https://data.binance.vision/data/futures/um/monthly/indexPriceKlines/SOLUSDT/1d/SOLUSDT-1d-2026-07.zip.CHECKSUM"
+    },
+    {
+      "object_id": "BINANCE_SOL_UM_MONTHLY_PREMIUM_INDEX_KLINES_202607",
+      "asset": "SOL",
+      "archive_family": "futures/um/monthly/premiumIndexKlines",
+      "capture_role": "PREMIUM_INDEX_RAW_SUPPORT_ONLY",
+      "archive_url": "https://data.binance.vision/data/futures/um/monthly/premiumIndexKlines/SOLUSDT/1d/SOLUSDT-1d-2026-07.zip",
+      "checksum_url": "https://data.binance.vision/data/futures/um/monthly/premiumIndexKlines/SOLUSDT/1d/SOLUSDT-1d-2026-07.zip.CHECKSUM"
+    }
+  ],
+  "cross_object_rules": [
+    "Each ZIP must be persisted create-only before parsing.",
+    "Each ZIP must have its paired .CHECKSUM object persisted create-only and verified before parsing.",
+    "Any missing object, non-success HTTP status, checksum mismatch, schema failure or timestamp failure stops the capture closed with no automatic retry.",
+    "premiumIndexKlines is captured only as raw support and may not be interpreted as perpetual funding.",
+    "No fapi.binance.com or api.bybit.com request is permitted under CAPTURE-0002.",
+    "No source value series, scientific statistic, feature, label, signal, position, PnL or performance metric may be emitted to logs or the researcher."
+  ],
+  "lifecycle_credit": "NONE_STAGE_3_REMAINS_2_OF_10",
+  "controlled_scientific_history_reads_to_researcher": 0,
+  "stage8_attempt_consumed": 0,
+  "production_authorized": false,
+  "signature_authorized": false,
+  "order_submission_authorized": false
+}
