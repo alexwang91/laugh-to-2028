@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "target_branch": "research/0072-capture-0002-execution-request-v1",
+  "research_id": "BRRK-CRYPTO-CARRY-ATLAS-0072",
+  "execution_request_id": "BRRK-CRYPTO-CARRY-ATLAS-0072-CAPTURE-0002-EXECUTION-REQUEST-0001",
+  "trigger_id": "BRRK-CRYPTO-CARRY-ATLAS-0072-CAPTURE-0002-EXECUTION-TRIGGER-0001",
+  "preflight_evidence_merge": "e095eca33f5dd4280b0f47e8acaf83e2d067c628",
+  "boundary_merge": "be7aaf4640869d27a7efec974efa45d072ec9a7b",
+  "formal_completion": "2/10",
+  "stage8_attempt": "0/1",
+  "controlled_reads": 0,
+  "production_authorized": false,
+  "replacements": [
+    {
+      "old": "CAPTURE-0002 IMPLEMENTATION+BOUNDARY MERGED / ZERO-EXISTING-ARTIFACT PREFLIGHT PASS / PREFLIGHT EVIDENCE RECORD IN PROGRESS / FORMAL COMPLETION 2/10",
+      "new": "CAPTURE-0002 IMPLEMENTATION+BOUNDARY MERGED / ZERO-EXISTING-ARTIFACT PREFLIGHT PASS / PREFLIGHT EVIDENCE MERGED / CAPTURE-0002 ONE-SHOT EXECUTION REQUEST+TRIGGER IN PROGRESS / FORMAL COMPLETION 2/10",
+      "count": 2
+    },
+    {
+      "old": "- Stage 3 CAPTURE-0002 implementation/execution-boundary #334 merge `be7aaf4640869d27a7efec974efa45d072ec9a7b`; boundary authorizes no network execution and earns no lifecycle credit.\n",
+      "new": "- Stage 3 CAPTURE-0002 implementation/execution-boundary #334 merge `be7aaf4640869d27a7efec974efa45d072ec9a7b`; boundary authorizes no network execution and earns no lifecycle credit.\n- Stage 3 CAPTURE-0002 zero-artifact preflight evidence #336 merge `e095eca33f5dd4280b0f47e8acaf83e2d067c628`; preflight PASS records execution-claim/raw/support artifacts absent, result files absent, source-network requests 0, scientific payload reads 0, Stage-8 attempt 0 and controlled reads 0.\n- Stage 3 CAPTURE-0002 one-shot execution request/trigger PR #337 is in progress; PR validation is zero source network and the unique marker may authorize source fetch only on its first landing on main after all-green expected-head merge.\n",
+      "count": 1
+    },
+    {
+      "old": "Require all standing CI SUCCESS on the preflight-evidence/CURRENT_STATE forward PR and expected-head merge it without lifecycle credit. Only after that merge may a separate prospective one-shot CAPTURE-0002 execution request/trigger be created, binding the already-frozen 30 `data.binance.vision` objects and the preflight PASS evidence. No source fetch may occur before that separate authorization merges; no fapi, Bybit, ad-hoc host, CAPTURE-0001 retry or Stage-8 action is permitted. Full Stage 3 remains 2/10.",
+      "new": "Require all standing CI SUCCESS on PR #337 exact head after this handoff writer removes its one-time request. Merge only if head is unchanged, open, mergeable and non-draft. The merge first-lands the unique CAPTURE-0002 trigger marker on main; the guarded workflow must durably create the fixed execution-claim artifact before any source network request and may then fetch only the 30 already-frozen `data.binance.vision` objects at most once. Any claim/raw/partial/failure/support artifact permanently blocks refetch. No fapi, Bybit, ad-hoc host, CAPTURE-0001 retry, raw-value exposure or Stage-8 action is permitted. Full Stage 3 remains 2/10 until support metadata and full preregistration merge.",
+      "count": 1
+    }
+  ]
+}
