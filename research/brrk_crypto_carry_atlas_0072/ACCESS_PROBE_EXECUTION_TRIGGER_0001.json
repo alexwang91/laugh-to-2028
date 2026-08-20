@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "trigger_id": "BRRK-CRYPTO-CARRY-ATLAS-0072-ACCESS-PROBE-TRIGGER-0001",
+  "amendment_id": "BRRK-CRYPTO-CARRY-ATLAS-0072-ACCESS-PROBE-TRIGGER-AMENDMENT-0001",
+  "research_id": "BRRK-CRYPTO-CARRY-ATLAS-0072",
+  "request_id": "BRRK-CRYPTO-CARRY-ATLAS-0072-ACCESS-PROBE-REQUEST-0001",
+  "probe_id": "BRRK-CRYPTO-CARRY-ATLAS-0072-ACCESS-PROBE-0001",
+  "execute_once": true,
+  "reusable": false,
+  "automatic_retry": false,
+  "capture_0001_retry_forbidden": true,
+  "scientific_scope_change": false,
+  "source_set_change": false,
+  "response_body_read_or_persist": false,
+  "stage8_attempt_consumption": 0,
+  "controlled_scientific_history_reads_to_researcher": 0,
+  "production_authorized": false,
+  "signature_authorized": false,
+  "order_submission_authorized": false
+}
