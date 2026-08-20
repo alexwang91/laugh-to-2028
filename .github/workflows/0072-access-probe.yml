@@ -6,15 +6,15 @@ on:
       - 'research/brrk_crypto_carry_atlas_0072/access_probe.py'
       - 'research/brrk_crypto_carry_atlas_0072/ACCESS_PROBE_EXECUTION_REQUEST.json'
       - 'research/brrk_crypto_carry_atlas_0072/SOURCE_ACCESS_REQUALIFICATION_PLAN.json'
+      - 'research/brrk_crypto_carry_atlas_0072/ACCESS_PROBE_TRIGGER_AMENDMENT_0001.json'
+      - 'research/brrk_crypto_carry_atlas_0072/ACCESS_PROBE_EXECUTION_TRIGGER_0001.json'
       - '.github/workflows/0072-access-probe.yml'
       - 'docs/CURRENT_STATE.md'
-  workflow_dispatch:
-    inputs:
-      probe_request_id:
-        description: 'Exact merged 0072 bounded access-probe request id'
-        required: true
-        default: 'BRRK-CRYPTO-CARRY-ATLAS-0072-ACCESS-PROBE-REQUEST-0001'
-        type: string
+  push:
+    branches:
+      - main
+    paths:
+      - 'research/brrk_crypto_carry_atlas_0072/ACCESS_PROBE_EXECUTION_TRIGGER_0001.json'
 
 permissions:
   contents: read
@@ -30,38 +30,68 @@ jobs:
           python-version: '3.12'
       - name: Validate frozen access-probe contract without network access
         run: python research/brrk_crypto_carry_atlas_0072/access_probe.py --validate-contract
-      - name: Diagnose gate and execute only on exact governed dispatch
-        env:
-          PROBE_REQUEST_ID_INPUTS: ${{ inputs.probe_request_id }}
-          PROBE_REQUEST_ID_EVENT: ${{ github.event.inputs.probe_request_id }}
+      - name: Validate prospective one-shot trigger and execute only after merge to main
         run: |
           python - <<'PY'
+          import json
           import os
           import subprocess
           from pathlib import Path
 
           event = os.environ.get('GITHUB_EVENT_NAME', '')
           ref = os.environ.get('GITHUB_REF', '')
-          via_inputs = os.environ.get('PROBE_REQUEST_ID_INPUTS', '')
-          via_event = os.environ.get('PROBE_REQUEST_ID_EVENT', '')
-          expected = 'BRRK-CRYPTO-CARRY-ATLAS-0072-ACCESS-PROBE-REQUEST-0001'
+          expected_request = 'BRRK-CRYPTO-CARRY-ATLAS-0072-ACCESS-PROBE-REQUEST-0001'
+          expected_probe = 'BRRK-CRYPTO-CARRY-ATLAS-0072-ACCESS-PROBE-0001'
+          expected_amendment = 'BRRK-CRYPTO-CARRY-ATLAS-0072-ACCESS-PROBE-TRIGGER-AMENDMENT-0001'
+          amendment_path = Path('research/brrk_crypto_carry_atlas_0072/ACCESS_PROBE_TRIGGER_AMENDMENT_0001.json')
+          trigger_path = Path('research/brrk_crypto_carry_atlas_0072/ACCESS_PROBE_EXECUTION_TRIGGER_0001.json')
+
+          amendment = json.loads(amendment_path.read_text(encoding='utf-8'))
+          trigger = json.loads(trigger_path.read_text(encoding='utf-8'))
+
+          assert amendment['amendment_id'] == expected_amendment
+          assert amendment['request_id'] == expected_request
+          assert amendment['probe_id'] == expected_probe
+          assert amendment['authorized_trigger'] == 'MERGED_ONE_SHOT_MARKER_PUSH_TO_MAIN'
+          assert amendment['allowed_event'] == 'push'
+          assert amendment['allowed_ref'] == 'refs/heads/main'
+          assert amendment['trigger_file'] == str(trigger_path)
+          assert amendment['execute_once'] is True
+          assert amendment['reusable'] is False
+          assert amendment['automatic_retry'] is False
+          assert amendment['scientific_scope_change'] is False
+          assert amendment['source_set_change'] is False
+          assert amendment['response_body_read_or_persist'] is False
+          assert amendment['stage8_attempt_consumption'] is False
+          assert amendment['controlled_scientific_history_reads_to_researcher'] == 0
+
+          assert trigger['amendment_id'] == expected_amendment
+          assert trigger['request_id'] == expected_request
+          assert trigger['probe_id'] == expected_probe
+          assert trigger['execute_once'] is True
+          assert trigger['reusable'] is False
+          assert trigger['automatic_retry'] is False
+          assert trigger['capture_0001_retry_forbidden'] is True
+          assert trigger['scientific_scope_change'] is False
+          assert trigger['source_set_change'] is False
+          assert trigger['response_body_read_or_persist'] is False
+          assert trigger['stage8_attempt_consumption'] == 0
+          assert trigger['controlled_scientific_history_reads_to_researcher'] == 0
 
           print(f'gate event={event!r}')
           print(f'gate ref={ref!r}')
-          print(f'gate inputs_context={via_inputs!r}')
-          print(f'gate event_inputs_context={via_event!r}')
+          print(f'gate request_id={trigger["request_id"]!r}')
+          print(f'gate amendment_id={trigger["amendment_id"]!r}')
 
-          if event != 'workflow_dispatch':
-              print('Pull-request validation mode: no network probe is permitted or attempted.')
+          if event == 'pull_request':
+              print('Pull-request validation mode: trigger contract validated; no network probe is permitted or attempted.')
               raise SystemExit(0)
+          if event != 'push':
+              raise SystemExit(f'Invalid event; refusing network probe: {event!r}')
           if ref != 'refs/heads/main':
-              raise SystemExit(f'Invalid dispatch ref; refusing network probe: {ref!r}')
-          if via_inputs != expected:
-              raise SystemExit(f'Invalid inputs.probe_request_id; refusing network probe: {via_inputs!r}')
-          if via_event != expected:
-              raise SystemExit(f'Invalid github.event.inputs.probe_request_id; refusing network probe: {via_event!r}')
+              raise SystemExit(f'Invalid ref; refusing network probe: {ref!r}')
 
-          print('All frozen dispatch gates validated; executing exactly two technical probes.')
+          print('Exact merged one-shot trigger validated; executing exactly two frozen technical probes.')
           out = Path('access_probe_evidence/ACCESS_PROBE_EVIDENCE.json')
           out.parent.mkdir(parents=True, exist_ok=True)
           subprocess.run([
@@ -72,7 +102,7 @@ jobs:
           ], check=True)
           PY
       - name: Validate evidence contains no scientific payload fields
-        if: ${{ github.event_name == 'workflow_dispatch' }}
+        if: ${{ github.event_name == 'push' }}
         run: |
           python - <<'PY'
           import json
@@ -91,7 +121,7 @@ jobs:
           assert all(set(row) == allowed for row in data['results'])
           PY
       - name: Upload technical-access evidence only
-        if: ${{ github.event_name == 'workflow_dispatch' }}
+        if: ${{ github.event_name == 'push' }}
         uses: actions/upload-artifact@v4
         with:
           name: 0072-access-probe-${{ github.run_id }}-${{ github.run_attempt }}
