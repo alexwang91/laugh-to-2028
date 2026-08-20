@@ -1,0 +1,96 @@
+name: 0072 CAPTURE-0002 zero-artifact preflight probe
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/0072-capture-0002-preflight-probe.yml'
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  zero-artifact-preflight:
+    if: github.head_ref == 'diagnostic/0072-capture-0002-zero-artifact-preflight-v1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: be7aaf4640869d27a7efec974efa45d072ec9a7b
+          fetch-depth: 1
+      - name: Assert exact merged boundary main identity
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "be7aaf4640869d27a7efec974efa45d072ec9a7b"
+          python research/brrk_crypto_carry_atlas_0072/capture_wiring_0002_fixed.py --validate-contract
+          echo 'CAPTURE_0002_PREFLIGHT_EXACT_MAIN_BOUNDARY_VALID'
+      - name: Query repository-wide fixed artifact metadata only
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, os, urllib.parse, urllib.request
+          names = [
+              '0072-capture-raw-BRRK-CRYPTO-CARRY-ATLAS-0072-CAPTURE-0002',
+              '0072-capture-support-BRRK-CRYPTO-CARRY-ATLAS-0072-CAPTURE-0002',
+          ]
+          token = os.environ['GH_TOKEN']
+          out = {}
+          nonexpired_total = 0
+          for name in names:
+              url = 'https://api.github.com/repos/alexwang91/laugh-to-2028/actions/artifacts?name=' + urllib.parse.quote(name) + '&per_page=100'
+              req = urllib.request.Request(url, headers={
+                  'Accept': 'application/vnd.github+json',
+                  'Authorization': 'Bearer ' + token,
+                  'User-Agent': '0072-capture-0002-zero-artifact-preflight',
+                  'X-GitHub-Api-Version': '2022-11-28',
+              })
+              with urllib.request.urlopen(req, timeout=20) as response:
+                  data = json.load(response)
+              rows = []
+              for artifact in data.get('artifacts', []):
+                  wr = artifact.get('workflow_run') or {}
+                  row = {
+                      'id': artifact.get('id'),
+                      'name': artifact.get('name'),
+                      'expired': artifact.get('expired'),
+                      'created_at': artifact.get('created_at'),
+                      'workflow_run_id': wr.get('id'),
+                      'workflow_head_sha': wr.get('head_sha'),
+                  }
+                  rows.append(row)
+                  if artifact.get('expired') is False:
+                      nonexpired_total += 1
+              out[name] = rows
+          print('CAPTURE_0002_ARTIFACT_METADATA=' + json.dumps(out, sort_keys=True, separators=(',', ':')))
+          print('CAPTURE_0002_NONEXPIRED_ARTIFACT_COUNT=' + str(nonexpired_total))
+          if nonexpired_total != 0:
+              raise SystemExit('CAPTURE_0002_ZERO_ARTIFACT_PREFLIGHT_FAIL')
+          PY
+      - name: Assert zero repository CAPTURE-0002 execution-result files on exact main
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import subprocess
+          paths = subprocess.check_output(['git','ls-tree','-r','--name-only','HEAD'], text=True).splitlines()
+          output_names = {'STAGING_MANIFEST.json','SUPPORT_MANIFEST.json','CAPTURE_RECEIPT.json','CAPTURE_FAILURE.json'}
+          hits = []
+          for path in paths:
+              if '/captures/BRRK-CRYPTO-CARRY-ATLAS-0072-CAPTURE-0002/' in path:
+                  hits.append(path)
+              elif path.startswith('research/brrk_crypto_carry_atlas_0072/') and path.rsplit('/',1)[-1] in output_names:
+                  hits.append(path)
+          print('CAPTURE_0002_REPOSITORY_RESULT_FILES=' + repr(sorted(hits)))
+          print('CAPTURE_0002_REPOSITORY_RESULT_FILE_COUNT=' + str(len(hits)))
+          if hits:
+              raise SystemExit('CAPTURE_0002_ZERO_RESULT_FILE_PREFLIGHT_FAIL')
+          PY
+      - name: Emit zero-result preflight PASS
+        run: |
+          echo 'CAPTURE_0002_PREFLIGHT=PASS_ZERO_EXISTING_ARTIFACT_AND_RESULT_FILE'
+          echo 'scientific_payload_reads=0'
+          echo 'source_network_requests=0'
+          echo 'stage8_attempt_consumed=0'
+          echo 'controlled_scientific_history_reads_to_researcher=0'
