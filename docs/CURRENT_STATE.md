@@ -200,7 +200,7 @@ The immutable closeout records the FAIL without rescue or reinterpretation. Gove
 ## 0072 carry atlas
 
 Research ID = `BRRK-CRYPTO-CARRY-ATLAS-0072`.
-State = `OWNER-FIRST + DESIGN MERGED / STAGE 3 PREREGISTRATION FIRST CAPTURE SEALED FAILED / RECONCILIATION MERGED / SOURCE ACCESS REQUALIFICATION PLAN MERGED / ACCESS PROBE EXECUTION REQUEST MERGED / ACCESS PROBE WORKFLOW MERGED / THREE DISPATCHES GUARD-SKIPPED / RUNNER-SIDE REQUEST-ID GATE MERGED / OBSERVABLE FAIL-CLOSED GATE MERGED / ONE-SHOT MERGE-TRIGGER MERGED / ACCESS PROBE SUCCESS_WITH_PARTIAL_TECHNICAL_REACHABILITY / SOURCE-IDENTITY AMENDMENT MERGED / CAPTURE-0002 REQUEST+OBJECT PLAN MERGED / CAPTURE-0002 IMPLEMENTATION+BOUNDARY MERGED / ZERO-EXISTING-ARTIFACT PREFLIGHT PASS / PREFLIGHT EVIDENCE RECORD IN PROGRESS / FORMAL COMPLETION 2/10 / CONTROLLED ATTEMPT 0/1 / CONTROLLED READS 0`.
+State = `OWNER-FIRST + DESIGN MERGED / STAGE 3 PREREGISTRATION FIRST CAPTURE SEALED FAILED / RECONCILIATION MERGED / SOURCE ACCESS REQUALIFICATION PLAN MERGED / ACCESS PROBE EXECUTION REQUEST MERGED / ACCESS PROBE WORKFLOW MERGED / THREE DISPATCHES GUARD-SKIPPED / RUNNER-SIDE REQUEST-ID GATE MERGED / OBSERVABLE FAIL-CLOSED GATE MERGED / ONE-SHOT MERGE-TRIGGER MERGED / ACCESS PROBE SUCCESS_WITH_PARTIAL_TECHNICAL_REACHABILITY / SOURCE-IDENTITY AMENDMENT MERGED / CAPTURE-0002 REQUEST+OBJECT PLAN MERGED / CAPTURE-0002 IMPLEMENTATION+BOUNDARY MERGED / ZERO-EXISTING-ARTIFACT PREFLIGHT PASS / PREFLIGHT EVIDENCE MERGED / CAPTURE-0002 ONE-SHOT EXECUTION REQUEST+TRIGGER IN PROGRESS / FORMAL COMPLETION 2/10 / CONTROLLED ATTEMPT 0/1 / CONTROLLED READS 0`.
 
 Lifecycle anchors:
 - roadmap merge `169d9adf6531dc099a43541df413fef079322adf`;
@@ -228,6 +228,8 @@ Lifecycle anchors:
 - Stage 3 source-identity amendment #332 merge `55b673f24155b4fe801e8adfdbb2f797b6f0ed0f`;
 - Stage 3 CAPTURE-0002 request/object-plan #333 merge `2e86901d9fe49cb7a2f4944914caaee13e0c6b77`;
 - Stage 3 CAPTURE-0002 implementation/execution-boundary #334 merge `be7aaf4640869d27a7efec974efa45d072ec9a7b`; boundary authorizes no network execution and earns no lifecycle credit.
+- Stage 3 CAPTURE-0002 zero-artifact preflight evidence #336 merge `e095eca33f5dd4280b0f47e8acaf83e2d067c628`; preflight PASS records execution-claim/raw/support artifacts absent, result files absent, source-network requests 0, scientific payload reads 0, Stage-8 attempt 0 and controlled reads 0.
+- Stage 3 CAPTURE-0002 one-shot execution request/trigger PR #337 is in progress; PR validation is zero source network and the unique marker may authorize source fetch only on its first landing on main after all-green expected-head merge.
 - CAPTURE-0002 zero-existing-artifact diagnostic PR #335 was closed without merge after successful metadata-only preflight.
 - CAPTURE-0002 zero-existing-artifact preflight workflow run `32422100836`, job `96596129550`: SUCCESS while checking out exact merged boundary main `be7aaf4640869d27a7efec974efa45d072ec9a7b`; contract validation = `CAPTURE_0002_CONTRACT_VALID_NO_NETWORK`; fixed raw/support artifact metadata rows = `0/0`; repository-wide nonexpired CAPTURE-0002 artifact count = `0`; repository CAPTURE-0002 result-file count = `0`; `scientific_payload_reads=0`; `source_network_requests=0`; `stage8_attempt_consumed=0`; `controlled_scientific_history_reads_to_researcher=0`.
 - forward preflight evidence file `research/brrk_crypto_carry_atlas_0072/CAPTURE_0002_ZERO_ARTIFACT_PREFLIGHT_EVIDENCE.json` records only the above metadata/preflight facts and grants no lifecycle or execution authority.
@@ -246,7 +248,7 @@ The successful access probe read no scientific payload. Evidence explicitly reco
 
 ## Exact next step
 
-Require all standing CI SUCCESS on the preflight-evidence/CURRENT_STATE forward PR and expected-head merge it without lifecycle credit. Only after that merge may a separate prospective one-shot CAPTURE-0002 execution request/trigger be created, binding the already-frozen 30 `data.binance.vision` objects and the preflight PASS evidence. No source fetch may occur before that separate authorization merges; no fapi, Bybit, ad-hoc host, CAPTURE-0001 retry or Stage-8 action is permitted. Full Stage 3 remains 2/10.
+Require all standing CI SUCCESS on PR #337 exact head after this handoff writer removes its one-time request. Merge only if head is unchanged, open, mergeable and non-draft. The merge first-lands the unique CAPTURE-0002 trigger marker on main; the guarded workflow must durably create the fixed execution-claim artifact before any source network request and may then fetch only the 30 already-frozen `data.binance.vision` objects at most once. Any claim/raw/partial/failure/support artifact permanently blocks refetch. No fapi, Bybit, ad-hoc host, CAPTURE-0001 retry, raw-value exposure or Stage-8 action is permitted. Full Stage 3 remains 2/10 until support metadata and full preregistration merge.
 
 ## No-drift authority
 
@@ -265,5 +267,5 @@ Canonical BRRK-0011 = NO CHANGE.
 0070 = CLOSED / NO SAME-ID ACTION.
 0071 = CONTROLLED BOUNDARY MERGED / ZERO-RESULT PREFLIGHT BLOCKED_PRE_ATTEMPT_CONTROLLED_CONTENT_CONTAMINATION / ATTEMPT 0/1.
 0083 = 10/10 COMPLETE / `FAIL_NO_ROBUST_LOCKED_P02_ECONOMIC_CONTROLLER_VALUE` / CLOSED TO SAME-ID RERUN / ATTEMPT 1/1.
-0072 = OWNER-FIRST + DESIGN MERGED / STAGE 3 SOURCE ACCESS REQUALIFICATION PLAN MERGED / ACCESS PROBE EXECUTION REQUEST MERGED / ACCESS PROBE WORKFLOW MERGED / THREE DISPATCHES GUARD-SKIPPED / RUNNER-SIDE REQUEST-ID GATE MERGED / OBSERVABLE FAIL-CLOSED GATE MERGED / ONE-SHOT MERGE-TRIGGER MERGED / ACCESS PROBE SUCCESS_WITH_PARTIAL_TECHNICAL_REACHABILITY / SOURCE-IDENTITY AMENDMENT MERGED / CAPTURE-0002 REQUEST+OBJECT PLAN MERGED / CAPTURE-0002 IMPLEMENTATION+BOUNDARY MERGED / ZERO-EXISTING-ARTIFACT PREFLIGHT PASS / PREFLIGHT EVIDENCE RECORD IN PROGRESS / FORMAL COMPLETION 2/10 / ATTEMPT 0/1 / CONTROLLED READS 0.
+0072 = OWNER-FIRST + DESIGN MERGED / STAGE 3 SOURCE ACCESS REQUALIFICATION PLAN MERGED / ACCESS PROBE EXECUTION REQUEST MERGED / ACCESS PROBE WORKFLOW MERGED / THREE DISPATCHES GUARD-SKIPPED / RUNNER-SIDE REQUEST-ID GATE MERGED / OBSERVABLE FAIL-CLOSED GATE MERGED / ONE-SHOT MERGE-TRIGGER MERGED / ACCESS PROBE SUCCESS_WITH_PARTIAL_TECHNICAL_REACHABILITY / SOURCE-IDENTITY AMENDMENT MERGED / CAPTURE-0002 REQUEST+OBJECT PLAN MERGED / CAPTURE-0002 IMPLEMENTATION+BOUNDARY MERGED / ZERO-EXISTING-ARTIFACT PREFLIGHT PASS / PREFLIGHT EVIDENCE MERGED / CAPTURE-0002 ONE-SHOT EXECUTION REQUEST+TRIGGER IN PROGRESS / FORMAL COMPLETION 2/10 / ATTEMPT 0/1 / CONTROLLED READS 0.
 Phase 6 = NO CHANGE.
