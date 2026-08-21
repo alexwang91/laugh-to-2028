@@ -4,6 +4,7 @@ from pathlib import Path
 from unittest import mock
 from research.brrk_crypto_carry_atlas_0072 import capture_wiring as c
 from research.brrk_crypto_carry_atlas_0072.test_engine import TestCarryAtlasStage4
+from research.brrk_crypto_carry_atlas_0072.test_stage6_boundary import TestCarryAtlasStage6Boundary
 
 def z():
     b=BytesIO()
