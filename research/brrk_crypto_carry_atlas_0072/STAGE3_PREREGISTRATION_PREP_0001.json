@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "research_id": "BRRK-CRYPTO-CARRY-ATLAS-0072",
+  "status": "STAGE3_PREREGISTRATION_PREP_ONLY_NO_LIFECYCLE_CREDIT",
+  "purpose": "Freeze only already-governed source-support facts and unresolved preregistration obligations before the final Stage-3 scientific contract is written. This file does not authorize controlled history reads or network access.",
+  "parent_forward_pr": 339,
+  "parent_exact_head": "d57b841d340ac3f5cb0b0519a299d00026c1e014",
+  "design_blob": "ba86fa7cbb414fdba39e04f23732c9dfac884c62",
+  "source_identity_amendment_blob": "dde70ee217d10896ff06abfd03ffe804c242cd64",
+  "capture_0002_success_evidence_blob": "f186724fed8810ffb923bdd2d585e279ac26e3dc",
+  "capture_execution_main_sha": "06ac1682b8a6de08ac75d53f0463f46727d60605",
+  "capture_workflow_run_id": 32428715027,
+  "capture_artifact_ids": {
+    "execution_claim": 9428322109,
+    "raw": 9428326636,
+    "support": 9428327167
+  },
+  "frozen_target_assets": ["BTC", "ETH", "SOL"],
+  "owner_first_family_ceiling": 10,
+  "capture_0002_delivery_support": {
+    "support_month": "2026-07",
+    "archive_objects": 15,
+    "checksum_objects": 15,
+    "support_objects": 15,
+    "support_pass": 15,
+    "support_fail": 0,
+    "per_object_rows": 31,
+    "aggregate_metadata_rows": 465,
+    "observed_min_timestamp": "2026-07-01T00:00:00Z",
+    "observed_max_timestamp": "2026-07-31T00:00:00Z",
+    "all_http_status_200": true,
+    "all_reported_missingness_zero": true,
+    "supported_archive_delivery_families": [
+      "spot/monthly/klines",
+      "futures/um/monthly/klines",
+      "futures/um/monthly/markPriceKlines",
+      "futures/um/monthly/indexPriceKlines",
+      "futures/um/monthly/premiumIndexKlines"
+    ]
+  },
+  "semantic_non_equivalence_guards": {
+    "premiumIndexKlines_is_perpetual_funding": false,
+    "premiumIndexKlines_rule": "RAW_SUPPORT_ONLY_NOT_PERPETUAL_FUNDING",
+    "archive_delivery_support_implies_scientific_family_support": false,
+    "technical_reachability_implies_point_in_time_qualification": false,
+    "binance_fapi_requalified": false,
+    "bybit_requalified": false
+  },
+  "prospectively_insufficient_under_current_execution_environment": [
+    "CROSS_VENUE_FUNDING_OR_BASIS_DISPERSION",
+    "OPEN_INTEREST_AND_OPEN_INTEREST_CHANGE"
+  ],
+  "no_substitution_rules": {
+    "no_eleventh_family": true,
+    "no_result_informed_source_substitution": true,
+    "no_result_informed_family_substitution": true,
+    "capture_0001_retry": false,
+    "capture_0002_refetch": false,
+    "capture_0002_second_fetch": false
+  },
+  "final_stage3_contract_must_still_freeze": [
+    "exact scientific source/blob identities for every retained family",
+    "exact study window and chronological partitions",
+    "event/exchange/availability/calculation timestamp transforms",
+    "point-in-time venue and instrument eligibility",
+    "exact retained family list and exact representations",
+    "candidate and hypothesis counts",
+    "future crash-risk horizons and maturation barrier",
+    "support minima and mathematically undefined inference rules",
+    "missingness and maximum staleness",
+    "all formulas and unit conventions",
+    "multiple-testing correction",
+    "serial-dependence-aware uncertainty/bootstrap settings and seeds",
+    "leave-one-asset and leave-one-venue robustness where supported",
+    "terminal PASS/FAIL/INCONCLUSIVE/INVALID numerical gates",
+    "synthetic qualification fixtures",
+    "controlled read/call accounting",
+    "exactly-once Stage-8 result persistence contract"
+  ],
+  "controlled_scientific_history_reads_to_researcher": 0,
+  "stage8_attempt_consumed": 0,
+  "network_fetch_authorized": false,
+  "lifecycle_credit": "NONE_STAGE_3_REMAINS_2_OF_10",
+  "production_authorized": false,
+  "signature_authorized": false,
+  "order_submission_authorized": false
+}
