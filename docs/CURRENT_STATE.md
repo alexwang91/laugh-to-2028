@@ -121,7 +121,7 @@ Roadmap = `research/governance/CRYPTO_MULTI_STRATEGY_RESEARCH_PROGRAM_0071_0082.
 
 The merged roadmap serializes prospective IDs 0071–0082 and requires every eligible ID to independently traverse the same ten formal lifecycle stages used by 0069/0070. It defines point-in-time and anti-lookahead rules, ordered economic accounting, realistic/stressed cost treatment, trial counting, DSR/PBO/bootstrap requirements where applicable, concentration/capacity/stress tests, explicit stop/gating rules, and zero production authority.
 
-The roadmap does not relax any per-ID lifecycle or evidence gate. Prospective governance PR #350 explicitly supersedes only the 0073 launch prerequisite after immutable 0072 closeout; it does not change 0072 science and grants no 0073 lifecycle credit before merge.
+The roadmap does not relax any per-ID lifecycle or evidence gate. Governance amendment PR #350 merged at `5b8153476aa63eb0c30d870a73e3bf14b4239ac8` and prospectively supersedes only the 0073 launch prerequisite after immutable 0072 closeout; it does not change or reinterpret 0072 science and grants no 0073 lifecycle credit by itself.
 
 ## 0071 controller integration
 
@@ -242,7 +242,7 @@ Lifecycle anchors:
 - Stage 8 persisted classification = `INCONCLUSIVE_INSUFFICIENT_SUPPORT`; execution valid; BTC/ETH/SOL state rows = 21/21/21, total 63; extreme-carry rows = 0; nonextreme rows = 63; crash-positive rows = 0; support sufficient = false; H06 is undefined. Same-ID attempt budget is consumed 1/1 and rerun/retune/rescue/recompute are permanently forbidden.
 - Stage 9 RESULT PR #348 merge `1ce5bc4faffa1539cc56687f1c79f982efc1efe9`; Stage 9 is formally complete at 9/10 and performed governance-only interpretation with zero controlled-source rereads and zero recomputation.
 - Stage 10 immutable CLOSEOUT PR #349 merge `e7571fd592c1a8074d487f27f8dbe9af6e33927f`; 0072 is formally complete at 10/10 with terminal state `INCONCLUSIVE_INSUFFICIENT_SUPPORT / CLOSED TO SAME-ID RERUN`.
-- Prospective 0073 prerequisite governance PR #350 records the post-closeout authorization to let this immutable INCONCLUSIVE closeout satisfy the 0073 launch gate without treating 0072 as PASS. No 0073 lifecycle credit exists before #350 merges.
+- Prospective 0073 prerequisite governance PR #350 merge `5b8153476aa63eb0c30d870a73e3bf14b4239ac8` authorizes 0073 Stage 1 OWNER-FIRST under a prospective dependency amendment while preserving 0072 exactly as INCONCLUSIVE, not PASS.
 - CAPTURE-0002 zero-existing-artifact diagnostic PR #335 was closed without merge after successful metadata-only preflight.
 - CAPTURE-0002 zero-existing-artifact preflight workflow run `32422100836`, job `96596129550`: SUCCESS while checking out exact merged boundary main `be7aaf4640869d27a7efec974efa45d072ec9a7b`; contract validation = `CAPTURE_0002_CONTRACT_VALID_NO_NETWORK`; fixed raw/support artifact metadata rows = `0/0`; repository-wide nonexpired CAPTURE-0002 artifact count = `0`; repository CAPTURE-0002 result-file count = `0`; `scientific_payload_reads=0`; `source_network_requests=0`; `stage8_attempt_consumed=0`; `controlled_scientific_history_reads_to_researcher=0`.
 - forward preflight evidence file `research/brrk_crypto_carry_atlas_0072/CAPTURE_0002_ZERO_ARTIFACT_PREFLIGHT_EVIDENCE.json` records only the above metadata/preflight facts and grants no lifecycle or execution authority.
@@ -261,7 +261,7 @@ The successful access probe read no scientific payload. Stage 7 read only identi
 
 ## Exact next step
 
-Obtain all standing CI SUCCESS on the exact prospective governance PR #350 head, then expected-head merge #350. That merge does not change 0072; it prospectively authorizes 0073 Stage 1 OWNER-FIRST under the amended prerequisite. After #350 merges, create a separate 0073 OWNER-FIRST branch/PR from current main with zero controlled-history reads and no scientific lifecycle credit beyond Stage 1.
+Merge the guarded 0073 OWNER-FIRST registry-writer tooling PR only after all standing CI succeeds on its exact head. After that tooling merge, create `research/0073-owner-first-v1` from current main, add one prospective request `research/governance/owner_first_requests/0073.json`, and open the separate Stage 1 OWNER-FIRST PR. The guarded writer must append exactly one canonical 0073 registry record, update CURRENT_STATE and delete the request in the same generated commit. No 0073 controlled scientific/history payload may be read.
 
 ## No-drift authority
 
@@ -281,5 +281,5 @@ Canonical BRRK-0011 = NO CHANGE.
 0071 = CONTROLLED BOUNDARY MERGED / ZERO-RESULT PREFLIGHT BLOCKED_PRE_ATTEMPT_CONTROLLED_CONTENT_CONTAMINATION / ATTEMPT 0/1.
 0083 = 10/10 COMPLETE / `FAIL_NO_ROBUST_LOCKED_P02_ECONOMIC_CONTROLLER_VALUE` / CLOSED TO SAME-ID RERUN / ATTEMPT 1/1.
 0072 = 10/10 COMPLETE / `INCONCLUSIVE_INSUFFICIENT_SUPPORT` / CLOSED TO SAME-ID RERUN / ATTEMPT 1/1 CONSUMED / CONTROLLED READS 6 / ENGINE 1/1 / SOURCE NETWORK FETCHES 0 / NO SAME-ID RERUN-RETUNE-RESCUE-RECOMPUTE.
-0073 = NOT STARTED / OWNER-FIRST AUTHORIZED ONLY AFTER PROSPECTIVE GOVERNANCE PR #350 MERGES / CONTROLLED ATTEMPT 0/1 / CONTROLLED READS 0.
+0073 = OWNER-FIRST AUTHORIZED BY MERGED PROSPECTIVE GOVERNANCE / REGISTRY TOOLING IN PROGRESS / FORMAL COMPLETION 0/10 / CONTROLLED ATTEMPT 0/1 / CONTROLLED READS 0.
 Phase 6 = NO CHANGE.
