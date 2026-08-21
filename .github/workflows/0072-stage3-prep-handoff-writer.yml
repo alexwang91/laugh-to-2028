@@ -1,0 +1,52 @@
+name: 0072 Stage3 prep CURRENT_STATE writer
+
+on:
+  push:
+    branches:
+      - research/0072-stage3-prereg-prep-v1
+    paths:
+      - '.github/workflows/0072-stage3-prep-handoff-writer.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  write-handoff:
+    if: github.ref == 'refs/heads/research/0072-stage3-prereg-prep-v1'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/0072-stage3-prereg-prep-v1
+          fetch-depth: 0
+      - name: Update CURRENT_STATE mechanically
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('docs/CURRENT_STATE.md')
+          s = p.read_text()
+          immutable = 'workflow run                         31381953131 / attempt 1'
+          assert immutable in s
+          old_state = 'CAPTURE-0002 ONE-SHOT EXECUTION SUCCESS / SUCCESS EVIDENCE IN PROGRESS / FORMAL COMPLETION 2/10 / CONTROLLED ATTEMPT 0/1 / CONTROLLED READS 0'
+          new_state = 'CAPTURE-0002 ONE-SHOT EXECUTION SUCCESS / SUCCESS EVIDENCE MERGED / STAGE3 PREREGISTRATION SUPPORT-BOUNDARY PREP IN PROGRESS / FORMAL COMPLETION 2/10 / CONTROLLED ATTEMPT 0/1 / CONTROLLED READS 0'
+          assert old_state in s
+          s = s.replace(old_state, new_state, 1)
+          anchor = '- Stage 3 CAPTURE-0002 one-shot execution request/trigger #337 merge `06ac1682b8a6de08ac75d53f0463f46727d60605`; unique workflow run `32428715027` attempt 1 = SUCCESS; durable execution-claim/raw/support artifacts `9428322109` / `9428326636` / `9428327167`; BTC/ETH/SOL x five frozen archive families = 15/15 support PASS; CAPTURE-0002 is permanently claimed and automatic refetch/second fetch is forbidden.\n'
+          assert anchor in s
+          addition = anchor + '- Stage 3 CAPTURE-0002 success-evidence #339 merge `ad7d76af3fbfe489d9cf74f9de371db70ab1d8c7`; metadata/support evidence is canonical on main, no raw payload was added or read, no lifecycle credit was claimed.\n- Stage 3 preregistration support-boundary prep PR #340 is in progress; it freezes only already-governed support facts, insufficient-family/no-substitution constraints, and earns no lifecycle credit.\n'
+          s = s.replace(anchor, addition, 1)
+          old_next = 'Require #339 exact-head standing CI SUCCESS after CURRENT_STATE handoff and expected-head merge if unchanged/open/mergeable/non-draft. Then complete the full Stage-3 preregistration freeze from merged DESIGN plus CAPTURE-0002 metadata/support truth. Do not read raw values, add an eleventh family, substitute a source/family, or claim Stage 3 complete before every DESIGN-required term is frozen. Full Stage 3 remains 2/10.'
+          if old_next in s:
+              new_next = 'Require #340 exact-head standing CI SUCCESS after this CURRENT_STATE handoff, remove the temporary writer, and merge only if unchanged/open/mergeable/non-draft. Then use the audited support boundary to complete the full Stage-3 preregistration freeze from merged DESIGN plus CAPTURE-0002 metadata/support truth. Do not read raw values, add an eleventh family, substitute a source/family, or claim Stage 3 complete before every DESIGN-required term is frozen. Full Stage 3 remains 2/10.'
+              s = s.replace(old_next, new_next, 1)
+          assert immutable in s
+          p.write_text(s)
+          PY
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add docs/CURRENT_STATE.md
+          git diff --cached --quiet && exit 0
+          git commit -m 'docs(0072): hand off Stage3 prereg support prep'
+          git push origin HEAD:research/0072-stage3-prereg-prep-v1
