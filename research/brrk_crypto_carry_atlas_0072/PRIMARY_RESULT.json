@@ -1,0 +1,83 @@
+{
+  "bh_adjusted_q": {
+    "H01_BASIS_PERSISTENCE": null,
+    "H02_BASIS_MEAN_REVERSION": null,
+    "H03_BASIS_VOLATILITY_ASSOCIATION": null,
+    "H04_BASIS_VOLUME_ASSOCIATION": null,
+    "H05_BASIS_TREND_ASSOCIATION": null,
+    "H06_EXTREME_CARRY_CRASH_ASSOCIATION": null
+  },
+  "candidate_accounting": {
+    "base_seed": 720072000,
+    "hypothesis_count": 6,
+    "hypothesis_ids": [
+      "H01_BASIS_PERSISTENCE",
+      "H02_BASIS_MEAN_REVERSION",
+      "H03_BASIS_VOLATILITY_ASSOCIATION",
+      "H04_BASIS_VOLUME_ASSOCIATION",
+      "H05_BASIS_TREND_ASSOCIATION",
+      "H06_EXTREME_CARRY_CRASH_ASSOCIATION"
+    ],
+    "multiple_testing": "BENJAMINI_HOCHBERG_FDR_0.10",
+    "permutation_block_days": 3,
+    "permutation_replicates": 20000
+  },
+  "classification": "INCONCLUSIVE_INSUFFICIENT_SUPPORT",
+  "evidence_tier": "RESEARCHER_UNEXPOSED_CAPTURED_DEVELOPMENT_HISTORY_NOT_INDEPENDENT_OOS",
+  "execution_valid": true,
+  "family_accounting": {
+    "eleventh_family_used": false,
+    "prospectively_insufficient_family_ids": [1, 3, 4, 5, 6, 9],
+    "retained_scientific_family_ids": [2, 7, 8, 10],
+    "source_or_family_substitution_used": false
+  },
+  "hypothesis_results": {
+    "H01_BASIS_PERSISTENCE": {"effect": -0.0038961038961038952, "permutation_pvalue": 0.48262586870656465},
+    "H02_BASIS_MEAN_REVERSION": {"effect": -0.6896103896103895, "permutation_pvalue": 4.999750012499375e-05},
+    "H03_BASIS_VOLATILITY_ASSOCIATION": {"effect": -0.05454545454545454, "permutation_pvalue": 0.6493675316234189},
+    "H04_BASIS_VOLUME_ASSOCIATION": {"effect": -0.003032930081537899, "permutation_pvalue": 0.5005249737513124},
+    "H05_BASIS_TREND_ASSOCIATION": {"effect": 0.17402597402597397, "permutation_pvalue": 0.12924353782310885},
+    "H06_EXTREME_CARRY_CRASH_ASSOCIATION": {"effect": null, "permutation_pvalue": null}
+  },
+  "leave_one_asset_results": {
+    "BTC": {"H01_BASIS_PERSISTENCE": 0.06233766233766233, "H02_BASIS_MEAN_REVERSION": -0.6519480519480518, "H03_BASIS_VOLATILITY_ASSOCIATION": 0.06168831168831169, "H04_BASIS_VOLUME_ASSOCIATION": 0.14035090682137114, "H05_BASIS_TREND_ASSOCIATION": 0.16493506493506493, "H06_EXTREME_CARRY_CRASH_ASSOCIATION": null},
+    "ETH": {"H01_BASIS_PERSISTENCE": 0.0896103896103896, "H02_BASIS_MEAN_REVERSION": -0.6909090909090909, "H03_BASIS_VOLATILITY_ASSOCIATION": -0.0435064935064935, "H04_BASIS_VOLUME_ASSOCIATION": -0.029239772254452324, "H05_BASIS_TREND_ASSOCIATION": 0.3759740259740259, "H06_EXTREME_CARRY_CRASH_ASSOCIATION": null},
+    "SOL": {"H01_BASIS_PERSISTENCE": -0.1636363636363636, "H02_BASIS_MEAN_REVERSION": -0.7259740259740258, "H03_BASIS_VOLATILITY_ASSOCIATION": -0.18181818181818177, "H04_BASIS_VOLUME_ASSOCIATION": -0.12028618752863172, "H05_BASIS_TREND_ASSOCIATION": -0.01883116883116883, "H06_EXTREME_CARRY_CRASH_ASSOCIATION": null}
+  },
+  "network_fetches": 0,
+  "order_submission_authorized": false,
+  "production_authorized": false,
+  "research_id": "BRRK-CRYPTO-CARRY-ATLAS-0072",
+  "signature_authorized": false,
+  "source_identities": {
+    "aggregate_raw_sha256": "c141ae5702db42500c30552f6795fb273bf36b7569745759f2e62bdd65861ab9",
+    "capture_0002_workflow_attempt": 1,
+    "capture_0002_workflow_run_id": 32428715027,
+    "engine_blob": "0a9ee76b9db8387415fd7f42add51e2bccd7787e",
+    "implementation_contract_blob": "7ace6f19e2c230d62998d63d9ae9acfcbecfedac",
+    "preregistration_blob": "c1ba293d9623d8342b3611382fd26cbba269f048",
+    "raw_artifact_digest": "sha256:24a7e8fb922ea8c78dda3170b0deda57f941bca3125dae1c30582a40e4e33880",
+    "raw_artifact_id": 9428326636,
+    "stage6_boundary_merge_sha": "62ea0971c8b8d47fde28f27c6b672d9cf5a61dcf",
+    "stage7_merge_sha": "8736100e0d617d22b0580cfc1cdf5d52b330f4e8"
+  },
+  "source_read_counts": {
+    "execution_claim_content_reads": 0,
+    "raw_artifact_downloads": 1,
+    "raw_artifact_redownloads": 0,
+    "refetches": 0,
+    "scientific_object_count": 6,
+    "scientific_object_reads": {
+      "BINANCE_BTC_SPOT_MONTHLY_KLINES_202607": 1,
+      "BINANCE_BTC_UM_MONTHLY_KLINES_202607": 1,
+      "BINANCE_ETH_SPOT_MONTHLY_KLINES_202607": 1,
+      "BINANCE_ETH_UM_MONTHLY_KLINES_202607": 1,
+      "BINANCE_SOL_SPOT_MONTHLY_KLINES_202607": 1,
+      "BINANCE_SOL_UM_MONTHLY_KLINES_202607": 1
+    },
+    "support_artifact_content_reads": 0
+  },
+  "study_window": {"eligible_state_end_utc": "2026-07-28", "eligible_state_start_utc": "2026-07-08", "raw_observation_end_utc": "2026-07-31", "raw_observation_start_utc": "2026-07-01"},
+  "support_counts": {"crash_positive": 0, "extreme": 0, "nonextreme": 63, "per_asset": {"BTC": 21, "ETH": 21, "SOL": 21}, "sufficient": false, "total": 63},
+  "terminal_gates": {"G0_EXECUTION_VALID": true, "G1_SUPPORT_SUFFICIENT": false}
+}
