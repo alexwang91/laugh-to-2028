@@ -1,0 +1,123 @@
+name: 0073 guarded OWNER-FIRST registry writer
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+
+jobs:
+  owner-first-registry-writer-0073:
+    name: Guarded 0073 OWNER-FIRST registry writer
+    if: >-
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      github.head_ref == 'research/0073-owner-first-v1'
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
+
+      - name: Apply prospective 0073 OWNER-FIRST request if present
+        shell: bash
+        run: |
+          set -euo pipefail
+          REQUEST='research/governance/owner_first_requests/0073.json'
+          if [[ ! -f "$REQUEST" ]]; then
+            echo 'No 0073 OWNER-FIRST request present; no mutation.'
+            exit 0
+          fi
+
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          request_path = Path('research/governance/owner_first_requests/0073.json')
+          request = json.loads(request_path.read_text(encoding='utf-8'))
+
+          assert request['schema_version'] == 1
+          assert request['target_branch'] == 'research/0073-owner-first-v1'
+          assert request['new_research_id'] == 'BRRK-CRYPTO-DELTA-NEUTRAL-CARRY-STRATEGY-0073'
+          assert request['roadmap_merge'] == '169d9adf6531dc099a43541df413fef079322adf'
+          assert request['prospective_0073_gate_merge'] == '5b8153476aa63eb0c30d870a73e3bf14b4239ac8'
+          assert request['0072_closeout_merge'] == 'e7571fd592c1a8074d487f27f8dbe9af6e33927f'
+          assert request['controlled_reads'] == 0
+          assert request['attempt_consumed'] == 0
+          assert request['production_authorized'] is False
+
+          record = request['record']
+          assert record['research_id'] == request['new_research_id']
+          assert record['research_family_id'] == 'CRYPTO_CARRY'
+          assert record['research_domain'] == 'RELATIVE_VALUE'
+          assert record['objective_type'] == 'PORTFOLIO_INTEGRATION'
+          assert record['created_before_result'] is True
+          assert record['actual_variants_evaluated'] == 0
+          assert record['production_authorized'] is False
+          assert record['provenance_status'] == 'PROSPECTIVE_FROZEN'
+          assert record['governed_path_prefixes'] == ['research/brrk_crypto_delta_neutral_carry_strategy_0073']
+          assert record['universe'] == ['BTC', 'ETH', 'SOL']
+          assert record['result_status'] == 'PREREGISTERED_NOT_RUN'
+          assert record['promotion_state'] == 'NONE'
+          assert record['failure_reason'] is None
+          assert record['declared_variant_budget'] == 3
+          assert record['parameter_candidate_count'] == 3
+          assert record['feature_families'] == [
+              'LONG_SPOT_SHORT_PERPETUAL',
+              'LONG_SPOT_SHORT_DATED_FUTURE',
+              'PROSPECTIVELY_FIXED_CROSS_VENUE_HEDGE_WITH_CUSTODY_TRANSFER_MODEL',
+          ]
+          assert 'INCONCLUSIVE' in record['hypothesis_origin']
+          assert 'NO_0073_CONTROLLED_HISTORY' in record['hypothesis_origin']
+          assert 'not pass' in record['notes'][1].lower()
+          assert record['decision_refs'] == [
+              'research/governance/CRYPTO_MULTI_STRATEGY_RESEARCH_PROGRAM_0071_0082.md',
+              'research/governance/0072_CLOSEOUT_0073_PREREQUISITE_GATE.md',
+              'docs/CURRENT_STATE.md',
+          ]
+
+          registry_path = Path('config/research_registry.json')
+          raw = registry_path.read_text(encoding='utf-8')
+          data = json.loads(raw)
+          new_id = request['new_research_id']
+          assert not any(row.get('research_id') == new_id for row in data['records'])
+
+          marker = '\n  ],\n  "research_governance_debt": ['
+          pos = raw.rfind(marker)
+          assert pos > 0, 'registry records/debt boundary not found'
+          rendered = json.dumps(record, indent=2, ensure_ascii=False)
+          rendered = '\n'.join('    ' + line for line in rendered.splitlines())
+          updated = raw[:pos] + ',\n' + rendered + raw[pos:]
+          parsed = json.loads(updated)
+          assert len(parsed['records']) == len(data['records']) + 1
+          assert parsed['records'][-1]['research_id'] == new_id
+          assert parsed['research_governance_debt'] == data['research_governance_debt']
+          registry_path.write_text(updated, encoding='utf-8')
+
+          state_path = Path('docs/CURRENT_STATE.md')
+          state = state_path.read_text(encoding='utf-8')
+          immutable = 'workflow run                         31381953131 / attempt 1'
+          assert state.count(immutable) == 1
+          replacements = request['current_state_replacements']
+          assert 1 <= len(replacements) <= 4
+          for old, replacement in replacements:
+              assert '0073' in old or '0073' in replacement
+              assert old in state, f'missing CURRENT_STATE anchor: {old}'
+              state = state.replace(old, replacement, 1)
+          assert state.count(immutable) == 1
+          state_path.write_text(state, encoding='utf-8')
+          PY
+
+          python -m research.governance.validate
+          python -m research.governance.no_drift
+          git diff --check
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add config/research_registry.json docs/CURRENT_STATE.md
+          git rm "$REQUEST"
+          test "$(git diff --cached --name-only | sort)" = "$(printf '%s\n' 'config/research_registry.json' 'docs/CURRENT_STATE.md' "$REQUEST" | sort)"
+          git commit -m 'governance(0073): register delta-neutral carry OWNER-FIRST'
+          git push origin HEAD:${{ github.event.pull_request.head.ref }}
