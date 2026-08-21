@@ -121,7 +121,7 @@ Roadmap = `research/governance/CRYPTO_MULTI_STRATEGY_RESEARCH_PROGRAM_0071_0082.
 
 The merged roadmap serializes prospective IDs 0071–0082 and requires every eligible ID to independently traverse the same ten formal lifecycle stages used by 0069/0070. It defines point-in-time and anti-lookahead rules, ordered economic accounting, realistic/stressed cost treatment, trial counting, DSR/PBO/bootstrap requirements where applicable, concentration/capacity/stress tests, explicit stop/gating rules, and zero production authority.
 
-The roadmap does not relax any per-ID lifecycle or evidence gate.
+The roadmap does not relax any per-ID lifecycle or evidence gate. Prospective governance PR #350 explicitly supersedes only the 0073 launch prerequisite after immutable 0072 closeout; it does not change 0072 science and grants no 0073 lifecycle credit before merge.
 
 ## 0071 controller integration
 
@@ -200,7 +200,7 @@ The immutable closeout records the FAIL without rescue or reinterpretation. Gove
 ## 0072 carry atlas
 
 Research ID = `BRRK-CRYPTO-CARRY-ATLAS-0072`.
-State = `OWNER-FIRST + DESIGN MERGED / STAGE 3 PREREGISTRATION FIRST CAPTURE SEALED FAILED / RECONCILIATION MERGED / SOURCE ACCESS REQUALIFICATION PLAN MERGED / ACCESS PROBE EXECUTION REQUEST MERGED / ACCESS PROBE WORKFLOW MERGED / THREE DISPATCHES GUARD-SKIPPED / RUNNER-SIDE REQUEST-ID GATE MERGED / OBSERVABLE FAIL-CLOSED GATE MERGED / ONE-SHOT MERGE-TRIGGER MERGED / ACCESS PROBE SUCCESS_WITH_PARTIAL_TECHNICAL_REACHABILITY / SOURCE-IDENTITY AMENDMENT MERGED / CAPTURE-0002 REQUEST+OBJECT PLAN MERGED / CAPTURE-0002 IMPLEMENTATION+BOUNDARY MERGED / ZERO-EXISTING-ARTIFACT PREFLIGHT PASS / PREFLIGHT EVIDENCE MERGED / CAPTURE-0002 ONE-SHOT EXECUTION SUCCESS / SUCCESS EVIDENCE MERGED / STAGE3 PREREGISTRATION SUPPORT-BOUNDARY PREP MERGED / FULL STAGE3 PREREGISTRATION MERGED / STAGE4 IMPLEMENTATION MERGED / STAGE5 NONHISTORICAL QUALIFICATION MERGED / STAGE6 CONTROLLED EXECUTION BOUNDARY MERGED / STAGE7 ZERO-RESULT PREFLIGHT PASS + EVIDENCE MERGED / STAGE8 CONTROLLED ATTEMPT SEALED / STAGE9 RESULT MERGED / STAGE10 IMMUTABLE CLOSEOUT IN PROGRESS / FORMAL COMPLETION 9/10 UNTIL STAGE10 MERGE / CONTROLLED ATTEMPT 1/1 CONSUMED / CONTROLLED READS 6 / SCIENTIFIC ENGINE 1/1 / SOURCE NETWORK FETCHES 0 / `INCONCLUSIVE_INSUFFICIENT_SUPPORT / CLOSED TO SAME-ID RERUN``.
+State = `10/10 COMPLETE / INCONCLUSIVE_INSUFFICIENT_SUPPORT / CLOSED TO SAME-ID RERUN / CONTROLLED ATTEMPT 1/1 CONSUMED / CONTROLLED READS 6 / SCIENTIFIC ENGINE 1/1 / SOURCE NETWORK FETCHES 0`.
 
 Lifecycle anchors:
 - roadmap merge `169d9adf6531dc099a43541df413fef079322adf`;
@@ -237,11 +237,12 @@ Lifecycle anchors:
 - Stage 5 nonhistorical qualification #343 merge `46c43e9b628dd19eed3a5402360de4bb1ce0d8d6`; synthetic-only evidence blob `6275596a5db8c7d56e94db7b39394b95193a263b` records qualification PASS with controlled scientific-history reads 0, raw artifact reads 0, network fetches 0 and Stage-8 attempt consumed 0; Stage 5 is formally complete at 5/10.
 - Stage 6 controlled-execution boundary #344 merge `62ea0971c8b8d47fde28f27c6b672d9cf5a61dcf`; boundary blob `cc43b63f63de0452d96078a29aeb3358b2d29515`; result-schema blob `b9e82e1f7cc1d14ad4d940d8793783df5e31fa68`; exact six scientific raw-object identities/read budgets, one raw-artifact download maximum, zero network/refetch, durable marker-before-read and create-only result persistence are frozen; Stage 6 is formally complete at 6/10 with controlled reads 0 and Stage-8 attempt 0/1.
 - Stage 7 zero-result preflight evidence #345 merge `8736100e0d617d22b0580cfc1cdf5d52b330f4e8`; exact PR head `08f26f4493d192e4c043658231fc7fc6cb37dc01`; Stage 7 is formally complete at 7/10 with raw artifact downloads 0, controlled scientific-history reads 0, source-network fetches 0 and Stage-8 attempt 0/1.
-- Stage 8 result branch `research/0072-result-v1`; durable `RUN_ATTEMPT.marker` preceded the first raw artifact download and controlled content read; raw artifact `9428326636` downloaded exactly once; exactly six authorized scientific objects read once each; source-network fetches 0; frozen scientific engine calls 1/1; create-only chain `RUN_ATTEMPT.marker` → `PRIMARY_RESULT.json` → `EVIDENCE.json` → `EXECUTION.json` → `RUN_ONCE.marker` is complete and sealed at head `bc35a226486efecdeb160f9c899d89b269651cde` before this governance-only handoff update.
+- Stage 8 result branch `research/0072-result-v1`; durable `RUN_ATTEMPT.marker` preceded the first raw artifact download and controlled content read; raw artifact `9428326636` downloaded exactly once; exactly six authorized scientific objects read once each; source-network fetches 0; frozen scientific engine calls 1/1; create-only chain `RUN_ATTEMPT.marker` → `PRIMARY_RESULT.json` → `EVIDENCE.json` → `EXECUTION.json` → `RUN_ONCE.marker` is complete and sealed at head `bc35a226486efecdeb160f9c899d89b269651cde` before governance-only handoff updates.
 - Stage 8 immutable result bundle merge `947475dc058c6204f20e1d26f719a1fea845876a`.
 - Stage 8 persisted classification = `INCONCLUSIVE_INSUFFICIENT_SUPPORT`; execution valid; BTC/ETH/SOL state rows = 21/21/21, total 63; extreme-carry rows = 0; nonextreme rows = 63; crash-positive rows = 0; support sufficient = false; H06 is undefined. Same-ID attempt budget is consumed 1/1 and rerun/retune/rescue/recompute are permanently forbidden.
 - Stage 9 RESULT PR #348 merge `1ce5bc4faffa1539cc56687f1c79f982efc1efe9`; Stage 9 is formally complete at 9/10 and performed governance-only interpretation with zero controlled-source rereads and zero recomputation.
-- Stage 10 immutable CLOSEOUT PR #349 is in progress on branch `research/0072-stage10-closeout-v1`; the closeout records `INCONCLUSIVE_INSUFFICIENT_SUPPORT / CLOSED TO SAME-ID RERUN`. Formal completion remains 9/10 until #349 merges.
+- Stage 10 immutable CLOSEOUT PR #349 merge `e7571fd592c1a8074d487f27f8dbe9af6e33927f`; 0072 is formally complete at 10/10 with terminal state `INCONCLUSIVE_INSUFFICIENT_SUPPORT / CLOSED TO SAME-ID RERUN`.
+- Prospective 0073 prerequisite governance PR #350 records the post-closeout authorization to let this immutable INCONCLUSIVE closeout satisfy the 0073 launch gate without treating 0072 as PASS. No 0073 lifecycle credit exists before #350 merges.
 - CAPTURE-0002 zero-existing-artifact diagnostic PR #335 was closed without merge after successful metadata-only preflight.
 - CAPTURE-0002 zero-existing-artifact preflight workflow run `32422100836`, job `96596129550`: SUCCESS while checking out exact merged boundary main `be7aaf4640869d27a7efec974efa45d072ec9a7b`; contract validation = `CAPTURE_0002_CONTRACT_VALID_NO_NETWORK`; fixed raw/support artifact metadata rows = `0/0`; repository-wide nonexpired CAPTURE-0002 artifact count = `0`; repository CAPTURE-0002 result-file count = `0`; `scientific_payload_reads=0`; `source_network_requests=0`; `stage8_attempt_consumed=0`; `controlled_scientific_history_reads_to_researcher=0`.
 - forward preflight evidence file `research/brrk_crypto_carry_atlas_0072/CAPTURE_0002_ZERO_ARTIFACT_PREFLIGHT_EVIDENCE.json` records only the above metadata/preflight facts and grants no lifecycle or execution authority.
@@ -260,7 +261,7 @@ The successful access probe read no scientific payload. Stage 7 read only identi
 
 ## Exact next step
 
-Require all standing CI SUCCESS on the exact Stage-10 PR #349 head including this CURRENT_STATE handoff, then expected-head merge #349. That merge completes 0072 at `10/10 COMPLETE / INCONCLUSIVE_INSUFFICIENT_SUPPORT / CLOSED TO SAME-ID RERUN`. Only after that merge may the roadmap advance owner-first to 0073. Stage 10 performs no controlled-source reread, scientific rerun, retune, rescue or recomputation.
+Obtain all standing CI SUCCESS on the exact prospective governance PR #350 head, then expected-head merge #350. That merge does not change 0072; it prospectively authorizes 0073 Stage 1 OWNER-FIRST under the amended prerequisite. After #350 merges, create a separate 0073 OWNER-FIRST branch/PR from current main with zero controlled-history reads and no scientific lifecycle credit beyond Stage 1.
 
 ## No-drift authority
 
@@ -279,5 +280,6 @@ Canonical BRRK-0011 = NO CHANGE.
 0070 = CLOSED / NO SAME-ID ACTION.
 0071 = CONTROLLED BOUNDARY MERGED / ZERO-RESULT PREFLIGHT BLOCKED_PRE_ATTEMPT_CONTROLLED_CONTENT_CONTAMINATION / ATTEMPT 0/1.
 0083 = 10/10 COMPLETE / `FAIL_NO_ROBUST_LOCKED_P02_ECONOMIC_CONTROLLER_VALUE` / CLOSED TO SAME-ID RERUN / ATTEMPT 1/1.
-0072 = OWNER-FIRST + DESIGN MERGED / FULL PREREGISTRATION MERGED / STAGE4 IMPLEMENTATION MERGED / STAGE5 NONHISTORICAL QUALIFICATION MERGED / STAGE6 CONTROLLED EXECUTION BOUNDARY MERGED / STAGE7 ZERO-RESULT PREFLIGHT EVIDENCE MERGED / STAGE8 CONTROLLED ATTEMPT SEALED / STAGE9 RESULT MERGED / STAGE10 IMMUTABLE CLOSEOUT IN PROGRESS / `INCONCLUSIVE_INSUFFICIENT_SUPPORT / CLOSED TO SAME-ID RERUN` / FORMAL COMPLETION 9/10 UNTIL STAGE10 MERGE / ATTEMPT 1/1 CONSUMED / CONTROLLED READS 6 / ENGINE 1/1 / SOURCE NETWORK FETCHES 0 / NO SAME-ID RERUN-RETUNE-RESCUE-RECOMPUTE.
+0072 = 10/10 COMPLETE / `INCONCLUSIVE_INSUFFICIENT_SUPPORT` / CLOSED TO SAME-ID RERUN / ATTEMPT 1/1 CONSUMED / CONTROLLED READS 6 / ENGINE 1/1 / SOURCE NETWORK FETCHES 0 / NO SAME-ID RERUN-RETUNE-RESCUE-RECOMPUTE.
+0073 = NOT STARTED / OWNER-FIRST AUTHORIZED ONLY AFTER PROSPECTIVE GOVERNANCE PR #350 MERGES / CONTROLLED ATTEMPT 0/1 / CONTROLLED READS 0.
 Phase 6 = NO CHANGE.
