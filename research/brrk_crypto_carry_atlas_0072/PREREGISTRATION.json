@@ -1,0 +1,205 @@
+{
+  "schema_version": 1,
+  "research_id": "BRRK-CRYPTO-CARRY-ATLAS-0072",
+  "stage": "NUMERICAL_DATA_ANALYSIS_PREREGISTRATION_FROZEN_NOT_RUN",
+  "evidence_tier": "RESEARCHER_UNEXPOSED_CAPTURED_DEVELOPMENT_HISTORY_NOT_INDEPENDENT_OOS",
+  "controlled_scientific_history_reads_during_preregistration": 0,
+  "stage8_attempt_consumed": 0,
+  "lineage": {
+    "roadmap_merge": "169d9adf6531dc099a43541df413fef079322adf",
+    "post_resolution_0083_closeout": "f4abfcabe68fa09f27900aac59228420f8721403",
+    "owner_first_merge": "e1d61eadb8a4564cae2689a718e2eaaa859aa05e",
+    "design_merge": "90a7b68718c5cb59002fe4b451d39d8979602161",
+    "design_blob": "ba86fa7cbb414fdba39e04f23732c9dfac884c62",
+    "source_identity_contract_blob": "8b933f357a4f4b1299558386e7ad6e91742df939",
+    "source_identity_amendment_merge": "55b673f24155b4fe801e8adfdbb2f797b6f0ed0f",
+    "source_identity_amendment_blob": "dde70ee217d10896ff06abfd03ffe804c242cd64",
+    "capture_0002_plan_blob": "d18c1d84051c4bb0274cca6fa953954333283fbd",
+    "capture_0002_implementation_contract_blob": "4dc0cc6e0327f4a9c77f14a05158ee83188f034c",
+    "capture_0002_execution_merge": "06ac1682b8a6de08ac75d53f0463f46727d60605",
+    "capture_0002_success_evidence_blob": "f186724fed8810ffb923bdd2d585e279ac26e3dc",
+    "stage3_support_boundary_prep_merge": "d9eec67f490ce1aad0e34b6e2d2f8de27193420f"
+  },
+  "capture_identity": {
+    "capture_request_id": "BRRK-CRYPTO-CARRY-ATLAS-0072-CAPTURE-0002",
+    "workflow_run_id": 32428715027,
+    "workflow_attempt": 1,
+    "execution_claim_artifact_id": 9428322109,
+    "raw_artifact_id": 9428326636,
+    "support_artifact_id": 9428327167,
+    "raw_artifact_digest": "sha256:24a7e8fb922ea8c78dda3170b0deda57f941bca3125dae1c30582a40e4e33880",
+    "aggregate_raw_sha256": "c141ae5702db42500c30552f6795fb273bf36b7569745759f2e62bdd65861ab9",
+    "staging_manifest_sha256": "9f0cb1cf4b09d0efd3b81c0d2dd6e23326382a2794c7973ac7e5fdb8c1c9d39e",
+    "support_artifact_digest": "sha256:dcc52c62667401557b1c507a43ed79a930b782faac823c91dd7ebd9d1fd1f5ea",
+    "support_month": "2026-07",
+    "capture_cutoff_utc": "2026-08-20T20:33:00Z",
+    "source_network_refetch_allowed": false,
+    "second_fetch_allowed": false
+  },
+  "raw_objects": [
+    {"canonical_request_id":"BINANCE_BTC_SPOT_MONTHLY_KLINES_202607","asset":"BTC","archive_family":"spot/monthly/klines","raw_sha256":"74ddc3e39aae9445b9f9dae00d53fe2ce6ff503ee469417e207a8f5970bad11a","raw_size_bytes":2193,"scientific_read_authorized_at_stage8":true,"scientific_role":"SPOT_PRICE_VOLATILITY_TREND"},
+    {"canonical_request_id":"BINANCE_BTC_UM_MONTHLY_KLINES_202607","asset":"BTC","archive_family":"futures/um/monthly/klines","raw_sha256":"c8aa635aee3c6fdc48347adc975b60c2342ef4253f4269494f9e08e85be61480","raw_size_bytes":2111,"scientific_read_authorized_at_stage8":true,"scientific_role":"PERPETUAL_TRADE_PRICE_AND_VOLUME"},
+    {"canonical_request_id":"BINANCE_BTC_UM_MONTHLY_MARK_PRICE_KLINES_202607","asset":"BTC","archive_family":"futures/um/monthly/markPriceKlines","raw_sha256":"1fa42c4c036ac53b2c4dc7fb20997217eb02746160bf695abdf197ef89c29542","raw_size_bytes":1260,"scientific_read_authorized_at_stage8":false,"scientific_role":"CAPTURED_SUPPORT_ONLY_NOT_READ_FOR_SCIENCE"},
+    {"canonical_request_id":"BINANCE_BTC_UM_MONTHLY_INDEX_PRICE_KLINES_202607","asset":"BTC","archive_family":"futures/um/monthly/indexPriceKlines","raw_sha256":"e592cafb43f6cdf9cd1b9b07b9cf5b5cfbe786f41fd91218f51bf15e92e176ef","raw_size_bytes":1319,"scientific_read_authorized_at_stage8":false,"scientific_role":"CAPTURED_SUPPORT_ONLY_NOT_READ_FOR_SCIENCE"},
+    {"canonical_request_id":"BINANCE_BTC_UM_MONTHLY_PREMIUM_INDEX_KLINES_202607","asset":"BTC","archive_family":"futures/um/monthly/premiumIndexKlines","raw_sha256":"720423123e1d637d2f0817086ca4e88e7f9f185df7506272ea8b912bf6776ff3","raw_size_bytes":1062,"scientific_read_authorized_at_stage8":false,"scientific_role":"CAPTURED_SUPPORT_ONLY_NOT_READ_FOR_SCIENCE"},
+    {"canonical_request_id":"BINANCE_ETH_SPOT_MONTHLY_KLINES_202607","asset":"ETH","archive_family":"spot/monthly/klines","raw_sha256":"6d4ae181331392a59efb8064c24392ccbfc80818bf0261a403900d7143966a10","raw_size_bytes":2109,"scientific_read_authorized_at_stage8":true,"scientific_role":"SPOT_PRICE_VOLATILITY_TREND"},
+    {"canonical_request_id":"BINANCE_ETH_UM_MONTHLY_KLINES_202607","asset":"ETH","archive_family":"futures/um/monthly/klines","raw_sha256":"f3c34fd95aefc44250c04af7808a2949f7a7520a20cc4a79a8b07491176b2bda","raw_size_bytes":2136,"scientific_read_authorized_at_stage8":true,"scientific_role":"PERPETUAL_TRADE_PRICE_AND_VOLUME"},
+    {"canonical_request_id":"BINANCE_ETH_UM_MONTHLY_MARK_PRICE_KLINES_202607","asset":"ETH","archive_family":"futures/um/monthly/markPriceKlines","raw_sha256":"c34b1fd5df47975e6ec6b74da8f94be9a0cd56ca67c77e27d94c09678907e426","raw_size_bytes":1263,"scientific_read_authorized_at_stage8":false,"scientific_role":"CAPTURED_SUPPORT_ONLY_NOT_READ_FOR_SCIENCE"},
+    {"canonical_request_id":"BINANCE_ETH_UM_MONTHLY_INDEX_PRICE_KLINES_202607","asset":"ETH","archive_family":"futures/um/monthly/indexPriceKlines","raw_sha256":"42594049df13d18d16b97318e2bf8416dedcd54e153557e4317f6ebe5103ced2","raw_size_bytes":1261,"scientific_read_authorized_at_stage8":false,"scientific_role":"CAPTURED_SUPPORT_ONLY_NOT_READ_FOR_SCIENCE"},
+    {"canonical_request_id":"BINANCE_ETH_UM_MONTHLY_PREMIUM_INDEX_KLINES_202607","asset":"ETH","archive_family":"futures/um/monthly/premiumIndexKlines","raw_sha256":"7d405653baf746a7de9bf6f1a89fbbb2ebae96e0dee83298313202c856d2c92f","raw_size_bytes":1075,"scientific_read_authorized_at_stage8":false,"scientific_role":"CAPTURED_SUPPORT_ONLY_NOT_READ_FOR_SCIENCE"},
+    {"canonical_request_id":"BINANCE_SOL_SPOT_MONTHLY_KLINES_202607","asset":"SOL","archive_family":"spot/monthly/klines","raw_sha256":"b961b1e117dc89b4eeaaa91e9aa5b5f15169a8ef54833aed1c894e2a3a9abc2f","raw_size_bytes":1936,"scientific_read_authorized_at_stage8":true,"scientific_role":"SPOT_PRICE_VOLATILITY_TREND"},
+    {"canonical_request_id":"BINANCE_SOL_UM_MONTHLY_KLINES_202607","asset":"SOL","archive_family":"futures/um/monthly/klines","raw_sha256":"3fcb32f964b330e9c3b52bc34e38fc7842aa63b8a6f9537e933bc47bee7aebcc","raw_size_bytes":2002,"scientific_read_authorized_at_stage8":true,"scientific_role":"PERPETUAL_TRADE_PRICE_AND_VOLUME"},
+    {"canonical_request_id":"BINANCE_SOL_UM_MONTHLY_MARK_PRICE_KLINES_202607","asset":"SOL","archive_family":"futures/um/monthly/markPriceKlines","raw_sha256":"aff5536de1df83949bab18b8a27c73f28a63c51ce508d07a791111aca2f47549","raw_size_bytes":1152,"scientific_read_authorized_at_stage8":false,"scientific_role":"CAPTURED_SUPPORT_ONLY_NOT_READ_FOR_SCIENCE"},
+    {"canonical_request_id":"BINANCE_SOL_UM_MONTHLY_INDEX_PRICE_KLINES_202607","asset":"SOL","archive_family":"futures/um/monthly/indexPriceKlines","raw_sha256":"fadd2935063a01dacb6c8297ccdd4058e1ebb5c68eeec82ab587c011ccf61b69","raw_size_bytes":1309,"scientific_read_authorized_at_stage8":false,"scientific_role":"CAPTURED_SUPPORT_ONLY_NOT_READ_FOR_SCIENCE"},
+    {"canonical_request_id":"BINANCE_SOL_UM_MONTHLY_PREMIUM_INDEX_KLINES_202607","asset":"SOL","archive_family":"futures/um/monthly/premiumIndexKlines","raw_sha256":"29bca1447c142eb71acb2abec996e28748bd3cb8055db2f1ab77149c9ab0c2a3","raw_size_bytes":1072,"scientific_read_authorized_at_stage8":false,"scientific_role":"CAPTURED_SUPPORT_ONLY_NOT_READ_FOR_SCIENCE"}
+  ],
+  "universe": {"assets":["BTC","ETH","SOL"],"venues":["BINANCE"],"universe_expansion_allowed":false},
+  "family_accounting": {
+    "owner_first_family_ceiling": 10,
+    "retained_scientific_families": [
+      {"family_id":2,"name":"SPOT_PERPETUAL_BASIS","status":"ADMITTED","representation":"BASIS_t = PERP_TRADE_CLOSE_t / SPOT_CLOSE_t - 1 using exact same UTC daily bar date."},
+      {"family_id":7,"name":"VOLUME_LIQUIDITY_SPREAD_STATE","status":"PARTIALLY_ADMITTED_VOLUME_ONLY","representation":"PERPETUAL_BASE_VOLUME_STATE_t = ln(PERP_BASE_VOLUME_t / median(PERP_BASE_VOLUME_{t-6:t})) when all seven values are positive; liquidity and spread subrepresentations are not admitted."},
+      {"family_id":8,"name":"REALIZED_VOLATILITY","status":"ADMITTED","representation":"RV7_t = sqrt((365/7) * sum_{j=0..6}(ln(SPOT_CLOSE_{t-j}/SPOT_CLOSE_{t-j-1}))^2)."},
+      {"family_id":10,"name":"PRICE_TREND_OR_ATTENTION_PROXY","status":"PARTIALLY_ADMITTED_PRICE_TREND_ONLY","representation":"TREND7_t = ln(SPOT_CLOSE_t / SPOT_CLOSE_{t-7}); attention proxy is not admitted."}
+    ],
+    "prospectively_insufficient_families": [
+      {"family_id":1,"name":"PERPETUAL_FUNDING","reason":"No captured funding-rate object; premiumIndexKlines is explicitly raw support only and not funding."},
+      {"family_id":3,"name":"SPOT_DATED_FUTURES_ANNUALIZED_BASIS","reason":"No prospectively qualified dated-futures contract metadata and price history."},
+      {"family_id":4,"name":"TERM_STRUCTURE_SLOPE_CURVATURE","reason":"No prospectively qualified dated-futures term-structure support."},
+      {"family_id":5,"name":"CROSS_VENUE_FUNDING_OR_BASIS_DISPERSION","reason":"Frozen Bybit interface was not technically usable and was not requalified."},
+      {"family_id":6,"name":"OPEN_INTEREST_AND_OPEN_INTEREST_CHANGE","reason":"Frozen OI source precedence was Bybit; Bybit was not requalified."},
+      {"family_id":9,"name":"LIQUIDATION_INTENSITY","reason":"Unqualified in source contract and no separate prospective source qualification merged."}
+    ],
+    "eleventh_family_allowed": false,
+    "source_or_family_substitution_allowed": false
+  },
+  "kline_schema": {
+    "spot_and_um_trade_kline_columns": {"col_0":"OPEN_TIME","col_1":"OPEN","col_2":"HIGH","col_3":"LOW","col_4":"CLOSE","col_5":"BASE_VOLUME","col_6":"CLOSE_TIME","col_7":"QUOTE_VOLUME","col_8":"TRADE_COUNT","col_9":"TAKER_BUY_BASE_VOLUME","col_10":"TAKER_BUY_QUOTE_VOLUME","col_11":"IGNORE"},
+    "spot_timestamp_unit": "MICROSECONDS",
+    "um_timestamp_unit": "MILLISECONDS",
+    "timestamp_unit_drift": "INVALID_EXECUTION"
+  },
+  "point_in_time_semantics": {
+    "raw_observation_window_utc": ["2026-07-01","2026-07-31"],
+    "daily_bar_anchor": "UTC calendar day identified by col_0 open time.",
+    "bar_availability_time": "For any daily bar dated d, availability_time is conservatively d+1 at 00:00:01 UTC; no value from day d may enter a state earlier.",
+    "calculation_time": "d+1 at 00:00:01 UTC after all required day-d bars are complete.",
+    "eligible_state_anchor_dates_utc": ["2026-07-08","2026-07-28"],
+    "eligible_state_count_per_asset_before_missingness": 21,
+    "future_outcome_maturation": "A state anchored at day d may use future closes only after the full preregistered horizon has elapsed; anchor dates after 2026-07-28 are excluded because the 3-day outcome is not fully matured inside the frozen raw window.",
+    "join_rule": "Exact asset and UTC anchor-date inner join only.",
+    "maximum_staleness_days": 0,
+    "forward_fill_allowed": false,
+    "backfill_allowed": false,
+    "revised_history_substitution_allowed": false,
+    "current_metadata_projected_backward_allowed": false
+  },
+  "feature_rules": {
+    "basis": {"formula":"PERP_CLOSE_t / SPOT_CLOSE_t - 1","inputs":["spot col_4","um trade col_4"]},
+    "absolute_basis": {"formula":"abs(BASIS_t)"},
+    "volume_state": {"formula":"ln(PERP_BASE_VOLUME_t / median(PERP_BASE_VOLUME_{t-6:t}))","inputs":["um trade col_5"],"requires_positive_volume":true},
+    "rv7": {"formula":"sqrt((365/7) * sum of seven squared close-to-close log returns ending at t)","inputs":["spot col_4"]},
+    "trend7": {"formula":"ln(SPOT_CLOSE_t / SPOT_CLOSE_{t-7})","inputs":["spot col_4"]},
+    "extreme_carry_state": {"formula":"abs(BASIS_t) >= 0.005","threshold_absolute_basis":0.005},
+    "future_crash_3d": {"formula":"min_{h in {1,2,3}}(SPOT_CLOSE_{t+h}/SPOT_CLOSE_t - 1) <= -0.10","threshold_return":-0.10,"horizon_calendar_days":3}
+  },
+  "hypotheses": [
+    {"id":"H01_BASIS_PERSISTENCE","statistic":"pooled within-asset Spearman(BASIS_t, BASIS_{t-1})","direction":"GREATER_THAN_ZERO","effect_gate":0.25},
+    {"id":"H02_BASIS_MEAN_REVERSION","statistic":"pooled within-asset Spearman(BASIS_t, BASIS_{t+1}-BASIS_t)","direction":"LESS_THAN_ZERO","effect_gate":-0.20},
+    {"id":"H03_BASIS_VOLATILITY_ASSOCIATION","statistic":"pooled within-asset Spearman(abs(BASIS_t), RV7_t)","direction":"GREATER_THAN_ZERO","effect_gate":0.20},
+    {"id":"H04_BASIS_VOLUME_ASSOCIATION","statistic":"pooled within-asset Spearman(abs(BASIS_t), VOLUME_STATE_t)","direction":"GREATER_THAN_ZERO","effect_gate":0.20},
+    {"id":"H05_BASIS_TREND_ASSOCIATION","statistic":"pooled within-asset Spearman(abs(BASIS_t), abs(TREND7_t))","direction":"GREATER_THAN_ZERO","effect_gate":0.20},
+    {"id":"H06_EXTREME_CARRY_CRASH_ASSOCIATION","statistic":"pooled crash-rate difference P(CRASH3=1|EXTREME=1)-P(CRASH3=1|EXTREME=0)","direction":"GREATER_THAN_ZERO","effect_gate":0.05,"minimum_extreme_rows":8,"minimum_nonextreme_rows":8,"minimum_crash_positive_rows":3}
+  ],
+  "candidate_accounting": {
+    "atlas_hypothesis_count": 6,
+    "multiple_testing_family": ["H01_BASIS_PERSISTENCE","H02_BASIS_MEAN_REVERSION","H03_BASIS_VOLATILITY_ASSOCIATION","H04_BASIS_VOLUME_ASSOCIATION","H05_BASIS_TREND_ASSOCIATION","H06_EXTREME_CARRY_CRASH_ASSOCIATION"],
+    "post_result_addition_or_pruning_allowed": false
+  },
+  "inference": {
+    "effect_aggregation": "For Spearman hypotheses, rank predictor and response separately within asset using midranks, concatenate the within-asset ranks, then compute Pearson correlation of concatenated ranks.",
+    "serial_dependence_test": {
+      "method": "WITHIN_ASSET_CONSECUTIVE_BLOCK_PERMUTATION",
+      "block_length_days": 3,
+      "replicates": 20000,
+      "rng": "numpy.random.Generator(PCG64)",
+      "base_seed": 720072000,
+      "hypothesis_seed_rule": "base_seed + hypothesis ordinal 1..6",
+      "permutation": "Partition each asset response in chronological consecutive blocks of length 3 with a final shorter block allowed; permute response blocks within asset, concatenate, preserve predictor order, then recompute statistic.",
+      "p_value": "one-sided (1 + null statistics at least as extreme as observed) / (replicates + 1)"
+    },
+    "multiple_testing": {"method":"BENJAMINI_HOCHBERG","fdr_q":0.10,"hypothesis_count":6},
+    "leave_one_asset_out": "Recompute every defined effect after removing BTC, ETH, and SOL one at a time; no retuning, reselection, threshold change, or p-value gate change.",
+    "leave_one_venue_out": "NOT_MATHEMATICALLY_SUPPORTED_SINGLE_VENUE"
+  },
+  "support_gates": {
+    "required_assets": ["BTC","ETH","SOL"],
+    "nominal_state_rows_per_asset": 21,
+    "minimum_valid_state_rows_per_asset": 19,
+    "minimum_total_valid_state_rows": 57,
+    "maximum_missing_fraction_per_asset": 0.09523809523809523,
+    "minimum_extreme_rows_for_H06": 8,
+    "minimum_nonextreme_rows_for_H06": 8,
+    "minimum_crash_positive_rows_for_H06": 3,
+    "undefined_metric_or_zero_variance": "INCONCLUSIVE_INSUFFICIENT_SUPPORT"
+  },
+  "terminal_gates": {
+    "G0_EXECUTION_VALID": "All pinned lineage, artifact, per-object SHA256, timestamp-unit, no-network, read-count, candidate-count and create-only persistence checks pass.",
+    "G1_SUPPORT_SUFFICIENT": "All three assets have at least 19 valid eligible states and at least 57 pooled valid states; H06 support minima hold.",
+    "G2_PERSISTENCE": "H01 effect >= 0.25 and BH-adjusted q <= 0.10.",
+    "G3_MEAN_REVERSION": "H02 effect <= -0.20 and BH-adjusted q <= 0.10.",
+    "G4_CROWDING_STATE_ASSOCIATION": "At least two of H03/H04/H05 meet effect >= 0.20 and BH-adjusted q <= 0.10.",
+    "G5_CRASH_RISK_ASSOCIATION": "H06 risk difference >= 0.05 and BH-adjusted q <= 0.10.",
+    "G6_LEAVE_ONE_ASSET_ROBUSTNESS": "H01 remains positive and H02 remains negative in all three leave-one-asset splits; at least two of H03/H04/H05 remain positive in all three splits; H06 risk difference remains positive in at least two of three splits where mathematically defined."
+  },
+  "classification_enum": ["PASS_STRUCTURAL_CARRY_MECHANISM","FAIL_NO_ROBUST_STRUCTURAL_CARRY_MECHANISM","INCONCLUSIVE_INSUFFICIENT_SUPPORT","INVALID_EXECUTION"],
+  "classification_rules": {
+    "PASS_STRUCTURAL_CARRY_MECHANISM": "Valid execution, sufficient support, and every G0-G6 gate passes.",
+    "FAIL_NO_ROBUST_STRUCTURAL_CARRY_MECHANISM": "Valid execution with sufficient support and defined required inference, but one or more scientific gates G2-G6 fail.",
+    "INCONCLUSIVE_INSUFFICIENT_SUPPORT": "Identity/execution is valid but G1 fails or any required statistic/inference is mathematically undefined from prospectively insufficient support.",
+    "INVALID_EXECUTION": "Any pinned identity/hash/timestamp-unit/lookahead/source/candidate-count/read-count/network/persistence/no-substitution contract drift."
+  },
+  "qualification_fixtures": [
+    {"id":"SYNTHETIC_EXACT_PASS","expected":"PASS_STRUCTURAL_CARRY_MECHANISM","requirements":"Three assets, 21 states each, strong positive persistence, negative mean-reversion statistic, at least two positive crowding associations, positive extreme-carry crash lift, all BH q gates and leave-one-asset gates satisfied."},
+    {"id":"SYNTHETIC_SCIENTIFIC_FAIL","expected":"FAIL_NO_ROBUST_STRUCTURAL_CARRY_MECHANISM","requirements":"All support and execution valid but one or more G2-G6 scientific gates fail."},
+    {"id":"SYNTHETIC_INSUFFICIENT_SUPPORT","expected":"INCONCLUSIVE_INSUFFICIENT_SUPPORT","requirements":"Execution valid but one asset has fewer than 19 valid states or H06 has fewer than required extreme/nonextreme/crash rows."},
+    {"id":"SYNTHETIC_UNDEFINED_METRIC","expected":"INCONCLUSIVE_INSUFFICIENT_SUPPORT","requirements":"Execution valid but a required variable has zero variance or a required statistic cannot be defined."},
+    {"id":"SYNTHETIC_IDENTITY_MISMATCH","expected":"INVALID_EXECUTION","requirements":"Any raw SHA256, artifact identity, design/prereg identity or timestamp unit differs."},
+    {"id":"SYNTHETIC_CANDIDATE_DRIFT","expected":"INVALID_EXECUTION","requirements":"More or fewer than exactly six preregistered hypotheses reach controlled evaluation."},
+    {"id":"SYNTHETIC_PREMIUM_AS_FUNDING","expected":"INVALID_EXECUTION","requirements":"premiumIndexKlines is interpreted as perpetual funding or used to rescue family 1."}
+  ],
+  "controlled_execution_contract": {
+    "attempt_budget": 1,
+    "durable_marker_precedes_any_controlled_payload_read": true,
+    "permitted_durable_artifact_downloads": {"CAPTURE_0002_RAW_ARTIFACT":1},
+    "permitted_scientific_archive_object_reads": {
+      "BINANCE_BTC_SPOT_MONTHLY_KLINES_202607":1,
+      "BINANCE_BTC_UM_MONTHLY_KLINES_202607":1,
+      "BINANCE_ETH_SPOT_MONTHLY_KLINES_202607":1,
+      "BINANCE_ETH_UM_MONTHLY_KLINES_202607":1,
+      "BINANCE_SOL_SPOT_MONTHLY_KLINES_202607":1,
+      "BINANCE_SOL_UM_MONTHLY_KLINES_202607":1
+    },
+    "forbidden_scientific_archive_object_reads": [
+      "BINANCE_BTC_UM_MONTHLY_MARK_PRICE_KLINES_202607","BINANCE_BTC_UM_MONTHLY_INDEX_PRICE_KLINES_202607","BINANCE_BTC_UM_MONTHLY_PREMIUM_INDEX_KLINES_202607",
+      "BINANCE_ETH_UM_MONTHLY_MARK_PRICE_KLINES_202607","BINANCE_ETH_UM_MONTHLY_INDEX_PRICE_KLINES_202607","BINANCE_ETH_UM_MONTHLY_PREMIUM_INDEX_KLINES_202607",
+      "BINANCE_SOL_UM_MONTHLY_MARK_PRICE_KLINES_202607","BINANCE_SOL_UM_MONTHLY_INDEX_PRICE_KLINES_202607","BINANCE_SOL_UM_MONTHLY_PREMIUM_INDEX_KLINES_202607"
+    ],
+    "source_network_fetches_allowed": 0,
+    "source_network_refetch_allowed": false,
+    "result_branch": "research/0072-result-v1",
+    "result_artifacts_create_only": ["RUN_ATTEMPT.marker","PRIMARY_RESULT.json","EVIDENCE.json","EXECUTION.json","RUN_ONCE.marker"],
+    "same_id_rerun_allowed_after_attempt": false,
+    "same_id_retune_allowed_after_attempt": false,
+    "same_id_rescue_allowed_after_attempt": false,
+    "same_id_recompute_allowed_after_attempt": false
+  },
+  "result_schema_required_fields": ["research_id","classification","execution_valid","evidence_tier","source_identities","study_window","family_accounting","candidate_accounting","support_counts","hypothesis_results","bh_adjusted_q","leave_one_asset_results","terminal_gates","source_read_counts","network_fetches","production_authorized","signature_authorized","order_submission_authorized"],
+  "forbidden": [
+    "CAPTURE-0001 retry","CAPTURE-0002 refetch or second fetch","fapi.binance.com or api.bybit.com source fetch","perpetual funding inferred from premiumIndexKlines","new source or eleventh family","dated futures or term structure without prospectively qualified support","cross-venue or OI source substitution","attention proxy","liquidation proxy","threshold or horizon change after raw values","hypothesis addition or pruning after raw values","strategy positions","hedge ratios","leverage rules","portfolio weights","carry PnL","CAGR","Sharpe","Sortino","MDD","Calmar","DSR","PBO as 0072 PASS criteria","production/signature/order authority"
+  ],
+  "network_fetch_allowed_during_controlled_attempt": false,
+  "production_authorized": false,
+  "signature_authorized": false,
+  "order_submission_authorized": false
+}

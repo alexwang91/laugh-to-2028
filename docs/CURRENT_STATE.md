@@ -1,6 +1,6 @@
 # BRRK Current State
 
-Last updated: 2026-08-20
+Last updated: 2026-08-21
 
 Authoritative repository: `alexwang91/laugh-to-2028`.
 
@@ -200,7 +200,7 @@ The immutable closeout records the FAIL without rescue or reinterpretation. Gove
 ## 0072 carry atlas
 
 Research ID = `BRRK-CRYPTO-CARRY-ATLAS-0072`.
-State = `OWNER-FIRST + DESIGN MERGED / STAGE 3 PREREGISTRATION FIRST CAPTURE SEALED FAILED / RECONCILIATION MERGED / SOURCE ACCESS REQUALIFICATION PLAN MERGED / ACCESS PROBE EXECUTION REQUEST MERGED / ACCESS PROBE WORKFLOW MERGED / THREE DISPATCHES GUARD-SKIPPED / RUNNER-SIDE REQUEST-ID GATE MERGED / OBSERVABLE FAIL-CLOSED GATE MERGED / ONE-SHOT MERGE-TRIGGER MERGED / ACCESS PROBE SUCCESS_WITH_PARTIAL_TECHNICAL_REACHABILITY / SOURCE-IDENTITY AMENDMENT MERGED / CAPTURE-0002 REQUEST+OBJECT PLAN MERGED / CAPTURE-0002 IMPLEMENTATION+BOUNDARY MERGED / ZERO-EXISTING-ARTIFACT PREFLIGHT PASS / PREFLIGHT EVIDENCE MERGED / CAPTURE-0002 ONE-SHOT EXECUTION SUCCESS / SUCCESS EVIDENCE MERGED / STAGE3 PREREGISTRATION SUPPORT-BOUNDARY PREP IN PROGRESS / FORMAL COMPLETION 2/10 / CONTROLLED ATTEMPT 0/1 / CONTROLLED READS 0`.
+State = `OWNER-FIRST + DESIGN MERGED / STAGE 3 PREREGISTRATION FIRST CAPTURE SEALED FAILED / RECONCILIATION MERGED / SOURCE ACCESS REQUALIFICATION PLAN MERGED / ACCESS PROBE EXECUTION REQUEST MERGED / ACCESS PROBE WORKFLOW MERGED / THREE DISPATCHES GUARD-SKIPPED / RUNNER-SIDE REQUEST-ID GATE MERGED / OBSERVABLE FAIL-CLOSED GATE MERGED / ONE-SHOT MERGE-TRIGGER MERGED / ACCESS PROBE SUCCESS_WITH_PARTIAL_TECHNICAL_REACHABILITY / SOURCE-IDENTITY AMENDMENT MERGED / CAPTURE-0002 REQUEST+OBJECT PLAN MERGED / CAPTURE-0002 IMPLEMENTATION+BOUNDARY MERGED / ZERO-EXISTING-ARTIFACT PREFLIGHT PASS / PREFLIGHT EVIDENCE MERGED / CAPTURE-0002 ONE-SHOT EXECUTION SUCCESS / SUCCESS EVIDENCE MERGED / STAGE3 PREREGISTRATION SUPPORT-BOUNDARY PREP MERGED / FULL STAGE3 PREREGISTRATION IN PROGRESS / FORMAL COMPLETION 2/10 / CONTROLLED ATTEMPT 0/1 / CONTROLLED READS 0`.
 
 Lifecycle anchors:
 - roadmap merge `169d9adf6531dc099a43541df413fef079322adf`;
@@ -231,7 +231,8 @@ Lifecycle anchors:
 - Stage 3 CAPTURE-0002 zero-artifact preflight evidence #336 merge `e095eca33f5dd4280b0f47e8acaf83e2d067c628`; preflight PASS records execution-claim/raw/support artifacts absent, result files absent, source-network requests 0, scientific payload reads 0, Stage-8 attempt 0 and controlled reads 0.
 - Stage 3 CAPTURE-0002 one-shot execution request/trigger #337 merge `06ac1682b8a6de08ac75d53f0463f46727d60605`; unique workflow run `32428715027` attempt 1 = SUCCESS; durable execution-claim/raw/support artifacts `9428322109` / `9428326636` / `9428327167`; BTC/ETH/SOL x five frozen archive families = 15/15 support PASS; CAPTURE-0002 is permanently claimed and automatic refetch/second fetch is forbidden.
 - Stage 3 CAPTURE-0002 success-evidence #339 merge `ad7d76af3fbfe489d9cf74f9de371db70ab1d8c7`; metadata/support evidence is canonical on main, no raw payload was added or read, no lifecycle credit was claimed.
-- Stage 3 preregistration support-boundary prep PR #340 is in progress; it freezes only already-governed support facts, insufficient-family/no-substitution constraints, and earns no lifecycle credit.
+- Stage 3 preregistration support-boundary prep #340 merge `d9eec67f490ce1aad0e34b6e2d2f8de27193420f`; it freezes only already-governed support facts, insufficient-family/no-substitution constraints, and earned no lifecycle credit.
+- Stage 3 full preregistration PR #341 is in progress from initial preregistration commit `3e954e2d1394446399c0406d46f86e20d036ee82`; it prospectively freezes four retained OWNER-FIRST families, exactly six hypotheses, the July-2026 PIT window, thresholds/horizon, support gates, serial-dependence inference, terminal gates, qualification fixtures, physical read budgets and exactly-once result persistence. It claims no Stage-3 completion before merge.
 - CAPTURE-0002 zero-existing-artifact diagnostic PR #335 was closed without merge after successful metadata-only preflight.
 - CAPTURE-0002 zero-existing-artifact preflight workflow run `32422100836`, job `96596129550`: SUCCESS while checking out exact merged boundary main `be7aaf4640869d27a7efec974efa45d072ec9a7b`; contract validation = `CAPTURE_0002_CONTRACT_VALID_NO_NETWORK`; fixed raw/support artifact metadata rows = `0/0`; repository-wide nonexpired CAPTURE-0002 artifact count = `0`; repository CAPTURE-0002 result-file count = `0`; `scientific_payload_reads=0`; `source_network_requests=0`; `stage8_attempt_consumed=0`; `controlled_scientific_history_reads_to_researcher=0`.
 - forward preflight evidence file `research/brrk_crypto_carry_atlas_0072/CAPTURE_0002_ZERO_ARTIFACT_PREFLIGHT_EVIDENCE.json` records only the above metadata/preflight facts and grants no lifecycle or execution authority.
@@ -250,7 +251,7 @@ The successful access probe read no scientific payload. Evidence explicitly reco
 
 ## Exact next step
 
-Persist the completed CAPTURE-0002 metadata/support success evidence in #339, with no raw payload in git and no lifecycle credit. After #339 merges, freeze the complete Stage-3 preregistration from merged DESIGN plus the already frozen 15/15 support truth. Do not add an eleventh family, substitute a source/family, refetch CAPTURE-0002, or use raw values to choose thresholds/horizons. Full Stage 3 remains 2/10 until that complete preregistration merges.
+Complete #341 CURRENT_STATE handoff and exact-head standing CI, then expected-head merge the complete Stage-3 preregistration. Until #341 merges, formal completion remains 2/10. After that merge, Stage 3 becomes 3/10 and the next legal lifecycle step is Stage 4 IMPLEMENTATION encoding only the frozen preregistration. Do not open CAPTURE-0002 raw values during Stage 3 or Stage 4, add an eleventh family, substitute a source/family, refetch CAPTURE-0002, or change thresholds/horizons after evidence.
 
 ## No-drift authority
 
@@ -269,5 +270,5 @@ Canonical BRRK-0011 = NO CHANGE.
 0070 = CLOSED / NO SAME-ID ACTION.
 0071 = CONTROLLED BOUNDARY MERGED / ZERO-RESULT PREFLIGHT BLOCKED_PRE_ATTEMPT_CONTROLLED_CONTENT_CONTAMINATION / ATTEMPT 0/1.
 0083 = 10/10 COMPLETE / `FAIL_NO_ROBUST_LOCKED_P02_ECONOMIC_CONTROLLER_VALUE` / CLOSED TO SAME-ID RERUN / ATTEMPT 1/1.
-0072 = OWNER-FIRST + DESIGN MERGED / STAGE 3 SOURCE ACCESS REQUALIFICATION PLAN MERGED / ACCESS PROBE EXECUTION REQUEST MERGED / ACCESS PROBE WORKFLOW MERGED / THREE DISPATCHES GUARD-SKIPPED / RUNNER-SIDE REQUEST-ID GATE MERGED / OBSERVABLE FAIL-CLOSED GATE MERGED / ONE-SHOT MERGE-TRIGGER MERGED / ACCESS PROBE SUCCESS_WITH_PARTIAL_TECHNICAL_REACHABILITY / SOURCE-IDENTITY AMENDMENT MERGED / CAPTURE-0002 REQUEST+OBJECT PLAN MERGED / CAPTURE-0002 IMPLEMENTATION+BOUNDARY MERGED / ZERO-EXISTING-ARTIFACT PREFLIGHT PASS / PREFLIGHT EVIDENCE MERGED / CAPTURE-0002 ONE-SHOT EXECUTION SUCCESS / SUCCESS EVIDENCE IN PROGRESS / FORMAL COMPLETION 2/10 / ATTEMPT 0/1 / CONTROLLED READS 0.
+0072 = OWNER-FIRST + DESIGN MERGED / STAGE 3 SOURCE ACCESS REQUALIFICATION PLAN MERGED / ACCESS PROBE EXECUTION REQUEST MERGED / ACCESS PROBE WORKFLOW MERGED / THREE DISPATCHES GUARD-SKIPPED / RUNNER-SIDE REQUEST-ID GATE MERGED / OBSERVABLE FAIL-CLOSED GATE MERGED / ONE-SHOT MERGE-TRIGGER MERGED / ACCESS PROBE SUCCESS_WITH_PARTIAL_TECHNICAL_REACHABILITY / SOURCE-IDENTITY AMENDMENT MERGED / CAPTURE-0002 REQUEST+OBJECT PLAN MERGED / CAPTURE-0002 IMPLEMENTATION+BOUNDARY MERGED / ZERO-EXISTING-ARTIFACT PREFLIGHT PASS / PREFLIGHT EVIDENCE MERGED / CAPTURE-0002 ONE-SHOT EXECUTION SUCCESS / SUCCESS EVIDENCE MERGED / STAGE3 SUPPORT-BOUNDARY PREP MERGED / FULL PREREGISTRATION IN PROGRESS / FORMAL COMPLETION 2/10 / ATTEMPT 0/1 / CONTROLLED READS 0.
 Phase 6 = NO CHANGE.
