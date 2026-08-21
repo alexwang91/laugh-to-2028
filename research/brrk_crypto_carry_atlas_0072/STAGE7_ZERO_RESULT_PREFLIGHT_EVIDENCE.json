@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "research_id": "BRRK-CRYPTO-CARRY-ATLAS-0072",
+  "stage": "ZERO_RESULT_PREFLIGHT",
+  "classification": "PREFLIGHT_PASS_ZERO_RESULT_IDENTITY_METADATA_ONLY",
+  "exact_merged_boundary_main_sha": "62ea0971c8b8d47fde28f27c6b672d9cf5a61dcf",
+  "boundary_blob": "cc43b63f63de0452d96078a29aeb3358b2d29515",
+  "result_schema_blob": "b9e82e1f7cc1d14ad4d940d8793783df5e31fa68",
+  "identity_checks": {
+    "preregistration_blob": "c1ba293d9623d8342b3611382fd26cbba269f048",
+    "implementation_contract_blob": "7ace6f19e2c230d62998d63d9ae9acfcbecfedac",
+    "engine_blob": "0a9ee76b9db8387415fd7f42add51e2bccd7787e",
+    "stage5_qualification_evidence_blob": "6275596a5db8c7d56e94db7b39394b95193a263b",
+    "all_match_boundary": true
+  },
+  "capture_artifact_metadata": {
+    "workflow_run_id": 32428715027,
+    "workflow_head_sha": "06ac1682b8a6de08ac75d53f0463f46727d60605",
+    "execution_claim": {
+      "artifact_id": 9428322109,
+      "name": "0072-capture-execution-claim-BRRK-CRYPTO-CARRY-ATLAS-0072-CAPTURE-0002",
+      "expired": false,
+      "digest": "sha256:ac4ba66a68bd4bbb6daad4c2637437fd54a0df500f375afa65216fd26a3c56ee"
+    },
+    "raw": {
+      "artifact_id": 9428326636,
+      "name": "0072-capture-raw-BRRK-CRYPTO-CARRY-ATLAS-0072-CAPTURE-0002",
+      "expired": false,
+      "digest": "sha256:24a7e8fb922ea8c78dda3170b0deda57f941bca3125dae1c30582a40e4e33880",
+      "size_in_bytes": 54956
+    },
+    "support": {
+      "artifact_id": 9428327167,
+      "name": "0072-capture-support-BRRK-CRYPTO-CARRY-ATLAS-0072-CAPTURE-0002",
+      "expired": false,
+      "digest": "sha256:dcc52c62667401557b1c507a43ed79a930b782faac823c91dd7ebd9d1fd1f5ea"
+    },
+    "raw_artifact_downloaded_during_preflight": false,
+    "artifact_contents_opened_during_preflight": false
+  },
+  "zero_result_checks": {
+    "result_branch": "research/0072-result-v1",
+    "result_branch_exists": false,
+    "run_attempt_marker_exists_in_0072_directory": false,
+    "primary_result_exists_in_0072_directory": false,
+    "evidence_result_exists_in_0072_directory": false,
+    "execution_result_exists_in_0072_directory": false,
+    "run_once_marker_exists_in_0072_directory": false
+  },
+  "preflight_read_accounting": {
+    "git_file_identity_reads": 5,
+    "github_artifact_metadata_list_calls": 1,
+    "github_branch_search_calls": 1,
+    "github_directory_metadata_reads": 1,
+    "controlled_scientific_history_reads": 0,
+    "raw_artifact_downloads": 0,
+    "raw_archive_value_reads": 0,
+    "support_artifact_content_reads": 0,
+    "execution_claim_content_reads": 0,
+    "source_network_fetches": 0,
+    "stage8_attempt_consumed": 0,
+    "run_attempt_marker_created": false,
+    "scientific_result_files_created": false
+  },
+  "gate_checks": {
+    "boundary_already_merged_before_preflight": true,
+    "exact_boundary_main_identity_verified": true,
+    "result_branch_absent": true,
+    "runtime_result_artifacts_absent": true,
+    "capture_artifacts_present_and_nonexpired": true,
+    "raw_artifact_digest_matches_boundary": true,
+    "identity_only_metadata_only": true,
+    "zero_controlled_content_read": true,
+    "zero_source_network": true,
+    "attempt_unconsumed": true,
+    "PASS": true
+  },
+  "production_authorized": false,
+  "signature_authorized": false,
+  "order_submission_authorized": false
+}
