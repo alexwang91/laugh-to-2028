@@ -3,6 +3,7 @@ from io import BytesIO
 from pathlib import Path
 from unittest import mock
 from research.brrk_crypto_carry_atlas_0072 import capture_wiring as c
+from research.brrk_crypto_carry_atlas_0072.test_engine import TestCarryAtlasStage4
 
 def z():
     b=BytesIO()
@@ -42,7 +43,7 @@ class CaptureWiringTests(unittest.TestCase):
             with self.assertRaises(c.CaptureError):c.capture(Path(d),f,git=False)
     def test_finalize_allowlist(self):
         one={"requests":[{"canonical_request_id":"ONE","source_id":"BINANCE_OFFICIAL_PUBLIC_FUTURES_AND_ARCHIVE_V1","asset":"BTC","venue":"BINANCE","instrument_family":"PERPETUAL_FUNDING","kind":"json","timestamp_rule":"fundingTime","support_if_parsed":"SUPPORTED","url":"https://fapi.binance.com/fapi/v1/fundingRate"}]}
-        def f(url):return {"body":json.dumps([{"fundingTime":1782864000000,"fundingRate":"SECRET"}]).encode(),"status":200,"headers":{},"retrieved_at_utc":"2026-08-18T20:00:00Z"}
+        def f(url):return {"body":json.dumps([{"fundingTime":1782864000000,"fundingRate":"SECRET"}]).encode(),"status":200,"headers":{},"retrieved_at_utc":"2026-08-18T20:01:00Z"}
         with mock.patch.object(c,"validate",return_value=one):
             with tempfile.TemporaryDirectory() as d:
                 d=Path(d);st=c.capture(d,f,git=False);rp=d/"r.json";c.write_receipt(rp,st,backend="GITHUB_ACTIONS_ARTIFACT_V4",root_ref="artifact://1",artifact_id="1",artifact_url="https://x",archived_at="2026-08-18T20:01:00Z");s=c.finalize(d,st,rp);self.assertNotIn("SECRET",json.dumps(s));self.assertEqual(set(s["objects"][0]),c.ALLOWED);self.assertEqual(s["attempt_consumed"],0)
