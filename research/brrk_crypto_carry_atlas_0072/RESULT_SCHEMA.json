@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "research_id": "BRRK-CRYPTO-CARRY-ATLAS-0072",
+  "purpose": "CREATE_ONLY_STAGE8_PRIMARY_RESULT_SCHEMA",
+  "required_top_level_fields": [
+    "research_id",
+    "classification",
+    "execution_valid",
+    "evidence_tier",
+    "source_identities",
+    "study_window",
+    "family_accounting",
+    "candidate_accounting",
+    "support_counts",
+    "hypothesis_results",
+    "bh_adjusted_q",
+    "leave_one_asset_results",
+    "terminal_gates",
+    "source_read_counts",
+    "network_fetches",
+    "production_authorized",
+    "signature_authorized",
+    "order_submission_authorized"
+  ],
+  "classification_enum": [
+    "PASS_STRUCTURAL_CARRY_MECHANISM",
+    "FAIL_NO_ROBUST_STRUCTURAL_CARRY_MECHANISM",
+    "INCONCLUSIVE_INSUFFICIENT_SUPPORT",
+    "INVALID_EXECUTION"
+  ],
+  "candidate_accounting": {
+    "hypothesis_ids_exact": [
+      "H01_BASIS_PERSISTENCE",
+      "H02_BASIS_MEAN_REVERSION",
+      "H03_BASIS_VOLATILITY_ASSOCIATION",
+      "H04_BASIS_VOLUME_ASSOCIATION",
+      "H05_BASIS_TREND_ASSOCIATION",
+      "H06_EXTREME_CARRY_CRASH_ASSOCIATION"
+    ],
+    "hypothesis_count_exact": 6
+  },
+  "source_read_counts": {
+    "raw_artifact_download_expected_max": 1,
+    "scientific_object_read_expected_max_each": 1,
+    "scientific_object_count_exact": 6,
+    "network_fetches_exact": 0,
+    "refetches_exact": 0
+  },
+  "terminal_gate_ids": ["G0_EXECUTION_VALID","G1_SUPPORT_SUFFICIENT","G2_PERSISTENCE","G3_MEAN_REVERSION","G4_CROWDING_STATE_ASSOCIATION","G5_CRASH_RISK_ASSOCIATION","G6_LEAVE_ONE_ASSET_ROBUSTNESS"],
+  "forbidden_result_content": [
+    "strategy_positions",
+    "hedge_ratios",
+    "leverage_rules",
+    "portfolio_weights",
+    "carry_PnL",
+    "CAGR",
+    "Sharpe",
+    "Sortino",
+    "MDD",
+    "Calmar",
+    "DSR",
+    "PBO_as_0072_PASS_gate",
+    "production_authorization"
+  ],
+  "result_file": "PRIMARY_RESULT.json",
+  "create_only": true,
+  "overwrite_allowed": false,
+  "production_authorized": false,
+  "signature_authorized": false,
+  "order_submission_authorized": false
+}
