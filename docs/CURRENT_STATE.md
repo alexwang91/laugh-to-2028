@@ -1,6 +1,6 @@
 # BRRK Current State
 
-Last updated: 2026-08-21
+Last updated: 2026-08-22
 
 Authoritative repository: `alexwang91/laugh-to-2028`.
 
@@ -261,7 +261,7 @@ The successful access probe read no scientific payload. Stage 7 read only identi
 
 ## Exact next step
 
-0073 Stage 1 OWNER-FIRST is merged at live main `dc287210212a827181501779482c976ac01995c8`. Stage 2 DESIGN is in progress on PR #353 / `research/0073-design-v1`. Require all standing CI SUCCESS on the exact Stage-2 head and expected-head merge. Only after Stage 2 merges may a separate Stage 3 PREREGISTRATION branch be created. No 0073 controlled scientific/history payload may be read in Stage 2; Stage 3 must freeze exact numerical, data and analysis semantics prospectively before implementation or controlled-history access.
+0073 Stage 1 OWNER-FIRST is merged at `dc287210212a827181501779482c976ac01995c8`. Stage 2 DESIGN is merged at `8cfe10ed7c031c6e46edb1d58e30bc5eb8cc7878`. Stage 3 PREREGISTRATION is in progress on PR #354 / `research/0073-stage3-preregistration-v1`. Formal completion remains 2/10 until Stage 3 merges. Controlled attempt remains 0/1; controlled scientific/history reads remain 0; scientific engine calls remain 0. Require all standing CI SUCCESS on the exact Stage-3 head and expected-head merge. Only after Stage 3 merges may a separate Stage 4 IMPLEMENTATION branch encode the prospectively frozen contract. No controlled scientific/history payload read is legal in Stage 3 or Stage 4.
 
 ## No-drift authority
 
@@ -281,5 +281,5 @@ Canonical BRRK-0011 = NO CHANGE.
 0071 = CONTROLLED BOUNDARY MERGED / ZERO-RESULT PREFLIGHT BLOCKED_PRE_ATTEMPT_CONTROLLED_CONTENT_CONTAMINATION / ATTEMPT 0/1.
 0083 = 10/10 COMPLETE / `FAIL_NO_ROBUST_LOCKED_P02_ECONOMIC_CONTROLLER_VALUE` / CLOSED TO SAME-ID RERUN / ATTEMPT 1/1.
 0072 = 10/10 COMPLETE / `INCONCLUSIVE_INSUFFICIENT_SUPPORT` / CLOSED TO SAME-ID RERUN / ATTEMPT 1/1 CONSUMED / CONTROLLED READS 6 / ENGINE 1/1 / SOURCE NETWORK FETCHES 0 / NO SAME-ID RERUN-RETUNE-RESCUE-RECOMPUTE.
-0073 = OWNER-FIRST MERGED / STAGE-2 DESIGN IN PROGRESS / FORMAL COMPLETION 1/10 UNTIL DESIGN MERGE / CONTROLLED ATTEMPT 0/1 / CONTROLLED READS 0 / SCIENTIFIC ENGINE 0 / PRODUCTION-SIGNATURE-ORDER AUTHORITY FALSE.
+0073 = OWNER-FIRST MERGED / STAGE-2 DESIGN MERGED / STAGE-3 PREREGISTRATION IN PROGRESS / FORMAL COMPLETION 2/10 UNTIL STAGE-3 MERGE / CONTROLLED ATTEMPT 0/1 / CONTROLLED READS 0 / SCIENTIFIC ENGINE 0 / PRODUCTION-SIGNATURE-ORDER AUTHORITY FALSE.
 Phase 6 = NO CHANGE.
