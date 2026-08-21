@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "research_id": "BRRK-CRYPTO-CARRY-ATLAS-0072",
+  "stage": "STAGE_5_NONHISTORICAL_QUALIFICATION",
+  "base_stage4_merge": "94a76ecb505a72314caaa00d39ad36faeb896b5f",
+  "qualification_scope": "SYNTHETIC_ONLY_NO_HISTORICAL_CONTENT",
+  "qualification": "PASS",
+  "regimes": {
+    "SYNTHETIC_EXACT_PASS": "PASS",
+    "SYNTHETIC_SCIENTIFIC_FAIL": "FAIL",
+    "SYNTHETIC_INSUFFICIENT_SUPPORT": "INCONCLUSIVE",
+    "SYNTHETIC_UNDEFINED_METRIC": "INCONCLUSIVE",
+    "SYNTHETIC_IDENTITY_MISMATCH": "INVALID",
+    "SYNTHETIC_CANDIDATE_DRIFT": "INVALID",
+    "SYNTHETIC_PREMIUM_AS_FUNDING": "INVALID"
+  },
+  "mechanical_checks_expected_true": [
+    "exactly_three_assets",
+    "exactly_six_hypotheses",
+    "spot_microseconds_and_um_milliseconds_enforced",
+    "timestamp_unit_drift_rejected",
+    "exact_21_state_rows_per_asset_on_complete_july_fixture",
+    "midrank_ties_deterministic",
+    "BH_six_hypothesis_adjustment_defined",
+    "three_day_block_permutation_deterministic",
+    "base_seed_frozen",
+    "no_network_interface_in_engine",
+    "no_raw_artifact_access_in_qualification",
+    "result_persistence_deferred"
+  ],
+  "execution_contract": {
+    "runner": "python -m research.brrk_crypto_carry_atlas_0072.qualification",
+    "standing_ci_must_execute": true,
+    "qualification_pass_requires_all_regimes_and_mechanical_checks": true
+  },
+  "controlled_scientific_history_reads": 0,
+  "raw_artifact_reads": 0,
+  "source_network_fetches": 0,
+  "stage8_attempt_consumed": 0,
+  "capture_0002_refetch_forbidden": true,
+  "production_authorized": false,
+  "signature_authorized": false,
+  "order_submission_authorized": false,
+  "lifecycle_credit_before_merge": false
+}
