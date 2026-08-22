@@ -28,6 +28,12 @@ No candidate replacement, source substitution, cross-asset hedge substitution, t
 
 The 730-UTC-day controlled window, minimum 365 eligible daily observations, same-underlying neutrality rules, gross exposure cap, 20% reserve, dated-future eligibility/roll rules, C1_REALISTIC/C2_STRESSED costs, eight mandatory stresses, synchronized moving-block bootstrap `L=20 / 4000 replicates / seed=730073`, DSR trial count exactly 3, conditional PBO, concentration/capacity gates and frozen terminal classifications remain unchanged.
 
+## Prospectively frozen capture cutoff
+
+Before any controlled historical payload read, Stage 6 now freezes the capture cutoff to `2026-07-31T23:59:59.999999Z`, the latest completed UTC month for which the frozen Binance monthly funding-object family can be prospectively enumerated without substituting a different source family. The corresponding exact 730-UTC-calendar-day study window is `2024-08-02T00:00:00Z` through `2026-07-31T23:59:59.999999Z`, inclusive.
+
+This cutoff is prospective and independent of realized strategy results. It may not be advanced, extended or changed after any controlled content read. Any archive object whose native coverage extends outside this window may be authorized only if its exact object identity is frozen in the manifest and Stage 8 deterministically filters rows to the frozen window; no extra-history observation may enter a scientific calculation.
+
 ## Marker-before-read and exactly-once boundary
 
 Stage 8 receives exactly one controlled scientific attempt. Before any authorized historical object content is opened, a durable remote `RUN_ATTEMPT.marker` must exist and identify the exact Stage-6 merged boundary commit. Marker creation itself consumes no historical read.
@@ -56,6 +62,8 @@ No historical object is authorized merely by host, filename pattern or asset fam
 - maximum scientific content-read budget, fixed to `1` per authorized object.
 
 Primary archive authorization may use only official Binance public archive objects from `data.binance.vision` that satisfy the frozen point-in-time identity contract. Present-day instrument metadata may not be projected backward. `premiumIndexKlines` cannot be relabeled as funding. Funding requires an official historical funding object with event timestamps. C3 requires a separately prospectively qualified second official venue; absent exact frozen identities, C3 remains `UNAVAILABLE_INSUFFICIENT_SUPPORT` and cannot be replaced.
+
+The official Binance public-data documentation states that public archive data are aggregated into daily or monthly files and that each ZIP has a companion `.CHECKSUM` used with SHA-256 verification. Stage 6 may use those checksum companions as metadata-only identity evidence, but it may not open the corresponding ZIP/CSV payloads before the Stage-8 attempt marker.
 
 This file deliberately does **not** fabricate archive paths, checksums or hashes. Until the exact manifest is committed, authorized-object count is `0` and controlled content reads remain prohibited.
 
