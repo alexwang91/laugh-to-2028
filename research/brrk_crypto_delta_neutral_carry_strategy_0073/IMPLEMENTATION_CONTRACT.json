@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "research_id": "BRRK-CRYPTO-DELTA-NEUTRAL-CARRY-STRATEGY-0073",
+  "stage": "IMPLEMENTATION_ONLY_NOT_HISTORICALLY_RUN",
+  "base_preregistration_merge": "903718ac8b406ed0b27399667a116e9e25ff4dab",
+  "base_preregistration_blob": "8a7643f80655c3d42fe03432c5e9c1235d4efa30",
+  "assets": ["BTC", "ETH", "SOL"],
+  "candidate_ids": ["C1_LONG_SPOT_SHORT_PERPETUAL", "C2_LONG_SPOT_SHORT_DATED_FUTURE", "C3_CROSS_VENUE_SAME_UNDERLYING_HEDGE"],
+  "candidate_count": 3,
+  "study_window_days": 730,
+  "minimum_eligible_days": 365,
+  "decision_time_utc": "00:00",
+  "target_net_delta_nav": 0.0,
+  "rebalance_delta_trigger_nav": 0.01,
+  "max_residual_delta_nav": 0.02,
+  "max_neutrality_breach_rate": 0.01,
+  "max_gross_exposure_nav": 1.0,
+  "minimum_margin_reserve_nav": 0.20,
+  "dated_future_entry_dte": [21, 120],
+  "dated_future_roll_dte_lte": 14,
+  "cost_regimes": {
+    "C1_REALISTIC": {"spot_fee_bps": 6, "derivative_fee_bps": 5, "spot_spread_slippage_bps": 4, "derivative_spread_slippage_bps": 3, "dated_roll_extra_bps": 4, "cross_venue_monthly_bps": 5},
+    "C2_STRESSED_MULTIPLIER": 2.0
+  },
+  "stress_ids": ["FUNDING_FLIP", "BASIS_COMPRESSION", "VOL_SPIKE", "SPREAD_BLOWOUT", "VENUE_OUTAGE", "COLLATERAL_HAIRCUT", "STABLECOIN_DEPEG", "MARGIN_STRESS"],
+  "bootstrap": {"block_length_days": 20, "replicates": 4000, "rng": "numpy.random.Generator(PCG64)", "seed": 730073, "lower_percentile": 5},
+  "dsr_trial_count": 3,
+  "dsr_gate": 0.95,
+  "pbo": {"method": "CSCV", "contiguous_slices": 8, "minimum_eligible_days": 504},
+  "pass_gates": {"c1_cagr_gt": 0.0, "c2_cagr_gt": 0.0, "c1_sharpe_gt": 0.50, "c2_sharpe_gt": 0.25, "c1_max_drawdown_gt": -0.35, "bootstrap_p05_annualized_return_gt": 0.0, "cost_break_even_bps_gte": 20, "asset_pnl_concentration_lte": 0.70, "venue_pnl_concentration_lte": 0.80},
+  "classification_enum": ["PASS", "FAIL", "INCONCLUSIVE_INSUFFICIENT_SUPPORT", "INVALID_EXECUTION"],
+  "implementation_guards": {"controlled_history_reads": 0, "source_network_fetches": 0, "scientific_engine_calls": 0, "stage8_attempt_consumed": 0, "premium_index_as_funding_allowed": false, "candidate_substitution_allowed": false, "source_substitution_allowed": false, "result_informed_rescue_allowed": false, "production_authorized": false, "signature_authorized": false, "order_submission_authorized": false}
+}
