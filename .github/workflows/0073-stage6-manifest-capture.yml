@@ -1,0 +1,100 @@
+name: 0073 Stage6 metadata-only manifest capture
+
+on:
+  pull_request:
+    branches: [main]
+    types: [synchronize, opened, reopened]
+
+permissions:
+  contents: write
+  pull-requests: read
+
+jobs:
+  capture:
+    if: github.head_ref == 'research/0073-stage6-controlled-boundary-v1'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
+      - name: Capture official checksum metadata only
+        run: |
+          python - <<'PY'
+          import json, re, urllib.request, urllib.error
+          from datetime import date
+          from pathlib import Path
+
+          assets = ['BTCUSDT','ETHUSDT','SOLUSDT']
+          months=[]
+          y,m=2024,8
+          while (y,m) <= (2026,7):
+              months.append(f'{y:04d}-{m:02d}')
+              m += 1
+              if m == 13: y,m = y+1,1
+
+          families = [
+            ('spot_kline_1d', 'https://data.binance.vision/data/spot/monthly/klines/{asset}/1d/{asset}-1d-{month}.zip'),
+            ('um_perp_kline_1d', 'https://data.binance.vision/data/futures/um/monthly/klines/{asset}/1d/{asset}-1d-{month}.zip'),
+            ('um_funding_rate', 'https://data.binance.vision/data/futures/um/monthly/fundingRate/{asset}/{asset}-fundingRate-{month}.zip'),
+          ]
+          rows=[]
+          failures=[]
+          for asset in assets:
+            for family, tmpl in families:
+              for month in months:
+                obj = tmpl.format(asset=asset, month=month)
+                checksum_url = obj + '.CHECKSUM'
+                try:
+                  req=urllib.request.Request(checksum_url, headers={'User-Agent':'0073-stage6-metadata-capture/1.0'})
+                  with urllib.request.urlopen(req, timeout=30) as r:
+                    raw=r.read(512).decode('utf-8','strict').strip()
+                  mm=re.fullmatch(r'([0-9a-fA-F]{64})\s+\*?(.+)', raw)
+                  expected=obj.rsplit('/',1)[1]
+                  if not mm or mm.group(2).strip() != expected:
+                    raise ValueError(f'malformed checksum: {raw!r}')
+                  rows.append({
+                    'candidate':'C1_STATIC_PERPETUAL_CARRY',
+                    'asset':asset[:-4],
+                    'venue':'BINANCE',
+                    'family':family,
+                    'object_url':obj,
+                    'checksum_url':checksum_url,
+                    'sha256':mm.group(1).lower(),
+                    'utc_coverage_month':month,
+                    'scientific_content_read_budget':1
+                  })
+                except Exception as e:
+                  failures.append({'family':family,'asset':asset,'month':month,'checksum_url':checksum_url,'error':type(e).__name__+': '+str(e)})
+
+          out={
+            'schema':'0073-stage6-authorized-object-manifest-v1',
+            'capture_cutoff_utc':'2026-07-31T23:59:59.999999Z',
+            'study_window_utc':['2024-08-01T00:00:00Z','2026-07-31T23:59:59.999999Z'],
+            'capture_mode':'OFFICIAL_CHECKSUM_METADATA_ONLY_ZERO_PAYLOAD_READS',
+            'candidate_status':{
+              'C1_STATIC_PERPETUAL_CARRY':'AUTHORIZED_ONLY_IF_complete_216_of_216',
+              'C2_DATED_FUTURE_ROLL':'UNAVAILABLE_INSUFFICIENT_POINT_IN_TIME_IDENTITY',
+              'C3_SECOND_VENUE_CARRY':'UNAVAILABLE_INSUFFICIENT_SUPPORT'
+            },
+            'expected_c1_objects':216,
+            'captured_c1_objects':len(rows),
+            'failures':failures,
+            'objects':rows
+          }
+          p=Path('research/brrk_crypto_delta_neutral_carry_strategy_0073/AUTHORIZED_OBJECT_MANIFEST.json')
+          p.write_text(json.dumps(out, indent=2, sort_keys=True)+'\n')
+          if failures or len(rows) != 216:
+            print(f'Fail-closed: captured {len(rows)}/216; failures={len(failures)}')
+          else:
+            print('Captured 216/216 official checksum identities; zero ZIP/CSV payload reads.')
+          PY
+      - name: Commit create-only manifest and remove capture workflow
+        run: |
+          test -f research/brrk_crypto_delta_neutral_carry_strategy_0073/AUTHORIZED_OBJECT_MANIFEST.json
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add research/brrk_crypto_delta_neutral_carry_strategy_0073/AUTHORIZED_OBJECT_MANIFEST.json
+          git rm .github/workflows/0073-stage6-manifest-capture.yml
+          git commit -m 'research(0073): freeze Stage6 authorized-object identities'
+          git push origin HEAD:${{ github.head_ref }}
