@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "research_id": "BRRK-CRYPTO-MULTI-HORIZON-TREND-0074",
+  "stage": 8,
+  "supplement_type": "POST_SEAL_CONCURRENCY_ACCOUNTING_CORRECTION",
+  "scientific_classification_unchanged": "INVALID_EXECUTION",
+  "scientific_result_available": false,
+  "canonical_primary_result_commit": "748ccd4261ebaccda6ffdff7b18305891432b9de",
+  "run_once_marker_sealed": true,
+  "incident_file": "research/brrk_crypto_multi_horizon_trend_0074/STAGE8_CONCURRENCY_INCIDENT.json",
+  "reason_supplement_is_required": "The create-only PRIMARY_RESULT/EVIDENCE/EXECUTION/RUN_ONCE chain was produced concurrently from a pre-read fail-closed audit and therefore recorded zero reads/zero engine calls. Worker B's separate post-marker path had already performed the authorized staged-payload reads and one non-frozen local calculation invocation before learning that the concurrent create-only primary result had been persisted. Create-only artifacts are not overwritten. This supplement preserves the scientific INVALID_EXECUTION classification while correcting operational accounting for downstream governance.",
+  "final_operational_accounting": {
+    "attempt": "1/1_CONSUMED",
+    "stage6_artifact_downloads_after_marker": 1,
+    "controlled_scientific_history_reads": 402,
+    "authorized_payload_objects_total": 402,
+    "authorized_payload_objects_opened_scientifically": 402,
+    "each_authorized_payload_read_at_most_once": true,
+    "scientific_engine_calls_realized": 1,
+    "scientific_engine_call_admissible": false,
+    "scientific_engine_call_reason_inadmissible": "The local harness was not part of the frozen Stage4 implementation.",
+    "scientific_source_network_fetches": 0,
+    "scientific_values_exposed": true,
+    "repository_scientific_metrics_from_local_harness_persisted": false
+  },
+  "interpretation_constraints": {
+    "local_harness_metrics_may_be_used_as_0074_scientific_evidence": false,
+    "local_harness_metrics_may_select_or_tune_followup": false,
+    "same_id_rerun": false,
+    "same_id_recompute": false,
+    "same_id_rescue": false,
+    "same_id_retune": false,
+    "source_substitution": false,
+    "history_extension": false,
+    "candidate_replacement": false,
+    "terminal_reason": "INVALID_EXECUTION due incomplete frozen Stage4 execution implementation plus post-marker concurrent execution divergence."
+  },
+  "production_authorized": false,
+  "signature_authorized": false,
+  "order_submission_authorized": false
+}
