@@ -30,7 +30,7 @@ The 730-UTC-day controlled window, minimum 365 eligible daily observations, same
 
 ## Prospectively frozen capture cutoff
 
-Before any controlled historical payload read, Stage 6 now freezes the capture cutoff to `2026-07-31T23:59:59.999999Z`, the latest completed UTC month for which the frozen Binance monthly funding-object family can be prospectively enumerated without substituting a different source family. The corresponding exact 730-UTC-calendar-day study window is `2024-08-02T00:00:00Z` through `2026-07-31T23:59:59.999999Z`, inclusive.
+Before any controlled historical payload read, Stage 6 now freezes the capture cutoff to `2026-07-31T23:59:59.999999Z`, the latest completed UTC month for which the frozen Binance monthly funding-object family can be prospectively enumerated without substituting a different source family. The corresponding exact 730-UTC-calendar-day study window is `2024-08-01T00:00:00Z` through `2026-07-31T23:59:59.999999Z`, inclusive.
 
 This cutoff is prospective and independent of realized strategy results. It may not be advanced, extended or changed after any controlled content read. Any archive object whose native coverage extends outside this window may be authorized only if its exact object identity is frozen in the manifest and Stage 8 deterministically filters rows to the frozen window; no extra-history observation may enter a scientific calculation.
 
