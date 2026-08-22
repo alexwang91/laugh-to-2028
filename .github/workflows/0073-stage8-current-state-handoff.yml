@@ -1,18 +1,19 @@
 name: 0073 Stage8 CURRENT_STATE handoff repair
 
 on:
-  push:
-    branches:
-      - research/0073-stage8-controlled-attempt-v1
+  pull_request:
+    branches: [main]
     paths:
       - '.github/workflows/0073-stage8-current-state-handoff.yml'
       - 'docs/CURRENT_STATE.md'
+      - 'research/brrk_crypto_delta_neutral_carry_strategy_0073/**'
 
 permissions:
   contents: write
 
 jobs:
   repair-handoff:
+    if: github.head_ref == 'research/0073-stage8-controlled-attempt-v1'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
