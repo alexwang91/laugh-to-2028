@@ -1,0 +1,179 @@
+name: 0074 Stage6 manifest and byte staging
+on:
+  push:
+    branches:
+      - research/0074-stage6-controlled-boundary-v1
+permissions:
+  contents: write
+  actions: read
+jobs:
+  stage:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      BRANCH: research/0074-stage6-controlled-boundary-v1
+      ROOT: research/brrk_crypto_multi_horizon_trend_0074
+      ARTIFACT_NAME: 0074-stage6-authorized-payloads-v1
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/0074-stage6-controlled-boundary-v1
+          fetch-depth: 0
+      - name: Guard create-only outputs
+        shell: bash
+        run: |
+          set -euo pipefail
+          test ! -e "$ROOT/AUTHORIZED_OBJECT_MANIFEST.json"
+          test ! -e "$ROOT/STAGE6_STAGING_EVIDENCE.json"
+      - name: Capture exact checksums and stage opaque ZIP bytes
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p stage/payloads stage/checksums
+          python - <<'PY'
+          import calendar, hashlib, json, os, pathlib, re, subprocess, sys
+          from datetime import datetime, timezone
+
+          host = 'https://data.binance.vision/'
+          symbols = ['BTCUSDT','ETHUSDT','SOLUSDT']
+          months=[]
+          y,m=2021,1
+          while (y,m) <= (2026,7):
+              months.append(f'{y:04d}-{m:02d}')
+              m += 1
+              if m == 13:
+                  y += 1; m = 1
+          assert len(months) == 67
+          families = [
+              ('perpetual_1d_kline', lambda s,ym: f'data/futures/um/monthly/klines/{s}/1d/{s}-1d-{ym}.zip'),
+              ('funding_rate', lambda s,ym: f'data/futures/um/monthly/fundingRate/{s}/{s}-fundingRate-{ym}.zip'),
+          ]
+          rows=[]
+          failures=[]
+          for sym in symbols:
+              for fam, build in families:
+                  for ym in months:
+                      path = build(sym,ym)
+                      checksum_path = path + '.CHECKSUM'
+                      safe = path.replace('/','__')
+                      zip_local = pathlib.Path('stage/payloads')/safe
+                      chk_local = pathlib.Path('stage/checksums')/(safe+'.CHECKSUM')
+                      for url, dest in [(host+checksum_path, chk_local),(host+path, zip_local)]:
+                          p = subprocess.run(['curl','--fail','--silent','--show-error','--location','--max-time','30','--retry','0','--output',str(dest),url])
+                          if p.returncode:
+                              failures.append({'path':path,'reason':f'fetch_failed:{url}'})
+                              break
+                      else:
+                          txt = chk_local.read_text().strip()
+                          mt = re.search(r'\b([0-9a-fA-F]{64})\b', txt)
+                          if not mt:
+                              failures.append({'path':path,'reason':'malformed_checksum'})
+                              continue
+                          official = mt.group(1).lower()
+                          h=hashlib.sha256()
+                          with zip_local.open('rb') as f:
+                              for chunk in iter(lambda:f.read(1024*1024),b''):
+                                  h.update(chunk)
+                          actual=h.hexdigest()
+                          if actual != official:
+                              failures.append({'path':path,'reason':'sha256_mismatch','official':official,'actual':actual})
+                              continue
+                          # Structural offline readability only. Do not extract or print scientific values.
+                          t = subprocess.run(['unzip','-tqq',str(zip_local)], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                          if t.returncode:
+                              failures.append({'path':path,'reason':'offline_zip_test_failed'})
+                              continue
+                          yy,mm=map(int,ym.split('-'))
+                          ny,nm=(yy+1,1) if mm==12 else (yy,mm+1)
+                          rows.append({
+                              'asset':sym.replace('USDT',''),
+                              'symbol':sym,
+                              'archive_family':fam,
+                              'month':ym,
+                              'official_object_path':path,
+                              'official_checksum_path':checksum_path,
+                              'official_sha256':official,
+                              'expected_utc_coverage':{'start':f'{yy:04d}-{mm:02d}-01T00:00:00Z','end_exclusive':f'{ny:04d}-{nm:02d}-01T00:00:00Z'},
+                              'scientific_content_read_budget':1,
+                              'staging_status':'STAGED_HASH_VERIFIED_OFFLINE_READABLE',
+                              'staged_relative_path':str(zip_local),
+                              'staged_byte_size':zip_local.stat().st_size,
+                              'staged_sha256':actual,
+                              'checksum_relative_path':str(chk_local),
+                          })
+          if failures or len(rows) != 402:
+              pathlib.Path('stage/FAILURES.json').write_text(json.dumps({'expected':402,'captured':len(rows),'failures':failures},indent=2,sort_keys=True)+'\n')
+              print(json.dumps({'expected':402,'captured':len(rows),'failures':failures[:20]},indent=2))
+              sys.exit(2)
+          manifest={
+              'research_id':'BRRK-CRYPTO-MULTI-HORIZON-TREND-0074',
+              'stage':6,
+              'status':'AUTHORIZED_OBJECT_MANIFEST_COMPLETE',
+              'official_host':'https://data.binance.vision',
+              'symbols':symbols,
+              'months':{'first':'2021-01','last':'2026-07','count':67},
+              'expected_payload_objects':402,
+              'captured_payload_objects':len(rows),
+              'failures':[],
+              'scientific_values_exposed':False,
+              'scientific_calculations_performed':False,
+              'controlled_scientific_history_reads':0,
+              'scientific_engine_calls':0,
+              'stage8_scientific_source_network_fetches':0,
+              'staging_artifact_name':os.environ['ARTIFACT_NAME'],
+              'objects':rows,
+          }
+          out=pathlib.Path(os.environ['ROOT'])/'AUTHORIZED_OBJECT_MANIFEST.json'
+          out.write_text(json.dumps(manifest,indent=2,sort_keys=True)+'\n')
+          pathlib.Path('stage/AUTHORIZED_OBJECT_MANIFEST.json').write_text(out.read_text())
+          print(json.dumps({'captured':len(rows),'failures':0,'payload_bytes':sum(r['staged_byte_size'] for r in rows)},indent=2))
+          PY
+      - name: Upload durable staged payload artifact
+        id: upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.ARTIFACT_NAME }}
+          path: stage/
+          if-no-files-found: error
+          retention-days: 90
+          compression-level: 0
+      - name: Persist create-only manifest and staging evidence; self-delete executor
+        shell: bash
+        env:
+          ARTIFACT_ID: ${{ steps.upload.outputs.artifact-id }}
+          ARTIFACT_URL: ${{ steps.upload.outputs.artifact-url }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib, json, os, pathlib
+          root=pathlib.Path(os.environ['ROOT'])
+          manifest_path=root/'AUTHORIZED_OBJECT_MANIFEST.json'
+          b=manifest_path.read_bytes()
+          ev={
+              'research_id':'BRRK-CRYPTO-MULTI-HORIZON-TREND-0074',
+              'stage':6,
+              'status':'STAGING_COMPLETE_ZERO_SCIENTIFIC_VALUE_EXPOSURE',
+              'artifact_name':os.environ['ARTIFACT_NAME'],
+              'artifact_id':os.environ.get('ARTIFACT_ID',''),
+              'artifact_url':os.environ.get('ARTIFACT_URL',''),
+              'artifact_retention_days':90,
+              'authorized_payload_objects':402,
+              'hash_verified_objects':402,
+              'offline_zip_readability_passed_objects':402,
+              'manifest_sha256':hashlib.sha256(b).hexdigest(),
+              'controlled_scientific_history_reads':0,
+              'scientific_engine_calls':0,
+              'stage8_scientific_source_network_fetches':0,
+              'attempt':'0/1',
+              'scientific_values_exposed':False,
+              'note':'Stage6 staging fetched opaque authorized bytes only, verified official SHA-256 identities, and performed unzip structural tests without extraction or scientific-value inspection.'
+          }
+          (root/'STAGE6_STAGING_EVIDENCE.json').write_text(json.dumps(ev,indent=2,sort_keys=True)+'\n')
+          PY
+          rm .github/workflows/0074-stage6-manifest-staging.yml
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add "$ROOT/AUTHORIZED_OBJECT_MANIFEST.json" "$ROOT/STAGE6_STAGING_EVIDENCE.json" .github/workflows/0074-stage6-manifest-staging.yml
+          git commit -m 'research(0074): persist Stage-6 authorized manifest and staging evidence'
+          git push origin HEAD:$BRANCH
