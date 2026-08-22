@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "research_id": "BRRK-CRYPTO-MULTI-HORIZON-TREND-0074",
+  "stage": "STAGE4_IMPLEMENTATION",
+  "evidence_tier": "DEVELOPMENT_HISTORY",
+  "universe": ["BTCUSDT", "ETHUSDT", "SOLUSDT"],
+  "candidate_count": 3,
+  "candidates": {
+    "PAST_RETURN_SIGN_TREND": {"lookbacks": [20, 60, 180]},
+    "MOVING_AVERAGE_SPREAD_TREND": {"pairs": [[10, 40], [20, 80], [60, 240]]},
+    "BREAKOUT_TREND_NORMALIZED_BY_LAGGED_VOL_OR_ATR": {"lookbacks": [20, 60, 180], "normalizer": "LAGGED_20D_REALIZED_VOL_ONLY"}
+  },
+  "voting": "SIGN_OF_EQUAL_SUM_FAST_MEDIUM_SLOW",
+  "risk": {
+    "lagged_vol_lookback": 20,
+    "annualization": 365,
+    "target_ann_vol": 0.20,
+    "vol_floor": 0.05,
+    "per_asset_abs_cap": 0.3333333333333333,
+    "portfolio_gross_cap": 1.0,
+    "rebalance": "UTC_DAILY_CLOSE"
+  },
+  "cost_bps_one_way": {"C0_THEORETICAL": 0, "C1_REALISTIC": 10, "C2_STRESSED": 30},
+  "inference": {"mbb_block_length": 20, "mbb_replicates": 4000, "mbb_seed": 740074, "dsr_trials": 3, "cscv_slices": 8, "cscv_splits": 70},
+  "support": {"common_days_min": 1095, "asset_days_min": 900, "post_warmup_two_asset_fraction_min": 0.80, "regime_nonflat_days_min": 30},
+  "stage4_guards": {
+    "synthetic_fixtures_only": true,
+    "controlled_history_reads": 0,
+    "scientific_engine_calls": 0,
+    "source_network_fetches": 0,
+    "controlled_attempt": "0/1",
+    "production_authorized": false,
+    "signature_authorized": false,
+    "order_submission_authorized": false
+  }
+}
