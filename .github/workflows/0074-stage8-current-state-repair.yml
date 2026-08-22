@@ -10,37 +10,67 @@ permissions:
 
 jobs:
   repair:
+    if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           ref: research/0074-stage8-controlled-attempt-v1
           fetch-depth: 0
-      - name: Synchronize Stage8 terminal handoff
-        shell: bash
+      - name: Synchronize incident-aware terminal Stage8 handoff
         run: |
-          set -euo pipefail
           python - <<'PY'
           from pathlib import Path
+          import re
+
           p = Path('docs/CURRENT_STATE.md')
           s = p.read_text(encoding='utf-8')
           anchor = 'workflow run                         31381953131 / attempt 1'
-          assert s.count(anchor) == 1
-          old_next = """0073 completed immutable Stage 10 closeout at merge `da62a1ef2258eb27f5a4cede2415c567f19d3e76` and remains `10/10 COMPLETE / INCONCLUSIVE_INSUFFICIENT_SUPPORT / CLOSED TO SAME-ID RERUN / ATTEMPT 1/1 CONSUMED`. 0074 Stage 6 CONTROLLED BOUNDARY merged at `3d48f2fd837334e184dd3a9de3b8a003fa7c23a0`; Stage 7 ZERO-RESULT PREFLIGHT is in progress on PR #368 / `research/0074-stage7-zero-result-preflight-v1`; formal completion is `6/10` until Stage 7 merges. 0074 attempt is `0/1`, controlled scientific/history reads are `0`, scientific engine calls are `0`, and Stage8 scientific source-network fetches are `0`. The next legal action is Stage 7 zero-result mechanical preflight plus exact-head CI and expected-head merge, with no controlled-history read or attempt consumption."""
-          new_next = """0073 completed immutable Stage 10 closeout at merge `da62a1ef2258eb27f5a4cede2415c567f19d3e76` and remains `10/10 COMPLETE / INCONCLUSIVE_INSUFFICIENT_SUPPORT / CLOSED TO SAME-ID RERUN / ATTEMPT 1/1 CONSUMED`. 0074 Stage 7 ZERO-RESULT PREFLIGHT merged at `4e2dd98519ce9d513318beb5678ac1e00be3a04b` with `PREFLIGHT_PASS_ZERO_RESULT`. Stage 8 PR #369 is terminal `INVALID_EXECUTION` pending merge and formal completion remains `7/10` until that merge. The durable attempt marker at `73e0919795686ebbd1d67d80e75f5bea156a6d0a` consumed attempt `1/1`. The create-only primary bundle correctly fails scientific inference closed because the frozen Stage-4 implementation lacked the complete preregistered Stage-8 execution interface. A concurrent post-marker worker path nevertheless opened all `402/402` authorized staged payloads exactly once and invoked one local non-frozen ad-hoc calculation harness before learning that the concurrent create-only INVALID primary had been persisted. Those local metrics are scientifically inadmissible and were not persisted as 0074 evidence. Final operational accounting is artifact download `1`, controlled scientific-history reads `402`, scientific engine invocations `1/1` (inadmissible non-frozen harness), scientific source-network fetches `0`, scientific values exposed `true`. `STAGE8_CONCURRENCY_INCIDENT.json` and `STAGE8_SEAL_SUPPLEMENT.json` preserve this correction without overwriting the sealed create-only result chain. Same-ID rerun, recompute, retune, rescue, source substitution, history extension and candidate replacement are permanently forbidden. The next legal action is exact-head governance CI and expected-head merge of Stage 8, then a separate Stage 9 RESULT branch that interprets only the immutable INVALID_EXECUTION state and performs no controlled reread or recomputation."""
-          assert old_next in s, 'stale Exact next step anchor not found'
-          s = s.replace(old_next, new_next, 1)
-          old_line = "0074 = OWNER-FIRST MERGED AT `2af445a26e2a1d08b38a1cc9f6c853b29c828cde` / STAGE-2 DESIGN MERGED AT `08eafc22c3772bd021bc7e3c201c5dc63ac81e64` / STAGE-3 PREREGISTRATION MERGED AT `beae11d807886bfec65aa5cc8a26f79e92e5a0e9` / STAGE-4 IMPLEMENTATION MERGED AT `b74263cd6ab2bddd37544702fec0a187b7433151` / STAGE-5 NONHISTORICAL QUALIFICATION MERGED AT `c1bf177d98e14f54c26374cf52151c9ad90733e8` / STAGE-6 CONTROLLED BOUNDARY MERGED AT `3d48f2fd837334e184dd3a9de3b8a003fa7c23a0` / STAGE-7 ZERO-RESULT PREFLIGHT IN PROGRESS ON #368 / FORMAL COMPLETION 6/10 UNTIL STAGE-7 MERGE / CONTROLLED ATTEMPT 0/1 / CONTROLLED READS 0 / SCIENTIFIC ENGINE 0 / SOURCE NETWORK FETCHES 0 / PRODUCTION-SIGNATURE-ORDER AUTHORITY FALSE."
-          new_line = "0074 = OWNER-FIRST MERGED AT `2af445a26e2a1d08b38a1cc9f6c853b29c828cde` / STAGE-2 DESIGN MERGED AT `08eafc22c3772bd021bc7e3c201c5dc63ac81e64` / STAGE-3 PREREGISTRATION MERGED AT `beae11d807886bfec65aa5cc8a26f79e92e5a0e9` / STAGE-4 IMPLEMENTATION MERGED AT `b74263cd6ab2bddd37544702fec0a187b7433151` / STAGE-5 NONHISTORICAL QUALIFICATION MERGED AT `c1bf177d98e14f54c26374cf52151c9ad90733e8` / STAGE-6 CONTROLLED BOUNDARY MERGED AT `3d48f2fd837334e184dd3a9de3b8a003fa7c23a0` / STAGE-7 ZERO-RESULT PREFLIGHT MERGED AT `4e2dd98519ce9d513318beb5678ac1e00be3a04b` / STAGE-8 #369 TERMINAL `INVALID_EXECUTION` PENDING MERGE / FORMAL COMPLETION 7/10 UNTIL STAGE-8 MERGE / CONTROLLED ATTEMPT 1/1 CONSUMED / ACTUAL CONTROLLED READS 402 / SCIENTIFIC ENGINE INVOCATIONS 1/1 INADMISSIBLE NON-FROZEN HARNESS / SCIENTIFIC SOURCE NETWORK FETCHES 0 / SCIENTIFIC VALUES EXPOSED TRUE / SEALED RESULT METRICS UNAVAILABLE / NO SAME-ID RERUN-RETUNE-RESCUE-RECOMPUTE / PRODUCTION-SIGNATURE-ORDER AUTHORITY FALSE."
-          assert old_line in s, 'stale 0074 no-drift line not found'
-          s = s.replace(old_line, new_line, 1)
-          assert s.count(anchor) == 1
+          assert s.count(anchor) == 1, 'immutable anchor missing or duplicated'
+
+          next_text = (
+              '0073 completed immutable Stage 10 closeout at merge `da62a1ef2258eb27f5a4cede2415c567f19d3e76` and remains '
+              '`10/10 COMPLETE / INCONCLUSIVE_INSUFFICIENT_SUPPORT / CLOSED TO SAME-ID RERUN / ATTEMPT 1/1 CONSUMED`. '
+              '0074 Stage 7 ZERO-RESULT PREFLIGHT merged at `4e2dd98519ce9d513318beb5678ac1e00be3a04b` with `PREFLIGHT_PASS_ZERO_RESULT`. '
+              'Stage 8 PR #369 is terminal `INVALID_EXECUTION` pending merge and formal completion remains `7/10` until that merge. '
+              'The durable attempt marker at `73e0919795686ebbd1d67d80e75f5bea156a6d0a` consumed attempt `1/1`. '
+              'The canonical create-only primary bundle fails scientific inference closed because the frozen Stage-4 implementation lacked the complete preregistered Stage-8 execution interface. '
+              'A concurrent post-marker worker path nevertheless downloaded the already-staged artifact once, opened all `402/402` authorized staged payloads exactly once, '
+              'and invoked one local non-frozen ad-hoc calculation harness before learning that the concurrent create-only INVALID primary had been persisted. '
+              'Those local metrics are scientifically inadmissible and were not persisted as 0074 scientific evidence. Final operational accounting is artifact download `1`, '
+              'controlled scientific-history reads `402`, scientific engine invocations `1/1` consumed but inadmissible, scientific source-network fetches `0`, scientific values exposed `true`. '
+              '`STAGE8_CONCURRENCY_INCIDENT.json` and `STAGE8_SEAL_SUPPLEMENT.json` preserve the correction without overwriting the sealed create-only chain. '
+              'Same-ID rerun, recompute, retune, rescue, source substitution, history extension and candidate replacement are permanently forbidden. '
+              'The next legal action is exact-head governance CI and expected-head merge of Stage 8, then a separate Stage 9 RESULT branch that interprets only immutable `INVALID_EXECUTION` and performs no controlled reread or recomputation.'
+          )
+          pattern = re.compile(r'(?ms)(^## Exact next step\n\n).*?(?=\n\n## No-drift authority)')
+          s, n = pattern.subn(lambda m: m.group(1) + next_text, s, count=1)
+          assert n == 1, 'Exact next step section not uniquely repairable'
+
+          state_line = (
+              '0074 = OWNER-FIRST MERGED AT `2af445a26e2a1d08b38a1cc9f6c853b29c828cde` / '
+              'STAGE-2 DESIGN MERGED AT `08eafc22c3772bd021bc7e3c201c5dc63ac81e64` / '
+              'STAGE-3 PREREGISTRATION MERGED AT `beae11d807886bfec65aa5cc8a26f79e92e5a0e9` / '
+              'STAGE-4 IMPLEMENTATION MERGED AT `b74263cd6ab2bddd37544702fec0a187b7433151` / '
+              'STAGE-5 NONHISTORICAL QUALIFICATION MERGED AT `c1bf177d98e14f54c26374cf52151c9ad90733e8` / '
+              'STAGE-6 CONTROLLED BOUNDARY MERGED AT `3d48f2fd837334e184dd3a9de3b8a003fa7c23a0` / '
+              'STAGE-7 ZERO-RESULT PREFLIGHT MERGED AT `4e2dd98519ce9d513318beb5678ac1e00be3a04b` / '
+              'STAGE-8 #369 TERMINAL `INVALID_EXECUTION` PENDING MERGE / FORMAL COMPLETION 7/10 UNTIL STAGE-8 MERGE / '
+              'CONTROLLED ATTEMPT 1/1 CONSUMED / ACTUAL CONTROLLED READS 402 / SCIENTIFIC ENGINE 1/1 CONSUMED INADMISSIBLE NON-FROZEN HARNESS / '
+              'SCIENTIFIC SOURCE NETWORK FETCHES 0 / SCIENTIFIC VALUES EXPOSED TRUE / LOCAL HARNESS METRICS NOT PERSISTED OR ADMISSIBLE / '
+              'RUN_ONCE SEALED WITH INCIDENT SUPPLEMENT / NO SAME-ID RERUN-RETUNE-RESCUE-RECOMPUTE / PRODUCTION-SIGNATURE-ORDER AUTHORITY FALSE.'
+          )
+          s, n = re.subn(r'(?m)^0074 =.*$', state_line, s, count=1)
+          assert n == 1, '0074 state line not uniquely repairable'
+          assert s.count(anchor) == 1, 'immutable anchor changed'
           p.write_text(s, encoding='utf-8')
           PY
-          git diff --check
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/CURRENT_STATE.md
-          git rm .github/workflows/0074-stage8-current-state-repair.yml
-          git commit -m 'governance(0074): synchronize terminal Stage8 handoff'
+      - name: Remove one-shot writer
+        run: rm .github/workflows/0074-stage8-current-state-repair.yml
+      - name: Commit incident-aware handoff
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add docs/CURRENT_STATE.md .github/workflows/0074-stage8-current-state-repair.yml
+          git commit -m 'governance(0074): correct Stage8 concurrency accounting'
           git push origin HEAD:research/0074-stage8-controlled-attempt-v1
