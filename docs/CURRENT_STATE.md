@@ -261,7 +261,7 @@ The successful access probe read no scientific payload. Stage 7 read only identi
 
 ## Exact next step
 
-0073 completed immutable Stage 10 closeout at merge `da62a1ef2258eb27f5a4cede2415c567f19d3e76` and remains `10/10 COMPLETE / INCONCLUSIVE_INSUFFICIENT_SUPPORT / CLOSED TO SAME-ID RERUN / ATTEMPT 1/1 CONSUMED`. 0074 Stage 2 DESIGN merged at `08eafc22c3772bd021bc7e3c201c5dc63ac81e64`; Stage 3 PREREGISTRATION is in progress on `research/0074-stage3-preregistration-v1`; formal completion is `2/10` until Stage 3 merges. 0074 attempt is `0/1`, controlled scientific/history reads are `0`, scientific engine calls are `0`, and source-network fetches are `0`. The next legal action is exact-head CI completion and expected-head merge of Stage 3, then a separate Stage 4 IMPLEMENTATION branch.
+0073 completed immutable Stage 10 closeout at merge `da62a1ef2258eb27f5a4cede2415c567f19d3e76` and remains `10/10 COMPLETE / INCONCLUSIVE_INSUFFICIENT_SUPPORT / CLOSED TO SAME-ID RERUN / ATTEMPT 1/1 CONSUMED`. 0074 Stage 3 PREREGISTRATION merged at `beae11d807886bfec65aa5cc8a26f79e92e5a0e9`; Stage 4 IMPLEMENTATION is in progress on PR #365 / `research/0074-stage4-implementation-v1`; formal completion is `3/10` until Stage 4 merges. 0074 attempt is `0/1`, controlled scientific/history reads are `0`, scientific engine calls are `0`, and source-network fetches are `0`. The next legal action is exact-head CI completion and expected-head merge of Stage 4, then a separate Stage 5 NONHISTORICAL QUALIFICATION branch using synthetic fixtures only.
 
 ## No-drift authority
 
@@ -282,5 +282,5 @@ Canonical BRRK-0011 = NO CHANGE.
 0083 = 10/10 COMPLETE / `FAIL_NO_ROBUST_LOCKED_P02_ECONOMIC_CONTROLLER_VALUE` / CLOSED TO SAME-ID RERUN / ATTEMPT 1/1.
 0072 = 10/10 COMPLETE / `INCONCLUSIVE_INSUFFICIENT_SUPPORT` / CLOSED TO SAME-ID RERUN / ATTEMPT 1/1 CONSUMED / CONTROLLED READS 6 / ENGINE 1/1 / SOURCE NETWORK FETCHES 0 / NO SAME-ID RERUN-RETUNE-RESCUE-RECOMPUTE.
 0073 = 10/10 COMPLETE / `INCONCLUSIVE_INSUFFICIENT_SUPPORT` / CLOSED TO SAME-ID RERUN / ATTEMPT 1/1 CONSUMED / CONTROLLED READS 0 / SCIENTIFIC ENGINE 1/1 / SOURCE NETWORK FETCHES 0 / NO SAME-ID RERUN-RETUNE-RESCUE-RECOMPUTE / PRODUCTION-SIGNATURE-ORDER AUTHORITY FALSE.
-0074 = OWNER-FIRST MERGED AT `2af445a26e2a1d08b38a1cc9f6c853b29c828cde` / STAGE-2 DESIGN MERGED AT `08eafc22c3772bd021bc7e3c201c5dc63ac81e64` / STAGE-3 PREREGISTRATION IN PROGRESS / FORMAL COMPLETION 2/10 UNTIL STAGE-3 MERGE / CONTROLLED ATTEMPT 0/1 / CONTROLLED READS 0 / SCIENTIFIC ENGINE 0 / SOURCE NETWORK FETCHES 0 / PRODUCTION-SIGNATURE-ORDER AUTHORITY FALSE.
+0074 = OWNER-FIRST MERGED AT `2af445a26e2a1d08b38a1cc9f6c853b29c828cde` / STAGE-2 DESIGN MERGED AT `08eafc22c3772bd021bc7e3c201c5dc63ac81e64` / STAGE-3 PREREGISTRATION MERGED AT `beae11d807886bfec65aa5cc8a26f79e92e5a0e9` / STAGE-4 IMPLEMENTATION IN PROGRESS ON #365 / FORMAL COMPLETION 3/10 UNTIL STAGE-4 MERGE / CONTROLLED ATTEMPT 0/1 / CONTROLLED READS 0 / SCIENTIFIC ENGINE 0 / SOURCE NETWORK FETCHES 0 / PRODUCTION-SIGNATURE-ORDER AUTHORITY FALSE.
 Phase 6 = NO CHANGE.
