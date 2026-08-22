@@ -1,0 +1,37 @@
+name: 0074 Stage6 handoff repair
+on:
+  push:
+    branches:
+      - research/0074-stage6-controlled-boundary-v1
+permissions:
+  contents: write
+jobs:
+  repair:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/0074-stage6-controlled-boundary-v1
+          fetch-depth: 0
+      - name: Exact handoff repair
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('docs/CURRENT_STATE.md')
+          s = p.read_text()
+          anchor = 'workflow run                         31381953131 / attempt 1'
+          assert anchor in s, 'immutable anchor missing'
+          old = '0074 = OWNER-FIRST MERGED AT `2af445a26e2a1d08b38a1cc9f6c853b29c828cde` / STAGE-2 DESIGN MERGED AT `08eafc22c3772bd021bc7e3c201c5dc63ac81e64` / STAGE-3 PREREGISTRATION MERGED AT `beae11d807886bfec65aa5cc8a26f79e92e5a0e9` / STAGE-4 IMPLEMENTATION MERGED AT `b74263cd6ab2bddd37544702fec0a187b7433151` / STAGE-5 NONHISTORICAL QUALIFICATION IN PROGRESS ON #366 / FORMAL COMPLETION 4/10 UNTIL STAGE-5 MERGE / CONTROLLED ATTEMPT 0/1 / CONTROLLED READS 0 / SCIENTIFIC ENGINE 0 / SOURCE NETWORK FETCHES 0 / PRODUCTION-SIGNATURE-ORDER AUTHORITY FALSE.'
+          new = '0074 = OWNER-FIRST MERGED AT `2af445a26e2a1d08b38a1cc9f6c853b29c828cde` / STAGE-2 DESIGN MERGED AT `08eafc22c3772bd021bc7e3c201c5dc63ac81e64` / STAGE-3 PREREGISTRATION MERGED AT `beae11d807886bfec65aa5cc8a26f79e92e5a0e9` / STAGE-4 IMPLEMENTATION MERGED AT `b74263cd6ab2bddd37544702fec0a187b7433151` / STAGE-5 NONHISTORICAL QUALIFICATION MERGED AT `c1bf177d98e14f54c26374cf52151c9ad90733e8` / STAGE-6 CONTROLLED BOUNDARY IN PROGRESS ON #367 / FORMAL COMPLETION 5/10 UNTIL STAGE-6 MERGE / CONTROLLED ATTEMPT 0/1 / CONTROLLED READS 0 / SCIENTIFIC ENGINE 0 / SOURCE NETWORK FETCHES 0 / PRODUCTION-SIGNATURE-ORDER AUTHORITY FALSE.'
+          assert s.count(old) == 1, 'expected stale 0074 handoff not found exactly once'
+          s2 = s.replace(old, new)
+          assert s2.count(anchor) == 1, 'immutable anchor changed or duplicated'
+          p.write_text(s2)
+          PY
+          rm .github/workflows/0074-stage6-handoff-repair.yml
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add docs/CURRENT_STATE.md .github/workflows/0074-stage6-handoff-repair.yml
+          git commit -m 'governance(0074): synchronize Stage-6 handoff'
+          git push origin HEAD:research/0074-stage6-controlled-boundary-v1
