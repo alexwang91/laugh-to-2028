@@ -5565,6 +5565,109 @@
         "Stage 8 later requires Stage 7 preflight PASS plus contemporaneous explicit user authorization before irreversible controlled execution.",
         "production_authorized=false; signature_authorized=false; order_submission_authorized=false."
       ]
+    },
+    {
+      "research_id": "BRRK-CRYPTO-MULTI-HORIZON-TREND-0074",
+      "research_family_id": "CRYPTO_TREND",
+      "research_domain": "DIRECTION_REGIME",
+      "research_governance_version": 1,
+      "governance_mode": "PROGRAM_GOVERNED_V1",
+      "objective_type": "ALPHA_DISCOVERY",
+      "created_at": "2026-08-22",
+      "created_before_result": true,
+      "question": "Can a prospectively frozen simple BTC/ETH/SOL multi-horizon directional trend benchmark with lagged volatility targeting retain robust positive net economic value after realistic and stressed costs, drawdown/tail, turnover, concentration and robustness gates?",
+      "hypothesis": "At least one prospectively frozen simple trend family can produce robust positive net risk-adjusted performance across BTC/ETH/SOL under lagged volatility targeting and exposure caps after complete preregistered cost and robustness treatment.",
+      "hypothesis_origin": "PROSPECTIVE_PROGRAM_ROADMAP_AFTER_0073_IMMUTABLE_CLOSEOUT; ZERO_0074_CONTROLLED_HISTORY_OR_RESULT_EXPOSURE",
+      "economic_mechanism": "Persistent directional price trends may survive realistic trading frictions when captured by simple auditable lagged signals and scaled by lagged realized volatility without lookahead.",
+      "primary_target": "NET_MULTI_HORIZON_DIRECTIONAL_TREND_ECONOMIC_PERFORMANCE_AFTER_COSTS_AND_RISK_SCALING",
+      "primary_metric": "ROBUST_RISK_ADJUSTED_NET_RETURN_UNDER_PREREGISTERED_COST_DRAWDOWN_TAIL_TURNOVER_CONCENTRATION_AND_ROBUSTNESS_GATES",
+      "secondary_metrics": [
+        "CAGR_or_annualized_return",
+        "annualized_volatility",
+        "Sharpe",
+        "Sortino",
+        "maximum_drawdown",
+        "Calmar",
+        "terminal_wealth",
+        "turnover",
+        "cost_drag",
+        "gross_and_net_exposure",
+        "concentration",
+        "tail_loss",
+        "bootstrap_or_lower_confidence_bound",
+        "deflated_Sharpe_ratio",
+        "PBO_where_supported"
+      ],
+      "feature_families": [
+        "PAST_RETURN_SIGN_TREND",
+        "MOVING_AVERAGE_SPREAD_TREND",
+        "BREAKOUT_TREND_NORMALIZED_BY_LAGGED_VOL_OR_ATR",
+        "FAST_MEDIUM_SLOW_ECONOMIC_HORIZON_FAMILIES",
+        "LAGGED_REALIZED_VOLATILITY_TARGETING_AND_EXPOSURE_CAPS",
+        "C0_C1_C2_COST_REGIMES_WITH_PREREGISTERED_VARIABLE_COST_SENSITIVITY"
+      ],
+      "horizon": [
+        "EXACT_FAST_MEDIUM_SLOW_HORIZONS_TO_BE_FROZEN_IN_DESIGN_AND_PREREGISTRATION_BEFORE_0074_CONTROLLED_HISTORY"
+      ],
+      "universe": [
+        "BTC",
+        "ETH",
+        "SOL"
+      ],
+      "development_dataset_refs": [],
+      "validation_dataset_refs": [],
+      "sealed_dataset_refs": [],
+      "declared_variant_budget": 3,
+      "actual_variants_evaluated": 0,
+      "parameter_candidate_count": 3,
+      "stopping_rule": "Traverse exactly the ten program lifecycle stages in order. Stage 1 OWNER-FIRST and Stage 2 DESIGN use zero 0074 controlled scientific/history reads. DESIGN and PREREGISTRATION must prospectively freeze exact data identities, timestamp and anti-lookahead semantics, signal formulas, fast/medium/slow horizons, candidate count, lagged-volatility target, exposure caps, C0/C1/C2 costs, rebalance rules, robustness, bootstrap/DSR/PBO rules where supported, concentration/capacity and terminal gates before controlled history. NONHISTORICAL QUALIFICATION must pass at attempt 0/1 and zero controlled reads. After merged CONTROLLED BOUNDARY, ZERO-RESULT PREFLIGHT must pass. Stage 8 requires fresh explicit authorization, durable RUN_ATTEMPT.marker before the first controlled content read, and exactly one controlled development-history attempt. After marker creation, same-ID rerun, retune, rescue, threshold or horizon alteration, candidate addition, source substitution, universe expansion, history extension and recomputation are forbidden.",
+      "success_criteria": "PASS only if valid exactly-once execution shows at least one prospectively frozen simple trend candidate passes all preregistered net economic, realistic/stressed cost, volatility-targeting, drawdown/tail, turnover, concentration and statistical robustness gates. Raw Sharpe alone cannot satisfy PASS. PASS grants research evidence only and no production/signing/order authority.",
+      "failure_criteria": "FAIL if valid execution completes but no prospectively frozen candidate passes the required economic and robustness gates. INCONCLUSIVE is limited to prospectively defined insufficient support or mathematically undefined inference. INVALID_EXECUTION applies to identity/hash/read-count/lookahead/timestamp/candidate-count/source/persistence/exactly-once drift.",
+      "allowed_followup": "Before attempt consumption, only semantics-preserving implementation or synthetic-qualification corrections that do not alter merged DESIGN/PREREGISTRATION science. After immutable closeout, altered signal families, horizons, cost model, volatility target, exposure cap, source set or strategy semantics require a new research ID where governance requires it.",
+      "forbidden_followup": "No dozens-of-near-identical-window search, model-complexity contest, post-result candidate addition, source substitution, adaptive rescue, threshold relaxation, horizon alteration, cost omission, same-ID rerun/retune/rescue/recompute, or claim that DEVELOPMENT history is independent OOS. No production, signing or order-submission authority may be inferred from any 0074 outcome.",
+      "researcher_decisions": [
+        "Use initial universe exactly BTC, ETH and SOL.",
+        "Bound OWNER-FIRST signal families to past-return-sign, moving-average-spread and breakout trend; exact formulas and fast/medium/slow horizons remain for later prospective freeze.",
+        "Require lagged realized-volatility targeting and explicit exposure caps with no same-bar lookahead.",
+        "Require C0 theoretical, C1 realistic and C2 stressed cost regimes; exact numerical costs remain for later prospective freeze.",
+        "Keep all candidate and trial accounting prospective; no post-result window proliferation or candidate addition.",
+        "Preserve one irreversible controlled development-history attempt with durable marker-before-read.",
+        "Require fresh explicit user authorization after Stage 7 zero-result preflight PASS before Stage 8.",
+        "Maintain production_authorized=false, signature_authorized=false and order_submission_authorized=false throughout 0074."
+      ],
+      "research_process_complexity": {
+        "declared_parameter_candidates": 3,
+        "actual_parameter_candidates_evaluated": 0,
+        "universes_evaluated": 1,
+        "horizons_evaluated": 0,
+        "rebalance_variants": 0,
+        "feature_representations": 3,
+        "special_cases_introduced": 3,
+        "validation_exposure_event_refs": 0,
+        "related_family_trials": 1
+      },
+      "lineage_edges": [],
+      "result_status": "PREREGISTERED_NOT_RUN",
+      "failure_reason": null,
+      "promotion_state": "NONE",
+      "evidence_refs": [],
+      "decision_refs": [
+        "research/governance/CRYPTO_MULTI_STRATEGY_RESEARCH_PROGRAM_0071_0082.md",
+        "docs/CURRENT_STATE.md"
+      ],
+      "production_relevance": "Research-only simple multi-horizon directional trend benchmark. Any PASS may inform later separately governed work only after immutable closeout; no automatic production, signature or order authority.",
+      "production_authorized": false,
+      "provenance_status": "PROSPECTIVE_FROZEN",
+      "governed_path_prefixes": [
+        "research/brrk_crypto_multi_horizon_trend_0074"
+      ],
+      "notes": [
+        "Stage 1 OWNER-FIRST freezes identity and family scope before any 0074 controlled scientific/history read.",
+        "0073 remains immutable INCONCLUSIVE and contributes no result-informed parameter selection to 0074.",
+        "Exact horizons, formulas, candidate count and numerical gates remain for DESIGN/PREREGISTRATION.",
+        "Controlled reads 0, scientific engine 0, source-network fetches 0 and attempt 0/1 at OWNER-FIRST.",
+        "production_authorized=false; signature_authorized=false; order_submission_authorized=false."
+      ]
     }
   ],
   "research_governance_debt": [
