@@ -20,8 +20,8 @@ jobs:
       - name: Mechanical metadata-only checks
         shell: python
         run: |
-          import ast, json, pathlib, re, sys
-          from collections import Counter, defaultdict
+          import ast, json, pathlib, re
+          from collections import Counter
 
           root = pathlib.Path('research/brrk_crypto_delta_neutral_carry_strategy_0073')
           manifest = json.loads((root/'AUTHORIZED_OBJECT_MANIFEST.json').read_text())
@@ -43,7 +43,7 @@ jobs:
               assert o['asset'] in {'BTC','ETH','SOL'}
               assert o['candidate'] == 'C1_STATIC_PERPETUAL_CARRY'
               assert o['venue'] == 'BINANCE'
-              assert o['family'] in {'spot_kline_1d','um_perpetual_kline_1d','um_funding_rate'}
+              assert o['family'] in {'spot_kline_1d','um_perp_kline_1d','um_funding_rate'}
               assert o['scientific_content_read_budget'] == 1
               assert re.fullmatch(r'[0-9a-f]{64}', o['sha256'])
               assert o['checksum_url'].endswith('.CHECKSUM')
@@ -63,7 +63,7 @@ jobs:
           assert len(expected_months)==24
           counts=Counter((o['asset'],o['family'],o['utc_coverage_month']) for o in objs)
           for asset in ('BTC','ETH','SOL'):
-              for family in ('spot_kline_1d','um_perpetual_kline_1d','um_funding_rate'):
+              for family in ('spot_kline_1d','um_perp_kline_1d','um_funding_rate'):
                   for month in expected_months:
                       assert counts[(asset,family,month)] == 1, (asset,family,month,counts[(asset,family,month)])
 
