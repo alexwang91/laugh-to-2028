@@ -261,7 +261,7 @@ The successful access probe read no scientific payload. Stage 7 read only identi
 
 ## Exact next step
 
-0073 Stage 1 OWNER-FIRST is merged at `dc287210212a827181501779482c976ac01995c8`. Stage 2 DESIGN is merged at `8cfe10ed7c031c6e46edb1d58e30bc5eb8cc7878`. Stage 3 PREREGISTRATION is merged at `903718ac8b406ed0b27399667a116e9e25ff4dab`. Stage 4 IMPLEMENTATION is in progress on PR #355 / `research/0073-stage4-implementation-v1`. Formal completion remains 3/10 until Stage 4 merges. Controlled attempt remains 0/1; controlled scientific/history reads remain 0; scientific engine calls remain 0. Require all standing CI SUCCESS on the exact Stage-4 head and expected-head merge. Only after Stage 4 merges may a separate Stage 5 NONHISTORICAL QUALIFICATION branch run synthetic fixtures only. No controlled scientific/history payload read is legal in Stage 4 or Stage 5.
+0073 Stage 1 OWNER-FIRST is merged at `dc287210212a827181501779482c976ac01995c8`. Stage 2 DESIGN is merged at `8cfe10ed7c031c6e46edb1d58e30bc5eb8cc7878`. Stage 3 PREREGISTRATION is merged at `903718ac8b406ed0b27399667a116e9e25ff4dab`. Stage 4 IMPLEMENTATION is merged at `372ece83cda67b74557b32ef19022e9829e2b89f`. Stage 5 NONHISTORICAL QUALIFICATION is in progress on PR #356 / `research/0073-stage5-nonhistorical-qualification-v1`. Formal completion remains 4/10 until Stage 5 merges. Controlled attempt remains 0/1; controlled scientific/history reads remain 0; scientific engine calls remain 0. Require all standing CI SUCCESS on the exact Stage-5 head and expected-head merge. Only after Stage 5 merges may a separate Stage 6 CONTROLLED BOUNDARY branch begin. No controlled scientific/history payload read is legal in Stage 5.
 
 ## No-drift authority
 
@@ -281,5 +281,5 @@ Canonical BRRK-0011 = NO CHANGE.
 0071 = CONTROLLED BOUNDARY MERGED / ZERO-RESULT PREFLIGHT BLOCKED_PRE_ATTEMPT_CONTROLLED_CONTENT_CONTAMINATION / ATTEMPT 0/1.
 0083 = 10/10 COMPLETE / `FAIL_NO_ROBUST_LOCKED_P02_ECONOMIC_CONTROLLER_VALUE` / CLOSED TO SAME-ID RERUN / ATTEMPT 1/1.
 0072 = 10/10 COMPLETE / `INCONCLUSIVE_INSUFFICIENT_SUPPORT` / CLOSED TO SAME-ID RERUN / ATTEMPT 1/1 CONSUMED / CONTROLLED READS 6 / ENGINE 1/1 / SOURCE NETWORK FETCHES 0 / NO SAME-ID RERUN-RETUNE-RESCUE-RECOMPUTE.
-0073 = OWNER-FIRST MERGED / STAGE-2 DESIGN MERGED / STAGE-3 PREREGISTRATION MERGED / STAGE-4 IMPLEMENTATION IN PROGRESS / FORMAL COMPLETION 3/10 UNTIL STAGE-4 MERGE / CONTROLLED ATTEMPT 0/1 / CONTROLLED READS 0 / SCIENTIFIC ENGINE 0 / PRODUCTION-SIGNATURE-ORDER AUTHORITY FALSE.
+0073 = OWNER-FIRST MERGED / STAGE-2 DESIGN MERGED / STAGE-3 PREREGISTRATION MERGED / STAGE-4 IMPLEMENTATION MERGED / STAGE-5 NONHISTORICAL QUALIFICATION IN PROGRESS / FORMAL COMPLETION 4/10 UNTIL STAGE-5 MERGE / CONTROLLED ATTEMPT 0/1 / CONTROLLED READS 0 / SCIENTIFIC ENGINE 0 / PRODUCTION-SIGNATURE-ORDER AUTHORITY FALSE.
 Phase 6 = NO CHANGE.
