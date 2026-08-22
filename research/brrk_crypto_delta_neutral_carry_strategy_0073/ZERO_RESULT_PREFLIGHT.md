@@ -1,6 +1,6 @@
 # BRRK-CRYPTO-DELTA-NEUTRAL-CARRY-STRATEGY-0073 — Stage 7 ZERO-RESULT PREFLIGHT
 
-Status: `IN_PROGRESS_ZERO_RESULT`
+Status: `PREFLIGHT_PASS_ZERO_RESULT`
 
 Date: 2026-08-22
 
@@ -10,13 +10,14 @@ Stage 6 CONTROLLED BOUNDARY merged at `ac13585c54c031440e5b35e183d7fea9a46e2830`
 
 This Stage 7 branch inherits the merged Stage-6 authorized-object boundary without modification.
 
-## Budgets before any Stage-7 check
+## Budgets after Stage-7 preflight
 
 - controlled attempt: `0/1`;
 - controlled scientific/history reads: `0`;
 - scientific engine calls: `0`;
 - scientific source-network fetches: `0`;
-- `RUN_ATTEMPT.marker`: absent by Stage-7 contract and must remain absent;
+- `RUN_ATTEMPT.marker`: absent and intentionally not created in Stage 7;
+- `RUN_ONCE.marker`: absent;
 - authorized historical ZIP/CSV payload reads: `0`.
 
 ## Frozen identities inherited
@@ -31,18 +32,33 @@ This Stage 7 branch inherits the merged Stage-6 authorized-object boundary witho
 
 C2 and C3 remain declared candidates and remain in multiplicity accounting. No replacement or rescue is permitted.
 
-## Stage-7 permitted work
+## Mechanical zero-result evidence
 
-Only identity/execution metadata checks defined by the merged `ZERO_RESULT_PREFLIGHT_CONTRACT.md` may be performed. No historical scientific payload may be opened or parsed. No return, PnL, funding, basis, volatility, drawdown, stress, bootstrap, DSR or PBO quantity may be calculated.
+The Stage-7 metadata-only preflight at exact head `ee6e2cbd6a614526a942d450ffd70c8b1cb20a71` completed successfully in workflow run `32560986689` without opening any historical ZIP/CSV payload or calling the scientific engine.
 
-## Current outcome
+It mechanically established:
 
-`IN_PROGRESS_ZERO_RESULT`.
+- exactly `216` authorized C1 objects and zero manifest failures;
+- required identity fields present for every object;
+- `216` unique official object paths and `216` unique SHA-256 identities;
+- exact coverage grid of BTC/ETH/SOL × `spot_kline_1d`/`um_perp_kline_1d`/`um_funding_rate` × 24 UTC months from `2024-08` through `2026-07`, exactly once per cell;
+- scientific content-read budget exactly `1` for every authorized object;
+- implementation contract and local engine constants remain equal to the frozen Stage-3/Stage-4 parameters, including 730-day window, 365-day minimum, MBB `20/4000/730073`, DSR trials `3`, PBO `8/504`, neutrality/exposure/reserve limits and exactly three candidates;
+- Stage-8 scientific source-network fetch budget remains `0`;
+- `RUN_ATTEMPT.marker`, `RUN_ONCE.marker` and `RESULT.json` are absent, so create-only destinations remain available.
 
-A terminal `PREFLIGHT_PASS_ZERO_RESULT` may be recorded only after the branch mechanically establishes every frozen identity/execution prerequisite, including manifest uniqueness/completeness, UTC coverage arithmetic, read-budget equality, deterministic engine/config identity, create-only result destination emptiness, marker-path availability, and zero scientific network authority.
+No return, PnL, funding realization, basis realization, volatility, drawdown, stress result, bootstrap output, DSR or PBO value was read or computed.
 
-If any prerequisite cannot be established without opening controlled scientific content or changing frozen science, Stage 7 must terminate as `PREFLIGHT_BLOCKED_ZERO_RESULT` and Stage 8 remains prohibited.
+## Terminal outcome
+
+`PREFLIGHT_PASS_ZERO_RESULT`.
+
+This is a governance/execution readiness outcome only. It is not scientific PASS evidence for the strategy. It authorizes only the proposal of a separate Stage-8 branch after this Stage-7 PR is merged and all exact-head standing CI succeeds.
+
+## Stage-8 handoff
+
+A later Stage-8 branch must re-establish live main and verify the exact merged Stage-6 and Stage-7 commits. Before the first authorized historical content read, Stage 8 must create the durable remote `RUN_ATTEMPT.marker`. Only after that marker exists may each authorized object be opened at most once and the scientific engine be called exactly once. Source-network fetches during the scientific attempt remain fixed at `0`.
 
 ## No-drift statement
 
-This Stage-7 entry commit changes no frozen science, source identity, candidate, threshold, cost, stress definition, capture cutoff, study window, multiplicity rule, attempt budget, read budget or production/signature/order authority.
+Stage 7 changed no frozen science, source identity, candidate, threshold, cost, stress definition, capture cutoff, study window, multiplicity rule, attempt budget, read budget or production/signature/order authority. It performed no controlled scientific/history read and consumed no Stage-8 attempt.
