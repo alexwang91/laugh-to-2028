@@ -1,0 +1,44 @@
+name: 0074 Stage5 handoff repair
+
+on:
+  push:
+    branches:
+      - research/0074-stage5-nonhistorical-qualification-v1
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/0074-stage5-nonhistorical-qualification-v1
+          fetch-depth: 0
+      - name: Repair CURRENT_STATE and self-delete
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('docs/CURRENT_STATE.md')
+          s = p.read_text(encoding='utf-8')
+          immutable = 'workflow run                         31381953131 / attempt 1'
+          assert s.count(immutable) == 1
+          old1 = "0073 completed immutable Stage 10 closeout at merge `da62a1ef2258eb27f5a4cede2415c567f19d3e76` and remains `10/10 COMPLETE / INCONCLUSIVE_INSUFFICIENT_SUPPORT / CLOSED TO SAME-ID RERUN / ATTEMPT 1/1 CONSUMED`. 0074 Stage 3 PREREGISTRATION merged at `beae11d807886bfec65aa5cc8a26f79e92e5a0e9`; Stage 4 IMPLEMENTATION is in progress on PR #365 / `research/0074-stage4-implementation-v1`; formal completion is `3/10` until Stage 4 merges. 0074 attempt is `0/1`, controlled scientific/history reads are `0`, scientific engine calls are `0`, and source-network fetches are `0`. The next legal action is exact-head CI completion and expected-head merge of Stage 4, then a separate Stage 5 NONHISTORICAL QUALIFICATION branch using synthetic fixtures only."
+          new1 = "0073 completed immutable Stage 10 closeout at merge `da62a1ef2258eb27f5a4cede2415c567f19d3e76` and remains `10/10 COMPLETE / INCONCLUSIVE_INSUFFICIENT_SUPPORT / CLOSED TO SAME-ID RERUN / ATTEMPT 1/1 CONSUMED`. 0074 Stage 4 IMPLEMENTATION merged at `b74263cd6ab2bddd37544702fec0a187b7433151`; Stage 5 NONHISTORICAL QUALIFICATION is in progress on PR #366 / `research/0074-stage5-nonhistorical-qualification-v1`; formal completion is `4/10` until Stage 5 merges. 0074 attempt is `0/1`, controlled scientific/history reads are `0`, scientific engine calls are `0`, and source-network fetches are `0`. The next legal action is synthetic-only qualification plus exact-head CI and expected-head merge of Stage 5, then a separate Stage 6 CONTROLLED BOUNDARY branch."
+          old2 = "0074 = OWNER-FIRST MERGED AT `2af445a26e2a1d08b38a1cc9f6c853b29c828cde` / STAGE-2 DESIGN MERGED AT `08eafc22c3772bd021bc7e3c201c5dc63ac81e64` / STAGE-3 PREREGISTRATION MERGED AT `beae11d807886bfec65aa5cc8a26f79e92e5a0e9` / STAGE-4 IMPLEMENTATION IN PROGRESS ON #365 / FORMAL COMPLETION 3/10 UNTIL STAGE-4 MERGE / CONTROLLED ATTEMPT 0/1 / CONTROLLED READS 0 / SCIENTIFIC ENGINE 0 / SOURCE NETWORK FETCHES 0 / PRODUCTION-SIGNATURE-ORDER AUTHORITY FALSE."
+          new2 = "0074 = OWNER-FIRST MERGED AT `2af445a26e2a1d08b38a1cc9f6c853b29c828cde` / STAGE-2 DESIGN MERGED AT `08eafc22c3772bd021bc7e3c201c5dc63ac81e64` / STAGE-3 PREREGISTRATION MERGED AT `beae11d807886bfec65aa5cc8a26f79e92e5a0e9` / STAGE-4 IMPLEMENTATION MERGED AT `b74263cd6ab2bddd37544702fec0a187b7433151` / STAGE-5 NONHISTORICAL QUALIFICATION IN PROGRESS ON #366 / FORMAL COMPLETION 4/10 UNTIL STAGE-5 MERGE / CONTROLLED ATTEMPT 0/1 / CONTROLLED READS 0 / SCIENTIFIC ENGINE 0 / SOURCE NETWORK FETCHES 0 / PRODUCTION-SIGNATURE-ORDER AUTHORITY FALSE."
+          assert old1 in s
+          assert old2 in s
+          s = s.replace(old1, new1, 1).replace(old2, new2, 1)
+          assert s.count(immutable) == 1
+          p.write_text(s, encoding='utf-8')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs/CURRENT_STATE.md
+          git rm .github/workflows/0074-stage5-handoff-repair.yml
+          git commit -m 'governance(0074): synchronize Stage5 handoff'
+          git push origin HEAD:research/0074-stage5-nonhistorical-qualification-v1
