@@ -1,0 +1,98 @@
+name: 0073 Stage8 authorized zero-result preflight
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'research/brrk_crypto_delta_neutral_carry_strategy_0073/**'
+      - '.github/workflows/0073-stage8-zero-result-preflight.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  zero-result-preflight:
+    if: github.event_name != 'pull_request' || github.head_ref == 'research/0073-stage8-controlled-attempt-v1'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Mechanical metadata-only checks
+        shell: python
+        run: |
+          import ast, json, pathlib, re
+          from collections import Counter
+
+          root = pathlib.Path('research/brrk_crypto_delta_neutral_carry_strategy_0073')
+          manifest = json.loads((root/'AUTHORIZED_OBJECT_MANIFEST.json').read_text())
+          contract = json.loads((root/'IMPLEMENTATION_CONTRACT.json').read_text())
+          engine_text = (root/'engine.py').read_text()
+
+          assert manifest['captured_c1_objects'] == 216
+          assert manifest['expected_c1_objects'] == 216
+          assert manifest['failures'] == []
+          assert manifest['capture_cutoff_utc'] == '2026-07-31T23:59:59.999999Z'
+          assert manifest['candidate_status']['C2_DATED_FUTURE_ROLL'] == 'UNAVAILABLE_INSUFFICIENT_POINT_IN_TIME_IDENTITY'
+          assert manifest['candidate_status']['C3_SECOND_VENUE_CARRY'] == 'UNAVAILABLE_INSUFFICIENT_SUPPORT'
+
+          objs = manifest['objects']
+          assert len(objs) == 216
+          required = {'asset','candidate','checksum_url','family','object_url','scientific_content_read_budget','sha256','utc_coverage_month','venue'}
+          for o in objs:
+              assert required <= set(o)
+              assert o['asset'] in {'BTC','ETH','SOL'}
+              assert o['candidate'] == 'C1_STATIC_PERPETUAL_CARRY'
+              assert o['venue'] == 'BINANCE'
+              assert o['family'] in {'spot_kline_1d','um_perp_kline_1d','um_funding_rate'}
+              assert o['scientific_content_read_budget'] == 1
+              assert re.fullmatch(r'[0-9a-f]{64}', o['sha256'])
+              assert o['checksum_url'].endswith('.CHECKSUM')
+              assert o['object_url'].startswith('https://data.binance.vision/')
+
+          urls = [o['object_url'] for o in objs]
+          hashes = [o['sha256'] for o in objs]
+          assert len(urls) == len(set(urls)), 'duplicate object_url'
+          assert len(hashes) == len(set(hashes)), 'duplicate sha256'
+
+          expected_months=[]
+          y,m=2024,8
+          while (y,m) <= (2026,7):
+              expected_months.append(f'{y:04d}-{m:02d}')
+              m += 1
+              if m==13: y,m=y+1,1
+          assert len(expected_months)==24
+          counts=Counter((o['asset'],o['family'],o['utc_coverage_month']) for o in objs)
+          for asset in ('BTC','ETH','SOL'):
+              for family in ('spot_kline_1d','um_perp_kline_1d','um_funding_rate'):
+                  for month in expected_months:
+                      assert counts[(asset,family,month)] == 1, (asset,family,month,counts[(asset,family,month)])
+
+          assert contract['assets'] == ['BTC','ETH','SOL']
+          assert contract['candidate_count'] == 3
+          assert contract['study_window_days'] == 730
+          assert contract['minimum_eligible_days'] == 365
+          assert contract['bootstrap'] == {'block_length_days':20,'replicates':4000,'rng':'numpy.random.Generator(PCG64)','seed':730073,'lower_percentile':5}
+          assert contract['dsr_trial_count'] == 3
+          assert contract['pbo']['contiguous_slices'] == 8 and contract['pbo']['minimum_eligible_days'] == 504
+          guards=contract['implementation_guards']
+          assert guards['controlled_history_reads']==0 and guards['source_network_fetches']==0 and guards['scientific_engine_calls']==0 and guards['stage8_attempt_consumed']==0
+          assert not any(guards[k] for k in ('premium_index_as_funding_allowed','candidate_substitution_allowed','source_substitution_allowed','result_informed_rescue_allowed','production_authorized','signature_authorized','order_submission_authorized'))
+
+          tree=ast.parse(engine_text)
+          const={}
+          for n in tree.body:
+              if isinstance(n, ast.Assign) and len(n.targets)==1 and isinstance(n.targets[0],ast.Name):
+                  try: const[n.targets[0].id]=ast.literal_eval(n.value)
+                  except Exception: pass
+          assert const['ASSETS'] == ('BTC','ETH','SOL')
+          assert const['CANDIDATES'] == tuple(contract['candidate_ids'])
+          assert const['BOOTSTRAP_BLOCK']==20 and const['BOOTSTRAP_REPS']==4000 and const['BOOTSTRAP_SEED']==730073
+          assert const['DSR_TRIALS']==3 and const['MIN_ELIGIBLE_DAYS']==365 and const['PBO_MIN_DAYS']==504
+          assert const['MAX_RESIDUAL_DELTA']==0.02 and const['REBALANCE_TRIGGER']==0.01 and const['MAX_NEUTRALITY_BREACH_RATE']==0.01
+          assert const['MAX_GROSS_EXPOSURE']==1.0 and const['MIN_MARGIN_RESERVE']==0.20
+
+          for forbidden in ('RUN_ATTEMPT.marker','RUN_ONCE.marker','RESULT.json','PRIMARY_RESULT.json','EVIDENCE.json','EXECUTION.json'):
+              assert not (root/forbidden).exists(), f'{forbidden} must be absent before Stage8 controlled read'
+
+          print('PREFLIGHT_PASS_ZERO_RESULT')
+          print('objects=216; unique_paths=216; unique_hashes=216; months=24x3 assetsx3 families; read_budget=1; engine/config fixed; result+markers absent; source_network_fetch_budget=0')
