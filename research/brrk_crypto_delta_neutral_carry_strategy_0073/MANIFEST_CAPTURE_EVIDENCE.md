@@ -60,6 +60,10 @@ Stage 3 forbids projecting present-day instrument metadata backward. Dated-futur
 
 `UNAVAILABLE_INSUFFICIENT_SUPPORT` unless a separately prospectively qualified second official venue and exact historical object identities are frozen before any controlled history read. No second venue has been frozen by this evidence note, so no replacement venue is introduced.
 
+## Metadata capture execution gate
+
+A temporary same-branch GitHub Actions workflow, `0073-stage6-manifest-capture.yml`, is now committed solely to fetch official sibling `.CHECKSUM` files for the frozen C1 object set. It must never request or read ZIP/CSV payload URLs. The capture is considered successful only if it produces exactly `216/216` checksum-pinned identities and then removes itself from the branch. Any missing or malformed checksum keeps Stage6 fail-closed and blocks merge.
+
 ## Budget preservation
 
 - controlled attempt: `0/1`
@@ -72,4 +76,4 @@ This metadata-only capture does not create `RUN_ATTEMPT.marker`, does not open a
 
 ## Exact next capture step
 
-Enumerate the C1 monthly objects for BTC/ETH/SOL over `2024-08` through `2026-07`, capture each sibling `.CHECKSUM`, and create the final create-only authorized-object manifest. In parallel, enumerate C2 dated-future archive identities only if they can be established prospectively from official historical archive metadata without opening scientific payloads. Otherwise persist C2 as unavailable under the frozen preregistration.
+Run the metadata-only checksum capture on the current Stage6 branch. If and only if it freezes all 216 C1 identities, persist the manifest and remove the temporary capture workflow. C2 remains unavailable unless exact point-in-time dated-future identities can be frozen without scientific payload reads; C3 remains unavailable under the frozen preregistration.
