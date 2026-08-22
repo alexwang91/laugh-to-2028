@@ -1,0 +1,19 @@
+{
+  "artifact_id": "9480304574",
+  "artifact_name": "0074-stage6-authorized-payloads-v1",
+  "artifact_retention_days": 90,
+  "artifact_url": "https://github.com/alexwang91/laugh-to-2028/actions/runs/32590698620/artifacts/9480304574",
+  "attempt": "0/1",
+  "authorized_payload_objects": 402,
+  "controlled_scientific_history_reads": 0,
+  "hash_verified_objects": 402,
+  "manifest_sha256": "fba23adb62a1a94492c77e94405593c18cba9226ed20d8c70fda578030d3b23f",
+  "note": "Stage6 staging fetched opaque authorized bytes only, verified official SHA-256 identities, and performed unzip structural tests without extraction or scientific-value inspection.",
+  "offline_zip_readability_passed_objects": 402,
+  "research_id": "BRRK-CRYPTO-MULTI-HORIZON-TREND-0074",
+  "scientific_engine_calls": 0,
+  "scientific_values_exposed": false,
+  "stage": 6,
+  "stage8_scientific_source_network_fetches": 0,
+  "status": "STAGING_COMPLETE_ZERO_SCIENTIFIC_VALUE_EXPOSURE"
+}
