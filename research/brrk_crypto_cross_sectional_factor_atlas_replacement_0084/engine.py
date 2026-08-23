@@ -6,7 +6,7 @@ network access, or controlled historical payload reads.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from math import isfinite
+from math import isfinite, sqrt
 from statistics import median
 from typing import Iterable, Mapping, Sequence
 
@@ -17,6 +17,13 @@ WINSOR_LO = 0.025
 WINSOR_HI = 0.975
 DECLARED_TRIALS = 64
 HOLM_ALPHA = 0.05
+FACTOR_FAMILIES = {
+    "PRICE": ("MOM_20", "MOM_60", "REV_5", "DRAWDOWN_60", "RECOVERY_20_FROM_DD", "RESID_MOM_60"),
+    "RISK": ("RVOL_20", "RVOL_60", "BETA_60", "DOWNSIDE_BETA_60", "IDIOVOL_60"),
+    "MARKET_STRUCTURE": ("VOLUME_SURPRISE_20", "LIQUIDITY_AMIHUD_20", "FUNDING_7D", "PERP_BASIS_1D", "PERP_MOMENTUM_GAP_20"),
+}
+HORIZONS = (5, 20)
+REPRESENTATIONS = ("A", "B")
 
 
 def _clean(xs: Iterable[float]) -> list[float]:
@@ -115,6 +122,67 @@ def drawdown_60(closes: Sequence[float]) -> float:
     return closes[-1] / max(closes) - 1.0
 
 
+def recovery_20_from_dd(closes_60: Sequence[float], close_20_ago: float, close_latest: float) -> float:
+    dd = drawdown_60(closes_60)
+    return log_return(close_20_ago, close_latest) if dd <= -0.20 else 0.0
+
+
+def sample_std(values: Sequence[float]) -> float:
+    xs = _clean(values)
+    if len(xs) != len(values) or len(xs) < 2:
+        raise ValueError("sample_std requires at least two finite values")
+    mean = sum(xs) / len(xs)
+    return sqrt(sum((x - mean) ** 2 for x in xs) / (len(xs) - 1))
+
+
+def realized_volatility(log_returns: Sequence[float], expected_n: int) -> float:
+    if len(log_returns) != expected_n:
+        raise ValueError(f"expected exactly {expected_n} returns")
+    return sample_std(log_returns) * sqrt(365.0)
+
+
+def ols_beta(asset_returns: Sequence[float], benchmark_returns: Sequence[float], min_pairs: int) -> float:
+    if len(asset_returns) != len(benchmark_returns):
+        raise ValueError("paired returns must have equal length")
+    pairs = [(float(a), float(b)) for a, b in zip(asset_returns, benchmark_returns)
+             if isfinite(float(a)) and isfinite(float(b))]
+    if len(pairs) < min_pairs:
+        raise ValueError("insufficient paired rows")
+    bs = [b for _, b in pairs]
+    bmean = sum(bs) / len(bs)
+    denom = sum((b - bmean) ** 2 for b in bs)
+    if denom == 0:
+        raise ValueError("benchmark variance is zero")
+    amean = sum(a for a, _ in pairs) / len(pairs)
+    return sum((a - amean) * (b - bmean) for a, b in pairs) / denom
+
+
+def beta_60(asset_returns: Sequence[float], benchmark_returns: Sequence[float]) -> float:
+    if len(asset_returns) != 60 or len(benchmark_returns) != 60:
+        raise ValueError("beta_60 requires 60 observations")
+    return ols_beta(asset_returns, benchmark_returns, 45)
+
+
+def downside_beta_60(asset_returns: Sequence[float], benchmark_returns: Sequence[float]) -> float:
+    if len(asset_returns) != 60 or len(benchmark_returns) != 60:
+        raise ValueError("downside_beta_60 requires 60 observations")
+    downside = [(a, b) for a, b in zip(asset_returns, benchmark_returns) if b < 0]
+    if len(downside) < 15:
+        raise ValueError("insufficient negative benchmark days")
+    return ols_beta([a for a, _ in downside], [b for _, b in downside], 15)
+
+
+def idiovol_60(asset_returns: Sequence[float], benchmark_returns: Sequence[float]) -> float:
+    beta = beta_60(asset_returns, benchmark_returns)
+    pairs = [(float(a), float(b)) for a, b in zip(asset_returns, benchmark_returns)
+             if isfinite(float(a)) and isfinite(float(b))]
+    amean = sum(a for a, _ in pairs) / len(pairs)
+    bmean = sum(b for _, b in pairs) / len(pairs)
+    alpha = amean - beta * bmean
+    residuals = [a - (alpha + beta * b) for a, b in pairs]
+    return sample_std(residuals) * sqrt(365.0)
+
+
 def volume_surprise_20(latest: float, prior_19: Sequence[float]) -> float:
     from math import log
     if latest <= 0 or len(prior_19) != 19 or any(x <= 0 for x in prior_19):
@@ -143,6 +211,81 @@ def funding_7d(observations: Sequence[float] | None, complete_coverage: bool) ->
     if len(vals) != len(observations):
         return None
     return sum(vals)
+
+
+def perp_momentum_gap_20(perp_start: float | None, perp_end: float | None,
+                         spot_start: float, spot_end: float) -> float | None:
+    if perp_start is None or perp_end is None:
+        return None
+    return log_return(perp_start, perp_end) - log_return(spot_start, spot_end)
+
+
+def spearman(values_x: Mapping[str, float], values_y: Mapping[str, float]) -> float:
+    common = sorted(set(values_x) & set(values_y))
+    if len(common) < 2:
+        raise ValueError("insufficient common observations")
+    xr = fractional_ranks({k: values_x[k] for k in common}) if len(common) >= MIN_CROSS_SECTION else _fractional_ranks_any({k: values_x[k] for k in common})
+    yr = fractional_ranks({k: values_y[k] for k in common}) if len(common) >= MIN_CROSS_SECTION else _fractional_ranks_any({k: values_y[k] for k in common})
+    xs = [xr[k] for k in common]
+    ys = [yr[k] for k in common]
+    mx, my = sum(xs) / len(xs), sum(ys) / len(ys)
+    num = sum((x - mx) * (y - my) for x, y in zip(xs, ys))
+    dx = sum((x - mx) ** 2 for x in xs)
+    dy = sum((y - my) ** 2 for y in ys)
+    if dx == 0 or dy == 0:
+        raise ValueError("undefined Spearman correlation")
+    return num / sqrt(dx * dy)
+
+
+def _fractional_ranks_any(values: Mapping[str, float]) -> dict[str, float]:
+    ordered = sorted(((k, float(v)) for k, v in values.items()), key=lambda kv: (kv[1], kv[0]))
+    n = len(ordered)
+    if n < 2:
+        raise ValueError("at least two observations required")
+    out: dict[str, float] = {}
+    i = 0
+    while i < n:
+        j = i + 1
+        while j < n and ordered[j][1] == ordered[i][1]:
+            j += 1
+        frac = ((i + (j - 1)) / 2.0) / (n - 1)
+        for k, _ in ordered[i:j]:
+            out[k] = frac
+        i = j
+    return out
+
+
+def q5_minus_q1(ranks: Mapping[str, float], forward_returns: Mapping[str, float]) -> float:
+    common = {k: ranks[k] for k in ranks if k in forward_returns}
+    if not q1_q5_supported(common):
+        raise ValueError("Q1/Q5 support undefined")
+    q1 = [float(forward_returns[k]) for k, r in common.items() if quintile(r) == 1]
+    q5 = [float(forward_returns[k]) for k, r in common.items() if quintile(r) == 5]
+    return sum(q5) / len(q5) - sum(q1) / len(q1)
+
+
+def monotonicity_score(ranks: Mapping[str, float], forward_returns: Mapping[str, float]) -> float:
+    buckets: dict[int, list[float]] = {i: [] for i in range(1, 6)}
+    for k, r in ranks.items():
+        if k in forward_returns:
+            buckets[quintile(r)].append(float(forward_returns[k]))
+    if any(not buckets[i] for i in buckets):
+        raise ValueError("all five quintiles must be supported")
+    means = {str(i): sum(buckets[i]) / len(buckets[i]) for i in range(1, 6)}
+    indices = {str(i): float(i) for i in range(1, 6)}
+    return spearman(indices, means)
+
+
+def trial_manifest() -> tuple[tuple[str, str, int, str], ...]:
+    trials: list[tuple[str, str, int, str]] = []
+    for family, factors in FACTOR_FAMILIES.items():
+        for factor in factors:
+            for horizon in HORIZONS:
+                for representation in REPRESENTATIONS:
+                    trials.append((family, factor, horizon, representation))
+    if len(trials) != DECLARED_TRIALS:
+        raise AssertionError("declared trial accounting drift")
+    return tuple(trials)
 
 
 def holm_adjust(raw_p: Sequence[float]) -> list[float]:
