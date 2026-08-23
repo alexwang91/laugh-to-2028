@@ -1,0 +1,40 @@
+name: 0075 Stage6 executor trigger repair
+
+on:
+  pull_request:
+    branches:
+      - main
+    types: [synchronize, reopened]
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    if: github.head_ref == 'research/0075-stage6-controlled-execution-boundary-v1' && github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/0075-stage6-controlled-execution-boundary-v1
+          fetch-depth: 0
+      - name: Repair only the executor event trigger
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('.github/workflows/0075-stage6-manifest-staging.yml')
+          s = p.read_text(encoding='utf-8')
+          old = """on:\n  push:\n    branches:\n      - research/0075-stage6-controlled-execution-boundary-v1\n"""
+          new = """on:\n  pull_request:\n    branches:\n      - main\n    types: [synchronize, reopened]\n"""
+          assert s.count(old) == 1, 'expected exact original push trigger once'
+          s = s.replace(old, new, 1)
+          p.write_text(s, encoding='utf-8')
+          PY
+          rm .github/workflows/0075-stage6-trigger-repair.yml
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add .github/workflows/0075-stage6-manifest-staging.yml .github/workflows/0075-stage6-trigger-repair.yml
+          git commit -m 'governance(0075): switch Stage6 executor to observable PR trigger'
+          git push origin HEAD:research/0075-stage6-controlled-execution-boundary-v1
