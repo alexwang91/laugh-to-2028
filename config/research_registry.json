@@ -5765,6 +5765,114 @@
         "Atlas PASS does not imply a deployable long/short strategy; 0076 requires 0075 PASS closeout and only immutably qualified factors.",
         "production_authorized=false; signature_authorized=false; order_submission_authorized=false."
       ]
+    },
+    {
+      "research_id": "BRRK-CRYPTO-CROSS-SECTIONAL-FACTOR-ATLAS-REPLACEMENT-0084",
+      "research_family_id": "CRYPTO_CROSS_SECTIONAL_FACTORS",
+      "research_domain": "RELATIVE_VALUE",
+      "research_governance_version": 1,
+      "governance_mode": "PROGRAM_GOVERNED_V1",
+      "objective_type": "MECHANISM_TEST",
+      "created_at": "2026-08-23",
+      "created_before_result": true,
+      "question": "Can a bounded prospectively defined point-in-time crypto cross-sectional factor atlas identify factor definitions with robust association to matured forward returns after family-wise multiple-testing control, regime stability, turnover/capacity and leave-out robustness?",
+      "hypothesis": "At least one prospectively frozen factor definition from the roadmap price, risk, market-structure or point-in-time-valid network/economic families may exhibit cross-sectional return structure that survives the frozen family-wise multiple-testing and robustness requirements.",
+      "hypothesis_origin": "PROSPECTIVE_MEASUREMENT_FIX_REPLACEMENT_OF_0075_AFTER_PREMARKER_IMPLEMENTATION_RESOLUTION; NO_0084_CONTROLLED_HISTORY_EXPOSURE; exact frozen 0075 scientific question, hypothesis, mechanism, universe, factor families, horizons, trial budget, stopping rule, success criteria and failure criteria are inherited prospectively without result-informed change.",
+      "economic_mechanism": "Cross-sectional crypto returns may reflect heterogeneous momentum/reversal, systematic and idiosyncratic risk, leverage/liquidity/market-structure conditions and economically meaningful network state. Any apparent relation must survive point-in-time universe construction, maturation, multiplicity and robustness controls.",
+      "primary_target": "MATURED_POINT_IN_TIME_CROSS_SECTIONAL_CRYPTO_FORWARD_RETURNS",
+      "primary_metric": "FAMILY_WISE_MULTIPLICITY_CONTROLLED_Q5_Q1_MONOTONICITY_AND_SPEARMAN_RANK_IC_ROBUSTNESS",
+      "secondary_metrics": [
+        "Q5_Q1_forward_return",
+        "cross_sectional_monotonicity",
+        "Spearman_rank_IC",
+        "IC_distribution_and_year_regime_stability",
+        "turnover",
+        "capacity_proxies",
+        "leave_year_out",
+        "leave_theme_out",
+        "leave_size_bucket_out"
+      ],
+      "feature_families": [
+        "PRICE_MOMENTUM",
+        "PRICE_SHORT_TERM_REVERSAL",
+        "PRICE_RESIDUAL_MOMENTUM",
+        "PRICE_DRAWDOWN_RECOVERY_STATE",
+        "RISK_REALIZED_VOLATILITY",
+        "RISK_RESIDUAL_IDIOSYNCRATIC_VOLATILITY",
+        "RISK_MARKET_BETA",
+        "RISK_DOWNSIDE_BETA_TAIL_RISK_IF_PROSPECTIVELY_DEFINED",
+        "MARKET_STRUCTURE_FUNDING",
+        "MARKET_STRUCTURE_BASIS",
+        "MARKET_STRUCTURE_OPEN_INTEREST_CHANGE",
+        "MARKET_STRUCTURE_LIQUIDITY_SPREAD",
+        "MARKET_STRUCTURE_VOLUME_SURPRISE",
+        "NETWORK_TRANSACTION_ACTIVITY",
+        "NETWORK_FEES_ECONOMIC_USAGE",
+        "NETWORK_SUPPLY_GROWTH_ISSUANCE",
+        "NETWORK_HOLDER_CONCENTRATION",
+        "NETWORK_TVL_ECONOMIC_ACTIVITY_IF_SEMANTICALLY_COMPARABLE"
+      ],
+      "horizon": [
+        "PROSPECTIVELY_FIXED_FORWARD_RETURN_HORIZONS_TO_BE_NUMERICALLY_FROZEN_IN_DESIGN_AND_PREREGISTRATION_BEFORE_CONTROLLED_HISTORY"
+      ],
+      "universe": [
+        "POINT_IN_TIME_TRADABLE_CRYPTO_UNIVERSE_TO_BE_FROZEN_BEFORE_CONTROLLED_HISTORY"
+      ],
+      "development_dataset_refs": [],
+      "validation_dataset_refs": [],
+      "sealed_dataset_refs": [],
+      "declared_variant_budget": 64,
+      "actual_variants_evaluated": 0,
+      "parameter_candidate_count": 64,
+      "stopping_rule": "Traverse exactly the ten program lifecycle stages in order. Stage1 and Stage2 use zero 0075 controlled scientific/history reads. DESIGN and PREREGISTRATION must prospectively freeze point-in-time universe eligibility, source identities, timestamp/maturity semantics, exact factor formulas and horizons, stale/missing filters, winsorization, ranking/standardization, residualization controls, quantile construction, candidate/trial accounting within the total ceiling of 64, family-wise multiple-testing correction, regime/turnover/capacity/leave-out robustness and terminal classifications before controlled history. After marker consumption no same-ID factor addition, redefinition, universe substitution, horizon extension, multiplicity change, retune, rescue or recomputation is allowed.",
+      "success_criteria": "PASS only if valid exactly-once execution identifies at least one prospectively frozen factor definition that satisfies all preregistered point-in-time support, matured-forward-return, family-wise multiplicity, spread/monotonicity/rank-IC stability, regime, turnover/capacity and leave-out robustness requirements. Atlas PASS is structural research evidence only and does not establish a deployable long/short strategy.",
+      "failure_criteria": "FAIL if valid execution completes but no preregistered factor qualifies under all frozen multiplicity and robustness rules. INCONCLUSIVE is limited to prospectively defined insufficient point-in-time support or mathematically undefined inference. INVALID_EXECUTION applies to identity/hash/read-count/lookahead/maturity/universe/candidate-count/source/persistence/exactly-once drift.",
+      "allowed_followup": "After Stage1 merge, only the next serial 0075 lifecycle stage is legal. After immutable 0075 PASS closeout, a separately owner-first 0076 may use only factor definitions immutably qualified by 0075.",
+      "forbidden_followup": "No post-result factor addition, family substitution, factor redefinition, alternate universe, alternate horizon, multiplicity relaxation, threshold rescue, same-ID rerun, retune or recomputation. A non-PASS 0075 cannot seed 0076 factor selection.",
+      "researcher_decisions": [
+        "Restart from Stage1 because merged governance resolution #381 found the frozen 0075 implementation incomplete before any Stage8 marker, controlled read, scientific-engine call, or result exposure.",
+        "Preserve the exact 0075 Stage3 scientific semantics and require a fresh full ten-stage lifecycle for 0084; no lifecycle credit transfers from 0075.",
+        "Do not transfer the 0075 Stage8 authorization to 0084; 0084 requires fresh exact-scope contemporaneous authorization if it later reaches Stage8."
+      ],
+      "research_process_complexity": {
+        "declared_parameter_candidates": 64,
+        "actual_parameter_candidates_evaluated": 0,
+        "universes_evaluated": 1,
+        "horizons_evaluated": 0,
+        "rebalance_variants": 0,
+        "feature_representations": 18,
+        "special_cases_introduced": 4,
+        "validation_exposure_event_refs": [],
+        "related_family_trials": 1
+      },
+      "lineage_edges": [
+        {
+          "relation": "MEASUREMENT_FIX",
+          "ref_research_id": "BRRK-CRYPTO-CROSS-SECTIONAL-FACTOR-ATLAS-0075",
+          "provenance_status": "FACT",
+          "evidence_ref": "research/governance/CRYPTO_MULTI_STRATEGY_0075_PREMARKER_IMPLEMENTATION_RESOLUTION.md"
+        }
+      ],
+      "result_status": "PREREGISTERED_NOT_RUN",
+      "failure_reason": null,
+      "promotion_state": "NONE",
+      "evidence_refs": [],
+      "decision_refs": [
+        "research/governance/CRYPTO_MULTI_STRATEGY_0075_PREMARKER_IMPLEMENTATION_RESOLUTION.md",
+        "research/governance/CRYPTO_MULTI_STRATEGY_RESEARCH_PROGRAM_0071_0082.md",
+        "docs/CURRENT_STATE.md"
+      ],
+      "production_relevance": "Research-only point-in-time crypto cross-sectional factor atlas. Any PASS may only qualify frozen factors for separately governed 0076 after immutable closeout; no automatic production, signature or order authority.",
+      "production_authorized": false,
+      "provenance_status": "PROSPECTIVE_FROZEN",
+      "governed_path_prefixes": [
+        "research/brrk_crypto_cross_sectional_factor_atlas_replacement_0084"
+      ],
+      "notes": [
+        "0084 is a prospective measurement-fix replacement authorized by merged governance resolution #381, not a rescue of observed 0075 results.",
+        "0075 remains permanently blocked at 7/10 with attempt 0/1 unconsumed, reads 0, scientific engine 0/1, network 0, no marker and no scientific result.",
+        "0084 begins with zero controlled reads, zero scientific-engine calls, zero source-network fetches, attempt 0/1, and zero production/signature/order authority."
+      ]
     }
   ],
   "research_governance_debt": [
