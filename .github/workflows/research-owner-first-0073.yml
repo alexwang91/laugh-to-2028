@@ -1,4 +1,4 @@
-name: 0073 guarded OWNER-FIRST registry writer
+name: 0073 and 0084 guarded OWNER-FIRST registry writer
 
 on:
   pull_request:
@@ -120,4 +120,188 @@ jobs:
           git rm "$REQUEST"
           test "$(git diff --cached --name-only | sort)" = "$(printf '%s\n' 'config/research_registry.json' 'docs/CURRENT_STATE.md' "$REQUEST" | sort)"
           git commit -m 'governance(0073): register delta-neutral carry OWNER-FIRST'
+          git push origin HEAD:${{ github.event.pull_request.head.ref }}
+
+  owner-first-registry-writer-0084:
+    name: Guarded 0084 OWNER-FIRST registry writer
+    if: >-
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      github.head_ref == 'research/0084-stage1-owner-first-v1'
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
+      - name: Apply prospective 0084 OWNER-FIRST request if present
+        shell: bash
+        run: |
+          set -euo pipefail
+          REQUEST='research/governance/owner_first_requests/0084.json'
+          if [[ ! -f "$REQUEST" ]]; then
+            echo 'No 0084 OWNER-FIRST request present; no mutation.'
+            exit 0
+          fi
+
+          python - <<'PY'
+          import copy
+          import json
+          from pathlib import Path
+
+          request_path = Path('research/governance/owner_first_requests/0084.json')
+          request = json.loads(request_path.read_text(encoding='utf-8'))
+          assert request['schema_version'] == 1
+          assert request['target_branch'] == 'research/0084-stage1-owner-first-v1'
+          assert request['new_research_id'] == 'BRRK-CRYPTO-CROSS-SECTIONAL-FACTOR-ATLAS-REPLACEMENT-0084'
+          assert request['template_research_id'] == 'BRRK-CRYPTO-CROSS-SECTIONAL-FACTOR-ATLAS-0075'
+          assert request['governance_resolution_merge'] == 'f50618f233aef5e8e9872695ab87b67ab294a3a4'
+          assert request['controlled_reads'] == 0
+          assert request['attempt_consumed'] == 0
+          assert request['scientific_engine_calls'] == 0
+          assert request['stage8_scientific_source_network_fetches'] == 0
+          assert request['production_authorized'] is False
+
+          registry_path = Path('config/research_registry.json')
+          raw = registry_path.read_text(encoding='utf-8')
+          data = json.loads(raw)
+          old_id = request['template_research_id']
+          new_id = request['new_research_id']
+          assert not any(row.get('research_id') == new_id for row in data['records'])
+          source = next(row for row in data['records'] if row.get('research_id') == old_id)
+          new = copy.deepcopy(source)
+
+          new['research_id'] = new_id
+          new['created_at'] = request['created_at']
+          new['created_before_result'] = True
+          new['hypothesis_origin'] = request['hypothesis_origin']
+          new['actual_variants_evaluated'] = 0
+          new['result_status'] = 'PREREGISTERED_NOT_RUN'
+          new['failure_reason'] = None
+          new['promotion_state'] = 'NONE'
+          new['evidence_refs'] = []
+          new['production_authorized'] = False
+          new['provenance_status'] = 'PROSPECTIVE_FROZEN'
+          new['governed_path_prefixes'] = [request['governed_path_prefix']]
+          new['lineage_edges'] = [{
+              'relation': 'MEASUREMENT_FIX',
+              'ref_research_id': old_id,
+              'provenance_status': 'FACT',
+              'evidence_ref': request['governance_resolution_path'],
+          }]
+          new['decision_refs'] = [
+              request['governance_resolution_path'],
+              'research/governance/CRYPTO_MULTI_STRATEGY_RESEARCH_PROGRAM_0071_0082.md',
+              'docs/CURRENT_STATE.md',
+          ]
+          rpc = new.get('research_process_complexity')
+          if isinstance(rpc, dict):
+              if 'actual_parameter_candidates_evaluated' in rpc:
+                  rpc['actual_parameter_candidates_evaluated'] = 0
+              if 'validation_exposure_event_refs' in rpc:
+                  rpc['validation_exposure_event_refs'] = []
+          new['researcher_decisions'] = request['researcher_decisions']
+          new['notes'] = request['notes']
+
+          assert new['research_family_id'] == source['research_family_id'] == 'CRYPTO_CROSS_SECTIONAL_FACTORS'
+          assert new['research_domain'] == source['research_domain'] == 'RELATIVE_VALUE'
+          assert new['objective_type'] == source['objective_type'] == 'MECHANISM_TEST'
+          assert new['declared_variant_budget'] == source['declared_variant_budget'] == 64
+          assert new['parameter_candidate_count'] == source['parameter_candidate_count']
+          assert new['feature_families'] == source['feature_families']
+          assert new['universe'] == source['universe']
+          assert new['question'] == source['question']
+          assert new['hypothesis'] == source['hypothesis']
+          assert new['economic_mechanism'] == source['economic_mechanism']
+          assert new['primary_target'] == source['primary_target']
+          assert new['primary_metric'] == source['primary_metric']
+          assert new['secondary_metrics'] == source['secondary_metrics']
+          assert new['horizon'] == source['horizon']
+          assert new['stopping_rule'] == source['stopping_rule']
+          assert new['success_criteria'] == source['success_criteria']
+          assert new['failure_criteria'] == source['failure_criteria']
+          assert new['allowed_followup'] == source['allowed_followup']
+          assert new['forbidden_followup'] == source['forbidden_followup']
+
+          marker = '\n  ],\n  "research_governance_debt": ['
+          pos = raw.rfind(marker)
+          assert pos > 0, 'registry records/debt boundary not found'
+          rendered = json.dumps(new, indent=2, ensure_ascii=False)
+          rendered = '\n'.join('    ' + line for line in rendered.splitlines())
+          updated = raw[:pos] + ',\n' + rendered + raw[pos:]
+          parsed = json.loads(updated)
+          assert len(parsed['records']) == len(data['records']) + 1
+          assert parsed['records'][-1]['research_id'] == new_id
+          assert parsed['research_governance_debt'] == data['research_governance_debt']
+          registry_path.write_text(updated, encoding='utf-8')
+
+          state_path = Path('docs/CURRENT_STATE.md')
+          state = state_path.read_text(encoding='utf-8')
+          immutable = 'workflow run                         31381953131 / attempt 1'
+          assert state.count(immutable) == 1
+          replacements = request['current_state_replacements']
+          assert 1 <= len(replacements) <= 4
+          for old, replacement in replacements:
+              assert '0084' in old or '0084' in replacement
+              assert old in state, f'missing CURRENT_STATE anchor: {old}'
+              state = state.replace(old, replacement, 1)
+          assert state.count(immutable) == 1
+          state_path.write_text(state, encoding='utf-8')
+          PY
+
+          python -m research.governance.validate
+          python -m research.governance.no_drift
+          git diff --check
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add config/research_registry.json docs/CURRENT_STATE.md
+          git rm "$REQUEST"
+          test "$(git diff --cached --name-only | sort)" = "$(printf '%s\n' 'config/research_registry.json' 'docs/CURRENT_STATE.md' "$REQUEST" | sort)"
+          git commit -m 'governance(0084): register replacement OWNER-FIRST'
+          git push origin HEAD:${{ github.event.pull_request.head.ref }}
+
+  tooling-current-state-sync-0084:
+    name: Temporary 0084 writer tooling CURRENT_STATE sync
+    if: >-
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      github.head_ref == 'governance/0084-owner-first-writer-v1'
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
+      - name: Synchronize tooling handoff once
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('docs/CURRENT_STATE.md')
+          s = p.read_text()
+          immutable = 'workflow run                         31381953131 / attempt 1'
+          assert s.count(immutable) == 1
+          old_next = "0074 remains immutable `10/10 COMPLETE / INVALID_EXECUTION / CLOSED TO SAME-ID RERUN`. 0075 Stage1-Stage6 are merged and Stage7 ZERO-RESULT PREFLIGHT merged at `3af2a58cb7ff12be37f918f2c45f44369bd0900d` with `PREFLIGHT_PASS_ZERO_RESULT`. Stage8 PR #379 obtained explicit contemporaneous authorization, but before any durable `RUN_ATTEMPT.marker`, controlled scientific-history read, scientific-engine call, or Stage8 scientific source-network fetch, pre-marker audit found `PREMARKER_READINESS_FAIL_FROZEN_IMPLEMENTATION_INCOMPLETE`; Issue #380 records the defect. 0075 therefore remains formal completion `7/10`, attempt `0/1` unconsumed, controlled reads `0`, scientific engine `0/1`, source-network fetches `0`, scientific values exposed `false`, and #379 stays draft/pre-marker. Governance PR #381 prospectively proposes `BLOCKED_PRE_ATTEMPT_FROZEN_IMPLEMENTATION_INCOMPLETE` plus replacement `BRRK-CRYPTO-CROSS-SECTIONAL-FACTOR-ATLAS-REPLACEMENT-0084`; neither routing change nor 0084 is authoritative before #381 merges. No 0075 marker or controlled scientific read is legal while #381 is unresolved."
+          new_next = "0074 remains immutable `10/10 COMPLETE / INVALID_EXECUTION / CLOSED TO SAME-ID RERUN`. Governance resolution #381 merged at `f50618f233aef5e8e9872695ab87b67ab294a3a4`; 0075 is permanently stopped at `7/10 BLOCKED_PRE_ATTEMPT_FROZEN_IMPLEMENTATION_INCOMPLETE`, attempt `0/1` unconsumed, reads `0`, engine `0/1`, Stage8 network `0`, values exposed `false`, no marker/result, and #379 is closed unmerged. Replacement 0084 is authorized by the merged resolution but OWNER-FIRST has not started; guarded OWNER-FIRST writer tooling is in progress on `governance/0084-owner-first-writer-v1`. 0084 remains `0/10`, attempt `0/1`, reads `0`, engine `0`, network `0`. No 0084 controlled history is legal before its own later governed stages."
+          assert s.count(old_next) == 1
+          s = s.replace(old_next, new_next, 1)
+          old75 = "0075 = STAGE-1 THROUGH STAGE-7 MERGED / STAGE-7 MERGE `3af2a58cb7ff12be37f918f2c45f44369bd0900d` / `PREFLIGHT_PASS_ZERO_RESULT` / STAGE-8 #379 AUTHORIZED BUT DRAFT-PRE-MARKER BLOCKED BY `PREMARKER_READINESS_FAIL_FROZEN_IMPLEMENTATION_INCOMPLETE` / ISSUE #380 / GOVERNANCE RESOLUTION #381 PROSPECTIVE ONLY UNTIL MERGE / FORMAL COMPLETION 7/10 / CONTROLLED ATTEMPT 0/1 UNCONSUMED / CONTROLLED READS 0 / SCIENTIFIC ENGINE 0/1 / SCIENTIFIC SOURCE NETWORK FETCHES 0 / SCIENTIFIC VALUES EXPOSED FALSE / NO MARKER / NO RESULT / PRODUCTION-SIGNATURE-ORDER AUTHORITY FALSE."
+          new75 = "0075 = STAGE-1 THROUGH STAGE-7 MERGED / STAGE-7 MERGE `3af2a58cb7ff12be37f918f2c45f44369bd0900d` / `PREFLIGHT_PASS_ZERO_RESULT` / GOVERNANCE RESOLUTION #381 MERGED AT `f50618f233aef5e8e9872695ab87b67ab294a3a4` / PERMANENT `BLOCKED_PRE_ATTEMPT_FROZEN_IMPLEMENTATION_INCOMPLETE` AT 7/10 / STAGE-8 #379 CLOSED UNMERGED / ATTEMPT 0/1 UNCONSUMED / READS 0 / ENGINE 0/1 / NETWORK 0 / VALUES EXPOSED FALSE / NO MARKER / NO SCIENTIFIC RESULT / NO SAME-ID CONTINUATION / PRODUCTION-SIGNATURE-ORDER AUTHORITY FALSE."
+          assert s.count(old75) == 1
+          s = s.replace(old75, new75, 1)
+          old84 = "0084 = PROSPECTIVE 0075 REPLACEMENT ONLY / NOT AUTHORIZED UNLESS GOVERNANCE PR #381 MERGES / MUST RESTART FULL TEN-STAGE LIFECYCLE / NO INHERITED SCIENTIFIC RESULT OR STAGE CREDIT."
+          new84 = "0084 = AUTHORIZED 0075 REPLACEMENT BY GOVERNANCE MERGE `f50618f233aef5e8e9872695ab87b67ab294a3a4` / OWNER-FIRST NOT STARTED / GUARDED OWNER-FIRST WRITER TOOLING IN PROGRESS ON `governance/0084-owner-first-writer-v1` / FORMAL COMPLETION 0/10 / FULL TEN-STAGE LIFECYCLE REQUIRED / NO INHERITED RESULT OR STAGE CREDIT / ATTEMPT 0/1 / READS 0 / ENGINE 0 / NETWORK 0 / PRODUCTION-SIGNATURE-ORDER AUTHORITY FALSE."
+          assert s.count(old84) == 1
+          s = s.replace(old84, new84, 1)
+          assert s.count(immutable) == 1
+          p.write_text(s)
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs/CURRENT_STATE.md
+          git diff --cached --check
+          git commit -m 'governance(0084): synchronize writer tooling handoff'
           git push origin HEAD:${{ github.event.pull_request.head.ref }}
