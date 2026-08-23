@@ -10,6 +10,8 @@ Current accounting: controlled attempt `0/1`; controlled historical/evidence rea
 
 The immutable historical line `workflow run                         31381953131 / attempt 1` remains required unchanged in `docs/CURRENT_STATE.md`.
 
-Fresh governance finding on 2026-08-23: the previous exact-head handoff run failed first because the PR body lacked the mandatory `## Evidence and tests` and `## Risks and unresolved items` headings. Those PR metadata sections are now repaired. The next known mechanical requirement remains synchronization of `docs/CURRENT_STATE.md` onto this Stage4 branch so that it appears in the forward PR diff. This note changes no frozen science and consumes no scientific budget.
+Governance repair on 2026-08-23: the earlier PR metadata failures were repaired, and `docs/CURRENT_STATE.md` is now synchronized on this same Stage4 branch to Stage3 merge `7b0ba828c75f9ecf8293b2e99a0531eac7954720` / Stage4 #375 in progress / formal completion `3/10` until Stage4 merge. The synchronization changes no frozen science and consumes no scientific budget.
 
-Exact next work on this same Stage4 branch is to synchronize `docs/CURRENT_STATE.md` to Stage3 merge `7b0ba828c75f9ecf8293b2e99a0531eac7954720` / Stage4 #375 in progress while preserving every immutable anchor, then require fresh exact-head standing CI before any merge. Stage5 may not begin until Stage4 merges.
+Fresh exact-head CI must be terminal green before merge. In addition, Stage4 implementation review must remain consistent with Stage3 Section 11 synthetic obligations; any missing synthetic mechanics/fixtures must be completed on this branch without controlled-history access before Stage4 can earn lifecycle credit.
+
+Exact next work on this same Stage4 branch is to read the fresh exact-head standing CI, resolve any implementation/qualification-coverage gap found against frozen Stage3 Section 11, and expected-head merge only after all mandatory checks succeed with head/base unchanged. Stage5 may not begin until Stage4 merges.
