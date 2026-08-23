@@ -1,0 +1,88 @@
+{
+  "research_id": "BRRK-CRYPTO-CROSS-SECTIONAL-FACTOR-ATLAS-0075",
+  "lifecycle_stage": "4/10 IMPLEMENTATION",
+  "stage3_merge": "7b0ba828c75f9ecf8293b2e99a0531eac7954720",
+  "controlled_attempt": "0/1",
+  "controlled_history_reads": 0,
+  "scientific_engine_calls": 0,
+  "scientific_source_network_fetches": 0,
+  "history_scope": "NO_CONTROLLED_HISTORY_AT_STAGE4",
+  "source_families": [
+    "BINANCE_SPOT_MONTHLY_DAILY_KLINES",
+    "BINANCE_USDM_MONTHLY_DAILY_PERPETUAL_KLINES",
+    "BINANCE_USDM_MONTHLY_FUNDING_RATE"
+  ],
+  "candidate_source_months": ["2021-01", "2026-07"],
+  "chronology": {
+    "decision_information_cutoff": "t-1 close",
+    "position_and_forward_return_start": "close t",
+    "rebalance": "daily",
+    "forward_horizons_sessions": [5, 20],
+    "tail_policy": "exclude_unmatured"
+  },
+  "universe": {
+    "quote_asset": "USDT",
+    "minimum_listing_age_calendar_days": 180,
+    "required_recent_daily_closes": 60,
+    "trailing_median_volume_window_days": 30,
+    "minimum_trailing_median_quote_volume_usd": 1000000,
+    "minimum_cross_section_symbols": 20,
+    "staleness_cutoff": "latest close must equal t-1"
+  },
+  "preprocessing": {
+    "winsor_percentiles": [2.5, 97.5],
+    "rank_range": [0.0, 1.0],
+    "ties": "average_rank",
+    "quintile_min_constituents_q1_q5": 4,
+    "forward_fill": false,
+    "residualization_min_complete_symbols": 30
+  },
+  "base_factors": [
+    "P1_MOM_20", "P2_MOM_60", "P3_REV_5", "P4_DRAWDOWN_60",
+    "P5_RECOVERY_20_FROM_DD", "P6_RESID_MOM_60",
+    "R1_RVOL_20", "R2_RVOL_60", "R3_BETA_60", "R4_DOWNSIDE_BETA_60", "R5_IDIOVOL_60",
+    "M1_VOLUME_SURPRISE_20", "M2_LIQUIDITY_AMIHUD_20", "M3_FUNDING_7D",
+    "M4_PERP_BASIS_1D", "M5_PERP_MOMENTUM_GAP_20"
+  ],
+  "representations_per_factor": 2,
+  "forward_horizons_per_factor": 2,
+  "declared_trials": 64,
+  "primary_statistics": ["RANK_IC", "Q5_MINUS_Q1", "QUINTILE_MONOTONICITY"],
+  "multiplicity": {
+    "method": "HOLM",
+    "family_wise_alpha": 0.05,
+    "families": {
+      "PRICE": 24,
+      "RISK": 20,
+      "MARKET_STRUCTURE": 20,
+      "NETWORK": 0
+    }
+  },
+  "bootstrap": {
+    "type": "MOVING_BLOCK",
+    "block_length_rebalance_dates": 20,
+    "replicates": 4000,
+    "seed": 750075,
+    "resampling_unit": "date_with_full_cross_section"
+  },
+  "qualification_gates": ["G0", "G1", "G2", "G3", "G4", "G5", "G6", "G7", "G8", "G9", "G10", "G11"],
+  "terminal_classifications": [
+    "PASS",
+    "FAIL_NO_QUALIFIED_FACTOR",
+    "INCONCLUSIVE_INSUFFICIENT_SUPPORT",
+    "INVALID_EXECUTION"
+  ],
+  "stage4_allowed_inputs": ["synthetic_fixtures", "merged_stage3_preregistration"],
+  "stage4_forbidden_inputs": ["controlled_historical_payloads", "source_network_fetches", "observed_factor_results"],
+  "stage8_execution_contract": {
+    "attempts": 1,
+    "marker_before_read": true,
+    "scientific_engine_calls": 1,
+    "scientific_source_network_fetches": 0,
+    "result_persistence": "create_only",
+    "same_id_rerun_retune_rescue_recompute": false
+  },
+  "production_authorized": false,
+  "signature_authorized": false,
+  "order_submission_authorized": false
+}
