@@ -10,4 +10,6 @@ Current accounting: controlled attempt `0/1`; controlled historical/evidence rea
 
 The immutable historical line `workflow run                         31381953131 / attempt 1` remains required unchanged in `docs/CURRENT_STATE.md`.
 
-Exact next work on this same Stage4 branch is to encode the preregistered factor engine and synthetic-only implementation tests, then synchronize `docs/CURRENT_STATE.md` before merge. Stage5 may not begin until Stage4 merges.
+Fresh governance finding on 2026-08-23: the previous exact-head handoff run failed first because the PR body lacked the mandatory `## Evidence and tests` and `## Risks and unresolved items` headings. Those PR metadata sections are now repaired. The next known mechanical requirement remains synchronization of `docs/CURRENT_STATE.md` onto this Stage4 branch so that it appears in the forward PR diff. This note changes no frozen science and consumes no scientific budget.
+
+Exact next work on this same Stage4 branch is to synchronize `docs/CURRENT_STATE.md` to Stage3 merge `7b0ba828c75f9ecf8293b2e99a0531eac7954720` / Stage4 #375 in progress while preserving every immutable anchor, then require fresh exact-head standing CI before any merge. Stage5 may not begin until Stage4 merges.
