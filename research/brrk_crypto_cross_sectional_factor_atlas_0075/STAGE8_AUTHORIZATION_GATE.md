@@ -6,7 +6,7 @@ Stage7 ZERO-RESULT PREFLIGHT merged at `3af2a58cb7ff12be37f918f2c45f44369bd0900d
 
 ## Current gate
 
-`BLOCKED_PENDING_EXPLICIT_USER_AUTHORIZATION`
+`AUTHORIZED_TO_PROCEED / ATTEMPT 0/1 / PRE-MARKER`
 
 - controlled attempt: `0/1`
 - `RUN_ATTEMPT.marker`: absent
@@ -17,18 +17,25 @@ Stage7 ZERO-RESULT PREFLIGHT merged at `3af2a58cb7ff12be37f918f2c45f44369bd0900d
 - `RUN_ONCE.marker`: absent
 - Stage8 result bundle: absent
 
-The standing governance authorization permits reversible GitHub governance work but does not authorize the irreversible 0075 Stage8 controlled attempt. No attempt is consumed until contemporaneous explicit authorization is persisted and a durable `RUN_ATTEMPT.marker` is created and remotely verified before any controlled scientific content read.
+## Explicit contemporaneous authorization
+
+On 2026-08-23 the repository owner/user explicitly authorized this exact irreversible scope with the instruction:
+
+> “授权执行 0075 Stage8 controlled attempt 1/1，并按既定 frozen science、marker-before-read、exactly-once 规则立即推进。”
+
+This authorization covers consumption of the unique `BRRK-CRYPTO-CROSS-SECTIONAL-FACTOR-ATLAS-0075` Stage8 controlled attempt `1/1`. It does not relax frozen science, exactly-once, marker-before-read, zero Stage8 scientific source-network fetches, no-result-informed-rescue, source identity, candidate identity, history window, or production-authority constraints.
 
 ## Immutable execution order after authorization
 
 1. Re-establish live main ancestry and identity-only / metadata-only zero-result pre-marker readiness.
 2. Persist contemporaneous explicit authorization for this exact 0075 Stage8 scope.
-3. Create `RUN_ATTEMPT.marker` and verify remote durability. Marker durability consumes attempt `1/1`.
-4. Read each authorized historical object at most once under the frozen Stage6 manifest and identities.
-5. Run the frozen scientific engine exactly once.
-6. Perform zero Stage8 scientific source-network fetches.
-7. Persist the create-only immutable result bundle.
-8. Create `RUN_ONCE.marker` to seal the attempt.
+3. Require fresh exact-head metadata/governance pre-marker checks to remain successful.
+4. Create `RUN_ATTEMPT.marker` and verify remote durability. Marker durability consumes attempt `1/1`.
+5. Read each authorized historical object at most once under the frozen Stage6 manifest and identities.
+6. Run the frozen scientific engine exactly once.
+7. Perform zero Stage8 scientific source-network fetches.
+8. Persist the create-only immutable result bundle.
+9. Create `RUN_ONCE.marker` to seal the attempt.
 
 After marker durability, rerun, retune, rescue, source substitution, candidate replacement, history extension and recomputation are permanently forbidden.
 
