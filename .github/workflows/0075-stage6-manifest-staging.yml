@@ -12,7 +12,7 @@ permissions:
 
 concurrency:
   group: 0075-stage6-manifest-staging
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   stage:
