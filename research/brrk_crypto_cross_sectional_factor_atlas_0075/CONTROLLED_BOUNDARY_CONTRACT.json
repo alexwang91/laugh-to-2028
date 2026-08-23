@@ -1,0 +1,106 @@
+{
+  "authorized_object_manifest_required_fields": [
+    "canonical_object_id",
+    "source_family",
+    "symbol",
+    "month",
+    "archive_path",
+    "paired_checksum_path",
+    "paired_checksum_identity",
+    "payload_sha256",
+    "frozen_object_role",
+    "scientific_content_read_budget"
+  ],
+  "controlled_attempt": {
+    "budget": 1,
+    "consumed": 0,
+    "durable_remote_verification_required": true,
+    "marker_before_first_controlled_read_required": true
+  },
+  "controlled_scientific_history_reads": 0,
+  "formal_completion_before_stage6_merge": "5/10",
+  "frozen_science_changed": false,
+  "frozen_source_boundary": {
+    "alternate_endpoint_allowed": false,
+    "alternate_venue_allowed": false,
+    "candidate_month_end": "2026-07",
+    "candidate_month_start": "2021-01",
+    "families": [
+      "SPOT_MONTHLY_1D_KLINES_FOR_ELIGIBLE_USDT_SYMBOLS",
+      "USD_M_MONTHLY_1D_PERPETUAL_KLINES_FOR_MATCHING_SYMBOLS",
+      "USD_M_MONTHLY_FUNDING_RATE_FOR_MATCHING_SYMBOLS"
+    ],
+    "history_extension_allowed": false,
+    "host": "data.binance.vision",
+    "network_or_economic_state_family_allowed": false,
+    "open_interest_family_allowed": false,
+    "source_substitution_allowed": false
+  },
+  "lifecycle_stage": "STAGE6_CONTROLLED_EXECUTION_BOUNDARY_IN_PROGRESS",
+  "manifest_completion_rules": {
+    "duplicate_object": "FAIL_CLOSED",
+    "exact_object_enumeration_required": true,
+    "extra_object": "FAIL_CLOSED",
+    "hash_mismatch": "FAIL_CLOSED",
+    "manifest_not_yet_complete": false,
+    "missing_object": "FAIL_CLOSED",
+    "paired_checksum_identity_required": true,
+    "payload_sha256_required": true,
+    "scientific_content_read_budget_per_object": 1
+  },
+  "offline_staging_rules": {
+    "durable_staging_required_before_stage7_pass": true,
+    "identity_and_metadata_validation_only_before_stage8": true,
+    "offline_readability_required_before_stage7_pass": true,
+    "scientific_payload_values_may_be_opened_during_stage6": false,
+    "scientific_payload_values_may_be_opened_during_stage7": false,
+    "staging_evidence_not_yet_complete": false
+  },
+  "order_submission_authorized": false,
+  "post_attempt_marker_prohibitions": [
+    "rerun",
+    "retune",
+    "rescue",
+    "recompute",
+    "source_substitution",
+    "candidate_replacement",
+    "history_extension",
+    "result_informed_pruning"
+  ],
+  "production_authorized": false,
+  "research_id": "BRRK-CRYPTO-CROSS-SECTIONAL-FACTOR-ATLAS-0075",
+  "schema_version": 1,
+  "scientific_engine_calls": {
+    "budget": 1,
+    "consumed": 0
+  },
+  "scientific_source_network_fetches": {
+    "budget": 0,
+    "consumed": 0
+  },
+  "scientific_values_exposed": false,
+  "signature_authorized": false,
+  "stage5_parent_merge": "c03dba8a89de81869a8dcb8024f95538f2f9af3f",
+  "stage6_evidence": {
+    "artifact_id": "9495175701",
+    "artifact_name": "0075-stage6-authorized-payloads-v1",
+    "authorized_object_manifest_sha256": "2f70384dd84a601b69528ef3d770e0fa9c714b3e0888bec009e93b5067ecebf8",
+    "authorized_payload_objects": 53541,
+    "candidate_symbol_count": 652,
+    "scientific_values_exposed": false,
+    "symbol_universe_sha256": "85337b0681d4e61fc60eef62f4f05b2ea6e43f7da9e7648b4d94032794f95dbd"
+  },
+  "stage6_lifecycle_credit_claimed": false,
+  "stage8_required_order": [
+    "FRESH_IDENTITY_ONLY_ZERO_RESULT_PREFLIGHT_PASS",
+    "CONTEMPORANEOUS_USER_AUTHORIZATION_RECORDED",
+    "CREATE_DURABLE_RUN_ATTEMPT_MARKER",
+    "VERIFY_RUN_ATTEMPT_MARKER_REMOTELY",
+    "CONSUME_ATTEMPT_1_OF_1",
+    "READ_EACH_AUTHORIZED_STAGED_OBJECT_AT_MOST_ONCE",
+    "INVOKE_SCIENTIFIC_ENGINE_EXACTLY_ONCE",
+    "PERSIST_RESULT_BUNDLE_CREATE_ONLY",
+    "MARKER_ONLY_FINALIZATION_WITH_ZERO_SCIENTIFIC_REREAD",
+    "CREATE_DURABLE_RUN_ONCE_MARKER"
+  ]
+}
