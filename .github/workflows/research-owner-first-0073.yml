@@ -1,4 +1,4 @@
-name: 0073 guarded OWNER-FIRST registry writer
+name: 0073 and 0084 guarded OWNER-FIRST registry writer
 
 on:
   pull_request:
@@ -120,4 +120,143 @@ jobs:
           git rm "$REQUEST"
           test "$(git diff --cached --name-only | sort)" = "$(printf '%s\n' 'config/research_registry.json' 'docs/CURRENT_STATE.md' "$REQUEST" | sort)"
           git commit -m 'governance(0073): register delta-neutral carry OWNER-FIRST'
+          git push origin HEAD:${{ github.event.pull_request.head.ref }}
+
+  owner-first-registry-writer-0084:
+    name: Guarded 0084 OWNER-FIRST registry writer
+    if: >-
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      github.head_ref == 'research/0084-stage1-owner-first-v1'
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
+      - name: Apply prospective 0084 OWNER-FIRST request if present
+        shell: bash
+        run: |
+          set -euo pipefail
+          REQUEST='research/governance/owner_first_requests/0084.json'
+          if [[ ! -f "$REQUEST" ]]; then
+            echo 'No 0084 OWNER-FIRST request present; no mutation.'
+            exit 0
+          fi
+
+          python - <<'PY'
+          import copy
+          import json
+          from pathlib import Path
+
+          request_path = Path('research/governance/owner_first_requests/0084.json')
+          request = json.loads(request_path.read_text(encoding='utf-8'))
+          assert request['schema_version'] == 1
+          assert request['target_branch'] == 'research/0084-stage1-owner-first-v1'
+          assert request['new_research_id'] == 'BRRK-CRYPTO-CROSS-SECTIONAL-FACTOR-ATLAS-REPLACEMENT-0084'
+          assert request['template_research_id'] == 'BRRK-CRYPTO-CROSS-SECTIONAL-FACTOR-ATLAS-0075'
+          assert request['governance_resolution_merge'] == 'f50618f233aef5e8e9872695ab87b67ab294a3a4'
+          assert request['controlled_reads'] == 0
+          assert request['attempt_consumed'] == 0
+          assert request['scientific_engine_calls'] == 0
+          assert request['stage8_scientific_source_network_fetches'] == 0
+          assert request['production_authorized'] is False
+
+          registry_path = Path('config/research_registry.json')
+          raw = registry_path.read_text(encoding='utf-8')
+          data = json.loads(raw)
+          old_id = request['template_research_id']
+          new_id = request['new_research_id']
+          assert not any(row.get('research_id') == new_id for row in data['records'])
+          source = next(row for row in data['records'] if row.get('research_id') == old_id)
+          new = copy.deepcopy(source)
+
+          new['research_id'] = new_id
+          new['created_at'] = request['created_at']
+          new['created_before_result'] = True
+          new['hypothesis_origin'] = request['hypothesis_origin']
+          new['actual_variants_evaluated'] = 0
+          new['result_status'] = 'PREREGISTERED_NOT_RUN'
+          new['failure_reason'] = None
+          new['promotion_state'] = 'NONE'
+          new['evidence_refs'] = []
+          new['production_authorized'] = False
+          new['provenance_status'] = 'PROSPECTIVE_FROZEN'
+          new['governed_path_prefixes'] = [request['governed_path_prefix']]
+          new['lineage_edges'] = [{
+              'relation': 'MEASUREMENT_FIX',
+              'ref_research_id': old_id,
+              'provenance_status': 'FACT',
+              'evidence_ref': request['governance_resolution_path'],
+          }]
+          new['decision_refs'] = [
+              request['governance_resolution_path'],
+              'research/governance/CRYPTO_MULTI_STRATEGY_RESEARCH_PROGRAM_0071_0082.md',
+              'docs/CURRENT_STATE.md',
+          ]
+          rpc = new.get('research_process_complexity')
+          if isinstance(rpc, dict):
+              if 'actual_parameter_candidates_evaluated' in rpc:
+                  rpc['actual_parameter_candidates_evaluated'] = 0
+              if 'validation_exposure_event_refs' in rpc:
+                  rpc['validation_exposure_event_refs'] = []
+          new['researcher_decisions'] = request['researcher_decisions']
+          new['notes'] = request['notes']
+
+          assert new['research_family_id'] == source['research_family_id'] == 'CRYPTO_CROSS_SECTIONAL_FACTORS'
+          assert new['research_domain'] == source['research_domain'] == 'RELATIVE_VALUE'
+          assert new['objective_type'] == source['objective_type'] == 'MECHANISM_TEST'
+          assert new['declared_variant_budget'] == source['declared_variant_budget'] == 64
+          assert new['parameter_candidate_count'] == source['parameter_candidate_count']
+          assert new['feature_families'] == source['feature_families']
+          assert new['universe'] == source['universe']
+          assert new['question'] == source['question']
+          assert new['hypothesis'] == source['hypothesis']
+          assert new['economic_mechanism'] == source['economic_mechanism']
+          assert new['primary_target'] == source['primary_target']
+          assert new['primary_metric'] == source['primary_metric']
+          assert new['secondary_metrics'] == source['secondary_metrics']
+          assert new['horizon'] == source['horizon']
+          assert new['stopping_rule'] == source['stopping_rule']
+          assert new['success_criteria'] == source['success_criteria']
+          assert new['failure_criteria'] == source['failure_criteria']
+          assert new['allowed_followup'] == source['allowed_followup']
+          assert new['forbidden_followup'] == source['forbidden_followup']
+
+          marker = '\n  ],\n  "research_governance_debt": ['
+          pos = raw.rfind(marker)
+          assert pos > 0, 'registry records/debt boundary not found'
+          rendered = json.dumps(new, indent=2, ensure_ascii=False)
+          rendered = '\n'.join('    ' + line for line in rendered.splitlines())
+          updated = raw[:pos] + ',\n' + rendered + raw[pos:]
+          parsed = json.loads(updated)
+          assert len(parsed['records']) == len(data['records']) + 1
+          assert parsed['records'][-1]['research_id'] == new_id
+          assert parsed['research_governance_debt'] == data['research_governance_debt']
+          registry_path.write_text(updated, encoding='utf-8')
+
+          state_path = Path('docs/CURRENT_STATE.md')
+          state = state_path.read_text(encoding='utf-8')
+          immutable = 'workflow run                         31381953131 / attempt 1'
+          assert state.count(immutable) == 1
+          replacements = request['current_state_replacements']
+          assert 1 <= len(replacements) <= 4
+          for old, replacement in replacements:
+              assert '0084' in old or '0084' in replacement
+              assert old in state, f'missing CURRENT_STATE anchor: {old}'
+              state = state.replace(old, replacement, 1)
+          assert state.count(immutable) == 1
+          state_path.write_text(state, encoding='utf-8')
+          PY
+
+          python -m research.governance.validate
+          python -m research.governance.no_drift
+          git diff --check
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add config/research_registry.json docs/CURRENT_STATE.md
+          git rm "$REQUEST"
+          test "$(git diff --cached --name-only | sort)" = "$(printf '%s\n' 'config/research_registry.json' 'docs/CURRENT_STATE.md' "$REQUEST" | sort)"
+          git commit -m 'governance(0084): register replacement OWNER-FIRST'
           git push origin HEAD:${{ github.event.pull_request.head.ref }}
