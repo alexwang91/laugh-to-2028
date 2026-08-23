@@ -28,7 +28,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          python research/brrk_crypto_cross_sectional_factor_atlas_0075/stage6_manifest_stager.py stage
+          python research/brrk_crypto_cross_sectional_factor_atlas_0075/stage6_unicode_url_patch.py
       - name: Upload durable staged payload artifact
         id: upload
         uses: actions/upload-artifact@v4
