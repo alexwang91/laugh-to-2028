@@ -1,0 +1,22 @@
+{
+  "artifact_id": "9495175701",
+  "artifact_name": "0075-stage6-authorized-payloads-v1",
+  "artifact_retention_days": 90,
+  "artifact_url": "https://github.com/alexwang91/laugh-to-2028/actions/runs/32646565505/artifacts/9495175701",
+  "attempt": "0/1",
+  "authorized_payload_objects": 53541,
+  "candidate_symbol_count": 652,
+  "controlled_scientific_history_reads": 0,
+  "hash_verified_objects": 53541,
+  "manifest_sha256": "2f70384dd84a601b69528ef3d770e0fa9c714b3e0888bec009e93b5067ecebf8",
+  "note": "Stage6 enumerated official object-key identities, fetched paired checksum metadata and opaque authorized ZIP bytes, verified SHA-256 and ZIP structural readability, and never parsed or emitted historical scientific rows.",
+  "offline_zip_readability_passed_objects": 53541,
+  "research_id": "BRRK-CRYPTO-CROSS-SECTIONAL-FACTOR-ATLAS-0075",
+  "schema_version": 1,
+  "scientific_engine_calls": 0,
+  "scientific_values_exposed": false,
+  "stage": 6,
+  "stage8_scientific_source_network_fetches": 0,
+  "status": "STAGING_COMPLETE_ZERO_SCIENTIFIC_VALUE_EXPOSURE",
+  "symbol_universe_sha256": "85337b0681d4e61fc60eef62f4f05b2ea6e43f7da9e7648b4d94032794f95dbd"
+}
