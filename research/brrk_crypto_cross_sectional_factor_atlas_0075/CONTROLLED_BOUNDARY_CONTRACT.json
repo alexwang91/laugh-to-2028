@@ -1,0 +1,97 @@
+{
+  "schema_version": 1,
+  "research_id": "BRRK-CRYPTO-CROSS-SECTIONAL-FACTOR-ATLAS-0075",
+  "lifecycle_stage": "STAGE6_CONTROLLED_EXECUTION_BOUNDARY_IN_PROGRESS",
+  "stage5_parent_merge": "c03dba8a89de81869a8dcb8024f95538f2f9af3f",
+  "formal_completion_before_stage6_merge": "5/10",
+  "controlled_attempt": {
+    "budget": 1,
+    "consumed": 0,
+    "marker_before_first_controlled_read_required": true,
+    "durable_remote_verification_required": true
+  },
+  "controlled_scientific_history_reads": 0,
+  "scientific_engine_calls": {
+    "budget": 1,
+    "consumed": 0
+  },
+  "scientific_source_network_fetches": {
+    "budget": 0,
+    "consumed": 0
+  },
+  "frozen_source_boundary": {
+    "host": "data.binance.vision",
+    "candidate_month_start": "2021-01",
+    "candidate_month_end": "2026-07",
+    "families": [
+      "SPOT_MONTHLY_1D_KLINES_FOR_ELIGIBLE_USDT_SYMBOLS",
+      "USD_M_MONTHLY_1D_PERPETUAL_KLINES_FOR_MATCHING_SYMBOLS",
+      "USD_M_MONTHLY_FUNDING_RATE_FOR_MATCHING_SYMBOLS"
+    ],
+    "network_or_economic_state_family_allowed": false,
+    "open_interest_family_allowed": false,
+    "alternate_venue_allowed": false,
+    "alternate_endpoint_allowed": false,
+    "history_extension_allowed": false,
+    "source_substitution_allowed": false
+  },
+  "authorized_object_manifest_required_fields": [
+    "canonical_object_id",
+    "source_family",
+    "symbol",
+    "month",
+    "archive_path",
+    "paired_checksum_path",
+    "paired_checksum_identity",
+    "payload_sha256",
+    "frozen_object_role",
+    "scientific_content_read_budget"
+  ],
+  "manifest_completion_rules": {
+    "exact_object_enumeration_required": true,
+    "paired_checksum_identity_required": true,
+    "payload_sha256_required": true,
+    "scientific_content_read_budget_per_object": 1,
+    "missing_object": "FAIL_CLOSED",
+    "extra_object": "FAIL_CLOSED",
+    "duplicate_object": "FAIL_CLOSED",
+    "hash_mismatch": "FAIL_CLOSED",
+    "manifest_not_yet_complete": true
+  },
+  "offline_staging_rules": {
+    "durable_staging_required_before_stage7_pass": true,
+    "offline_readability_required_before_stage7_pass": true,
+    "identity_and_metadata_validation_only_before_stage8": true,
+    "scientific_payload_values_may_be_opened_during_stage6": false,
+    "scientific_payload_values_may_be_opened_during_stage7": false,
+    "staging_evidence_not_yet_complete": true
+  },
+  "stage8_required_order": [
+    "FRESH_IDENTITY_ONLY_ZERO_RESULT_PREFLIGHT_PASS",
+    "CONTEMPORANEOUS_USER_AUTHORIZATION_RECORDED",
+    "CREATE_DURABLE_RUN_ATTEMPT_MARKER",
+    "VERIFY_RUN_ATTEMPT_MARKER_REMOTELY",
+    "CONSUME_ATTEMPT_1_OF_1",
+    "READ_EACH_AUTHORIZED_STAGED_OBJECT_AT_MOST_ONCE",
+    "INVOKE_SCIENTIFIC_ENGINE_EXACTLY_ONCE",
+    "PERSIST_RESULT_BUNDLE_CREATE_ONLY",
+    "MARKER_ONLY_FINALIZATION_WITH_ZERO_SCIENTIFIC_REREAD",
+    "CREATE_DURABLE_RUN_ONCE_MARKER"
+  ],
+  "post_attempt_marker_prohibitions": [
+    "rerun",
+    "retune",
+    "rescue",
+    "recompute",
+    "source_substitution",
+    "candidate_replacement",
+    "history_extension",
+    "result_informed_pruning"
+  ],
+  "scientific_values_exposed": false,
+  "frozen_science_changed": false,
+  "production_authorized": false,
+  "signature_authorized": false,
+  "order_submission_authorized": false,
+  "stage6_lifecycle_credit_claimed": false
+}
