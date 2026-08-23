@@ -1,0 +1,57 @@
+name: 0075 Stage6 manifest and byte staging
+
+on:
+  pull_request:
+    branches:
+      - main
+    types: [synchronize, reopened]
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: 0075-stage6-manifest-staging
+  cancel-in-progress: false
+
+jobs:
+  stage:
+    if: github.head_ref == 'research/0075-stage6-controlled-execution-boundary-v1' && github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/0075-stage6-controlled-execution-boundary-v1
+          fetch-depth: 0
+      - name: Enumerate identities and stage opaque bytes
+        shell: bash
+        run: |
+          set -euo pipefail
+          python research/brrk_crypto_cross_sectional_factor_atlas_0075/stage6_manifest_stager.py stage
+      - name: Upload durable staged payload artifact
+        id: upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: 0075-stage6-authorized-payloads-v1
+          path: stage/
+          if-no-files-found: error
+          retention-days: 90
+          compression-level: 0
+      - name: Persist create-only Stage6 evidence
+        shell: bash
+        env:
+          ARTIFACT_ID: ${{ steps.upload.outputs.artifact-id }}
+          ARTIFACT_URL: ${{ steps.upload.outputs.artifact-url }}
+        run: |
+          set -euo pipefail
+          python research/brrk_crypto_cross_sectional_factor_atlas_0075/stage6_manifest_stager.py finalize
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add \
+            research/brrk_crypto_cross_sectional_factor_atlas_0075/AUTHORIZED_OBJECT_MANIFEST.json \
+            research/brrk_crypto_cross_sectional_factor_atlas_0075/STAGE6_SYMBOL_UNIVERSE.json \
+            research/brrk_crypto_cross_sectional_factor_atlas_0075/STAGE6_STAGING_EVIDENCE.json \
+            research/brrk_crypto_cross_sectional_factor_atlas_0075/CONTROLLED_BOUNDARY_CONTRACT.json
+          git commit -m 'research(0075): persist Stage6 manifest and opaque staging evidence'
+          git push origin HEAD:research/0075-stage6-controlled-execution-boundary-v1
