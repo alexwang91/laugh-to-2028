@@ -88,9 +88,8 @@ class Test0084Stage6ControlledBoundary(unittest.TestCase):
         self.assertTrue(self.contract["stage6_scientific_payload_values_forbidden"])
         self.assertTrue(self.contract["stage7_scientific_payload_values_forbidden"])
 
-    def test_runtime_and_result_artifacts_absent(self) -> None:
+    def test_result_artifacts_absent_before_stage8_execution(self) -> None:
         forbidden = (
-            "RUN_ATTEMPT.marker",
             "PRIMARY_RESULT.json",
             "EVIDENCE.json",
             "EXECUTION.json",
