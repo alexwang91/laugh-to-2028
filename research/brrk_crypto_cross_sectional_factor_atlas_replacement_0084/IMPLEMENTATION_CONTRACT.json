@@ -1,0 +1,66 @@
+{
+  "research_id": "BRRK-CRYPTO-CROSS-SECTIONAL-FACTOR-ATLAS-REPLACEMENT-0084",
+  "lifecycle_stage": "4/10 IMPLEMENTATION",
+  "stage3_merge": "046e34b020a4f628967fb942947b06ca30c7289c",
+  "controlled_attempt": "0/1",
+  "controlled_history_reads": 0,
+  "scientific_engine_calls": 0,
+  "scientific_source_network_fetches": 0,
+  "history_scope": "NO_CONTROLLED_HISTORY_AT_STAGE4",
+  "source_families": [
+    "BINANCE_SPOT_MONTHLY_DAILY_KLINES",
+    "BINANCE_USDM_MONTHLY_DAILY_PERPETUAL_KLINES",
+    "BINANCE_USDM_MONTHLY_FUNDING_RATE"
+  ],
+  "candidate_source_months": ["2021-01", "2026-07"],
+  "chronology": {
+    "decision_information_cutoff": "t-1 close",
+    "position_and_forward_return_start": "close t",
+    "rebalance": "daily",
+    "forward_horizons_sessions": [5, 20],
+    "tail_policy": "exclude_unmatured"
+  },
+  "declared_trials": 64,
+  "bootstrap": {
+    "type": "MOVING_BLOCK",
+    "block_length_rebalance_dates": 20,
+    "replicates": 4000,
+    "seed": 750075,
+    "resampling_unit": "date_with_full_cross_section"
+  },
+  "multiplicity": {
+    "method": "HOLM",
+    "family_wise_alpha": 0.05,
+    "families": {"PRICE": 24, "RISK": 20, "MARKET_STRUCTURE": 20, "NETWORK": 0}
+  },
+  "qualification_gates": ["G0","G1","G2","G3","G4","G5","G6","G7","G8","G9","G10","G11"],
+  "terminal_classifications": ["PASS","FAIL_NO_QUALIFIED_FACTOR","INCONCLUSIVE_INSUFFICIENT_SUPPORT","INVALID_EXECUTION"],
+  "complete_stage4_interface_required": [
+    "deterministic_staged_payload_parser",
+    "per_object_read_accounting",
+    "all_16_frozen_factor_calculations",
+    "exact_64_trial_orchestration",
+    "rank_ic_q5_q1_monotonicity_statistics",
+    "moving_block_bootstrap_20_4000_seed_750075",
+    "holm_family_inference",
+    "calendar_trend_volatility_liquidity_size_robustness",
+    "g0_g11_evaluation",
+    "exact_execution_counters",
+    "create_only_result_persistence"
+  ],
+  "stage4_allowed_inputs": ["synthetic_fixtures", "merged_stage3_preregistration"],
+  "stage4_forbidden_inputs": ["controlled_historical_payloads", "source_network_fetches", "observed_factor_results"],
+  "stage8_execution_contract": {
+    "attempts": 1,
+    "marker_before_read": true,
+    "maximum_reads_per_authorized_object": 1,
+    "scientific_engine_calls": 1,
+    "scientific_source_network_fetches": 0,
+    "result_persistence": "create_only",
+    "run_once_marker_last": true,
+    "same_id_rerun_retune_rescue_source_substitution_candidate_replacement_history_extension_recompute": false
+  },
+  "production_authorized": false,
+  "signature_authorized": false,
+  "order_submission_authorized": false
+}
