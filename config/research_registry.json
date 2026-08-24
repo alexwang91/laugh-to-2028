@@ -5905,7 +5905,9 @@
         "cost_break_even",
         "stressed_borrow_unavailable_scenario"
       ],
-      "feature_families": [],
+      "feature_families": [
+        "CROSS_SECTIONAL_LONG_SHORT_PORTFOLIO_CONSTRUCTION"
+      ],
       "horizon": [
         "TO_BE_FROZEN_PROSPECTIVELY_IN_DESIGN_AND_PREREGISTRATION_BEFORE_CONTROLLED_HISTORY"
       ],
@@ -5942,14 +5944,7 @@
         "validation_exposure_event_refs": [],
         "related_family_trials": 1
       },
-      "lineage_edges": [
-        {
-          "relation": "GOVERNANCE_SUCCESSOR",
-          "ref_research_id": "BRRK-CRYPTO-CROSS-SECTIONAL-FACTOR-ATLAS-REPLACEMENT-0084",
-          "provenance_status": "FACT",
-          "evidence_ref": "research/governance/CRYPTO_MULTI_STRATEGY_0084_INVALID_CLOSEOUT_0076_ROUTING_RESOLUTION.md"
-        }
-      ],
+      "lineage_edges": [],
       "result_status": "PREREGISTERED_NOT_RUN",
       "failure_reason": null,
       "promotion_state": "NONE",
