@@ -1,0 +1,106 @@
+name: 0076 guarded OWNER-FIRST bootstrap
+
+on:
+  push:
+    branches:
+      - research/0076-stage1-owner-first-v1
+
+permissions:
+  contents: write
+
+jobs:
+  owner-first-registry-writer-0076:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/0076-stage1-owner-first-v1
+          fetch-depth: 0
+
+      - name: Apply prospective 0076 OWNER-FIRST request and self-delete
+        shell: bash
+        run: |
+          set -euo pipefail
+          REQUEST='research/governance/owner_first_requests/0076.json'
+          WORKFLOW='.github/workflows/0076-owner-first-bootstrap.yml'
+          test -f "$REQUEST"
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          request_path = Path('research/governance/owner_first_requests/0076.json')
+          request = json.loads(request_path.read_text(encoding='utf-8'))
+          assert request['schema_version'] == 1
+          assert request['target_branch'] == 'research/0076-stage1-owner-first-v1'
+          assert request['new_research_id'] == 'BRRK-CRYPTO-CROSS-SECTIONAL-LS-0076'
+          assert request['roadmap_merge'] == '169d9adf6531dc099a43541df413fef079322adf'
+          assert request['routing_resolution_merge'] == '5d773d9546e32b784381093ce5324001f7282e29'
+          assert request['upstream_0084_closeout_merge'] == '4304456742c5bccea10433457e10fa3bb0e0af1e'
+          assert request['inherited_validated_factor_count'] == 0
+          assert request['controlled_reads'] == 0
+          assert request['attempt_consumed'] == 0
+          assert request['scientific_engine_calls'] == 0
+          assert request['scientific_source_network_fetches'] == 0
+          assert request['production_authorized'] is False
+
+          record = request['record']
+          assert record['research_id'] == request['new_research_id']
+          assert record['research_family_id'] == 'CRYPTO_CROSS_SECTIONAL_LONG_SHORT'
+          assert record['research_domain'] == 'RELATIVE_VALUE'
+          assert record['objective_type'] == 'PORTFOLIO_INTEGRATION'
+          assert record['created_before_result'] is True
+          assert record['declared_variant_budget'] == 1
+          assert record['actual_variants_evaluated'] == 0
+          assert record['parameter_candidate_count'] == 1
+          assert record['feature_families'] == []
+          assert record['result_status'] == 'PREREGISTERED_NOT_RUN'
+          assert record['promotion_state'] == 'NONE'
+          assert record['failure_reason'] is None
+          assert record['production_authorized'] is False
+          assert record['provenance_status'] == 'PROSPECTIVE_FROZEN'
+          assert record['governed_path_prefixes'] == ['research/brrk_crypto_cross_sectional_ls_0076']
+          assert record['lineage_edges'][0]['ref_research_id'] == 'BRRK-CRYPTO-CROSS-SECTIONAL-FACTOR-ATLAS-REPLACEMENT-0084'
+          assert 'ZERO_INHERITED_VALIDATED_FACTORS' in record['hypothesis_origin']
+          assert 'INCONCLUSIVE_INSUFFICIENT_SUPPORT' in record['stopping_rule']
+
+          registry_path = Path('config/research_registry.json')
+          raw = registry_path.read_text(encoding='utf-8')
+          data = json.loads(raw)
+          new_id = request['new_research_id']
+          assert not any(row.get('research_id') == new_id for row in data['records'])
+          marker = '\n  ],\n  "research_governance_debt": ['
+          pos = raw.rfind(marker)
+          assert pos > 0, 'registry records/debt boundary not found'
+          rendered = json.dumps(record, indent=2, ensure_ascii=False)
+          rendered = '\n'.join('    ' + line for line in rendered.splitlines())
+          updated = raw[:pos] + ',\n' + rendered + raw[pos:]
+          parsed = json.loads(updated)
+          assert len(parsed['records']) == len(data['records']) + 1
+          assert parsed['records'][-1]['research_id'] == new_id
+          assert parsed['research_governance_debt'] == data['research_governance_debt']
+          registry_path.write_text(updated, encoding='utf-8')
+
+          state_path = Path('docs/CURRENT_STATE.md')
+          state = state_path.read_text(encoding='utf-8')
+          immutable = 'workflow run                         31381953131 / attempt 1'
+          assert state.count(immutable) == 1, 'immutable workflow anchor missing/duplicated'
+          assert 'CAPTURE-0001' in state and 'CAPTURE-0002' in state, 'capture anchors missing'
+          replacements = request['current_state_replacements']
+          assert 1 <= len(replacements) <= 4
+          for old, replacement in replacements:
+              assert '0076' in old or '0076' in replacement
+              assert state.count(old) == 1, f'CURRENT_STATE anchor missing/duplicated: {old}'
+              state = state.replace(old, replacement, 1)
+          assert state.count(immutable) == 1
+          state_path.write_text(state, encoding='utf-8')
+          PY
+
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add config/research_registry.json docs/CURRENT_STATE.md
+          git rm "$REQUEST" "$WORKFLOW"
+          test "$(git diff --cached --name-only | sort)" = "$(printf '%s\n' 'config/research_registry.json' 'docs/CURRENT_STATE.md' "$REQUEST" "$WORKFLOW" | sort)"
+          git diff --cached --check
+          git commit -m 'governance(0076): register cross-sectional LS OWNER-FIRST'
+          git push origin HEAD:research/0076-stage1-owner-first-v1
