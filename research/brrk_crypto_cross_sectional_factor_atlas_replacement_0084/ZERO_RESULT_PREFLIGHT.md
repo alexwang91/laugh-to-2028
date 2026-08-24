@@ -35,3 +35,7 @@ If PASS is earned, the only remaining action before the frozen controlled execut
 ## Earned evidence
 
 One-shot workflow `32701067890` downloaded artifact `9495175701` exactly once for Stage7 availability/readability validation. Outer SHA-256 matched `8040282ff412b2d3fd360173e4745ebfd048796eb9e9c2ad49fa0901e5cedf56`; 53,541/53,541 staged payload ZIPs matched their paired official checksums; 53,541/53,541 nested ZIP central directories were structurally readable; nested scientific CSV member content reads remained 0. Attempt/read/engine/scientific-source-network budgets remain 0.
+
+## Exact-head CI handoff
+
+Connector-authored metadata-only synchronization after the generated PASS evidence commit. This changes no scientific identity, budget, result, source, marker, or frozen rule; it exists only to trigger standing CI on the final Stage7 head after GitHub self-trigger protection left the generated evidence head at `action_required`.
