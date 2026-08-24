@@ -43,6 +43,11 @@ jobs:
               blob=base64.b64decode(m.group(1), validate=True)
               assert blob[:2]==b'\x1f\x8b', key
               payload=zlib.decompress(blob[10:-8], -zlib.MAX_WBITS)
+              if key=='SMOKE_B64':
+                  bad=b'datetime(20T6,1,1,tzinfo=timezone.utc)'
+                  good=b'datetime(2026,1,1,tzinfo=timezone.utc)'
+                  assert payload.count(bad)==1
+                  payload=payload.replace(bad,good)
               (out/name).write_bytes(payload)
           PY
 
