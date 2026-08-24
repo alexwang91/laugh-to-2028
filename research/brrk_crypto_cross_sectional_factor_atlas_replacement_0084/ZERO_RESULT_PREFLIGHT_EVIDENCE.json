@@ -1,0 +1,61 @@
+{
+  "artifact": {
+    "digest": "sha256:8040282ff412b2d3fd360173e4745ebfd048796eb9e9c2ad49fa0901e5cedf56",
+    "expired": false,
+    "expires_at": "2026-11-21T14:48:32Z",
+    "id": 9495175701,
+    "name": "0075-stage6-authorized-payloads-v1",
+    "outer_entry_count": 107084,
+    "outer_zip_crc_pass": true,
+    "size_in_bytes": 174445627,
+    "stage7_artifact_downloads": 1,
+    "workflow_run_id": 32646565505
+  },
+  "authority": {
+    "order_submission_authorized": false,
+    "production_authorized": false,
+    "signature_authorized": false
+  },
+  "budgets": {
+    "controlled_attempt_consumed": 0,
+    "controlled_scientific_history_reads": 0,
+    "scientific_engine_calls": 0,
+    "scientific_values_exposed": false,
+    "stage8_scientific_source_network_fetches": 0
+  },
+  "classification": "PREFLIGHT_PASS_ZERO_RESULT",
+  "execution_readiness": {
+    "durable_attempt_marker_is_only_remaining_execution_gate": true,
+    "evidence_result_absent": true,
+    "execution_result_absent": true,
+    "primary_result_absent": true,
+    "run_attempt_marker_absent": true,
+    "run_once_marker_absent": true,
+    "stage5_synthetic_qualification_pass": true,
+    "stage6_identity_boundary_pass": true
+  },
+  "identity_checks": {
+    "checksum_count": 53541,
+    "manifest_sha256": "2f70384dd84a601b69528ef3d770e0fa9c714b3e0888bec009e93b5067ecebf8",
+    "nested_member_content_reads": 0,
+    "nested_zip_structural_readability_passed": 53541,
+    "payload_sha256_matches_checksum": 53541,
+    "payload_zip_count": 53541,
+    "symbol_universe_sha256": "85337b0681d4e61fc60eef62f4f05b2ea6e43f7da9e7648b4d94032794f95dbd",
+    "unique_one_to_one_payload_checksum_names": true
+  },
+  "notes": [
+    "Stage7 inspected artifact metadata, opaque staged ZIP bytes, paired checksum text, and ZIP central-directory structure only.",
+    "No nested CSV member content was opened or parsed; no factor/return/statistic/result was computed.",
+    "The GitHub staging-artifact download is not a scientific source-network fetch and does not consume the Stage8 attempt.",
+    "0084 still requires fresh exact-scope contemporaneous user authorization before Stage8 marker creation."
+  ],
+  "pr_number": 389,
+  "preflight_branch_head_before_generated_evidence": "9a142257fa54b9d506ca9195cc8306b0e6fbdc8e",
+  "research_id": "BRRK-CRYPTO-CROSS-SECTIONAL-FACTOR-ATLAS-REPLACEMENT-0084",
+  "schema_version": 1,
+  "stage": 7,
+  "stage6_merge": "3e22ee336f82e14a8eea63d1d9afb07085699d07",
+  "workflow_run_attempt": 1,
+  "workflow_run_id": 32701067890
+}
