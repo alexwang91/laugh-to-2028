@@ -5932,7 +5932,8 @@
         "Keep the total selectable route/candidate ceiling at one to prevent result-informed route search.",
         "Stage2 selected exactly one independently justified baseline route: CROSS_SECTIONAL_MOMENTUM_SINGLE_BASELINE; the insufficient-support route and all alternate factor families are unavailable under this ID.",
         "Stage3 freezes one MOM60 parameterization, Monday-close weekly rebalance, deterministic beta-neutral projection, Binance USD-M perpetual source/cache contract, C0/C1/C2 costs, dependence-aware inference and G0-G11 terminal gates before controlled history.",
-        "Use no 0075/0084 scientific result and perform no candidate/window/sign search; source-cache reuse transfers bytes/identities only."
+        "Use no 0075/0084 scientific result and perform no candidate/window/sign search; source-cache reuse transfers bytes/identities only.",
+        "Stage4 implements one complete frozen payload-bytes-to-terminal-result scientific entrypoint; Stage8 requires no new scientific adapter/harness, subject to Stage5 synthetic qualification."
       ],
       "research_process_complexity": {
         "declared_parameter_candidates": 1,
@@ -5956,7 +5957,10 @@
         "research/governance/CRYPTO_MULTI_STRATEGY_RESEARCH_PROGRAM_0071_0082.md",
         "research/governance/CRYPTO_MULTI_STRATEGY_0084_INVALID_CLOSEOUT_0076_ROUTING_RESOLUTION.md",
         "docs/CURRENT_STATE.md",
-        "research/brrk_crypto_cross_sectional_ls_0076/PREREGISTRATION.md"
+        "research/brrk_crypto_cross_sectional_ls_0076/PREREGISTRATION.md",
+        "research/brrk_crypto_cross_sectional_ls_0076/IMPLEMENTATION.md",
+        "research/brrk_crypto_cross_sectional_ls_0076/IMPLEMENTATION_CONTRACT.json",
+        "research/brrk_crypto_cross_sectional_ls_0076/engine.py"
       ],
       "production_relevance": "Research-only cross-sectional long/short sleeve study. No production, signature or order authority.",
       "production_authorized": false,
