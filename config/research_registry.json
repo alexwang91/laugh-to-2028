@@ -5906,13 +5906,13 @@
         "stressed_borrow_unavailable_scenario"
       ],
       "feature_families": [
-        "CROSS_SECTIONAL_LONG_SHORT_PORTFOLIO_CONSTRUCTION"
+        "CROSS_SECTIONAL_PRICE_MOMENTUM_SINGLE_BASELINE"
       ],
       "horizon": [
-        "TO_BE_FROZEN_PROSPECTIVELY_IN_DESIGN_AND_PREREGISTRATION_BEFORE_CONTROLLED_HISTORY"
+        "MONDAY_CLOSE_TO_NEXT_MONDAY_CLOSE_DAILY_MARK_TO_MARKET"
       ],
       "universe": [
-        "POINT_IN_TIME_TRADABLE_CRYPTO_UNIVERSE_TO_BE_FROZEN_BEFORE_CONTROLLED_HISTORY"
+        "POINT_IN_TIME_BINANCE_USDM_USDT_PERPETUALS_2021_01_THROUGH_2026_07"
       ],
       "development_dataset_refs": [],
       "validation_dataset_refs": [],
@@ -5929,15 +5929,18 @@
         "Record immutable 0084 non-PASS closeout and zero inherited validated factors explicitly at OWNER-FIRST.",
         "Transfer no lifecycle credit, scientific result, factor definition, Stage8 authorization or attempt budget from 0075/0084.",
         "Bound DESIGN to exactly one of the two routes authorized by the merged prospective routing resolution and require that choice before controlled history.",
-        "Keep the total selectable route/candidate ceiling at one to prevent result-informed route search."
+        "Keep the total selectable route/candidate ceiling at one to prevent result-informed route search.",
+        "Stage2 selected exactly one independently justified baseline route: CROSS_SECTIONAL_MOMENTUM_SINGLE_BASELINE; the insufficient-support route and all alternate factor families are unavailable under this ID.",
+        "Stage3 freezes one MOM60 parameterization, Monday-close weekly rebalance, deterministic beta-neutral projection, Binance USD-M perpetual source/cache contract, C0/C1/C2 costs, dependence-aware inference and G0-G11 terminal gates before controlled history.",
+        "Use no 0075/0084 scientific result and perform no candidate/window/sign search; source-cache reuse transfers bytes/identities only."
       ],
       "research_process_complexity": {
         "declared_parameter_candidates": 1,
         "actual_parameter_candidates_evaluated": 0,
-        "universes_evaluated": 0,
-        "horizons_evaluated": 0,
-        "rebalance_variants": 0,
-        "feature_representations": 0,
+        "universes_evaluated": 1,
+        "horizons_evaluated": 1,
+        "rebalance_variants": 1,
+        "feature_representations": 1,
         "special_cases_introduced": [
           "ZERO_INHERITED_VALIDATED_FACTORS_FAIL_CLOSED"
         ],
@@ -5952,7 +5955,8 @@
       "decision_refs": [
         "research/governance/CRYPTO_MULTI_STRATEGY_RESEARCH_PROGRAM_0071_0082.md",
         "research/governance/CRYPTO_MULTI_STRATEGY_0084_INVALID_CLOSEOUT_0076_ROUTING_RESOLUTION.md",
-        "docs/CURRENT_STATE.md"
+        "docs/CURRENT_STATE.md",
+        "research/brrk_crypto_cross_sectional_ls_0076/PREREGISTRATION.md"
       ],
       "production_relevance": "Research-only cross-sectional long/short sleeve study. No production, signature or order authority.",
       "production_authorized": false,
