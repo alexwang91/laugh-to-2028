@@ -1,6 +1,6 @@
 # BRRK Current State
 
-Last updated: 2026-08-24
+Last updated: 2026-08-23
 
 Authoritative repository: `alexwang91/laugh-to-2028`.
 
@@ -46,7 +46,7 @@ State = `PASS_EVENT_EARLY_WARNING_ONLY / CLOSED TO SAME-ID RERUN`.
 
 Lifecycle anchors:
 - owner-first registry `dfd3f0a95e7245a4103637aaca1745bf3b2c8e03`;
-- DESIGN `51d734bc510aed4ff5ba7c7ed8c80ff115`;
+- DESIGN `51d734bc510aed4ff5ba7c5eb9fbac686ddc2e13`;
 - PREREGISTRATION `f9d1d95ec87ac9e86e2ed25a1340be3c725737f8`;
 - IMPLEMENTATION `bd3952a47af80ee49dd2d99e501f23631be3ba67`, qualified head `c11101d8c454d71e918bed163fbd188934910670`;
 - QUALIFICATION EVIDENCE `90e0aff461538d14cdf037bc57583ef6ac2b31ae`;
