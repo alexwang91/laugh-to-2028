@@ -90,18 +90,23 @@ def run_synthetic_qualification() -> dict[str, object]:
         0.0 <= p <= 1.0 for p in adjusted_family.values()
     )
 
+    # With a one-session lookback, decision date t requires two strictly prior
+    # closes: t-2 and t-1. The decision-date close is intentionally chosen so
+    # it would reverse the label if lookahead leaked into the calculation.
     trend = trend_partition(
         {
             date(2026, 1, 1): 100.0,
             date(2026, 1, 2): 90.0,
-            date(2026, 1, 3): 80.0,
+            date(2026, 1, 3): 95.0,
+            date(2026, 1, 4): 80.0,
         },
         lookback_sessions=1,
     )
     checks["trend_partition_strictly_lagged"] = (
         date(2026, 1, 1) not in trend
-        and trend[date(2026, 1, 2)] == "BULL"
+        and date(2026, 1, 2) not in trend
         and trend[date(2026, 1, 3)] == "BEAR"
+        and trend[date(2026, 1, 4)] == "BULL"
     )
 
     med = median_split_partition(
