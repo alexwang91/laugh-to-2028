@@ -2,7 +2,7 @@
   "schema_version": 1,
   "research_id": "BRRK-CRYPTO-CROSS-SECTIONAL-FACTOR-ATLAS-REPLACEMENT-0084",
   "stage": 6,
-  "status": "BOUNDARY_IN_PROGRESS",
+  "status": "BOUNDARY_READY_PENDING_EXACT_HEAD_CI",
   "parent_stage5_merge": "61b7e3a45c82604520ea9f76c6878a2707481fc2",
   "frozen_preregistration_blob": "aad59a753fe1d281d71a1b3c5c3727961b526d14",
   "frozen_implementation_contract_blob": "76481795ba5f73b081781f2636727d64d31e8be2",
@@ -56,14 +56,17 @@
   "stage7_scientific_payload_values_forbidden": true,
   "fail_closed_on_identity_or_staging_mismatch": true,
   "completion_requirements": {
-    "referenced_manifest_identity_reverified": false,
-    "referenced_symbol_universe_identity_reverified": false,
-    "staging_artifact_availability_reverified": false,
+    "referenced_manifest_identity_and_sha256_required_by_ci": true,
+    "referenced_symbol_universe_identity_and_sha256_required_by_ci": true,
+    "staging_evidence_zero_result_metadata_required_by_ci": true,
+    "source_staging_workflow_terminal_success_bound": true,
+    "staging_artifact_metadata_bound_with_90_day_retention": true,
+    "stage7_actual_artifact_retrieval_and_readability_recheck_required": true,
     "all_53541_payload_hashes_bound": true,
     "all_53541_offline_zip_readability_bound": true,
-    "run_attempt_marker_absent": true,
-    "run_once_marker_absent": true,
-    "result_bundle_absent": true,
-    "current_state_synchronized": false
+    "run_attempt_marker_absent_required_by_ci": true,
+    "run_once_marker_absent_required_by_ci": true,
+    "result_bundle_absent_required_by_ci": true,
+    "current_state_synchronized": true
   }
 }
