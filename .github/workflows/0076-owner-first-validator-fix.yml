@@ -1,0 +1,64 @@
+name: 0076 OWNER-FIRST validator fix
+
+on:
+  push:
+    branches:
+      - research/0076-stage1-owner-first-clean-v2
+
+permissions:
+  contents: write
+
+jobs:
+  patch-0076-owner-first-record:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/0076-stage1-owner-first-clean-v2
+          fetch-depth: 0
+
+      - name: Apply minimal validator-compatible 0076 OWNER-FIRST fix and self-delete
+        shell: bash
+        run: |
+          set -euo pipefail
+          WORKFLOW='.github/workflows/0076-owner-first-validator-fix.yml'
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          path = Path('config/research_registry.json')
+          raw = path.read_text(encoding='utf-8')
+          data = json.loads(raw)
+          rid = 'BRRK-CRYPTO-CROSS-SECTIONAL-LS-0076'
+          matches = [r for r in data['records'] if r.get('research_id') == rid]
+          assert len(matches) == 1
+          record = matches[0]
+          assert record['feature_families'] == []
+          assert record['lineage_edges'] == [{
+              'relation': 'GOVERNANCE_SUCCESSOR',
+              'ref_research_id': 'BRRK-CRYPTO-CROSS-SECTIONAL-FACTOR-ATLAS-REPLACEMENT-0084',
+              'provenance_status': 'FACT',
+              'evidence_ref': 'research/governance/CRYPTO_MULTI_STRATEGY_0084_INVALID_CLOSEOUT_0076_ROUTING_RESOLUTION.md',
+          }]
+
+          record['feature_families'] = ['CROSS_SECTIONAL_LONG_SHORT_PORTFOLIO_CONSTRUCTION']
+          record['lineage_edges'] = []
+
+          # Preserve the complete registry structure and all unrelated records/debt.
+          path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + '\n', encoding='utf-8')
+
+          # Validate the two exact blockers are gone without reading any scientific payload.
+          assert record['feature_families'] == ['CROSS_SECTIONAL_LONG_SHORT_PORTFOLIO_CONSTRUCTION']
+          assert record['lineage_edges'] == []
+          PY
+
+          python -m research.governance.validate
+          grep -F 'workflow run                         31381953131 / attempt 1' docs/CURRENT_STATE.md >/dev/null
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add config/research_registry.json
+          git rm "$WORKFLOW"
+          git diff --cached --check
+          git commit -m 'governance(0076): satisfy OWNER-FIRST registry validator'
+          git push origin HEAD:research/0076-stage1-owner-first-clean-v2
