@@ -90,18 +90,24 @@ def run_synthetic_qualification() -> dict[str, object]:
         0.0 <= p <= 1.0 for p in adjusted_family.values()
     )
 
+    # With a one-session lookback, the lagged latest close and its one-session
+    # mean are identical, so a BEAR fixture is impossible. Use two lagged
+    # sessions and four dates to exercise both directions without changing the
+    # frozen trend semantics.
     trend = trend_partition(
         {
             date(2026, 1, 1): 100.0,
-            date(2026, 1, 2): 90.0,
-            date(2026, 1, 3): 80.0,
+            date(2026, 1, 2): 110.0,
+            date(2026, 1, 3): 90.0,
+            date(2026, 1, 4): 80.0,
         },
-        lookback_sessions=1,
+        lookback_sessions=2,
     )
     checks["trend_partition_strictly_lagged"] = (
         date(2026, 1, 1) not in trend
-        and trend[date(2026, 1, 2)] == "BULL"
-        and trend[date(2026, 1, 3)] == "BEAR"
+        and date(2026, 1, 2) not in trend
+        and trend[date(2026, 1, 3)] == "BULL"
+        and trend[date(2026, 1, 4)] == "BEAR"
     )
 
     med = median_split_partition(
