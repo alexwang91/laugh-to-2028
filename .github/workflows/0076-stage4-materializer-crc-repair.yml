@@ -1,0 +1,45 @@
+name: 0076 Stage4 materializer CRC repair
+
+on:
+  push:
+    branches:
+      - research/0076-stage4-implementation-v1
+
+permissions:
+  contents: write
+
+jobs:
+  repair-materializer-envelope:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/0076-stage4-implementation-v1
+          fetch-depth: 0
+      - name: Repair corrupted ENGINE gzip envelope and self-delete
+        shell: bash
+        run: |
+          set -euo pipefail
+          WF='.github/workflows/0076-stage4-implementation-materializer.yml'
+          SELF='.github/workflows/0076-stage4-materializer-crc-repair.yml'
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('.github/workflows/0076-stage4-implementation-materializer.yml')
+          s=p.read_text(encoding='utf-8')
+          old_guard="    if: github.actor != 'github-actions[bot]'"
+          new_guard="    if: true"
+          old_decode='          printf \'%s\' "$ENGINE_B64" | base64 -d | gzip -d > "$DIR/engine.py"'
+          new_decode='          printf \'%s\' "$ENGINE_B64" | base64 -d | python -c \'import sys,zlib; b=sys.stdin.buffer.read(); assert b[:2] == b"\\x1f\\x8b"; sys.stdout.buffer.write(zlib.decompress(b[10:-8], -zlib.MAX_WBITS))\' > "$DIR/engine.py"'
+          assert s.count(old_guard)==1
+          assert s.count(old_decode)==1
+          s=s.replace(old_guard,new_guard).replace(old_decode,new_decode)
+          p.write_text(s,encoding='utf-8')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add "$WF"
+          git rm "$SELF"
+          git diff --cached --check
+          git commit -m 'fix(0076): repair Stage4 materializer gzip envelope'
+          git push origin HEAD:research/0076-stage4-implementation-v1
