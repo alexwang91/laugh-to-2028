@@ -111,8 +111,14 @@ def family_holm(raw_p_by_trial: Mapping[TrialKey, float]) -> dict[TrialKey, floa
     return adjusted
 
 
-def trend_partition(market_close: Mapping[date, float], lookback_sessions: int = 200) -> dict[date, str]:
-    """Label BULL/BEAR using only closes strictly before each decision date."""
+def trend_partition(market_close: Mapping[date, float], lookback_sessions: int = 60) -> dict[date, str]:
+    """Label BULL/BEAR from the strictly-lagged lookback return.
+
+    For decision date t, use only closes through t-1 and compare the latest
+    admissible close with the close exactly ``lookback_sessions`` observations
+    earlier. This implements the frozen Stage3 market-trend rule and never uses
+    the decision-date close itself.
+    """
     ordered = sorted((d, float(v)) for d, v in market_close.items())
     if lookback_sessions <= 0:
         raise ValueError("lookback must be positive")
@@ -121,9 +127,10 @@ def trend_partition(market_close: Mapping[date, float], lookback_sessions: int =
     for d, close in ordered:
         if not isfinite(close) or close <= 0:
             raise ValueError("market close must be finite and positive")
-        if len(closes) >= lookback_sessions:
-            reference = sum(closes[-lookback_sessions:]) / lookback_sessions
-            out[d] = "BULL" if closes[-1] >= reference else "BEAR"
+        if len(closes) >= lookback_sessions + 1:
+            start = closes[-(lookback_sessions + 1)]
+            end = closes[-1]
+            out[d] = "BULL" if end / start - 1.0 >= 0.0 else "BEAR"
         closes.append(close)
     return out
 
