@@ -5873,6 +5873,103 @@
         "0075 remains permanently blocked at 7/10 with attempt 0/1 unconsumed, reads 0, scientific engine 0/1, network 0, no marker and no scientific result.",
         "0084 begins with zero controlled reads, zero scientific-engine calls, zero source-network fetches, attempt 0/1, and zero production/signature/order authority."
       ]
+    },
+    {
+      "research_id": "BRRK-CRYPTO-CROSS-SECTIONAL-LS-0076",
+      "research_family_id": "CRYPTO_CROSS_SECTIONAL_LONG_SHORT",
+      "research_domain": "RELATIVE_VALUE",
+      "research_governance_version": 1,
+      "governance_mode": "PROGRAM_GOVERNED_V1",
+      "objective_type": "PORTFOLIO_INTEGRATION",
+      "created_at": "2026-08-24",
+      "created_before_result": true,
+      "question": "Can a prospectively governed crypto cross-sectional long/short sleeve establish valid relative-value economics when the immutable upstream validated-factor set is empty, while failing closed rather than manufacturing replacement factor evidence?",
+      "hypothesis": "A valid 0076 lifecycle can preserve the original cross-sectional long/short economic purpose without inheriting nonexistent 0075/0084 factor evidence by prospectively freezing exactly one allowed route before controlled history: either insufficient-support fail-closed treatment or one separately justified baseline family with no claimed upstream factor inheritance.",
+      "hypothesis_origin": "PROSPECTIVE_AFTER_IMMUTABLE_0084_INVALID_EXECUTION_CLOSEOUT_AND_MERGED_0076_ROUTING_RESOLUTION; ZERO_INHERITED_VALIDATED_FACTORS; NO_0075_OR_0084_SCIENTIFIC_RESULT_USED; NO_0076_CONTROLLED_HISTORY_EXPOSURE.",
+      "economic_mechanism": "Cross-sectional relative-value portfolios may earn returns from persistent differences across assets, but 0076 may claim no inherited factor mechanism because 0075/0084 produced no admissible validated factors. Any baseline mechanism must be separately justified and frozen prospectively in DESIGN and PREREGISTRATION, otherwise the study fails closed for insufficient support.",
+      "primary_target": "AFTER_COST_CROSS_SECTIONAL_LONG_SHORT_RELATIVE_VALUE_ECONOMICS_OR_FAIL_CLOSED_INSUFFICIENT_SUPPORT",
+      "primary_metric": "PROSPECTIVELY_FROZEN_NET_LONG_SHORT_ECONOMIC_AND_ROBUSTNESS_GATES_IF_A_BASELINE_ROUTE_IS_LAWFULLY_PREREGISTERED",
+      "secondary_metrics": [
+        "gross_and_net_exposure",
+        "market_beta_residual",
+        "turnover",
+        "fees_and_slippage",
+        "borrow_availability_and_cost",
+        "capacity_and_participation_rate",
+        "factor_or_baseline_attribution",
+        "crowding_and_correlation",
+        "leave_asset_theme_year_regime_out",
+        "Deflated_Sharpe_Ratio_if_applicable",
+        "PBO_if_supported",
+        "dependence_aware_bootstrap",
+        "cost_break_even",
+        "stressed_borrow_unavailable_scenario"
+      ],
+      "feature_families": [],
+      "horizon": [
+        "TO_BE_FROZEN_PROSPECTIVELY_IN_DESIGN_AND_PREREGISTRATION_BEFORE_CONTROLLED_HISTORY"
+      ],
+      "universe": [
+        "POINT_IN_TIME_TRADABLE_CRYPTO_UNIVERSE_TO_BE_FROZEN_BEFORE_CONTROLLED_HISTORY"
+      ],
+      "development_dataset_refs": [],
+      "validation_dataset_refs": [],
+      "sealed_dataset_refs": [],
+      "declared_variant_budget": 1,
+      "actual_variants_evaluated": 0,
+      "parameter_candidate_count": 1,
+      "stopping_rule": "Traverse exactly the ten governed lifecycle stages in order. DESIGN must choose exactly one prospectively justified route authorized by the merged routing resolution: NO_UPSTREAM_VALIDATED_FACTOR -> INCONCLUSIVE_INSUFFICIENT_SUPPORT, or one separately justified baseline family. PREREGISTRATION must freeze every numerical/data/analysis semantic before any controlled history. A durable RUN_ATTEMPT.marker must precede every controlled scientific/history read. After marker durability, no same-ID rerun, retune, rescue, source substitution, candidate replacement, history extension or recomputation is allowed.",
+      "success_criteria": "PASS is possible only if DESIGN and PREREGISTRATION prospectively authorize a separately justified baseline family and the exactly-once controlled execution satisfies all frozen realistic/stressed implementation, borrow, neutrality, robustness, concentration, capacity and multiple-testing gates. If DESIGN selects the fail-closed route because no upstream validated factors exist, the terminal scientific classification is prospectively limited to INCONCLUSIVE_INSUFFICIENT_SUPPORT and cannot be rescued.",
+      "failure_criteria": "FAIL applies only to valid execution of a prospectively frozen baseline route whose economic/robustness gates fail. INCONCLUSIVE_INSUFFICIENT_SUPPORT applies when the no-upstream-factor fail-closed route is frozen or when prospectively defined support is insufficient. INVALID_EXECUTION applies to identity/hash/read-count/lookahead/universe/candidate-count/neutrality/cost/borrow/persistence/exactly-once drift.",
+      "allowed_followup": "Before attempt consumption, only semantics-preserving implementation and synthetic-qualification corrections within the frozen 0076 contract. After immutable 0076 closeout, only the roadmap-legal 0077 successor may start; any new factor discovery or alternate long/short hypothesis requires a new owner-first research ID.",
+      "forbidden_followup": "No inheritance or fabrication of validated factors from 0075 or 0084; no post-result factor discovery; no result-informed baseline addition; no same-ID alternate universe, horizon, borrow model, neutralization rule, cost model, candidate family, threshold rescue, rerun, retune or recomputation; no claim that DEVELOPMENT history is independent OOS; no production, signature or order authority.",
+      "researcher_decisions": [
+        "Record immutable 0084 non-PASS closeout and zero inherited validated factors explicitly at OWNER-FIRST.",
+        "Transfer no lifecycle credit, scientific result, factor definition, Stage8 authorization or attempt budget from 0075/0084.",
+        "Bound DESIGN to exactly one of the two routes authorized by the merged prospective routing resolution and require that choice before controlled history.",
+        "Keep the total selectable route/candidate ceiling at one to prevent result-informed route search."
+      ],
+      "research_process_complexity": {
+        "declared_parameter_candidates": 1,
+        "actual_parameter_candidates_evaluated": 0,
+        "universes_evaluated": 0,
+        "horizons_evaluated": 0,
+        "rebalance_variants": 0,
+        "feature_representations": 0,
+        "special_cases_introduced": [
+          "ZERO_INHERITED_VALIDATED_FACTORS_FAIL_CLOSED"
+        ],
+        "validation_exposure_event_refs": [],
+        "related_family_trials": 1
+      },
+      "lineage_edges": [
+        {
+          "relation": "GOVERNANCE_SUCCESSOR",
+          "ref_research_id": "BRRK-CRYPTO-CROSS-SECTIONAL-FACTOR-ATLAS-REPLACEMENT-0084",
+          "provenance_status": "FACT",
+          "evidence_ref": "research/governance/CRYPTO_MULTI_STRATEGY_0084_INVALID_CLOSEOUT_0076_ROUTING_RESOLUTION.md"
+        }
+      ],
+      "result_status": "PREREGISTERED_NOT_RUN",
+      "failure_reason": null,
+      "promotion_state": "NONE",
+      "evidence_refs": [],
+      "decision_refs": [
+        "research/governance/CRYPTO_MULTI_STRATEGY_RESEARCH_PROGRAM_0071_0082.md",
+        "research/governance/CRYPTO_MULTI_STRATEGY_0084_INVALID_CLOSEOUT_0076_ROUTING_RESOLUTION.md",
+        "docs/CURRENT_STATE.md"
+      ],
+      "production_relevance": "Research-only cross-sectional long/short sleeve study. No production, signature or order authority.",
+      "production_authorized": false,
+      "provenance_status": "PROSPECTIVE_FROZEN",
+      "governed_path_prefixes": [
+        "research/brrk_crypto_cross_sectional_ls_0076"
+      ],
+      "notes": [
+        "0084 is immutable INVALID_EXECUTION with attempt 1/1 consumed and no admissible scientific result; it is not reclassified or rescued.",
+        "0076 inherits exactly zero validated factors and starts at formal completion 0/10, attempt 0/1, controlled reads 0, scientific engine 0/1, scientific source-network fetches 0.",
+        "OWNER-FIRST itself reads no 0076 controlled scientific/history payload."
+      ]
     }
   ],
   "research_governance_debt": [
