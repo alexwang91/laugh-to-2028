@@ -1,0 +1,242 @@
+name: 0084 Stage7 zero-result preflight
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: write
+  actions: read
+
+env:
+  GH_TOKEN: ${{ github.token }}
+  EXPECTED_MAIN: 3e22ee336f82e14a8eea63d1d9afb07085699d07
+  ARTIFACT_ID: '9495175701'
+  ARTIFACT_RUN_ID: '32646565505'
+  ARTIFACT_NAME: 0075-stage6-authorized-payloads-v1
+  ARTIFACT_SIZE: '174445627'
+  ARTIFACT_SHA256: 8040282ff412b2d3fd360173e4745ebfd048796eb9e9c2ad49fa0901e5cedf56
+  MANIFEST_SHA256: 2f70384dd84a601b69528ef3d770e0fa9c714b3e0888bec009e93b5067ecebf8
+  UNIVERSE_SHA256: 85337b0681d4e61fc60eef62f4f05b2ea6e43f7da9e7648b4d94032794f95dbd
+
+jobs:
+  preflight:
+    if: >-
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      github.head_ref == 'research/0084-stage7-zero-result-preflight-v1' &&
+      github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
+
+      - name: Verify exact merged Stage6 ancestry and zero runtime state
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          test "$(git rev-parse origin/main)" = "$EXPECTED_MAIN"
+          test "$(git merge-base HEAD origin/main)" = "$EXPECTED_MAIN"
+          RID='research/brrk_crypto_cross_sectional_factor_atlas_replacement_0084'
+          for f in RUN_ATTEMPT.marker PRIMARY_RESULT.json EVIDENCE.json EXECUTION.json RUN_ONCE.marker; do
+            test ! -e "$RID/$f"
+          done
+          python -m unittest \
+            research.governance.test_0084_stage5_nonhistorical \
+            research.governance.test_0084_stage6_boundary
+
+      - name: Fetch artifact metadata and exact opaque staging ZIP once
+        shell: bash
+        run: |
+          set -euo pipefail
+          API="https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/artifacts/${ARTIFACT_ID}"
+          curl --fail --silent --show-error --location \
+            -H "Authorization: Bearer ${GH_TOKEN}" \
+            -H 'Accept: application/vnd.github+json' \
+            -H 'X-GitHub-Api-Version: 2022-11-28' \
+            "$API" -o /tmp/artifact-meta.json
+          curl --fail --silent --show-error --location \
+            -H "Authorization: Bearer ${GH_TOKEN}" \
+            -H 'Accept: application/vnd.github+json' \
+            -H 'X-GitHub-Api-Version: 2022-11-28' \
+            "${API}/zip" -o /tmp/staging.zip
+
+      - name: Identity-only checksum and ZIP-structure verification
+        shell: bash
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib
+          import io
+          import json
+          import os
+          import subprocess
+          import zipfile
+          from pathlib import Path
+
+          RID = Path('research/brrk_crypto_cross_sectional_factor_atlas_replacement_0084')
+          artifact_path = Path('/tmp/staging.zip')
+          meta = json.loads(Path('/tmp/artifact-meta.json').read_text())
+          expected_digest = 'sha256:' + os.environ['ARTIFACT_SHA256']
+          assert meta['id'] == int(os.environ['ARTIFACT_ID'])
+          assert meta['name'] == os.environ['ARTIFACT_NAME']
+          assert meta['size_in_bytes'] == int(os.environ['ARTIFACT_SIZE'])
+          assert meta['digest'] == expected_digest
+          assert meta['expired'] is False
+          assert artifact_path.stat().st_size == int(os.environ['ARTIFACT_SIZE'])
+
+          h = hashlib.sha256()
+          with artifact_path.open('rb') as fh:
+              for chunk in iter(lambda: fh.read(8 * 1024 * 1024), b''):
+                  h.update(chunk)
+          outer_sha = h.hexdigest()
+          assert outer_sha == os.environ['ARTIFACT_SHA256']
+
+          with zipfile.ZipFile(artifact_path, 'r') as outer:
+              assert outer.testzip() is None
+              infos = outer.infolist()
+              names = [item.filename for item in infos]
+              payloads = [n[len('payloads/'):] for n in names if n.startswith('payloads/') and n.endswith('.zip')]
+              checksums = [n[len('checksums/'):-len('.CHECKSUM')] for n in names if n.startswith('checksums/') and n.endswith('.CHECKSUM')]
+              jsons = [n for n in names if n.endswith('.json')]
+              assert len(infos) == 107084
+              assert len(payloads) == len(set(payloads)) == 53541
+              assert len(checksums) == len(set(checksums)) == 53541
+              assert set(payloads) == set(checksums)
+              assert set(jsons) == {'AUTHORIZED_OBJECT_MANIFEST.json', 'STAGE6_SYMBOL_UNIVERSE.json'}
+
+              manifest_bytes = outer.read('AUTHORIZED_OBJECT_MANIFEST.json')
+              universe_bytes = outer.read('STAGE6_SYMBOL_UNIVERSE.json')
+              assert hashlib.sha256(manifest_bytes).hexdigest() == os.environ['MANIFEST_SHA256']
+              assert hashlib.sha256(universe_bytes).hexdigest() == os.environ['UNIVERSE_SHA256']
+
+              checksum_matches = 0
+              nested_structural_pass = 0
+              nested_member_content_reads = 0
+              for name in payloads:
+                  payload_bytes = outer.read('payloads/' + name)
+                  declared = outer.read('checksums/' + name + '.CHECKSUM').decode('utf-8', 'strict').strip().split()[0]
+                  assert hashlib.sha256(payload_bytes).hexdigest() == declared
+                  checksum_matches += 1
+                  with zipfile.ZipFile(io.BytesIO(payload_bytes), 'r') as nested:
+                      members = nested.infolist()
+                      assert len(members) == 1
+                      # Intentionally do not call nested.read/open on the CSV member.
+                      nested_structural_pass += 1
+
+          branch_head = subprocess.run(
+              ['git', 'rev-parse', 'HEAD'], check=True, text=True, capture_output=True
+          ).stdout.strip()
+          evidence = {
+              'schema_version': 1,
+              'research_id': 'BRRK-CRYPTO-CROSS-SECTIONAL-FACTOR-ATLAS-REPLACEMENT-0084',
+              'stage': 7,
+              'classification': 'PREFLIGHT_PASS_ZERO_RESULT',
+              'stage6_merge': os.environ['EXPECTED_MAIN'],
+              'preflight_branch_head_before_generated_evidence': branch_head,
+              'workflow_run_id': int(os.environ['GITHUB_RUN_ID']),
+              'workflow_run_attempt': int(os.environ['GITHUB_RUN_ATTEMPT']),
+              'pr_number': int(os.environ['PR_NUMBER']),
+              'artifact': {
+                  'id': meta['id'],
+                  'name': meta['name'],
+                  'workflow_run_id': int(os.environ['ARTIFACT_RUN_ID']),
+                  'size_in_bytes': meta['size_in_bytes'],
+                  'digest': meta['digest'],
+                  'expired': meta['expired'],
+                  'expires_at': meta['expires_at'],
+                  'stage7_artifact_downloads': 1,
+                  'outer_zip_crc_pass': True,
+                  'outer_entry_count': 107084,
+              },
+              'identity_checks': {
+                  'manifest_sha256': os.environ['MANIFEST_SHA256'],
+                  'symbol_universe_sha256': os.environ['UNIVERSE_SHA256'],
+                  'payload_zip_count': 53541,
+                  'checksum_count': 53541,
+                  'unique_one_to_one_payload_checksum_names': True,
+                  'payload_sha256_matches_checksum': checksum_matches,
+                  'nested_zip_structural_readability_passed': nested_structural_pass,
+                  'nested_member_content_reads': nested_member_content_reads,
+              },
+              'execution_readiness': {
+                  'stage5_synthetic_qualification_pass': True,
+                  'stage6_identity_boundary_pass': True,
+                  'run_attempt_marker_absent': True,
+                  'primary_result_absent': True,
+                  'evidence_result_absent': True,
+                  'execution_result_absent': True,
+                  'run_once_marker_absent': True,
+                  'durable_attempt_marker_is_only_remaining_execution_gate': True,
+              },
+              'budgets': {
+                  'controlled_attempt_consumed': 0,
+                  'controlled_scientific_history_reads': 0,
+                  'scientific_engine_calls': 0,
+                  'stage8_scientific_source_network_fetches': 0,
+                  'scientific_values_exposed': False,
+              },
+              'authority': {
+                  'production_authorized': False,
+                  'signature_authorized': False,
+                  'order_submission_authorized': False,
+              },
+              'notes': [
+                  'Stage7 inspected artifact metadata, opaque staged ZIP bytes, paired checksum text, and ZIP central-directory structure only.',
+                  'No nested CSV member content was opened or parsed; no factor/return/statistic/result was computed.',
+                  'The GitHub staging-artifact download is not a scientific source-network fetch and does not consume the Stage8 attempt.',
+                  '0084 still requires fresh exact-scope contemporaneous user authorization before Stage8 marker creation.'
+              ]
+          }
+          (RID / 'ZERO_RESULT_PREFLIGHT_EVIDENCE.json').write_text(
+              json.dumps(evidence, indent=2, sort_keys=True) + '\n', encoding='utf-8'
+          )
+
+          preflight = RID / 'ZERO_RESULT_PREFLIGHT.md'
+          text = preflight.read_text(encoding='utf-8')
+          assert text.count('PREFLIGHT_IN_PROGRESS_ZERO_RESULT') == 1
+          text = text.replace('PREFLIGHT_IN_PROGRESS_ZERO_RESULT', 'PREFLIGHT_PASS_ZERO_RESULT', 1)
+          text += f"\n## Earned evidence\n\nOne-shot workflow `{os.environ['GITHUB_RUN_ID']}` downloaded artifact `{meta['id']}` exactly once for Stage7 availability/readability validation. Outer SHA-256 matched `{outer_sha}`; 53,541/53,541 staged payload ZIPs matched their paired official checksums; 53,541/53,541 nested ZIP central directories were structurally readable; nested scientific CSV member content reads remained 0. Attempt/read/engine/scientific-source-network budgets remain 0.\n"
+          preflight.write_text(text, encoding='utf-8')
+
+          state_path = Path('docs/CURRENT_STATE.md')
+          state = state_path.read_text(encoding='utf-8')
+          immutable = 'workflow run                         31381953131 / attempt 1'
+          assert state.count(immutable) == 1
+          lines = state.splitlines()
+          idx = [i for i, line in enumerate(lines) if line.startswith('0074 remains immutable `10/10 COMPLETE / INVALID_EXECUTION')]
+          assert len(idx) == 1
+          assert 'Stage6 CONTROLLED-EXECUTION BOUNDARY is active' in lines[idx[0]]
+          lines[idx[0]] = (
+              "0074 remains immutable `10/10 COMPLETE / INVALID_EXECUTION / CLOSED TO SAME-ID RERUN`. Governance resolution #381 merged at `f50618f233aef5e8e9872695ab87b67ab294a3a4`; 0075 is permanently stopped at `7/10 BLOCKED_PRE_ATTEMPT_FROZEN_IMPLEMENTATION_INCOMPLETE`, attempt `0/1` unconsumed, reads `0`, engine `0/1`, Stage8 network `0`, values exposed `false`, no marker/result, and #379 is closed unmerged. Guarded 0084 OWNER-FIRST writer tooling merged at `896e307b83e5fa96553286b7752042b0e418cb22`; replacement 0084 Stage1 OWNER-FIRST merged at `a0b4c6b4943850e29ad5392d33be7ab1fb86c65d`; Stage2 DESIGN merged at `075d8b5b7de97836350314d517ad483d5de67219`; Stage3 PREREGISTRATION merged at `046e34b020a4f628967fb942947b06ca30c7289c`; Stage4 IMPLEMENTATION merged at `3574c33a199580637efa74b230564c7eb23d5725`; Stage5 NONHISTORICAL QUALIFICATION merged at `61b7e3a45c82604520ea9f76c6878a2707481fc2`; Stage6 CONTROLLED-EXECUTION BOUNDARY merged at `3e22ee336f82e14a8eea63d1d9afb07085699d07`. 0084 Stage7 ZERO-RESULT PREFLIGHT is active on `research/0084-stage7-zero-result-preflight-v1` / PR #" + os.environ['PR_NUMBER'] + ". Formal completion is `6/10` until Stage7 merges; `PREFLIGHT_PASS_ZERO_RESULT` has zero scientific value exposure and attempt/read/engine/network budgets remain zero."
+          )
+          idx84 = [i for i, line in enumerate(lines) if line.startswith('0084 = AUTHORIZED 0075 REPLACEMENT')]
+          assert len(idx84) == 1
+          assert 'STAGE6 CONTROLLED-EXECUTION BOUNDARY ACTIVE ON PR #388' in lines[idx84[0]]
+          lines[idx84[0]] = (
+              "0084 = AUTHORIZED 0075 REPLACEMENT BY GOVERNANCE MERGE `f50618f233aef5e8e9872695ab87b67ab294a3a4` / GUARDED OWNER-FIRST WRITER TOOLING MERGED AT `896e307b83e5fa96553286b7752042b0e418cb22` / OWNER-FIRST STAGE1 MERGED AT `a0b4c6b4943850e29ad5392d33be7ab1fb86c65d` / STAGE2 DESIGN MERGED AT `075d8b5b7de97836350314d517ad483d5de67219` / STAGE3 PREREGISTRATION MERGED AT `046e34b020a4f628967fb942947b06ca30c7289c` / STAGE4 IMPLEMENTATION MERGED AT `3574c33a199580637efa74b230564c7eb23d5725` / STAGE5 NONHISTORICAL QUALIFICATION MERGED AT `61b7e3a45c82604520ea9f76c6878a2707481fc2` / STAGE6 CONTROLLED-EXECUTION BOUNDARY MERGED AT `3e22ee336f82e14a8eea63d1d9afb07085699d07` / STAGE7 ZERO-RESULT PREFLIGHT ACTIVE ON PR #" + os.environ['PR_NUMBER'] + " `research/0084-stage7-zero-result-preflight-v1` / `PREFLIGHT_PASS_ZERO_RESULT` / FORMAL COMPLETION 6/10 UNTIL STAGE7 MERGE / FULL TEN-STAGE LIFECYCLE REQUIRED / NO INHERITED RESULT OR STAGE CREDIT / ATTEMPT 0/1 / READS 0 / ENGINE 0 / NETWORK 0 / PRODUCTION-SIGNATURE-ORDER AUTHORITY FALSE."
+          )
+          updated = '\n'.join(lines) + '\n'
+          assert updated.count(immutable) == 1
+          state_path.write_text(updated, encoding='utf-8')
+          PY
+
+      - name: Persist PASS evidence create-only and self-delete workflow
+        shell: bash
+        run: |
+          set -euo pipefail
+          git rm .github/workflows/0084-stage7-zero-result-preflight.yml
+          git diff --check
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs/CURRENT_STATE.md \
+            research/brrk_crypto_cross_sectional_factor_atlas_replacement_0084/ZERO_RESULT_PREFLIGHT.md \
+            research/brrk_crypto_cross_sectional_factor_atlas_replacement_0084/ZERO_RESULT_PREFLIGHT_EVIDENCE.json
+          test "$(git diff --cached --name-only | sort)" = "$(printf '%s\n' '.github/workflows/0084-stage7-zero-result-preflight.yml' 'docs/CURRENT_STATE.md' 'research/brrk_crypto_cross_sectional_factor_atlas_replacement_0084/ZERO_RESULT_PREFLIGHT.md' 'research/brrk_crypto_cross_sectional_factor_atlas_replacement_0084/ZERO_RESULT_PREFLIGHT_EVIDENCE.json' | sort)"
+          git commit -m 'research(0084): persist Stage7 zero-result preflight PASS'
+          git push origin HEAD:${{ github.event.pull_request.head.ref }}
