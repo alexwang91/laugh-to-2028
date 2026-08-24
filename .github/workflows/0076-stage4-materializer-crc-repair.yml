@@ -20,15 +20,14 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Materialize exact embedded Stage4 payload without trusting corrupt gzip trailer
+      - name: Materialize exact embedded Stage4 payload without trusting corrupt gzip trailers
         shell: bash
         run: |
           set -euo pipefail
           DIR='research/brrk_crypto_cross_sectional_ls_0076'
-          SRC='.github/workflows/0076-stage4-implementation-materializer.yml'
           mkdir -p "$DIR"
           python - <<'PY'
-          import base64, gzip, re, zlib
+          import base64, re, zlib
           from pathlib import Path
           src=Path('.github/workflows/0076-stage4-implementation-materializer.yml').read_text(encoding='utf-8')
           out=Path('research/brrk_crypto_cross_sectional_ls_0076')
@@ -42,11 +41,8 @@ jobs:
               m=re.search(r'^\s*'+re.escape(key)+r':\s*(\S+)\s*$',src,re.M)
               assert m, key
               blob=base64.b64decode(m.group(1), validate=True)
-              if key=='ENGINE_B64':
-                  assert blob[:2]==b'\x1f\x8b'
-                  payload=zlib.decompress(blob[10:-8], -zlib.MAX_WBITS)
-              else:
-                  payload=gzip.decompress(blob)
+              assert blob[:2]==b'\x1f\x8b', key
+              payload=zlib.decompress(blob[10:-8], -zlib.MAX_WBITS)
               (out/name).write_bytes(payload)
           PY
 
