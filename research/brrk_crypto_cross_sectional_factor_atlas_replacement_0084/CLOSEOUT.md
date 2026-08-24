@@ -68,3 +68,7 @@ Production, signing, trading, and order authority remain false.
 After this Stage10 CLOSEOUT is merged, 0084 is immutable `10/10 COMPLETE / INVALID_EXECUTION / CLOSED TO SAME-ID RERUN`.
 
 No subsequent research ID is automatically authorized by this closeout. Any roadmap prerequisite that explicitly requires an 0084 PASS remains unsatisfied unless a separate prospective governance amendment changes that prerequisite without reinterpreting 0084.
+
+## CURRENT_STATE handoff safety
+
+The Stage10 branch may update only the two stale 0084 handoff locations in `docs/CURRENT_STATE.md`. The exact historical anchor `workflow run                         31381953131 / attempt 1` must remain present exactly once, and all other immutable history must remain unchanged. This handoff is governance-only and does not consume any scientific budget.
