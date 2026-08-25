@@ -382,3 +382,16 @@ Phase 6 = NO CHANGE.
 - 0076 remains sealed at its Stage7 pre-marker boundary incident; 0072/0073 Carry remain paused/closed; 0083 remains immutable FAIL; all historical attempts/captures remain unchanged.
 - `workflow run                         31381953131 / attempt 1`, CAPTURE-0001 sealed/no-retry, CAPTURE-0002 permanently claimed/no-refetch, and Phase6 closeout remain immutable.
 - Production/signature/order/withdrawal/transfer authority remains false.
+
+## 0086 independent cross-sectional Factor Atlas
+
+Research ID = `BRRK-CROSS-SECTIONAL-FACTOR-ATLAS-0086`.
+State = `SPEC_FREEZE_PROPOSED / CONTROLLED ATTEMPT 0/1 / CONTROLLED READS 0`.
+
+0086 is independent from 0075/0076/0084/0085 and inherits zero lifecycle credit, attempt credit, factor-selection credit, or scientific result. The central owner record was durably committed before the governed 0086 research path was introduced.
+
+Frozen SPEC tests exactly three predeclared factor representatives: momentum `MOM60_RAW`, volatility `RVOL20_RAW`, and liquidity `LIQ30_RAW`. Size/market-cap and carry/funding are excluded because no qualifying point-in-time source identity was frozen before SPEC_FREEZE. The exact multiplicity family is three tests with Holm FWER 0.05. Universe construction, Monday UTC-close decision timing, FWD5 outcome, raw rank transforms, MBB inference, support minima, 10/20 bps economic diagnostics, terminal rules, trial budget, and stop rules are frozen before any controlled value exposure.
+
+Any future 0086 controlled RUN must use `ControlledResearchRunnerV1SourceQualified`, requires a separate irreversible user authorization, and permits at most one attempt. Pre-marker payload traversal/decompression/CRC remains forbidden. Factor L/S remains forbidden unless 0086 returns a valid PASS, and only passing factor families may become eligible for a separately governed future ID.
+
+0085 remains immutable `INVALID_EXECUTION` with attempt 1/1 consumed and no admissible Trend result. 0076 remains sealed; 0072/0073 remain paused; 0083 remains immutable FAIL; Phase6 PASS closeout remains unchanged. Production/signature/order/withdrawal/transfer authority remains zero.
