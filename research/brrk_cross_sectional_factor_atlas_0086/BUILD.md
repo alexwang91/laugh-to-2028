@@ -60,6 +60,10 @@ Only after the durable RUN marker and runner-owned verified payload reads may `e
 
 All fixtures are generated synthetically in the test process. No controlled historical value is opened by BUILD or its tests.
 
+## Handoff durability
+
+The BUILD handoff was durably appended to `docs/CURRENT_STATE.md` before final exact-head CI. The temporary append workflow removed itself and is not part of the final BUILD diff.
+
 ## ARM boundary
 
 ARM must bind exact artifact/object identities, declared hashes and sizes, exact source keys, schema contract, source-qualified runner interface, expected controlled read budget, result/marker paths, and engine-call budget without payload traversal. ARM may inspect central-directory metadata and declared identity metadata only. It must not call `testzip()`, decompress an inner ZIP, parse CSV, CRC-scan payloads, or expose controlled values before a durable RUN marker.
