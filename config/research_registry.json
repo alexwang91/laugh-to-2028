@@ -6102,7 +6102,7 @@
       "research_domain": "RELATIVE_VALUE",
       "research_governance_version": 1,
       "governance_mode": "PROGRAM_GOVERNED_V1",
-      "objective_type": "FACTOR_ATLAS_VALIDATION",
+      "objective_type": "ALPHA_DISCOVERY",
       "created_at": "2026-08-25T15:55:00Z",
       "created_before_result": true,
       "question": "Do any prospectively fixed cross-sectional momentum, volatility, or liquidity factor families contain reproducible point-in-time predictive and economic structure across a liquid crypto perpetual universe after dependence-aware multiple testing and realistic/stressed costs?",
