@@ -287,3 +287,15 @@ Canonical BRRK-0011 = NO CHANGE.
 0084 = 10/10 COMPLETE / `INVALID_EXECUTION / POST_MARKER_FROZEN_EXECUTION_INTERFACE_INCOMPLETE` / CLOSED TO SAME-ID RERUN / STAGE10 IMMUTABLE CLOSEOUT MERGED AT `4304456742c5bccea10433457e10fa3bb0e0af1e` / GOVERNANCE REPLACEMENT AUTHORITY `f50618f233aef5e8e9872695ab87b67ab294a3a4` / ATTEMPT 1/1 CONSUMED / CONTROLLED READS 0 / SCIENTIFIC ENGINE 0/1 / SCIENTIFIC SOURCE NETWORK FETCHES 0 / SCIENTIFIC VALUES EXPOSED FALSE / NO ADMISSIBLE SCIENTIFIC RESULT / NO RUN_ONCE.marker / NO SECOND MARKER-RERUN-RETUNE-RESCUE-RECOMPUTE / 0076 PASS PREREQUISITE UNSATISFIED / PRODUCTION-SIGNATURE-ORDER AUTHORITY FALSE.
 0076 = STAGE-1 THROUGH STAGE-6 MERGED / STAGE6 MERGE `868187bae8f5e23dcf884b023c0783d19c96ed18` / STAGE7 `FAIL_CLOSED_PRE_MARKER_PAYLOAD_ENTRY_READ_BOUNDARY_VIOLATION` ON PR #404 / FORMAL COMPLETION REMAINS 6/10 / ATTEMPT 0/1 UNCONSUMED / CONTROLLED AUTHORIZED PAYLOAD-FILE TRAVERSALS 30336 PRE-MARKER / SCIENTIFIC ENGINE 0/1 / SCIENTIFIC SOURCE NETWORK FETCHES 0 / INNER CSV ROWS PARSED FALSE / SCIENTIFIC ROW VALUES EXPOSED FALSE / NO STAGE8 MARKER OR RESULT / NO SAME-ID STAGE8-RERUN-RETUNE-RESCUE-RECOMPUTE / PRODUCTION-SIGNATURE-ORDER AUTHORITY FALSE.
 Phase 6 = NO CHANGE.
+
+## Phase 6 live observation closeout — 2026-08-25
+
+- Frozen Phase-6 live-observation thresholds were checked against live GitHub Actions evidence without replay/backfill: elapsed `15` days, `16` genuine schedule-origin decisions, and `1` separately evidenced zero-authority emergency drill.
+- Every credited schedule decision is attempt-1 schedule-origin and has an already-persisted create-only evidence artifact plus separate hash-bound receipt; missing expected dates `[]`, duplicate decision timestamps `[]`.
+- Observed critical reconciliation errors `0`, unexplained target drift `0`, schedule failures `0`; production/signature/order authority remains false.
+- Emergency drill run `32822137245` is `workflow_dispatch`-origin and is not scheduled-decision credit.
+- Closeout audit workflow run `32822011836`; audit artifact id `9553575209`, digest `sha256:2482e5f575b544ccc3168776d70b5ce0dfc3baef24dcf4de9fb7cb5caaf77096`.
+- Persisted closeout inventory: `research/governance/PHASE6_OBSERVATION_CLOSEOUT_2026-08-25.json`. Repository recording creates no evidence or credit and does not alter the frozen Phase-6 contract.
+- Phase 6 R1 evidence closeout = `PASS_FROZEN_LIVE_OBSERVATION_GATES`; this grants no production authority and does not authorize any paused/invalid historical research ID.
+- 0076 remains sealed at Stage7 pre-marker read-boundary incident with no replacement, retroactive marker, same-ID Stage8, rerun, retune, rescue or recompute. 0072/0073 Carry remain paused; 0083 remains immutable FAIL.
+- Next legal frontier: R2 public `CONTROLLED_RESEARCH_RUNNER_V1`, then prospective lifecycle-gate compression amendment only after runner qualification.
