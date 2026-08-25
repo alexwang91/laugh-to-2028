@@ -370,3 +370,15 @@ Phase 6 = NO CHANGE.
 - The earlier workflow-definition failures occurred before GitHub created any job. They consumed no attempt, created no marker, downloaded no controlled artifact, performed no controlled read, and invoked no scientific engine.
 - 0085 remains attempt `0/1`, controlled reads `0`, scientific engine `0/1`, scientific values exposed `false`. The user authorization for controlled RUN attempt 1/1 remains valid and unconsumed.
 - Frozen science, source identity, 201-object read budget, immutable historical states, and production/signature/order/withdrawal/transfer authority remain unchanged.
+
+## 0085 terminal seal and R2 source-interface requalification — 2026-08-25
+
+- 0085 Trend completed its single authorized controlled RUN attempt `1/1` and is permanently sealed `INVALID_EXECUTION / CLOSED TO SAME-ID RERUN`.
+- Durable `RUN_ATTEMPT.marker` preceded all controlled reads. The run consumed exactly `201` controlled reads and exactly `1/1` scientific engine invocation; source-network fetches remained `0`.
+- The persisted terminal failure is `INVALID_EXECUTION:ENGINE_OR_RUNTIME_FAILURE:TrendExecutionError`, rooted in the runner exposing artifact member keys as `payloads/...` while the frozen 0085 adapter expected `stage/payloads/...`. No PASS/FAIL/INCONCLUSIVE scientific result is admissible.
+- Durable result and `RUN_ONCE.marker` exist. 0085 cannot rerun, retune, rescue, recompute, substitute sources, reinterpret the terminal result, or receive same-ID continuation.
+- PR #419 merged the immutable 0085 seal. PR #420 prospectively requalified the common execution interface with metadata-only source-key validation, the exact 0085 namespace regression, and 20 consecutive synthetic full lifecycles.
+- Future controlled science remains forbidden from using the old callable-only runner path. PR #421 adds the prospective 0086+ guard requiring `ControlledResearchRunnerV1SourceQualified` for future numeric controlled RUN scripts.
+- 0076 remains sealed at its Stage7 pre-marker boundary incident; 0072/0073 Carry remain paused/closed; 0083 remains immutable FAIL; all historical attempts/captures remain unchanged.
+- `workflow run                         31381953131 / attempt 1`, CAPTURE-0001 sealed/no-retry, CAPTURE-0002 permanently claimed/no-refetch, and Phase6 closeout remain immutable.
+- Production/signature/order/withdrawal/transfer authority remains false.
