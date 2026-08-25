@@ -25,14 +25,16 @@ def _monthly_zip(symbol: str, month: str, rows: list[tuple[date, float]]) -> byt
     return out.getvalue()
 
 
-def _source_name(symbol: str, month: str) -> str:
+def _source_name(symbol: str, month: str, *, artifact_member: bool = False) -> str:
+    prefix = "payloads/" if artifact_member else "stage/payloads/"
     return (
-        "stage/payloads/data__futures__um__monthly__klines__"
-        f"{symbol}__1d__{symbol}-1d-{month}.zip"
+        prefix
+        + "data__futures__um__monthly__klines__"
+        + f"{symbol}__1d__{symbol}-1d-{month}.zip"
     )
 
 
-def _synthetic_sources(days: int = 1000) -> dict[str, bytes]:
+def _synthetic_sources(days: int = 1000, *, artifact_member: bool = False) -> dict[str, bytes]:
     start = date(2023, 1, 1)
     by_month: dict[str, list[date]] = {}
     for offset in range(days):
@@ -47,7 +49,7 @@ def _synthetic_sources(days: int = 1000) -> dict[str, bytes]:
                 absolute = (day - start).days
                 close = 100.0 * asset_i * (1.0 + 0.0008 * absolute + 0.002 * ((absolute + asset_i) % 11))
                 rows.append((day, close))
-            sources[_source_name(symbol, month)] = _monthly_zip(symbol, month, rows)
+            sources[_source_name(symbol, month, artifact_member=artifact_member)] = _monthly_zip(symbol, month, rows)
     return sources
 
 
@@ -64,6 +66,20 @@ def test_adapter_normalizes_exact_three_assets_and_runs_frozen_engine():
         "INCONCLUSIVE_INSUFFICIENT_SUPPORT",
     }
     assert result["support_sessions"] >= 730
+
+
+def test_adapter_accepts_github_artifact_member_namespace():
+    sources = _synthetic_sources(artifact_member=True)
+    normalized = normalize_controlled_sources(sources)
+    assert set(normalized) == {"btc_daily.json", "eth_daily.json", "sol_daily.json"}
+
+    result = ControlledArchiveTrendEngine().execute(SimpleNamespace(sources=sources))
+    assert result["execution_valid"] is True
+    assert result["classification"] in {
+        "PASS_TREND_SLEEVE_DEVELOPMENT_SUPPORT",
+        "FAIL_NO_ROBUST_TREND_SLEEVE_VALUE",
+        "INCONCLUSIVE_INSUFFICIENT_SUPPORT",
+    }
 
 
 def test_adapter_rejects_funding_or_unknown_source():
@@ -96,6 +112,14 @@ def test_adapter_rejects_duplicate_asset_month_identity():
     original = _source_name("BTCUSDT", "2023-01")
     sources[original.replace("stage/payloads/", "alias/")] = sources[original]
     with pytest.raises(Exception, match="UNKNOWN_CONTROLLED_SOURCE"):
+        normalize_controlled_sources(sources)
+
+
+def test_adapter_rejects_duplicate_month_across_staging_and_artifact_namespaces():
+    sources = _synthetic_sources(days=10)
+    original = _source_name("BTCUSDT", "2023-01")
+    sources[original.replace("stage/payloads/", "payloads/")] = sources[original]
+    with pytest.raises(Exception, match="DUPLICATE_KLINE_MONTH"):
         normalize_controlled_sources(sources)
 
 
