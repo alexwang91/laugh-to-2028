@@ -6217,6 +6217,123 @@
         "0086 receives zero attempt, lifecycle, result, or scientific-value credit from 0075/0076/0084/0085.",
         "Any future common-runner-caused INVALID_EXECUTION stops new science pending repair and requalification."
       ]
+    },
+    {
+      "research_id": "BRRK-OPTIONS-VOLATILITY-RISK-PREMIUM-0087",
+      "research_family_id": "OPTIONS_VOLATILITY_RISK_PREMIUM",
+      "research_domain": "OPTIONS_VOLATILITY",
+      "research_governance_version": 1,
+      "governance_mode": "PROGRAM_GOVERNED_V1",
+      "objective_type": "ALPHA_DISCOVERY",
+      "created_at": "2026-08-25T20:25:26Z",
+      "created_before_result": true,
+      "question": "Does a single prospectively fixed 30-calendar-day at-the-money BTC/ETH crypto options volatility-risk-premium mechanism exhibit persistent point-in-time variance compensation and positive delta-hedged short-volatility economics after frozen costs without result-informed rescue?",
+      "hypothesis": "A prospectively fixed implied-versus-realized volatility premium may remain positive and economically meaningful after frozen hedging and cost conventions if option compensation for variance risk is persistent rather than sample-specific.",
+      "hypothesis_origin": "PROSPECTIVE_INDEPENDENT_OPTIONS_VRP_LINE_WITH_ZERO_INHERITED_SCIENTIFIC_RESULT",
+      "economic_mechanism": "Option sellers may receive compensation for bearing convexity, jump, and variance risk; the study tests whether that compensation survives point-in-time construction and realistic implementation frictions.",
+      "primary_target": "ROBUST_30D_ATM_BTC_ETH_OPTIONS_VRP_AFTER_COSTS",
+      "primary_metric": "G1_G8_FROZEN_VRP_AND_DELTA_HEDGED_ECONOMIC_GATES",
+      "secondary_metrics": [
+        "weekly_vrp30",
+        "btc_vrp30",
+        "eth_vrp30",
+        "hac_mean_vrp_pvalue",
+        "mbb_mean_vrp_ci",
+        "chronological_block_vrp",
+        "gross_delta_hedged_short_straddle_pnl",
+        "net_pnl_c1_realistic",
+        "net_pnl_c2_stress",
+        "support_count"
+      ],
+      "feature_families": [
+        "DERIBIT_BTC_ETH_ATM_30D_VRP_SINGLE_FAMILY"
+      ],
+      "horizon": "MONDAY_0800_UTC_ENTRY_25_TO_35_DTE_HOLD_TO_EARLIER_OF_EXPIRY_OR_30_CALENDAR_DAYS",
+      "universe": [
+        "DERIBIT_BTC_EUROPEAN_OPTIONS",
+        "DERIBIT_ETH_EUROPEAN_OPTIONS"
+      ],
+      "development_dataset_refs": [],
+      "validation_dataset_refs": [],
+      "sealed_dataset_refs": [],
+      "declared_variant_budget": 1,
+      "actual_variants_evaluated": 0,
+      "parameter_candidate_count": 1,
+      "stopping_rule": "Exactly one predeclared BTC/ETH ATM 30D VRP family. SPEC_FREEZE precedes values; BUILD synthetic only; ARM must bind qualifying point-in-time Deribit option bid/ask/IV/contract metadata, underlying index and hedge identities; RUN requires separate authorization and at most one attempt; SEAL has zero scientific recomputation. If source qualification fails, stop before RUN with no venue/maturity/spread/mark substitution and no replacement retry chain.",
+      "success_criteria": [
+        "At least 52 supported weekly observations total, at least 20 BTC and 20 ETH, at least two calendar years, all statistics finite.",
+        "Mean weekly VRP30 > 0; HAC p<0.05; 8-week MBB 95% CI positive using 4000 reps seed 870087.",
+        "BTC and ETH standalone mean VRP30 both positive and at least 3/4 chronological blocks positive.",
+        "C1 realistic mean normalized delta-hedged short-straddle PnL positive; C2 stress mean non-negative; at least 3/4 blocks have positive C1 PnL.",
+        "All source identity, PIT, marker, read, engine, persistence and source-qualified-runner invariants pass."
+      ],
+      "failure_criteria": [
+        "Valid execution with adequate support but any frozen G1-G8 gate failing produces FAIL_NO_ROBUST_OPTIONS_VRP.",
+        "Valid execution with insufficient frozen support produces INCONCLUSIVE_INSUFFICIENT_OPTIONS_SUPPORT.",
+        "Any identity/hash/schema/timestamp/PIT/fallback/nonfinite/candidate/network/marker/read/source-interface/engine/persistence violation produces INVALID_EXECUTION."
+      ],
+      "allowed_followup": [
+        "Only a valid PASS may make an options/VRP sleeve eligible for later separately governed multi-sleeve research.",
+        "PASS may motivate separately preregistered forward-only validation."
+      ],
+      "forbidden_followup": [
+        "No inheritance of scientific result or lifecycle credit from 0072-0086.",
+        "No same-ID alternate venue, maturity, delta, moneyness, hedge, realized-vol estimator, rebalance, cost panel, inference rule, threshold, candidate addition, rerun, retune, rescue, recomputation or source substitution after controlled exposure.",
+        "No production, signing, order, withdrawal, or transfer authority."
+      ],
+      "researcher_decisions": [
+        "Use Deribit only and exactly BTC/ETH European options.",
+        "Use Monday 08:00 UTC with no within-week fallback.",
+        "Use exactly one 25-35 DTE expiry nearest 30D and a same-strike ATM call/put pair selected by minimum absolute log-moneyness.",
+        "Require executable positive bid/ask and relative spread <=20% for both legs; unsupported rows are not replaced.",
+        "Define ATM_IV30 as mean call/put source IV, VRP30 as ATM_IV30^2 minus annualized next-30-calendar-day realized variance.",
+        "Use one delta-hedged short ATM straddle economic diagnostic, daily UTC hedging, C1 actual option bid/ask plus 5 bps hedge friction and C2 plus 15 bps.",
+        "Use one candidate only; no multiplicity correction beyond fixed confirmation gates; HAC lag 8 and weekly MBB block length 8, 4000 reps, seed 870087.",
+        "Treat all controlled history as researcher-exposed DEVELOPMENT, not independent OOS."
+      ],
+      "research_process_complexity": {
+        "declared_parameter_candidates": [
+          "DERIBIT_BTC_ETH_ATM_30D_VRP_SINGLE_FAMILY"
+        ],
+        "actual_parameter_candidates_evaluated": 0,
+        "universes_evaluated": 1,
+        "horizons_evaluated": [
+          "25_TO_35_DTE_NEAREST_30D_ONLY"
+        ],
+        "rebalance_variants": [
+          "MONDAY_0800_UTC_ONLY"
+        ],
+        "feature_representations": [
+          "ATM_CALL_PUT_SOURCE_IV_MEAN_ONLY"
+        ],
+        "special_cases_introduced": [],
+        "validation_exposure_event_refs": [],
+        "related_family_trials": 1
+      },
+      "lineage_edges": [],
+      "result_status": "SPEC_FREEZE_PROPOSED",
+      "failure_reason": null,
+      "promotion_state": "NONE",
+      "evidence_refs": [],
+      "decision_refs": [
+        "https://github.com/alexwang91/laugh-to-2028/issues/426",
+        "research/governance/PROSPECTIVE_FIVE_GATE_LIFECYCLE_V1.md",
+        "research/governance/CONTROLLED_RESEARCH_RUNNER_V1_SOURCE_INTERFACE_QUALIFICATION_2026-08-25.md",
+        "research/brrk_options_volatility_risk_premium_0087/SPEC_FREEZE.md"
+      ],
+      "production_relevance": "Research-only DEVELOPMENT options/VRP study. PASS grants only later governed research eligibility.",
+      "production_authorized": false,
+      "provenance_status": "PROSPECTIVE_DECLARED_BEFORE_RESULT",
+      "governed_path_prefixes": [
+        "research/brrk_options_volatility_risk_premium_0087/"
+      ],
+      "notes": [
+        "Owner-first central registry commit 3686aec8a5a82d3a146828e464da090f0aea9a70 precedes the governed 0087 research path.",
+        "0087 receives zero attempt, lifecycle, result, source-selection or scientific-value credit from prior IDs.",
+        "0087 controlled attempt remains 0/1 with controlled reads 0 and scientific engine 0/1.",
+        "If qualifying PIT Deribit source identities cannot be bound at ARM, stop before RUN instead of weakening the frozen question.",
+        "Any future common-runner-caused INVALID_EXECUTION stops new science pending repair and requalification."
+      ]
     }
   ],
   "research_governance_debt": [
