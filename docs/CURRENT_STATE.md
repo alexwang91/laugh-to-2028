@@ -312,3 +312,15 @@ Phase 6 = NO CHANGE.
 - 0076 remains sealed at Stage7 pre-marker read-boundary incident; no replacement, retroactive marker, same-ID Stage8, rerun, retune, rescue or recompute. 0072/0073 Carry remain paused; 0083 remains immutable FAIL.
 - No Trend, Factor or Options controlled scientific attempt may start until R2 runner qualification is durably PASS and the prospective R3 lifecycle amendment is separately merged.
 - Production/signature/order/withdrawal/transfer authority remains false.
+
+## R3 prospective five-gate lifecycle — 2026-08-25
+
+- R2 `CONTROLLED_RESEARCH_RUNNER_V1` merged at `cfceb7f7eace6b3c08f3ec7cafb6cc09199163df` after exact-head terminal-green qualification; the runner remains prospective research infrastructure with zero production authority.
+- R3 proposes `PROSPECTIVE_FIVE_GATE_LIFECYCLE_V1` for newly registered research IDs that explicitly adopt it after the amendment merges.
+- The ten logical checkpoints remain unchanged and are grouped into five merge gates: `SPEC_FREEZE` = OWNER-FIRST + DESIGN + PREREGISTRATION; `BUILD` = IMPLEMENTATION + NONHISTORICAL QUALIFICATION; `ARM` = CONTROLLED BOUNDARY + ZERO-RESULT PREFLIGHT; `RUN` = UNIQUE CONTROLLED ATTEMPT; `SEAL` = RESULT + IMMUTABLE CLOSEOUT.
+- The amendment cannot change, reopen, reinterpret, rescue, rerun, retune, recompute, or transfer lifecycle credit for any preexisting research ID.
+- Future independent research tracks may run in parallel only when no declared scientific dependency exists. Factor L/S still requires qualifying factor evidence; portfolio studies still require their preregistered sleeve prerequisites.
+- Every future controlled `RUN` gate must use a currently qualified common runner, preserve durable marker-before-read and exactly-once engine execution, and stop new science if the common runner causes a new `INVALID_EXECUTION`.
+- 0076 remains sealed at 6/10 after its Stage7 pre-marker boundary incident; 0072/0073 Carry remain closed/paused; 0083 remains immutable FAIL; no historical authority changes.
+- R3 is governance-only and grants no production/signature/order/withdrawal/transfer authority.
+- Next legal frontier after R3 merge: register the first new Trend research under `SPEC_FREEZE`; Factor Atlas and Options/VRP may proceed independently under separate new IDs after their own SPEC_FREEZE gates.

@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "contract_id": "PROSPECTIVE_FIVE_GATE_LIFECYCLE_V1",
+  "status": "PROSPECTIVE_NEW_IDS_ONLY",
+  "activation": "ON_MERGE_FOR_EXPLICITLY_ADOPTING_NEW_RESEARCH_IDS_ONLY",
+  "applies_to_preexisting_research_ids": false,
+  "transfers_historical_lifecycle_credit": false,
+  "logical_stage_count": 10,
+  "merge_gate_count": 5,
+  "logical_stages": [
+    "OWNER-FIRST",
+    "DESIGN",
+    "PREREGISTRATION",
+    "IMPLEMENTATION",
+    "NONHISTORICAL QUALIFICATION",
+    "CONTROLLED BOUNDARY",
+    "ZERO-RESULT PREFLIGHT",
+    "UNIQUE CONTROLLED ATTEMPT",
+    "RESULT",
+    "IMMUTABLE CLOSEOUT"
+  ],
+  "merge_gates": [
+    {
+      "gate": "SPEC_FREEZE",
+      "logical_stages": ["OWNER-FIRST", "DESIGN", "PREREGISTRATION"]
+    },
+    {
+      "gate": "BUILD",
+      "logical_stages": ["IMPLEMENTATION", "NONHISTORICAL QUALIFICATION"]
+    },
+    {
+      "gate": "ARM",
+      "logical_stages": ["CONTROLLED BOUNDARY", "ZERO-RESULT PREFLIGHT"]
+    },
+    {
+      "gate": "RUN",
+      "logical_stages": ["UNIQUE CONTROLLED ATTEMPT"]
+    },
+    {
+      "gate": "SEAL",
+      "logical_stages": ["RESULT", "IMMUTABLE CLOSEOUT"]
+    }
+  ],
+  "required_controlled_runner": "CONTROLLED_RESEARCH_RUNNER_V1",
+  "minimum_runner_consecutive_synthetic_lifecycles": 20,
+  "pre_marker_payload_read_allowed": false,
+  "marker_before_controlled_payload_read_required": true,
+  "exactly_once_scientific_engine_required": true,
+  "same_id_rescue_after_consumed_attempt_allowed": false,
+  "result_informed_retuning_allowed": false,
+  "development_history_may_be_called_independent_oos": false,
+  "independent_tracks_may_run_in_parallel_without_declared_dependency": true,
+  "production_authorized": false,
+  "signature_authorized": false,
+  "order_submission_authorized": false
+}
