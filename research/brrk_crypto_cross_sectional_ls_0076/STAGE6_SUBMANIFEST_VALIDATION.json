@@ -1,0 +1,28 @@
+{
+  "authorized_object_submanifest_path": "research/brrk_crypto_cross_sectional_ls_0076/AUTHORIZED_OBJECT_SUBMANIFEST.json",
+  "authorized_object_submanifest_sha256": "c33b575cc436db795086458a25ca38fe1527f649809e549caba00e9754422e58",
+  "authorized_objects": 30336,
+  "controlled_scientific_history_reads": 0,
+  "counts_by_family": {
+    "USD_M_MONTHLY_1D_PERPETUAL_KLINE": 15254,
+    "USD_M_MONTHLY_FUNDING_RATE": 15082
+  },
+  "duplicate_canonical_object_ids": 0,
+  "eligible_symbols": 467,
+  "frozen_science_changed": false,
+  "lifecycle_stage": "STAGE6_CONTROLLED_EXECUTION_BOUNDARY",
+  "parent_manifest_sha256_verified": true,
+  "parent_symbol_universe_sha256_verified": true,
+  "research_id": "BRRK-CRYPTO-CROSS-SECTIONAL-LS-0076",
+  "schema_version": 1,
+  "scientific_engine_consumed": 0,
+  "scientific_payload_file_contents_opened": false,
+  "scientific_rows_parsed": false,
+  "scientific_source_network_fetches": 0,
+  "scientific_values_exposed": false,
+  "selected_objects_missing_checksum_filename": 0,
+  "selected_objects_missing_staged_payload_filename": 0,
+  "stage8_attempt_consumed": 0,
+  "unique_canonical_object_ids": 30336,
+  "validation_result": "PASS"
+}
