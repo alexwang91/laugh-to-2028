@@ -1,8 +1,7 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
 from datetime import date
-from math import exp, isfinite, log, sqrt
+from math import isfinite, log, sqrt
 from statistics import stdev
 from typing import Any, Mapping
 import json
@@ -38,14 +37,8 @@ class TrendExecutionError(RuntimeError):
     pass
 
 
-@dataclass(frozen=True)
-class Series:
-    dates: tuple[str, ...]
-    values: tuple[float, ...]
-
-
 class TrendVolTargetEngine:
-    """Pure deterministic 0085 engine. The common runner owns read/once semantics."""
+    """Pure deterministic 0085 engine; the common runner owns exactly-once I/O."""
 
     def execute(self, context: Any) -> Mapping[str, Any]:
         try:
@@ -58,50 +51,47 @@ class TrendVolTargetEngine:
             }
 
 
-def _json(raw: bytes, name: str) -> Any:
+def _load_json(raw: bytes, name: str) -> Any:
     try:
         return json.loads(raw.decode("utf-8"))
     except Exception as exc:
         raise TrendExecutionError(f"INVALID_JSON:{name}") from exc
 
 
-def _validate_date(text: Any) -> str:
-    if not isinstance(text, str):
+def _iso_date(value: Any) -> str:
+    if not isinstance(value, str):
         raise TrendExecutionError("INVALID_DATE")
     try:
-        parsed = date.fromisoformat(text)
+        return date.fromisoformat(value).isoformat()
     except ValueError as exc:
         raise TrendExecutionError("INVALID_DATE") from exc
-    return parsed.isoformat()
 
 
-def _price_series(raw: bytes, name: str) -> Series:
-    rows = _json(raw, name)
+def _parse_prices(raw: bytes, name: str) -> dict[str, float]:
+    rows = _load_json(raw, name)
     if not isinstance(rows, list) or len(rows) < 2:
         raise TrendExecutionError(f"INVALID_PRICE_ROWS:{name}")
-    dates: list[str] = []
-    vals: list[float] = []
+    out: dict[str, float] = {}
     previous: str | None = None
     for row in rows:
         if not isinstance(row, dict):
             raise TrendExecutionError(f"INVALID_PRICE_ROW:{name}")
-        d = _validate_date(row.get("date"))
+        d = _iso_date(row.get("date"))
         try:
-            v = float(row.get("close"))
+            px = float(row.get("close"))
         except (TypeError, ValueError) as exc:
             raise TrendExecutionError(f"INVALID_PRICE:{name}") from exc
-        if not isfinite(v) or v <= 0:
+        if not isfinite(px) or px <= 0:
             raise TrendExecutionError(f"INVALID_PRICE:{name}")
         if previous is not None and d <= previous:
             raise TrendExecutionError(f"NON_INCREASING_DATE:{name}")
         previous = d
-        dates.append(d)
-        vals.append(v)
-    return Series(tuple(dates), tuple(vals))
+        out[d] = px
+    return out
 
 
-def _return_series(raw: bytes, name: str) -> dict[str, float]:
-    rows = _json(raw, name)
+def _parse_returns(raw: bytes, name: str) -> dict[str, float]:
+    rows = _load_json(raw, name)
     if not isinstance(rows, list):
         raise TrendExecutionError(f"INVALID_RETURN_ROWS:{name}")
     out: dict[str, float] = {}
@@ -109,31 +99,33 @@ def _return_series(raw: bytes, name: str) -> dict[str, float]:
     for row in rows:
         if not isinstance(row, dict):
             raise TrendExecutionError(f"INVALID_RETURN_ROW:{name}")
-        d = _validate_date(row.get("date"))
+        d = _iso_date(row.get("date"))
         try:
-            v = float(row.get("return"))
+            ret = float(row.get("return"))
         except (TypeError, ValueError) as exc:
             raise TrendExecutionError(f"INVALID_RETURN:{name}") from exc
-        if not isfinite(v) or v <= -1:
+        if not isfinite(ret) or ret <= -1:
             raise TrendExecutionError(f"INVALID_RETURN:{name}")
         if previous is not None and d <= previous:
             raise TrendExecutionError(f"NON_INCREASING_DATE:{name}")
-        if d in out:
-            raise TrendExecutionError(f"DUPLICATE_DATE:{name}")
         previous = d
-        out[d] = v
+        out[d] = ret
     return out
 
 
-def _sample_vol(xs: list[float]) -> float:
-    if len(xs) < 2:
+def _annualized_sample_vol(values: list[float]) -> float:
+    if len(values) < 2:
         return float("nan")
-    v = stdev(xs) * sqrt(ANNUALIZATION)
-    return v if isfinite(v) and v > 0 else float("nan")
+    value = stdev(values) * sqrt(ANNUALIZATION)
+    return value if isfinite(value) and value > 0 else float("nan")
 
 
-def _metric_bundle(returns: list[float]) -> dict[str, float | int]:
+def _metrics(returns: list[float], risk_free: list[float] | None = None) -> dict[str, float | int]:
     n = len(returns)
+    if risk_free is None:
+        risk_free = [0.0] * n
+    if len(risk_free) != n:
+        raise TrendExecutionError("RISK_FREE_SUPPORT_MISMATCH")
     if n == 0:
         return {
             "sessions": 0,
@@ -144,24 +136,27 @@ def _metric_bundle(returns: list[float]) -> dict[str, float | int]:
             "calmar": 0.0,
             "terminal_wealth_multiple": 1.0,
         }
+
     wealth = 1.0
     peak = 1.0
     max_dd = 0.0
-    for r in returns:
-        wealth *= 1.0 + r
+    for ret in returns:
+        wealth *= 1.0 + ret
         peak = max(peak, wealth)
-        if peak > 0:
-            max_dd = min(max_dd, wealth / peak - 1.0)
+        max_dd = min(max_dd, wealth / peak - 1.0)
+
     years = n / ANNUALIZATION
     cagr = wealth ** (1.0 / years) - 1.0 if wealth > 0 and years > 0 else -1.0
-    vol = stdev(returns) * sqrt(ANNUALIZATION) if n >= 2 else 0.0
-    mean_ann = sum(returns) / n * ANNUALIZATION
-    sharpe = mean_ann / vol if vol > 0 else 0.0
+    ann_vol = stdev(returns) * sqrt(ANNUALIZATION) if n >= 2 else 0.0
+    excess = [ret - rf for ret, rf in zip(returns, risk_free)]
+    excess_vol = stdev(excess) * sqrt(ANNUALIZATION) if n >= 2 else 0.0
+    excess_mean = sum(excess) / n * ANNUALIZATION
+    sharpe = excess_mean / excess_vol if excess_vol > 0 else 0.0
     calmar = cagr / abs(max_dd) if max_dd < 0 else (float("inf") if cagr > 0 else 0.0)
     return {
         "sessions": n,
         "cagr": cagr,
-        "annualized_volatility": vol,
+        "annualized_volatility": ann_vol,
         "sharpe": sharpe,
         "maximum_drawdown": max_dd,
         "calmar": calmar,
@@ -169,158 +164,171 @@ def _metric_bundle(returns: list[float]) -> dict[str, float | int]:
     }
 
 
-def _corr(a: list[float], b: list[float]) -> float | None:
-    if len(a) != len(b) or len(a) < 2:
+def _corr(left: list[float], right: list[float]) -> float | None:
+    if len(left) != len(right) or len(left) < 2:
         return None
-    ma = sum(a) / len(a)
-    mb = sum(b) / len(b)
-    da = [x - ma for x in a]
-    db = [x - mb for x in b]
-    va = sum(x * x for x in da)
-    vb = sum(x * x for x in db)
-    if va <= 0 or vb <= 0:
+    ml = sum(left) / len(left)
+    mr = sum(right) / len(right)
+    dl = [x - ml for x in left]
+    dr = [x - mr for x in right]
+    vl = sum(x * x for x in dl)
+    vr = sum(x * x for x in dr)
+    if vl <= 0 or vr <= 0:
         return None
-    return sum(x * y for x, y in zip(da, db)) / sqrt(va * vb)
+    return sum(x * y for x, y in zip(dl, dr)) / sqrt(vl * vr)
 
 
-def _chronological_blocks(returns: list[float]) -> list[list[float]]:
-    n = len(returns)
+def _blocks(values: list[float]) -> list[list[float]]:
+    n = len(values)
     bounds = [round(i * n / 4) for i in range(5)]
-    return [returns[bounds[i]:bounds[i + 1]] for i in range(4)]
-
-
-def _month_key(d: str) -> str:
-    return d[:7]
+    return [values[bounds[i] : bounds[i + 1]] for i in range(4)]
 
 
 def run_from_sources(sources: Mapping[str, bytes]) -> Mapping[str, Any]:
     names = set(sources)
-    unknown = names - ALLOWED_SOURCE_NAMES
     required = set(PRICE_FILES.values())
+    unknown = names - ALLOWED_SOURCE_NAMES
     if unknown:
         raise TrendExecutionError(f"UNKNOWN_SOURCE:{sorted(unknown)}")
     if not required.issubset(names):
         raise TrendExecutionError(f"MISSING_REQUIRED_SOURCE:{sorted(required - names)}")
 
-    px = {asset: _price_series(sources[fname], fname) for asset, fname in PRICE_FILES.items()}
-    maps = {asset: dict(zip(series.dates, series.values)) for asset, series in px.items()}
-    common_dates = sorted(set.intersection(*(set(m) for m in maps.values())))
+    price_maps = {asset: _parse_prices(sources[name], name) for asset, name in PRICE_FILES.items()}
+    common_dates = sorted(set.intersection(*(set(series) for series in price_maps.values())))
     if len(common_dates) < 2:
         raise TrendExecutionError("NO_COMMON_PRICE_SUPPORT")
+    closes = {asset: [price_maps[asset][d] for d in common_dates] for asset in ASSETS}
+    log_returns = {
+        asset: [log(closes[asset][i] / closes[asset][i - 1]) for i in range(1, len(common_dates))]
+        for asset in ASSETS
+    }
+    simple_returns = {
+        asset: [closes[asset][i] / closes[asset][i - 1] - 1.0 for i in range(1, len(common_dates))]
+        for asset in ASSETS
+    }
 
-    closes = {asset: [maps[asset][d] for d in common_dates] for asset in ASSETS}
-    logrets = {asset: [log(closes[asset][i] / closes[asset][i - 1]) for i in range(1, len(common_dates))] for asset in ASSETS}
-    simple_rets = {asset: [closes[asset][i] / closes[asset][i - 1] - 1.0 for i in range(1, len(common_dates))] for asset in ASSETS}
+    cash_bound = "cash_daily.json" in sources
+    cash_map = _parse_returns(sources["cash_daily.json"], "cash_daily.json") if cash_bound else {}
+    canonical_bound = "canonical_brrk_daily.json" in sources
+    canonical_map = (
+        _parse_returns(sources["canonical_brrk_daily.json"], "canonical_brrk_daily.json")
+        if canonical_bound
+        else {}
+    )
 
-    cash_map = _return_series(sources["cash_daily.json"], "cash_daily.json") if "cash_daily.json" in sources else {}
-    canonical_map = _return_series(sources["canonical_brrk_daily.json"], "canonical_brrk_daily.json") if "canonical_brrk_daily.json" in sources else {}
-
-    target_weights: list[dict[str, float]] = []
-    target_dates: list[str] = []
     start_i = max(HORIZONS)
+    weights_by_decision: list[dict[str, float]] = []
     for i in range(start_i, len(common_dates) - 1):
         active: list[str] = []
         vols: dict[str, float] = {}
         for asset in ASSETS:
-            signs = []
-            for h in HORIZONS:
-                lr = log(closes[asset][i] / closes[asset][i - h])
-                signs.append(1 if lr > 0 else 0)
-            vol20 = _sample_vol(logrets[asset][i - VOL_WINDOW:i])
-            if sum(signs) >= 3 and isfinite(vol20) and vol20 > 0:
+            positive = sum(1 for h in HORIZONS if log(closes[asset][i] / closes[asset][i - h]) > 0)
+            vol20 = _annualized_sample_vol(log_returns[asset][i - VOL_WINDOW : i])
+            if positive >= 3 and isfinite(vol20) and vol20 > 0:
                 active.append(asset)
                 vols[asset] = vol20
+
         if not active:
             weights = {asset: 0.0 for asset in ASSETS}
         else:
-            raw = {asset: 1.0 / vols[asset] for asset in active}
-            raw_total = sum(raw.values())
-            normalized = {asset: raw[asset] / raw_total for asset in active}
-            weighted_hist = []
-            for j in range(i - VOL_WINDOW, i):
-                weighted_hist.append(sum(normalized[a] * logrets[a][j] for a in active))
-            pvol = _sample_vol(weighted_hist)
-            scaler = min(1.0, VOL_TARGET / pvol) if isfinite(pvol) and pvol > 0 else 0.0
+            inverse = {asset: 1.0 / vols[asset] for asset in active}
+            total_inverse = sum(inverse.values())
+            normalized = {asset: inverse[asset] / total_inverse for asset in active}
+            portfolio_history = [
+                sum(normalized[asset] * log_returns[asset][j] for asset in active)
+                for j in range(i - VOL_WINDOW, i)
+            ]
+            portfolio_vol = _annualized_sample_vol(portfolio_history)
+            scaler = min(1.0, VOL_TARGET / portfolio_vol) if isfinite(portfolio_vol) and portfolio_vol > 0 else 0.0
             weights = {asset: normalized.get(asset, 0.0) * scaler for asset in ASSETS}
-        gross = sum(weights.values())
-        if gross < -1e-12 or gross > 1.0 + 1e-12 or any(v < -1e-12 for v in weights.values()):
-            raise TrendExecutionError("GROSS_OR_SHORT_VIOLATION")
-        target_dates.append(common_dates[i])
-        target_weights.append(weights)
 
-    candidate_by_cost: dict[int, list[float]] = {bps: [] for bps in COST_BPS}
+        gross = sum(weights.values())
+        if gross < -1e-12 or gross > 1.0 + 1e-12 or any(weight < -1e-12 for weight in weights.values()):
+            raise TrendExecutionError("GROSS_OR_SHORT_VIOLATION")
+        weights_by_decision.append(weights)
+
+    candidate_by_cost = {bps: [] for bps in COST_BPS}
     benchmark_ew: list[float] = []
     benchmark_btc: list[float] = []
+    cash_reference: list[float] = []
     candidate_dates: list[str] = []
     gross_series: list[float] = []
     turnover_series: list[float] = []
-    exposure_sums = {a: 0.0 for a in ASSETS}
-    previous = {a: 0.0 for a in ASSETS}
+    exposure_sums = {asset: 0.0 for asset in ASSETS}
+    previous = {asset: 0.0 for asset in ASSETS}
 
-    for k, weights in enumerate(target_weights):
-        i = start_i + k
-        ret_date = common_dates[i + 1]
-        asset_next = {a: simple_rets[a][i] for a in ASSETS}
-        risky = sum(weights[a] * asset_next[a] for a in ASSETS)
+    for offset, weights in enumerate(weights_by_decision):
+        i = start_i + offset
+        return_date = common_dates[i + 1]
+        if cash_bound and return_date not in cash_map:
+            raise TrendExecutionError(f"MISSING_BOUND_CASH_RETURN:{return_date}")
+        asset_next = {asset: simple_returns[asset][i] for asset in ASSETS}
         gross = sum(weights.values())
-        cash_weight = max(0.0, 1.0 - gross)
-        cash_ret = cash_map.get(ret_date, 0.0)
-        gross_ret = risky + cash_weight * cash_ret
-        turnover = sum(abs(weights[a] - previous[a]) for a in ASSETS)
+        cash_return = cash_map[return_date] if cash_bound else 0.0
+        gross_return = sum(weights[asset] * asset_next[asset] for asset in ASSETS) + (1.0 - gross) * cash_return
+        turnover = sum(abs(weights[asset] - previous[asset]) for asset in ASSETS)
         for bps in COST_BPS:
-            candidate_by_cost[bps].append(gross_ret - turnover * bps / 10000.0)
+            candidate_by_cost[bps].append(gross_return - turnover * bps / 10000.0)
         benchmark_ew.append(sum(asset_next.values()) / 3.0)
         benchmark_btc.append(asset_next["BTC"])
-        candidate_dates.append(ret_date)
+        cash_reference.append(cash_return)
+        candidate_dates.append(return_date)
         gross_series.append(gross)
         turnover_series.append(turnover)
-        for a in ASSETS:
-            exposure_sums[a] += weights[a]
+        for asset in ASSETS:
+            exposure_sums[asset] += weights[asset]
         previous = weights
 
     support = len(candidate_dates)
-    metrics = {bps: _metric_bundle(candidate_by_cost[bps]) for bps in COST_BPS}
-    ew_metrics = _metric_bundle(benchmark_ew)
-    btc_metrics = _metric_bundle(benchmark_btc)
-
+    metrics = {bps: _metrics(candidate_by_cost[bps], cash_reference) for bps in COST_BPS}
+    ew_metrics = _metrics(benchmark_ew, cash_reference)
+    btc_metrics = _metrics(benchmark_btc, cash_reference)
     primary = candidate_by_cost[10]
-    blocks = _chronological_blocks(primary)
-    block_cagrs = [float(_metric_bundle(block)["cagr"]) for block in blocks]
-    positive_blocks = sum(1 for x in block_cagrs if x > 0)
 
-    monthly_growth: dict[str, float] = {}
-    for d, r in zip(candidate_dates, primary):
-        monthly_growth[_month_key(d)] = monthly_growth.get(_month_key(d), 0.0) + log(1.0 + r)
-    positive_growth = [x for x in monthly_growth.values() if x > 0]
-    total_positive = sum(positive_growth)
-    best5_share = sum(sorted(positive_growth, reverse=True)[:5]) / total_positive if total_positive > 0 else None
+    block_cagrs = [float(_metrics(block)["cagr"]) for block in _blocks(primary)]
+    positive_blocks = sum(value > 0 for value in block_cagrs)
 
-    canonical_common_candidate: list[float] = []
-    canonical_common: list[float] = []
-    for d, r in zip(candidate_dates, primary):
+    monthly_log_growth: dict[str, float] = {}
+    for d, ret in zip(candidate_dates, primary):
+        monthly_log_growth[d[:7]] = monthly_log_growth.get(d[:7], 0.0) + log(1.0 + ret)
+    positive_months = [value for value in monthly_log_growth.values() if value > 0]
+    total_positive_growth = sum(positive_months)
+    best5_share = (
+        sum(sorted(positive_months, reverse=True)[:5]) / total_positive_growth
+        if total_positive_growth > 0
+        else None
+    )
+
+    canonical_candidate: list[float] = []
+    canonical_returns: list[float] = []
+    for d, ret in zip(candidate_dates, primary):
         if d in canonical_map:
-            canonical_common_candidate.append(r)
-            canonical_common.append(canonical_map[d])
+            canonical_candidate.append(ret)
+            canonical_returns.append(canonical_map[d])
+    canonical_corr = _corr(canonical_candidate, canonical_returns) if canonical_bound else None
+    required_benchmark_measurement_ok = (not canonical_bound) or canonical_corr is not None
 
     avg_gross = sum(gross_series) / support if support else 0.0
     annualized_turnover = sum(turnover_series) / support * ANNUALIZATION if support else 0.0
+    zero_gross_pct = sum(abs(value) <= 1e-15 for value in gross_series) / support if support else 0.0
+    asset_avg = {asset: exposure_sums[asset] / support if support else 0.0 for asset in ASSETS}
     cost_drag = {bps: sum(turnover_series) * bps / 10000.0 for bps in COST_BPS}
-    zero_gross_pct = sum(1 for x in gross_series if abs(x) <= 1e-15) / support if support else 0.0
-    asset_avg = {a: exposure_sums[a] / support if support else 0.0 for a in ASSETS}
 
-    if support < MIN_SUPPORT:
+    if support < MIN_SUPPORT or not required_benchmark_measurement_ok:
         classification = "INCONCLUSIVE_INSUFFICIENT_SUPPORT"
-        gates = {"minimum_support": False}
+        gates = {
+            "minimum_support": support >= MIN_SUPPORT,
+            "required_benchmark_measurement": required_benchmark_measurement_ok,
+        }
     else:
         p10 = metrics[10]
         p20 = metrics[20]
         p30 = metrics[30]
         candidate_mdd = abs(float(p10["maximum_drawdown"]))
         ew_mdd = abs(float(ew_metrics["maximum_drawdown"]))
-        wealth_gate = float(p10["terminal_wealth_multiple"]) >= 0.85 * float(ew_metrics["terminal_wealth_multiple"])
-        dd_gate = candidate_mdd <= ew_mdd if ew_mdd < 0.20 else candidate_mdd <= ew_mdd - 0.05
         gates = {
             "minimum_support": True,
+            "required_benchmark_measurement": True,
             "primary_cagr_positive": float(p10["cagr"]) > 0,
             "primary_sharpe_ge_0_80": float(p10["sharpe"]) >= 0.80,
             "primary_calmar_ge_1_00": float(p10["calmar"]) >= 1.00,
@@ -328,11 +336,16 @@ def run_from_sources(sources: Mapping[str, bytes]) -> Mapping[str, Any]:
             "stress20_sharpe_ge_0_65": float(p20["sharpe"]) >= 0.65,
             "severe30_cagr_positive": float(p30["cagr"]) > 0,
             "positive_blocks_ge_3": positive_blocks >= 3,
-            "wealth_ge_85pct_equal_weight": wealth_gate,
-            "drawdown_improvement": dd_gate,
-            "gross_cap_and_no_short": all(0.0 <= x <= 1.0 + 1e-12 for x in gross_series),
+            "wealth_ge_85pct_equal_weight": float(p10["terminal_wealth_multiple"])
+            >= 0.85 * float(ew_metrics["terminal_wealth_multiple"]),
+            "drawdown_improvement": candidate_mdd <= ew_mdd if ew_mdd < 0.20 else candidate_mdd <= ew_mdd - 0.05,
+            "gross_cap_and_no_short": all(0.0 <= gross <= 1.0 + 1e-12 for gross in gross_series),
         }
-        classification = "PASS_TREND_SLEEVE_DEVELOPMENT_SUPPORT" if all(gates.values()) else "FAIL_NO_ROBUST_TREND_SLEEVE_VALUE"
+        classification = (
+            "PASS_TREND_SLEEVE_DEVELOPMENT_SUPPORT"
+            if all(gates.values())
+            else "FAIL_NO_ROBUST_TREND_SLEEVE_VALUE"
+        )
 
     if classification not in CLASSIFICATIONS:
         raise TrendExecutionError("BAD_CLASSIFICATION")
@@ -341,7 +354,7 @@ def run_from_sources(sources: Mapping[str, bytes]) -> Mapping[str, Any]:
         "classification": classification,
         "execution_valid": True,
         "support_sessions": support,
-        "cost_panels_bps": {str(b): metrics[b] for b in COST_BPS},
+        "cost_panels_bps": {str(bps): metrics[bps] for bps in COST_BPS},
         "benchmarks": {
             "equal_weight_btc_eth_sol": ew_metrics,
             "btc_buy_and_hold": btc_metrics,
@@ -349,18 +362,18 @@ def run_from_sources(sources: Mapping[str, bytes]) -> Mapping[str, Any]:
         "primary_diagnostics": {
             "average_risky_gross_exposure": avg_gross,
             "annualized_turnover": annualized_turnover,
-            "cost_drag": {str(k): v for k, v in cost_drag.items()},
+            "cost_drag": {str(bps): value for bps, value in cost_drag.items()},
             "zero_risky_gross_session_pct": zero_gross_pct,
             "asset_average_exposure": asset_avg,
             "chronological_block_cagr": block_cagrs,
             "worst_block_cagr": min(block_cagrs) if block_cagrs else None,
             "best_five_month_positive_log_growth_share": best5_share,
             "correlation_equal_weight": _corr(primary, benchmark_ew),
-            "correlation_canonical_brrk": _corr(canonical_common_candidate, canonical_common),
+            "correlation_canonical_brrk": canonical_corr,
         },
         "gates": gates,
-        "cash_rule": "ARM_BOUND_CASH_DAILY" if "cash_daily.json" in sources else "ZERO_CASH_RETURN",
-        "canonical_brrk_present": "canonical_brrk_daily.json" in sources,
+        "cash_rule": "ARM_BOUND_CASH_DAILY" if cash_bound else "ZERO_CASH_RETURN",
+        "canonical_brrk_present": canonical_bound,
         "frozen_parameters": {
             "assets": list(ASSETS),
             "horizons": list(HORIZONS),
