@@ -1,0 +1,117 @@
+{
+  "research_id": "BRRK-CROSS-SECTIONAL-MOMENTUM-FACTOR-ATLAS-0086",
+  "research_family_id": "CROSS_SECTIONAL_MOMENTUM_FACTOR_ATLAS",
+  "research_domain": "RELATIVE_VALUE",
+  "research_governance_version": 1,
+  "governance_mode": "PROGRAM_GOVERNED_V1",
+  "objective_type": "FACTOR_VALIDATION",
+  "created_at": "2026-08-25T15:55:00Z",
+  "created_before_result": true,
+  "question": "Does one independently motivated, prospectively fixed cross-sectional 60-session price-momentum factor contain reproducible positive 5-session forward ranking information across a point-in-time liquid crypto perpetual universe after strict causal timing, support, dependence-aware inference and temporal/regime robustness, without factor selection or result-informed rescue?",
+  "hypothesis": "Assets with stronger trailing 60-session return at weekly decision time will on average rank above weaker trailing-return assets over the next fully matured 5 sessions, with positive ranking information that remains stable across time and broad BTC market states.",
+  "hypothesis_origin": "PROSPECTIVE_INDEPENDENT_SINGLE_FACTOR_QUESTION_AFTER_0084_INVALID_EXECUTION_WITH_ZERO_ADMISSIBLE_FACTOR_RESULTS",
+  "economic_mechanism": "Gradual information diffusion, persistent capital flows, heterogeneous investor updating and slow portfolio rebalancing can generate cross-sectional return continuation.",
+  "primary_target": "ROBUST_POSITIVE_WEEKLY_MOM60_TO_FWD5_SPEARMAN_RANK_IC",
+  "primary_metric": "FROZEN_G0_G9_PASS_GATES_ON_WEEKLY_MOM60_FWD5_RANK_IC",
+  "secondary_metrics": [
+    "median_weekly_spearman_ic",
+    "positive_weekly_ic_fraction",
+    "hac_lag4_t_stat",
+    "moving_block_bootstrap_mean_ic_lcb",
+    "calendar_year_mean_ic",
+    "four_chronological_block_mean_ic",
+    "btc_up_nonup_state_mean_ic",
+    "leave_one_calendar_year_out_mean_ic",
+    "eligible_cross_section_count",
+    "liquidity_state_diagnostics"
+  ],
+  "feature_families": [
+    "CROSS_SECTIONAL_PRICE_MOMENTUM_MOM60_RAW"
+  ],
+  "horizon": "WEEKLY_MONDAY_UTC_CLOSE_DECISION_TO_FULLY_MATURED_5_SESSION_FORWARD_RETURN",
+  "universe": [
+    "POINT_IN_TIME_TOP30_BY_TRAILING30_MEDIAN_QUOTE_VOLUME_BINANCE_USDM_USDT_PERPETUALS"
+  ],
+  "development_dataset_refs": [],
+  "validation_dataset_refs": [],
+  "sealed_dataset_refs": [],
+  "declared_variant_budget": 1,
+  "actual_variants_evaluated": 0,
+  "parameter_candidate_count": 1,
+  "stopping_rule": "Use PROSPECTIVE_FIVE_GATE_LIFECYCLE_V1. SPEC_FREEZE precedes controlled values; BUILD uses synthetic/nonhistorical fixtures only; ARM binds exact controlled identities and source-qualified interface; RUN consumes at most one authorized attempt through ControlledResearchRunnerV1SourceQualified; SEAL performs no scientific recomputation. No same-ID rerun, retune, rescue, source substitution, candidate replacement or history extension after marker durability.",
+  "success_criteria": [
+    "At least 104 valid weekly IC observations.",
+    "Mean weekly Spearman IC >=0.025.",
+    "Moving-block-bootstrap 95% lower bound for mean weekly IC >0.",
+    "Fraction of weekly IC observations >0 >=0.55.",
+    "At least 3/4 chronological blocks have mean IC >0 and none has mean IC <=-0.025.",
+    "At least 3 calendar years each have >=20 valid weekly observations and positive mean IC.",
+    "BTC_UP and BTC_NONUP each have >=30 observations and positive mean IC.",
+    "Every eligible leave-one-calendar-year-out mean IC remains >0.",
+    "All identity, causality, finite-statistic, read, candidate, persistence, source-interface and exactly-once invariants pass."
+  ],
+  "failure_criteria": [
+    "Valid execution with sufficient support but any frozen G1-G8 scientific gate failing produces FAIL_NO_ROBUST_MOM60_FACTOR.",
+    "Valid execution with insufficient frozen support produces INCONCLUSIVE_INSUFFICIENT_SUPPORT.",
+    "Any source identity, manifest/hash, schema, timestamp, point-in-time membership, read-count, candidate-count, non-finite, persistence, network, marker-ordering, source-interface or exactly-once violation produces INVALID_EXECUTION."
+  ],
+  "allowed_followup": [
+    "Only immutable PASS_VALIDATED_MOM60_FACTOR may make this exact factor eligible for a separately governed future Factor L/S research ID.",
+    "PASS may also motivate separately preregistered forward-only validation."
+  ],
+  "forbidden_followup": [
+    "No inheritance of factor results or lifecycle credit from 0075 or 0084.",
+    "No same-ID alternate momentum lookback, skip window, sign, residualization, volatility scaling, nonlinear transform, factor family, universe rule, support threshold, bootstrap rule, seed, PASS threshold, candidate addition, rerun, retune, rescue, recomputation or source substitution after controlled exposure.",
+    "No production, signing, order, withdrawal or transfer authority."
+  ],
+  "researcher_decisions": [
+    "Adopt PROSPECTIVE_FIVE_GATE_LIFECYCLE_V1.",
+    "Test exactly one independently justified factor: MOM60_RAW = log(close_t/close_t-60).",
+    "Use Monday UTC-close decisions and fully matured 5-session forward returns.",
+    "Use point-in-time top-30 trailing-30-session median quote-volume eligibility with minimum 120 completed daily sessions and minimum cross-section size 10.",
+    "Use mean weekly Spearman IC as primary statistic, MBB block length 8, 10000 replicates, seed 860086, and frozen G0-G9 gates.",
+    "Treat all controlled history as researcher-exposed DEVELOPMENT, not independent OOS.",
+    "0086 is scientifically narrower than 0084's 16-factor/64-trial atlas and does not retry 0084."
+  ],
+  "research_process_complexity": {
+    "declared_parameter_candidates": [
+      "MOM60_RAW_ONLY"
+    ],
+    "actual_parameter_candidates_evaluated": 0,
+    "universes_evaluated": 1,
+    "horizons_evaluated": [
+      "FWD5_ONLY"
+    ],
+    "rebalance_variants": [
+      "MONDAY_UTC_CLOSE_ONLY"
+    ],
+    "feature_representations": [
+      "RAW_CROSS_SECTIONAL_RANK_ONLY"
+    ],
+    "special_cases_introduced": [],
+    "validation_exposure_event_refs": [],
+    "related_family_trials": 1
+  },
+  "lineage_edges": [],
+  "result_status": "SPEC_FREEZE_PREPARED_NOT_MERGED",
+  "failure_reason": null,
+  "promotion_state": "NONE",
+  "evidence_refs": [],
+  "decision_refs": [
+    "research/brrk_cross_sectional_momentum_factor_atlas_0086/SPEC_FREEZE.md",
+    "research/governance/PROSPECTIVE_FIVE_GATE_LIFECYCLE_V1.md",
+    "research/governance/CONTROLLED_RESEARCH_RUNNER_V1_SOURCE_INTERFACE_QUALIFICATION_2026-08-25.md"
+  ],
+  "production_relevance": "Research-only DEVELOPMENT factor validation. PASS grants only later governed research eligibility.",
+  "production_authorized": false,
+  "provenance_status": "PROSPECTIVE_DECLARED_BEFORE_RESULT",
+  "governed_path_prefixes": [
+    "research/brrk_cross_sectional_momentum_factor_atlas_0086/"
+  ],
+  "notes": [
+    "This staged payload must be inserted atomically into config/research_registry.json before SPEC_FREEZE can merge.",
+    "0084 remains immutable INVALID_EXECUTION with no admissible scientific factor result.",
+    "0086 receives zero attempt, lifecycle, result, factor-selection or scientific-value credit from 0075/0084.",
+    "Any future common-runner-caused INVALID_EXECUTION stops new science pending repair and requalification."
+  ]
+}
