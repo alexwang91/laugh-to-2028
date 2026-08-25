@@ -1,0 +1,33 @@
+name: 0085 clean SPEC_FREEZE writer
+
+on:
+  push:
+    branches:
+      - research/0085-trend-spec-freeze-clean-v2
+
+permissions:
+  contents: write
+
+jobs:
+  write-clean-spec-freeze:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/0085-trend-spec-freeze-clean-v2
+          fetch-depth: 0
+      - name: Introduce registry owner and governed path in one commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin research/0085-trend-spec-freeze-v1
+          mkdir -p research/brrk_multi_horizon_trend_vol_target_0085
+          git show origin/research/0085-trend-spec-freeze-v1:research/brrk_multi_horizon_trend_vol_target_0085/SPEC_FREEZE.md > research/brrk_multi_horizon_trend_vol_target_0085/SPEC_FREEZE.md
+          git show origin/research/0085-trend-spec-freeze-v1:config/research_registry.json > config/research_registry.json
+          git show origin/research/0085-trend-spec-freeze-v1:docs/CURRENT_STATE.md > docs/CURRENT_STATE.md
+          rm -f .github/workflows/0085-clean-spec-freeze-writer.yml
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add config/research_registry.json docs/CURRENT_STATE.md research/brrk_multi_horizon_trend_vol_target_0085/SPEC_FREEZE.md .github/workflows/0085-clean-spec-freeze-writer.yml
+          git commit -m 'research: atomically register and freeze 0085 Trend'
+          git push origin HEAD:research/0085-trend-spec-freeze-clean-v2
