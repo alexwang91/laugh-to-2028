@@ -1,8 +1,10 @@
 # 0087 BUILD CI handoff
 
-This connector-authored commit exists only to trigger standing pull-request governance checks after the one-shot durable `CURRENT_STATE` writer removed itself.
+This connector-authored commit triggers standing pull-request governance checks after the one-shot durable `CURRENT_STATE` writers removed themselves.
 
-It changes no scientific definition, source identity, attempt budget, controlled-read budget, runner contract, result path, or authority.
+The final BUILD head includes the settlement-convention correction: `economic_core.py` uses a source-convention-neutral normalized PnL interface, while ARM must prove and freeze the Deribit settlement convention, common numeraire, and hedge-target semantics from metadata/schema before any controlled value exposure. The stale synthetic linear-payoff helper has been removed from `engine.py`.
+
+This handoff changes no source identity, attempt budget, controlled-read budget, runner contract, result path, or authority.
 
 ## What did not change
 
