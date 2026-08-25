@@ -1,4 +1,4 @@
-name: 0085 BUILD CURRENT_STATE one-shot writer
+name: Sync 0085 BUILD current state
 
 on:
   push:
@@ -9,27 +9,25 @@ permissions:
   contents: write
 
 jobs:
-  sync-current-state:
-    if: github.actor != 'github-actions[bot]'
+  sync:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           ref: research/0085-trend-build-v1
           fetch-depth: 0
-      - name: Append governed BUILD handoff and self-remove
+      - name: Update handoff
         shell: bash
         run: |
           python - <<'PY'
           from pathlib import Path
-
-          path = Path('docs/CURRENT_STATE.md')
-          text = path.read_text(encoding='utf-8')
-          immutable = 'workflow run                         31381953131 / attempt 1'
-          assert text.count(immutable) == 1
-          marker = '## 0085 Trend BUILD — 2026-08-25'
-          assert marker not in text
-          addition = '''
+          p = Path("docs/CURRENT_STATE.md")
+          s = p.read_text(encoding="utf-8")
+          anchor = "workflow run                         31381953131 / attempt 1"
+          marker = "## 0085 Trend BUILD — 2026-08-25"
+          assert s.count(anchor) == 1
+          assert marker not in s
+          s = s.rstrip() + """
 
 ## 0085 Trend BUILD — 2026-08-25
 
@@ -39,18 +37,16 @@ jobs:
 - Standing mandatory CI executes the synthetic 0085 BUILD qualification through `research/governance/test_0085_trend_build.py`; these tests use no controlled scientific payload.
 - 0074 and 0084 remain immutable `INVALID_EXECUTION`; 0076 remains sealed at the Stage7 pre-marker read-boundary incident with no same-ID continuation; 0072/0073 remain closed/paused; 0083 remains immutable FAIL. Production/signature/order/withdrawal/transfer authority remains false.
 - After terminal-green BUILD merge, the next legal 0085 gate is ARM only: bind exact source identities/hashes/sizes, read/call budgets, optional cash/canonical presence, qualified common-runner identity, and a zero-result metadata-only preflight. ARM may not read controlled payload.
-'''
-          path.write_text(text.rstrip() + addition + '\n', encoding='utf-8')
-          updated = path.read_text(encoding='utf-8')
-          assert updated.count(immutable) == 1
-          assert updated.count(marker) == 1
+""" + "\n"
+          p.write_text(s, encoding="utf-8")
+          assert p.read_text(encoding="utf-8").count(anchor) == 1
+          assert p.read_text(encoding="utf-8").count(marker) == 1
           PY
-
           git diff --check
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add docs/CURRENT_STATE.md
           git rm .github/workflows/0085-build-current-state-writer.yml
-          test "$(git diff --cached --name-only | sort)" = "$(printf '%s\n' '.github/workflows/0085-build-current-state-writer.yml' 'docs/CURRENT_STATE.md' | sort)"
-          git commit -m 'governance(0085): sync BUILD CURRENT_STATE handoff'
+          git diff --cached --check
+          git commit -m "governance(0085): sync BUILD CURRENT_STATE handoff"
           git push origin HEAD:research/0085-trend-build-v1
