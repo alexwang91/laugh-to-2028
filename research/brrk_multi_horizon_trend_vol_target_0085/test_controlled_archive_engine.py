@@ -83,6 +83,14 @@ def test_adapter_rejects_corrupt_inner_zip():
         normalize_controlled_sources(sources)
 
 
+def test_controlled_engine_propagates_adapter_failure_to_common_runner():
+    sources = _synthetic_sources(days=10)
+    first = next(iter(sources))
+    sources[first] = b"corrupt"
+    with pytest.raises(Exception, match="INVALID_INNER_ZIP"):
+        ControlledArchiveTrendEngine().execute(SimpleNamespace(sources=sources))
+
+
 def test_adapter_rejects_duplicate_asset_month_identity():
     sources = _synthetic_sources(days=10)
     original = _source_name("BTCUSDT", "2023-01")

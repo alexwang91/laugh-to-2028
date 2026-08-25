@@ -151,18 +151,18 @@ def normalize_controlled_sources(sources: Mapping[str, bytes]) -> dict[str, byte
 
 
 class ControlledArchiveTrendEngine:
-    """0085 engine interface for ARM-bound staged monthly ZIP objects."""
+    """0085 engine interface for ARM-bound staged monthly ZIP objects.
+
+    Adapter/runtime failures must propagate to CONTROLLED_RESEARCH_RUNNER_V1 so
+    the common runner can seal them as non-admissible INVALID_EXECUTION.  This
+    adapter must never convert an execution failure into a result Mapping,
+    because any Mapping is treated by the runner as a candidate scientific
+    result after exactly one engine invocation.
+    """
 
     def execute(self, context: Any) -> Mapping[str, Any]:
-        try:
-            normalized = normalize_controlled_sources(context.sources)
-            return run_from_sources(normalized)
-        except Exception as exc:
-            return {
-                "classification": "INVALID_EXECUTION",
-                "execution_valid": False,
-                "error": f"{type(exc).__name__}:{exc}",
-            }
+        normalized = normalize_controlled_sources(context.sources)
+        return run_from_sources(normalized)
 
 
 # Explicit alias for governance/readability.  The original JSON-only engine
