@@ -156,9 +156,15 @@ class ControlledResearchRunnerV1Qualification(unittest.TestCase):
 
     def test_fault_corrupted_zip_crc_is_only_discovered_after_marker(self):
         path = self.root / "source.zip"
-        raw = path.read_bytes()
-        self.assertIn(b"alpha", raw)
-        path.write_bytes(raw.replace(b"alpha", b"blpha", 1))
+        with zipfile.ZipFile(path, "r") as zf:
+            info = zf.getinfo("alpha.bin")
+        raw = bytearray(path.read_bytes())
+        local_header = info.header_offset
+        filename_len = int.from_bytes(raw[local_header + 26:local_header + 28], "little")
+        extra_len = int.from_bytes(raw[local_header + 28:local_header + 30], "little")
+        payload_offset = local_header + 30 + filename_len + extra_len
+        raw[payload_offset] ^= 0x01
+        path.write_bytes(raw)
         report, store, spec = self.run_good()
         self.assertTrue(report.marker_created)
         self.assertTrue(report.attempt_consumed)
