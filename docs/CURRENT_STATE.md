@@ -448,3 +448,14 @@ BUILD may use synthetic/nonhistorical fixtures only. ARM must bind qualifying po
 - `research/brrk_options_volatility_risk_premium_0087/economic_core.py` now freezes a source-convention-neutral economic core: ARM supplies entry premium, settlement payoff, hedge quotes and target units in one pre-exposure frozen numeraire; the core applies executable-side hedge accounting and C1 5 bps / C2 15 bps friction.
 - ARM must prove the source-native settlement convention, numeraire conversion and hedge-target semantics from metadata/schema before controlled value exposure. If that cannot be bound, the 0087 line stops before RUN.
 - This correction consumed no controlled reads, no scientific engine call, no attempt budget, and exposed no scientific values.
+
+## 0087 ARM source qualification blocker — 2026-08-25
+
+- 0087 BUILD is merged. ARM source qualification from exact main `20f2a5290bfb37ee2c6e02f2f2e9e0bd57f1b782` found no qualifying Deribit point-in-time controlled source metadata/schema for executable option bid/ask, contemporaneous IV, expiry/settlement, index closes, source-native hedge-target/delta semantics and executable daily hedge quotes.
+- Status is `BLOCKED_NO_QUALIFYING_CONTROLLED_SOURCE_METADATA`. This is a reversible pre-scientific source/data blocker, not PASS, FAIL, INCONCLUSIVE or INVALID_EXECUTION.
+- 0087 remains attempt `0/1`, controlled reads `0`, engine `0/1`, values unexposed and no RUN marker. No source substitution, post-exposure schema invention or alternative venue is authorized.
+- A future ARM continuation is legal only after independently staging qualifying point-in-time Deribit source data and proving metadata/schema before controlled value exposure.
+- 0086 remains ARM-complete at attempt `0/1` pending separate irreversible RUN authorization; Factor L/S remains blocked unless 0086 returns valid PASS.
+- 0085 remains immutable INVALID_EXECUTION attempt 1/1; 0076 sealed; 0072/0073 paused; 0083 immutable FAIL; Phase6 PASS closeout unchanged.
+- `workflow run                         31381953131 / attempt 1`, CAPTURE-0001 sealed/no-retry and CAPTURE-0002 permanently claimed/no-refetch remain immutable.
+- Production/signature/order/withdrawal/transfer authority remains false.
