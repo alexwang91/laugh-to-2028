@@ -5979,7 +5979,7 @@
       "research_family_id": "MULTI_HORIZON_TREND_VOL_TARGET",
       "research_domain": "DIRECTION_REGIME",
       "research_governance_version": 1,
-      "governance_mode": "PROSPECTIVE_FIVE_GATE_LIFECYCLE_V1",
+      "governance_mode": "PROGRAM_GOVERNED_V1",
       "objective_type": "ALPHA_DISCOVERY",
       "created_at": "2026-08-25T08:40:00Z",
       "created_before_result": true,
@@ -6073,14 +6073,7 @@
         "validation_exposure_event_refs": [],
         "related_family_trials": 1
       },
-      "lineage_edges": [
-        {
-          "relation": "SCIENTIFIC_QUESTION_REATTEMPT_AFTER_INVALID_EXECUTION_WITH_NEW_GOVERNANCE_INFRASTRUCTURE",
-          "ref_research_id": "BRRK-MULTI-ASSET-TREND-BENCHMARK-0074",
-          "provenance_status": "FACT",
-          "evidence_ref": "docs/CURRENT_STATE.md"
-        }
-      ],
+      "lineage_edges": [],
       "result_status": "PREREGISTERED_NOT_RUN",
       "failure_reason": null,
       "promotion_state": "NONE",
@@ -6099,7 +6092,8 @@
         "0085 receives no lifecycle credit, attempt budget, result evidence or parameter choice from 0074.",
         "SPEC_FREEZE combines OWNER-FIRST, DESIGN and PREREGISTRATION while preserving their internal logical order.",
         "Controlled source identities are bound later at ARM; no source substitution after ARM.",
-        "Any common-runner-caused INVALID_EXECUTION stops new science pending runner repair/requalification and does not create a replacement-ID retry chain."
+        "Any common-runner-caused INVALID_EXECUTION stops new science pending runner repair/requalification and does not create a replacement-ID retry chain.",
+        "Lifecycle grouping is governed by PROSPECTIVE_FIVE_GATE_LIFECYCLE_V1; registry governance_mode remains PROGRAM_GOVERNED_V1 for schema compatibility."
       ]
     }
   ],
