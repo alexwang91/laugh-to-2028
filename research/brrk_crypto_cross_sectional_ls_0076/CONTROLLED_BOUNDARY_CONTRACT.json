@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "research_id": "BRRK-CRYPTO-CROSS-SECTIONAL-LS-0076",
+  "lifecycle_stage": "STAGE6_CONTROLLED_EXECUTION_BOUNDARY_IN_PROGRESS",
+  "formal_completion_before_stage6_merge": "5/10",
+  "stage5_parent_merge": "0e453df9a1148919333a85d695bacfc9b35dbd39",
+  "frozen_science_changed": false,
+  "parent_zero_result_cache": {
+    "research_id": "BRRK-CRYPTO-CROSS-SECTIONAL-FACTOR-ATLAS-0075",
+    "authorized_object_manifest_git_blob": "74b119149e55c6c7a4fc641840b07c24bb27644a",
+    "authorized_object_manifest_sha256": "2f70384dd84a601b69528ef3d770e0fa9c714b3e0888bec009e93b5067ecebf8",
+    "symbol_universe_git_blob": "45c07672c6404593279333ec1995c0ae0203eed3",
+    "symbol_universe_sha256": "85337b0681d4e61fc60eef62f4f05b2ea6e43f7da9e7648b4d94032794f95dbd",
+    "staging_workflow_run": "32646565505",
+    "staging_workflow_conclusion": "SUCCESS",
+    "artifact_id": "9495175701",
+    "artifact_name": "0075-stage6-authorized-payloads-v1",
+    "parent_authorized_payload_objects": 53541,
+    "scientific_values_exposed_by_parent_stage6": false
+  },
+  "authorized_submanifest_selection": {
+    "derivation_mode": "METADATA_ONLY_OBJECT_PATH_IDENTITY_FILTER",
+    "source_family": "data.binance.vision public archive",
+    "required_parent_fields": [
+      "canonical_object_id",
+      "source_family",
+      "symbol",
+      "month",
+      "archive_path",
+      "paired_checksum_path",
+      "paired_checksum_identity",
+      "payload_sha256",
+      "frozen_object_role",
+      "scientific_content_read_budget"
+    ],
+    "symbol_suffix": "USDT",
+    "month_start": "2021-01",
+    "month_end": "2026-07",
+    "allowed_object_families": [
+      "USD_M_MONTHLY_1D_PERPETUAL_KLINES_FOR_MATCHING_SYMBOLS",
+      "USD_M_MONTHLY_FUNDING_RATE_FOR_MATCHING_SYMBOLS"
+    ],
+    "spot_objects_allowed": false,
+    "alternate_endpoint_allowed": false,
+    "alternate_venue_allowed": false,
+    "source_substitution_allowed": false,
+    "history_extension_allowed": false,
+    "scientific_payload_row_parse_allowed": false
+  },
+  "authorized_submanifest": {
+    "path": "research/brrk_crypto_cross_sectional_ls_0076/AUTHORIZED_OBJECT_SUBMANIFEST.json",
+    "status": "PENDING_METADATA_ONLY_DERIVATION",
+    "exact_object_enumeration_required": true,
+    "duplicate_object": "FAIL_CLOSED",
+    "extra_object": "FAIL_CLOSED",
+    "missing_object": "FAIL_CLOSED",
+    "hash_mismatch": "FAIL_CLOSED",
+    "paired_checksum_identity_required": true,
+    "payload_sha256_required": true,
+    "scientific_content_read_budget_per_object": 1
+  },
+  "stage6_zero_result_identity_staging_evidence": {
+    "status": "PENDING_EXACT_SUBMANIFEST_VALIDATION",
+    "durable_staging_required_before_stage7_pass": true,
+    "offline_readability_required_before_stage7_pass": true,
+    "identity_and_metadata_validation_only_before_stage8": true,
+    "scientific_payload_values_may_be_opened_during_stage6": false,
+    "scientific_payload_values_may_be_opened_during_stage7": false
+  },
+  "controlled_attempt": {
+    "budget": 1,
+    "consumed": 0,
+    "marker_before_first_controlled_read_required": true,
+    "durable_remote_verification_required": true
+  },
+  "controlled_scientific_history_reads": 0,
+  "scientific_engine_calls": {
+    "budget": 1,
+    "consumed": 0
+  },
+  "scientific_source_network_fetches": {
+    "budget": 0,
+    "consumed": 0
+  },
+  "scientific_values_exposed": false,
+  "run_attempt_marker_present": false,
+  "result_bundle_present": false,
+  "run_once_marker_present": false,
+  "production_authorized": false,
+  "signature_authorized": false,
+  "order_submission_authorized": false,
+  "stage6_lifecycle_credit_claimed": false,
+  "exact_next_step": "Derive and persist the exact 0076 authorized-object submanifest from the pinned parent manifest using metadata-only object-path identity filtering; validate exact identities, hashes, counts, staged artifact availability/readability, execution-interface identity, and zero-budget state without parsing scientific payload rows."
+}
