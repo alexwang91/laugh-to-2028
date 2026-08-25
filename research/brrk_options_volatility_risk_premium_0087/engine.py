@@ -9,7 +9,7 @@ BOOTSTRAP_SEED = 870087
 BOOTSTRAP_REPLICATES = 4_000
 BOOTSTRAP_BLOCK = 8
 HAC_LAG = 8
-MIN_TOTAL = 52
+MIN_TOTAL_WEEKS = 52
 MIN_PER_UNDERLYING = 20
 MIN_YEARS = 2
 UNDERLYINGS = ("BTC", "ETH")
@@ -85,6 +85,87 @@ def atm_ivar30(call: Mapping[str, Any], put: Mapping[str, Any]) -> float:
         raise OptionsVRPExecutionError("NONPOSITIVE_IV")
     iv = (call_iv + put_iv) / 2.0
     return iv * iv
+
+
+def delta_hedged_short_straddle_pnl(
+    call: Mapping[str, Any],
+    put: Mapping[str, Any],
+    settlement_spot: float,
+    hedge_path: Sequence[Mapping[str, Any]],
+    friction_bps: float,
+) -> float:
+    """Frozen pure economic core using source-native deltas and executable hedge quotes.
+
+    Each hedge row is one daily UTC hedge point with spot, executable bid/ask,
+    call_delta and put_delta. The last hedge row must coincide with settlement.
+    """
+    call_bid = _finite(call.get("bid"), "CALL_BID")
+    put_bid = _finite(put.get("bid"), "PUT_BID")
+    call_strike = _finite(call.get("strike"), "CALL_STRIKE")
+    put_strike = _finite(put.get("strike"), "PUT_STRIKE")
+    settle = _finite(settlement_spot, "SETTLEMENT_SPOT")
+    bps = _finite(friction_bps, "FRICTION_BPS")
+    if call_bid <= 0 or put_bid <= 0 or call_strike <= 0 or put_strike != call_strike or settle <= 0 or bps < 0:
+        raise OptionsVRPExecutionError("INVALID_ECONOMIC_INPUT")
+    if not hedge_path:
+        raise OptionsVRPExecutionError("EMPTY_HEDGE_PATH")
+
+    premium = call_bid + put_bid
+    hedge_pnl = 0.0
+    previous_spot: float | None = None
+    units = 0.0
+    last_bid = last_ask = last_spot = 0.0
+
+    for row in hedge_path:
+        spot = _finite(row.get("spot"), "HEDGE_SPOT")
+        bid = _finite(row.get("bid"), "HEDGE_BID")
+        ask = _finite(row.get("ask"), "HEDGE_ASK")
+        call_delta = _finite(row.get("call_delta"), "CALL_DELTA")
+        put_delta = _finite(row.get("put_delta"), "PUT_DELTA")
+        if spot <= 0 or bid <= 0 or ask <= 0 or ask < bid:
+            raise OptionsVRPExecutionError("INVALID_HEDGE_QUOTE")
+        if previous_spot is not None:
+            hedge_pnl += units * (spot - previous_spot)
+        target = call_delta + put_delta
+        trade = target - units
+        if trade > 0:
+            hedge_pnl -= trade * (ask - spot)
+        elif trade < 0:
+            hedge_pnl -= (-trade) * (spot - bid)
+        hedge_pnl -= abs(trade) * spot * bps / 10_000.0
+        units = target
+        previous_spot = spot
+        last_bid, last_ask, last_spot = bid, ask, spot
+
+    if abs(last_spot - settle) > max(1e-12, abs(settle) * 1e-12):
+        raise OptionsVRPExecutionError("HEDGE_PATH_SETTLEMENT_MISMATCH")
+
+    unwind = -units
+    if unwind > 0:
+        hedge_pnl -= unwind * (last_ask - last_spot)
+    elif unwind < 0:
+        hedge_pnl -= (-unwind) * (last_spot - last_bid)
+    hedge_pnl -= abs(unwind) * last_spot * bps / 10_000.0
+
+    strike = call_strike
+    option_payoff = max(settle - strike, 0.0) + max(strike - settle, 0.0)
+    option_pnl = premium - option_payoff
+    normalized = (option_pnl + hedge_pnl) / abs(premium)
+    if not isfinite(normalized):
+        raise OptionsVRPExecutionError("NONFINITE_NORMALIZED_PNL")
+    return normalized
+
+
+def economic_cost_panels(
+    call: Mapping[str, Any],
+    put: Mapping[str, Any],
+    settlement_spot: float,
+    hedge_path: Sequence[Mapping[str, Any]],
+) -> Mapping[str, float]:
+    return {
+        "pnl_c1": delta_hedged_short_straddle_pnl(call, put, settlement_spot, hedge_path, 5.0),
+        "pnl_c2": delta_hedged_short_straddle_pnl(call, put, settlement_spot, hedge_path, 15.0),
+    }
 
 
 def _quantile(values: Sequence[float], q: float) -> float:
@@ -189,15 +270,18 @@ def analyze_weekly_observations(rows: Sequence[Mapping[str, Any]]) -> Mapping[st
         )
     normalized.sort(key=lambda row: (row["week"], row["underlying"]))
 
+    by_week: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for row in normalized:
+        by_week[row["week"]].append(row)
     counts = {u: sum(r["underlying"] == u for r in normalized) for u in UNDERLYINGS}
     years = sorted({r["year"] for r in normalized})
     support = {
-        "total_underlying_weeks": len(normalized),
+        "total_weeks": len(by_week),
         "BTC": counts["BTC"],
         "ETH": counts["ETH"],
         "calendar_years": years,
     }
-    if len(normalized) < MIN_TOTAL or any(counts[u] < MIN_PER_UNDERLYING for u in UNDERLYINGS) or len(years) < MIN_YEARS:
+    if len(by_week) < MIN_TOTAL_WEEKS or any(counts[u] < MIN_PER_UNDERLYING for u in UNDERLYINGS) or len(years) < MIN_YEARS:
         return {
             "classification": "INCONCLUSIVE_INSUFFICIENT_OPTIONS_SUPPORT",
             "execution_valid": True,
@@ -205,9 +289,6 @@ def analyze_weekly_observations(rows: Sequence[Mapping[str, Any]]) -> Mapping[st
             "support": support,
         }
 
-    by_week: dict[str, list[dict[str, Any]]] = defaultdict(list)
-    for row in normalized:
-        by_week[row["week"]].append(row)
     weekly: list[dict[str, float | str]] = []
     for week in sorted(by_week):
         group = by_week[week]
@@ -222,8 +303,6 @@ def analyze_weekly_observations(rows: Sequence[Mapping[str, Any]]) -> Mapping[st
     vrp = [float(r["vrp30"]) for r in weekly]
     pnl_c1 = [float(r["pnl_c1"]) for r in weekly]
     pnl_c2 = [float(r["pnl_c2"]) for r in weekly]
-    if len(vrp) < 4:
-        raise OptionsVRPExecutionError("INSUFFICIENT_WEEKLY_SUPPORT")
 
     mean_vrp = sum(vrp) / len(vrp)
     t_stat, p_value = hac_mean_test(vrp)
