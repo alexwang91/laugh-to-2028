@@ -1,0 +1,87 @@
+name: 0086 owner-first registry bootstrap
+
+on:
+  push:
+    branches:
+      - research/0086-factor-atlas-spec-freeze-clean-v2
+
+permissions:
+  contents: write
+
+jobs:
+  register-owner:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/0086-factor-atlas-spec-freeze-clean-v2
+          fetch-depth: 0
+      - name: Insert 0086 owner record before governed path exists
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p = Path('config/research_registry.json')
+          data = json.loads(p.read_text())
+          rid = 'BRRK-CROSS-SECTIONAL-FACTOR-ATLAS-0086'
+          if any(r.get('research_id') == rid for r in data['records']):
+              raise SystemExit('0086 owner already registered')
+          record = {
+            'research_id': rid,
+            'research_family_id': 'CROSS_SECTIONAL_FACTOR_ATLAS',
+            'research_domain': 'RELATIVE_VALUE',
+            'research_governance_version': 1,
+            'governance_mode': 'PROGRAM_GOVERNED_V1',
+            'objective_type': 'FACTOR_ATLAS_VALIDATION',
+            'created_at': '2026-08-25T15:55:00Z',
+            'created_before_result': True,
+            'question': 'Do any prospectively fixed cross-sectional momentum, volatility, or liquidity factor families contain reproducible point-in-time predictive and economic structure across a liquid crypto perpetual universe after dependence-aware multiple testing and realistic/stressed costs?',
+            'hypothesis': 'At least one of three independently motivated, prospectively fixed factor representatives will show stable cross-sectional ranking information and a same-sign economic spread after costs without result-informed family selection or rescue.',
+            'hypothesis_origin': 'PROSPECTIVE_INDEPENDENT_FACTOR_ATLAS_AFTER_0085_INVALID_EXECUTION_WITH_ZERO_TREND_SCIENTIFIC_RESULT',
+            'economic_mechanism': 'Slow information diffusion and persistent flows can support momentum; heterogeneous risk demand can support a volatility effect; market-depth and participation differences can support a liquidity effect.',
+            'primary_target': 'ROBUST_CROSS_SECTIONAL_FACTOR_STRUCTURE_AFTER_MULTIPLE_TESTING_AND_COSTS',
+            'primary_metric': 'FROZEN_FACTOR_FAMILY_GATES_WITH_HOLM_FWER_0P05_AND_NET_SPREAD_CONFIRMATION',
+            'secondary_metrics': ['weekly_spearman_rank_ic','positive_same_sign_week_fraction','hac_t_stat','moving_block_bootstrap_ic_ci','calendar_year_ic','chronological_block_ic','btc_state_ic','gross_tercile_spread','net_tercile_spread_10bps','net_tercile_spread_20bps','eligible_cross_section_count'],
+            'feature_families': ['MOMENTUM_MOM60_RAW','VOLATILITY_RVOL20_RAW','LIQUIDITY_LOG_MEDIAN_QUOTE_VOLUME30_RAW'],
+            'horizon': 'WEEKLY_MONDAY_UTC_CLOSE_DECISION_TO_FULLY_MATURED_5_SESSION_FORWARD_RETURN',
+            'universe': ['POINT_IN_TIME_TOP30_BY_TRAILING30_MEDIAN_QUOTE_VOLUME_BINANCE_USDM_USDT_PERPETUALS'],
+            'development_dataset_refs': [],
+            'validation_dataset_refs': [],
+            'sealed_dataset_refs': [],
+            'declared_variant_budget': 3,
+            'actual_variants_evaluated': 0,
+            'parameter_candidate_count': 3,
+            'stopping_rule': 'Use PROSPECTIVE_FIVE_GATE_LIFECYCLE_V1. SPEC_FREEZE precedes controlled values; BUILD uses synthetic/nonhistorical fixtures only; ARM binds exact controlled identities and ControlledResearchRunnerV1SourceQualified; RUN consumes at most one separately authorized attempt; SEAL performs no scientific recomputation. No family addition, pruning, rerun, retune, rescue, source substitution, candidate replacement, or history extension after controlled exposure.',
+            'success_criteria': ['At least 104 valid weekly cross-sections per tested family.','Exactly three predeclared factor candidates are evaluated: MOM60_RAW, RVOL20_RAW, LIQ30_RAW.','Family-wise inference uses two-sided Holm correction at alpha=0.05 across exactly three primary factor tests.','At least one factor has Holm-adjusted p<0.05 and a moving-block-bootstrap 95% IC confidence interval excluding zero.','Any passing factor keeps the same IC sign in at least 3/4 chronological blocks and in both BTC_UP and BTC_NONUP states with frozen support minima.','Any passing factor has a same-sign equal-weight top-minus-bottom tercile spread after frozen 10 bps round-trip cost and does not reverse sign under 20 bps stressed cost.','All identity, causality, finite-statistic, read, candidate, persistence, source-interface, and exactly-once invariants pass.'],
+            'failure_criteria': ['Valid execution with adequate support but zero factor families satisfying every frozen scientific and economic gate produces FAIL_NO_ROBUST_FACTOR_FAMILY.','Valid execution with inadequate frozen support for all families produces INCONCLUSIVE_INSUFFICIENT_SUPPORT.','Any source identity, manifest/hash, schema, timestamp, point-in-time membership, read-count, candidate-count, non-finite, persistence, network, marker-ordering, source-interface, or exactly-once violation produces INVALID_EXECUTION.'],
+            'allowed_followup': ['Only a factor family that passes every frozen Atlas gate may become eligible for a separately governed future Factor L/S research ID.','PASS may motivate separately preregistered forward-only validation.'],
+            'forbidden_followup': ['No inheritance of scientific result or lifecycle credit from 0075, 0076, 0084, or 0085.','No same-ID alternate lookback, sign choice, residualization, scaling, transform, factor family, universe rule, support threshold, inference rule, cost panel, seed, PASS threshold, candidate addition, rerun, retune, rescue, recomputation, or source substitution after controlled exposure.','No production, signing, order, withdrawal, or transfer authority.'],
+            'researcher_decisions': ['Adopt PROSPECTIVE_FIVE_GATE_LIFECYCLE_V1.','Test exactly three independently justified families with one representative each: MOM60_RAW, RVOL20_RAW, LIQ30_RAW.','Exclude size/market-cap and carry/funding from 0086 because no qualifying point-in-time source has been frozen at owner registration; they cannot be added after controlled exposure.','Use Monday UTC-close decisions and fully matured 5-session forward returns.','Use point-in-time top-30 trailing-30-session median quote-volume eligibility with minimum 120 completed daily sessions and minimum cross-section size 10.','Use weekly Spearman IC plus a diagnostic equal-weight top-minus-bottom tercile spread with frozen 10 bps realistic and 20 bps stressed round-trip costs.','Control the three primary factor tests with Holm FWER alpha=0.05.','Treat all controlled history as researcher-exposed DEVELOPMENT, not independent OOS.'],
+            'research_process_complexity': {'declared_parameter_candidates':['MOM60_RAW','RVOL20_RAW','LIQ30_RAW'],'actual_parameter_candidates_evaluated':0,'universes_evaluated':1,'horizons_evaluated':['FWD5_ONLY'],'rebalance_variants':['MONDAY_UTC_CLOSE_ONLY'],'feature_representations':['RAW_CROSS_SECTIONAL_RANK_ONLY'],'special_cases_introduced':[],'validation_exposure_event_refs':[],'related_family_trials':3},
+            'lineage_edges': [],
+            'result_status': 'OWNER_REGISTERED_SPEC_NOT_INTRODUCED',
+            'failure_reason': None,
+            'promotion_state': 'NONE',
+            'evidence_refs': [],
+            'decision_refs': ['https://github.com/alexwang91/laugh-to-2028/issues/422','research/governance/PROSPECTIVE_FIVE_GATE_LIFECYCLE_V1.md','research/governance/CONTROLLED_RESEARCH_RUNNER_V1_SOURCE_INTERFACE_QUALIFICATION_2026-08-25.md'],
+            'production_relevance': 'Research-only DEVELOPMENT factor atlas. PASS grants only later governed research eligibility.',
+            'production_authorized': False,
+            'provenance_status': 'PROSPECTIVE_DECLARED_BEFORE_RESULT',
+            'governed_path_prefixes': ['research/brrk_cross_sectional_factor_atlas_0086/'],
+            'notes': ['Owner-first central registry insertion precedes any governed 0086 research path.','0085 remains immutable INVALID_EXECUTION and scientifically unanswered.','0086 receives zero attempt, lifecycle, result, or scientific-value credit from 0075/0076/0084/0085.','Any future common-runner-caused INVALID_EXECUTION stops new science pending repair and requalification.']
+          }
+          data['records'].append(record)
+          p.write_text(json.dumps(data, indent=2, ensure_ascii=False) + '\n')
+          PY
+      - name: Remove bootstrap workflow and commit owner record atomically
+        shell: bash
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git rm .github/workflows/0086-owner-first-bootstrap.yml
+          git add config/research_registry.json
+          git diff --cached --check
+          git commit -m "research(0086): register factor atlas owner first"
+          git push origin HEAD:research/0086-factor-atlas-spec-freeze-clean-v2
