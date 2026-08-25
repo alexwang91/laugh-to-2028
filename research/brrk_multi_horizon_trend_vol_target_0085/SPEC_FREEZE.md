@@ -4,6 +4,8 @@ Research ID: `BRRK-MULTI-HORIZON-TREND-VOL-TARGET-0085`
 
 Lifecycle: `PROSPECTIVE_FIVE_GATE_LIFECYCLE_V1`
 
+Registry representation: `governance_mode=PROGRAM_GOVERNED_V1`; explicit five-gate adoption is governed by this SPEC_FREEZE and the merged prospective lifecycle contract. This is a schema-compatibility representation only and does not change the frozen science.
+
 Gate: `SPEC_FREEZE` = OWNER-FIRST + DESIGN + PREREGISTRATION
 
 Status: `FROZEN_NOT_BUILT_NOT_RUN`
