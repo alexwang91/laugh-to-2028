@@ -395,3 +395,14 @@ Frozen SPEC tests exactly three predeclared factor representatives: momentum `MO
 Any future 0086 controlled RUN must use `ControlledResearchRunnerV1SourceQualified`, requires a separate irreversible user authorization, and permits at most one attempt. Pre-marker payload traversal/decompression/CRC remains forbidden. Factor L/S remains forbidden unless 0086 returns a valid PASS, and only passing factor families may become eligible for a separately governed future ID.
 
 0085 remains immutable `INVALID_EXECUTION` with attempt 1/1 consumed and no admissible Trend result. 0076 remains sealed; 0072/0073 remain paused; 0083 remains immutable FAIL; Phase6 PASS closeout remains unchanged. Production/signature/order/withdrawal/transfer authority remains zero.
+
+## 0086 Factor Atlas BUILD — 2026-08-25
+
+- `BRRK-CROSS-SECTIONAL-FACTOR-ATLAS-0086` SPEC_FREEZE is merged. BUILD implements exactly the frozen three-factor family `MOM60_RAW`, `RVOL20_RAW`, `LIQ30_RAW` with no controlled historical reads.
+- BUILD freezes the exact PIT top-30 liquidity universe, Monday UTC-close/FWD5 timing, BTC state rule (`BTC_UP` iff BTCUSDT MOM60_RAW > 0), average-rank Spearman IC, tercile spread/turnover accounting, 10/20 bps costs, 8-week/10,000-replicate MBB seed 860086, exact three-test Holm correction, support minima, G0-G9 gates and terminal classifier.
+- The source-qualified adapter validates filenames metadata-only before marker and accepts both known staging `stage/payloads/...` and GitHub artifact `payloads/...` namespaces while rejecting duplicate logical `(symbol, month)` objects. Inner ZIP/CSV parsing is post-marker execution only.
+- Synthetic qualification covers factor formulas, both namespaces, duplicate/unknown keys, ZIP normalization, Holm, insufficient support, an adequate-support full synthetic Atlas and the source-qualified interface. Synthetic classifications carry zero scientific evidence.
+- 0086 controlled attempt remains `0/1`; controlled reads remain `0`; scientific engine remains `0/1`. Factor L/S remains blocked pending a valid 0086 PASS.
+- Next legal gate is ARM. ARM may bind exact artifact/object identities, declared hashes/sizes, source keys, schema/read budget/result-marker paths and engine-call budget using metadata only. Pre-marker decompression, `testzip()`, CRC traversal and payload parsing remain forbidden.
+- 0085 remains immutable `INVALID_EXECUTION` with attempt 1/1 consumed and no admissible Trend result. 0076 remains sealed; 0072/0073 remain paused; 0083 remains immutable FAIL; Phase6 PASS closeout remains unchanged.
+- No production/signature/order/withdrawal/transfer authority is granted.
