@@ -299,3 +299,16 @@ Phase 6 = NO CHANGE.
 - Phase 6 R1 evidence closeout = `PASS_FROZEN_LIVE_OBSERVATION_GATES`; this grants no production authority and does not authorize any paused/invalid historical research ID.
 - 0076 remains sealed at Stage7 pre-marker read-boundary incident with no replacement, retroactive marker, same-ID Stage8, rerun, retune, rescue or recompute. 0072/0073 Carry remain paused; 0083 remains immutable FAIL.
 - Next legal frontier: R2 public `CONTROLLED_RESEARCH_RUNNER_V1`, then prospective lifecycle-gate compression amendment only after runner qualification.
+
+## R2 controlled research runner — 2026-08-25
+
+- R1 Phase 6 evidence closeout is merged on main at `bac4b105e7576f8a00227c759b5cabdaaead7d9f` with `PASS_FROZEN_LIVE_OBSERVATION_GATES`; this grants no production authority.
+- R2 PR #407 introduces prospective public `CONTROLLED_RESEARCH_RUNNER_V1`; it does not authorize or consume any scientific attempt.
+- The runner enforces metadata-only pre-marker inspection, durable `RUN_ATTEMPT.marker` before payload reads, one verified physical payload-read pass, exactly one scientific engine invocation, create-only result persistence and `RUN_ONCE.marker` sealing.
+- Pre-marker `ZipFile.testzip()`, payload `read/open`, decompression, extraction and CRC payload traversal are prohibited.
+- Synthetic qualification covers corrupted ZIP/CRC, missing file, wrong hash, duplicate object, stale head, existing result, marker push failure, crash after marker, duplicate read, double engine invocation, NaN, missing timestamp, schema drift, writer failure, network attempt, wrong source manifest and wrong execution interface.
+- Qualification also requires at least `20` consecutive synthetic full lifecycles with zero unexpected failure.
+- Exact-head `Research governance core` on runner head `cbadff165afc78ae938e11da1f3e1f02bcfe22e3` passed; `PR handoff governance` failed only because this CURRENT_STATE handoff had not yet changed in PR #407. Final qualification remains pending a new exact-head terminal-green CI after this handoff.
+- 0076 remains sealed at Stage7 pre-marker read-boundary incident; no replacement, retroactive marker, same-ID Stage8, rerun, retune, rescue or recompute. 0072/0073 Carry remain paused; 0083 remains immutable FAIL.
+- No Trend, Factor or Options controlled scientific attempt may start until R2 runner qualification is durably PASS and the prospective R3 lifecycle amendment is separately merged.
+- Production/signature/order/withdrawal/transfer authority remains false.
