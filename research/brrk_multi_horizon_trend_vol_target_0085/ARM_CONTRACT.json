@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "research_id": "BRRK-MULTI-HORIZON-TREND-VOL-TARGET-0085",
+  "gate": "ARM",
+  "logical_checkpoints": ["CONTROLLED_BOUNDARY", "ZERO_RESULT_PREFLIGHT"],
+  "status": "ARM_READY_PENDING_EXACT_HEAD_CI",
+  "attempt": "0/1",
+  "attempt_consumed": false,
+  "controlled_scientific_history_reads": 0,
+  "scientific_engine_calls": "0/1",
+  "scientific_source_network_fetches": 0,
+  "scientific_values_exposed": false,
+  "common_runner": "CONTROLLED_RESEARCH_RUNNER_V1",
+  "execution_interface": "research.brrk_multi_horizon_trend_vol_target_0085.controlled_archive_engine.ControlledArchiveTrendEngine",
+  "source_binding": {
+    "mode": "IMMUTABLE_PARENT_MANIFEST_FILTER",
+    "parent_manifest_path": "research/brrk_crypto_multi_horizon_trend_0074/AUTHORIZED_OBJECT_MANIFEST.json",
+    "parent_manifest_sha256": "fba23adb62a1a94492c77e94405593c18cba9226ed20d8c70fda578030d3b23f",
+    "parent_staging_evidence_path": "research/brrk_crypto_multi_horizon_trend_0074/STAGE6_STAGING_EVIDENCE.json",
+    "artifact_run_id": 32590698620,
+    "artifact_id": 9480304574,
+    "artifact_name": "0074-stage6-authorized-payloads-v1",
+    "artifact_digest": "sha256:dd39591efc19bda3fd959b6eb9f7a78e0f4319ae371b4be9556a505341301c5e",
+    "artifact_size_in_bytes": 1274724,
+    "artifact_expires_at": "2026-11-20T18:25:37Z",
+    "artifact_expired_at_arm": false,
+    "filter": {
+      "archive_family": "perpetual_1d_kline",
+      "assets": ["BTC", "ETH", "SOL"],
+      "symbols": ["BTCUSDT", "ETHUSDT", "SOLUSDT"],
+      "first_month": "2021-01",
+      "last_month": "2026-07"
+    },
+    "expected_authorized_objects": 201,
+    "per_object_max_controlled_content_reads": 1,
+    "required_staging_status": "STAGED_HASH_VERIFIED_OFFLINE_READABLE"
+  },
+  "pre_marker_allowed": [
+    "git_identity",
+    "artifact_identity",
+    "artifact_expiry_metadata",
+    "filename",
+    "central_directory_metadata_without_entry_content_traversal",
+    "declared_sha256",
+    "declared_size",
+    "manifest_filter_and_uniqueness_validation"
+  ],
+  "pre_marker_forbidden": [
+    "testzip",
+    "payload_decompression",
+    "inner_csv_open_or_parse",
+    "crc_payload_traversal",
+    "scientific_row_read",
+    "scientific_metric_calculation"
+  ],
+  "run_order": [
+    "verify_exact_arm_contract_and_artifact_identity_metadata_only",
+    "durably_persist_and_remotely_verify_RUN_ATTEMPT.marker",
+    "read_each_of_201_authorized_outer_payload_objects_at_most_once",
+    "invoke_ControlledArchiveTrendEngine_exactly_once",
+    "persist_create_only_result_and_execution_evidence",
+    "seal_RUN_ONCE.marker"
+  ],
+  "production_authorized": false,
+  "signature_authorized": false,
+  "order_submission_authorized": false
+}
