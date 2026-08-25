@@ -1,0 +1,38 @@
+name: Temporary Phase6 observation closeout audit
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'research/governance/phase6_observation_closeout_audit.py'
+      - '.github/workflows/tmp-phase6-observation-closeout-audit.yml'
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  audit:
+    if: github.head_ref == 'governance/phase6-observation-closeout-audit-v1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Audit only already-persisted Phase6 evidence and receipts
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          python -m research.governance.phase6_observation_closeout_audit \
+            --output phase6_closeout_audit.json
+          python -m json.tool phase6_closeout_audit.json
+      - name: Upload read-only audit result
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase6-observation-closeout-audit-${{ github.run_id }}-${{ github.run_attempt }}
+          path: phase6_closeout_audit.json
+          if-no-files-found: error
+          retention-days: 30
+          overwrite: false
