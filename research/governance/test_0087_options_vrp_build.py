@@ -5,6 +5,10 @@ from math import log
 
 import pytest
 
+from research.brrk_options_volatility_risk_premium_0087.economic_core import (
+    economic_cost_panels,
+    normalized_delta_hedged_short_straddle_pnl,
+)
 from research.brrk_options_volatility_risk_premium_0087.engine import (
     BOOTSTRAP_BLOCK,
     BOOTSTRAP_REPLICATES,
@@ -13,8 +17,6 @@ from research.brrk_options_volatility_risk_premium_0087.engine import (
     OptionsVRPExecutionError,
     analyze_weekly_observations,
     atm_ivar30,
-    delta_hedged_short_straddle_pnl,
-    economic_cost_panels,
     realized_variance_30,
     select_atm_pair,
 )
@@ -84,27 +86,53 @@ def test_rv30_exact_30_returns():
 
 
 def test_delta_hedged_short_straddle_pure_economic_core():
-    call = {"strike": 100.0, "bid": 10.0}
-    put = {"strike": 100.0, "bid": 10.0}
     hedge_path = [
-        {"spot": 100.0, "bid": 100.0, "ask": 100.0, "call_delta": 0.25, "put_delta": -0.25},
-        {"spot": 100.0, "bid": 100.0, "ask": 100.0, "call_delta": 0.20, "put_delta": -0.20},
+        {"spot": 100.0, "bid": 100.0, "ask": 100.0, "target_units": 0.0},
+        {"spot": 100.0, "bid": 100.0, "ask": 100.0, "target_units": 0.0},
     ]
-    assert delta_hedged_short_straddle_pnl(call, put, 100.0, hedge_path, 5.0) == pytest.approx(1.0)
-    panels = economic_cost_panels(call, put, 100.0, hedge_path)
+    assert normalized_delta_hedged_short_straddle_pnl(
+        entry_premium_value=20.0,
+        settlement_payoff_value=0.0,
+        hedge_path=hedge_path,
+        friction_bps=5.0,
+    ) == pytest.approx(1.0)
+    panels = economic_cost_panels(
+        entry_premium_value=20.0,
+        settlement_payoff_value=0.0,
+        hedge_path=hedge_path,
+    )
     assert panels == pytest.approx({"pnl_c1": 1.0, "pnl_c2": 1.0})
 
 
 def test_hedge_execution_costs_are_monotone_under_stress():
-    call = {"strike": 100.0, "bid": 10.0}
-    put = {"strike": 100.0, "bid": 10.0}
     hedge_path = [
-        {"spot": 100.0, "bid": 99.9, "ask": 100.1, "call_delta": 0.60, "put_delta": -0.20},
-        {"spot": 102.0, "bid": 101.9, "ask": 102.1, "call_delta": 0.70, "put_delta": -0.10},
-        {"spot": 102.0, "bid": 101.9, "ask": 102.1, "call_delta": 0.70, "put_delta": -0.10},
+        {"spot": 100.0, "bid": 99.9, "ask": 100.1, "target_units": 0.40},
+        {"spot": 102.0, "bid": 101.9, "ask": 102.1, "target_units": 0.60},
+        {"spot": 102.0, "bid": 101.9, "ask": 102.1, "target_units": 0.60},
     ]
-    panels = economic_cost_panels(call, put, 102.0, hedge_path)
+    panels = economic_cost_panels(
+        entry_premium_value=20.0,
+        settlement_payoff_value=2.0,
+        hedge_path=hedge_path,
+    )
     assert panels["pnl_c2"] < panels["pnl_c1"]
+
+
+def test_settlement_core_does_not_assume_linear_quote_payoff():
+    hedge_path = [{"spot": 100.0, "bid": 100.0, "ask": 100.0, "target_units": 0.0}]
+    low_payoff = normalized_delta_hedged_short_straddle_pnl(
+        entry_premium_value=2.0,
+        settlement_payoff_value=0.25,
+        hedge_path=hedge_path,
+        friction_bps=5.0,
+    )
+    high_payoff = normalized_delta_hedged_short_straddle_pnl(
+        entry_premium_value=2.0,
+        settlement_payoff_value=1.25,
+        hedge_path=hedge_path,
+        friction_bps=5.0,
+    )
+    assert low_payoff > high_payoff
 
 
 def test_support_counts_distinct_weeks_not_underlying_rows():
