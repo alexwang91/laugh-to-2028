@@ -1,0 +1,102 @@
+name: 0085 unique controlled RUN
+
+on:
+  push:
+    branches:
+      - tools/0085-unique-controlled-run-v1
+      - research/0085-trend-run-v1
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: 0085-unique-controlled-run
+  cancel-in-progress: false
+
+jobs:
+  tooling-handoff:
+    if: github.ref_name == 'tools/0085-unique-controlled-run-v1' && !contains(github.event.head_commit.message, '[0085 tooling handoff]')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Append durable-run tooling handoff once
+        shell: bash
+        run: |
+          set -euo pipefail
+          marker='## 0085 Trend durable RUN tooling handoff — 2026-08-25'
+          if grep -Fq "$marker" docs/CURRENT_STATE.md; then
+            exit 0
+          fi
+          cat >> docs/CURRENT_STATE.md <<'EOF'
+
+## 0085 Trend durable RUN tooling handoff — 2026-08-25
+
+- This tooling-only change adds a Git-backed create-only store whose `create_only` operation commits, pushes, fetches, and byte-verifies each durable RUN object before returning.
+- It adds the unique 0085 RUN orchestrator and a branch-scoped workflow. The scientific job can run only on `research/0085-trend-run-v1`; this tooling branch cannot create a marker or consume the attempt.
+- The orchestrator mechanically rebuilds the frozen 201-object SourceManifest from the ARM-bound immutable 0074 parent manifest, verifies its SHA-256/filter/read budgets, requires the exact frozen controlled execution interface, and delegates marker/read/engine/result/RUN_ONCE ordering to `CONTROLLED_RESEARCH_RUNNER_V1`.
+- No controlled artifact is downloaded by this tooling handoff. Attempt remains 0/1, controlled reads 0, engine calls 0/1, and scientific values exposed false.
+- After terminal-green merge, the already-authorized attempt may proceed only by creating `research/0085-trend-run-v1` from the exact merged tooling head and committing the explicit RUN trigger. No alternate/manual marker path is permitted.
+EOF
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add docs/CURRENT_STATE.md
+          git commit -m 'docs: record 0085 durable RUN tooling [0085 tooling handoff]'
+          git push origin HEAD:${GITHUB_REF_NAME}
+
+  controlled-run:
+    if: github.ref_name == 'research/0085-trend-run-v1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Require explicit trigger receipt
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f research/brrk_multi_horizon_trend_vol_target_0085/RUN_TRIGGER.json
+          python - <<'PY'
+          import json
+          p='research/brrk_multi_horizon_trend_vol_target_0085/RUN_TRIGGER.json'
+          x=json.load(open(p, encoding='utf-8'))
+          assert x == {
+            'research_id': 'BRRK-MULTI-HORIZON-TREND-VOL-TARGET-0085',
+            'attempt': '1/1',
+            'authorization': 'AUTHORIZED',
+            'authorized_at': '2026-08-25T12:03:00Z',
+          }
+          PY
+      - name: Verify frozen artifact metadata
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh api repos/${GITHUB_REPOSITORY}/actions/artifacts/9480304574 > /tmp/artifact.json
+          python - <<'PY'
+          import json
+          a=json.load(open('/tmp/artifact.json'))
+          assert a['id'] == 9480304574
+          assert a['name'] == '0074-stage6-authorized-payloads-v1'
+          assert a['expired'] is False
+          assert a['size_in_bytes'] == 1274724
+          assert a.get('digest') == 'sha256:dd39591efc19bda3fd959b6eb9f7a78e0f4319ae371b4be9556a505341301c5e'
+          PY
+      - name: Download frozen artifact container without opening payload entries
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh api repos/${GITHUB_REPOSITORY}/actions/artifacts/9480304574/zip > /tmp/0085-artifact.zip
+      - name: Execute unique controlled attempt through common runner
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          python -m research.brrk_multi_horizon_trend_vol_target_0085.run_controlled_once /tmp/0085-artifact.zip
