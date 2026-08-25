@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "research_id": "BRRK-CRYPTO-CROSS-SECTIONAL-LS-0076",
+  "lifecycle_stage": "STAGE6_CONTROLLED_EXECUTION_BOUNDARY_IN_PROGRESS",
+  "evidence_kind": "ZERO_RESULT_METADATA_ONLY_DERIVATION",
+  "parent_stage6_artifact": {
+    "research_id": "BRRK-CRYPTO-CROSS-SECTIONAL-FACTOR-ATLAS-0075",
+    "workflow_run": "32646565505",
+    "artifact_id": "9495175701",
+    "artifact_name": "0075-stage6-authorized-payloads-v1",
+    "authorized_object_manifest_sha256_expected": "2f70384dd84a601b69528ef3d770e0fa9c714b3e0888bec009e93b5067ecebf8",
+    "authorized_object_manifest_sha256_observed": "2f70384dd84a601b69528ef3d770e0fa9c714b3e0888bec009e93b5067ecebf8",
+    "symbol_universe_sha256_expected": "85337b0681d4e61fc60eef62f4f05b2ea6e43f7da9e7648b4d94032794f95dbd",
+    "symbol_universe_sha256_observed": "85337b0681d4e61fc60eef62f4f05b2ea6e43f7da9e7648b4d94032794f95dbd",
+    "parent_authorized_payload_objects": 53541
+  },
+  "selection_contract": {
+    "derivation_mode": "METADATA_ONLY_OBJECT_PATH_IDENTITY_FILTER",
+    "symbol_suffix": "USDT",
+    "month_start": "2021-01",
+    "month_end": "2026-07",
+    "allowed_source_families": [
+      "USD_M_MONTHLY_1D_PERPETUAL_KLINE",
+      "USD_M_MONTHLY_FUNDING_RATE"
+    ],
+    "spot_objects_allowed": false,
+    "scientific_payload_row_parse_allowed": false
+  },
+  "derived_identity_summary": {
+    "authorized_objects": 30336,
+    "unique_canonical_object_ids": 30336,
+    "duplicate_canonical_object_ids": 0,
+    "eligible_symbols": 467,
+    "month_min": "2021-01",
+    "month_max": "2026-07",
+    "counts_by_family": {
+      "USD_M_MONTHLY_1D_PERPETUAL_KLINE": 15254,
+      "USD_M_MONTHLY_FUNDING_RATE": 15082
+    },
+    "scientific_content_read_budget_value": 1,
+    "objects_with_nonunit_read_budget": 0,
+    "objects_with_nonverified_staging_status": 0,
+    "staging_status": "STAGED_HASH_VERIFIED_OFFLINE_READABLE"
+  },
+  "artifact_central_directory_identity_check": {
+    "method": "ZIP_CENTRAL_DIRECTORY_FILENAMES_ONLY",
+    "payload_file_contents_opened": false,
+    "scientific_rows_parsed": false,
+    "selected_objects_missing_staged_payload_filename": 0,
+    "selected_objects_missing_checksum_filename": 0,
+    "result": "PASS"
+  },
+  "irreversible_budget_state": {
+    "stage8_attempt_consumed": 0,
+    "stage8_attempt_budget": 1,
+    "controlled_scientific_history_reads": 0,
+    "scientific_engine_consumed": 0,
+    "scientific_engine_budget": 1,
+    "scientific_source_network_fetches": 0,
+    "scientific_values_exposed": false,
+    "run_attempt_marker_present": false,
+    "result_bundle_present": false,
+    "run_once_marker_present": false
+  },
+  "stage6_credit_claimed": false,
+  "remaining_stage6_blocker": "Persist the exact 30336-object authorized submanifest in the repository-defined durable representation and validate it against the pinned parent metadata before Stage6 lifecycle credit may be claimed.",
+  "frozen_science_changed": false,
+  "production_authorized": false,
+  "signature_authorized": false,
+  "order_submission_authorized": false
+}
