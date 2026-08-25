@@ -214,13 +214,18 @@ class PayloadArchive:
         if len(names) != len(set(names)):
             raise PreflightRejected("DUPLICATE_OBJECT")
         expected = {entry.filename: entry for entry in self.manifest.entries}
-        if set(names) != set(expected):
-            missing = sorted(set(expected) - set(names))
-            extra = sorted(set(names) - set(expected))
-            raise PreflightRejected(f"ARCHIVE_FILE_SET_MISMATCH missing={missing} extra={extra}")
+        # A frozen source artifact may be a superset container shared by several
+        # prospectively filtered research IDs.  Pre-marker we may inspect only
+        # central-directory metadata, so require every authorized member and
+        # validate its declared size while ignoring unmanifested members.  The
+        # post-marker read path still opens only manifest entries, so extras
+        # consume zero controlled-read budget and expose zero scientific values.
+        missing = sorted(set(expected) - set(names))
+        if missing:
+            raise PreflightRejected(f"ARCHIVE_FILE_SET_MISMATCH missing={missing}")
         # file_size is central-directory metadata and is explicitly allowed pre-marker.
         for info in infos:
-            if info.is_dir():
+            if info.is_dir() or info.filename not in expected:
                 continue
             if info.file_size != expected[info.filename].size:
                 raise PreflightRejected(f"DECLARED_SIZE_MISMATCH:{info.filename}")

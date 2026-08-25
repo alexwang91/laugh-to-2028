@@ -343,3 +343,12 @@ Phase 6 = NO CHANGE.
 - The user has explicitly authorized `0085 Trend RUN controlled attempt 1/1`; that authorization applies only after this repair merges and the frozen common runner confirms the exact merged ARM/RUN contract.
 - Attempt state at this handoff: `0/1` unconsumed; controlled reads `0`; scientific engine calls `0/1`; scientific values exposed `false`; production/signature/order/withdrawal/transfer authority remains false.
 - Exact next legal action after #414 terminal-green merge: execute the single authorized RUN through `CONTROLLED_RESEARCH_RUNNER_V1`, with durable marker-before-read and create-only result sealing. No manual marker fabrication or alternate execution path is permitted.
+
+## R2.1 common-runner superset-container compatibility repair — 2026-08-25
+
+- Live 0085 pre-attempt inspection found its frozen artifact is the 0074 Stage6 shared `stage/` artifact containing 402 payload objects, while the 0085 ARM filter authorizes exactly 201 perpetual-1d-kline objects.
+- `CONTROLLED_RESEARCH_RUNNER_V1` previously required archive membership to equal the filtered manifest exactly, which would preflight-reject the frozen shared artifact before marker creation. No 0085 attempt, controlled read, engine invocation or scientific-value exposure occurred.
+- This prospective infrastructure-only repair permits a frozen archive to be a superset container: metadata preflight requires every manifest member and validates only its declared central-directory size; unmanifested members are ignored and never opened. Post-marker reads remain exactly the manifest entries, each at most once, with unchanged SHA-256 verification and exactly-one engine invocation.
+- The repair changes no 0085 universe, date range, signal, cost, threshold, benchmark, source identity or 201-object read budget. It changes no historical result or authority and grants no new attempt.
+- The common runner must re-pass the complete existing synthetic fault matrix, the 20-consecutive full-lifecycle qualification, and the new superset-container test on the exact final PR head before 0085 RUN may execute.
+- 0085 user authorization for controlled attempt 1/1 remains valid but unconsumed. Production/signature/order/withdrawal/transfer authority remains false.
