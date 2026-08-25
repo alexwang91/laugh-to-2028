@@ -2,52 +2,39 @@ name: Project Smoke
 
 on:
   push:
-    branches:
-      - "tools/0085-unique-controlled-run-v1"
+    branches: [main]
     paths:
-      - ".github/workflows/project-smoke.yml"
-
-permissions:
-  contents: write
+      - 'research/**'
+      - 'execution/plan-b-bot/**'
+      - '.github/workflows/project-smoke.yml'
+  workflow_dispatch:
 
 jobs:
-  append-0085-run-handoff:
+  research-imports:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
-          ref: "tools/0085-unique-controlled-run-v1"
-          fetch-depth: 0
-      - name: Append handoff and push
-        shell: bash
-        run: |
-          set -euo pipefail
-          python - <<'PY'
-          from pathlib import Path
-          p = Path('docs/CURRENT_STATE.md')
-          s = p.read_text(encoding='utf-8')
-          marker = '## 0085 Trend unique controlled RUN orchestration — 2026-08-25'
-          if marker not in s:
-              lines = [
-                  '',
-                  '## 0085 Trend unique controlled RUN orchestration — 2026-08-25',
-                  '',
-                  '- Worker B rebased the RUN orchestration onto merged PR #416 and removed its duplicate store implementation. The RUN path now reuses the qualified `GitCreateOnlyStoreV1` backend from main.',
-                  '- The unique orchestrator rebuilds the frozen 201-object SourceManifest from the ARM-bound parent manifest, verifies parent SHA-256/filter/read budgets, requires the frozen `ControlledArchiveTrendEngine`, and delegates marker-before-read, exactly-once engine, create-only result and RUN_ONCE ordering to `CONTROLLED_RESEARCH_RUNNER_V1`.',
-                  '- The science workflow is scoped only to `research/0085-trend-run-v1` plus the exact `RUN_TRIGGER.json`. It verifies artifact id/name/size/digest before downloading the outer artifact container; no payload member is opened before the common runner persists and remotely verifies the attempt marker.',
-                  '- `research/governance/no_drift.py` adds only the exact workflow path `.github/workflows/0085-unique-controlled-run.yml`; no broad workflow prefix or research-path exemption is introduced.',
-                  '- The earlier workflow-definition failures occurred before GitHub created any job. They consumed no attempt, created no marker, downloaded no controlled artifact, performed no controlled read, and invoked no scientific engine.',
-                  '- 0085 remains attempt `0/1`, controlled reads `0`, scientific engine `0/1`, scientific values exposed `false`. The user authorization for controlled RUN attempt 1/1 remains valid and unconsumed.',
-                  '- Frozen science, source identity, 201-object read budget, immutable historical states, and production/signature/order/withdrawal/transfer authority remain unchanged.',
-                  '',
-              ]
-              p.write_text(s + '\n'.join(lines), encoding='utf-8')
-          PY
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/CURRENT_STATE.md
-          if git diff --cached --quiet; then
-            exit 0
-          fi
-          git commit -m 'docs: record rebased 0085 RUN orchestration handoff'
-          git push origin HEAD:tools/0085-unique-controlled-run-v1
+          python-version: '3.11'
+      - name: Install research dependencies
+        run: pip install --disable-pip-version-check -r research/requirements.txt
+      - name: Import PIT-DISP-0015 dependency closure
+        working-directory: research/pit_universe
+        run: python -c "import run_dynamic_dispersion; print('PIT-DISP-0015 imports OK')"
+
+  plan-b-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Plan B dependencies
+        working-directory: execution/plan-b-bot
+        run: pip install --disable-pip-version-check -r requirements-dev.txt
+      - name: Run Plan B tests
+        working-directory: execution/plan-b-bot
+        run: pytest -q
