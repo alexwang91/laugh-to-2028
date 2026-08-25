@@ -1,0 +1,99 @@
+{
+  "schema_version": 1,
+  "research_id": "BRRK-CROSS-SECTIONAL-FACTOR-ATLAS-0086",
+  "gate": "ARM",
+  "parent_main_sha": "ef40990e8279925b0bbadbe30d45b696656d0798",
+  "runner": {
+    "required_class": "ControlledResearchRunnerV1SourceQualified",
+    "qualification_required": true,
+    "marker_before_first_controlled_read": true,
+    "engine_calls_budget": 1,
+    "engine_calls_consumed": 0,
+    "attempt_budget": 1,
+    "attempts_consumed": 0,
+    "source_network_fetch_budget": 0,
+    "source_network_fetches_consumed": 0
+  },
+  "controlled_source": {
+    "reuse_role": "OPAQUE_STAGED_BYTE_IDENTITY_ONLY_ZERO_SCIENTIFIC_OR_LIFECYCLE_CREDIT",
+    "github_actions_run_id": 32646565505,
+    "artifact_id": 9495175701,
+    "artifact_name": "0075-stage6-authorized-payloads-v1",
+    "artifact_size_bytes": 174445627,
+    "artifact_digest": "sha256:8040282ff412b2d3fd360173e4745ebfd048796eb9e9c2ad49fa0901e5cedf56",
+    "parent_0075_manifest_sha256": "2f70384dd84a601b69528ef3d770e0fa9c714b3e0888bec009e93b5067ecebf8",
+    "parent_0076_submanifest_path": "research/brrk_crypto_cross_sectional_ls_0076/AUTHORIZED_OBJECT_SUBMANIFEST.json",
+    "parent_0076_submanifest_sha256": "c33b575cc436db795086458a25ca38fe1527f649809e549caba00e9754422e58",
+    "parent_0076_authorized_objects": 30336,
+    "selection_rule": "SELECT_EXACTLY_USDM_MONTHLY_1D_KLINE_OBJECTS_FROM_IMMUTABLE_0076_SUBMANIFEST",
+    "selected_kline_objects": 15254,
+    "excluded_funding_objects": 15082,
+    "eligible_symbol_count": 467,
+    "candidate_month_start": "2021-01",
+    "candidate_month_end": "2026-07",
+    "required_symbol": "BTCUSDT",
+    "source_key_namespace_allowed": [
+      "payloads/...",
+      "stage/payloads/..."
+    ],
+    "source_key_interface": "research.brrk_cross_sectional_factor_atlas_0086.engine.validate_source_keys",
+    "payload_role": "BINANCE_USDM_MONTHLY_1D_KLINE_ZIP",
+    "controlled_read_budget_per_selected_object": 1,
+    "controlled_reads_consumed": 0,
+    "scientific_values_exposed": false
+  },
+  "pre_marker_allowed": [
+    "git_identity",
+    "artifact_identity",
+    "artifact_size",
+    "artifact_digest",
+    "manifest_declared_hash",
+    "submanifest_declared_hash",
+    "central_directory_filename_metadata",
+    "source_key_filename_validation"
+  ],
+  "pre_marker_forbidden": [
+    "testzip",
+    "payload_decompression",
+    "inner_zip_open",
+    "inner_csv_open_or_parse",
+    "crc_payload_traversal",
+    "scientific_row_read",
+    "factor_calculation",
+    "return_calculation",
+    "scientific_metric_calculation"
+  ],
+  "run_order": [
+    "FRESH_METADATA_IDENTITY_ZERO_RESULT_PREFLIGHT_PASS",
+    "CONTEMPORANEOUS_SEPARATE_USER_AUTHORIZATION",
+    "CREATE_DURABLE_RUN_ATTEMPT_MARKER",
+    "VERIFY_RUN_ATTEMPT_MARKER_REMOTELY",
+    "CONSUME_ATTEMPT_1_OF_1",
+    "READ_EACH_SELECTED_KLINE_OBJECT_AT_MOST_ONCE",
+    "INVOKE_CROSS_SECTIONAL_FACTOR_ATLAS_0086_ENGINE_EXACTLY_ONCE",
+    "PERSIST_RESULT_BUNDLE_CREATE_ONLY",
+    "CREATE_DURABLE_RUN_ONCE_MARKER",
+    "SEAL_WITH_ZERO_SCIENTIFIC_REREAD"
+  ],
+  "post_arm_prohibitions": [
+    "source_substitution",
+    "history_extension",
+    "family_addition",
+    "candidate_replacement",
+    "result_informed_pruning",
+    "rerun",
+    "retune",
+    "rescue",
+    "recompute"
+  ],
+  "result_paths": {
+    "run_attempt_marker": "research/brrk_cross_sectional_factor_atlas_0086/RUN_ATTEMPT.marker",
+    "result_bundle": "research/brrk_cross_sectional_factor_atlas_0086/PRIMARY_RESULT.json",
+    "run_once_marker": "research/brrk_cross_sectional_factor_atlas_0086/RUN_ONCE.marker"
+  },
+  "production_authorized": false,
+  "signature_authorized": false,
+  "order_submission_authorized": false,
+  "withdrawal_authorized": false,
+  "transfer_authorized": false
+}
