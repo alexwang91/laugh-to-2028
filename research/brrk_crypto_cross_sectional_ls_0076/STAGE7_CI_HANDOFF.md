@@ -16,3 +16,5 @@ Irreversible budgets remain unchanged before Stage8:
 The immutable historical line `workflow run                         31381953131 / attempt 1` remains unchanged in `docs/CURRENT_STATE.md`. CAPTURE-0001 remains sealed/no-retry and CAPTURE-0002 remains permanently claimed/no-refetch.
 
 Purpose: provide a connector-authored exact head so standing PR governance workflows can evaluate the corrected Stage7 handoff without relying on the bot-generated commit identity. This file grants no lifecycle credit and no Stage8 execution authority.
+
+Fresh CI retrigger note: prior exact-head `Research governance core` was `action_required` with zero instantiated jobs because the triggering commit identity was `github-actions[bot]`. This connector-authored governance-only commit intentionally changes no scientific or lifecycle state; it exists solely to obtain an evaluable exact-head governance run.
