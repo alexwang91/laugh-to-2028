@@ -431,3 +431,14 @@ Owner-first registry commit `3686aec8a5a82d3a146828e464da090f0aea9a70` predates 
 BUILD may use synthetic/nonhistorical fixtures only. ARM must bind qualifying point-in-time Deribit options, index and hedge identities using metadata only; inability to bind them stops 0087 before RUN without source substitution or scientific rescue. Any RUN requires separate irreversible user authorization and `ControlledResearchRunnerV1SourceQualified`.
 
 0086 remains ARM-complete at attempt 0/1 pending separate authorization. 0085 remains immutable INVALID_EXECUTION attempt 1/1 consumed. 0076 remains sealed; 0072/0073 remain paused; 0083 remains immutable FAIL. `workflow run                         31381953131 / attempt 1`, CAPTURE-0001 sealed/no-retry and CAPTURE-0002 permanently claimed/no-refetch remain immutable. Production/signature/order/withdrawal/transfer authority remains false.
+## 0087 Options / VRP BUILD — 2026-08-25
+
+- `BRRK-OPTIONS-VOLATILITY-RISK-PREMIUM-0087` SPEC_FREEZE is merged. BUILD implements the frozen single BTC/ETH Deribit ATM 30D VRP candidate using synthetic/nonhistorical fixtures only; no controlled historical value was opened.
+- BUILD freezes same-strike ATM selection, source-IV `ATM_IVAR30`, exact 30-return `RV30`, distinct-week support counting, HAC lag 8, 8-week/4,000-replicate MBB seed 870087, G1-G8 adjudication, and executable-side daily delta-hedged short-straddle economics with C1 5 bps / C2 15 bps hedge friction.
+- Synthetic qualification covers selection/spread rejection, IVAR/RV30, weekly support, pure hedge accounting, stress-cost monotonicity, valid INCONCLUSIVE, adequate-support PASS/FAIL and duplicate-identity fail-closed behavior. Synthetic outcomes carry zero scientific evidence.
+- 0087 controlled attempt remains `0/1`; controlled reads remain `0`; scientific engine remains `0/1`; scientific values remain unexposed. Next legal gate is ARM metadata/schema binding only.
+- ARM must bind qualifying point-in-time Deribit option/index/hedge identities, executable bid/ask, source IV, source-native deltas, timestamps, hashes/sizes, source keys, read budget and `ControlledResearchRunnerV1SourceQualified` without payload traversal. If it cannot, 0087 stops before RUN without source substitution or rescue.
+- 0086 remains ARM-complete at attempt `0/1` pending separate irreversible RUN authorization. Factor L/S remains blocked unless 0086 returns a valid PASS.
+- 0085 remains immutable `INVALID_EXECUTION` attempt 1/1 consumed; 0076 remains sealed; 0072/0073 remain paused; 0083 remains immutable FAIL; Phase6 PASS closeout remains unchanged.
+- `workflow run                         31381953131 / attempt 1`, CAPTURE-0001 sealed/no-retry and CAPTURE-0002 permanently claimed/no-refetch remain immutable.
+- Production/signature/order/withdrawal/transfer authority remains false.
