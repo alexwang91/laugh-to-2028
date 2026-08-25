@@ -18,6 +18,7 @@ from .validate import repo_root_from_module
 ALLOWED_EXACT_PATHS = {
     ".github/workflows/0072-access-probe.yml",
     ".github/workflows/0072-capture-0002.yml",
+    ".github/workflows/0085-unique-controlled-run.yml",
     ".github/workflows/research-governance.yml",
     ".github/workflows/research-owner-first-0073.yml",
     "config/dataset_exposure_registry.json",

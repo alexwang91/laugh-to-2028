@@ -360,3 +360,13 @@ Phase 6 = NO CHANGE.
 - 0085 remains ARM-complete with the user's explicit RUN attempt 1/1 authorization valid and unconsumed. Attempt remains 0/1; controlled reads remain 0; scientific engine remains 0/1; scientific values exposed remain false.
 - Frozen Trend science, ARM-bound 201-object manifest, parent artifact identity, immutable historical anchors, and production/signature/order/withdrawal/transfer authority remain unchanged.
 - Exact next legal action after #416 terminal-green merge is the already-authorized single 0085 RUN through the requalified common runner using this durable backend.
+
+## 0085 Trend unique controlled RUN orchestration — 2026-08-25
+
+- Worker B rebased the RUN orchestration onto merged PR #416 and removed its duplicate store implementation. The RUN path now reuses the qualified `GitCreateOnlyStoreV1` backend from main.
+- The unique orchestrator rebuilds the frozen 201-object SourceManifest from the ARM-bound parent manifest, verifies parent SHA-256/filter/read budgets, requires the frozen `ControlledArchiveTrendEngine`, and delegates marker-before-read, exactly-once engine, create-only result and RUN_ONCE ordering to `CONTROLLED_RESEARCH_RUNNER_V1`.
+- The science workflow is scoped only to `research/0085-trend-run-v1` plus the exact `RUN_TRIGGER.json`. It verifies artifact id/name/size/digest before downloading the outer artifact container; no payload member is opened before the common runner persists and remotely verifies the attempt marker.
+- `research/governance/no_drift.py` adds only the exact workflow path `.github/workflows/0085-unique-controlled-run.yml`; no broad workflow prefix or research-path exemption is introduced.
+- The earlier workflow-definition failures occurred before GitHub created any job. They consumed no attempt, created no marker, downloaded no controlled artifact, performed no controlled read, and invoked no scientific engine.
+- 0085 remains attempt `0/1`, controlled reads `0`, scientific engine `0/1`, scientific values exposed `false`. The user authorization for controlled RUN attempt 1/1 remains valid and unconsumed.
+- Frozen science, source identity, 201-object read budget, immutable historical states, and production/signature/order/withdrawal/transfer authority remain unchanged.
