@@ -1,0 +1,40 @@
+name: R3 CURRENT_STATE writer
+
+on:
+  push:
+    branches:
+      - governance/prospective-five-gate-lifecycle-v1
+
+permissions:
+  contents: write
+
+jobs:
+  write-current-state:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: governance/prospective-five-gate-lifecycle-v1
+          fetch-depth: 0
+      - name: Append R3 prospective lifecycle handoff and self-remove
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('docs/CURRENT_STATE.md')
+          text = path.read_text(encoding='utf-8')
+          marker = '## R3 prospective five-gate lifecycle — 2026-08-25'
+          if marker not in text:
+              text = text.rstrip() + '''\n\n## R3 prospective five-gate lifecycle — 2026-08-25\n\n- R2 `CONTROLLED_RESEARCH_RUNNER_V1` merged at `cfceb7f7eace6b3c08f3ec7cafb6cc09199163df` after exact-head terminal-green qualification; the runner remains prospective research infrastructure with zero production authority.\n- R3 proposes `PROSPECTIVE_FIVE_GATE_LIFECYCLE_V1` for newly registered research IDs that explicitly adopt it after the amendment merges.\n- The ten logical checkpoints remain unchanged and are grouped into five merge gates: `SPEC_FREEZE` = OWNER-FIRST + DESIGN + PREREGISTRATION; `BUILD` = IMPLEMENTATION + NONHISTORICAL QUALIFICATION; `ARM` = CONTROLLED BOUNDARY + ZERO-RESULT PREFLIGHT; `RUN` = UNIQUE CONTROLLED ATTEMPT; `SEAL` = RESULT + IMMUTABLE CLOSEOUT.\n- The amendment cannot change, reopen, reinterpret, rescue, rerun, retune, recompute, or transfer lifecycle credit for any preexisting research ID.\n- Future independent research tracks may run in parallel only when no declared scientific dependency exists. Factor L/S still requires qualifying factor evidence; portfolio studies still require their preregistered sleeve prerequisites.\n- Every future controlled `RUN` gate must use a currently qualified common runner, preserve durable marker-before-read and exactly-once engine execution, and stop new science if the common runner causes a new `INVALID_EXECUTION`.\n- 0076 remains sealed at 6/10 after its Stage7 pre-marker boundary incident; 0072/0073 Carry remain closed/paused; 0083 remains immutable FAIL; no historical authority changes.\n- R3 is governance-only and grants no production/signature/order/withdrawal/transfer authority.\n- Next legal frontier after R3 merge: register the first new Trend research under `SPEC_FREEZE`; Factor Atlas and Options/VRP may proceed independently under separate new IDs after their own SPEC_FREEZE gates.\n'''
+              path.write_text(text, encoding='utf-8')
+          PY
+          rm -f .github/workflows/r3-current-state-writer.yml
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add docs/CURRENT_STATE.md .github/workflows/r3-current-state-writer.yml
+          if git diff --cached --quiet; then
+            exit 0
+          fi
+          git commit -m 'governance: record R3 prospective lifecycle handoff'
+          git push origin HEAD:governance/prospective-five-gate-lifecycle-v1
