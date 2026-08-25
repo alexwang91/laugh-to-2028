@@ -442,3 +442,9 @@ BUILD may use synthetic/nonhistorical fixtures only. ARM must bind qualifying po
 - 0085 remains immutable `INVALID_EXECUTION` attempt 1/1 consumed; 0076 remains sealed; 0072/0073 remain paused; 0083 remains immutable FAIL; Phase6 PASS closeout remains unchanged.
 - `workflow run                         31381953131 / attempt 1`, CAPTURE-0001 sealed/no-retry and CAPTURE-0002 permanently claimed/no-refetch remain immutable.
 - Production/signature/order/withdrawal/transfer authority remains false.
+## 0087 BUILD settlement-convention correction — 2026-08-25
+
+- BUILD removed a synthetic linear-quote option payoff assumption from the 0087 engine. Deribit expiry/settlement must follow the source-frozen contract convention rather than a BUILD-invented USD linear payout.
+- `research/brrk_options_volatility_risk_premium_0087/economic_core.py` now freezes a source-convention-neutral economic core: ARM supplies entry premium, settlement payoff, hedge quotes and target units in one pre-exposure frozen numeraire; the core applies executable-side hedge accounting and C1 5 bps / C2 15 bps friction.
+- ARM must prove the source-native settlement convention, numeraire conversion and hedge-target semantics from metadata/schema before controlled value exposure. If that cannot be bound, the 0087 line stops before RUN.
+- This correction consumed no controlled reads, no scientific engine call, no attempt budget, and exposed no scientific values.
