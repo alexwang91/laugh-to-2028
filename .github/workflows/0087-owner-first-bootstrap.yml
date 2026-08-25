@@ -26,7 +26,7 @@ jobs:
           p = Path('config/research_registry.json')
           data = json.loads(p.read_text())
           rid = 'BRRK-OPTIONS-VOLATILITY-RISK-PREMIUM-0087'
-          if any(x.get('research_id') == rid for x in data['research_records']):
+          if any(x.get('research_id') == rid for x in data['records']):
               raise SystemExit('0087 owner record already exists; refusing duplicate')
           rec = {
             'research_id': rid,
@@ -72,7 +72,7 @@ jobs:
             'governed_path_prefixes': ['research/brrk_options_volatility_risk_premium_0087/'],
             'notes': ['Owner-first central registry insertion must precede any governed 0087 research path.','0087 is independent from 0085 and 0086 and receives zero attempt, lifecycle, result, source-selection, or scientific-value credit from prior IDs.','0086 remains at ARM complete with attempt 0/1 pending separate irreversible RUN authorization.','Any future common-runner-caused INVALID_EXECUTION stops new science pending repair and requalification.']
           }
-          data['research_records'].append(rec)
+          data['records'].append(rec)
           p.write_text(json.dumps(data, indent=2, ensure_ascii=False) + '\n')
           PY
           git config user.name github-actions[bot]
