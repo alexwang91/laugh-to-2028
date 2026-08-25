@@ -6221,7 +6221,7 @@
     {
       "research_id": "BRRK-OPTIONS-VOLATILITY-RISK-PREMIUM-0087",
       "research_family_id": "OPTIONS_VOLATILITY_RISK_PREMIUM",
-      "research_domain": "VOLATILITY_RELATIVE_VALUE",
+      "research_domain": "OPTIONS_VOLATILITY",
       "research_governance_version": 1,
       "governance_mode": "PROGRAM_GOVERNED_V1",
       "objective_type": "ALPHA_DISCOVERY",
