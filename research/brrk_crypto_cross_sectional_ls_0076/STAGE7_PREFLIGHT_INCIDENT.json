@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "research_id": "BRRK-CRYPTO-CROSS-SECTIONAL-LS-0076",
+  "lifecycle_stage": "STAGE7_ZERO_RESULT_PREFLIGHT",
+  "incident_classification": "FAIL_CLOSED_PRE_MARKER_PAYLOAD_ENTRY_READ_BOUNDARY_VIOLATION",
+  "observed_at_utc": "2026-08-25T05:24:00Z",
+  "stage6_merge_baseline": "868187bae8f5e23dcf884b023c0783d19c96ed18",
+  "pr": 404,
+  "pre_incident_exact_head": "03c25c65a8916d1bf57eee3633036f249b644d06",
+  "fresh_exact_head_ci_before_preflight": {
+    "research_governance_core": "SUCCESS",
+    "pr_handoff_governance": "SUCCESS"
+  },
+  "artifact_identity": {
+    "workflow_run": "32646565505",
+    "artifact_id": "9495175701",
+    "artifact_name": "0075-stage6-authorized-payloads-v1",
+    "artifact_expired": false,
+    "artifact_size_bytes": 174445627,
+    "artifact_digest": "sha256:8040282ff412b2d3fd360173e4745ebfd048796eb9e9c2ad49fa0901e5cedf56",
+    "downloaded_archive_sha256": "8040282ff412b2d3fd360173e4745ebfd048796eb9e9c2ad49fa0901e5cedf56"
+  },
+  "allowed_stage7_method": "ZIP_CENTRAL_DIRECTORY_FILENAMES_AND_METADATA_ONLY",
+  "actual_incident": {
+    "operation": "outer ZIP integrity traversal equivalent to Python zipfile.ZipFile.testzip()",
+    "why_invalid": "The integrity traversal opens and decompresses every outer artifact entry instead of limiting inspection to the outer ZIP central directory. That exceeds the Stage7 identity-only boundary before any durable RUN_ATTEMPT.marker exists.",
+    "outer_entries_traversed": 107084,
+    "parent_staged_payload_archive_entries_traversed": 53541,
+    "parent_checksum_entries_traversed": 53541,
+    "parent_metadata_entries_traversed": 2,
+    "0076_authorized_objects": 30336,
+    "0076_authorized_payload_entry_bytes_traversed": 30336,
+    "inner_payload_zip_csv_entries_opened": false,
+    "scientific_rows_parsed": false,
+    "scientific_engine_invoked": false,
+    "scientific_source_network_fetches": 0,
+    "run_attempt_marker_present": false,
+    "result_bundle_present": false,
+    "run_once_marker_present": false
+  },
+  "budget_accounting_after_incident": {
+    "stage8_attempt_budget": 1,
+    "stage8_attempt_consumed": 0,
+    "controlled_authorized_payload_file_reads": 30336,
+    "max_read_per_authorized_object": 1,
+    "scientific_engine_budget": 1,
+    "scientific_engine_consumed": 0,
+    "scientific_source_network_fetch_budget": 0,
+    "scientific_source_network_fetches": 0,
+    "scientific_row_values_exposed": false
+  },
+  "governance_effect": {
+    "stage7_result": "FAIL_CLOSED",
+    "stage7_lifecycle_credit_claimed": false,
+    "formal_completion_remains": "6/10",
+    "same_id_stage8_execution_permitted": false,
+    "same_id_rerun_retune_rescue_recompute_permitted": false,
+    "reason": "marker-before-read and exactly-once controlled-read invariants can no longer be satisfied for the frozen 0076 authorized-object set without reusing already traversed payload files or rewriting history"
+  },
+  "immutable_anchors_preserved": {
+    "current_state_historical_line": "workflow run                         31381953131 / attempt 1",
+    "capture_0001": "SEALED_FAILED_HTTP_451_NO_RETRY",
+    "capture_0002": "PERMANENTLY_CLAIMED_NO_REFETCH",
+    "frozen_science_changed": false
+  },
+  "production_authorized": false,
+  "signature_authorized": false,
+  "order_submission_authorized": false
+}
