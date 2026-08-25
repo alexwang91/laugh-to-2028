@@ -1,0 +1,64 @@
+name: 0087 SPEC handoff
+
+on:
+  push:
+    branches:
+      - research/0087-options-vrp-spec-freeze-v1
+    paths:
+      - .github/workflows/0087-spec-handoff.yml
+
+permissions:
+  contents: write
+
+jobs:
+  handoff:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Persist exact SPEC state
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          rp = Path('config/research_registry.json')
+          data = json.loads(rp.read_text())
+          rid = 'BRRK-OPTIONS-VOLATILITY-RISK-PREMIUM-0087'
+          matches = [x for x in data['records'] if x.get('research_id') == rid]
+          if len(matches) != 1:
+              raise SystemExit(f'expected one 0087 owner record, got {len(matches)}')
+          r = matches[0]
+          r['question'] = 'Does a single prospectively fixed 30-calendar-day at-the-money BTC/ETH crypto options volatility-risk-premium mechanism exhibit persistent point-in-time variance compensation and positive delta-hedged short-volatility economics after frozen costs without result-informed rescue?'
+          r['primary_target'] = 'ROBUST_30D_ATM_BTC_ETH_OPTIONS_VRP_AFTER_COSTS'
+          r['primary_metric'] = 'G1_G8_FROZEN_VRP_AND_DELTA_HEDGED_ECONOMIC_GATES'
+          r['secondary_metrics'] = ['weekly_vrp30','btc_vrp30','eth_vrp30','hac_mean_vrp_pvalue','mbb_mean_vrp_ci','chronological_block_vrp','gross_delta_hedged_short_straddle_pnl','net_pnl_c1_realistic','net_pnl_c2_stress','support_count']
+          r['feature_families'] = ['DERIBIT_BTC_ETH_ATM_30D_VRP_SINGLE_FAMILY']
+          r['horizon'] = 'MONDAY_0800_UTC_ENTRY_25_TO_35_DTE_HOLD_TO_EARLIER_OF_EXPIRY_OR_30_CALENDAR_DAYS'
+          r['universe'] = ['DERIBIT_BTC_EUROPEAN_OPTIONS','DERIBIT_ETH_EUROPEAN_OPTIONS']
+          r['declared_variant_budget'] = 1
+          r['parameter_candidate_count'] = 1
+          r['stopping_rule'] = 'Exactly one predeclared BTC/ETH ATM 30D VRP family. SPEC_FREEZE precedes values; BUILD synthetic only; ARM must bind qualifying point-in-time Deribit option bid/ask/IV/contract metadata, underlying index and hedge identities; RUN requires separate authorization and at most one attempt; SEAL has zero scientific recomputation. If source qualification fails, stop before RUN with no venue/maturity/spread/mark substitution and no replacement retry chain.'
+          r['success_criteria'] = ['At least 52 supported weekly observations total, at least 20 BTC and 20 ETH, at least two calendar years, all statistics finite.','Mean weekly VRP30 > 0; HAC p<0.05; 8-week MBB 95% CI positive using 4000 reps seed 870087.','BTC and ETH standalone mean VRP30 both positive and at least 3/4 chronological blocks positive.','C1 realistic mean normalized delta-hedged short-straddle PnL positive; C2 stress mean non-negative; at least 3/4 blocks have positive C1 PnL.','All source identity, PIT, marker, read, engine, persistence and source-qualified-runner invariants pass.']
+          r['failure_criteria'] = ['Valid execution with adequate support but any frozen G1-G8 gate failing produces FAIL_NO_ROBUST_OPTIONS_VRP.','Valid execution with insufficient frozen support produces INCONCLUSIVE_INSUFFICIENT_OPTIONS_SUPPORT.','Any identity/hash/schema/timestamp/PIT/fallback/nonfinite/candidate/network/marker/read/source-interface/engine/persistence violation produces INVALID_EXECUTION.']
+          r['researcher_decisions'] = ['Use Deribit only and exactly BTC/ETH European options.','Use Monday 08:00 UTC with no within-week fallback.','Use exactly one 25-35 DTE expiry nearest 30D and a same-strike ATM call/put pair selected by minimum absolute log-moneyness.','Require executable positive bid/ask and relative spread <=20% for both legs; unsupported rows are not replaced.','Define ATM_IV30 as mean call/put source IV, VRP30 as ATM_IV30^2 minus annualized next-30-calendar-day realized variance.','Use one delta-hedged short ATM straddle economic diagnostic, daily UTC hedging, C1 actual option bid/ask plus 5 bps hedge friction and C2 plus 15 bps.','Use one candidate only; no multiplicity correction beyond fixed confirmation gates; HAC lag 8 and weekly MBB block length 8, 4000 reps, seed 870087.','Treat all controlled history as researcher-exposed DEVELOPMENT, not independent OOS.']
+          r['research_process_complexity'] = {'declared_parameter_candidates':['DERIBIT_BTC_ETH_ATM_30D_VRP_SINGLE_FAMILY'],'actual_parameter_candidates_evaluated':0,'universes_evaluated':1,'horizons_evaluated':['25_TO_35_DTE_NEAREST_30D_ONLY'],'rebalance_variants':['MONDAY_0800_UTC_ONLY'],'feature_representations':['ATM_CALL_PUT_SOURCE_IV_MEAN_ONLY'],'special_cases_introduced':[],'validation_exposure_event_refs':[],'related_family_trials':1}
+          r['result_status'] = 'SPEC_FREEZE_PROPOSED'
+          r['decision_refs'] = ['https://github.com/alexwang91/laugh-to-2028/issues/426','research/governance/PROSPECTIVE_FIVE_GATE_LIFECYCLE_V1.md','research/governance/CONTROLLED_RESEARCH_RUNNER_V1_SOURCE_INTERFACE_QUALIFICATION_2026-08-25.md','research/brrk_options_volatility_risk_premium_0087/SPEC_FREEZE.md']
+          r['notes'] = ['Owner-first central registry commit 3686aec8a5a82d3a146828e464da090f0aea9a70 precedes the governed 0087 research path.','0087 receives zero attempt, lifecycle, result, source-selection or scientific-value credit from prior IDs.','0087 controlled attempt remains 0/1 with controlled reads 0 and scientific engine 0/1.','If qualifying PIT Deribit source identities cannot be bound at ARM, stop before RUN instead of weakening the frozen question.','Any future common-runner-caused INVALID_EXECUTION stops new science pending repair and requalification.']
+          rp.write_text(json.dumps(data, indent=2, ensure_ascii=False) + '\n')
+
+          sp = Path('docs/CURRENT_STATE.md')
+          text = sp.read_text()
+          marker = '## 0087 independent Options / VRP SPEC_FREEZE'
+          if marker not in text:
+              text += '''\n\n## 0087 independent Options / VRP SPEC_FREEZE\n\nResearch ID = `BRRK-OPTIONS-VOLATILITY-RISK-PREMIUM-0087`.\nState = `SPEC_FREEZE_PROPOSED / CONTROLLED ATTEMPT 0/1 / CONTROLLED READS 0`.\n\nOwner-first registry commit `3686aec8a5a82d3a146828e464da090f0aea9a70` predates the governed 0087 path. 0087 freezes one independent Deribit BTC/ETH ATM 30D VRP family, Monday 08:00 UTC timing, nearest 25-35 DTE same-strike ATM call/put selection, source-IV VRP30 definition, daily delta-hedged short-straddle economics, C1/C2 cost panels, support minima, HAC/MBB inference and PASS/FAIL/INCONCLUSIVE/INVALID rules. No controlled scientific value has been exposed.\n\nBUILD may use synthetic/nonhistorical fixtures only. ARM must bind qualifying point-in-time Deribit options, index and hedge identities using metadata only; inability to bind them stops 0087 before RUN without source substitution or scientific rescue. Any RUN requires separate irreversible user authorization and `ControlledResearchRunnerV1SourceQualified`.\n\n0086 remains ARM-complete at attempt 0/1 pending separate authorization. 0085 remains immutable INVALID_EXECUTION attempt 1/1 consumed. 0076 remains sealed; 0072/0073 remain paused; 0083 remains immutable FAIL. `workflow run                         31381953131 / attempt 1`, CAPTURE-0001 sealed/no-retry and CAPTURE-0002 permanently claimed/no-refetch remain immutable. Production/signature/order/withdrawal/transfer authority remains false.\n'''
+              sp.write_text(text)
+          PY
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add config/research_registry.json docs/CURRENT_STATE.md
+          git rm .github/workflows/0087-spec-handoff.yml
+          git commit -m 'research(0087): persist SPEC registry and current-state handoff'
+          git push origin HEAD:research/0087-options-vrp-spec-freeze-v1
