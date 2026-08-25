@@ -48,6 +48,16 @@ def _head() -> str:
     return subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()
 
 
+def _artifact_member_name(staged_relative_path: str) -> str:
+    prefix = "stage/"
+    if not staged_relative_path.startswith(prefix):
+        raise RuntimeError(f"UNEXPECTED_STAGED_RELATIVE_PATH:{staged_relative_path}")
+    member = staged_relative_path[len(prefix):]
+    if not member.startswith("payloads/"):
+        raise RuntimeError(f"UNEXPECTED_ARTIFACT_MEMBER_PATH:{member}")
+    return member
+
+
 def _manifest(arm: dict) -> SourceManifest:
     parent_rel = arm["source_binding"]["parent_manifest_path"]
     parent_path = ROOT / parent_rel
@@ -72,7 +82,7 @@ def _manifest(arm: dict) -> SourceManifest:
     rows.sort(key=lambda row: (row["asset"], row["month"], row["staged_relative_path"]))
     if len(rows) != arm["source_binding"]["expected_authorized_objects"]:
         raise RuntimeError(f"AUTHORIZED_OBJECT_COUNT_MISMATCH:{len(rows)}")
-    names = [row["staged_relative_path"] for row in rows]
+    names = [_artifact_member_name(row["staged_relative_path"]) for row in rows]
     if len(names) != len(set(names)):
         raise RuntimeError("DUPLICATE_FILTERED_OBJECT")
     if any(row.get("staging_status") != arm["source_binding"]["required_staging_status"] for row in rows):
@@ -82,7 +92,7 @@ def _manifest(arm: dict) -> SourceManifest:
 
     entries = tuple(
         ManifestEntry(
-            filename=row["staged_relative_path"],
+            filename=_artifact_member_name(row["staged_relative_path"]),
             size=int(row["staged_byte_size"]),
             sha256=row["staged_sha256"],
         )
