@@ -5973,6 +5973,134 @@
         "0076 inherits exactly zero validated factors and starts at formal completion 0/10, attempt 0/1, controlled reads 0, scientific engine 0/1, scientific source-network fetches 0.",
         "OWNER-FIRST itself reads no 0076 controlled scientific/history payload."
       ]
+    },
+    {
+      "research_id": "BRRK-MULTI-HORIZON-TREND-VOL-TARGET-0085",
+      "research_family_id": "MULTI_HORIZON_TREND_VOL_TARGET",
+      "research_domain": "DIRECTION_REGIME",
+      "research_governance_version": 1,
+      "governance_mode": "PROSPECTIVE_FIVE_GATE_LIFECYCLE_V1",
+      "objective_type": "ALPHA_DISCOVERY",
+      "created_at": "2026-08-25T08:40:00Z",
+      "created_before_result": true,
+      "question": "Does one fixed BTC/ETH/SOL multi-horizon long/cash trend sleeve with volatility targeting produce robust positive standalone economic value after realistic and stressed costs on governed DEVELOPMENT history?",
+      "hypothesis": "A fixed majority-positive 20/60/120/240-session trend rule with inverse-volatility risk allocation and a 25% annualized portfolio-volatility target capped at gross 1.0 can produce a persistent long/cash return stream with materially controlled drawdown after costs.",
+      "hypothesis_origin": "PROSPECTIVE_NEW_QUESTION_AFTER_0074_INVALID_EXECUTION_WITH_NO_0074_SCIENTIFIC_RESULT_ADMISSIBLE",
+      "economic_mechanism": "Slow capital flows, reflexive momentum and delayed positioning adjustment may create medium-horizon trend persistence; long/cash trend participation may retain upside while reducing exposure after broad trend breaks.",
+      "primary_target": "ROBUST_POSITIVE_STANDALONE_TREND_SLEEVE_ECONOMICS_WITH_GROSS_CAP_1",
+      "primary_metric": "FROZEN_JOINT_PASS_GATES_ON_10_20_30BPS_COST_PATHS_AND_FOUR_CHRONOLOGICAL_BLOCKS",
+      "secondary_metrics": [
+        "CAGR",
+        "VOLATILITY",
+        "SHARPE",
+        "MAX_DRAWDOWN",
+        "CALMAR",
+        "TERMINAL_WEALTH",
+        "TURNOVER",
+        "COST_DRAG",
+        "AVERAGE_GROSS",
+        "ZERO_RISKY_GROSS_SHARE",
+        "ASSET_AVERAGE_EXPOSURE",
+        "BRRK_CORRELATION",
+        "EQUAL_WEIGHT_CORRELATION"
+      ],
+      "feature_families": [
+        "TRAILING_LOG_RETURN_SIGN_20_60_120_240",
+        "TRAILING_REALIZED_VOLATILITY_20"
+      ],
+      "horizon": "GOVERNED_DAILY_DEVELOPMENT_HISTORY_EXACT_IDENTITIES_TO_BE_BOUND_AT_ARM_WITH_T_TO_TPLUS1_CAUSALITY",
+      "universe": [
+        "BTC",
+        "ETH",
+        "SOL"
+      ],
+      "development_dataset_refs": [],
+      "validation_dataset_refs": [],
+      "sealed_dataset_refs": [],
+      "declared_variant_budget": 1,
+      "actual_variants_evaluated": 0,
+      "parameter_candidate_count": 1,
+      "stopping_rule": "SPEC_FREEZE is complete before controlled values. BUILD may use synthetic/nonhistorical tests only. ARM binds exact controlled identities and read budgets. RUN uses one CONTROLLED_RESEARCH_RUNNER_V1 attempt. Any valid scientific result proceeds only to SEAL; same-ID rerun/retune/rescue is forbidden after attempt consumption.",
+      "success_criteria": [
+        "Eligible common support >=730 daily sessions.",
+        "10bps CAGR >0, Sharpe >=0.80, Calmar >=1.00 and MDD magnitude <=35%.",
+        "20bps Sharpe >=0.65 and 30bps CAGR >0.",
+        "At least 3/4 chronological blocks have positive CAGR.",
+        "10bps terminal wealth >=85% of equal-weight BTC/ETH/SOL buy-and-hold on same support.",
+        "10bps MDD magnitude improves by >=5 percentage points versus equal-weight benchmark unless benchmark MDD <20%, in which case candidate MDD must be <= benchmark MDD.",
+        "Gross <=1.0, no short, controlled read budgets exact, scientific engine exactly once, scientific network fetches 0."
+      ],
+      "failure_criteria": [
+        "Valid execution with sufficient support but any frozen economic PASS gate failing produces FAIL_NO_ROBUST_TREND_SLEEVE_VALUE.",
+        "Valid execution with <730 sessions or an ARM-bound required common-support benchmark impossible to form produces INCONCLUSIVE_INSUFFICIENT_SUPPORT.",
+        "Any marker/read/order/exactly-once/source/hash/network/persistence contract violation produces INVALID_EXECUTION."
+      ],
+      "allowed_followup": [
+        "PASS may make the frozen Trend sleeve eligible for separately governed forward-only validation and later multi-sleeve research.",
+        "FAIL closes this exact hypothesis; a materially different trend mechanism requires a new research ID."
+      ],
+      "forbidden_followup": [
+        "No same-ID horizon, majority threshold, vol lookback, vol target, cost panel, universe, benchmark, history, or parameter change after controlled results.",
+        "No 0074 result reconstruction or rescue.",
+        "No leverage, shorting, production, signing or order authority."
+      ],
+      "researcher_decisions": [
+        "Adopts PROSPECTIVE_FIVE_GATE_LIFECYCLE_V1 after its merge.",
+        "Exactly one candidate: 3-of-4 positive trailing log-return signs at 20/60/120/240 sessions.",
+        "Active assets use inverse 20-session realized volatility; portfolio annualized target volatility exactly 25%; gross cap 1.0.",
+        "Cost panels fixed at 10/20/30 bps one-way turnover cost.",
+        "Evidence tier is researcher-exposed DEVELOPMENT, not independent OOS.",
+        "No controlled scientific payload values were read during SPEC_FREEZE."
+      ],
+      "research_process_complexity": {
+        "declared_parameter_candidates": [
+          "ONE_FIXED_TREND_CANDIDATE"
+        ],
+        "actual_parameter_candidates_evaluated": 0,
+        "universes_evaluated": [
+          "BTC_ETH_SOL_FIXED"
+        ],
+        "horizons_evaluated": [
+          "20_60_120_240_FIXED"
+        ],
+        "rebalance_variants": [
+          "DAILY_FIXED"
+        ],
+        "feature_representations": [
+          "FOUR_HORIZON_BINARY_TREND_MAJORITY_PLUS_VOL20"
+        ],
+        "special_cases_introduced": [],
+        "validation_exposure_event_refs": [],
+        "related_family_trials": 1
+      },
+      "lineage_edges": [
+        {
+          "relation": "SCIENTIFIC_QUESTION_REATTEMPT_AFTER_INVALID_EXECUTION_WITH_NEW_GOVERNANCE_INFRASTRUCTURE",
+          "ref_research_id": "BRRK-MULTI-ASSET-TREND-BENCHMARK-0074",
+          "provenance_status": "FACT",
+          "evidence_ref": "docs/CURRENT_STATE.md"
+        }
+      ],
+      "result_status": "PREREGISTERED_NOT_RUN",
+      "failure_reason": null,
+      "promotion_state": "NONE",
+      "evidence_refs": [],
+      "decision_refs": [
+        "research/brrk_multi_horizon_trend_vol_target_0085/SPEC_FREEZE.md",
+        "research/governance/PROSPECTIVE_FIVE_GATE_LIFECYCLE_V1.md"
+      ],
+      "production_relevance": "Research-only DEVELOPMENT Trend sleeve study. PASS grants only later validation eligibility, never automatic production authority.",
+      "production_authorized": false,
+      "provenance_status": "PROSPECTIVE_DECLARED_BEFORE_RESULT",
+      "governed_path_prefixes": [
+        "research/brrk_multi_horizon_trend_vol_target_0085/"
+      ],
+      "notes": [
+        "0085 receives no lifecycle credit, attempt budget, result evidence or parameter choice from 0074.",
+        "SPEC_FREEZE combines OWNER-FIRST, DESIGN and PREREGISTRATION while preserving their internal logical order.",
+        "Controlled source identities are bound later at ARM; no source substitution after ARM.",
+        "Any common-runner-caused INVALID_EXECUTION stops new science pending runner repair/requalification and does not create a replacement-ID retry chain."
+      ]
     }
   ],
   "research_governance_debt": [

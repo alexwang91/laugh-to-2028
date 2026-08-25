@@ -324,3 +324,14 @@ Phase 6 = NO CHANGE.
 - 0076 remains sealed at 6/10 after its Stage7 pre-marker boundary incident; 0072/0073 Carry remain closed/paused; 0083 remains immutable FAIL; no historical authority changes.
 - R3 is governance-only and grants no production/signature/order/withdrawal/transfer authority.
 - Next legal frontier after R3 merge: register the first new Trend research under `SPEC_FREEZE`; Factor Atlas and Options/VRP may proceed independently under separate new IDs after their own SPEC_FREEZE gates.
+
+## 0085 Trend SPEC_FREEZE — 2026-08-25
+
+- Research ID `BRRK-MULTI-HORIZON-TREND-VOL-TARGET-0085` is the first new research ID explicitly adopting merged `PROSPECTIVE_FIVE_GATE_LIFECYCLE_V1`.
+- `SPEC_FREEZE` contains OWNER-FIRST + DESIGN + PREREGISTRATION in preserved logical order; no controlled scientific payload value was read and attempt remains `0/1`.
+- Exactly one candidate is frozen: BTC/ETH/SOL long/cash, 3-of-4 positive trailing log-return signs over 20/60/120/240 sessions, inverse 20-session realized-vol allocation, portfolio vol target 25% annualized, gross cap 1.0, daily decisions, t-close first affects t→t+1.
+- One-way turnover cost panels are frozen at 10/20/30 bps. Primary economic gates include 10bps Sharpe >=0.80, Calmar >=1.00, MDD magnitude <=35%, 20bps Sharpe >=0.65, 30bps CAGR >0, >=3/4 positive chronological blocks, and frozen benchmark wealth/drawdown gates.
+- Evidence tier is `RESEARCHER_EXPOSED_DEVELOPMENT_NOT_INDEPENDENT_OOS`; PASS can only qualify later forward validation/multi-sleeve consideration.
+- 0074 remains immutable `INVALID_EXECUTION`; 0085 receives no lifecycle/result/attempt credit from it.
+- Next 0085 gate after SPEC_FREEZE merge is `BUILD`: implementation + nonhistorical qualification only, with controlled payload reads 0 and attempt 0/1.
+- Production/signature/order/withdrawal/transfer authority remains false.
