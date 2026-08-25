@@ -419,3 +419,15 @@ Any future 0086 controlled RUN must use `ControlledResearchRunnerV1SourceQualifi
 - 0085 remains immutable `INVALID_EXECUTION` attempt 1/1 consumed with no admissible Trend result. 0076 remains sealed; 0072/0073 remain paused; 0083 remains immutable FAIL; Phase6 PASS closeout remains unchanged.
 - `workflow run                         31381953131 / attempt 1`, CAPTURE-0001 sealed/no-retry and CAPTURE-0002 permanently claimed/no-refetch remain immutable.
 - Production/signature/order/withdrawal/transfer authority remains false.
+
+
+## 0087 independent Options / VRP SPEC_FREEZE
+
+Research ID = `BRRK-OPTIONS-VOLATILITY-RISK-PREMIUM-0087`.
+State = `SPEC_FREEZE_PROPOSED / CONTROLLED ATTEMPT 0/1 / CONTROLLED READS 0`.
+
+Owner-first registry commit `3686aec8a5a82d3a146828e464da090f0aea9a70` predates the governed 0087 path. 0087 freezes one independent Deribit BTC/ETH ATM 30D VRP family, Monday 08:00 UTC timing, nearest 25-35 DTE same-strike ATM call/put selection, source-IV VRP30 definition, daily delta-hedged short-straddle economics, C1/C2 cost panels, support minima, HAC/MBB inference and PASS/FAIL/INCONCLUSIVE/INVALID rules. No controlled scientific value has been exposed.
+
+BUILD may use synthetic/nonhistorical fixtures only. ARM must bind qualifying point-in-time Deribit options, index and hedge identities using metadata only; inability to bind them stops 0087 before RUN without source substitution or scientific rescue. Any RUN requires separate irreversible user authorization and `ControlledResearchRunnerV1SourceQualified`.
+
+0086 remains ARM-complete at attempt 0/1 pending separate authorization. 0085 remains immutable INVALID_EXECUTION attempt 1/1 consumed. 0076 remains sealed; 0072/0073 remain paused; 0083 remains immutable FAIL. `workflow run                         31381953131 / attempt 1`, CAPTURE-0001 sealed/no-retry and CAPTURE-0002 permanently claimed/no-refetch remain immutable. Production/signature/order/withdrawal/transfer authority remains false.
