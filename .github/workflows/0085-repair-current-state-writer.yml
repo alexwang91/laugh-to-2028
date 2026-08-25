@@ -1,0 +1,42 @@
+name: 0085 repair CURRENT_STATE one-shot writer
+
+on:
+  push:
+    branches:
+      - research/0085-trend-build-source-interface-repair-v1
+
+permissions:
+  contents: write
+
+jobs:
+  append-and-self-delete:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/0085-trend-build-source-interface-repair-v1
+          fetch-depth: 0
+      - name: Append truthful handoff and remove writer
+        shell: bash
+        run: |
+          cat >> docs/CURRENT_STATE.md <<'EOF'
+
+## 0085 Trend BUILD source-interface repair — 2026-08-25
+
+- 0085 `SPEC_FREEZE` and `BUILD` are merged; attempt remains `0/1`, controlled scientific/history reads remain `0`, scientific controlled engine budget remains `0/1`, and source-network fetches remain `0`.
+- Pre-ARM review found a mechanical source-interface mismatch: the merged BUILD accepted normalized BTC/ETH/SOL daily JSON, while governance-visible controlled history is durably staged as Binance USD-M perpetual 1d monthly ZIP objects. Pre-marker normalization would require forbidden payload decompression/read.
+- The prospective BUILD repair adds `ControlledArchiveTrendEngine`, which may run only after the qualified common runner has durably persisted `RUN_ATTEMPT.marker` and completed its verified outer payload-read pass. It converts exact ARM-bound monthly kline ZIP bytes in memory and delegates to the unchanged frozen Trend engine.
+- Synthetic qualification covers exact staged source recognition, successful three-asset normalization/delegation, corrupt inner ZIP rejection, unknown/funding source rejection, alias rejection and month/date mismatch rejection. No controlled payload was used.
+- Frozen Trend science is unchanged: BTC/ETH/SOL, horizons 20/60/120/240, 3-of-4 activation, trailing 20-session realized volatility, 25% annualized portfolio-vol target, gross cap 1.0, long/cash only, UTC daily timing, t-close first affects t->t+1, and 10/20/30 bps cost panels.
+- Pre-marker `testzip()`, decompression, inner CSV open/parse, CRC payload traversal and any scientific-value exposure remain forbidden. ARM must bind exact staged object identities/hashes/sizes/read budgets and the repaired execution interface before RUN.
+- 0074 remains immutable `INVALID_EXECUTION`; 0076 remains sealed at its Stage7 pre-marker boundary incident; 0072/0073 Carry remain paused; 0083 remains immutable FAIL. Exact historical anchor `workflow run                         31381953131 / attempt 1`, CAPTURE-0001 sealed/no-retry and CAPTURE-0002 permanently claimed/no-refetch remain unchanged.
+- Production/signature/order/withdrawal/transfer authority remains false.
+- Next legal 0085 step after this repair merges with terminal-green exact-head CI: `ARM` metadata/identity binding only. No scientific attempt is authorized or consumed by the repair.
+EOF
+          git rm .github/workflows/0085-repair-current-state-writer.yml
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add docs/CURRENT_STATE.md
+          git commit -m 'governance(0085): record pre-ARM source-interface repair handoff'
+          git push origin HEAD:research/0085-trend-build-source-interface-repair-v1
