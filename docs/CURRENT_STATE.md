@@ -353,13 +353,10 @@ Phase 6 = NO CHANGE.
 - The common runner must re-pass the complete existing synthetic fault matrix, the 20-consecutive full-lifecycle qualification, and the new superset-container test on the exact final PR head before 0085 RUN may execute.
 - 0085 user authorization for controlled attempt 1/1 remains valid but unconsumed. Production/signature/order/withdrawal/transfer authority remains false.
 
+## R2.2 durable Git create-only store qualification — 2026-08-25
 
-## 0085 Trend durable RUN tooling handoff — 2026-08-25
-
-- This tooling-only change adds a Git-backed create-only store whose `create_only` operation commits, pushes, fetches, and byte-verifies each durable RUN object before returning.
-- It adds the unique 0085 RUN orchestrator and a science-branch workflow. The workflow can run only when `research/0085-trend-run-v1` receives the exact `RUN_TRIGGER.json`; this tooling branch cannot create a marker or consume the attempt.
-- The orchestrator mechanically rebuilds the frozen 201-object SourceManifest from the ARM-bound immutable 0074 parent manifest, verifies its SHA-256/filter/read budgets, requires the exact frozen controlled execution interface, and delegates marker/read/engine/result/RUN_ONCE ordering to `CONTROLLED_RESEARCH_RUNNER_V1`.
-- No controlled artifact was downloaded or opened by this tooling handoff. Attempt remains `0/1`, controlled reads `0`, engine calls `0/1`, source-network fetches `0`, and scientific values exposed `false`.
-- Three preliminary pushes of the newly introduced 0085 workflow terminated before any job was created; they performed no controlled read, artifact download, marker creation, engine invocation, or scientific computation. The workflow is now scoped only to the future RUN branch and trigger path.
-- After this tooling PR reaches terminal green and merges cleanly, the already-authorized attempt may proceed only by creating `research/0085-trend-run-v1` from the exact merged tooling head and committing the explicit trigger. No alternate/manual marker path is permitted.
-- Frozen Trend science, source identity, 201-object read budget, thresholds, benchmarks, and all immutable historical states remain unchanged. Production/signature/order/withdrawal/transfer authority remains false.
+- PR #416 prospectively qualifies `GitCreateOnlyStoreV1` as the durable Git-backed `CreateOnlyStore` backend for `CONTROLLED_RESEARCH_RUNNER_V1`; it maps governed keys to dedicated remote branches, rejects existing keys, never force-pushes, and remotely fetches/byte-verifies every successful write.
+- Qualification uses only synthetic bytes and temporary local bare Git repositories. It creates no 0085 marker/result/RUN_ONCE object and reads no controlled historical payload.
+- 0085 remains ARM-complete with the user's explicit RUN attempt 1/1 authorization valid and unconsumed. Attempt remains 0/1; controlled reads remain 0; scientific engine remains 0/1; scientific values exposed remain false.
+- Frozen Trend science, ARM-bound 201-object manifest, parent artifact identity, immutable historical anchors, and production/signature/order/withdrawal/transfer authority remain unchanged.
+- Exact next legal action after #416 terminal-green merge is the already-authorized single 0085 RUN through the requalified common runner using this durable backend.
