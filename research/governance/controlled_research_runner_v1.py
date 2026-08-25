@@ -244,7 +244,7 @@ class PayloadArchive:
                     if hashlib.sha256(payload).hexdigest() != entry.sha256:
                         raise InvalidExecution(f"PAYLOAD_HASH_MISMATCH:{entry.filename}")
                     payloads[entry.filename] = payload
-        except DuplicatePayloadRead:
+        except InvalidExecution:
             raise
         except zipfile.BadZipFile as exc:
             raise InvalidExecution("CORRUPTED_ZIP_OR_CRC") from exc
