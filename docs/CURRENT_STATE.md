@@ -352,3 +352,14 @@ Phase 6 = NO CHANGE.
 - The repair changes no 0085 universe, date range, signal, cost, threshold, benchmark, source identity or 201-object read budget. It changes no historical result or authority and grants no new attempt.
 - The common runner must re-pass the complete existing synthetic fault matrix, the 20-consecutive full-lifecycle qualification, and the new superset-container test on the exact final PR head before 0085 RUN may execute.
 - 0085 user authorization for controlled attempt 1/1 remains valid but unconsumed. Production/signature/order/withdrawal/transfer authority remains false.
+
+
+## 0085 Trend durable RUN tooling handoff — 2026-08-25
+
+- This tooling-only change adds a Git-backed create-only store whose `create_only` operation commits, pushes, fetches, and byte-verifies each durable RUN object before returning.
+- It adds the unique 0085 RUN orchestrator and a science-branch workflow. The workflow can run only when `research/0085-trend-run-v1` receives the exact `RUN_TRIGGER.json`; this tooling branch cannot create a marker or consume the attempt.
+- The orchestrator mechanically rebuilds the frozen 201-object SourceManifest from the ARM-bound immutable 0074 parent manifest, verifies its SHA-256/filter/read budgets, requires the exact frozen controlled execution interface, and delegates marker/read/engine/result/RUN_ONCE ordering to `CONTROLLED_RESEARCH_RUNNER_V1`.
+- No controlled artifact was downloaded or opened by this tooling handoff. Attempt remains `0/1`, controlled reads `0`, engine calls `0/1`, source-network fetches `0`, and scientific values exposed `false`.
+- Three preliminary pushes of the newly introduced 0085 workflow terminated before any job was created; they performed no controlled read, artifact download, marker creation, engine invocation, or scientific computation. The workflow is now scoped only to the future RUN branch and trigger path.
+- After this tooling PR reaches terminal green and merges cleanly, the already-authorized attempt may proceed only by creating `research/0085-trend-run-v1` from the exact merged tooling head and committing the explicit trigger. No alternate/manual marker path is permitted.
+- Frozen Trend science, source identity, 201-object read budget, thresholds, benchmarks, and all immutable historical states remain unchanged. Production/signature/order/withdrawal/transfer authority remains false.
