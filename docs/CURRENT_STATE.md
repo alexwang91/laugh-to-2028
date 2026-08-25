@@ -352,3 +352,11 @@ Phase 6 = NO CHANGE.
 - The repair changes no 0085 universe, date range, signal, cost, threshold, benchmark, source identity or 201-object read budget. It changes no historical result or authority and grants no new attempt.
 - The common runner must re-pass the complete existing synthetic fault matrix, the 20-consecutive full-lifecycle qualification, and the new superset-container test on the exact final PR head before 0085 RUN may execute.
 - 0085 user authorization for controlled attempt 1/1 remains valid but unconsumed. Production/signature/order/withdrawal/transfer authority remains false.
+
+## R2.2 durable Git create-only store qualification — 2026-08-25
+
+- PR #416 prospectively qualifies `GitCreateOnlyStoreV1` as the durable Git-backed `CreateOnlyStore` backend for `CONTROLLED_RESEARCH_RUNNER_V1`; it maps governed keys to dedicated remote branches, rejects existing keys, never force-pushes, and remotely fetches/byte-verifies every successful write.
+- Qualification uses only synthetic bytes and temporary local bare Git repositories. It creates no 0085 marker/result/RUN_ONCE object and reads no controlled historical payload.
+- 0085 remains ARM-complete with the user's explicit RUN attempt 1/1 authorization valid and unconsumed. Attempt remains 0/1; controlled reads remain 0; scientific engine remains 0/1; scientific values exposed remain false.
+- Frozen Trend science, ARM-bound 201-object manifest, parent artifact identity, immutable historical anchors, and production/signature/order/withdrawal/transfer authority remain unchanged.
+- Exact next legal action after #416 terminal-green merge is the already-authorized single 0085 RUN through the requalified common runner using this durable backend.
