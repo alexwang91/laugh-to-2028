@@ -1,26 +1,30 @@
 from __future__ import annotations
 
-"""Read-only auditor for Phase-6 future-only observation evidence.
+"""Read-only audit of already-persisted Phase-6 live-shadow evidence.
 
-This tool never creates observation credit. It inventories existing GitHub Actions
-runs/artifacts and verifies the already-frozen evidence/receipt bindings so a
-later repository accounting change can index only evidence that already exists.
+The audit never creates observation credit. It verifies the durable evidence +
+separate receipt pair produced by the Phase-6 observation job. A failure in an
+unrelated job of the same workflow does not erase a successfully persisted
+Phase-6 observation; conversely a workflow rerun cannot manufacture a new
+scheduled decision. Only attempt-1 Phase-6 observation evidence is eligible.
 """
 
 import argparse
 import io
 import json
 import os
+import urllib.error
 import urllib.parse
 import urllib.request
 import zipfile
-from datetime import date, datetime, timedelta, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
 API_ROOT = "https://api.github.com"
 FIRST_ELIGIBLE_DECISION = "2026-08-10T00:00:00Z"
 WORKFLOW_FILE = "research-governance.yml"
+PHASE6_JOB_NAME = "phase6-live-observation"
 
 
 class AuditError(RuntimeError):
@@ -58,6 +62,10 @@ def _request_json(url: str, token: str) -> dict[str, Any]:
 
 
 def _request_bytes(url: str, token: str) -> bytes:
+    class NoRedirect(urllib.request.HTTPRedirectHandler):
+        def redirect_request(self, req, fp, code, msg, headers, newurl):
+            return None
+
     request = urllib.request.Request(
         url,
         headers={
@@ -67,51 +75,68 @@ def _request_bytes(url: str, token: str) -> bytes:
             "User-Agent": "phase6-observation-closeout-audit-v1",
         },
     )
-    with urllib.request.urlopen(request, timeout=60) as response:
+    opener = urllib.request.build_opener(NoRedirect())
+    try:
+        with opener.open(request, timeout=30) as response:
+            return response.read()
+    except urllib.error.HTTPError as exc:
+        if exc.code not in (301, 302, 303, 307, 308):
+            raise
+        location = exc.headers.get("Location")
+        if not location:
+            raise AuditError("artifact download redirect missing Location") from exc
+    redirected = urllib.request.Request(
+        location, headers={"User-Agent": "phase6-observation-closeout-audit-v1"}
+    )
+    with urllib.request.urlopen(redirected, timeout=60) as response:
         return response.read()
 
 
-def _read_json_from_zip(raw_zip: bytes, basename: str) -> dict[str, Any]:
-    with zipfile.ZipFile(io.BytesIO(raw_zip)) as archive:
+def _json_from_artifact(artifact: dict[str, Any], basename: str, token: str) -> dict[str, Any]:
+    url = str(artifact.get("archive_download_url") or "")
+    if not url:
+        raise AuditError(f"artifact {artifact.get('id')} has no download URL")
+    raw = _request_bytes(url, token)
+    with zipfile.ZipFile(io.BytesIO(raw)) as archive:
         matches = [name for name in archive.namelist() if Path(name).name == basename]
         if len(matches) != 1:
-            raise AuditError(f"expected exactly one {basename}, found {len(matches)}")
+            raise AuditError(f"artifact {artifact.get('id')} expected one {basename}, found {len(matches)}")
         value = json.loads(archive.read(matches[0]).decode("utf-8"))
     if not isinstance(value, dict):
-        raise AuditError(f"{basename} must contain a JSON object")
+        raise AuditError(f"{basename} must be a JSON object")
     return value
 
 
 def _list_runs(repo: str, token: str) -> list[dict[str, Any]]:
-    runs: list[dict[str, Any]] = []
-    page = 1
     first = _parse_iso(FIRST_ELIGIBLE_DECISION)
-    while True:
-        query = urllib.parse.urlencode({"per_page": 100, "page": page})
-        payload = _request_json(
-            f"{API_ROOT}/repos/{repo}/actions/workflows/{WORKFLOW_FILE}/runs?{query}", token
-        )
-        rows = payload.get("workflow_runs", [])
-        if not isinstance(rows, list):
-            raise AuditError("workflow_runs must be a list")
-        if not rows:
-            break
-        stop = False
-        for row in rows:
-            if not isinstance(row, dict):
-                continue
-            created = _parse_iso(str(row["created_at"]))
-            if created < first - timedelta(days=1):
-                stop = True
-                continue
-            if row.get("event") in {"schedule", "workflow_dispatch"}:
-                runs.append(row)
-        if stop or len(rows) < 100:
-            break
-        page += 1
-        if page > 10:
-            raise AuditError("unexpected workflow-run pagination >10 pages")
-    return runs
+    rows_out: list[dict[str, Any]] = []
+    for event_name in ("schedule", "workflow_dispatch"):
+        page = 1
+        while True:
+            query = urllib.parse.urlencode({"event": event_name, "per_page": 100, "page": page})
+            payload = _request_json(
+                f"{API_ROOT}/repos/{repo}/actions/workflows/{WORKFLOW_FILE}/runs?{query}", token
+            )
+            rows = payload.get("workflow_runs", [])
+            if not isinstance(rows, list):
+                raise AuditError("workflow_runs must be a list")
+            if not rows:
+                break
+            stop = False
+            for row in rows:
+                if not isinstance(row, dict):
+                    continue
+                created = _parse_iso(str(row["created_at"]))
+                if created < first - timedelta(days=1):
+                    stop = True
+                    continue
+                rows_out.append(row)
+            if stop or len(rows) < 100:
+                break
+            page += 1
+            if page > 10:
+                raise AuditError(f"unexpected {event_name} pagination >10 pages")
+    return rows_out
 
 
 def _artifacts(repo: str, run_id: int, token: str) -> list[dict[str, Any]]:
@@ -124,51 +149,72 @@ def _artifacts(repo: str, run_id: int, token: str) -> list[dict[str, Any]]:
     return [row for row in rows if isinstance(row, dict)]
 
 
-def _download_artifact_json(artifact: dict[str, Any], basename: str, token: str) -> dict[str, Any]:
-    url = str(artifact.get("archive_download_url") or "")
-    if not url:
-        raise AuditError(f"artifact {artifact.get('id')} missing archive_download_url")
-    return _read_json_from_zip(_request_bytes(url, token), basename)
+def _phase6_attempt_job(repo: str, run_id: int, attempt: int, token: str) -> dict[str, Any] | None:
+    payload = _request_json(
+        f"{API_ROOT}/repos/{repo}/actions/runs/{run_id}/attempts/{attempt}/jobs?per_page=100", token
+    )
+    rows = payload.get("jobs", [])
+    if not isinstance(rows, list):
+        raise AuditError("jobs must be a list")
+    matches = [row for row in rows if isinstance(row, dict) and row.get("name") == PHASE6_JOB_NAME]
+    if len(matches) != 1:
+        return None
+    return matches[0]
 
 
 def _verify_pair(
-    *, repo: str, run: dict[str, Any], evidence: dict[str, Any], receipt: dict[str, Any], token: str
+    *,
+    repo: str,
+    run: dict[str, Any],
+    evidence: dict[str, Any],
+    receipt: dict[str, Any],
+    token: str,
 ) -> dict[str, Any]:
     errors: list[str] = []
     run_id = int(run["id"])
-    run_attempt = int(run.get("run_attempt") or 0)
     event_name = str(run.get("event"))
-    conclusion = run.get("conclusion")
 
-    if run_attempt != 1:
-        errors.append("RUN_ATTEMPT_NOT_ONE_RERUN_INELIGIBLE")
-    if conclusion != "success":
-        errors.append(f"RUN_NOT_SUCCESS:{conclusion}")
+    try:
+        metadata = _json_from_artifact(evidence, "evidence_metadata.json", token)
+        provenance = _json_from_artifact(evidence, "input_provenance_manifest.json", token)
+        shadow = _json_from_artifact(evidence, "shadow_record.json", token)
+        receipt_json = _json_from_artifact(receipt, "receipt.json", token)
+    except Exception as exc:
+        return {
+            "run_id": run_id,
+            "event_name": event_name,
+            "creditable_schedule": False,
+            "creditable_emergency_drill": False,
+            "errors": [f"ARTIFACT_PARSE_ERROR:{type(exc).__name__}:{exc}"],
+        }
+
+    artifact_attempt_text = str(metadata.get("github_run_attempt") or "")
+    try:
+        artifact_attempt = int(artifact_attempt_text)
+    except ValueError:
+        artifact_attempt = -1
+        errors.append("INVALID_ARTIFACT_RUN_ATTEMPT")
+    if artifact_attempt != 1:
+        errors.append("RERUN_EVIDENCE_INELIGIBLE_FOR_NEW_DECISION_CREDIT")
+
+    try:
+        job = _phase6_attempt_job(repo, run_id, artifact_attempt, token) if artifact_attempt > 0 else None
+    except Exception as exc:
+        job = None
+        errors.append(f"PHASE6_JOB_LOOKUP_ERROR:{type(exc).__name__}:{exc}")
+    if job is None:
+        errors.append("PHASE6_OBSERVATION_JOB_NOT_UNIQUE")
+    elif job.get("conclusion") != "success":
+        errors.append(f"PHASE6_OBSERVATION_JOB_NOT_SUCCESS:{job.get('conclusion')}")
+
     if evidence.get("expired") is True:
         errors.append("EVIDENCE_ARTIFACT_EXPIRED")
     if receipt.get("expired") is True:
         errors.append("RECEIPT_ARTIFACT_EXPIRED")
 
-    try:
-        metadata = _download_artifact_json(evidence, "evidence_metadata.json", token)
-        provenance = _download_artifact_json(evidence, "input_provenance_manifest.json", token)
-        receipt_json = _download_artifact_json(receipt, "receipt.json", token)
-    except Exception as exc:  # audit must fail closed but preserve run inventory
-        return {
-            "run_id": run_id,
-            "run_attempt": run_attempt,
-            "event_name": event_name,
-            "conclusion": conclusion,
-            "evidence_artifact_id": evidence.get("id"),
-            "receipt_artifact_id": receipt.get("id"),
-            "creditable_schedule": False,
-            "creditable_emergency_drill": False,
-            "errors": errors + [f"ARTIFACT_PARSE_ERROR:{type(exc).__name__}:{exc}"],
-        }
-
     expected_identity = {
         "github_run_id": str(run_id),
-        "github_run_attempt": str(run_attempt),
+        "github_run_attempt": "1",
         "workflow_sha": str(run.get("head_sha")),
     }
     for key, expected in expected_identity.items():
@@ -194,24 +240,30 @@ def _verify_pair(
     if metadata.get("event_name") != event_name:
         errors.append("METADATA_EVENT_NAME_MISMATCH")
 
-    if any(metadata.get(key) is True for key in (
-        "production_authorized", "signature_authorized", "order_submission_authorized"
-    )):
-        errors.append("AUTHORITY_LEAK_IN_METADATA")
-    if receipt_json.get("production_authorized") is True:
-        errors.append("AUTHORITY_LEAK_IN_RECEIPT")
-    if provenance.get("secret_material_present") is not False:
-        errors.append("SECRET_MATERIAL_FLAG_NOT_FALSE")
-    if provenance.get("authorization_headers_used_for_market_or_account_reads") is not False:
-        errors.append("AUTH_HEADER_USED")
-
     parity = provenance.get("target_reference_parity")
     if not isinstance(parity, dict) or parity.get("passed") is not True:
         errors.append("TARGET_REFERENCE_PARITY_NOT_PASS")
     if metadata.get("shadow_status") != "SHADOW_COMPUTED_NO_AUTHORITY":
         errors.append("SHADOW_STATUS_NOT_ZERO_AUTHORITY")
-    if metadata.get("shadow_alerts") != []:
+    alerts = shadow.get("alerts")
+    if alerts != []:
         errors.append("SHADOW_ALERTS_NONEMPTY")
+    offline_drift = shadow.get("offline_reference_l1_drift")
+    try:
+        offline_drift_value = float(offline_drift)
+    except (TypeError, ValueError):
+        offline_drift_value = float("nan")
+        errors.append("OFFLINE_REFERENCE_DRIFT_INVALID")
+    if offline_drift_value != 0.0:
+        errors.append("OFFLINE_REFERENCE_DRIFT_NONZERO")
+
+    if provenance.get("secret_material_present") is not False:
+        errors.append("SECRET_MATERIAL_FLAG_NOT_FALSE")
+    if provenance.get("authorization_headers_used_for_market_or_account_reads") is not False:
+        errors.append("AUTH_HEADER_USED")
+    for field in ("production_authorized", "signature_authorized", "order_submission_authorized"):
+        if metadata.get(field) is not False:
+            errors.append(f"AUTHORITY_LEAK:{field}")
 
     schedule_candidate = metadata.get("scheduled_decision_credit_candidate") is True
     drill_candidate = metadata.get("emergency_drill_candidate") is True
@@ -219,14 +271,18 @@ def _verify_pair(
         errors.append("RECEIPT_SCHEDULE_CANDIDATE_MISMATCH")
     if bool(receipt_json.get("emergency_drill_candidate")) != drill_candidate:
         errors.append("RECEIPT_DRILL_CANDIDATE_MISMATCH")
+    if event_name == "workflow_dispatch" and drill_candidate and shadow.get("emergency_hypothetical_action") != "FLATTEN":
+        errors.append("EMERGENCY_DRILL_DID_NOT_COMPUTE_FLATTEN")
 
     creditable_schedule = event_name == "schedule" and schedule_candidate and not errors
     creditable_drill = event_name == "workflow_dispatch" and drill_candidate and not errors
     return {
         "run_id": run_id,
-        "run_attempt": run_attempt,
+        "github_run_attempt": "1",
+        "latest_run_attempt_seen": run.get("run_attempt"),
+        "overall_workflow_conclusion": run.get("conclusion"),
+        "phase6_observation_job_conclusion": job.get("conclusion") if isinstance(job, dict) else None,
         "event_name": event_name,
-        "conclusion": conclusion,
         "head_sha": run.get("head_sha"),
         "decision_timestamp": metadata.get("decision_timestamp"),
         "observed_at": metadata.get("observed_at"),
@@ -261,10 +317,14 @@ def _verify_pair(
         },
         "observation_checks": {
             "shadow_status": metadata.get("shadow_status"),
-            "shadow_alerts": metadata.get("shadow_alerts"),
+            "shadow_alerts": alerts,
             "target_reference_parity_passed": parity.get("passed") if isinstance(parity, dict) else None,
             "target_reference_gross_abs_difference": parity.get("gross_abs_difference") if isinstance(parity, dict) else None,
             "target_reference_max_weight_abs_difference": parity.get("max_weight_abs_difference") if isinstance(parity, dict) else None,
+            "offline_reference_l1_drift": offline_drift_value,
+            "critical_reconciliation_errors_observed": 0 if metadata.get("shadow_status") == "SHADOW_COMPUTED_NO_AUTHORITY" else 1,
+            "unexplained_target_drift_observed": 0 if offline_drift_value == 0.0 and alerts == [] else 1,
+            "schedule_failure_observed": 0 if "DAILY_SCHEDULE_DRIFT" not in (alerts or []) else 1,
             "authorization_headers_used_for_market_or_account_reads": provenance.get("authorization_headers_used_for_market_or_account_reads"),
             "secret_material_present": provenance.get("secret_material_present"),
             "production_authorized": metadata.get("production_authorized"),
@@ -275,45 +335,54 @@ def _verify_pair(
     }
 
 
+def _select_attempt1_pair(run_id: int, artifacts: list[dict[str, Any]]) -> tuple[dict[str, Any] | None, dict[str, Any] | None]:
+    suffix = f"-{run_id}-1"
+    evidence = [
+        row for row in artifacts
+        if str(row.get("name", "")).startswith("phase6-evidence-") and str(row.get("name", "")).endswith(suffix)
+    ]
+    receipt = [
+        row for row in artifacts
+        if str(row.get("name", "")).startswith("phase6-receipt-") and str(row.get("name", "")).endswith(suffix)
+    ]
+    return (evidence[0] if len(evidence) == 1 else None, receipt[0] if len(receipt) == 1 else None)
+
+
 def audit(repo: str, token: str, as_of: datetime) -> dict[str, Any]:
     runs = _list_runs(repo, token)
     records: list[dict[str, Any]] = []
-    run_inventory: list[dict[str, Any]] = []
+    inventory: list[dict[str, Any]] = []
 
     for run in sorted(runs, key=lambda row: (str(row.get("created_at")), int(row.get("id", 0)))):
         run_id = int(run["id"])
         artifacts = _artifacts(repo, run_id, token)
-        evidence = [a for a in artifacts if str(a.get("name", "")).startswith("phase6-evidence-")]
-        receipts = [a for a in artifacts if str(a.get("name", "")).startswith("phase6-receipt-")]
-        run_inventory.append({
+        evidence, receipt = _select_attempt1_pair(run_id, artifacts)
+        inventory.append({
             "run_id": run_id,
-            "run_attempt": run.get("run_attempt"),
+            "latest_run_attempt_seen": run.get("run_attempt"),
             "event_name": run.get("event"),
-            "status": run.get("status"),
-            "conclusion": run.get("conclusion"),
+            "overall_workflow_conclusion": run.get("conclusion"),
             "created_at": run.get("created_at"),
             "head_sha": run.get("head_sha"),
-            "evidence_artifact_count": len(evidence),
-            "receipt_artifact_count": len(receipts),
+            "attempt1_evidence_found": evidence is not None,
+            "attempt1_receipt_found": receipt is not None,
         })
-        if len(evidence) != 1 or len(receipts) != 1:
+        if evidence is None or receipt is None:
             records.append({
                 "run_id": run_id,
-                "run_attempt": run.get("run_attempt"),
                 "event_name": run.get("event"),
-                "conclusion": run.get("conclusion"),
                 "creditable_schedule": False,
                 "creditable_emergency_drill": False,
-                "errors": [f"ARTIFACT_PAIR_COUNT:{len(evidence)}:{len(receipts)}"],
+                "errors": ["ATTEMPT1_EVIDENCE_RECEIPT_PAIR_MISSING_OR_AMBIGUOUS"],
             })
             continue
-        records.append(_verify_pair(repo=repo, run=run, evidence=evidence[0], receipt=receipts[0], token=token))
+        records.append(_verify_pair(repo=repo, run=run, evidence=evidence, receipt=receipt, token=token))
 
-    schedule = [row for row in records if row.get("creditable_schedule") is True]
+    schedules = [row for row in records if row.get("creditable_schedule") is True]
     drills = [row for row in records if row.get("creditable_emergency_drill") is True]
-    decision_timestamps = [str(row["decision_timestamp"]) for row in schedule]
-    duplicate_decisions = sorted({value for value in decision_timestamps if decision_timestamps.count(value) > 1})
-    unique_schedule = {str(row["decision_timestamp"]): row for row in schedule}
+    decision_values = [str(row["decision_timestamp"]) for row in schedules]
+    duplicates = sorted({value for value in decision_values if decision_values.count(value) > 1})
+    unique_schedules = {str(row["decision_timestamp"]): row for row in schedules}
 
     first_date = _parse_iso(FIRST_ELIGIBLE_DECISION).date()
     as_of_date = as_of.astimezone(timezone.utc).date()
@@ -322,34 +391,42 @@ def audit(repo: str, token: str, as_of: datetime) -> dict[str, Any]:
     while cursor <= as_of_date:
         expected_dates.append(cursor.isoformat())
         cursor += timedelta(days=1)
-    credited_dates = sorted({str(row["decision_timestamp"])[:10] for row in schedule})
-    missing_expected_dates = [value for value in expected_dates if value not in credited_dates]
-
-    schedule_run_failures = [
+    credited_dates = sorted({str(row["decision_timestamp"])[:10] for row in schedules})
+    missing_dates = [value for value in expected_dates if value not in credited_dates]
+    schedule_failures = [
         row for row in records
         if row.get("event_name") == "schedule" and row.get("creditable_schedule") is not True
     ]
+    rec_errors = sum(int(row.get("observation_checks", {}).get("critical_reconciliation_errors_observed", 0)) for row in schedules)
+    drift_errors = sum(int(row.get("observation_checks", {}).get("unexplained_target_drift_observed", 0)) for row in schedules)
+    observed_schedule_failures = sum(int(row.get("observation_checks", {}).get("schedule_failure_observed", 0)) for row in schedules)
+    total_schedule_failures = len(schedule_failures) + observed_schedule_failures
     elapsed_days = (as_of_date - first_date).days
+
     requirements = {
         "elapsed_days": elapsed_days,
         "minimum_elapsed_calendar_days": 14,
         "elapsed_requirement_met": elapsed_days >= 14,
-        "genuine_scheduled_decisions": len(unique_schedule),
+        "genuine_scheduled_decisions": len(unique_schedules),
         "minimum_scheduled_decisions": 10,
-        "scheduled_decision_requirement_met": len(unique_schedule) >= 10 and not duplicate_decisions,
+        "scheduled_decision_requirement_met": len(unique_schedules) >= 10 and not duplicates,
         "emergency_drills": len(drills),
         "minimum_emergency_drills": 1,
         "emergency_drill_requirement_met": len(drills) >= 1,
-        "schedule_run_failures": len(schedule_run_failures),
-        "missing_expected_schedule_dates": missing_expected_dates,
-        "duplicate_decision_timestamps": duplicate_decisions,
+        "critical_reconciliation_errors_observed": rec_errors,
+        "unexplained_target_drift_observed": drift_errors,
+        "schedule_failures_observed": total_schedule_failures,
+        "missing_expected_schedule_dates": missing_dates,
+        "duplicate_decision_timestamps": duplicates,
     }
     requirements["phase6_acceptance_preliminary"] = bool(
         requirements["elapsed_requirement_met"]
         and requirements["scheduled_decision_requirement_met"]
         and requirements["emergency_drill_requirement_met"]
-        and requirements["schedule_run_failures"] == 0
-        and not requirements["missing_expected_schedule_dates"]
+        and rec_errors == 0
+        and drift_errors == 0
+        and total_schedule_failures == 0
+        and not missing_dates
     )
 
     return {
@@ -368,10 +445,10 @@ def audit(repo: str, token: str, as_of: datetime) -> dict[str, Any]:
         "signature_authorized": False,
         "order_submission_authorized": False,
         "requirements": requirements,
-        "creditable_schedule_records": schedule,
+        "creditable_schedule_records": schedules,
         "creditable_emergency_drill_records": drills,
         "all_candidate_records": records,
-        "run_inventory": run_inventory,
+        "run_inventory": inventory,
     }
 
 
