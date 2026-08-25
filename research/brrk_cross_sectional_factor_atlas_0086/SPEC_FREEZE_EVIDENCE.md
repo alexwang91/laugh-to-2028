@@ -6,6 +6,10 @@
 - Central owner registry commit: `21da7d90b6f638638238f3d04f679424000c1d6e`.
 - Governed `SPEC_FREEZE.md` was introduced only after that owner commit.
 - SPEC handoff bootstrap workflow: `32872508364` = `SUCCESS`.
+- First exact-head governance validation exposed one schema-only defect: the provisional objective type `FACTOR_ATLAS_VALIDATION` was not in the frozen governance enum.
+- Governance enum source: `config/research_governance_v1.json`; Factor Atlas is classified under the existing allowed objective `ALPHA_DISCOVERY`.
+- Objective-type schema-fix workflow: `32872904680`, job `97883926627` = `SUCCESS`; it changed only the registry objective classification and removed its temporary workflow.
+- Frozen scientific question, factor family, universe, inference, cost, support, terminal gates, trial budget and stopping rule were unchanged by the schema alignment.
 - Controlled attempt: `0/1`.
 - Controlled historical value reads: `0`.
 - Scientific engine calls: `0/1`.
