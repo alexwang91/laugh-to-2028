@@ -406,3 +406,16 @@ Any future 0086 controlled RUN must use `ControlledResearchRunnerV1SourceQualifi
 - Next legal gate is ARM. ARM may bind exact artifact/object identities, declared hashes/sizes, source keys, schema/read budget/result-marker paths and engine-call budget using metadata only. Pre-marker decompression, `testzip()`, CRC traversal and payload parsing remain forbidden.
 - 0085 remains immutable `INVALID_EXECUTION` with attempt 1/1 consumed and no admissible Trend result. 0076 remains sealed; 0072/0073 remain paused; 0083 remains immutable FAIL; Phase6 PASS closeout remains unchanged.
 - No production/signature/order/withdrawal/transfer authority is granted.
+
+## 0086 Factor Atlas ARM — 2026-08-25
+
+- `BRRK-CROSS-SECTIONAL-FACTOR-ATLAS-0086` SPEC_FREEZE and BUILD are merged; ARM binds controlled identities only and opens no scientific payload value.
+- ARM binds GitHub Actions run `32646565505`, artifact `9495175701` / `0075-stage6-authorized-payloads-v1`, size `174445627`, SHA-256 `8040282ff412b2d3fd360173e4745ebfd048796eb9e9c2ad49fa0901e5cedf56`.
+- The immutable 0075 parent manifest SHA-256 remains `2f70384dd84a601b69528ef3d770e0fa9c714b3e0888bec009e93b5067ecebf8`; immutable 0076 zero-result submanifest SHA-256 remains `c33b575cc436db795086458a25ca38fe1527f649809e549caba00e9754422e58`.
+- 0086 authorizes exactly the `15254` `USD_M_MONTHLY_1D_PERPETUAL_KLINE` identities from that submanifest and excludes all funding objects. Source substitution/refetch/renaming after ARM is forbidden.
+- Future RUN must use `ControlledResearchRunnerV1SourceQualified` with `CrossSectionalFactorAtlas0086Engine`; pre-marker `testzip()`, payload open/read, decompression, inner-ZIP/CSV parsing and CRC payload traversal remain forbidden.
+- Controlled attempt remains `0/1`; controlled reads remain `0`; scientific engine remains `0/1`; scientific values exposed remain `false`. No `RUN_ATTEMPT.marker` exists.
+- A separate explicit irreversible user authorization is required before 0086 RUN attempt 1/1. Factor L/S remains blocked unless 0086 returns a valid PASS.
+- 0085 remains immutable `INVALID_EXECUTION` attempt 1/1 consumed with no admissible Trend result. 0076 remains sealed; 0072/0073 remain paused; 0083 remains immutable FAIL; Phase6 PASS closeout remains unchanged.
+- `workflow run                         31381953131 / attempt 1`, CAPTURE-0001 sealed/no-retry and CAPTURE-0002 permanently claimed/no-refetch remain immutable.
+- Production/signature/order/withdrawal/transfer authority remains false.
