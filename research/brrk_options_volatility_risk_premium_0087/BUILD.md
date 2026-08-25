@@ -12,7 +12,7 @@ Production/signature/order/withdrawal/transfer authority: `false`
 
 This gate implements the merged SPEC_FREEZE using synthetic/nonhistorical fixtures only. BUILD does not bind a controlled Deribit source, download controlled history, inspect historical payload values, create a RUN marker, or invoke a scientific controlled engine.
 
-The frozen scientific and economic core lives in `research/brrk_options_volatility_risk_premium_0087/engine.py`. ARM may add only the exact source/schema adapter required to construct the normalized inputs consumed by this core. ARM cannot change the scientific adjudication or hedge-accounting formulas implemented here.
+The frozen statistical core lives in `research/brrk_options_volatility_risk_premium_0087/engine.py`. The source-convention-neutral economic core lives in `research/brrk_options_volatility_risk_premium_0087/economic_core.py`. ARM may add only the exact source/schema adapter required to construct their normalized inputs. ARM cannot change the scientific adjudication or hedge-accounting formulas frozen here.
 
 ## Exact implementation frozen here
 
@@ -31,18 +31,19 @@ The frozen scientific and economic core lives in `research/brrk_options_volatili
 
 ## Frozen economic core
 
-BUILD now freezes the delta-hedged short-straddle accounting independently of any historical source schema:
+BUILD freezes delta-hedged short-straddle accounting without assuming a linear USD payout for Deribit contracts:
 
-- entry premium equals executable selected call bid plus executable selected put bid;
-- option payoff at settlement is the same-strike call payoff plus put payoff;
-- the hedge target at each daily UTC hedge point equals source-native `call_delta + put_delta`, which offsets the delta of the short call-plus-put position;
-- hedge inventory accrues spot PnL between adjacent daily hedge points;
-- each rebalance pays executable-side slippage relative to contemporaneous spot and one-way friction on absolute traded hedge notional;
-- the final hedge point must coincide with settlement and the hedge inventory is mechanically unwound there;
-- normalized PnL equals option PnL plus hedge PnL divided by absolute initial option premium;
+- ARM must bind exactly one source-native expiry/settlement convention and exactly one common numeraire before controlled value exposure;
+- ARM must convert executable entry premium, settlement payoff and every hedge quote into that same frozen numeraire by a metadata/schema-defined mapping;
+- the BUILD economic core accepts those normalized values and does not infer or substitute a settlement convention after exposure;
+- each daily UTC hedge row supplies a source-convention `target_units` inventory required to offset the short-straddle delta;
+- hedge inventory accrues spot PnL between adjacent hedge points;
+- each rebalance pays executable-side slippage relative to contemporaneous spot plus one-way friction on absolute traded hedge notional;
+- the final hedge inventory is mechanically unwound at the final source-defined settlement hedge point;
+- normalized PnL equals `entry premium - settlement payoff + hedge PnL`, divided by positive entry premium;
 - `C1_REALISTIC` applies 5 bps one-way hedge friction and `C2_STRESS` applies 15 bps.
 
-ARM must bind a qualifying point-in-time source that can mechanically supply each weekly observation from executable option bid/ask, contemporaneous source IV, expiry/strike metadata, underlying index closes, source-native option deltas and executable daily hedge quotes. ARM may freeze field names and schema mappings only if metadata/schema evidence supports them before controlled value exposure. If it cannot, 0087 stops before RUN. It may not substitute midpoint marks, reconstructed spreads, a different venue, maturity, hedge cadence, post-exposure delta model, or alternate PnL accounting.
+ARM must bind a qualifying point-in-time source that can mechanically supply each weekly observation from executable option bid/ask, contemporaneous source IV, expiry/strike metadata, underlying index closes, source-native option delta/hedge-target semantics, executable daily hedge quotes, settlement convention and numeraire conversion rules. ARM may freeze field names and schema mappings only if metadata/schema evidence supports them before controlled value exposure. If it cannot, 0087 stops before RUN. It may not substitute midpoint marks, reconstructed spreads, a different venue, maturity, hedge cadence, post-exposure delta model, alternate settlement convention, or alternate PnL accounting.
 
 ## Synthetic qualification
 
@@ -53,7 +54,7 @@ ARM must bind a qualifying point-in-time source that can mechanically supply eac
 - source-IV `ATM_IVAR30`;
 - exact 30-return realized variance window;
 - distinct-week support counting rather than underlying-row counting;
-- pure short-straddle economic accounting and stress-cost monotonicity;
+- source-convention-neutral short-straddle settlement accounting and stress-cost monotonicity;
 - valid insufficient-support classification;
 - full synthetic PASS across all G1-G8;
 - adequate-support scientific FAIL;
@@ -63,7 +64,7 @@ Synthetic PASS/FAIL outcomes carry no scientific evidence and consume no attempt
 
 ## ARM boundary
 
-ARM must bind exact controlled Deribit option, index and hedge artifact/object identities; declared hashes and sizes; source keys; point-in-time timestamps; required schema fields; source-qualified runner interface; read budget; marker/result/RUN_ONCE paths; and exactly-one engine invocation budget.
+ARM must bind exact controlled Deribit option, index and hedge artifact/object identities; declared hashes and sizes; source keys; point-in-time timestamps; required schema fields; source-native settlement/numeraire mappings; source-qualified runner interface; read budget; marker/result/RUN_ONCE paths; and exactly-one engine invocation budget.
 
 Before the durable marker, ARM/RUN preflight may inspect only Git/artifact identity, filenames, central-directory metadata, declared hashes and sizes. It must not call `testzip()`, decompress controlled payloads, CRC-scan payload contents, parse historical rows, or expose scientific values.
 
