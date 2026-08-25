@@ -131,7 +131,7 @@ State = `OWNER-FIRST + DESIGN + PREREGISTRATION + IMPLEMENTATION + NONHISTORICAL
 Lifecycle anchors:
 - roadmap merge `169d9adf6531dc099a43541df413fef079322adf`;
 - OWNER-FIRST merge `4b8762f8046000c1bd414fb60b9232917251e579`;
-- DESIGN merge `0f86341d40516e0ed90d09baaa17e149c64671f6`;
+- DESIGN merge `0f86341d40516e0ed90b8232917251e579`;
 - PREREGISTRATION merge `34ccffa6ecedffb5076b88cf86222c2fb142560c`;
 - IMPLEMENTATION merge `cf203236348de692d8d92f30aedf35db7d2fe0c2`;
 - NONHISTORICAL QUALIFICATION merge `693ddde4898ef923e3f55b09b138d9354d8da4c9`;
@@ -335,3 +335,11 @@ Phase 6 = NO CHANGE.
 - 0074 remains immutable `INVALID_EXECUTION`; 0085 receives no lifecycle/result/attempt credit from it.
 - Next 0085 gate after SPEC_FREEZE merge is `BUILD`: implementation + nonhistorical qualification only, with controlled payload reads 0 and attempt 0/1.
 - Production/signature/order/withdrawal/transfer authority remains false.
+
+## 0085 Trend RUN interface repair handoff — 2026-08-25
+
+- `SPEC_FREEZE`, `BUILD`, and `ARM` are already merged on main for `BRRK-MULTI-HORIZON-TREND-VOL-TARGET-0085`.
+- PR #414 is a mechanical pre-attempt RUN-interface repair only. It does not create `RUN_ATTEMPT.marker`, read controlled historical payloads, invoke the scientific engine, expose scientific values, or consume attempt 1/1.
+- The user has explicitly authorized `0085 Trend RUN controlled attempt 1/1`; that authorization applies only after this repair merges and the frozen common runner confirms the exact merged ARM/RUN contract.
+- Attempt state at this handoff: `0/1` unconsumed; controlled reads `0`; scientific engine calls `0/1`; scientific values exposed `false`; production/signature/order/withdrawal/transfer authority remains false.
+- Exact next legal action after #414 terminal-green merge: execute the single authorized RUN through `CONTROLLED_RESEARCH_RUNNER_V1`, with durable marker-before-read and create-only result sealing. No manual marker fabrication or alternate execution path is permitted.
