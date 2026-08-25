@@ -12,7 +12,7 @@ Formal lifecycle completion remains `5/10` until this Stage6 PR merges.
 
 This stage freezes the execution boundary after the already-frozen Stage3 science, complete Stage4 implementation, and Stage5 nonhistorical qualification. It does not authorize or perform any controlled scientific/history read.
 
-Stage6 must derive the exact 0076 authorized-object sub-manifest from the immutable 0075 Stage6 zero-result cache identities using object-path identity only. The selection is restricted to the source contract frozen in 0076 Stage3:
+Stage6 derives the exact 0076 authorized-object sub-manifest from the immutable 0075 Stage6 zero-result cache identities using object-path identity only. The selection is restricted to the source contract frozen in 0076 Stage3:
 
 - official source family: `data.binance.vision` public archive;
 - parent authorized-object manifest Git blob: `74b119149e55c6c7a4fc641840b07c24bb27644a`;
@@ -25,6 +25,27 @@ Stage6 must derive the exact 0076 authorized-object sub-manifest from the immuta
 - source months exactly `2021-01` through `2026-07`, inclusive.
 
 No parent scientific result or lifecycle credit transfers to 0076.
+
+## Durable Stage6 sub-manifest evidence
+
+The repository now durably persists `AUTHORIZED_OBJECT_SUBMANIFEST.json` and `STAGE6_SUBMANIFEST_VALIDATION.json` derived solely from the pinned parent metadata files and ZIP central-directory filenames.
+
+Validation is `PASS`:
+
+- authorized objects = `30336`;
+- unique canonical object IDs = `30336`; duplicates = `0`;
+- USD-M monthly 1d perpetual-kline objects = `15254`;
+- USD-M monthly funding-rate objects = `15082`;
+- eligible symbols = `467`;
+- selected objects missing staged payload filenames = `0`;
+- selected objects missing checksum filenames = `0`;
+- parent manifest and symbol-universe SHA-256 identities verified = `true`;
+- authorized sub-manifest SHA-256 = `c33b575cc436db795086458a25ca38fe1527f649809e549caba00e9754422e58`;
+- scientific payload file contents opened = `false`;
+- scientific rows parsed = `false`;
+- frozen science changed = `false`.
+
+The temporary metadata-only materialization workflow removed itself after creating this durable evidence and is not part of the final Stage6 tree.
 
 ## Exactly-once boundary
 
@@ -59,4 +80,4 @@ Production authorization, signature authorization, and order-submission authoriz
 
 ## Exact next step
 
-Persist and validate the exact 0076 object sub-manifest and Stage6 zero-result identity/staging evidence without opening scientific payload content. Require fresh exact-head mandatory CI. Only after Stage6 merges may an independent Stage7 ZERO-RESULT PREFLIGHT begin.
+Require fresh mandatory CI on this maintainer-authored exact head. If all checks are terminal green and ancestry/mergeability remain clean, expected-head merge this Stage6 PR. Only after that merge may an independent Stage7 ZERO-RESULT PREFLIGHT branch/PR begin.
