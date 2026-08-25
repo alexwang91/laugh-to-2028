@@ -17,7 +17,7 @@ from research.governance.controlled_research_runner_v1 import (
     RunSpec,
     SourceManifest,
 )
-from research.governance.git_remote_create_only_store import GitRemoteCreateOnlyStore
+from research.governance.git_create_only_store_v1 import GitCreateOnlyStoreV1
 
 ROOT = Path(__file__).resolve().parents[2]
 RID = "BRRK-MULTI-HORIZON-TREND-VOL-TARGET-0085"
@@ -28,6 +28,8 @@ BASE = ROOT / "research" / "brrk_multi_horizon_trend_vol_target_0085"
 MARKER_KEY = "research/brrk_multi_horizon_trend_vol_target_0085/RUN_ATTEMPT.marker"
 RESULT_KEY = "research/brrk_multi_horizon_trend_vol_target_0085/RESULT.json"
 RUN_ONCE_KEY = "research/brrk_multi_horizon_trend_vol_target_0085/RUN_ONCE.marker"
+MARKER_BRANCH = "research/0085-trend-attempt-marker-v1"
+RESULT_BRANCH = "research/0085-trend-result-v1"
 
 
 def _read_json(path: Path) -> dict:
@@ -122,7 +124,15 @@ def main() -> int:
         raise RuntimeError(f"CHECKOUT_HEAD_MISMATCH:{actual_head}:{expected_head}")
 
     manifest = _manifest(arm)
-    store = GitRemoteCreateOnlyStore(ROOT, branch)
+    store = GitCreateOnlyStoreV1(
+        ROOT,
+        base_sha=actual_head,
+        key_branches={
+            MARKER_KEY: MARKER_BRANCH,
+            RESULT_KEY: RESULT_BRANCH,
+            RUN_ONCE_KEY: RESULT_BRANCH,
+        },
+    )
     spec = RunSpec(
         research_id=RID,
         attempt_id=ATTEMPT,
