@@ -4,7 +4,7 @@ from __future__ import annotations
 
 The common controlled runner owns source identity/hash verification, durable
 RUN_ATTEMPT.marker ordering, exactly-once outer payload reads and engine-call
-counting.  This module runs only inside that already-marked engine invocation.
+counting. This module runs only inside that already-marked engine invocation.
 It converts the ARM-bound staged Binance perpetual 1d monthly ZIP bytes into
 the UTF-8 daily JSON interface consumed by the frozen Trend engine.
 
@@ -25,8 +25,12 @@ from .engine import TrendExecutionError, TrendVolTargetEngine, run_from_sources
 ASSET_SYMBOLS = {"BTC": "BTCUSDT", "ETH": "ETHUSDT", "SOL": "SOLUSDT"}
 SYMBOL_ASSETS = {symbol: asset for asset, symbol in ASSET_SYMBOLS.items()}
 
+# GitHub Actions artifacts flatten the uploaded `stage/` directory and expose
+# its members as `payloads/...`, while the frozen parent staging manifest records
+# `stage/payloads/...`. Both names identify the same hash/size-bound object. The
+# common runner verifies the physical artifact member before this adapter sees it.
 _KLINE_PATH = re.compile(
-    r"^stage/payloads/data__futures__um__monthly__klines__"
+    r"^(?:stage/)?payloads/data__futures__um__monthly__klines__"
     r"(?P<symbol>BTCUSDT|ETHUSDT|SOLUSDT)__1d__"
     r"(?P=symbol)-1d-(?P<year>20\d{2})-(?P<month>0[1-9]|1[0-2])\.zip$"
 )
@@ -82,8 +86,6 @@ def _monthly_closes(raw_zip: bytes, source_name: str, expected_month: str) -> li
             continue
         first = fields[0].strip()
         if not first.lstrip("-").isdigit():
-            # Binance archives can include a header row.  Only a header in the
-            # first non-empty row is tolerated.
             if not rows and first.lower() in {"open_time", "opentime"}:
                 continue
             raise TrendExecutionError(f"INVALID_KLINE_ROW:{source_name}")
@@ -154,7 +156,7 @@ class ControlledArchiveTrendEngine:
     """0085 engine interface for ARM-bound staged monthly ZIP objects.
 
     Adapter/runtime failures must propagate to CONTROLLED_RESEARCH_RUNNER_V1 so
-    the common runner can seal them as non-admissible INVALID_EXECUTION.  This
+    the common runner can seal them as non-admissible INVALID_EXECUTION. This
     adapter must never convert an execution failure into a result Mapping,
     because any Mapping is treated by the runner as a candidate scientific
     result after exactly one engine invocation.
@@ -165,6 +167,4 @@ class ControlledArchiveTrendEngine:
         return run_from_sources(normalized)
 
 
-# Explicit alias for governance/readability.  The original JSON-only engine
-# remains unchanged and continues to support its synthetic BUILD qualification.
 ARM_EXECUTION_ENGINE = ControlledArchiveTrendEngine
