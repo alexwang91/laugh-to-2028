@@ -6195,14 +6195,15 @@
         "related_family_trials": 3
       },
       "lineage_edges": [],
-      "result_status": "OWNER_REGISTERED_SPEC_NOT_INTRODUCED",
+      "result_status": "SPEC_FREEZE_PROPOSED",
       "failure_reason": null,
       "promotion_state": "NONE",
       "evidence_refs": [],
       "decision_refs": [
         "https://github.com/alexwang91/laugh-to-2028/issues/422",
         "research/governance/PROSPECTIVE_FIVE_GATE_LIFECYCLE_V1.md",
-        "research/governance/CONTROLLED_RESEARCH_RUNNER_V1_SOURCE_INTERFACE_QUALIFICATION_2026-08-25.md"
+        "research/governance/CONTROLLED_RESEARCH_RUNNER_V1_SOURCE_INTERFACE_QUALIFICATION_2026-08-25.md",
+        "research/brrk_cross_sectional_factor_atlas_0086/SPEC_FREEZE.md"
       ],
       "production_relevance": "Research-only DEVELOPMENT factor atlas. PASS grants only later governed research eligibility.",
       "production_authorized": false,
