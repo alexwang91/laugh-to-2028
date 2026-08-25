@@ -12,7 +12,7 @@ Production/signature/order/withdrawal/transfer authority: `false`
 
 This gate implements the merged SPEC_FREEZE using synthetic/nonhistorical fixtures only. BUILD does not bind a controlled Deribit source, download controlled history, inspect historical payload values, create a RUN marker, or invoke a scientific controlled engine.
 
-The frozen scientific core lives in `research/brrk_options_volatility_risk_premium_0087/engine.py`. ARM must add only the exact source/schema adapter required to construct the normalized inputs consumed by this core. ARM cannot change the scientific adjudication implemented here.
+The frozen scientific and economic core lives in `research/brrk_options_volatility_risk_premium_0087/engine.py`. ARM may add only the exact source/schema adapter required to construct the normalized inputs consumed by this core. ARM cannot change the scientific adjudication or hedge-accounting formulas implemented here.
 
 ## Exact implementation frozen here
 
@@ -21,7 +21,7 @@ The frozen scientific core lives in `research/brrk_options_volatility_risk_premi
 - `RV30` uses exactly 31 index closes / 30 close-to-close log returns and annualizes squared returns by 365;
 - normalized weekly rows are keyed uniquely by `(underlying, week)` and duplicate identities fail closed;
 - the primary weekly series equal-weights BTC and ETH when both exist and uses the single supported underlying otherwise;
-- support requires at least 52 underlying-week observations in total, at least 20 each for BTC and ETH, and at least two calendar years;
+- support requires at least 52 distinct supported weekly timestamps in total, at least 20 supported observations each for BTC and ETH, and at least two calendar years;
 - HAC uses lag 8 and a two-sided large-sample normal test of the mean;
 - moving-block bootstrap uses block length 8 weeks, 4,000 replicates, deterministic seed `870087`, and a 95% percentile interval;
 - four chronological blocks use deterministic rounded boundaries `round(i*n/4)`;
@@ -29,11 +29,20 @@ The frozen scientific core lives in `research/brrk_options_volatility_risk_premi
 - adequate valid support with all G1-G8 true returns `PASS_OPTIONS_VRP_STRUCTURE`; adequate valid support with any gate false returns `FAIL_NO_ROBUST_OPTIONS_VRP`; support failure returns `INCONCLUSIVE_INSUFFICIENT_OPTIONS_SUPPORT`;
 - declared candidate count remains exactly `1`.
 
-## Economic-path boundary
+## Frozen economic core
 
-BUILD freezes adjudication of the two normalized economic series `pnl_c1` and `pnl_c2`, but it does not invent an unverified historical options schema. ARM must bind a qualifying point-in-time source that can mechanically construct each weekly observation from executable option bid/ask, contemporaneous IV, expiry/strike metadata, underlying index closes, and a daily delta-hedge path.
+BUILD now freezes the delta-hedged short-straddle accounting independently of any historical source schema:
 
-The source adapter at ARM must preserve the SPEC economics exactly: short selected call and put at executable bid, daily UTC delta hedge, frozen hedge-side execution, C1 5 bps and C2 15 bps one-way hedge friction, expiry/source settlement convention, and normalization by absolute initial option premium. ARM may freeze field names and source-native delta/schema mechanics only if the source proves them by metadata/schema evidence before any controlled value exposure. If it cannot, 0087 stops before RUN. It may not substitute midpoint marks, reconstructed spreads, a different venue, maturity, hedge cadence, or a post-exposure model.
+- entry premium equals executable selected call bid plus executable selected put bid;
+- option payoff at settlement is the same-strike call payoff plus put payoff;
+- the hedge target at each daily UTC hedge point equals source-native `call_delta + put_delta`, which offsets the delta of the short call-plus-put position;
+- hedge inventory accrues spot PnL between adjacent daily hedge points;
+- each rebalance pays executable-side slippage relative to contemporaneous spot and one-way friction on absolute traded hedge notional;
+- the final hedge point must coincide with settlement and the hedge inventory is mechanically unwound there;
+- normalized PnL equals option PnL plus hedge PnL divided by absolute initial option premium;
+- `C1_REALISTIC` applies 5 bps one-way hedge friction and `C2_STRESS` applies 15 bps.
+
+ARM must bind a qualifying point-in-time source that can mechanically supply each weekly observation from executable option bid/ask, contemporaneous source IV, expiry/strike metadata, underlying index closes, source-native option deltas and executable daily hedge quotes. ARM may freeze field names and schema mappings only if metadata/schema evidence supports them before controlled value exposure. If it cannot, 0087 stops before RUN. It may not substitute midpoint marks, reconstructed spreads, a different venue, maturity, hedge cadence, post-exposure delta model, or alternate PnL accounting.
 
 ## Synthetic qualification
 
@@ -43,6 +52,8 @@ The source adapter at ARM must preserve the SPEC economics exactly: short select
 - same-strike ATM selection and spread rejection;
 - source-IV `ATM_IVAR30`;
 - exact 30-return realized variance window;
+- distinct-week support counting rather than underlying-row counting;
+- pure short-straddle economic accounting and stress-cost monotonicity;
 - valid insufficient-support classification;
 - full synthetic PASS across all G1-G8;
 - adequate-support scientific FAIL;
