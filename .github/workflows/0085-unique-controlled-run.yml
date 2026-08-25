@@ -16,7 +16,7 @@ concurrency:
 
 jobs:
   tooling-handoff:
-    if: github.ref_name == 'tools/0085-unique-controlled-run-v1' && !contains(github.event.head_commit.message, '[0085 tooling handoff]')
+    if: ${{ github.ref_name == 'tools/0085-unique-controlled-run-v1' && !contains(github.event.head_commit.message, '[0085 tooling handoff]') }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -47,7 +47,7 @@ EOF
           git push origin HEAD:${GITHUB_REF_NAME}
 
   controlled-run:
-    if: github.ref_name == 'research/0085-trend-run-v1'
+    if: ${{ github.ref_name == 'research/0085-trend-run-v1' }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
