@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from datetime import date, timedelta
+from math import log
 
 import pytest
 
@@ -12,6 +13,8 @@ from research.brrk_options_volatility_risk_premium_0087.engine import (
     OptionsVRPExecutionError,
     analyze_weekly_observations,
     atm_ivar30,
+    delta_hedged_short_straddle_pnl,
+    economic_cost_panels,
     realized_variance_30,
     select_atm_pair,
 )
@@ -28,12 +31,13 @@ def _chain():
     ]
 
 
-def _rows(level: float = 0.08, c1: float = 0.03, c2: float = 0.01):
+def _rows(level: float = 0.08, c1: float = 0.03, c2: float = 0.01, weeks: int = 60):
     rows = []
     start = date(2024, 1, 1)
-    for i in range(60):
-        week = (start + timedelta(days=7 * i)).isoformat()
-        year = (start + timedelta(days=7 * i)).year
+    for i in range(weeks):
+        stamp = start + timedelta(days=7 * i)
+        week = stamp.isoformat()
+        year = stamp.year
         wobble = ((i % 5) - 2) * 0.001
         for underlying, offset in (("BTC", 0.002), ("ETH", -0.001)):
             rows.append(
@@ -73,15 +77,46 @@ def test_spread_gate_fails_closed():
 
 def test_rv30_exact_30_returns():
     closes = [100.0 * (1.001**i) for i in range(31)]
-    expected = 365.0 * (pytest.approx(0.0) if False else 1.0)
     value = realized_variance_30(closes)
-    assert value > 0
+    assert value == pytest.approx(365.0 * log(1.001) ** 2)
     with pytest.raises(OptionsVRPExecutionError, match="RV30_REQUIRES_31_CLOSES"):
         realized_variance_30(closes[:-1])
 
 
+def test_delta_hedged_short_straddle_pure_economic_core():
+    call = {"strike": 100.0, "bid": 10.0}
+    put = {"strike": 100.0, "bid": 10.0}
+    hedge_path = [
+        {"spot": 100.0, "bid": 100.0, "ask": 100.0, "call_delta": 0.25, "put_delta": -0.25},
+        {"spot": 100.0, "bid": 100.0, "ask": 100.0, "call_delta": 0.20, "put_delta": -0.20},
+    ]
+    assert delta_hedged_short_straddle_pnl(call, put, 100.0, hedge_path, 5.0) == pytest.approx(1.0)
+    panels = economic_cost_panels(call, put, 100.0, hedge_path)
+    assert panels == pytest.approx({"pnl_c1": 1.0, "pnl_c2": 1.0})
+
+
+def test_hedge_execution_costs_are_monotone_under_stress():
+    call = {"strike": 100.0, "bid": 10.0}
+    put = {"strike": 100.0, "bid": 10.0}
+    hedge_path = [
+        {"spot": 100.0, "bid": 99.9, "ask": 100.1, "call_delta": 0.60, "put_delta": -0.20},
+        {"spot": 102.0, "bid": 101.9, "ask": 102.1, "call_delta": 0.70, "put_delta": -0.10},
+        {"spot": 102.0, "bid": 101.9, "ask": 102.1, "call_delta": 0.70, "put_delta": -0.10},
+    ]
+    panels = economic_cost_panels(call, put, 102.0, hedge_path)
+    assert panels["pnl_c2"] < panels["pnl_c1"]
+
+
+def test_support_counts_distinct_weeks_not_underlying_rows():
+    result = analyze_weekly_observations(_rows(weeks=40))
+    assert result["classification"] == "INCONCLUSIVE_INSUFFICIENT_OPTIONS_SUPPORT"
+    assert result["support"]["total_weeks"] == 40
+    assert result["support"]["BTC"] == 40
+    assert result["support"]["ETH"] == 40
+
+
 def test_insufficient_support_is_valid_inconclusive():
-    result = analyze_weekly_observations(_rows()[:40])
+    result = analyze_weekly_observations(_rows(weeks=20))
     assert result["execution_valid"] is True
     assert result["classification"] == "INCONCLUSIVE_INSUFFICIENT_OPTIONS_SUPPORT"
     assert result["candidate_count"] == 1
