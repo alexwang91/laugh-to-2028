@@ -8,102 +8,23 @@ on:
       - '.github/workflows/tmp-phase6-observation-closeout-audit.yml'
 
 permissions:
-  contents: read
-  actions: write
+  contents: write
+  actions: read
 
 jobs:
-  audit:
+  audit-and-finalize:
     if: github.head_ref == 'governance/phase6-observation-closeout-audit-v1'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Audit already-persisted Phase6 evidence before drill
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        run: |
-          python -m research.governance.phase6_observation_closeout_audit \
-            --output phase6_closeout_audit_before.json
-          python -m json.tool phase6_closeout_audit_before.json
-      - name: Dispatch exactly one missing zero-authority emergency drill and wait to terminal
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
-        run: |
-          python - <<'PY'
-          import json
-          import os
-          import time
-          import urllib.parse
-          import urllib.request
-          from datetime import datetime, timezone
-          from pathlib import Path
-
-          repo = os.environ['GITHUB_REPOSITORY']
-          token = os.environ['GITHUB_TOKEN']
-          before = json.loads(Path('phase6_closeout_audit_before.json').read_text())
-          if before['requirements']['emergency_drills'] >= 1:
-              print('A verified emergency drill already exists; no dispatch.')
-              raise SystemExit(0)
-
-          headers = {
-              'Authorization': f'Bearer {token}',
-              'Accept': 'application/vnd.github+json',
-              'X-GitHub-Api-Version': '2022-11-28',
-              'User-Agent': 'phase6-closeout-drill-dispatch-v1',
-          }
-          dispatch_started = datetime.now(timezone.utc)
-          url = f'https://api.github.com/repos/{repo}/actions/workflows/research-governance.yml/dispatches'
-          body = json.dumps({'ref': 'main', 'inputs': {'emergency_drill': 'true'}}).encode()
-          request = urllib.request.Request(url, data=body, headers=headers, method='POST')
-          with urllib.request.urlopen(request, timeout=30) as response:
-              assert response.status == 204, response.status
-          print('Dispatched zero-authority Phase6 emergency drill at', dispatch_started.isoformat())
-
-          run_id = None
-          deadline = time.time() + 20 * 60
-          while time.time() < deadline and run_id is None:
-              query = urllib.parse.urlencode({'event': 'workflow_dispatch', 'per_page': 20})
-              request = urllib.request.Request(
-                  f'https://api.github.com/repos/{repo}/actions/workflows/research-governance.yml/runs?{query}',
-                  headers=headers,
-              )
-              with urllib.request.urlopen(request, timeout=30) as response:
-                  rows = json.loads(response.read().decode())['workflow_runs']
-              for row in rows:
-                  created = datetime.fromisoformat(row['created_at'].replace('Z', '+00:00'))
-                  if created >= dispatch_started.replace(microsecond=0) and row.get('head_branch') == 'main':
-                      run_id = int(row['id'])
-                      break
-              if run_id is None:
-                  time.sleep(5)
-          if run_id is None:
-              raise SystemExit('Timed out locating dispatched emergency-drill run')
-          print('Emergency-drill workflow run:', run_id)
-          Path('phase6_emergency_drill_run_id.txt').write_text(str(run_id) + '\n')
-
-          while time.time() < deadline:
-              request = urllib.request.Request(
-                  f'https://api.github.com/repos/{repo}/actions/runs/{run_id}', headers=headers
-              )
-              with urllib.request.urlopen(request, timeout=30) as response:
-                  row = json.loads(response.read().decode())
-              print('run', run_id, row['status'], row.get('conclusion'))
-              if row['status'] == 'completed':
-                  break
-              time.sleep(10)
-          else:
-              raise SystemExit(f'Timed out waiting for emergency-drill run {run_id}')
-
-          # The overall workflow may contain unrelated governance jobs. The closeout
-          # auditor independently requires the attempt-1 Phase6 observation job and
-          # its evidence+receipt pair to be valid, which is the frozen evidence rule.
-          time.sleep(5)
-          PY
-      - name: Re-audit after emergency drill and require every frozen Phase6 acceptance gate
+      - name: Re-audit already-persisted Phase6 evidence
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
@@ -124,16 +45,25 @@ jobs:
           assert req['missing_expected_schedule_dates'] == [], req
           assert req['duplicate_decision_timestamps'] == [], req
           assert req['phase6_acceptance_preliminary'] is True, req
+          assert len(audit['creditable_schedule_records']) == 16, audit['creditable_schedule_records']
+          assert len(audit['creditable_emergency_drill_records']) == 1, audit['creditable_emergency_drill_records']
           print('PHASE6_FROZEN_ACCEPTANCE_GATES_PASS')
           PY
-      - name: Upload read-only before/after audits
-        uses: actions/upload-artifact@v4
-        with:
-          name: phase6-observation-closeout-audit-${{ github.run_id }}-${{ github.run_attempt }}
-          path: |
-            phase6_closeout_audit_before.json
-            phase6_closeout_audit_after.json
-            phase6_emergency_drill_run_id.txt
-          if-no-files-found: error
-          retention-days: 30
-          overwrite: false
+      - name: Persist closeout accounting and append continuity handoff
+        run: |
+          cp phase6_closeout_audit_after.json research/governance/PHASE6_OBSERVATION_CLOSEOUT_2026-08-25.json
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('docs/CURRENT_STATE.md')
+          text = path.read_text(encoding='utf-8')
+          marker = '## Phase 6 live observation closeout — 2026-08-25'
+          if marker not in text:
+              text = text.rstrip() + '''\n\n## Phase 6 live observation closeout — 2026-08-25\n\n- Frozen Phase-6 live-observation thresholds were checked against live GitHub Actions evidence without replay/backfill: elapsed `15` days, `16` genuine schedule-origin decisions, and `1` separately evidenced zero-authority emergency drill.\n- Every credited schedule decision is attempt-1 schedule-origin and has an already-persisted create-only evidence artifact plus separate hash-bound receipt; missing expected dates `[]`, duplicate decision timestamps `[]`.\n- Observed critical reconciliation errors `0`, unexplained target drift `0`, schedule failures `0`; production/signature/order authority remains false.\n- Emergency drill run `32822137245` is `workflow_dispatch`-origin and is not scheduled-decision credit.\n- Closeout audit workflow run `32822011836`; audit artifact id `9553575209`, digest `sha256:2482e5f575b544ccc3168776d70b5ce0dfc3baef24dcf4de9fb7cb5caaf77096`.\n- Persisted closeout inventory: `research/governance/PHASE6_OBSERVATION_CLOSEOUT_2026-08-25.json`. Repository recording creates no evidence or credit and does not alter the frozen Phase-6 contract.\n- Phase 6 R1 evidence closeout = `PASS_FROZEN_LIVE_OBSERVATION_GATES`; this grants no production authority and does not authorize any paused/invalid historical research ID.\n- 0076 remains sealed at Stage7 pre-marker read-boundary incident with no replacement, retroactive marker, same-ID Stage8, rerun, retune, rescue or recompute. 0072/0073 Carry remain paused; 0083 remains immutable FAIL.\n- Next legal frontier: R2 public `CONTROLLED_RESEARCH_RUNNER_V1`, then prospective lifecycle-gate compression amendment only after runner qualification.\n'''
+              path.write_text(text, encoding='utf-8')
+          PY
+          git rm .github/workflows/tmp-phase6-observation-closeout-audit.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs/CURRENT_STATE.md research/governance/PHASE6_OBSERVATION_CLOSEOUT_2026-08-25.json
+          git commit -m 'governance: persist Phase6 live observation closeout'
+          git push origin "HEAD:${GITHUB_HEAD_REF}"
