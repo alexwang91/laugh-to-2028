@@ -1,0 +1,50 @@
+name: 0076 Stage7 incident state sync
+
+on:
+  push:
+    branches:
+      - research/0076-stage7-zero-result-preflight-v1
+    paths:
+      - .github/workflows/0076-stage7-incident-state-sync.yml
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/0076-stage7-zero-result-preflight-v1
+          fetch-depth: 0
+      - name: Synchronize fail-closed governance state
+        shell: python
+        run: |
+          from pathlib import Path
+          p = Path('docs/CURRENT_STATE.md')
+          s = p.read_text()
+          anchor = 'workflow run                         31381953131 / attempt 1'
+          if anchor not in s:
+              raise SystemExit('immutable anchor missing')
+          old1 = 'Stage7 ZERO-RESULT PREFLIGHT is active on PR #404 / `research/0076-stage7-zero-result-preflight-v1`; formal completion 6/10; inherited validated factors 0; attempt 0/1; controlled reads 0; scientific engine 0/1; scientific source-network fetches 0; scientific values exposed false; no Stage8 marker/result exists; zero production/signature/order authority.'
+          new1 = 'Stage7 ZERO-RESULT PREFLIGHT on PR #404 / `research/0076-stage7-zero-result-preflight-v1` is `FAIL_CLOSED_PRE_MARKER_PAYLOAD_ENTRY_READ_BOUNDARY_VIOLATION`; formal completion remains 6/10; inherited validated factors 0; attempt 0/1 unconsumed; controlled authorized payload-file traversals 30336 occurred pre-marker; scientific engine 0/1; scientific source-network fetches 0; inner CSV rows parsed false; scientific row values exposed false; no Stage8 marker/result exists; same-ID Stage8/rerun/retune/rescue/recompute prohibited; zero production/signature/order authority.'
+          old2 = '0076 = STAGE-1 THROUGH STAGE-6 MERGED / STAGE6 MERGE `868187bae8f5e23dcf884b023c0783d19c96ed18` / STAGE7 ZERO-RESULT PREFLIGHT ACTIVE ON PR #404 / FORMAL COMPLETION 6/10 / ATTEMPT 0/1 / CONTROLLED READS 0 / SCIENTIFIC ENGINE 0/1 / SCIENTIFIC SOURCE NETWORK FETCHES 0 / SCIENTIFIC VALUES EXPOSED FALSE / NO STAGE8 MARKER OR RESULT / PRODUCTION-SIGNATURE-ORDER AUTHORITY FALSE.'
+          new2 = '0076 = STAGE-1 THROUGH STAGE-6 MERGED / STAGE6 MERGE `868187bae8f5e23dcf884b023c0783d19c96ed18` / STAGE7 `FAIL_CLOSED_PRE_MARKER_PAYLOAD_ENTRY_READ_BOUNDARY_VIOLATION` ON PR #404 / FORMAL COMPLETION REMAINS 6/10 / ATTEMPT 0/1 UNCONSUMED / CONTROLLED AUTHORIZED PAYLOAD-FILE TRAVERSALS 30336 PRE-MARKER / SCIENTIFIC ENGINE 0/1 / SCIENTIFIC SOURCE NETWORK FETCHES 0 / INNER CSV ROWS PARSED FALSE / SCIENTIFIC ROW VALUES EXPOSED FALSE / NO STAGE8 MARKER OR RESULT / NO SAME-ID STAGE8-RERUN-RETUNE-RESCUE-RECOMPUTE / PRODUCTION-SIGNATURE-ORDER AUTHORITY FALSE.'
+          if s.count(old1) != 1:
+              raise SystemExit(f'expected one prose state occurrence, found {s.count(old1)}')
+          if s.count(old2) != 1:
+              raise SystemExit(f'expected one summary state occurrence, found {s.count(old2)}')
+          s = s.replace(old1, new1).replace(old2, new2)
+          if anchor not in s:
+              raise SystemExit('immutable anchor changed')
+          p.write_text(s)
+      - name: Commit synchronized state and retire writer
+        run: |
+          rm .github/workflows/0076-stage7-incident-state-sync.yml
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add docs/CURRENT_STATE.md .github/workflows/0076-stage7-incident-state-sync.yml
+          git diff --cached --check
+          git commit -m "research(0076): sync Stage7 fail-closed incident state"
+          git push origin HEAD:research/0076-stage7-zero-result-preflight-v1
