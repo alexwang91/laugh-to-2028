@@ -1,0 +1,35 @@
+name: 0087 BUILD settlement cleanup
+
+on:
+  push:
+    branches:
+      - research/0087-options-vrp-build-v1
+    paths:
+      - .github/workflows/0087-build-settlement-cleanup.yml
+
+permissions:
+  contents: write
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/0087-options-vrp-build-v1
+          fetch-depth: 0
+      - name: Remove stale helper and persist correction
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -c "from pathlib import Path; p=Path('research/brrk_options_volatility_risk_premium_0087/engine.py'); s=p.read_text(); a=s.index('def delta_hedged_short_straddle_pnl('); b=s.index('def _quantile(', a); p.write_text(s[:a]+s[b:])"
+          if ! grep -q '^## 0087 BUILD settlement-convention correction — 2026-08-25$' docs/CURRENT_STATE.md; then
+            echo 'IyMgMDA4NyBCVUlMRCBzZXR0bGVtZW50LWNvbnZlbnRpb24gY29ycmVjdGlvbiDigJQgMjAyNi0wOC0yNQoKLSBCVUlMRCByZW1vdmVkIGEgc3ludGhldGljIGxpbmVhci1xdW90ZSBvcHRpb24gcGF5b2ZmIGFzc3VtcHRpb24gZnJvbSB0aGUgMDA4NyBlbmdpbmUuIERlcmliaXQgZXhwaXJ5L3NldHRsZW1lbnQgbXVzdCBmb2xsb3cgdGhlIHNvdXJjZS1mcm96ZW4gY29udHJhY3QgY29udmVudGlvbiByYXRoZXIgdGhhbiBhIEJVSUxELWludmVudGVkIFVTRCBsaW5lYXIgcGF5b3V0LgotIGByZXNlYXJjaC9icnJrX29wdGlvbnNfdm9sYXRpbGl0eV9yaXNrX3ByZW1pdW1fMDA4Ny9lY29ub21pY19jb3JlLnB5YCBub3cgZnJlZXplcyBhIHNvdXJjZS1jb252ZW50aW9uLW5ldXRyYWwgZWNvbm9taWMgY29yZTogQVJNIHN1cHBsaWVzIGVudHJ5IHByZW1pdW0sIHNldHRsZW1lbnQgcGF5b2ZmLCBoZWRnZSBxdW90ZXMgYW5kIHRhcmdldCB1bml0cyBpbiBvbmUgcHJlLWV4cG9zdXJlIGZyb3plbiBudW1lcmFpcmU7IHRoZSBjb3JlIGFwcGxpZXMgZXhlY3V0YWJsZS1zaWRlIGhlZGdlIGFjY291bnRpbmcgYW5kIEMxIDUgYnBzIC8gQzIgMTUgYnBzIGZyaWN0aW9uLgotIEFSTSBtdXN0IHByb3ZlIHRoZSBzb3VyY2UtbmF0aXZlIHNldHRsZW1lbnQgY29udmVudGlvbiwgbnVtZXJhaXJlIGNvbnZlcnNpb24gYW5kIGhlZGdlLXRhcmdldCBzZW1hbnRpY3MgZnJvbSBtZXRhZGF0YS9zY2hlbWEgYmVmb3JlIGNvbnRyb2xsZWQgdmFsdWUgZXhwb3N1cmUuIElmIHRoYXQgY2Fubm90IGJlIGJvdW5kLCB0aGUgMDA4NyBsaW5lIHN0b3BzIGJlZm9yZSBSVU4uCi0gVGhpcyBjb3JyZWN0aW9uIGNvbnN1bWVkIG5vIGNvbnRyb2xsZWQgcmVhZHMsIG5vIHNjaWVudGlmaWMgZW5naW5lIGNhbGwsIG5vIGF0dGVtcHQgYnVkZ2V0LCBhbmQgZXhwb3NlZCBubyBzY2llbnRpZmljIHZhbHVlcy4K' | base64 -d >> docs/CURRENT_STATE.md
+          fi
+          rm -f .github/workflows/0087-build-settlement-cleanup.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add research/brrk_options_volatility_risk_premium_0087/engine.py docs/CURRENT_STATE.md .github/workflows/0087-build-settlement-cleanup.yml
+          git diff --cached --quiet && exit 0
+          git commit -m 'fix(0087): persist settlement-neutral BUILD correction'
+          git push origin HEAD:research/0087-options-vrp-build-v1
