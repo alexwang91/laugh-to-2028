@@ -30,7 +30,7 @@ CLASSIFICATIONS = {
 
 _SOURCE_RE = re.compile(
     r"^(?:stage/)?payloads/data__futures__um__monthly__klines__"
-    r"(?P<symbol>[A-Z0-9]+USDT)__1d__(?P=symbol)-1d-"
+    r"(?P<symbol>[^/]+USDT)__1d__(?P=symbol)-1d-"
     r"(?P<year>20\d{2})-(?P<month>0[1-9]|1[0-2])\.zip$"
 )
 
