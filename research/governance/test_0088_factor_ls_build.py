@@ -1,3 +1,5 @@
+import unittest
+
 from research.brrk_factor_ls_0088.engine import analyze_weekly_records
 
 
@@ -31,49 +33,49 @@ def _record(i, support=True, ret=0.02):
     }
 
 
-def test_0088_adequate_synthetic_support_passes_all_frozen_gates():
-    records = [_record(i) for i in range(156)]
-    result = analyze_weekly_records(records)
-    assert result["classification"] == "PASS_VALIDATED_FACTOR_LS"
-    assert all(result["gates"].values())
-    assert result["observations"] == 156
+class Test0088FactorLSBuild(unittest.TestCase):
+    def test_adequate_synthetic_support_passes_all_frozen_gates(self):
+        records = [_record(i) for i in range(156)]
+        result = analyze_weekly_records(records)
+        self.assertEqual(result["classification"], "PASS_VALIDATED_FACTOR_LS")
+        self.assertTrue(all(result["gates"].values()))
+        self.assertEqual(result["observations"], 156)
+
+    def test_unsupported_week_removes_preceding_and_restarts_from_zero(self):
+        records = [_record(i) for i in range(110)]
+        records[50]["support"] = False
+        result = analyze_weekly_records(records)
+        self.assertEqual(result["observations"], 108)
+
+    def test_support_admission_is_return_blind(self):
+        left = [_record(i) for i in range(110)]
+        right = [_record(i) for i in range(110)]
+        left[50]["support"] = False
+        right[50]["support"] = False
+        left[49]["asset_returns"] = {name: -0.90 for name in left[49]["target"]}
+        right[49]["asset_returns"] = {name: 0.90 for name in right[49]["target"]}
+        self.assertEqual(analyze_weekly_records(left)["observations"], 108)
+        self.assertEqual(analyze_weekly_records(right)["observations"], 108)
+
+    def test_missing_capacity_denominator_fails_closed_as_unsupported_transition(self):
+        records = [_record(i) for i in range(110)]
+        records[50]["median_quote_volume"] = {}
+        result = analyze_weekly_records(records)
+        self.assertEqual(result["observations"], 108)
+
+    def test_consecutive_unsupported_weeks_restart_deterministically(self):
+        records = [_record(i) for i in range(112)]
+        records[50]["support"] = False
+        records[51]["support"] = False
+        result = analyze_weekly_records(records)
+        self.assertEqual(result["observations"], 109)
+
+    def test_insufficient_support_is_inconclusive_not_invalid(self):
+        result = analyze_weekly_records([_record(i) for i in range(50)])
+        self.assertEqual(result["classification"], "INCONCLUSIVE_INSUFFICIENT_SUPPORT")
+        self.assertTrue(result["gates"]["G0_EXECUTION"])
+        self.assertFalse(result["gates"]["G1_SUPPORT"])
 
 
-def test_unsupported_week_removes_preceding_and_restarts_from_zero():
-    records = [_record(i) for i in range(110)]
-    records[50]["support"] = False
-    result = analyze_weekly_records(records)
-    # Unsupported week contributes zero observations and mechanically deletes prior observation.
-    assert result["observations"] == 108
-
-
-def test_support_admission_is_return_blind():
-    left = [_record(i) for i in range(110)]
-    right = [_record(i) for i in range(110)]
-    left[50]["support"] = False
-    right[50]["support"] = False
-    left[49]["asset_returns"] = {name: -0.90 for name in left[49]["target"]}
-    right[49]["asset_returns"] = {name: 0.90 for name in right[49]["target"]}
-    assert analyze_weekly_records(left)["observations"] == analyze_weekly_records(right)["observations"] == 108
-
-
-def test_missing_capacity_denominator_fails_closed_as_unsupported_transition():
-    records = [_record(i) for i in range(110)]
-    records[50]["median_quote_volume"] = {}
-    result = analyze_weekly_records(records)
-    assert result["observations"] == 108
-
-
-def test_consecutive_unsupported_weeks_restart_deterministically():
-    records = [_record(i) for i in range(112)]
-    records[50]["support"] = False
-    records[51]["support"] = False
-    result = analyze_weekly_records(records)
-    assert result["observations"] == 109
-
-
-def test_insufficient_support_is_inconclusive_not_invalid():
-    result = analyze_weekly_records([_record(i) for i in range(50)])
-    assert result["classification"] == "INCONCLUSIVE_INSUFFICIENT_SUPPORT"
-    assert result["gates"]["G0_EXECUTION"] is True
-    assert result["gates"]["G1_SUPPORT"] is False
+if __name__ == "__main__":
+    unittest.main()
