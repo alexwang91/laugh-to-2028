@@ -519,3 +519,15 @@ BUILD may use synthetic/nonhistorical fixtures only. ARM must bind qualifying po
 - Next gate is ARM. ARM must bind exact controlled price/funding identities, declared hashes/sizes, schema/timestamps, read budget, marker/result paths, source-qualified runner interface, and engine budget before any RUN authorization.
 - 0086 remains immutable `PASS_VALIDATED_FACTOR_ATLAS`; 0085 remains immutable `INVALID_EXECUTION`; 0076 remains sealed; 0072/0073 remain paused; 0083 remains immutable FAIL; 0087 remains source-metadata blocked. Phase6 closeout and common-runner qualification remain unchanged.
 - `workflow run                         31381953131 / attempt 1`, CAPTURE-0001 sealed/no-retry, and CAPTURE-0002 permanently claimed/no-refetch remain immutable. Production/signature/order/withdrawal/transfer authority remains false.
+
+## 0088 Factor L/S ARM — 2026-08-26
+
+- 0088 `SPEC_FREEZE`, prospective transition clarification, and BUILD are merged. ARM binds controlled identities/schema only and opens no scientific payload value.
+- ARM binds immutable workflow run `32646565505`, artifact `9495175701` / `0075-stage6-authorized-payloads-v1`, size `174445627`, digest `sha256:8040282ff412b2d3fd360173e4745ebfd048796eb9e9c2ad49fa0901e5cedf56`.
+- Parent manifest SHA-256 remains `2f70384dd84a601b69528ef3d770e0fa9c714b3e0888bec009e93b5067ecebf8`; immutable 0076 metadata-only submanifest SHA-256 remains `c33b575cc436db795086458a25ca38fe1527f649809e549caba00e9754422e58`.
+- 0088 authorizes exactly `30,336` controlled objects from that submanifest: `15,254` USD-M monthly 1d perpetual kline objects plus `15,082` funding-rate objects across `467` historical eligible symbols for 2021-01 through 2026-07. No source substitution, refetch, renaming, or history extension is permitted.
+- Future RUN must use `ControlledResearchRunnerV1SourceQualified` with `FactorLS0088Engine`; pre-marker `testzip()`, payload open/read, decompression, inner ZIP/CSV parsing, CRC traversal, and scientific-row reads remain forbidden.
+- Controlled attempt remains `0/1`; controlled reads remain `0`; scientific engine remains `0/1`; scientific values remain unexposed. No RUN marker or result exists.
+- After ARM merges, only a fresh metadata/identity-only zero-result preflight is legal before the separate irreversible 0088 RUN authorization boundary.
+- 0086 remains immutable `PASS_VALIDATED_FACTOR_ATLAS`; 0085 remains immutable `INVALID_EXECUTION`; 0076 remains sealed; 0072/0073 remain paused; 0083 remains immutable FAIL; 0087 remains source-metadata blocked. Phase6 closeout and common-runner qualification remain unchanged.
+- `workflow run                         31381953131 / attempt 1`, CAPTURE-0001 sealed/no-retry, and CAPTURE-0002 permanently claimed/no-refetch remain immutable. Production/signature/order/withdrawal/transfer authority remains false.
