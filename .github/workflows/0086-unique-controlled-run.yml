@@ -37,6 +37,8 @@ jobs:
           assert auth['attempt'] == '1/1'
           assert auth['authorization'] == 'AUTHORIZED'
           assert auth['attempt_consumed'] is False
+          retry = trigger.pop('pre_marker_retry', 0)
+          assert retry in (0, 1)
           assert trigger == {
               'research_id': 'BRRK-CROSS-SECTIONAL-FACTOR-ATLAS-0086',
               'attempt': '1/1',
