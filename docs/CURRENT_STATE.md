@@ -470,3 +470,12 @@ BUILD may use synthetic/nonhistorical fixtures only. ARM must bind qualifying po
 - This handoff also repays the real `docs/CURRENT_STATE.md` debt left by merged 0087 BUILD requalification PR #432. 0087 mechanics clarification/requalification is complete pre-exposure, but 0087 remains blocked before ARM/RUN by `BLOCKED_NO_QUALIFYING_CONTROLLED_SOURCE_METADATA`.
 - 0085 remains immutable `INVALID_EXECUTION` with attempt `1/1` consumed and no admissible Trend science. 0076 remains sealed at its Stage7 pre-marker incident; 0072/0073 remain paused; 0083 remains immutable FAIL. `workflow run                         31381953131 / attempt 1`, CAPTURE-0001 sealed/no-retry, CAPTURE-0002 permanently claimed/no-refetch, and Phase6 closeout remain immutable.
 - Factor L/S remains forbidden unless 0086 produces an admissible PASS. Production/signature/order/withdrawal/transfer authority remains false.
+
+
+## 0086 pre-marker source-key repair — 2026-08-26
+
+- Authorized 0086 workflow run `32946544624` terminated before durable marker creation and before any controlled payload read. The exact fail-closed cause was metadata adapter rejection of the frozen historical symbol key `币安人生USDT`: `_SOURCE_RE` admitted ASCII `[A-Z0-9]+USDT` only.
+- Remote verification after the failure found neither `research/0086-factor-atlas-attempt-marker-v1` nor `research/0086-factor-atlas-result-v1`. Therefore attempt remains `0/1`, controlled reads remain `0`, engine calls remain `0/1`, and scientific values remain unexposed. This event is a pre-marker execution-path failure, not a scientific attempt and not an `INVALID_EXECUTION` result.
+- Prospective repair broadens only the filename symbol token to any non-slash symbol ending in `USDT`, preserving the exact prefix, `__1d__`, symbol back-reference, month grammar, duplicate logical-object rejection, and required BTCUSDT check. A synthetic regression binds the actual frozen Unicode filename.
+- The unique workflow accepts a single auditable `pre_marker_retry: 1` receipt only while the original authorization remains `attempt_consumed=false`. No second scientific attempt is created.
+- 0085, 0076, 0072/0073, 0083, Phase6 closeout, CAPTURE anchors and all frozen 0086 science remain unchanged. Factor L/S remains blocked until an admissible 0086 PASS.
