@@ -1,0 +1,58 @@
+name: 0086 pre-marker repair once
+
+on:
+  push:
+    branches:
+      - "research/0086-factor-atlas-run-v1"
+    paths:
+      - ".github/workflows/0086-pre-marker-repair-once.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: "research/0086-factor-atlas-run-v1"
+          fetch-depth: 0
+      - name: Apply minimal metadata adapter repair
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+
+          engine = Path('research/brrk_cross_sectional_factor_atlas_0086/engine.py')
+          text = engine.read_text(encoding='utf-8')
+          old = r'r"(?P<symbol>[A-Z0-9]+USDT)__1d__(?P=symbol)-1d-"'
+          new = r'r"(?P<symbol>[^/]+USDT)__1d__(?P=symbol)-1d-"'
+          if old not in text:
+              raise SystemExit('0086 source regex anchor missing')
+          engine.write_text(text.replace(old, new, 1), encoding='utf-8')
+
+          wf = Path('.github/workflows/0086-unique-controlled-run.yml')
+          w = wf.read_text(encoding='utf-8')
+          old_block = """          assert trigger == {\n              'research_id': 'BRRK-CROSS-SECTIONAL-FACTOR-ATLAS-0086',\n              'attempt': '1/1',\n              'authorization': 'AUTHORIZED',\n              'authorized_at': auth['authorized_at'],\n          }\n"""
+          new_block = """          retry = trigger.pop('pre_marker_retry', 0)\n          assert retry in (0, 1)\n          assert trigger == {\n              'research_id': 'BRRK-CROSS-SECTIONAL-FACTOR-ATLAS-0086',\n              'attempt': '1/1',\n              'authorization': 'AUTHORIZED',\n              'authorized_at': auth['authorized_at'],\n          }\n"""
+          if old_block not in w:
+              raise SystemExit('0086 trigger receipt assertion anchor missing')
+          wf.write_text(w.replace(old_block, new_block, 1), encoding='utf-8')
+
+          current = Path('docs/CURRENT_STATE.md')
+          state = current.read_text(encoding='utf-8')
+          heading = '## 0086 pre-marker source-key repair — 2026-08-26'
+          if heading not in state:
+              state += '''\n\n## 0086 pre-marker source-key repair — 2026-08-26\n\n- Authorized 0086 workflow run `32946544624` terminated before durable marker creation and before any controlled payload read. The exact fail-closed cause was metadata adapter rejection of the frozen historical symbol key `币安人生USDT`: `_SOURCE_RE` admitted ASCII `[A-Z0-9]+USDT` only.\n- Remote verification after the failure found neither `research/0086-factor-atlas-attempt-marker-v1` nor `research/0086-factor-atlas-result-v1`. Therefore attempt remains `0/1`, controlled reads remain `0`, engine calls remain `0/1`, and scientific values remain unexposed. This event is a pre-marker execution-path failure, not a scientific attempt and not an `INVALID_EXECUTION` result.\n- Prospective repair broadens only the filename symbol token to any non-slash symbol ending in `USDT`, preserving the exact prefix, `__1d__`, symbol back-reference, month grammar, duplicate logical-object rejection, and required BTCUSDT check. A synthetic regression binds the actual frozen Unicode filename.\n- The unique workflow accepts a single auditable `pre_marker_retry: 1` receipt only while the original authorization remains `attempt_consumed=false`. No second scientific attempt is created.\n- 0085, 0076, 0072/0073, 0083, Phase6 closeout, CAPTURE anchors and all frozen 0086 science remain unchanged. Factor L/S remains blocked until an admissible 0086 PASS.\n'''
+              current.write_text(state, encoding='utf-8')
+          PY
+      - name: Remove one-time repair workflow and commit
+        run: |
+          set -euo pipefail
+          rm .github/workflows/0086-pre-marker-repair-once.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add research/brrk_cross_sectional_factor_atlas_0086/engine.py .github/workflows/0086-unique-controlled-run.yml docs/CURRENT_STATE.md .github/workflows/0086-pre-marker-repair-once.yml
+          git commit -m "fix(0086): admit frozen unicode source symbols pre-marker"
+          git push origin HEAD:research/0086-factor-atlas-run-v1
