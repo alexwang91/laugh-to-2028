@@ -531,3 +531,11 @@ BUILD may use synthetic/nonhistorical fixtures only. ARM must bind qualifying po
 - After ARM merges, only a fresh metadata/identity-only zero-result preflight is legal before the separate irreversible 0088 RUN authorization boundary.
 - 0086 remains immutable `PASS_VALIDATED_FACTOR_ATLAS`; 0085 remains immutable `INVALID_EXECUTION`; 0076 remains sealed; 0072/0073 remain paused; 0083 remains immutable FAIL; 0087 remains source-metadata blocked. Phase6 closeout and common-runner qualification remain unchanged.
 - `workflow run                         31381953131 / attempt 1`, CAPTURE-0001 sealed/no-retry, and CAPTURE-0002 permanently claimed/no-refetch remain immutable. Production/signature/order/withdrawal/transfer authority remains false.
+
+## 0088 Factor L/S authorized RUN preparation — 2026-08-26
+
+- Contemporaneous user authorization for `BRRK-FACTOR-LS-0088` controlled attempt `1/1` was received at `2026-08-26T19:06:00Z`.
+- This preparation is reversible and does not consume the attempt: attempt remains `0/1`, controlled reads `0`, engine `0/1`, scientific values exposed `false`; no `RUN_ATTEMPT.marker`, result, or `RUN_ONCE.marker` exists.
+- Frozen ARM source identity is unchanged: workflow run `32646565505`, artifact `9495175701`, digest `sha256:8040282ff412b2d3fd360173e4745ebfd048796eb9e9c2ad49fa0901e5cedf56`, submanifest `c33b575cc436db795086458a25ca38fe1527f649809e549caba00e9754422e58`, exactly `30,336` objects (`15,254` kline + `15,082` funding), `467` eligible symbols, `2021-01` through `2026-07`.
+- The trigger-scoped `ControlledResearchRunnerV1SourceQualified` orchestration is prepared prospectively. The irreversible attempt begins only after prep merge, a fresh metadata/identity preflight, creation of the exact RUN trigger, durable create-only marker persistence, and remote marker verification.
+- Immutable 0076/0085/0086/0087 and Phase6/CAPTURE states remain unchanged. No rerun, retune, rescue, source substitution, history extension, or result-informed modification is authorized.

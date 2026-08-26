@@ -1,0 +1,74 @@
+name: 0088 unique controlled RUN
+
+on:
+  push:
+    branches:
+      - "research/0088-factor-ls-run-v1"
+    paths:
+      - "research/brrk_factor_ls_0088/RUN_TRIGGER.json"
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: 0088-unique-controlled-run
+  cancel-in-progress: false
+
+jobs:
+  run-once:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: "research/0088-factor-ls-run-v1"
+          fetch-depth: 0
+      - name: Require explicit authorization and trigger receipts
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          base = Path('research/brrk_factor_ls_0088')
+          auth = json.loads((base / 'RUN_AUTHORIZATION.json').read_text(encoding='utf-8'))
+          trigger = json.loads((base / 'RUN_TRIGGER.json').read_text(encoding='utf-8'))
+          assert auth['research_id'] == 'BRRK-FACTOR-LS-0088'
+          assert auth['attempt'] == '1/1'
+          assert auth['authorization'] == 'AUTHORIZED'
+          assert auth['attempt_consumed'] is False
+          assert auth['controlled_values_exposed'] is False
+          assert trigger == {
+              'research_id': 'BRRK-FACTOR-LS-0088',
+              'attempt': '1/1',
+              'authorization': 'AUTHORIZED',
+              'authorized_at': auth['authorized_at'],
+          }
+          PY
+      - name: Verify frozen artifact metadata
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh api repos/${GITHUB_REPOSITORY}/actions/artifacts/9495175701 > /tmp/artifact.json
+          python - <<'PY'
+          import json
+          a=json.load(open('/tmp/artifact.json'))
+          assert a['id'] == 9495175701
+          assert a['name'] == '0075-stage6-authorized-payloads-v1'
+          assert a['expired'] is False
+          assert a['size_in_bytes'] == 174445627
+          assert a.get('digest') == 'sha256:8040282ff412b2d3fd360173e4745ebfd048796eb9e9c2ad49fa0901e5cedf56'
+          PY
+      - name: Download frozen artifact container without opening payload entries
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh api repos/${GITHUB_REPOSITORY}/actions/artifacts/9495175701/zip > /tmp/0088-artifact.zip
+      - name: Execute authorized attempt through source-qualified common runner
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          python -m research.brrk_factor_ls_0088.run_controlled_once /tmp/0088-artifact.zip
