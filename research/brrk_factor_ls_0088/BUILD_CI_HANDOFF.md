@@ -7,6 +7,8 @@ This file records the mechanical CI handoff for the synthetic BUILD gate.
 - scientific engine: `0/1`
 - controlled values exposed: `false`
 - merged science: unchanged
+- `docs/CURRENT_STATE.md` now contains the truthful 0088 BUILD handoff written by the self-deleting helper.
+- the BUILD qualification tests are `unittest.TestCase` methods and must be counted by governance discovery.
 - exact next gate after terminal-green BUILD merge: metadata-only ARM
 
 ## What did not change
