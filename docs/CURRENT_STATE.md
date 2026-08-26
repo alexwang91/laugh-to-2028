@@ -459,3 +459,14 @@ BUILD may use synthetic/nonhistorical fixtures only. ARM must bind qualifying po
 - 0085 remains immutable INVALID_EXECUTION attempt 1/1; 0076 sealed; 0072/0073 paused; 0083 immutable FAIL; Phase6 PASS closeout unchanged.
 - `workflow run                         31381953131 / attempt 1`, CAPTURE-0001 sealed/no-retry and CAPTURE-0002 permanently claimed/no-refetch remain immutable.
 - Production/signature/order/withdrawal/transfer authority remains false.
+
+
+## 0086 Factor Atlas authorized RUN preparation — 2026-08-26
+
+- `BRRK-CROSS-SECTIONAL-FACTOR-ATLAS-0086` remains ARM-complete. The repository owner has now durably recorded separate authorization for controlled RUN attempt `1/1`; authorization is not itself an attempt marker and remains unconsumed at this handoff.
+- Worker B reused `research/0086-factor-atlas-run-v1` and added the prospective source-qualified production orchestrator plus a unique trigger-scoped workflow. No `RUN_TRIGGER.json`, `RUN_ATTEMPT.marker`, `PRIMARY_RESULT.json`, or `RUN_ONCE.marker` exists at this preparation point. Controlled reads remain `0`; engine calls remain `0/1`; scientific values remain unexposed.
+- The orchestrator rebuilds exactly the ARM-selected `15,254` USD-M monthly 1d kline identities from the immutable 0076 metadata-only submanifest, maps frozen `stage/payloads/...` keys to the actual GitHub artifact `payloads/...` namespace, verifies declared size/SHA-256 through `ControlledResearchRunnerV1SourceQualified`, and uses the qualified Git create-only store for durable marker/result/RUN_ONCE persistence.
+- The run workflow verifies artifact `9495175701` name, size and digest before downloading the outer container. Pre-marker payload decompression, `testzip()`, CRC traversal, inner ZIP/CSV parsing and scientific calculations remain forbidden.
+- This handoff also repays the real `docs/CURRENT_STATE.md` debt left by merged 0087 BUILD requalification PR #432. 0087 mechanics clarification/requalification is complete pre-exposure, but 0087 remains blocked before ARM/RUN by `BLOCKED_NO_QUALIFYING_CONTROLLED_SOURCE_METADATA`.
+- 0085 remains immutable `INVALID_EXECUTION` with attempt `1/1` consumed and no admissible Trend science. 0076 remains sealed at its Stage7 pre-marker incident; 0072/0073 remain paused; 0083 remains immutable FAIL. `workflow run                         31381953131 / attempt 1`, CAPTURE-0001 sealed/no-retry, CAPTURE-0002 permanently claimed/no-refetch, and Phase6 closeout remain immutable.
+- Factor L/S remains forbidden unless 0086 produces an admissible PASS. Production/signature/order/withdrawal/transfer authority remains false.
