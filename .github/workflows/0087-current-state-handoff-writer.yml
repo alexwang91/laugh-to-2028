@@ -1,0 +1,48 @@
+name: 0087 one-shot CURRENT_STATE handoff writer
+
+on:
+  push:
+    branches:
+      - research/0087-options-vrp-pre-exposure-spec-clarification-v1
+
+permissions:
+  contents: write
+
+jobs:
+  handoff:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Append durable handoff and remove helper
+        shell: bash
+        run: |
+          set -euo pipefail
+          marker='## 0087 pre-exposure SPEC clarification — 2026-08-26'
+          if ! grep -Fq "$marker" docs/CURRENT_STATE.md; then
+            cat >> docs/CURRENT_STATE.md <<'EOF'
+
+## 0087 pre-exposure SPEC clarification — 2026-08-26
+
+- Issue #428 live revalidation found two unresolved pre-exposure scientific-mechanism ambiguities after BUILD #429: daily delta source semantics and executable day-30 close semantics.
+- `PRE_EXPOSURE_SPEC_CLARIFICATION.md` prospectively freezes source-native Deribit call/put delta at the exact ARM-bound daily UTC hedge timestamp, exact contract-multiplier/numeraire conversion, no model/mark/stale/fallback delta substitution, and unsupported classification for missing required delta inputs.
+- For options still alive at entry+30 calendar days, both short legs must close mechanically at executable ask quotes at the frozen terminal UTC timestamp; missing/invalid asks make the underlying-week unsupported. Residual hedge inventory closes at executable side at the same terminal timestamp; expiry observations retain source-native settlement semantics proven at ARM.
+- BUILD must requalify these clarified mechanics on synthetic/nonhistorical fixtures before any ARM continuation. 0087 also remains blocked by `BLOCKED_NO_QUALIFYING_CONTROLLED_SOURCE_METADATA`; source availability cannot choose or alter the clarified mechanics.
+- 0087 remains attempt `0/1`, controlled reads `0`, engine `0/1`, scientific values unexposed, with no RUN marker and no scientific terminal classification.
+- 0086 remains ARM-complete at attempt `0/1` pending separate irreversible RUN authorization; Factor L/S remains blocked unless 0086 validly PASSes.
+- 0085 remains immutable INVALID_EXECUTION attempt 1/1; 0076 sealed; 0072/0073 paused; 0083 immutable FAIL; Phase6 PASS closeout unchanged.
+- `workflow run                         31381953131 / attempt 1`, CAPTURE-0001 sealed/no-retry and CAPTURE-0002 permanently claimed/no-refetch remain immutable.
+- `ControlledResearchRunnerV1SourceQualified` remains mandatory for future controlled RUNs. Production/signature/order/withdrawal/transfer authority remains false.
+EOF
+          fi
+          rm -f .github/workflows/0087-current-state-handoff-writer.yml
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add docs/CURRENT_STATE.md .github/workflows/0087-current-state-handoff-writer.yml
+          if git diff --cached --quiet; then
+            exit 0
+          fi
+          git commit -m 'research(0087): record pre-exposure clarification handoff'
+          git push origin HEAD:research/0087-options-vrp-pre-exposure-spec-clarification-v1
