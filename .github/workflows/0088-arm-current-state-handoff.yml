@@ -1,16 +1,16 @@
 name: 0088 arm current-state handoff
 
 on:
-  pull_request:
+  push:
     branches:
-      - main
+      - research/0088-factor-ls-arm-v1
 
 permissions:
   contents: write
 
 jobs:
   append-handoff:
-    if: github.event.pull_request.head.ref == 'research/0088-factor-ls-arm-v1' && github.actor != 'github-actions[bot]'
+    if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
