@@ -11,6 +11,7 @@ Gate: `SPEC_FREEZE`
 - Controlled attempt remains `0/1`; controlled reads remain `0`; engine remains `0/1`; scientific values remain unexposed.
 - BUILD is restricted to synthetic/nonhistorical fixtures. ARM is metadata/schema/identity-only and must use `ControlledResearchRunnerV1SourceQualified`.
 - Any future RUN requires separate irreversible user authorization.
+- Governance-core schema repair was mechanical only: objective type is the existing `PORTFOLIO_INTEGRATION` enum, 0086 ancestry is represented by `RESULT_INFORMED` plus `ref_research_id`, research IDs were removed from dataset-reference fields, and preregistration carries no result evidence. `python -m research.governance.validate` passed before the repair commit was pushed.
 
 ## What did not change
 
