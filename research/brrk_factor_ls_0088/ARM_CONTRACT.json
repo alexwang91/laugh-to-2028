@@ -1,0 +1,52 @@
+{
+  "research_id": "BRRK-FACTOR-LS-0088",
+  "gate": "ARM",
+  "controlled_attempt": "0/1",
+  "controlled_reads": 0,
+  "engine_calls": "0/1",
+  "scientific_values_exposed": false,
+  "artifact": {
+    "workflow_run_id": 32646565505,
+    "artifact_id": 9495175701,
+    "name": "0075-stage6-authorized-payloads-v1",
+    "size_bytes": 174445627,
+    "digest": "sha256:8040282ff412b2d3fd360173e4745ebfd048796eb9e9c2ad49fa0901e5cedf56"
+  },
+  "manifests": {
+    "parent_sha256": "2f70384dd84a601b69528ef3d770e0fa9c714b3e0888bec009e93b5067ecebf8",
+    "submanifest_sha256": "c33b575cc436db795086458a25ca38fe1527f649809e549caba00e9754422e58"
+  },
+  "selection": {
+    "total_objects": 30336,
+    "kline_objects": 15254,
+    "funding_objects": 15082,
+    "eligible_symbols": 467,
+    "candidate_month_start": "2021-01",
+    "candidate_month_end": "2026-07",
+    "require_btcusdt": true
+  },
+  "execution": {
+    "runner": "ControlledResearchRunnerV1SourceQualified",
+    "engine": "FactorLS0088Engine",
+    "expected_controlled_reads": 30336,
+    "expected_engine_calls": 1,
+    "attempt_budget": 1,
+    "marker_path": "research/brrk_factor_ls_0088/RUN_ATTEMPT.marker",
+    "result_path": "research/brrk_factor_ls_0088/PRIMARY_RESULT.json",
+    "run_once_path": "research/brrk_factor_ls_0088/RUN_ONCE.marker"
+  },
+  "pre_marker_forbidden": [
+    "testzip",
+    "payload_decompression",
+    "inner_zip_open",
+    "csv_parse",
+    "payload_crc_traversal",
+    "scientific_row_read",
+    "factor_calculation",
+    "funding_pnl_calculation",
+    "portfolio_calculation",
+    "return_calculation"
+  ],
+  "source_substitution_after_arm": false,
+  "production_authority": false
+}
