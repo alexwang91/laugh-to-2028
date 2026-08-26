@@ -6341,7 +6341,7 @@
       "research_domain": "RELATIVE_VALUE",
       "research_governance_version": 1,
       "governance_mode": "PROGRAM_GOVERNED_V1",
-      "objective_type": "FACTOR_PORTFOLIO_VALIDATION",
+      "objective_type": "PORTFOLIO_INTEGRATION",
       "created_at": "2026-08-26T09:56:00Z",
       "created_before_result": true,
       "question": "Can the three immutable passing 0086 factor directions form one prospectively fixed cross-sectional long/short crypto perpetual sleeve with positive risk-adjusted net returns after turnover, funding, stressed costs, concentration, capacity, chronology, and BTC-state robustness checks?",
@@ -6376,9 +6376,7 @@
       "universe": [
         "POINT_IN_TIME_TOP30_BY_TRAILING30_MEDIAN_QUOTE_VOLUME_BINANCE_USDM_USDT_PERPETUALS"
       ],
-      "development_dataset_refs": [
-        "BRRK-CROSS-SECTIONAL-FACTOR-ATLAS-0086"
-      ],
+      "development_dataset_refs": [],
       "validation_dataset_refs": [],
       "sealed_dataset_refs": [],
       "declared_variant_budget": 1,
@@ -6435,17 +6433,14 @@
       },
       "lineage_edges": [
         {
-          "from_research_id": "BRRK-CROSS-SECTIONAL-FACTOR-ATLAS-0086",
-          "relation": "IMMUTABLE_PASS_UNLOCKS_SEPARATE_DOWNSTREAM_FACTOR_LS_ONLY"
+          "relation": "RESULT_INFORMED",
+          "ref_research_id": "BRRK-CROSS-SECTIONAL-FACTOR-ATLAS-0086"
         }
       ],
-      "result_status": "OWNER_REGISTERED_SPEC_NOT_INTRODUCED",
+      "result_status": "PREREGISTERED_NOT_RUN",
       "failure_reason": null,
       "promotion_state": "NONE",
-      "evidence_refs": [
-        "research/brrk_cross_sectional_factor_atlas_0086/CLOSEOUT.md",
-        "research/brrk_cross_sectional_factor_atlas_0086/PRIMARY_RESULT.json"
-      ],
+      "evidence_refs": [],
       "decision_refs": [
         "research/governance/PROSPECTIVE_FIVE_GATE_LIFECYCLE_V1.md",
         "research/governance/CONTROLLED_RESEARCH_RUNNER_V1_SOURCE_INTERFACE_QUALIFICATION_2026-08-25.md"
