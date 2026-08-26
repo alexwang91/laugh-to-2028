@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
 from math import isfinite, sqrt
 from random import Random
 from statistics import median, stdev
@@ -119,15 +118,8 @@ def _capacity_ok(previous: Mapping[str, float], current: Mapping[str, float], me
 
 
 def analyze_weekly_records(records: Sequence[Mapping[str, Any]]) -> Mapping[str, Any]:
-    """Pure frozen 0088 portfolio evaluator over synthetic-normalized weekly records.
-
-    A record supplies decision-time target weights, FWD5 asset returns, funding PnL,
-    beta diagnostics, capacity denominators and support flags. The state transition
-    follows the merged pre-exposure clarification exactly.
-    """
     previous: dict[str, float] = {}
     admitted: list[dict[str, Any]] = []
-    pending_preceding_index: int | None = None
 
     for raw in records:
         day = str(raw.get("date", ""))
@@ -158,7 +150,6 @@ def analyze_weekly_records(records: Sequence[Mapping[str, Any]]) -> Mapping[str,
             if admitted and previous:
                 admitted.pop()
             previous = {}
-            pending_preceding_index = None
             continue
 
         turnover = _transition_turnover(previous, target)
@@ -180,7 +171,7 @@ def analyze_weekly_records(records: Sequence[Mapping[str, Any]]) -> Mapping[str,
         c0 = price_pnl + funding_pnl
         c1 = c0 - turnover * 0.001
         c2 = c0 - turnover * 0.002
-        row = {
+        admitted.append({
             "date": day,
             "year": day[:4],
             "btc_state": btc_state,
@@ -191,20 +182,16 @@ def analyze_weekly_records(records: Sequence[Mapping[str, Any]]) -> Mapping[str,
             "beta": beta,
             "max_capacity_utilization": max_util,
             "max_abs_weight": max(abs(v) for v in target.values()),
-        }
-        admitted.append(row)
+        })
         previous = dict(target)
-        pending_preceding_index = len(admitted) - 1
 
     c2_values = [float(row["c2"]) for row in admitted]
     support = len(admitted) >= MIN_WEEKS
-
     by_year: dict[str, list[float]] = {}
     by_state: dict[str, list[float]] = {"BTC_UP": [], "BTC_NONUP": []}
     for row in admitted:
         by_year.setdefault(str(row["year"]), []).append(float(row["c2"]))
         by_state[str(row["btc_state"])].append(float(row["c2"]))
-
     qualifying_years = {year: vals for year, vals in by_year.items() if len(vals) >= 20}
     blocks = _four_blocks(c2_values) if c2_values else []
     support = support and len(blocks) == 4 and all(len(block) >= 20 for block in blocks)
@@ -276,5 +263,14 @@ def analyze_weekly_records(records: Sequence[Mapping[str, Any]]) -> Mapping[str,
 
 
 class FactorLS0088Engine:
-    def execute(self, controlled_sources: Mapping[str, bytes]) -> Mapping[str, Any]:
-        raise FactorLSExecutionError("BUILD_ONLY_SYNTHETIC_ENGINE_REQUIRES_ARM_ADAPTER")
+    """Source-qualified post-marker engine. The common runner owns reads/persistence."""
+
+    def validate_source_keys(self, source_keys: Sequence[str]) -> None:
+        from .source_adapter import validate_source_keys
+        validate_source_keys(source_keys)
+
+    def execute(self, context: Any) -> Mapping[str, Any]:
+        from .construction import build_weekly_records
+        from .source_adapter import normalize_controlled_sources
+        panel, funding = normalize_controlled_sources(context.sources)
+        return analyze_weekly_records(build_weekly_records(panel, funding))
