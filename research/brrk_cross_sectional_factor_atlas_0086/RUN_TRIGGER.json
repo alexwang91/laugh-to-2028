@@ -2,5 +2,6 @@
   "research_id": "BRRK-CROSS-SECTIONAL-FACTOR-ATLAS-0086",
   "attempt": "1/1",
   "authorization": "AUTHORIZED",
-  "authorized_at": "2026-08-26T07:26:43Z"
+  "authorized_at": "2026-08-26T07:26:43Z",
+  "pre_marker_retry": 1
 }

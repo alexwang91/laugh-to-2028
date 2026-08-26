@@ -479,3 +479,13 @@ BUILD may use synthetic/nonhistorical fixtures only. ARM must bind qualifying po
 - Prospective repair broadens only the filename symbol token to any non-slash symbol ending in `USDT`, preserving the exact prefix, `__1d__`, symbol back-reference, month grammar, duplicate logical-object rejection, and required BTCUSDT check. A synthetic regression binds the actual frozen Unicode filename.
 - The unique workflow accepts a single auditable `pre_marker_retry: 1` receipt only while the original authorization remains `attempt_consumed=false`. No second scientific attempt is created.
 - 0085, 0076, 0072/0073, 0083, Phase6 closeout, CAPTURE anchors and all frozen 0086 science remain unchanged. Factor L/S remains blocked until an admissible 0086 PASS.
+
+## 0086 Factor Atlas immutable PASS seal — 2026-08-26
+
+- `BRRK-CROSS-SECTIONAL-FACTOR-ATLAS-0086` completed its single authorized controlled attempt `1/1` through `ControlledResearchRunnerV1SourceQualified`; durable `RUN_ATTEMPT.marker` preceded all controlled payload reads.
+- The run consumed exactly `15,254` controlled source reads and exactly `1/1` scientific engine invocation. Source-network fetches remained `0`; `PRIMARY_RESULT.json` and `RUN_ONCE.marker` were persisted create-only.
+- Persisted execution classification is `EXECUTION_VALID`; scientific classification is `PASS_VALIDATED_FACTOR_ATLAS`; `scientific_result_admissible=true`.
+- All three frozen factors pass G0-G9 with persisted signs `MOM60_RAW=-1`, `RVOL20_RAW=-1`, `LIQ30_RAW=+1`. Same-ID rerun, retune, rescue, recomputation, source substitution, factor reselection and sign reinterpretation are forbidden.
+- Mean weekly rank ICs are MOM60 `-0.05754786555676433`, RVOL20 `-0.12389264424859531`, LIQ30 `0.037890696622620984`; frozen 20 bps net aligned weekly spreads are `0.004849416287787996`, `0.009230759613991876`, and `0.0021777487441069694`.
+- The PASS unlocks only a separately governed Factor L/S research ID. Evidence remains researcher-exposed DEVELOPMENT history and grants zero production/signature/order/withdrawal/transfer authority.
+- 0085 remains immutable `INVALID_EXECUTION`; 0076 remains sealed; 0072/0073 remain paused; 0083 remains immutable FAIL; Phase6 closeout and CAPTURE anchors remain unchanged.
