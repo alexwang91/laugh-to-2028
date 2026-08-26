@@ -1,0 +1,36 @@
+name: 0086 current state append
+"on":
+  push:
+    branches:
+      - research/0086-factor-atlas-result-v1
+    paths:
+      - .github/workflows/0086-current-state-append.yml
+permissions:
+  contents: write
+jobs:
+  append:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/0086-factor-atlas-result-v1
+      - shell: bash
+        run: |
+          cat >> docs/CURRENT_STATE.md <<'EOF'
+
+## 0086 Factor Atlas immutable PASS seal — 2026-08-26
+
+- `BRRK-CROSS-SECTIONAL-FACTOR-ATLAS-0086` completed its single authorized controlled attempt `1/1` through `ControlledResearchRunnerV1SourceQualified`; durable `RUN_ATTEMPT.marker` preceded all controlled payload reads.
+- The run consumed exactly `15,254` controlled source reads and exactly `1/1` scientific engine invocation. Source-network fetches remained `0`; `PRIMARY_RESULT.json` and `RUN_ONCE.marker` were persisted create-only.
+- Persisted execution classification is `EXECUTION_VALID`; scientific classification is `PASS_VALIDATED_FACTOR_ATLAS`; `scientific_result_admissible=true`.
+- All three frozen factors pass G0-G9 with persisted signs `MOM60_RAW=-1`, `RVOL20_RAW=-1`, `LIQ30_RAW=+1`. Same-ID rerun, retune, rescue, recomputation, source substitution, factor reselection and sign reinterpretation are forbidden.
+- Mean weekly rank ICs are MOM60 `-0.05754786555676433`, RVOL20 `-0.12389264424859531`, LIQ30 `0.037890696622620984`; frozen 20 bps net aligned weekly spreads are `0.004849416287787996`, `0.009230759613991876`, and `0.0021777487441069694`.
+- The PASS unlocks only a separately governed Factor L/S research ID. Evidence remains researcher-exposed DEVELOPMENT history and grants zero production/signature/order/withdrawal/transfer authority.
+- 0085 remains immutable `INVALID_EXECUTION`; 0076 remains sealed; 0072/0073 remain paused; 0083 remains immutable FAIL; Phase6 closeout and CAPTURE anchors remain unchanged.
+EOF
+          rm .github/workflows/0086-current-state-append.yml
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add docs/CURRENT_STATE.md .github/workflows/0086-current-state-append.yml
+          git commit -m 'docs(0086): record immutable PASS seal'
+          git push origin HEAD:research/0086-factor-atlas-result-v1
