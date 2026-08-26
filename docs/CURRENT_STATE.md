@@ -489,3 +489,13 @@ BUILD may use synthetic/nonhistorical fixtures only. ARM must bind qualifying po
 - Mean weekly rank ICs are MOM60 `-0.05754786555676433`, RVOL20 `-0.12389264424859531`, LIQ30 `0.037890696622620984`; frozen 20 bps net aligned weekly spreads are `0.004849416287787996`, `0.009230759613991876`, and `0.0021777487441069694`.
 - The PASS unlocks only a separately governed Factor L/S research ID. Evidence remains researcher-exposed DEVELOPMENT history and grants zero production/signature/order/withdrawal/transfer authority.
 - 0085 remains immutable `INVALID_EXECUTION`; 0076 remains sealed; 0072/0073 remain paused; 0083 remains immutable FAIL; Phase6 closeout and CAPTURE anchors remain unchanged.
+
+## 0088 Factor L/S SPEC_FREEZE — 2026-08-26
+
+- `BRRK-FACTOR-LS-0088` is a new separately governed Factor L/S research ID unlocked only by immutable 0086 `PASS_VALIDATED_FACTOR_ATLAS`. It is not a 0076 replacement, retry, continuation, rescue, or recomputation and inherits zero 0076 lifecycle/attempt credit.
+- Central `config/research_registry.json` owner registration preceded creation of `research/brrk_factor_ls_0088/`.
+- SPEC freezes all three immutable 0086 passing directions with no reselection or sign change: `MOM60_RAW=-1`, `RVOL20_RAW=-1`, `LIQ30_RAW=+1`. Exactly one equal-weight signed-rank composite and one top/bottom-tercile weekly L/S construction are admissible.
+- The portfolio uses PIT Binance USD-M USDT perpetual top-30 liquidity membership, Monday UTC-close decisions, FWD5 holding, long gross +1/short gross -1, explicit turnover, source-native funding-rate attribution, C0/C1/C2 costs, beta/capacity/concentration gates, 8-week MBB inference and frozen G0-G9 adjudication.
+- Controlled attempt remains `0/1`; controlled reads remain `0`; scientific engine remains `0/1`; scientific values remain unexposed. BUILD may use synthetic/nonhistorical fixtures only. ARM is metadata/schema/identity-only. Any RUN requires separate irreversible user authorization and `ControlledResearchRunnerV1SourceQualified`.
+- 0086 remains immutable PASS and cannot be rerun or reinterpreted. 0085 remains immutable INVALID_EXECUTION. 0076 remains sealed; 0072/0073 remain paused; 0083 remains immutable FAIL; 0087 remains source-metadata blocked. Phase6 closeout and common-runner qualification remain unchanged.
+- `workflow run                         31381953131 / attempt 1`, CAPTURE-0001 sealed/no-retry and CAPTURE-0002 permanently claimed/no-refetch remain immutable. Production/signature/order/withdrawal/transfer authority remains false.
