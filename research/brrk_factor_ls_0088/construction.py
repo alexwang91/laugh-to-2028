@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime, time, timezone
-from math import isfinite
+from math import isfinite, log
 from statistics import median
 from typing import Any, Mapping, Sequence
 
@@ -16,10 +16,7 @@ FWD = 5
 
 
 def _indices(panel: Mapping[str, Sequence[Mapping[str, Any]]]) -> dict[str, dict[str, int]]:
-    out = {}
-    for symbol, rows in panel.items():
-        out[symbol] = {str(row["date"]): i for i, row in enumerate(rows)}
-    return out
+    return {symbol: {str(row["date"]): i for i, row in enumerate(rows)} for symbol, rows in panel.items()}
 
 
 def construct_target(panel: Mapping[str, list[dict[str, Any]]], day: str) -> Mapping[str, Any]:
@@ -53,10 +50,7 @@ def construct_target(panel: Mapping[str, list[dict[str, Any]]], day: str) -> Map
         values = [float(x[3][name]) for x in selected]
         ranks = _average_ranks(values)
         factor_ranks[name] = [SIGNS[name] * ((r - 1.0) / (n - 1.0) - 0.5) for r in ranks]
-    composite = {
-        symbol: sum(factor_ranks[name][i] for name in SIGNS) / 3.0
-        for i, symbol in enumerate(symbols)
-    }
+    composite = {symbol: sum(factor_ranks[name][i] for name in SIGNS) / 3.0 for i, symbol in enumerate(symbols)}
     k = n // 3
     bottom = [s for s, _ in sorted(composite.items(), key=lambda x: (x[1], x[0]))[:k]]
     top = [s for s, _ in sorted(composite.items(), key=lambda x: (-x[1], x[0]))[:k]]
@@ -113,3 +107,67 @@ def funding_pnl(target: Mapping[str, float], events: Mapping[str, Sequence[Mappi
             if start < stamp <= end:
                 total += -weight * rate
     return total
+
+
+def _decision_capacity(panel: Mapping[str, list[dict[str, Any]]], day: str) -> dict[str, float]:
+    out: dict[str, float] = {}
+    for symbol, rows in panel.items():
+        index = {str(row["date"]): i for i, row in enumerate(rows)}.get(day)
+        if index is None or index < 29:
+            continue
+        values = [float(rows[j]["quote_volume"]) for j in range(index - 29, index + 1)]
+        value = median(values)
+        if isfinite(value) and value > 0:
+            out[symbol] = value
+    return out
+
+
+def build_weekly_records(panel: Mapping[str, list[dict[str, Any]]], funding: Mapping[str, Sequence[Mapping[str, Any]]]) -> list[dict[str, Any]]:
+    """Bridge normalized post-marker source rows into the frozen weekly evaluator."""
+    if "BTCUSDT" not in panel:
+        raise FactorLSExecutionError("MISSING_BTCUSDT_PANEL")
+    btc = panel["BTCUSDT"]
+    btc_index = {str(row["date"]): i for i, row in enumerate(btc)}
+    indices = _indices(panel)
+    records: list[dict[str, Any]] = []
+    for btc_i, btc_row in enumerate(btc):
+        day = str(btc_row["date"])
+        try:
+            weekday = datetime.fromisoformat(day).weekday()
+        except ValueError as exc:
+            raise FactorLSExecutionError("INVALID_DECISION_DATE") from exc
+        if weekday != 0 or btc_i < MIN_HISTORY - 1 or btc_i + FWD >= len(btc):
+            continue
+        try:
+            built = construct_target(panel, day)
+            target = dict(built["target"])
+            exit_day = str(btc[btc_i + FWD]["date"])
+            asset_returns: dict[str, float] = {}
+            portfolio_beta = 0.0
+            for symbol, weight in target.items():
+                i = indices[symbol].get(day)
+                if i is None or i + FWD >= len(panel[symbol]) or str(panel[symbol][i + FWD]["date"]) != exit_day:
+                    raise FactorLSExecutionError(f"MISSING_FWD5_SUPPORT:{symbol}:{day}")
+                entry = float(panel[symbol][i]["close"])
+                exit_close = float(panel[symbol][i + FWD]["close"])
+                ret = exit_close / entry - 1.0
+                if not isfinite(ret):
+                    raise FactorLSExecutionError("NONFINITE_FWD5_RETURN")
+                asset_returns[symbol] = ret
+                if weight != 0:
+                    portfolio_beta += weight * trailing_beta(panel[symbol], btc, day)
+            fpnl = funding_pnl(target, funding, day, exit_day)
+            btc_state = "BTC_UP" if log(float(btc[btc_i]["close"]) / float(btc[btc_i - 60]["close"])) > 0 else "BTC_NONUP"
+            records.append({
+                "date": day,
+                "support": True,
+                "target": target,
+                "asset_returns": asset_returns,
+                "funding_pnl": fpnl,
+                "portfolio_beta": portfolio_beta,
+                "btc_state": btc_state,
+                "median_quote_volume": _decision_capacity(panel, day),
+            })
+        except FactorLSExecutionError:
+            records.append({"date": day, "support": False})
+    return records
