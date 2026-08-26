@@ -1,6 +1,6 @@
 # 0087 CURRENT_STATE handoff trigger
 
-Mechanical retrigger for the corrected branch-local CURRENT_STATE writer. This file contains no scientific evidence, opens no controlled value, consumes no attempt, and grants no authority.
+Mechanical synchronization for the guarded pull-request CURRENT_STATE writer. This file contains no scientific evidence, opens no controlled value, consumes no attempt, and grants no authority.
 
 ## What did not change
 
