@@ -1,0 +1,90 @@
+name: 0088 owner-first registry bootstrap
+
+on:
+  push:
+    branches:
+      - research/0088-factor-ls-spec-freeze-v1
+
+permissions:
+  contents: write
+
+jobs:
+  register-owner:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/0088-factor-ls-spec-freeze-v1
+          fetch-depth: 0
+      - name: Register 0088 owner before governed path exists
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p = Path('config/research_registry.json')
+          data = json.loads(p.read_text())
+          rid = 'BRRK-FACTOR-LS-0088'
+          if any(r.get('research_id') == rid for r in data['records']):
+              raise SystemExit('0088 owner already registered')
+          governed = Path('research/brrk_factor_ls_0088')
+          if governed.exists():
+              raise SystemExit('0088 governed path exists before owner registration')
+          record = {
+            'research_id': rid,
+            'research_family_id': 'FACTOR_LONG_SHORT',
+            'research_domain': 'RELATIVE_VALUE',
+            'research_governance_version': 1,
+            'governance_mode': 'PROGRAM_GOVERNED_V1',
+            'objective_type': 'FACTOR_PORTFOLIO_VALIDATION',
+            'created_at': '2026-08-26T09:56:00Z',
+            'created_before_result': True,
+            'question': 'Can the three immutable passing 0086 factor directions form one prospectively fixed cross-sectional long/short crypto perpetual sleeve with positive risk-adjusted net returns after turnover, funding, stressed costs, concentration, capacity, chronology, and BTC-state robustness checks?',
+            'hypothesis': 'An equal-weight composite of the immutable 0086 signed factor ranks will preserve enough independent cross-sectional structure to support a dollar-neutral weekly long/short sleeve after realistic and stressed implementation costs without factor reselection, sign changes, or portfolio tuning.',
+            'hypothesis_origin': 'PROSPECTIVE_DOWNSTREAM_RESEARCH_UNLOCKED_ONLY_BY_IMMUTABLE_0086_PASS',
+            'economic_mechanism': 'The 0086 PASS identified persistent relative-return structure in low realized volatility, medium-horizon reversal, and liquidity. Combining the three fixed signed ranks may diversify factor-specific noise while retaining their prevalidated cross-sectional ordering.',
+            'primary_target': 'ROBUST_IMPLEMENTABLE_FACTOR_LONG_SHORT_SLEEVE',
+            'primary_metric': 'FROZEN_WEEKLY_NET_PORTFOLIO_RETURN_AND_RISK_GATES_AT_STRESSED_COST',
+            'secondary_metrics': ['gross_weekly_return','net_weekly_return_c1','net_weekly_return_c2','annualized_sharpe_c2','max_drawdown_c2','positive_week_fraction_c2','one_way_turnover','funding_pnl','portfolio_beta_to_btc','max_name_weight','capacity_utilization','chronological_block_return','calendar_year_return','btc_state_return','leave_one_year_out_return'],
+            'feature_families': ['MOM60_RAW_SIGN_MINUS_ONE_FROM_0086','RVOL20_RAW_SIGN_MINUS_ONE_FROM_0086','LIQ30_RAW_SIGN_PLUS_ONE_FROM_0086'],
+            'horizon': 'MONDAY_UTC_CLOSE_TO_FULLY_MATURED_5_SESSION_WEEKLY_HOLD',
+            'universe': ['POINT_IN_TIME_TOP30_BY_TRAILING30_MEDIAN_QUOTE_VOLUME_BINANCE_USDM_USDT_PERPETUALS'],
+            'development_dataset_refs': ['BRRK-CROSS-SECTIONAL-FACTOR-ATLAS-0086'],
+            'validation_dataset_refs': [],
+            'sealed_dataset_refs': [],
+            'declared_variant_budget': 1,
+            'actual_variants_evaluated': 0,
+            'parameter_candidate_count': 1,
+            'stopping_rule': 'Use PROSPECTIVE_FIVE_GATE_LIFECYCLE_V1. Evaluate exactly one fixed Factor L/S construction downstream of immutable 0086 PASS. SPEC_FREEZE precedes controlled values; BUILD uses synthetic/nonhistorical fixtures only; ARM binds exact controlled identities and ControlledResearchRunnerV1SourceQualified; RUN consumes at most one separately authorized attempt; SEAL performs no scientific recomputation. No factor reselection, sign flip, weight optimization, alternate basket, horizon, rebalance, cost panel, risk overlay, source substitution, rerun, retune, rescue, or history extension after controlled exposure.',
+            'success_criteria': ['Use exactly the three immutable 0086 passing factors with signs MOM60_RAW=-1, RVOL20_RAW=-1, LIQ30_RAW=+1.','Evaluate exactly one prospectively fixed composite and portfolio construction.','Require adequate weekly support and positive stressed-cost portfolio economics with dependence-aware uncertainty.','Require chronology, calendar-year, BTC-state, leave-one-year-out, concentration, beta-budget, and capacity robustness under prospectively frozen gates.','Require all identity, causality, finite-statistic, read, persistence, source-interface, and exactly-once invariants to pass.'],
+            'failure_criteria': ['Valid execution with adequate support but any frozen mandatory scientific/economic/risk gate failing produces a scientific FAIL.','Valid execution with inadequate frozen support or truthful implementation accounting produces INCONCLUSIVE.','Any source identity, manifest/hash, schema, timestamp, point-in-time membership, read-count, non-finite, persistence, network, marker-ordering, source-interface, or exactly-once violation produces INVALID_EXECUTION.'],
+            'allowed_followup': ['Only an immutable valid PASS may make this Factor L/S sleeve eligible for later separately governed multi-sleeve research.','PASS may motivate separately preregistered forward-only validation.'],
+            'forbidden_followup': ['No reuse or continuation of 0076 and no inheritance of its lifecycle or attempt credit.','No factor reselection, sign reinterpretation, coefficient fitting, weight optimization, alternate universe, alternate horizon, alternate rebalance, alternate cost panel, rescue, recomputation, or source substitution after controlled exposure.','No production, signing, order, withdrawal, or transfer authority.'],
+            'researcher_decisions': ['Adopt PROSPECTIVE_FIVE_GATE_LIFECYCLE_V1.','Treat immutable 0086 PASS as the sole scientific dependency.','Use exactly MOM60_RAW=-1, RVOL20_RAW=-1, LIQ30_RAW=+1 with no reselection or sign changes.','Evaluate one equal-weight signed-rank composite only.','Use the same point-in-time Binance USD-M USDT-perpetual top-30 liquidity universe and Monday UTC-close weekly cadence as 0086 unless the SPEC freezes a stricter support rule before any controlled exposure.','Treat all controlled history as researcher-exposed DEVELOPMENT, not independent OOS.'],
+            'research_process_complexity': {'declared_parameter_candidates':['ONE_FIXED_EQUAL_WEIGHT_SIGNED_RANK_COMPOSITE'],'actual_parameter_candidates_evaluated':0,'universes_evaluated':1,'horizons_evaluated':['FWD5_ONLY'],'rebalance_variants':['MONDAY_UTC_CLOSE_ONLY'],'feature_representations':['EQUAL_WEIGHT_SIGNED_CROSS_SECTIONAL_RANK_COMPOSITE_ONLY'],'special_cases_introduced':[],'validation_exposure_event_refs':[],'related_family_trials':1},
+            'lineage_edges': [{'from_research_id':'BRRK-CROSS-SECTIONAL-FACTOR-ATLAS-0086','relation':'IMMUTABLE_PASS_UNLOCKS_SEPARATE_DOWNSTREAM_FACTOR_LS_ONLY'}],
+            'result_status': 'OWNER_REGISTERED_SPEC_NOT_INTRODUCED',
+            'failure_reason': None,
+            'promotion_state': 'NONE',
+            'evidence_refs': ['research/brrk_cross_sectional_factor_atlas_0086/CLOSEOUT.md','research/brrk_cross_sectional_factor_atlas_0086/PRIMARY_RESULT.json'],
+            'decision_refs': ['research/governance/PROSPECTIVE_FIVE_GATE_LIFECYCLE_V1.md','research/governance/CONTROLLED_RESEARCH_RUNNER_V1_SOURCE_INTERFACE_QUALIFICATION_2026-08-25.md'],
+            'production_relevance': 'Research-only DEVELOPMENT Factor L/S sleeve. PASS grants only later governed research eligibility.',
+            'production_authorized': False,
+            'provenance_status': 'PROSPECTIVE_DECLARED_BEFORE_RESULT',
+            'governed_path_prefixes': ['research/brrk_factor_ls_0088/'],
+            'notes': ['Owner-first central registry insertion precedes any governed 0088 research path.','0088 is not a 0076 replacement, retry, continuation, or rescue and receives zero 0076 lifecycle/attempt credit.','0086 factor identities and signs are immutable inputs and cannot be reselected or reinterpreted.','Any future common-runner-caused INVALID_EXECUTION stops new science pending repair and requalification.']
+          }
+          data['records'].append(record)
+          p.write_text(json.dumps(data, indent=2, ensure_ascii=False) + '\n')
+          PY
+      - name: Remove bootstrap workflow and commit owner record atomically
+        shell: bash
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git rm .github/workflows/0088-owner-first-bootstrap.yml
+          git add config/research_registry.json
+          git diff --cached --check
+          git commit -m "research(0088): register Factor L/S owner first"
+          git push origin HEAD:research/0088-factor-ls-spec-freeze-v1
