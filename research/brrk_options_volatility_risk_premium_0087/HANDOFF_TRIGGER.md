@@ -1,6 +1,6 @@
 # 0087 CURRENT_STATE handoff trigger
 
-This branch-local mechanical trigger exists only to activate the one-shot CURRENT_STATE writer. It contains no scientific evidence, reads no controlled value, consumes no attempt, and grants no authority.
+Mechanical retrigger for the corrected branch-local CURRENT_STATE writer. This file contains no scientific evidence, opens no controlled value, consumes no attempt, and grants no authority.
 
 ## What did not change
 
