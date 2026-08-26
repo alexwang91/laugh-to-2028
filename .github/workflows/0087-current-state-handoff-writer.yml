@@ -1,27 +1,34 @@
-name: 0087 CURRENT_STATE handoff writer
+name: 0087 guarded CURRENT_STATE handoff writer
 
 on:
-  push:
-    branches:
-      - "research/0087-options-vrp-pre-exposure-spec-clarification-v1"
+  pull_request:
+    types: [opened, synchronize, reopened]
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
-  handoff:
-    if: ${{ github.actor != 'github-actions[bot]' }}
+  current-state-handoff-0087:
+    name: Guarded 0087 CURRENT_STATE handoff writer
+    if: >-
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      github.head_ref == 'research/0087-options-vrp-pre-exposure-spec-clarification-v1'
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: ${{ github.event.pull_request.head.ref }}
           fetch-depth: 0
+
       - name: Append durable handoff
         shell: bash
         run: |
           set -euo pipefail
           marker='## 0087 pre-exposure SPEC clarification - 2026-08-26'
           if grep -Fq "$marker" docs/CURRENT_STATE.md; then
+            echo 'CURRENT_STATE handoff already present; no mutation.'
             exit 0
           fi
           cat >> docs/CURRENT_STATE.md <<'EOF'
@@ -38,8 +45,8 @@ jobs:
 - `workflow run                         31381953131 / attempt 1`, CAPTURE-0001 sealed/no-retry and CAPTURE-0002 permanently claimed/no-refetch remain immutable.
 - `ControlledResearchRunnerV1SourceQualified` remains mandatory for future controlled RUNs. Production/signature/order/withdrawal/transfer authority remains false.
 EOF
-          git config user.name github-actions[bot]
-          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add docs/CURRENT_STATE.md
           git commit -m 'research(0087): record pre-exposure clarification handoff'
-          git push origin HEAD:"${GITHUB_REF_NAME}"
+          git push origin HEAD:${{ github.event.pull_request.head.ref }}
