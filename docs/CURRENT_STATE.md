@@ -499,3 +499,13 @@ BUILD may use synthetic/nonhistorical fixtures only. ARM must bind qualifying po
 - Controlled attempt remains `0/1`; controlled reads remain `0`; scientific engine remains `0/1`; scientific values remain unexposed. BUILD may use synthetic/nonhistorical fixtures only. ARM is metadata/schema/identity-only. Any RUN requires separate irreversible user authorization and `ControlledResearchRunnerV1SourceQualified`.
 - 0086 remains immutable PASS and cannot be rerun or reinterpreted. 0085 remains immutable INVALID_EXECUTION. 0076 remains sealed; 0072/0073 remain paused; 0083 remains immutable FAIL; 0087 remains source-metadata blocked. Phase6 closeout and common-runner qualification remain unchanged.
 - `workflow run                         31381953131 / attempt 1`, CAPTURE-0001 sealed/no-retry and CAPTURE-0002 permanently claimed/no-refetch remain immutable. Production/signature/order/withdrawal/transfer authority remains false.
+
+## 0088 Factor L/S pre-exposure transition clarification — 2026-08-26
+
+- Prospective clarification file: `research/brrk_factor_ls_0088/SPEC_CLARIFICATION_INVALID_WEEK_TRANSITIONS.md`.
+- The clarification freezes invalid-week, liquidation, restart, exit-capacity, and return-blind support-admission semantics before any controlled exposure.
+- An unsupported scheduled Monday creates no scientific observation and cannot silently carry the prior target across the gap. A later admissible Monday restarts from zero weights and pays full entry turnover under the frozen cost schedule.
+- If an unsupported transition prevents truthful terminal accounting for the immediately preceding portfolio observation, that preceding observation is mechanically removed. Missing decision-time capacity data for a previously held asset is fail-closed; stale, future, or substitute denominators are forbidden.
+- Controlled attempt remains `0/1`; controlled reads remain `0`; scientific engine remains `0/1`; scientific values remain unexposed. BUILD must requalify the clarified state machine with synthetic/nonhistorical fixtures before ARM.
+- 0086 remains immutable `PASS_VALIDATED_FACTOR_ATLAS`; 0085 remains immutable `INVALID_EXECUTION`; 0076 remains sealed; 0072/0073 remain paused; 0083 remains immutable FAIL; 0087 remains source-metadata blocked. Phase6 closeout and common-runner qualification remain unchanged.
+- `workflow run                         31381953131 / attempt 1`, CAPTURE-0001 sealed/no-retry, and CAPTURE-0002 permanently claimed/no-refetch remain immutable. Production/signature/order/withdrawal/transfer authority remains false.
