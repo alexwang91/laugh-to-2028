@@ -51,3 +51,5 @@ The result is admissible scientific evidence of failure. It is not an infrastruc
 Same-ID rerun, retune, rescue, factor reselection, sign reinterpretation, threshold relaxation, source substitution, or recomputation are forbidden. The 0086 Atlas factor signs remain immutable historical inputs; this 0088 failure does not rewrite 0086.
 
 Production, signing, order-submission, withdrawal, transfer, and release authority remain false.
+
+The cross-chat handoff in `docs/CURRENT_STATE.md` records these same persisted terminal facts and introduces no additional scientific interpretation.
